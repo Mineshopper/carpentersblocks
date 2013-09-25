@@ -499,18 +499,7 @@ public class BlockCarpentersStairs extends BlockBase
 
 		return false;
 	}
-    
-    /**
-     * Returns whether two blocks share faces.
-     * Primarily for slopes, stairs and slabs.
-     */
-    @Override
-	protected boolean shareFaces(TECarpentersBlock TE_adj, TECarpentersBlock TE_src, ForgeDirection side_adj, ForgeDirection side_src)
-    {
-    	return	TE_adj.getBlockType().isBlockSolidOnSide(TE_adj.worldObj, TE_adj.xCoord, TE_adj.yCoord, TE_adj.zCoord, side_adj) &&
-    			TE_src.getBlockType().isBlockSolidOnSide(TE_src.worldObj, TE_src.xCoord, TE_src.yCoord, TE_src.zCoord, side_src);
-    }
-	
+
     @Override
 	/**
 	 * Called when block is placed in world.

@@ -555,7 +555,7 @@ public class BlockCarpentersSlope extends BlockBase
 				return false;
     	}
     	
-		return true;
+		return super.shareFaces(TE_adj, TE_src, side_adj, side_src);
 	}
 
     @Override

@@ -310,7 +310,7 @@ public class BlockCarpentersBlock extends BlockBase
 	    	}
     	}
     	
-    	return true;
+    	return super.shareFaces(TE_adj, TE_src, side_adj, side_src);
     }
 	
     @Override

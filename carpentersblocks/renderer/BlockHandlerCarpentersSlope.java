@@ -694,7 +694,7 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerBase
     	setWedgeSlopeLighting(renderBlocks, slope1);
         
         if (slope1.isPositive) {
-        	prepareSlopeRender(TE, renderBlocks, coverBlock, srcBlock, 0, WEDGE_CORNER_YXXPNP, true, x, y, z, 0.8F);
+        	prepareSlopeRender(TE, renderBlocks, coverBlock, srcBlock, 1, WEDGE_CORNER_YXXPNP, true, x, y, z, 0.8F);
         } else {
         	prepareSlopeRender(TE, renderBlocks, coverBlock, srcBlock, 0, WEDGE_CORNER_YXXNNP, true, x, y, z, 0.55F);
         }
@@ -708,7 +708,7 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerBase
         if (slope2.isPositive) {
         	prepareSlopeRender(TE, renderBlocks, coverBlock, srcBlock, 1, WEDGE_CORNER_YZZPNP, true, x, y, z, 0.9F);
         } else {
-        	prepareSlopeRender(TE, renderBlocks, coverBlock, srcBlock, 1, WEDGE_CORNER_YZZNNP, true, x, y, z, 0.65F);
+        	prepareSlopeRender(TE, renderBlocks, coverBlock, srcBlock, 0, WEDGE_CORNER_YZZNNP, true, x, y, z, 0.65F);
         }
     }
     
