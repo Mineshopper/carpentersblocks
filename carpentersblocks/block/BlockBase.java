@@ -4,6 +4,7 @@ import java.util.Random;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
+import net.minecraft.block.BlockDirectional;
 import net.minecraft.block.BlockFlower;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.particle.EffectRenderer;
@@ -14,6 +15,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.client.ForgeHooksClient;
@@ -22,6 +24,7 @@ import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.IPlantable;
 import carpentersblocks.tileentity.TECarpentersBlock;
 import carpentersblocks.util.BlockProperties;
+import carpentersblocks.util.handler.BlockHandler;
 import carpentersblocks.util.handler.EventHandler;
 import carpentersblocks.util.handler.FeatureHandler;
 import carpentersblocks.util.handler.ItemHandler;
@@ -38,7 +41,7 @@ public class BlockBase extends BlockContainer
 	{
 		super(blockID, material);
 	}
-		
+
 	/**
 	 * Returns whether cover will return instanceof this, resulting in loop.
 	 */
@@ -68,7 +71,7 @@ public class BlockBase extends BlockContainer
 	public Icon getBlockTexture(IBlockAccess world, int x, int y, int z, int side)
 	{
 		TECarpentersBlock TE = (TECarpentersBlock) world.getBlockTileEntity(x, y, z);
-		
+
 		return BlockProperties.getCoverBlock(TE, 6).getIcon(side, BlockProperties.getCoverMetadata(TE, 6));
 	}
 
@@ -84,27 +87,28 @@ public class BlockBase extends BlockContainer
 
 		if (itemStack != null)
 		{
-			int side = EventHandler.faceClicked;
+			int side = EventHandler.eventFace;
 			
 			int effectiveSide = BlockProperties.hasCover(TE, side) ? side : 6;
 			Item item = itemStack.getItem();
 
-			if (item.equals(ItemHandler.itemCarpentersHammer))
-			{
+			if (item.equals(ItemHandler.itemCarpentersHammer)) {
+				
 				boolean dataAltered = false;
 
-				if (entityPlayer.isSneaking())
-				{
-					if (!world.isRemote)
-					{
+				if (entityPlayer.isSneaking()) {
+					
+					if (!world.isRemote) {
+						
 						if (BlockProperties.hasOverlay(TE, effectiveSide)) {
 							dataAltered = BlockProperties.setOverlay(TE, effectiveSide, (ItemStack)null);
 						} else if (BlockProperties.hasDyeColor(TE, effectiveSide)) {
 							dataAltered = BlockProperties.setDyeColor(TE, effectiveSide, 0);
 						} else if (BlockProperties.hasCover(TE, effectiveSide)) {
-							dataAltered = BlockProperties.setCover(TE, effectiveSide, (ItemStack)null);
+							dataAltered = BlockProperties.setCover(TE, effectiveSide, 0, (ItemStack)null);
 							dataAltered = BlockProperties.setPattern(TE, effectiveSide, 0);
 						}
+						
 					}
 
 				} else {
@@ -181,15 +185,42 @@ public class BlockBase extends BlockContainer
 
 			} else if (FeatureHandler.enableCovers && BlockProperties.isCover(itemStack)) {
 
+				Block block = Block.blocksList[itemStack.itemID];
+				int metadata = block instanceof BlockDirectional ? MathHelper.floor_double(EventHandler.eventEntity.rotationYaw * 4.0F / 360.0F + 2.5D) & 3 : itemStack.getItemDamage();		
+
 				if (!BlockProperties.hasCover(TE, 6)) {
 
-					actionPerformed = decrementInventory = BlockProperties.setCover(TE, 6, itemStack);
+					if (this != BlockHandler.blockCarpentersSlope && BlockProperties.blockRotates(world, block, x, y, z)) {
+						metadata = block.onBlockPlaced(world, x, y, z, side, hitX, hitY, hitZ, metadata);
+					}
+					
+					actionPerformed = decrementInventory = BlockProperties.setCover(TE, 6, metadata, itemStack);
 
 				} else if (FeatureHandler.enableSideCovers) {
 
-					if (!BlockProperties.hasCover(TE, side) && this.canCoverSide(TE, world, x, y, z, side))
-						actionPerformed = decrementInventory = BlockProperties.setCover(TE, side, itemStack);
+					if (!BlockProperties.hasCover(TE, side) && this.canCoverSide(TE, world, x, y, z, side)) {
+						
+						if (this != BlockHandler.blockCarpentersSlope && BlockProperties.blockRotates(world, block, x, y, z))
+						{
+							/*
+							 * Blocks that determine direction based on side clicked
+							 * have an obvious limitation in regards to being used as
+							 * side covers: it's always the side clicked.
+							 * 
+							 * Therefore, we'll instead utilize the player's pitch
+							 * and yaw for rotation when the block is used as a side
+							 * cover.
+							 */
 
+							int facing = MathHelper.floor_double(EventHandler.eventEntity.rotationYaw * 4.0F / 360.0F + 2.5D) & 3;
+							int side_interpolated =	entityPlayer.rotationPitch < -45.0F ? 0 : entityPlayer.rotationPitch > 45 ? 1 : facing == 0 ? 3 : facing == 1 ? 4 : facing == 2 ? 2 : 5;
+							metadata = block.onBlockPlaced(world, x, y, z, side_interpolated, hitX, hitY, hitZ, metadata);
+						}
+						
+						actionPerformed = decrementInventory = BlockProperties.setCover(TE, side, metadata, itemStack);
+						
+					}
+						
 				}
 
 			} else if (FeatureHandler.enableOverlays && BlockProperties.isOverlay(itemStack)) {

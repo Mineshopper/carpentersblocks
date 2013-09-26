@@ -1,6 +1,7 @@
 package carpentersblocks.util.handler;
 
 import net.minecraft.block.Block;
+import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -13,7 +14,12 @@ public class EventHandler
 	/**
 	 * Stores face for onBlockClicked().
 	 */
-	public static int faceClicked;
+	public static int eventFace;
+	
+	/**
+	 * Stores entity that hit block.
+	 */
+	public static Entity eventEntity;
 	
 	@ForgeSubscribe
 	/**
@@ -29,9 +35,11 @@ public class EventHandler
 		{
 			BlockBase block = (BlockBase) Block.blocksList[blockID];
 			
+			eventEntity = event.entity;
+
 			if (event.action.equals(PlayerInteractEvent.Action.LEFT_CLICK_BLOCK)) {
 
-				faceClicked = event.face;
+				eventFace = event.face;
 
 			} else if (event.entityPlayer.isSneaking()) {
 				

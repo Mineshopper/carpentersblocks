@@ -4,6 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockBreakable;
 import net.minecraft.block.BlockHalfSlab;
 import net.minecraft.block.BlockPane;
+import net.minecraft.block.BlockQuartz;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
@@ -39,6 +40,17 @@ public class BlockProperties
 			entityEjectedItem.delayBeforeCanPickup = 10;
 			TE.worldObj.spawnEntityInWorld(entityEjectedItem);
 		}
+	}
+	
+	/**
+	 * Returns whether block rotates based on placement conditions.
+	 * The blocks that utilize this property are mostly atypical, and
+	 * must be added manually.
+	 */
+	public static boolean blockRotates(World world, Block block, int x, int y, int z)
+	{
+		return	block.isWood(world, x, y, z) ||
+				block instanceof BlockQuartz;
 	}
 		
 	/**
@@ -78,7 +90,7 @@ public class BlockProperties
 		
 		setDyeColor(TE, side, DyeColorHandler.NO_COLOR);
 		setOverlay(TE, side, (ItemStack)null);
-		setCover(TE, side, (ItemStack)null);
+		setCover(TE, side, 0, (ItemStack)null);
 		setPattern(TE, side, 0);
 		
 		suppressUpdate = false;
@@ -177,14 +189,13 @@ public class BlockProperties
 	/**
 	 * Sets cover block.
 	 */
-	public static boolean setCover(TECarpentersBlock TE, int side, ItemStack itemStack)
+	public static boolean setCover(TECarpentersBlock TE, int side, int metadata, ItemStack itemStack)
 	{		
 		if (hasCover(TE, side))
 			ejectEntity(TE, new ItemStack(getCoverID(TE, side), 1, getCoverMetadata(TE, side)));
-		
+
 		int blockID = itemStack == null ? 0 : itemStack.itemID;
-		int metadata = itemStack == null ? 0 : itemStack.getItemDamage();
-		
+
 		if (itemStack != null)
 			playBlockPlacementSound(TE, blockID);
 

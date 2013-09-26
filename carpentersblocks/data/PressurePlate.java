@@ -10,8 +10,8 @@ public class PressurePlate
 	/**
 	 * 16-bit data components:
 	 *
-	 *	[00000000000]		[0]			[0]		[000]
-	 *  Unused				Polarity	State	Type
+	 *	[000000000]		[00]		[0]			[0]		[000]
+	 *  Unused			Trigger		Polarity	State	Type
 	 */
 	
 	/*

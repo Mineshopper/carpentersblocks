@@ -19,7 +19,7 @@ import cpw.mods.fml.common.network.NetworkMod;
 @Mod(
         modid = "CarpentersBlocks",
         name = "Carpenter's Blocks",
-        version = "v1.9",
+        version = "v1.91",
         dependencies = "required-after:Forge@[7.7.2.682,)"
 	)
 @NetworkMod(
