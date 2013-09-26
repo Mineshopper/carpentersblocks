@@ -1051,6 +1051,30 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 	{
 		float rgb[] = getRGB(renderBlocks.blockAccess, coverBlock, x, y, z);
 
+		/* Set block rotation. */
+		
+		boolean blockRotates = false;
+		
+		/* Skip block rotation for slopes due to sloped face ambiguity. */
+		if (srcBlock != BlockHandler.blockCarpentersSlope)
+			blockRotates = BlockProperties.blockRotates(TE.worldObj, coverBlock, x, y, z);
+		
+		if (blockRotates)
+		{
+	        int metadata = BlockProperties.getCoverMetadata(TE, coverRendering);
+	        int dir = metadata & 12;
+
+	        if (metadata == 3 || dir == 4) {
+	            renderBlocks.uvRotateEast = 1;
+	            renderBlocks.uvRotateWest = 1;
+	            renderBlocks.uvRotateTop = 1;
+	            renderBlocks.uvRotateBottom = 1;
+	        } else if (metadata == 4 || dir == 8) {
+	            renderBlocks.uvRotateSouth = 1;
+	            renderBlocks.uvRotateNorth = 1;
+	        }
+		}
+		
 		if (srcBlock == BlockHandler.blockCarpentersSlope && !isSideCover) {
 
 			if (Minecraft.isAmbientOcclusionEnabled() && Block.lightValue[coverBlock.blockID] == 0) {
@@ -1067,6 +1091,16 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 				renderStandardBlockWithColorMultiplier(TE, renderBlocks, coverBlock, srcBlock, x, y, z, rgb[0], rgb[1], rgb[2]);
 			}
 
+		}
+		
+		if (blockRotates)
+		{
+	        renderBlocks.uvRotateSouth = 0;
+	        renderBlocks.uvRotateEast = 0;
+	        renderBlocks.uvRotateWest = 0;
+	        renderBlocks.uvRotateNorth = 0;
+	        renderBlocks.uvRotateTop = 0;
+	        renderBlocks.uvRotateBottom = 0;
 		}
 
 		return true;
