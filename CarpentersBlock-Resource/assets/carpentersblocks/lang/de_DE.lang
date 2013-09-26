@@ -1,0 +1,39 @@
+﻿# Carpenter's Blocks Language File = GERMANY GERMAN
+
+# CREATIVE TAB
+itemGroup.carpentersBlocks.name=Carpenter's Blocks
+
+# ITEMS
+item.itemCarpentersHammer.name=Hammer des Zimmermanns
+item.itemCarpentersChisel.name=Meißel des Zimmermanns
+item.itemCarpentersDoor.name=Tür des Zimmermanns
+item.itemCarpentersBed.name=Bett des Zimmermanns
+
+# BLOCKS
+tile.blockCarpentersBarrier.name=Barriere des Zimmermanns
+tile.blockCarpentersBed.name=Bett des Zimmermanns
+tile.blockCarpentersBlock.name=Block des Zimmermanns
+tile.blockCarpentersButton.name=Knopf des Zimmermanns
+tile.blockCarpentersDaylightSensor.name=Tageslichtsensor des Zimmermanns
+tile.blockCarpentersDoor.name=Tür des Zimmermanns
+tile.blockCarpentersGate.name=Zauntor des Zimmermanns
+tile.blockCarpentersHatch.name=Luke des Zimmermanns
+tile.blockCarpentersLadder.name=Leiter des Zimmermanns
+tile.blockCarpentersLever.name=Hebel des Zimmermanns
+tile.blockCarpentersPressurePlate.name=Druckplatte des Zimmermanns
+tile.blockCarpentersSlope.name=Rampe des Zimmermanns
+tile.blockCarpentersStairs.name=Treppe des Zimmermanns
+
+# MESSAGES
+message.polarity_pos.name=\u00a76POLARITÄT: \u00a7fNormaler Redstone-Output.
+message.polarity_neg.name=\u00a76POLARITÄT: \u00a7fUmgekehrter Redstone-Output.
+message.activation_day.name=\u00a76AKTIVIERUNG: \u00a7fAktiviere bei Tag.
+message.activation_night.name=\u00a76AKTIVIERUNG: \u00a7fAktiviere bei Nacht.
+message.activation_iron.name=\u00a76AKTIVIERUNG: \u00a7fWird funktionieren wie eine Eisentür.
+message.activation_wood.name=\u00a76AKTIVIERUNG: \u00a7fWird funktionieren wie eine Holztür.
+message.trigger_player.name=\u00a76TRIGGER: \u00a7fNur bei Spielern aktiv.
+message.trigger_monster.name=\u00a76TRIGGER: \u00a7fNur bei Monstern aktiv.
+message.trigger_animal.name=\u00a76TRIGGER: \u00a7fNur bei Tieren aktiv.
+message.trigger_all.name=\u00a76TRIGGER: \u00a7fBei allem aktiv.
+
+# </file>
