@@ -4,7 +4,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockDirectional;
 import net.minecraft.block.BlockFluid;
 import net.minecraft.block.BlockGrass;
-import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.client.renderer.RenderBlocks;
@@ -753,7 +752,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 	{
 		int data = BlockProperties.getData(TE);
 		int metadata = hasMetadataOverride ? metadataOverride : BlockProperties.getCoverMetadata(TE, coverRendering);
-
+		
 		Icon icon = coverBlock.getIcon(side, metadata);
 		
 		/* The daylight sensor grabs textures directly. */
@@ -790,11 +789,6 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 				}
 			} else if (coverBlock instanceof BlockDirectional && !slope.slopeType.equals(SlopeType.WEDGE_Y)) {
 				icon = coverBlock.getBlockTextureFromSide(1);
-			}
-
-			/* For grass material, use top texture on positive slope side. */
-			if (slope.isPositive && coverBlock.blockMaterial.equals(Material.grass)) {
-				icon = coverBlock.getIcon(1, metadata);
 			}
 		}
 
@@ -943,6 +937,16 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 		int data = BlockProperties.getData(TE);
 		int overlay = BlockProperties.getOverlay(TE, coverRendering);
 
+		if (isSideSloped)
+		{
+			Slope slope = Slope.slopesList[BlockProperties.getData(TE)];			
+			if (slope.isPositive) {
+				side = 1;
+			} else if (slope.slopeType.equals(SlopeType.OBLIQUE_INT) || slope.slopeType.equals(SlopeType.OBLIQUE_EXT) || slope.slopeType.equals(SlopeType.PYRAMID)) {
+				side = 2;
+			}
+		}
+
 		/*
 		 * If coverBlock is grass, we need to prerender the grass
 		 * sides before drawing any overlays.
@@ -1054,7 +1058,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 	protected Icon getGrassOverlayIcon(TECarpentersBlock TE, int side)
 	{
 		Slope slope = Slope.slopesList[BlockProperties.getData(TE)];
-		
+
 		if (side == 1 || slope.isPositive && isSideSloped) {
 			return Block.grass.getBlockTextureFromSide(1);
 		} else if (side > 1) {
