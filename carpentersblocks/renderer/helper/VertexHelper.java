@@ -7,7 +7,7 @@ import net.minecraft.util.Icon;
 
 public class VertexHelper
 {
-
+	
 	/**
 	 * Offset used for faces.
 	 */
@@ -34,7 +34,7 @@ public class VertexHelper
 	 * This will set the render helpers to translate the icon
 	 * down with yMax.
 	 */
-	protected final static boolean iconHasFloatingHeight(Icon icon)
+	public static boolean iconHasFloatingHeight(Icon icon)
 	{
 		return	icon == BlockGrass.getIconSideOverlay() ||
 				icon.getIconName().contains("overlay/overlay_") && icon.getIconName().endsWith("_side");

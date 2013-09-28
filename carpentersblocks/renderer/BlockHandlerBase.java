@@ -1,6 +1,7 @@
 package carpentersblocks.renderer;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockDirectional;
 import net.minecraft.block.BlockFluid;
 import net.minecraft.block.BlockGrass;
 import net.minecraft.block.material.Material;
@@ -50,12 +51,83 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 
 	protected float lightnessOffset = 0.0F;
 
-	/*
-	 * Slope-specific variables
-	 */
+	/** Identifies which render helper to use. */
 	protected int slopeRenderID = 0;
-	protected boolean isFaceSlopingUpOrDown = false;
+	
+	/** Returns whether side is sloped face. */
+	protected boolean isSideSloped = false;
+	
+	/**
+	 * Sets directional block side rotation in RenderBlocks.
+	 */
+	protected void setDirectionalRotation(TECarpentersBlock TE, RenderBlocks renderBlocks, int side)
+	{
+        int metadata = BlockProperties.getCoverMetadata(TE, coverRendering);
+        int dir = metadata & 12;
 
+		switch (side)
+		{
+			case 0:
+		        if (metadata == 3 || dir == 4) {
+		        	renderBlocks.uvRotateBottom = 1;
+		        }
+				break;
+			case 1:
+		        if (metadata == 3 || dir == 4) {
+		        	renderBlocks.uvRotateTop = 1;
+		        }
+				break;
+			case 2:
+		        if (metadata == 3 || dir == 4) {
+		        	renderBlocks.uvRotateEast = 1; // NORTH
+		        }
+				break;
+			case 3:
+		        if (metadata == 3 || dir == 4) {
+		        	renderBlocks.uvRotateWest = 1; // SOUTH
+		        }
+				break;
+			case 4:
+		        if (metadata == 4 || dir == 8) {
+		        	renderBlocks.uvRotateNorth = 1; // WEST
+		        }
+				break;
+			case 5:
+		        if (metadata == 4 || dir == 8) {
+		        	renderBlocks.uvRotateSouth = 1; // EAST
+		        }
+				break;
+		}
+	}
+	
+	/**
+	 * Resets side rotation in RenderBlocks.
+	 */
+	protected void clearRotation(RenderBlocks renderBlocks, int side)
+	{
+		switch (side)
+		{
+		case 0:
+			renderBlocks.uvRotateBottom = 0;
+			break;
+		case 1:
+			renderBlocks.uvRotateTop = 0;
+			break;
+		case 2:
+			renderBlocks.uvRotateEast = 0;
+			break;
+		case 3:
+			renderBlocks.uvRotateWest = 0;
+			break;
+		case 4:
+			renderBlocks.uvRotateNorth = 0;
+			break;
+		case 5:
+			renderBlocks.uvRotateSouth = 0;
+			break;
+		}
+	}
+	
 	/**
 	 * Sets metadata override.
 	 */
@@ -139,7 +211,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 	{
 		hasLightnessOffset = false;
 	}
-
+	
 	/**
 	 * Stores uncolored, ambient occlusion values for each corner of face.
 	 */
@@ -675,30 +747,31 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 	}
 
 	/**
-	 * Sets appropriate icon for face.
+	 * Returns icon for face.
 	 */
-	protected Icon setupIcon(TECarpentersBlock TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int side, int x, int y, int z)
+	protected Icon getIcon(TECarpentersBlock TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int side, int x, int y, int z)
 	{
 		int data = BlockProperties.getData(TE);
+		int metadata = hasMetadataOverride ? metadataOverride : BlockProperties.getCoverMetadata(TE, coverRendering);
 
-		Icon icon;
-		if (hasMetadataOverride) {
-			icon = coverBlock.getIcon(side, metadataOverride);
-		} else if (srcBlock == BlockHandler.blockCarpentersDaylightSensor) {
+		Icon icon = coverBlock.getIcon(side, metadata);
+		
+		/* The daylight sensor grabs textures directly. */
+		if (srcBlock == BlockHandler.blockCarpentersDaylightSensor) {
 			icon = srcBlock.getBlockTexture(renderBlocks.blockAccess, x, y, z, side);
-		} else {
-			icon = coverBlock.getIcon(isFaceSlopingUpOrDown ? 2 : side, BlockProperties.getCoverMetadata(TE, coverRendering));
 		}
 
-		// Default icon for Carpenter's Lever is the lever itself, so we'll replace it here.
+		/* The lever icon defaults to the handle.  We set the box icon here. */
 		if (coverBlock == BlockHandler.blockCarpentersLever) {
 			icon = IconHandler.icon_generic;
 		}
-
-		if (isFaceSlopingUpOrDown)
+		
+		/* If the face is sloped, set icons accordingly. */
+		if (isSideSloped)
 		{
 			Slope slope = Slope.slopesList[data];
-
+			
+			/* Uncovered sloped oblique faces use triangular frame icons. */
 			if (!BlockProperties.hasCover(TE, 6))
 			{
 				if (slope.slopeType.equals(SlopeType.OBLIQUE_INT)) {
@@ -707,16 +780,25 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 					icon = slope.isPositive ? IconHandler.icon_slope_oblique_pt_high : IconHandler.icon_slope_oblique_pt_low;
 				}
 			}
+			
+			/* For directional blocks, make sure sloped icons match regardless of side. */
+			if (BlockProperties.blockRotates(TE.worldObj, coverBlock, x, y, z)) {
+				if (metadata % 8 == 0) {
+					icon = coverBlock.getIcon(slope.isPositive ? 1 : 0, metadata);
+				} else {
+					icon = coverBlock.getIcon(2, metadata);
+				}
+			} else if (coverBlock instanceof BlockDirectional && !slope.slopeType.equals(SlopeType.WEDGE_Y)) {
+				icon = coverBlock.getBlockTextureFromSide(1);
+			}
 
-			// For grass material, use top texture on positive slope side
-			if (slope.isPositive && coverBlock.blockMaterial == Material.grass) {
-				icon = renderBlocks.getBlockIcon(coverBlock, renderBlocks.blockAccess, x, y, z, 1);
+			/* For grass material, use top texture on positive slope side. */
+			if (slope.isPositive && coverBlock.blockMaterial.equals(Material.grass)) {
+				icon = coverBlock.getIcon(1, metadata);
 			}
 		}
 
-		/*
-		 * If icon has override, use it.
-		 */
+		/* If icon has global override, apply it. */
 		if (hasIconOverride[side] && iconOverride[side] != null) {
 			icon = iconOverride[side];
 		}
@@ -736,30 +818,34 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 		 */
 		if (shouldRenderBlock(TE, renderBlocks, coverBlock, srcBlock, renderPass))
 		{
+			if (BlockProperties.blockRotates(TE.worldObj, coverBlock, x, y, z)) {
+				setDirectionalRotation(TE, renderBlocks, side);
+			}
+			
 			colorSide(TE, renderBlocks, coverBlock, srcBlock, side, x, y, z, icon, lightness);
 			renderSide(TE, renderBlocks, side, 0, x, y, z, icon);
+			
+			clearRotation(renderBlocks, side);
 		}
 
-		/*
-		 * Do not render decorations on top if this is the daylight sensor block
-		 */
+		/* Do not render decorations on top if this is the daylight sensor block. */
 		if (srcBlock == BlockHandler.blockCarpentersDaylightSensor && side == 1) {
 			return;
 		}
 
-		/*
-		 * Render pattern on side
-		 */
+		suppressDyeColor = true;
+		
+		/* Render pattern on side. */
 		if (shouldRenderPattern(TE, renderPass)) {
 			renderPattern(TE, renderBlocks, srcBlock, side, x, y, z, lightness);
 		}
 
-		/*
-		 * Render overlay on side
-		 */
+		/* Render overlay on side. */
 		if (shouldRenderOverlay(TE, renderPass)) {
 			renderOverlay(TE, renderBlocks, coverBlock, srcBlock, side, x, y, z, lightness, icon);
 		}
+		
+		suppressDyeColor = false;
 	}
 
 	/**
@@ -767,12 +853,12 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 	 */
 	protected void prepareRender(TECarpentersBlock TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int side, int x, int y, int z, float lightness)
 	{
-		Icon icon = setupIcon(TE, renderBlocks, coverBlock, srcBlock, side, x, y, z);
-
+		Icon icon = getIcon(TE, renderBlocks, coverBlock, srcBlock, side, x, y, z);
+		
 		if (!renderBlocks.enableAO) {
 			base_RGB = new float[] { lightness, lightness, lightness };
 		}
-
+		
 		/*
 		 * A texture override indicates the breaking animation is being
 		 * drawn.  If this is the case, only draw this for current pass.
@@ -837,7 +923,9 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 	{
 		if (coverBlock == Block.grass || BlockProperties.getOverlay(TE, side) == OverlayHandler.OVERLAY_GRASS)
 		{
-			if (side == 1 || icon == BlockGrass.getIconSideOverlay()) {
+			Slope slope = Slope.slopesList[BlockProperties.getData(TE)];
+			
+			if (side == 1 || icon == BlockGrass.getIconSideOverlay() || slope.isPositive && isSideSloped) {
 				return srcBlock == BlockHandler.blockCarpentersDaylightSensor ? side != 1 : true;
 			} else {
 				return false;
@@ -854,22 +942,19 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 	{
 		int data = BlockProperties.getData(TE);
 		int overlay = BlockProperties.getOverlay(TE, coverRendering);
-		boolean isSide = (!isFaceSlopingUpOrDown && side > 1) || (isFaceSlopingUpOrDown && !Slope.slopesList[data].isPositive);
-
-		suppressDyeColor = true;
-
-		// Do not render overlay if side is bottom and overlay drapes
-		if (side == 0 && !isFaceSlopingUpOrDown && (overlay == OverlayHandler.OVERLAY_GRASS || overlay == OverlayHandler.OVERLAY_SNOW || overlay == OverlayHandler.OVERLAY_HAY || overlay == OverlayHandler.OVERLAY_MYCELIUM)) {
-			return;
-		}
 
 		/*
-		 * If coverBlock is grass, we need to pre-render the grass
-		 * before processing any overlays.
+		 * If coverBlock is grass, we need to prerender the grass
+		 * sides before drawing any overlays.
 		 */
 		if (coverBlock == Block.grass)
 		{
-			icon = getGrassOverlayIcon(side, isSide, icon);
+			icon = getGrassOverlayIcon(TE, side);
+			
+			if (icon == null) {
+				return;
+			}
+			
 			colorSide(TE, renderBlocks, Block.grass, srcBlock, side, x, y, z, icon, lightness);
 
 			if (overlay != OverlayHandler.NO_OVERLAY) {
@@ -881,20 +966,32 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 		{
 		case OverlayHandler.OVERLAY_SNOW:
 		{
-			if (side == 1) {
+			switch (side)
+			{
+			case 0:
+				return;
+			case 1:
 				icon = Block.snow.getBlockTextureFromSide(1);
-			} else if (isSide) {
+				break;
+			default:
 				icon = IconHandler.icon_overlay_snow_side;
+				break;
 			}
 			colorSide(TE, renderBlocks, Block.blockSnow, srcBlock, side, x, y, z, icon, lightness);
 			break;
 		}
 		case OverlayHandler.OVERLAY_HAY:
 		{
-			if (side == 1) {
-				icon = Block.field_111038_cB.getBlockTextureFromSide(1);
-			} else if (isSide) {
-				icon = IconHandler.icon_overlay_hay_side;
+			switch (side)
+			{
+				case 0:
+					return;
+				case 1:
+					icon = Block.field_111038_cB.getBlockTextureFromSide(1);
+					break;
+				default:
+					icon = IconHandler.icon_overlay_hay_side;
+					break;
 			}
 			colorSide(TE, renderBlocks, Block.field_111038_cB, srcBlock, side, x, y, z, icon, lightness);
 			break;
@@ -913,31 +1010,39 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 		}
 		case OverlayHandler.OVERLAY_MYCELIUM:
 		{
-			if (side == 1) {
-				icon = Block.mycelium.getBlockTextureFromSide(1);
-			} else if (isSide) {
-				icon = IconHandler.icon_overlay_mycelium_side;
+			switch (side)
+			{
+				case 0:
+					return;
+				case 1:
+					icon = Block.mycelium.getBlockTextureFromSide(1);
+					break;
+				default:
+					icon = IconHandler.icon_overlay_mycelium_side;
+					break;
 			}
 			colorSide(TE, renderBlocks, Block.mycelium, srcBlock, side, x, y, z, icon, lightness);
 			break;
 		}
 		case OverlayHandler.OVERLAY_GRASS:
-		{
 			/*
-			 * Grass blocks will pre-render the grass overlay by
+			 * Grass blocks will prerender the grass overlay by
 			 * default, so we'll skip this part if it's not necessary.
 			 */
 			if (coverBlock != Block.grass)
 			{
-				icon = getGrassOverlayIcon(side, isSide, icon);
+				icon = getGrassOverlayIcon(TE, side);
+				
+				if (icon == null) {
+					return;
+				}
+				
 				colorSide(TE, renderBlocks, Block.grass, srcBlock, side, x, y, z, icon, lightness);
 			}
-		}
+			break;
 		}
 
 		renderSide(TE, renderBlocks, side, 0, x, y, z, icon);
-
-		suppressDyeColor = false;
 	}
 
 	/**
@@ -946,11 +1051,13 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 	 * is the only real exception in the game due to biome-specific
 	 * coloring and side specificity.
 	 */
-	protected Icon getGrassOverlayIcon(int side, boolean isSide, Icon icon)
+	protected Icon getGrassOverlayIcon(TECarpentersBlock TE, int side)
 	{
-		if (side == 1) {
+		Slope slope = Slope.slopesList[BlockProperties.getData(TE)];
+		
+		if (side == 1 || slope.isPositive && isSideSloped) {
 			return Block.grass.getBlockTextureFromSide(1);
-		} else if (isSide) {
+		} else if (side > 1) {
 
 			/*
 			 * When FAST graphics are used, grass blocks use a single
@@ -968,7 +1075,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 			}
 		}
 
-		return icon;
+		return null;
 	}
 
 	/**
@@ -977,15 +1084,10 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 	protected void renderPattern(TECarpentersBlock TE, RenderBlocks renderBlocks, Block srcBlock, int side, int x, int y, int z, float lightness)
 	{
 		int pattern = BlockProperties.getPattern(TE, coverRendering);
-
 		Icon icon = IconHandler.icon_pattern[pattern];
-
-		suppressDyeColor = true;
 
 		colorSide(TE, renderBlocks, Block.glass, srcBlock, side, x, y, z, icon, lightness);
 		renderSide(TE, renderBlocks, side, 0, x, y, z, icon);
-
-		suppressDyeColor = false;
 	}
 
 	/**
@@ -1050,30 +1152,6 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 	protected boolean renderStandardBlock(TECarpentersBlock TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int x, int y, int z)
 	{
 		float rgb[] = getRGB(renderBlocks.blockAccess, coverBlock, x, y, z);
-
-		/* Set block rotation. */
-		
-		boolean blockRotates = false;
-		
-		/* Skip block rotation for slopes due to sloped face ambiguity. */
-		if (srcBlock != BlockHandler.blockCarpentersSlope)
-			blockRotates = BlockProperties.blockRotates(TE.worldObj, coverBlock, x, y, z);
-		
-		if (blockRotates)
-		{
-	        int metadata = BlockProperties.getCoverMetadata(TE, coverRendering);
-	        int dir = metadata & 12;
-
-	        if (metadata == 3 || dir == 4) {
-	            renderBlocks.uvRotateEast = 1;
-	            renderBlocks.uvRotateWest = 1;
-	            renderBlocks.uvRotateTop = 1;
-	            renderBlocks.uvRotateBottom = 1;
-	        } else if (metadata == 4 || dir == 8) {
-	            renderBlocks.uvRotateSouth = 1;
-	            renderBlocks.uvRotateNorth = 1;
-	        }
-		}
 		
 		if (srcBlock == BlockHandler.blockCarpentersSlope && !isSideCover) {
 
@@ -1091,16 +1169,6 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 				renderStandardBlockWithColorMultiplier(TE, renderBlocks, coverBlock, srcBlock, x, y, z, rgb[0], rgb[1], rgb[2]);
 			}
 
-		}
-		
-		if (blockRotates)
-		{
-	        renderBlocks.uvRotateSouth = 0;
-	        renderBlocks.uvRotateEast = 0;
-	        renderBlocks.uvRotateWest = 0;
-	        renderBlocks.uvRotateNorth = 0;
-	        renderBlocks.uvRotateTop = 0;
-	        renderBlocks.uvRotateBottom = 0;
 		}
 
 		return true;
@@ -1172,11 +1240,11 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 			prepareRender(TE, renderBlocks, coverBlock, srcBlock, 5, x, y, z, 0.6F);
 			side_rendered = true;
 		}
-
+		
 		if (base_ao[0] > 0)
+			
 
-
-			renderBlocks.enableAO = false;
+		renderBlocks.enableAO = false;
 		return side_rendered;
 	}
 
@@ -1368,7 +1436,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 			renderBlocks.brightnessBottomRight = renderBlocks.getAoBrightness(renderBlocks.aoBrightnessXYNP, renderBlocks.aoBrightnessXYZNPN, renderBlocks.aoBrightnessYZPN, offsetBrightness);
 		}
 	}
-
+	
 	/**
 	 * Fills AO variables with lightness for North face.
 	 */
@@ -1463,7 +1531,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 			renderBlocks.brightnessTopRight = renderBlocks.getAoBrightness(renderBlocks.aoBrightnessXYZNNN, renderBlocks.aoBrightnessXZNN, renderBlocks.aoBrightnessYZNN, offsetBrightness);
 		}
 	}
-
+	
 	/**
 	 * Fills AO variables with lightness for South face.
 	 */
@@ -1558,7 +1626,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 			renderBlocks.brightnessBottomLeft = renderBlocks.getAoBrightness(renderBlocks.aoBrightnessXYZNNP, renderBlocks.aoBrightnessXZNP, renderBlocks.aoBrightnessYZNP, offsetBrightness);
 		}
 	}
-
+	
 	/**
 	 * Fills AO variables with lightness for West face.
 	 */
@@ -1748,7 +1816,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 			renderBlocks.brightnessBottomLeft = renderBlocks.getAoBrightness(renderBlocks.aoBrightnessXYZPNN, renderBlocks.aoBrightnessXYPN, renderBlocks.aoBrightnessXZPN, offsetBrightness);
 		}
 	}
-
+	
 	/**
 	 * Renders a standard cube block at the given coordinates, with a given color ratio.  Args: block, x, y, z, r, g, b
 	 */

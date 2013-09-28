@@ -26,7 +26,6 @@ import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.IPlantable;
 import carpentersblocks.tileentity.TECarpentersBlock;
 import carpentersblocks.util.BlockProperties;
-import carpentersblocks.util.handler.BlockHandler;
 import carpentersblocks.util.handler.EventHandler;
 import carpentersblocks.util.handler.FeatureHandler;
 import carpentersblocks.util.handler.ItemHandler;
@@ -189,20 +188,20 @@ public class BlockBase extends BlockContainer
 
 				Block block = Block.blocksList[itemStack.itemID];
 				int metadata = block instanceof BlockDirectional ? MathHelper.floor_double(EventHandler.eventEntity.rotationYaw * 4.0F / 360.0F + 2.5D) & 3 : itemStack.getItemDamage();		
-
+				
 				if (!BlockProperties.hasCover(TE, 6)) {
 
-					if (this != BlockHandler.blockCarpentersSlope && BlockProperties.blockRotates(world, block, x, y, z)) {
+					if (BlockProperties.blockRotates(world, block, x, y, z)) {
 						metadata = block.onBlockPlaced(world, x, y, z, side, hitX, hitY, hitZ, metadata);
 					}
-					
+
 					actionPerformed = decrementInventory = BlockProperties.setCover(TE, 6, metadata, itemStack);
 
 				} else if (FeatureHandler.enableSideCovers) {
 
 					if (!BlockProperties.hasCover(TE, side) && this.canCoverSide(TE, world, x, y, z, side)) {
 						
-						if (this != BlockHandler.blockCarpentersSlope && BlockProperties.blockRotates(world, block, x, y, z))
+						if (BlockProperties.blockRotates(world, block, x, y, z))
 						{
 							/*
 							 * Blocks that determine direction based on side clicked
