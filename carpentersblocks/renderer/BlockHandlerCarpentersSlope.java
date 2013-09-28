@@ -9,10 +9,11 @@ import net.minecraftforge.common.ForgeDirection;
 import org.lwjgl.opengl.GL11;
 
 import carpentersblocks.data.Slope;
-import carpentersblocks.renderer.helper.slope.RenderHelperObliqueCorner;
-import carpentersblocks.renderer.helper.slope.RenderHelperPyramid;
-import carpentersblocks.renderer.helper.slope.RenderHelperWedge;
-import carpentersblocks.renderer.helper.slope.RenderHelperWedgeCorner;
+import carpentersblocks.renderer.helper.RenderHelperWedge;
+import carpentersblocks.renderer.helper.slope.HelperOblique;
+import carpentersblocks.renderer.helper.slope.HelperPyramid;
+import carpentersblocks.renderer.helper.slope.HelperWedge;
+import carpentersblocks.renderer.helper.slope.HelperWedgeCorner;
 import carpentersblocks.tileentity.TECarpentersBlock;
 import carpentersblocks.util.BlockProperties;
 
@@ -28,40 +29,30 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerBase
 	private static final int EAST = 5;
 
 	// RENDER IDS
-	private static final int WEDGE_SLOPED_YN = 0;
-	private static final int WEDGE_YN = 1;
-	private static final int WEDGE_SLOPED_YP = 2;
-	private static final int WEDGE_YP = 3;
-	private static final int WEDGE_ZN = 4;
+	private static final int WEDGE_YN = 0;
+	private static final int WEDGE_YP = 1;
+	private static final int WEDGE_SLOPED_ZN = 2;
+	private static final int WEDGE_ZN = 3;
+	private static final int WEDGE_SLOPED_ZP = 4;
 	private static final int WEDGE_ZP = 5;
-	private static final int WEDGE_SLOPED_ZN = 6;
+	private static final int WEDGE_SLOPED_XN = 6;
 	private static final int WEDGE_XN = 7;
-	private static final int WEDGE_SLOPED_ZP = 8;
+	private static final int WEDGE_SLOPED_XP = 8;
 	private static final int WEDGE_XP = 9;
-	private static final int WEDGE_CORNER_YZZNNP = 10;
-	private static final int WEDGE_CORNER_YXXNNP = 11;
-	private static final int WEDGE_CORNER_YZZPNP = 12;
-	private static final int WEDGE_CORNER_YXXPNP = 13;
-	private static final int WEDGE_CORNER_ZN = 14;
-	private static final int WEDGE_CORNER_ZP = 15;
-	private static final int WEDGE_CORNER_XN = 16;
-	private static final int WEDGE_CORNER_XP = 17;
-	private static final int OBL_CORNER_SLOPED_YN = 18;
-	private static final int OBL_CORNER_YN = 19;
-	private static final int OBL_CORNER_SLOPED_YP = 20;
-	private static final int OBL_CORNER_YP = 21;
-	private static final int OBL_CORNER_ZN = 22;
-	private static final int OBL_CORNER_ZP = 23;
-	private static final int OBL_CORNER_XN = 24;
-	private static final int OBL_CORNER_XP = 25;
-	private static final int PYR_YZNN = 26;
-	private static final int PYR_YZNP = 27;
-	private static final int PYR_YXNN = 28;
-	private static final int PYR_YXNP = 29;
-	private static final int PYR_YZPN = 30;
-	private static final int PYR_YZPP = 31;
-	private static final int PYR_YXPN = 32;
-	private static final int PYR_YXPP = 33;
+	private static final int WEDGE_CORNER_SLOPED_ZN = 10;
+	private static final int WEDGE_CORNER_SLOPED_ZP = 11;
+	private static final int WEDGE_CORNER_SLOPED_XN = 12;
+	private static final int WEDGE_CORNER_SLOPED_XP = 13;
+	private static final int OBL_CORNER_SLOPED_YN = 14;
+	private static final int OBL_CORNER_SLOPED_YP = 15;
+	private static final int PYR_YZNN = 16;
+	private static final int PYR_YZNP = 17;
+	private static final int PYR_YXNN = 18;
+	private static final int PYR_YXNP = 19;
+	private static final int PYR_YZPN = 20;
+	private static final int PYR_YZPP = 21;
+	private static final int PYR_YXPN = 22;
+	private static final int PYR_YXPP = 23;
 
 	/**
 	 * Holds AO values for all six faces.
@@ -138,7 +129,7 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerBase
     	tessellator.draw();
     	tessellator.startDrawingQuads();
     	tessellator.setNormal(0.0F, 1.0F, 0.0F);
-    	RenderHelperWedge.renderSlopeYPos(renderBlocks, Slope.ID_WEDGE_POS_W, 0.0D, 0.0D, 0.0D, block.getBlockTextureFromSide(1));
+    	HelperWedge.renderSlopeXNeg(renderBlocks, Slope.ID_WEDGE_POS_W, 0.0D, 0.0D, 0.0D, block.getBlockTextureFromSide(1));
     	tessellator.draw();
     	tessellator.startDrawingQuads();
     	tessellator.setNormal(0.0F, 0.0F, -1.0F);
@@ -159,11 +150,9 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerBase
     /**
      * Sets slope-specific variables and calls prepareRender().
      */
-    private void prepareSlopeRender(TECarpentersBlock TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int side, int renderID, boolean slopedUpOrDown, int x, int y, int z, float lightness)
+    private void prepareSlopeRender(TECarpentersBlock TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int side, int renderID, int x, int y, int z, float lightness)
     {
-		isFaceSlopingUpOrDown = slopedUpOrDown;
 		slopeRenderID = renderID;
-		
 		prepareRender(TE, renderBlocks, coverBlock, srcBlock, side, x, y, z, lightness);
     }
 
@@ -183,107 +172,77 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerBase
 
     		switch (slopeRenderID)
     		{
-    		case WEDGE_SLOPED_YN:
-    			RenderHelperWedge.renderSlopeYNeg(renderBlocks, slopeID, x, y, z, icon);
-    			break;
     		case WEDGE_YN:
     			RenderHelperWedge.renderFaceYNeg(renderBlocks, slopeID, x, y, z, icon);
-    			break;
-    		case WEDGE_SLOPED_YP:
-    			RenderHelperWedge.renderSlopeYPos(renderBlocks, slopeID, x, y, z, icon);
     			break;
     		case WEDGE_YP:
     			RenderHelperWedge.renderFaceYPos(renderBlocks, slopeID, x, y, z, icon);
     			break;
+    		case WEDGE_SLOPED_ZN:
+    			HelperWedge.renderSlopeZNeg(renderBlocks, slopeID, x, y, z, icon);
+    			break;
     		case WEDGE_ZN:
     			RenderHelperWedge.renderFaceZNeg(renderBlocks, slopeID, x, y, z, icon);
+    			break;
+    		case WEDGE_SLOPED_ZP:
+    			HelperWedge.renderSlopeZPos(renderBlocks, slopeID, x, y, z, icon);
     			break;
     		case WEDGE_ZP:
     			RenderHelperWedge.renderFaceZPos(renderBlocks, slopeID, x, y, z, icon);
     			break;
-    		case WEDGE_SLOPED_ZN:
-    			RenderHelperWedge.renderSlopeZNeg(renderBlocks, slopeID, x, y, z, icon);
+    		case WEDGE_SLOPED_XN:
+    			HelperWedge.renderSlopeXNeg(renderBlocks, slopeID, x, y, z, icon);
     			break;
     		case WEDGE_XN:
     			RenderHelperWedge.renderFaceXNeg(renderBlocks, slopeID, x, y, z, icon);
     			break;
-    		case WEDGE_SLOPED_ZP:
-    			RenderHelperWedge.renderSlopeZPos(renderBlocks, slopeID, x, y, z, icon);
+    		case WEDGE_SLOPED_XP:
+    			HelperWedge.renderSlopeXPos(renderBlocks, slopeID, x, y, z, icon);
     			break;
     		case WEDGE_XP:
     			RenderHelperWedge.renderFaceXPos(renderBlocks, slopeID, x, y, z, icon);
     			break;
-    		case WEDGE_CORNER_YZZNNP:
-    			RenderHelperWedgeCorner.renderFaceYNegZNegZPos(renderBlocks, slopeID, x, y, z, icon);
+    		case WEDGE_CORNER_SLOPED_ZN:
+    			HelperWedgeCorner.renderSlopeZNeg(renderBlocks, slopeID, x, y, z, icon);
     			break;
-    		case WEDGE_CORNER_YXXNNP:
-    			RenderHelperWedgeCorner.renderFaceYNegXNegXPos(renderBlocks, slopeID, x, y, z, icon);
+    		case WEDGE_CORNER_SLOPED_ZP:
+    			HelperWedgeCorner.renderSlopeZPos(renderBlocks, slopeID, x, y, z, icon);
     			break;
-    		case WEDGE_CORNER_YZZPNP:
-    			RenderHelperWedgeCorner.renderFaceYPosZNegZPos(renderBlocks, slopeID, x, y, z, icon);
+    		case WEDGE_CORNER_SLOPED_XN:
+    			HelperWedgeCorner.renderSlopeXNeg(renderBlocks, slopeID, x, y, z, icon);
     			break;
-    		case WEDGE_CORNER_YXXPNP:
-    			RenderHelperWedgeCorner.renderFaceYPosXNegXPos(renderBlocks, slopeID, x, y, z, icon);
-    			break;
-    		case WEDGE_CORNER_ZN:
-    			RenderHelperWedgeCorner.renderFaceZNeg(renderBlocks, slopeID, x, y, z, icon);
-    			break;
-    		case WEDGE_CORNER_ZP:
-    			RenderHelperWedgeCorner.renderFaceZPos(renderBlocks, slopeID, x, y, z, icon);
-    			break;
-    		case WEDGE_CORNER_XN:
-    			RenderHelperWedgeCorner.renderFaceXNeg(renderBlocks, slopeID, x, y, z, icon);
-    			break;
-    		case WEDGE_CORNER_XP:
-    			RenderHelperWedgeCorner.renderFaceXPos(renderBlocks, slopeID, x, y, z, icon);
-    			break;
-    		case OBL_CORNER_YN:
-    			RenderHelperObliqueCorner.renderFaceYNeg(renderBlocks, slopeID, x, y, z, icon);
+    		case WEDGE_CORNER_SLOPED_XP:
+    			HelperWedgeCorner.renderSlopeXPos(renderBlocks, slopeID, x, y, z, icon);
     			break;
     		case OBL_CORNER_SLOPED_YN:
-    			RenderHelperObliqueCorner.renderSlopeYNeg(renderBlocks, slopeID, x, y, z, icon);
-    			break;
-    		case OBL_CORNER_YP:
-    			RenderHelperObliqueCorner.renderFaceYPos(renderBlocks, slopeID, x, y, z, icon);
+    			HelperOblique.renderSlopeYNeg(renderBlocks, slopeID, x, y, z, icon);
     			break;
     		case OBL_CORNER_SLOPED_YP:
-    			RenderHelperObliqueCorner.renderSlopeYPos(renderBlocks, slopeID, x, y, z, icon);
-    			break;
-    		case OBL_CORNER_ZN:
-    			RenderHelperObliqueCorner.renderFaceZNeg(renderBlocks, slopeID, x, y, z, icon);
-    			break;
-    		case OBL_CORNER_ZP:
-    			RenderHelperObliqueCorner.renderFaceZPos(renderBlocks, slopeID, x, y, z, icon);
-    			break;
-    		case OBL_CORNER_XN:
-    			RenderHelperObliqueCorner.renderFaceXNeg(renderBlocks, slopeID, x, y, z, icon);
-    			break;
-    		case OBL_CORNER_XP:
-    			RenderHelperObliqueCorner.renderFaceXPos(renderBlocks, slopeID, x, y, z, icon);
+    			HelperOblique.renderSlopeYPos(renderBlocks, slopeID, x, y, z, icon);
     			break;
     		case PYR_YZNN:
-    			RenderHelperPyramid.renderFaceYNegZNeg(renderBlocks, slopeID, x, y, z, icon);
+    			HelperPyramid.renderFaceYNegZNeg(renderBlocks, slopeID, x, y, z, icon);
     			break;
     		case PYR_YZNP:
-    			RenderHelperPyramid.renderFaceYNegZPos(renderBlocks, slopeID, x, y, z, icon);
+    			HelperPyramid.renderFaceYNegZPos(renderBlocks, slopeID, x, y, z, icon);
     			break;
     		case PYR_YXNN:
-    			RenderHelperPyramid.renderFaceYNegXNeg(renderBlocks, slopeID, x, y, z, icon);
+    			HelperPyramid.renderFaceYNegXNeg(renderBlocks, slopeID, x, y, z, icon);
     			break;
     		case PYR_YXNP:
-    			RenderHelperPyramid.renderFaceYNegXPos(renderBlocks, slopeID, x, y, z, icon);
+    			HelperPyramid.renderFaceYNegXPos(renderBlocks, slopeID, x, y, z, icon);
     			break;
     		case PYR_YZPN:
-    			RenderHelperPyramid.renderFaceYPosZNeg(renderBlocks, slopeID, x, y, z, icon);
+    			HelperPyramid.renderFaceYPosZNeg(renderBlocks, slopeID, x, y, z, icon);
     			break;
     		case PYR_YZPP:
-    			RenderHelperPyramid.renderFaceYPosZPos(renderBlocks, slopeID, x, y, z, icon);
+    			HelperPyramid.renderFaceYPosZPos(renderBlocks, slopeID, x, y, z, icon);
     			break;
     		case PYR_YXPN:
-    			RenderHelperPyramid.renderFaceYPosXNeg(renderBlocks, slopeID, x, y, z, icon);
+    			HelperPyramid.renderFaceYPosXNeg(renderBlocks, slopeID, x, y, z, icon);
     			break;
     		case PYR_YXPP:
-    			RenderHelperPyramid.renderFaceYPosXPos(renderBlocks, slopeID, x, y, z, icon);
+    			HelperPyramid.renderFaceYPosXPos(renderBlocks, slopeID, x, y, z, icon);
     			break;
     		}
     	}
@@ -365,13 +324,9 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerBase
 
         /*
          * Render sloped faces.
-         * 
-         * All sloped faces (excluding side slopes) are
-         * vertically-adjusted top and bottom faces.
-         * 
-         * Icons are mapped accordingly in setupIcon()
-         * in super class.
          */
+    	
+    	isSideSloped = true;
     	
     	switch (slope.slopeType)
     	{
@@ -397,6 +352,8 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerBase
     		preparePyramid(TE, renderBlocks, coverBlock, srcBlock, slope, x, y, z);
     		break;
     	}
+    	
+    	isSideSloped = false;
 
         /*
          * Render non-sloped faces.
@@ -637,11 +594,11 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerBase
     private void prepareHorizontalWedge(TECarpentersBlock TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, Slope slope, int x, int y, int z)
     {
     	setWedgeSlopeLighting(renderBlocks, slope);
-
+    	
     	if (slope.facings.contains(ForgeDirection.NORTH)) {
-    		prepareSlopeRender(TE, renderBlocks, coverBlock, srcBlock, 5, WEDGE_SLOPED_ZN, false, x, y, z, 0.7F);
+    		prepareSlopeRender(TE, renderBlocks, coverBlock, srcBlock, 5, WEDGE_SLOPED_ZN, x, y, z, 0.7F);
     	} else {
-    		prepareSlopeRender(TE, renderBlocks, coverBlock, srcBlock, 4, WEDGE_SLOPED_ZP, false, x, y, z, 0.7F);
+    		prepareSlopeRender(TE, renderBlocks, coverBlock, srcBlock, 4, WEDGE_SLOPED_ZP, x, y, z, 0.7F);
     	}
     }
     
@@ -649,12 +606,16 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerBase
     {
     	setWedgeSlopeLighting(renderBlocks, slope);
 
-    	if (slope.isPositive) {
-    		float aoValue = slope.facings.contains(ForgeDirection.EAST) || slope.facings.contains(ForgeDirection.WEST) ? 0.8F : 0.9F;
-    		prepareSlopeRender(TE, renderBlocks, coverBlock, srcBlock, 1, WEDGE_SLOPED_YP, true, x, y, z, aoValue);
-    	} else {
-    		float aoValue = slope.facings.contains(ForgeDirection.EAST) || slope.facings.contains(ForgeDirection.WEST) ? 0.55F : 0.65F;
-    		prepareSlopeRender(TE, renderBlocks, coverBlock, srcBlock, 0, WEDGE_SLOPED_YN, true, x, y, z, aoValue);
+    	// WEST and EAST are darker
+    	
+    	if (slope.facings.contains(ForgeDirection.NORTH)) {
+    		prepareSlopeRender(TE, renderBlocks, coverBlock, srcBlock, NORTH, WEDGE_SLOPED_ZN, x, y, z, slope.isPositive ? 0.9F : 0.65F);
+    	} else if (slope.facings.contains(ForgeDirection.SOUTH)) {
+    		prepareSlopeRender(TE, renderBlocks, coverBlock, srcBlock, SOUTH, WEDGE_SLOPED_ZP, x, y, z, slope.isPositive ? 0.9F : 0.65F);
+    	} else if (slope.facings.contains(ForgeDirection.WEST)) {
+    		prepareSlopeRender(TE, renderBlocks, coverBlock, srcBlock, WEST, WEDGE_SLOPED_XN, x, y, z, slope.isPositive ? 0.8F : 0.55F);
+    	} else { // ForgeDirection.EAST
+    		prepareSlopeRender(TE, renderBlocks, coverBlock, srcBlock, EAST, WEDGE_SLOPED_XP, x, y, z, slope.isPositive ? 0.8F : 0.55F);
     	}
     }
     
@@ -665,24 +626,24 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerBase
     	Slope slope1 = slope.facings.contains(ForgeDirection.WEST) ? (slope.isPositive ? Slope.WEDGE_POS_W : Slope.WEDGE_NEG_W) : (slope.isPositive ? Slope.WEDGE_POS_E : Slope.WEDGE_NEG_E);
     	    	
     	setWedgeSlopeLighting(renderBlocks, slope1);
-        	
-        if (slope1.isPositive) {
-        	prepareSlopeRender(TE, renderBlocks, coverBlock, srcBlock, 1, WEDGE_CORNER_YXXPNP, true, x, y, z, 0.8F);
-        } else {
-        	prepareSlopeRender(TE, renderBlocks, coverBlock, srcBlock, 0, WEDGE_CORNER_YXXNNP, true, x, y, z, 0.55F);
-        }
+        
+    	if (slope1.facings.contains(ForgeDirection.WEST)) {
+    		prepareSlopeRender(TE, renderBlocks, coverBlock, srcBlock, WEST, WEDGE_CORNER_SLOPED_XN, x, y, z, slope.isPositive ? 0.8F : 0.55F);
+    	} else { // ForgeDirection.EAST
+    		prepareSlopeRender(TE, renderBlocks, coverBlock, srcBlock, EAST, WEDGE_CORNER_SLOPED_XP, x, y, z, slope.isPositive ? 0.8F : 0.55F);
+    	}
         	
         /* Z Slope */
 
         Slope slope2 = slope.facings.contains(ForgeDirection.NORTH) ? (slope.isPositive ? Slope.WEDGE_POS_N : Slope.WEDGE_NEG_N) : (slope.isPositive ? Slope.WEDGE_POS_S : Slope.WEDGE_NEG_S);
 
     	setWedgeSlopeLighting(renderBlocks, slope2);
-        	
-        if (slope2.isPositive) {
-        	prepareSlopeRender(TE, renderBlocks, coverBlock, srcBlock, 1, WEDGE_CORNER_YZZPNP, true, x, y, z, 0.9F);
-        } else {
-			prepareSlopeRender(TE, renderBlocks, coverBlock, srcBlock, 0, WEDGE_CORNER_YZZNNP, true, x, y, z, 0.65F);
-        }
+        
+    	if (slope.facings.contains(ForgeDirection.NORTH)) {
+    		prepareSlopeRender(TE, renderBlocks, coverBlock, srcBlock, NORTH, WEDGE_CORNER_SLOPED_ZN, x, y, z, slope.isPositive ? 0.9F : 0.65F);
+    	} else {
+    		prepareSlopeRender(TE, renderBlocks, coverBlock, srcBlock, SOUTH, WEDGE_CORNER_SLOPED_ZP, x, y, z, slope.isPositive ? 0.9F : 0.65F);
+    	}
     }
     
     private void prepareWedgeExtCorner(TECarpentersBlock TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, Slope slope, int x, int y, int z)
@@ -693,11 +654,11 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerBase
     	
     	setWedgeSlopeLighting(renderBlocks, slope1);
         
-        if (slope1.isPositive) {
-        	prepareSlopeRender(TE, renderBlocks, coverBlock, srcBlock, 1, WEDGE_CORNER_YXXPNP, true, x, y, z, 0.8F);
-        } else {
-        	prepareSlopeRender(TE, renderBlocks, coverBlock, srcBlock, 0, WEDGE_CORNER_YXXNNP, true, x, y, z, 0.55F);
-        }
+    	if (slope1.facings.contains(ForgeDirection.WEST)) {
+    		prepareSlopeRender(TE, renderBlocks, coverBlock, srcBlock, WEST, WEDGE_CORNER_SLOPED_XN, x, y, z, slope.isPositive ? 0.8F : 0.55F);
+    	} else { // ForgeDirection.EAST
+    		prepareSlopeRender(TE, renderBlocks, coverBlock, srcBlock, EAST, WEDGE_CORNER_SLOPED_XP, x, y, z, slope.isPositive ? 0.8F : 0.55F);
+    	}
         	
         /* Z Slope */
         
@@ -705,11 +666,11 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerBase
 
     	setWedgeSlopeLighting(renderBlocks, slope2);
 
-        if (slope2.isPositive) {
-        	prepareSlopeRender(TE, renderBlocks, coverBlock, srcBlock, 1, WEDGE_CORNER_YZZPNP, true, x, y, z, 0.9F);
-        } else {
-        	prepareSlopeRender(TE, renderBlocks, coverBlock, srcBlock, 0, WEDGE_CORNER_YZZNNP, true, x, y, z, 0.65F);
-        }
+    	if (slope.facings.contains(ForgeDirection.NORTH)) {
+    		prepareSlopeRender(TE, renderBlocks, coverBlock, srcBlock, NORTH, WEDGE_CORNER_SLOPED_ZN, x, y, z, slope.isPositive ? 0.9F : 0.65F);
+    	} else {
+    		prepareSlopeRender(TE, renderBlocks, coverBlock, srcBlock, SOUTH, WEDGE_CORNER_SLOPED_ZP, x, y, z, slope.isPositive ? 0.9F : 0.65F);
+    	}
     }
     
     /**
@@ -833,9 +794,9 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerBase
     	}
 
     	if (slope.isPositive) {
-        	prepareSlopeRender(TE, renderBlocks, coverBlock, srcBlock, 1, OBL_CORNER_SLOPED_YP, true, x, y, z, 0.85F);
+        	prepareSlopeRender(TE, renderBlocks, coverBlock, srcBlock, 1, OBL_CORNER_SLOPED_YP, x, y, z, 0.85F);
     	} else {
-        	prepareSlopeRender(TE, renderBlocks, coverBlock, srcBlock, 0, OBL_CORNER_SLOPED_YN, true, x, y, z, 0.6F);
+        	prepareSlopeRender(TE, renderBlocks, coverBlock, srcBlock, 0, OBL_CORNER_SLOPED_YN, x, y, z, 0.6F);
     	}
     }
     
@@ -960,9 +921,9 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerBase
     	}
 
     	if (slope.isPositive) {
-        	prepareSlopeRender(TE, renderBlocks, coverBlock, srcBlock, 1, OBL_CORNER_SLOPED_YP, true, x, y, z, 0.85F);
+        	prepareSlopeRender(TE, renderBlocks, coverBlock, srcBlock, 1, OBL_CORNER_SLOPED_YP, x, y, z, 0.85F);
     	} else {
-        	prepareSlopeRender(TE, renderBlocks, coverBlock, srcBlock, 0, OBL_CORNER_SLOPED_YN, true, x, y, z, 0.6F);
+        	prepareSlopeRender(TE, renderBlocks, coverBlock, srcBlock, 0, OBL_CORNER_SLOPED_YN, x, y, z, 0.6F);
     	}
     }
     
@@ -988,7 +949,7 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerBase
 	    		renderBlocks.brightnessBottomRight = mixedBrightness;
     		}
 
-    		prepareSlopeRender(TE, renderBlocks, coverBlock, srcBlock, 0, PYR_YXNN, true, x, y, z, 0.55F);
+    		prepareSlopeRender(TE, renderBlocks, coverBlock, srcBlock, 0, PYR_YXNN, x, y, z, 0.55F);
 
     		if (renderBlocks.enableAO)
     		{
@@ -1003,7 +964,7 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerBase
 	    		renderBlocks.brightnessBottomRight = offset_brightness[DOWN][2];
     		}
 
-    		prepareSlopeRender(TE, renderBlocks, coverBlock, srcBlock, 0, PYR_YXNP, true, x, y, z, 0.55F);
+    		prepareSlopeRender(TE, renderBlocks, coverBlock, srcBlock, 0, PYR_YXNP, x, y, z, 0.55F);
 
     		if (renderBlocks.enableAO)
     		{
@@ -1018,7 +979,7 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerBase
 	    		renderBlocks.brightnessBottomRight = offset_brightness[DOWN][2];
     		}
 
-    		prepareSlopeRender(TE, renderBlocks, coverBlock, srcBlock, 0, PYR_YZNN, true, x, y, z, 0.65F);
+    		prepareSlopeRender(TE, renderBlocks, coverBlock, srcBlock, 0, PYR_YZNN, x, y, z, 0.65F);
 
     		if (renderBlocks.enableAO)
     		{
@@ -1033,7 +994,7 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerBase
 	    		renderBlocks.brightnessTopRight = offset_brightness[DOWN][1];
     		}
 
-    		prepareSlopeRender(TE, renderBlocks, coverBlock, srcBlock, 0, PYR_YZNP, true, x, y, z, 0.65F);
+    		prepareSlopeRender(TE, renderBlocks, coverBlock, srcBlock, 0, PYR_YZNP, x, y, z, 0.65F);
 
     		break;
     	case Slope.ID_PYR_HALF_POS:
@@ -1041,17 +1002,17 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerBase
     		if (renderBlocks.enableAO)
     		{
 	    		/* TOP - NW CORNER */
-	    		base_ao[2] = ao[UP][2];
-	    		renderBlocks.brightnessBottomLeft = brightness[UP][2];
+	    		base_ao[2] = offset_ao[UP][2];
+	    		renderBlocks.brightnessBottomLeft = offset_brightness[UP][2];
 	    		/* TOP - SW CORNER */
-	    		base_ao[1] = ao[UP][1];
-	    		renderBlocks.brightnessTopLeft = brightness[UP][1];
+	    		base_ao[1] = offset_ao[UP][1];
+	    		renderBlocks.brightnessTopLeft = offset_brightness[UP][1];
 	    		/* MIDDLE - CENTER */
 	    		base_ao[0] = aoLightValue;
 	    		renderBlocks.brightnessTopRight = mixedBrightness;
     		}
 
-    		prepareSlopeRender(TE, renderBlocks, coverBlock, srcBlock, 1, PYR_YXPN, true, x, y, z, 0.8F);
+    		prepareSlopeRender(TE, renderBlocks, coverBlock, srcBlock, 1, PYR_YXPN, x, y, z, 0.8F);
 
     		if (renderBlocks.enableAO)
     		{
@@ -1059,44 +1020,44 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerBase
 	    		base_ao[2] = aoLightValue;
 	    		renderBlocks.brightnessBottomLeft = mixedBrightness;
 	    		/* TOP - SE CORNER */
-	    		base_ao[0] = ao[UP][0];
-	    		renderBlocks.brightnessTopRight = brightness[UP][0];
+	    		base_ao[0] = offset_ao[UP][0];
+	    		renderBlocks.brightnessTopRight = offset_brightness[UP][0];
 	    		/* TOP - NE CORNER */
-	    		base_ao[3] = ao[UP][3];
-	    		renderBlocks.brightnessBottomRight = brightness[UP][3];
+	    		base_ao[3] = offset_ao[UP][3];
+	    		renderBlocks.brightnessBottomRight = offset_brightness[UP][3];
     		}
 
-    		prepareSlopeRender(TE, renderBlocks, coverBlock, srcBlock, 1, PYR_YXPP, true, x, y, z, 0.8F);
+    		prepareSlopeRender(TE, renderBlocks, coverBlock, srcBlock, 1, PYR_YXPP, x, y, z, 0.8F);
 
     		if (renderBlocks.enableAO)
     		{
 	    		/* TOP - NW CORNER */
-	    		base_ao[2] = ao[UP][2];
-	    		renderBlocks.brightnessBottomLeft = brightness[UP][2];
+	    		base_ao[2] = offset_ao[UP][2];
+	    		renderBlocks.brightnessBottomLeft = offset_brightness[UP][2];
 	    		/* MIDDLE - CENTER */
 	    		base_ao[0] = aoLightValue;
 	    		renderBlocks.brightnessTopRight = mixedBrightness;
 	    		/* TOP - NE CORNER */
-	    		base_ao[3] = ao[UP][3];
-	    		renderBlocks.brightnessBottomRight = brightness[UP][3];
+	    		base_ao[3] = offset_ao[UP][3];
+	    		renderBlocks.brightnessBottomRight = offset_brightness[UP][3];
     		}
 
-    		prepareSlopeRender(TE, renderBlocks, coverBlock, srcBlock, 1, PYR_YZPN, true, x, y, z, 0.9F);
+    		prepareSlopeRender(TE, renderBlocks, coverBlock, srcBlock, 1, PYR_YZPN, x, y, z, 0.9F);
 
     		if (renderBlocks.enableAO)
     		{
 	    		/* TOP - SW CORNER */
-	    		base_ao[1] = ao[UP][1];
-	    		renderBlocks.brightnessTopLeft = brightness[UP][1];
+	    		base_ao[1] = offset_ao[UP][1];
+	    		renderBlocks.brightnessTopLeft = offset_brightness[UP][1];
 	    		/* TOP - SE CORNER */
-	    		base_ao[0] = ao[UP][0];
-	    		renderBlocks.brightnessTopRight = brightness[UP][0];
+	    		base_ao[0] = offset_ao[UP][0];
+	    		renderBlocks.brightnessTopRight = offset_brightness[UP][0];
 	    		/* MIDDLE - CENTER */
 	    		base_ao[3] = aoLightValue;
 	    		renderBlocks.brightnessBottomRight = mixedBrightness;
     		}
 
-    		prepareSlopeRender(TE, renderBlocks, coverBlock, srcBlock, 1, PYR_YZPP, true, x, y, z, 0.9F);
+    		prepareSlopeRender(TE, renderBlocks, coverBlock, srcBlock, 1, PYR_YZPP, x, y, z, 0.9F);
 
     		break;
     	}
@@ -1123,13 +1084,7 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerBase
 	    	renderBlocks.brightnessBottomRight = brightness[DOWN][2];
 		}
 
-    	switch (slope.slopeType) {
-    	case OBLIQUE_INT: case OBLIQUE_EXT:
-    		prepareSlopeRender(TE, renderBlocks, coverBlock, srcBlock, 0, OBL_CORNER_YN, false, x, y, z, 0.5F);
-    		break;
-    	default:
-    		prepareSlopeRender(TE, renderBlocks, coverBlock, srcBlock, 0, WEDGE_YN, false, x, y, z, 0.5F);
-    	}    		
+    	prepareSlopeRender(TE, renderBlocks, coverBlock, srcBlock, 0, WEDGE_YN, x, y, z, 0.5F);
     }
     
     /**
@@ -1153,13 +1108,7 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerBase
 	    	renderBlocks.brightnessBottomRight = brightness[UP][3];
 		}
 
-    	switch (slope.slopeType) {
-    	case OBLIQUE_INT: case OBLIQUE_EXT:
-    		prepareSlopeRender(TE, renderBlocks, coverBlock, srcBlock, 1, OBL_CORNER_YP, false, x, y, z, 1.0F);
-    		break;
-    	default:
-    		prepareSlopeRender(TE, renderBlocks, coverBlock, srcBlock, 1, WEDGE_YP, false, x, y, z, 1.0F);
-    	}
+    	prepareSlopeRender(TE, renderBlocks, coverBlock, srcBlock, 1, WEDGE_YP, x, y, z, 1.0F);
     }
 
     /**
@@ -1183,16 +1132,7 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerBase
 	    	renderBlocks.brightnessTopLeft = brightness[NORTH][0];
 		}
 
-    	switch (slope.slopeType) {
-    	case WEDGE_INT: case WEDGE_EXT:
-    		prepareSlopeRender(TE, renderBlocks, coverBlock, srcBlock, 2, WEDGE_CORNER_ZN, false, x, y, z, 0.8F);
-    		break;
-    	case OBLIQUE_INT: case OBLIQUE_EXT:
-    		prepareSlopeRender(TE, renderBlocks, coverBlock, srcBlock, 2, OBL_CORNER_ZN, false, x, y, z, 0.8F);
-    		break;
-    	default:
-    		prepareSlopeRender(TE, renderBlocks, coverBlock, srcBlock, 2, WEDGE_ZN, false, x, y, z, 0.8F);
-    	}
+    	prepareSlopeRender(TE, renderBlocks, coverBlock, srcBlock, 2, WEDGE_ZN, x, y, z, 0.8F);
     }
     
     /**
@@ -1216,16 +1156,7 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerBase
 	    	renderBlocks.brightnessTopRight = brightness[SOUTH][1];
 		}
 
-        switch (slope.slopeType) {
-        case WEDGE_INT: case WEDGE_EXT:
-        	prepareSlopeRender(TE, renderBlocks, coverBlock, srcBlock, 3, WEDGE_CORNER_ZP, false, x, y, z, 0.8F);
-        	break;
-        case OBLIQUE_INT: case OBLIQUE_EXT:
-        	prepareSlopeRender(TE, renderBlocks, coverBlock, srcBlock, 3, OBL_CORNER_ZP, false, x, y, z, 0.8F);
-        	break;
-        default:
-        	prepareSlopeRender(TE, renderBlocks, coverBlock, srcBlock, 3, WEDGE_ZP, false, x, y, z, 0.8F);
-        }
+        prepareSlopeRender(TE, renderBlocks, coverBlock, srcBlock, 3, WEDGE_ZP, x, y, z, 0.8F);
     }
     
     /**
@@ -1249,16 +1180,7 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerBase
 	    	renderBlocks.brightnessTopLeft = brightness[WEST][0];
 		}
 
-    	switch (slope.slopeType) {
-    	case WEDGE_INT: case WEDGE_EXT:
-    		prepareSlopeRender(TE, renderBlocks, coverBlock, srcBlock, 4, WEDGE_CORNER_XN, false, x, y, z, 0.6F);
-    		break;
-    	case OBLIQUE_INT: case OBLIQUE_EXT:
-    		prepareSlopeRender(TE, renderBlocks, coverBlock, srcBlock, 4, OBL_CORNER_XN, false, x, y, z, 0.6F);
-    		break;
-    	default:
-    		prepareSlopeRender(TE, renderBlocks, coverBlock, srcBlock, 4, WEDGE_XN, false, x, y, z, 0.6F);		
-    	}
+    	prepareSlopeRender(TE, renderBlocks, coverBlock, srcBlock, 4, WEDGE_XN, x, y, z, 0.6F);		
     }
     
     /**
@@ -1282,16 +1204,7 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerBase
 	    	renderBlocks.brightnessBottomRight = brightness[EAST][2];
 		}
 
-        switch (slope.slopeType) {
-        case WEDGE_INT: case WEDGE_EXT:
-        	prepareSlopeRender(TE, renderBlocks, coverBlock, srcBlock, 5, WEDGE_CORNER_XP, false, x, y, z, 0.6F);
-        	break;
-        case OBLIQUE_INT: case OBLIQUE_EXT:
-        	prepareSlopeRender(TE, renderBlocks, coverBlock, srcBlock, 5, OBL_CORNER_XP, false, x, y, z, 0.6F);
-        	break;
-        default:
-        	prepareSlopeRender(TE, renderBlocks, coverBlock, srcBlock, 5, WEDGE_XP, false, x, y, z, 0.6F);
-        }
+        prepareSlopeRender(TE, renderBlocks, coverBlock, srcBlock, 5, WEDGE_XP, x, y, z, 0.6F);
     }
     
 	@Override
@@ -1308,15 +1221,11 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerBase
 
         /*
          * Render sloped faces.
-         * 
-         * All sloped faces (excluding side slopes) are
-         * vertically-adjusted top and bottom faces.
-         * 
-         * Icons are mapped accordingly in setupIcon()
-         * in super class.
          */
     	
         tessellator.setBrightness(coverBlock.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y, z));
+        
+        isSideSloped = true;
         
     	switch (slope.slopeType)
     	{
@@ -1342,6 +1251,8 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerBase
     		preparePyramid(TE, renderBlocks, coverBlock, srcBlock, slope, x, y, z);
     		break;
     	}
+    	
+    	isSideSloped = false;
     	
         /*
          * Render non-sloped faces.

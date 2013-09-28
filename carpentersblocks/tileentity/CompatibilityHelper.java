@@ -29,6 +29,7 @@ public class CompatibilityHelper
 		byte old_overlay = (byte) ((old_data & 0x0000f000) >> 12);
 
 		cover[6] = (short) (old_data & 0x00000fff);
+
 		pattern = nbt.getByte("pattern");
 		color = old_color;
 		overlay = old_overlay;
