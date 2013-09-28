@@ -437,19 +437,19 @@ public class BlockCarpentersSlope extends BlockBase
 
 		int slopeID = BlockProperties.getData(TE);
 		Slope slope = Slope.slopesList[slopeID];
-
-		int precision = getNumBoxesPerPass(slope);
+		
+		int numBoxesPerPass = getNumBoxesPerPass(slope);
 		int numPasses = getNumPasses(slope);
 
 		double currDist = 0.0D;
 		double maxDist = 0.0D;
 
-		// Determine if ray trace is a hit on slope
-		for (int pass = 0; pass < numPasses; ++pass)
+		/* Determine if ray trace is a hit on slope. */
+		for (int pass = 0; pass < numPasses && finalTrace == null; ++pass)
 		{
-			for (int slice = 0; slice < precision; ++slice)
+			for (int slice = 0; slice < numBoxesPerPass && finalTrace == null; ++slice)
 			{
-				float[] box = genBounds(slope, slice, precision, pass);
+				float[] box = genBounds(slope, slice, numBoxesPerPass, pass);
 				setBlockBounds(box[0], box[1], box[2], box[3], box[4], box[5]);
 				MovingObjectPosition traceResult = super.collisionRayTrace(world, x, y, z, startVec, endVec);
 
@@ -463,12 +463,17 @@ public class BlockCarpentersSlope extends BlockBase
 				}
 			}
 			if (slope.slopeType.equals(SlopeType.OBLIQUE_EXT)) {
-				--precision;
+				--numBoxesPerPass;
 			}
 		}
 
 		setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
 
+		/* Determine true face hit since sloped faces are two or more shared faces. */
+		if (finalTrace != null) {
+			finalTrace = super.collisionRayTrace(world, x, y, z, startVec, endVec);
+		}
+		
 		return finalTrace;
 	}
 
