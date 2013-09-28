@@ -8,6 +8,7 @@ import net.minecraftforge.common.ForgeDirection;
 
 import org.lwjgl.opengl.GL11;
 
+import carpentersblocks.block.BlockBase;
 import carpentersblocks.data.Slope;
 import carpentersblocks.renderer.helper.slope.RenderHelperObliqueCorner;
 import carpentersblocks.renderer.helper.slope.RenderHelperPyramid;
@@ -134,23 +135,23 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerBase
 
 		tessellator.startDrawingQuads();
 		tessellator.setNormal(0.0F, -1.0F, 0.0F);
-		RenderHelperWedge.renderFaceYNeg(renderBlocks, Slope.ID_WEDGE_POS_W, 0.0D, 0.0D, 0.0D, block.getBlockTextureFromSide(0));
+		RenderHelperWedge.renderFaceYNeg(renderBlocks, Slope.ID_WEDGE_POS_W, 0.0D, 0.0D, 0.0D, ((BlockBase)block).getDefaultIconFromSide(0));
 		tessellator.draw();
 		tessellator.startDrawingQuads();
 		tessellator.setNormal(0.0F, 1.0F, 0.0F);
-		RenderHelperWedge.renderSlopeYPos(renderBlocks, Slope.ID_WEDGE_POS_W, 0.0D, 0.0D, 0.0D, block.getBlockTextureFromSide(1));
+		RenderHelperWedge.renderSlopeYPos(renderBlocks, Slope.ID_WEDGE_POS_W, 0.0D, 0.0D, 0.0D, ((BlockBase)block).getDefaultIconFromSide(1));
 		tessellator.draw();
 		tessellator.startDrawingQuads();
 		tessellator.setNormal(0.0F, 0.0F, -1.0F);
-		RenderHelperWedge.renderFaceZNeg(renderBlocks, Slope.ID_WEDGE_POS_W, 0.0D, 0.0D, 0.0D, block.getBlockTextureFromSide(2));
+		RenderHelperWedge.renderFaceZNeg(renderBlocks, Slope.ID_WEDGE_POS_W, 0.0D, 0.0D, 0.0D, ((BlockBase)block).getDefaultIconFromSide(2));
 		tessellator.draw();
 		tessellator.startDrawingQuads();
 		tessellator.setNormal(0.0F, 0.0F, 1.0F);
-		RenderHelperWedge.renderFaceZPos(renderBlocks, Slope.ID_WEDGE_POS_W, 0.0D, 0.0D, 0.0D, block.getBlockTextureFromSide(2));
+		RenderHelperWedge.renderFaceZPos(renderBlocks, Slope.ID_WEDGE_POS_W, 0.0D, 0.0D, 0.0D, ((BlockBase)block).getDefaultIconFromSide(2));
 		tessellator.draw();
 		tessellator.startDrawingQuads();
 		tessellator.setNormal(1.0F, 0.0F, 0.0F);
-		RenderHelperWedge.renderFaceXPos(renderBlocks, Slope.ID_WEDGE_POS_W, 0.0D, 0.0D, 0.0D, block.getBlockTextureFromSide(2));
+		RenderHelperWedge.renderFaceXPos(renderBlocks, Slope.ID_WEDGE_POS_W, 0.0D, 0.0D, 0.0D, ((BlockBase)block).getDefaultIconFromSide(2));
 		tessellator.draw();
 
 		GL11.glTranslatef(0.5F, 0.5F, 0.5F);

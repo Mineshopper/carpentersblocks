@@ -6,8 +6,11 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.BlockDirectional;
 import net.minecraft.block.BlockFlower;
+import net.minecraft.block.StepSound;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.particle.EffectRenderer;
+import net.minecraft.client.particle.EntityDiggingFX;
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.EntityDragon;
@@ -18,6 +21,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
 import net.minecraft.util.MathHelper;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.client.ForgeHooksClient;
@@ -39,9 +43,17 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class BlockBase extends BlockContainer
 {
 
+	private Icon fakeIcon;
+
 	public BlockBase(int blockID, Material material)
 	{
 		super(blockID, material);
+		this.setStepSound(new StepSound("carpentermod", 1.0f, 1.0f){
+		    public String getPlaceSound()
+		    {
+		        return "place." + this.stepSoundName;
+		    }
+		});
 	}
 
 	/**
@@ -73,9 +85,50 @@ public class BlockBase extends BlockContainer
 	public Icon getBlockTexture(IBlockAccess world, int x, int y, int z, int side)
 	{
 		TECarpentersBlock TE = (TECarpentersBlock) world.getBlockTileEntity(x, y, z);
-
-		return BlockProperties.getCoverBlock(TE, 6).getIcon(side, BlockProperties.getCoverMetadata(TE, 6));
+		Block cover = BlockProperties.getCoverBlock(TE, 6);
+		return cover instanceof BlockBase?getDefaultBlockTexture(world,x, y, z, side):cover.getIcon(side, BlockProperties.getCoverMetadata(TE, 6));
 	}
+
+	
+	private Icon getDefaultBlockTexture(IBlockAccess world, int x, int y, int z, int side)
+    {
+        return this.blockIcon;
+    }
+	
+
+    public Icon getDefaultIconFromSide(int i)
+    {
+        return this.blockIcon;
+    }
+
+
+    public Icon getDefaultIcon(int i, int coverMetadata)
+    {
+        // TODO Auto-generated method stub
+        return getDefaultIconFromSide(i);
+    }
+	
+	@Override
+	@SideOnly(Side.CLIENT)
+	/**
+     * This should only be called by the sprint getIcon particle. This allows us to over ride any sprint particles to be the correct texture
+     */
+	public Icon getIcon(int par1, int par2)
+    {
+        return this.fakeIcon;
+    }
+	
+	@Override
+	@SideOnly(Side.CLIENT)
+    /**
+     * When this method is called, your block should register all the icons it needs with the given IconRegister. This
+     * is the only chance you get to register icons.
+     */
+    public void registerIcons(IconRegister par1IconRegister)
+    {
+        this.fakeIcon = par1IconRegister.registerIcon("carpentersblocks:general/fake");
+        super.registerIcons(par1IconRegister);
+    }
 
 	@Override
 	/**
@@ -469,17 +522,78 @@ public class BlockBase extends BlockContainer
 		 * we're guessing based on who is closest.  This should
 		 * be adequate most of the time.
 		 */
-
+	    boolean result = false;
 		if (world.getBlockId(x, y, z) == blockID)
 		{
 			EntityPlayer entityPlayer = world.getClosestPlayer(x, y, z, 6.5F);
 
 			if (entityPlayer != null)
-				return suppressDestroyBlock(entityPlayer, entityPlayer.getHeldItem());
+			    result = suppressDestroyBlock(entityPlayer, entityPlayer.getHeldItem());
 		}
 
+		if(!result){
+		    TECarpentersBlock tile = (TECarpentersBlock) world.getBlockTileEntity(x,
+                    y,
+                    z);
+		    Block baseblock =  BlockProperties.getCoverBlock(tile, 6);
+		    if (baseblock != null) {
+		            byte b0 = 4;
+		            for (int j1 = 0; j1 < b0; ++j1) {
+		                for (int k1 = 0; k1 < b0; ++k1) {
+		                    for (int l1 = 0; l1 < b0; ++l1) {
+		                        double d0 = (double) x + ((double) j1 + 0.5D)
+		                                / (double) b0;
+		                        double d1 = (double) y + ((double) k1 + 0.5D)
+		                                / (double) b0;
+		                        double d2 = (double) z + ((double) l1 + 0.5D)
+		                                / (double) b0;
+		                        EntityDiggingFX particle = new EntityDiggingFX(world, d0, d1, d2, d0
+                                        - (double) x
+                                        - 0.5D, d1
+                                                - (double) y
+                                                - 0.5D, d2
+                                                        - (double) z
+                                                        - 0.5D, baseblock, BlockProperties.getCoverMetadata(tile, 6));
+		                        if (baseblock instanceof BlockBase){
+		                            particle.func_110125_a(this.getDefaultIconFromSide(0));
+		                        }
+		                        effectRenderer.addEffect(particle.applyColourMultiplier(x, y, z));
+		                    }
+		                }
+		            }
+		            return true;
+		    }
+		}
 		return false;
 	}
+	
+	@Override
+	@SideOnly(Side.CLIENT)
+    public boolean addBlockHitEffects(World worldObj, MovingObjectPosition target, EffectRenderer effectRenderer)
+    {
+        TECarpentersBlock tile = (TECarpentersBlock) worldObj.getBlockTileEntity(target.blockX, target.blockY, target.blockZ);
+        Block baseblock = BlockProperties.getCoverBlock(tile, 6);
+        if (baseblock != null)
+        {
+            float f = 0.1F;
+            double d0 = (double) target.blockX + worldObj.rand.nextDouble()
+                    * (baseblock.getBlockBoundsMaxX() - baseblock.getBlockBoundsMinX() - (double) (f * 2.0F)) + (double) f + baseblock.getBlockBoundsMinX();
+            double d1 = (double) target.blockY + worldObj.rand.nextDouble()
+                    * (baseblock.getBlockBoundsMaxY() - baseblock.getBlockBoundsMinY() - (double) (f * 2.0F)) + (double) f + baseblock.getBlockBoundsMinY();
+            double d2 = (double) target.blockZ + worldObj.rand.nextDouble()
+                    * (baseblock.getBlockBoundsMaxZ() - baseblock.getBlockBoundsMinZ() - (double) (f * 2.0F)) + (double) f + baseblock.getBlockBoundsMinZ();
+
+            EntityDiggingFX particle = new EntityDiggingFX(worldObj, d0, d1, d2, 0.0D, 0.0D, 0.0D, baseblock, BlockProperties.getCoverMetadata(tile, 6));
+            if (baseblock instanceof BlockBase){
+                particle.func_110125_a(this.getDefaultIconFromSide(0));
+            }
+            effectRenderer.addEffect(particle.applyColourMultiplier(target.blockX, target.blockY, target.blockZ)
+            .multiplyVelocity(0.2F).multipleParticleScaleBy(0.6F));
+
+            return true;
+        }
+        return false;
+    }
 
 	@Override
 	/**

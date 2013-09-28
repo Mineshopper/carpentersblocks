@@ -1,5 +1,10 @@
 package carpentersblocks.util.handler;
 
+import net.minecraft.block.Block;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.Configuration;
+import net.minecraftforge.oredict.ShapedOreRecipe;
 import carpentersblocks.block.BlockCarpentersBarrier;
 import carpentersblocks.block.BlockCarpentersBed;
 import carpentersblocks.block.BlockCarpentersBlock;
@@ -13,15 +18,9 @@ import carpentersblocks.block.BlockCarpentersLever;
 import carpentersblocks.block.BlockCarpentersPressurePlate;
 import carpentersblocks.block.BlockCarpentersSlope;
 import carpentersblocks.block.BlockCarpentersStairs;
-import carpentersblocks.item.ItemCarpentersBed;
-import carpentersblocks.item.ItemCarpentersDoor;
+import carpentersblocks.item.ItemBlockBase;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.Configuration;
-import net.minecraftforge.oredict.ShapedOreRecipe;
 
 public class BlockHandler
 {
@@ -162,77 +161,77 @@ public class BlockHandler
     {
     	if (enableBarrier) {
     		blockCarpentersBarrier = (new BlockCarpentersBarrier(blockCarpentersBarrierID));
-    		GameRegistry.registerBlock(blockCarpentersBarrier, "blockCarpentersBarrier");
+    		GameRegistry.registerBlock(blockCarpentersBarrier, ItemBlockBase.class, "blockCarpentersBarrier");
     		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(blockCarpentersBarrier, recipeQuantityBarrier), "X X", "XXX", 'X', "stickWood"));
     	}
     	
     	if (enableBed) {
         	BlockHandler.blockCarpentersBed = (new BlockCarpentersBed(BlockHandler.blockCarpentersBedID));
-    		GameRegistry.registerBlock(BlockHandler.blockCarpentersBed, "blockCarpentersBed");
+    		GameRegistry.registerBlock(BlockHandler.blockCarpentersBed, ItemBlockBase.class, "blockCarpentersBed");
         }
     	
     	if (enableBlock) {
     		blockCarpentersBlock = (new BlockCarpentersBlock(blockCarpentersBlockID));
-    		GameRegistry.registerBlock(blockCarpentersBlock, "blockCarpentersBlock");
+    		GameRegistry.registerBlock(blockCarpentersBlock, ItemBlockBase.class, "blockCarpentersBlock");
     		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(blockCarpentersBlock, recipeQuantityBlock), "XXX", "XYX", "XXX", 'X', "stickWood", 'Y', "plankWood"));
     	}
     	
     	if (enableButton) {
     		blockCarpentersButton = (new BlockCarpentersButton(blockCarpentersButtonID));
-    		GameRegistry.registerBlock(blockCarpentersButton, "blockCarpentersButton");
+    		GameRegistry.registerBlock(blockCarpentersButton, ItemBlockBase.class, "blockCarpentersButton");
     		GameRegistry.addRecipe(new ItemStack(blockCarpentersButton, recipeQuantityButton), new Object[] {"X", 'X', blockCarpentersBlock});
     	}
     	
     	if (enableDaylightSensor) {
     		blockCarpentersDaylightSensor = (new BlockCarpentersDaylightSensor(blockCarpentersDaylightSensorID));
-    		GameRegistry.registerBlock(blockCarpentersDaylightSensor, "blockCarpentersDaylightSensor");
+    		GameRegistry.registerBlock(blockCarpentersDaylightSensor, ItemBlockBase.class, "blockCarpentersDaylightSensor");
     		GameRegistry.addRecipe(new ItemStack(blockCarpentersDaylightSensor, recipeQuantityDaylightSensor), new Object[] {"XXX", "YYY", "ZZZ", 'X', Block.glass, 'Y', Item.netherQuartz, 'Z', blockCarpentersBlock});
     	}
     	
     	if (enableDoor) {
     		BlockHandler.blockCarpentersDoor = (new BlockCarpentersDoor(BlockHandler.blockCarpentersDoorID));
-    		GameRegistry.registerBlock(BlockHandler.blockCarpentersDoor, "blockCarpentersDoor");
+    		GameRegistry.registerBlock(BlockHandler.blockCarpentersDoor, ItemBlockBase.class, "blockCarpentersDoor");
         }
     	
     	if (enableGate) {
     		blockCarpentersGate = (new BlockCarpentersGate(blockCarpentersGateID));
-    		GameRegistry.registerBlock(blockCarpentersGate, "blockCarpentersGate");
+    		GameRegistry.registerBlock(blockCarpentersGate, ItemBlockBase.class, "blockCarpentersGate");
     		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(blockCarpentersGate, recipeQuantityGate), "XYX", "XYX", 'X', "stickWood", 'Y', blockCarpentersBlock));
     	}
     	
     	if (enableHatch) {
     		blockCarpentersHatch = (new BlockCarpentersHatch(blockCarpentersHatchID));
-    		GameRegistry.registerBlock(blockCarpentersHatch, "blockCarpentersHatch");
+    		GameRegistry.registerBlock(blockCarpentersHatch, ItemBlockBase.class, "blockCarpentersHatch");
     		GameRegistry.addRecipe(new ItemStack(blockCarpentersHatch, recipeQuantityHatch), new Object[] {"XXX", "XXX", 'X', blockCarpentersBlock});
     	}
     	
     	if (enableLadder) {
     		blockCarpentersLadder = (new BlockCarpentersLadder(blockCarpentersLadderID));
-    		GameRegistry.registerBlock(blockCarpentersLadder, "blockCarpentersLadder");
+    		GameRegistry.registerBlock(blockCarpentersLadder, ItemBlockBase.class, "blockCarpentersLadder");
     		GameRegistry.addRecipe(new ItemStack(blockCarpentersLadder, recipeQuantityLadder), new Object[] {"X X", "XXX", "X X", 'X', blockCarpentersBlock});
     	}
 
     	if (enableLever) {
     		blockCarpentersLever = (new BlockCarpentersLever(blockCarpentersLeverID));
-    		GameRegistry.registerBlock(blockCarpentersLever, "blockCarpentersLever");
+    		GameRegistry.registerBlock(blockCarpentersLever, ItemBlockBase.class, "blockCarpentersLever");
     		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(blockCarpentersLever, recipeQuantityLever), "X", "Y", 'X', "stickWood", 'Y', blockCarpentersBlock));
     	}
 
     	if (enablePressurePlate) {
     		blockCarpentersPressurePlate = (new BlockCarpentersPressurePlate(blockCarpentersPressurePlateID));
-    		GameRegistry.registerBlock(blockCarpentersPressurePlate, "blockCarpentersPressurePlate");
+    		GameRegistry.registerBlock(blockCarpentersPressurePlate, ItemBlockBase.class, "blockCarpentersPressurePlate");
     		GameRegistry.addRecipe(new ItemStack(blockCarpentersPressurePlate, recipeQuantityPressurePlate), new Object[] {"XX", 'X', blockCarpentersBlock});
     	}
     	
     	if (enableSlope) {
     		blockCarpentersSlope = (new BlockCarpentersSlope(blockCarpentersSlopeID));
-    		GameRegistry.registerBlock(blockCarpentersSlope, "blockCarpentersSlope");
+    		GameRegistry.registerBlock(blockCarpentersSlope, ItemBlockBase.class, "blockCarpentersSlope");
     		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(blockCarpentersSlope, recipeQuantitySlope), "  X", " XY", "XYY", 'X', "stickWood", 'Y', "plankWood"));
     	}
 
     	if (enableStairs) {
     		blockCarpentersStairs = (new BlockCarpentersStairs(blockCarpentersStairsID));
-    		GameRegistry.registerBlock(blockCarpentersStairs, "blockCarpentersStairs");
+    		GameRegistry.registerBlock(blockCarpentersStairs, ItemBlockBase.class, "blockCarpentersStairs");
     		GameRegistry.addRecipe(new ItemStack(blockCarpentersStairs, recipeQuantityStairs), new Object[] {"  X", " XX", "XXX", 'X', blockCarpentersBlock});
     	}
     }

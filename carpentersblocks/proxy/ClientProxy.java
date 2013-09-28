@@ -17,6 +17,7 @@ import carpentersblocks.renderer.BlockHandlerCarpentersStairs;
 import carpentersblocks.renderer.tileentity.TERendererCarpentersBlock;
 import carpentersblocks.tileentity.TECarpentersBlock;
 import carpentersblocks.util.handler.BlockHandler;
+import carpentersblocks.util.handler.ClientEventHandler;
 import carpentersblocks.util.handler.FeatureHandler;
 import carpentersblocks.util.handler.IconHandler;
 import carpentersblocks.util.handler.LanguageHandler;
@@ -29,6 +30,11 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 public class ClientProxy extends CommonProxy
 {
 
+	@Override public void registerHandlers(FMLPreInitializationEvent event)
+	{
+		super.registerHandlers(event);
+		MinecraftForge.EVENT_BUS.register(new ClientEventHandler());
+	}
 	@Override
 	public void registerRenderInformation(FMLPreInitializationEvent event)
 	{

@@ -683,11 +683,19 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 
 		Icon icon;
 		if (hasMetadataOverride) {
-			icon = coverBlock.getIcon(side, metadataOverride);
+		    if (coverBlock instanceof BlockBase){
+                icon = ((BlockBase)coverBlock).getDefaultIcon(side, metadataOverride);
+		    }else{
+		        icon = coverBlock.getIcon(side, metadataOverride);
+		    }
 		} else if (srcBlock == BlockHandler.blockCarpentersDaylightSensor) {
 			icon = srcBlock.getBlockTexture(renderBlocks.blockAccess, x, y, z, side);
 		} else {
-			icon = coverBlock.getIcon(isFaceSlopingUpOrDown ? 2 : side, BlockProperties.getCoverMetadata(TE, coverRendering));
+		    if (coverBlock instanceof BlockBase){
+		        icon = ((BlockBase)coverBlock).getDefaultIcon(isFaceSlopingUpOrDown ? 2 : side, BlockProperties.getCoverMetadata(TE, coverRendering));
+		    }else{
+		        icon = coverBlock.getIcon(isFaceSlopingUpOrDown ? 2 : side, BlockProperties.getCoverMetadata(TE, coverRendering));
+		    }
 		}
 
 		// Default icon for Carpenter's Lever is the lever itself, so we'll replace it here.
