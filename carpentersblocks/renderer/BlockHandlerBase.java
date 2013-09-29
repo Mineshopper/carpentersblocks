@@ -1057,9 +1057,9 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 	 */
 	protected Icon getGrassOverlayIcon(TECarpentersBlock TE, int side)
 	{
-		Slope slope = Slope.slopesList[BlockProperties.getData(TE)];
-
-		if (side == 1 || slope.isPositive && isSideSloped) {
+		boolean isPositiveSlope = isSideSloped ? Slope.slopesList[BlockProperties.getData(TE)].isPositive : false;
+		
+		if (side == 1 || isPositiveSlope) {
 			return Block.grass.getBlockTextureFromSide(1);
 		} else if (side > 1) {
 
