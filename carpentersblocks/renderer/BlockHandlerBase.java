@@ -917,9 +917,9 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 	{
 		if (coverBlock == Block.grass || BlockProperties.getOverlay(TE, side) == OverlayHandler.OVERLAY_GRASS)
 		{
-			Slope slope = Slope.slopesList[BlockProperties.getData(TE)];
+			boolean isPositiveSlope = isSideSloped ? Slope.slopesList[BlockProperties.getData(TE)].isPositive : false;
 			
-			if (side == 1 || icon == BlockGrass.getIconSideOverlay() || slope.isPositive && isSideSloped) {
+			if (side == 1 || icon == BlockGrass.getIconSideOverlay() || isPositiveSlope) {
 				return srcBlock == BlockHandler.blockCarpentersDaylightSensor ? side != 1 : true;
 			} else {
 				return false;
