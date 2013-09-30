@@ -29,7 +29,7 @@ public class BlockCarpentersStairs extends BlockBase
 		setHardness(0.2F);
 		setUnlocalizedName("blockCarpentersStairs");
 		setCreativeTab(CarpentersBlocks.tabCarpentersBlocks);
-		func_111022_d("carpentersblocks:stairs/stairs");
+		setTextureName("carpentersblocks:stairs/stairs");
 	}
 
 	@Override

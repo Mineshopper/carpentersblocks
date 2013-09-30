@@ -31,7 +31,7 @@ public class BlockCarpentersPressurePlate extends BlockBase
 		setUnlocalizedName("blockCarpentersPressurePlate");
 		setCreativeTab(CarpentersBlocks.tabCarpentersBlocks);
 		setTickRandomly(true);
-		func_111022_d("carpentersblocks:slope/slope");
+		setTextureName("carpentersblocks:slope/slope");
 	}
 
 	@Override

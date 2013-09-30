@@ -27,7 +27,7 @@ public class BlockCarpentersDoor extends BlockBase
 		super(blockID, Material.wood);
 		setHardness(0.2F);
 		setUnlocalizedName("blockCarpentersDoor");
-		func_111022_d("carpentersblocks:general/generic");
+		setTextureName("carpentersblocks:general/generic");
 	}
 
 	@Override

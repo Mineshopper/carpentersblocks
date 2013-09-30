@@ -32,7 +32,7 @@ public class BlockCarpentersSlope extends BlockBase
 		setHardness(0.2F);
 		setUnlocalizedName("blockCarpentersSlope");
 		setCreativeTab(CarpentersBlocks.tabCarpentersBlocks);
-		func_111022_d("carpentersblocks:slope/slope");
+		setTextureName("carpentersblocks:slope/slope");
 	}
 
 	@Override
