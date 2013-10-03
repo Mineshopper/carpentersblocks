@@ -9,6 +9,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import carpentersblocks.CarpentersBlocks;
 import carpentersblocks.data.Bed;
+import carpentersblocks.tileentity.TECarpentersBlock;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.handler.BlockHandler;
 import cpw.mods.fml.relauncher.Side;
@@ -48,7 +49,7 @@ public class ItemCarpentersBed extends Item
 			++y;
 			int facing = MathHelper.floor_double(entityPlayer.rotationYaw * 4.0F / 360.0F + 0.5D) & 3;
 
-			ForgeDirection dir = Bed.getDirection(facing);
+			ForgeDirection dir = BlockProperties.getDirectionFromFacing(facing);
 
 			int x_offset = x - dir.offsetX;
 			int z_offset = z - dir.offsetZ;
@@ -57,26 +58,19 @@ public class ItemCarpentersBed extends Item
 
 				if (world.isAirBlock(x, y, z) && world.isAirBlock(x_offset, y, z_offset) && world.doesBlockHaveSolidTopSurface(x, y - 1, z) && world.doesBlockHaveSolidTopSurface(x_offset, y - 1, z_offset)) {
 
-					/*
-					 * Set foot of bed.
-					 * 
-					 * Metadata indicates direction and bed piece for identifying
-					 * direction and coordinates for sleeping players.
-					 * 
-					 * Metadata for foot of bed is set to facing.
-					 */
-					world.setBlock(x, y, z, BlockHandler.blockCarpentersBedID, facing, 3);
+					/* Set foot of bed. */
+					world.setBlock(x, y, z, BlockHandler.blockCarpentersBedID);
+					
+					TECarpentersBlock TE_foot = (TECarpentersBlock) world.getBlockTileEntity(x, y, z);
+					Bed.setDirection(TE_foot, facing);
 
-					/*
-					 * Set head of bed.
-					 * 
-					 * Metadata indicates direction and bed piece for identifying
-					 * direction and coordinates for sleeping players.
-					 * 
-					 * Metadata for head of bed is set to facing + 8.
-					 */
-					world.setBlock(x_offset, y, z_offset, BlockHandler.blockCarpentersBedID, facing + 8, 3);
-
+					/* Set head of bed. */
+					world.setBlock(x_offset, y, z_offset, BlockHandler.blockCarpentersBedID);
+					
+					TECarpentersBlock TE_head = (TECarpentersBlock) world.getBlockTileEntity(x_offset,  y,  z_offset);
+					Bed.setHeadOfBed(TE_head, true);
+					Bed.setDirection(TE_head, facing);
+					
 					BlockProperties.playBlockPlacementSound(world, x, y, z, BlockHandler.blockCarpentersBedID);
 
 					--itemStack.stackSize;

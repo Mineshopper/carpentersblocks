@@ -11,6 +11,7 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeDirection;
 import carpentersblocks.tileentity.TECarpentersBlock;
 import carpentersblocks.util.handler.DyeColorHandler;
 import carpentersblocks.util.handler.OverlayHandler;
@@ -18,6 +19,24 @@ import carpentersblocks.util.handler.OverlayHandler;
 public class BlockProperties
 {
 
+	/**
+	 * Will return direction from player facing (values 0 to 3).
+	 */
+	public static ForgeDirection getDirectionFromFacing(int facing)
+	{
+		switch (facing)
+		{
+		case 0:
+			return ForgeDirection.NORTH;
+		case 1:
+			return ForgeDirection.EAST;
+		case 2:
+			return ForgeDirection.SOUTH;
+		default:
+			return ForgeDirection.WEST;
+		}
+	}
+	
 	/**
 	 * Will suppress block updates.
 	 */
@@ -203,6 +222,9 @@ public class BlockProperties
 			playBlockPlacementSound(TE, blockID);
 
 		TE.cover[side] = (short) (blockID + (metadata << 12));
+		
+		if (side == 6)
+			TE.worldObj.setBlockMetadataWithNotify(TE.xCoord, TE.yCoord, TE.zCoord, metadata, 0);
 		
 		TE.worldObj.notifyBlocksOfNeighborChange(TE.xCoord, TE.yCoord, TE.zCoord, blockID);
 		TE.worldObj.markBlockForUpdate(TE.xCoord, TE.yCoord, TE.zCoord);

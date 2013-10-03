@@ -30,15 +30,13 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase
 	public boolean renderNormalBed(TECarpentersBlock TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int x, int y, int z)
 	{
 		int data = BlockProperties.getData(TE);
-		int metadata = renderBlocks.blockAccess.getBlockMetadata(x, y, z);
+		ForgeDirection dir = Bed.getDirection(TE);
 
 		disableAO = true;
 
-		boolean isHead = BlockBed.isBlockHeadOfBed(metadata);
+		boolean isHead = Bed.isHeadOfBed(TE);
 
-		ForgeDirection dir = Bed.getDirection(metadata & 3);
-
-		TECarpentersBlock TE_opp = Bed.getOppositeTE(renderBlocks.blockAccess, x, y, z);
+		TECarpentersBlock TE_opp = Bed.getOppositeTE(TE);
 
 		boolean isOccupied = Bed.isOccupied(TE);
 		int	blanketColor = 0;
@@ -76,23 +74,28 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase
 		boolean	bedParallelPos = false;
 		boolean bedParallelNeg = false;
 
-		/*
-		 * (metadata & -5) returns data representing direction and bed piece.
-		 */
-		if (dir.equals(ForgeDirection.NORTH) || dir.equals(ForgeDirection.SOUTH)) {
-
-			if (renderBlocks.blockAccess.getBlockId(x + 1, y, z) == srcBlock.blockID)
-				bedParallelPos = (metadata & -5) == (renderBlocks.blockAccess.getBlockMetadata(x + 1, y, z) & -5);
-			if (renderBlocks.blockAccess.getBlockId(x - 1, y, z) == srcBlock.blockID)
-				bedParallelNeg = (metadata & -5) == (renderBlocks.blockAccess.getBlockMetadata(x - 1, y, z) & -5);
-
+		if (dir.equals(ForgeDirection.NORTH) || dir.equals(ForgeDirection.SOUTH)) 
+		{
+			if (renderBlocks.blockAccess.getBlockId(x + 1, y, z) == srcBlock.blockID) {
+				TECarpentersBlock TE_adj = (TECarpentersBlock) renderBlocks.blockAccess.getBlockTileEntity(x + 1,  y,  z);
+				bedParallelPos = Bed.isHeadOfBed(TE) == Bed.isHeadOfBed(TE_adj) && Bed.getDirection(TE) == Bed.getDirection(TE_adj);
+			}
+			if (renderBlocks.blockAccess.getBlockId(x - 1, y, z) == srcBlock.blockID) {
+				TECarpentersBlock TE_adj = (TECarpentersBlock) renderBlocks.blockAccess.getBlockTileEntity(x - 1,  y,  z);
+				bedParallelNeg = Bed.isHeadOfBed(TE) == Bed.isHeadOfBed(TE_adj) && Bed.getDirection(TE) == Bed.getDirection(TE_adj);
+			}
+			
 		} else {
-
-			if (renderBlocks.blockAccess.getBlockId(x, y, z + 1) == srcBlock.blockID)
-				bedParallelPos = (metadata & -5) == (renderBlocks.blockAccess.getBlockMetadata(x, y, z + 1) & -5);
-			if (renderBlocks.blockAccess.getBlockId(x, y, z - 1) == srcBlock.blockID)
-				bedParallelNeg = (metadata & -5) == (renderBlocks.blockAccess.getBlockMetadata(x, y, z - 1) & -5);
-
+			
+			if (renderBlocks.blockAccess.getBlockId(x, y, z + 1) == srcBlock.blockID) {
+				TECarpentersBlock TE_adj = (TECarpentersBlock) renderBlocks.blockAccess.getBlockTileEntity(x,  y, z + 1);
+				bedParallelPos = Bed.isHeadOfBed(TE) == Bed.isHeadOfBed(TE_adj) && Bed.getDirection(TE) == Bed.getDirection(TE_adj);
+			}
+			if (renderBlocks.blockAccess.getBlockId(x, y, z - 1) == srcBlock.blockID) {
+				TECarpentersBlock TE_adj = (TECarpentersBlock) renderBlocks.blockAccess.getBlockTileEntity(x,  y, z - 1);
+				bedParallelNeg = Bed.isHeadOfBed(TE) == Bed.isHeadOfBed(TE_adj) && Bed.getDirection(TE) == Bed.getDirection(TE_adj);
+			}
+			
 		}
 
 		switch (dir)

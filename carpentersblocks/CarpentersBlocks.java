@@ -18,7 +18,7 @@ import cpw.mods.fml.common.network.NetworkMod;
 @Mod(
 		modid = "CarpentersBlocks",
 		name = "Carpenter's Blocks",
-		version = "v1.91"
+		version = "v1.92"
 		)
 @NetworkMod(
 		clientSideRequired = true,

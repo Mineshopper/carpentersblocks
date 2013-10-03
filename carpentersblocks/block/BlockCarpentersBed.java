@@ -56,7 +56,7 @@ public class BlockCarpentersBed extends BlockBase
 
 		Bed.setDesign(TE, design);
 
-		TECarpentersBlock TE_opp = Bed.getOppositeTE(TE.worldObj, TE.xCoord, TE.yCoord, TE.zCoord);
+		TECarpentersBlock TE_opp = Bed.getOppositeTE(TE);
 
 		if (TE_opp != null)
 			Bed.setDesign(TE_opp, design);
@@ -75,7 +75,7 @@ public class BlockCarpentersBed extends BlockBase
 
 		Bed.setDesign(TE, design);
 
-		TECarpentersBlock TE_opp = Bed.getOppositeTE(TE.worldObj, TE.xCoord, TE.yCoord, TE.zCoord);
+		TECarpentersBlock TE_opp = Bed.getOppositeTE(TE);
 
 		if (TE_opp != null)
 			Bed.setDesign(TE_opp, design);
@@ -91,8 +91,7 @@ public class BlockCarpentersBed extends BlockBase
 	{
 		if (!world.isRemote)
 		{
-			int metadata = world.getBlockMetadata(x, y, z);
-			ForgeDirection dir = Bed.getDirection(metadata & 3);
+			ForgeDirection dir = Bed.getDirection(TE);
 
 			if (!isBedFoot(world, x, y, z))
 			{
@@ -105,7 +104,7 @@ public class BlockCarpentersBed extends BlockBase
 
 			if (world.provider.canRespawnHere() && world.getBiomeGenForCoords(x, z) != BiomeGenBase.hell)
 			{
-				if (isBedOccupied(world, x, y, z))
+				if (Bed.isOccupied(TE))
 				{
 					EntityPlayer entityPlayer1 = null;
 					Iterator iterator = world.playerEntities.iterator();
@@ -182,18 +181,14 @@ public class BlockCarpentersBed extends BlockBase
 	@Override
 	protected void auxiliaryOnNeighborBlockChange(TECarpentersBlock TE, World world, int x, int y, int z, int blockID)
 	{
-		int metadata = world.getBlockMetadata(x, y, z);
-		ForgeDirection dir = Bed.getDirection(metadata & 3);
+		ForgeDirection dir = Bed.getDirection(TE);
 
 		if (isBedFoot(world, x, y, z)) {
-
-			if (world.getBlockId(x + dir.offsetX, y, z + dir.offsetZ) != this.blockID)
+			if (world.getBlockId(x + dir.offsetX, y, z + dir.offsetZ) != this.blockID) {
 				world.setBlockToAir(x, y, z);
-
+			}
 		} else if (world.getBlockId(x - dir.offsetX, y, z - dir.offsetZ) != this.blockID) {
-
 			world.setBlockToAir(x, y, z);
-
 		}
 	}
 
@@ -212,25 +207,17 @@ public class BlockCarpentersBed extends BlockBase
 	 */
 	public void setBedOccupied(World world, int x, int y, int z, EntityPlayer entityPlayer, boolean isOccupied)
 	{
-		BlockBed.setBedOccupied(world, x, y, z, isOccupied);
+    	TECarpentersBlock TE = (TECarpentersBlock) world.getBlockTileEntity(x, y, z);
+    	Bed.setOccupied(TE, isOccupied);
 
-		TECarpentersBlock TE = (TECarpentersBlock) world.getBlockTileEntity(x, y, z);
-		TECarpentersBlock TE_opp = Bed.getOppositeTE(world, x, y, z);
+		TECarpentersBlock TE_opp = Bed.getOppositeTE(TE);
 
 		Bed.setOccupied(TE, isOccupied);
 
 		if (TE_opp != null)
 			Bed.setOccupied(TE_opp, isOccupied);
 	}
-
-	/**
-	 * Returns whether bed has player sleeping in it.
-	 */
-	private boolean isBedOccupied(World world, int x, int y, int z)
-	{
-		return (world.getBlockMetadata(x, y, z) & 8) != 0;
-	}
-
+	
 	@Override
 	@SideOnly(Side.CLIENT)
 	/**

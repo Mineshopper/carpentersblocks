@@ -15,6 +15,7 @@ import net.minecraftforge.common.ForgeDirection;
 import carpentersblocks.CarpentersBlocks;
 import carpentersblocks.data.Ladder;
 import carpentersblocks.tileentity.TECarpentersBlock;
+import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.handler.BlockHandler;
 
 public class BlockCarpentersLadder extends BlockBase
@@ -36,13 +37,12 @@ public class BlockCarpentersLadder extends BlockBase
 	 */
 	public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
 	{
-		world.getBlockTileEntity(x, y, z);
-
-		int metadata = world.getBlockMetadata(x, y, z);
+		TECarpentersBlock TE = (TECarpentersBlock) world.getBlockTileEntity(x, y, z);
+		int data = BlockProperties.getData(TE);
 
 		float[] bounds;
 
-		switch (metadata) {
+		switch (data) {
 		case Ladder.FACING_NORTH: // Ladder on +Z
 			bounds = new float[] { 0.0F, 0.0F, 0.8125F, 1.0F, 1.0F, 1.0F };
 			break;
@@ -110,20 +110,23 @@ public class BlockCarpentersLadder extends BlockBase
 	 */
 	public void auxiliaryOnBlockPlacedBy(TECarpentersBlock TE, World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack itemStack)
 	{
-		if (world.getBlockMetadata(x, y, z) < 2)
-		{
-			/*
-			 * Try to match ladder facing above or below.
-			 */
-			if (world.getBlockId(x, y - 1, z) == blockID) {
-				world.setBlockMetadataWithNotify(x, y, z, world.getBlockMetadata(x, y - 1, z), 2);
-			} else if (world.getBlockId(x, y + 1, z) == blockID) {
-				world.setBlockMetadataWithNotify(x, y, z, world.getBlockMetadata(x, y + 1, z), 2);
-			} else {
-				int facing = MathHelper.floor_double(entityLiving.rotationYaw * 4.0F / 360.0F + 0.5D) & 3;
-				world.setBlockMetadataWithNotify(x, y, z, (facing % 2) == 0 ? Ladder.FACING_ON_X : Ladder.FACING_ON_Z, 2);
-			}
+		int metadata = world.getBlockMetadata(x, y, z);
+
+		TECarpentersBlock TE_adj = null;
+		
+		if (world.getBlockId(x, y - 1, z) == blockID) {
+			TE_adj = (TECarpentersBlock) world.getBlockTileEntity(x, y - 1, z);
+		} else if (world.getBlockId(x, y + 1, z) == blockID) {
+			TE_adj = (TECarpentersBlock) world.getBlockTileEntity(x, y + 1, z);
+		} else if (metadata < 2) {
+			int facing = MathHelper.floor_double(entityLiving.rotationYaw * 4.0F / 360.0F + 0.5D) & 3;
+			BlockProperties.setData(TE, ((facing % 2) == 0 ? Ladder.FACING_ON_X : Ladder.FACING_ON_Z));
+		} else {
+			BlockProperties.setData(TE, metadata);
 		}
+		
+		if (TE_adj != null)
+			BlockProperties.setData(TE, BlockProperties.getData(TE_adj));
 
 		/*
 		 * Force ladder to check whether it can stay.
@@ -140,18 +143,18 @@ public class BlockCarpentersLadder extends BlockBase
 	 */
 	public void auxiliaryOnNeighborBlockChange(TECarpentersBlock TE, World world, int x, int y, int z, int blockID)
 	{
-		int metadata = world.getBlockMetadata(x, y, z);
+		int data = BlockProperties.getData(TE);
 
-		if (metadata > 1)
+		if (data > 1)
 		{
 			if (
-					metadata == 2 && !world.isBlockSolidOnSide(x, y, z + 1, ForgeDirection.NORTH) ||
-					metadata == 3 && !world.isBlockSolidOnSide(x, y, z - 1, ForgeDirection.SOUTH) ||
-					metadata == 4 && !world.isBlockSolidOnSide(x + 1, y, z, ForgeDirection.WEST) ||
-					metadata == 5 && !world.isBlockSolidOnSide(x - 1, y, z, ForgeDirection.EAST)
-					)
+					data == 2 && !world.isBlockSolidOnSide(x, y, z + 1, ForgeDirection.NORTH) ||
+					data == 3 && !world.isBlockSolidOnSide(x, y, z - 1, ForgeDirection.SOUTH) ||
+					data == 4 && !world.isBlockSolidOnSide(x + 1, y, z, ForgeDirection.WEST) ||
+					data == 5 && !world.isBlockSolidOnSide(x - 1, y, z, ForgeDirection.EAST)
+				)
 			{
-				dropBlockAsItem(world, x, y, z, metadata, 0);
+				dropBlockAsItem(world, x, y, z, data, 0);
 				world.setBlockToAir(x, y, z);
 			}
 		}
