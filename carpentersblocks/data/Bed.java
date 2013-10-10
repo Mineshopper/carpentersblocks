@@ -93,11 +93,11 @@ public class Bed
 		int z = TE.zCoord;
 
 		if (isHeadOfBed(TE)) {
-			x = TE.xCoord - dir.offsetX;
-			z = TE.zCoord - dir.offsetZ;
-		} else {
 			x = TE.xCoord + dir.offsetX;
 			z = TE.zCoord + dir.offsetZ;
+		} else {
+			x = TE.xCoord - dir.offsetX;
+			z = TE.zCoord - dir.offsetZ;
 		}
 
 		if (TE.worldObj.getBlockId(x, TE.yCoord, z) == BlockHandler.blockCarpentersBedID)

@@ -7,7 +7,6 @@ import net.minecraft.block.BlockPane;
 import net.minecraft.block.BlockQuartz;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -239,7 +238,7 @@ public class BlockProperties
 		
 		TE.worldObj.notifyBlocksOfNeighborChange(TE.xCoord, TE.yCoord, TE.zCoord, blockID);
 		TE.worldObj.markBlockForUpdate(TE.xCoord, TE.yCoord, TE.zCoord);
-		
+
 		return true;
 	}
 

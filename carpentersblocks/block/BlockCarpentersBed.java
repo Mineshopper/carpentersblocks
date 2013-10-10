@@ -11,7 +11,6 @@ import net.minecraft.entity.player.EnumStatus;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
-import net.minecraftforge.common.ForgeDirection;
 import carpentersblocks.data.Bed;
 import carpentersblocks.tileentity.TECarpentersBlock;
 import carpentersblocks.util.BlockProperties;
@@ -90,15 +89,15 @@ public class BlockCarpentersBed extends BlockBase
 	{
 		if (!world.isRemote)
 		{
-			ForgeDirection dir = Bed.getDirection(TE);
+			TECarpentersBlock TE_opp = Bed.getOppositeTE(TE);
 
-			if (!isBedFoot(world, x, y, z))
-			{
-				x -= dir.offsetX;
-				z -= dir.offsetZ;
-
-				if (world.getBlockId(x, y, z) != blockID)
-					return true;
+			if (TE_opp != null) {
+				if (Bed.isHeadOfBed(TE_opp)) {
+					x = TE_opp.xCoord;
+					z = TE_opp.zCoord;
+				}
+			} else {
+				return true;
 			}
 
 			if (world.provider.canRespawnHere() && world.getBiomeGenForCoords(x, z) != BiomeGenBase.hell)
@@ -130,8 +129,14 @@ public class BlockCarpentersBed extends BlockBase
 					setBedOccupied(world, x, y, z, entityPlayer, false);
 				}
 
+				/*
+				 * Set metadata for bed while player is sleeping.
+				 * Needed because all the external bed methods use this.
+				 */
+				world.setBlockMetadataWithNotify(x, y, z, Bed.getDirection(TE).ordinal(), 0);
+				
 				EnumStatus enumstatus = entityPlayer.sleepInBedAt(x, y, z);
-
+								
 				if (enumstatus == EnumStatus.OK)
 				{
 					setBedOccupied(world, x, y, z, entityPlayer, true);
@@ -150,21 +155,7 @@ public class BlockCarpentersBed extends BlockBase
 			}
 			else
 			{
-				double xOffset = x + 0.5D;
-				double yOffset = y + 0.5D;
-				double zOffset = z + 0.5D;
 				world.setBlockToAir(x, y, z);
-				x -= dir.offsetX;
-				z -= dir.offsetZ;
-
-				if (world.getBlockId(x, y, z) == blockID)
-				{
-					world.setBlockToAir(x, y, z);
-					xOffset = (xOffset + x + 0.5D) / 2.0D;
-					yOffset = (yOffset + y + 0.5D) / 2.0D;
-					zOffset = (zOffset + z + 0.5D) / 2.0D;
-				}
-
 				world.newExplosion((Entity)null, x + 0.5F, y + 0.5F, z + 0.5F, 5.0F, true, true);
 				return true;
 			}
@@ -180,13 +171,7 @@ public class BlockCarpentersBed extends BlockBase
 	@Override
 	protected void auxiliaryOnNeighborBlockChange(TECarpentersBlock TE, World world, int x, int y, int z, int blockID)
 	{
-		ForgeDirection dir = Bed.getDirection(TE);
-
-		if (isBedFoot(world, x, y, z)) {
-			if (world.getBlockId(x - dir.offsetX, y, z - dir.offsetZ) != this.blockID) {
-				world.setBlockToAir(x, y, z);
-			}
-		} else if (world.getBlockId(x + dir.offsetX, y, z + dir.offsetZ) != this.blockID) {
+		if (Bed.getOppositeTE(TE) == null) {
 			world.setBlockToAir(x, y, z);
 		}
 	}
@@ -210,8 +195,14 @@ public class BlockCarpentersBed extends BlockBase
     	Bed.setOccupied(TE, isOccupied);
 
 		TECarpentersBlock TE_opp = Bed.getOppositeTE(TE);
-
+		
 		Bed.setOccupied(TE, isOccupied);
+		
+		/*
+		 * Restore metadata of foot of bed upon waking up.
+		 */
+		if (!isOccupied && !Bed.isHeadOfBed(TE))
+			world.setBlockMetadataWithNotify(x, y, z, BlockProperties.getCoverMetadata(TE, 6), 0);
 
 		if (TE_opp != null)
 			Bed.setOccupied(TE_opp, isOccupied);
