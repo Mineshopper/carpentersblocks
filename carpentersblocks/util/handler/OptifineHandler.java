@@ -6,7 +6,6 @@ import java.util.logging.Level;
 
 import net.minecraft.block.Block;
 import net.minecraft.world.IBlockAccess;
-import carpentersblocks.CarpentersBlocks;
 import carpentersblocks.util.ModLogger;
 
 public class OptifineHandler

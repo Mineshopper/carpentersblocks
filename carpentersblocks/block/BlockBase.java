@@ -6,7 +6,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.BlockDirectional;
 import net.minecraft.block.BlockFlower;
-import net.minecraft.block.StepSound;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.entity.Entity;
@@ -51,7 +50,7 @@ public class BlockBase extends BlockContainer
 	{
 		TECarpentersBlock TE = (TECarpentersBlock) world.getBlockTileEntity(x, y, z);
 
-		return BlockProperties.getCoverBlock(TE, 6).blockID == blockID;
+		return BlockProperties.getCoverBlock(TE, 6).blockID == this.blockID;
 	}
 
 	/**
@@ -188,7 +187,7 @@ public class BlockBase extends BlockContainer
 			} else if (FeatureHandler.enableCovers && BlockProperties.isCover(itemStack)) {
 
 				Block block = Block.blocksList[itemStack.itemID];
-				int metadata = block instanceof BlockDirectional ? MathHelper.floor_double(EventHandler.eventEntity.rotationYaw * 4.0F / 360.0F + 2.5D) & 3 : itemStack.getItemDamage();		
+				int metadata = block instanceof BlockDirectional ? BlockProperties.getEntityFacing(EventHandler.eventEntity) : itemStack.getItemDamage();		
 				
 				if (!BlockProperties.hasCover(TE, 6)) {
 
@@ -214,7 +213,7 @@ public class BlockBase extends BlockContainer
 							 * cover.
 							 */
 
-							int facing = MathHelper.floor_double(EventHandler.eventEntity.rotationYaw * 4.0F / 360.0F + 2.5D) & 3;
+							int facing = BlockProperties.getEntityFacing(EventHandler.eventEntity);
 							int side_interpolated =	entityPlayer.rotationPitch < -45.0F ? 0 : entityPlayer.rotationPitch > 45 ? 1 : facing == 0 ? 3 : facing == 1 ? 4 : facing == 2 ? 2 : 5;
 							metadata = block.onBlockPlaced(world, x, y, z, side_interpolated, hitX, hitY, hitZ, metadata);
 						}
@@ -316,12 +315,13 @@ public class BlockBase extends BlockContainer
 			}
 		}
 
-		if (neighbor_pattern == 0)
+		if (neighbor_pattern == 0) {
 			pattern = leftClick ? PatternHandler.getPrev(pattern) : PatternHandler.getNext(pattern);
+		}
 
-			BlockProperties.setPattern(TE, side, pattern);
+		BlockProperties.setPattern(TE, side, pattern);
 
-			return true;
+		return true;
 	}
 
 	@Override
@@ -331,12 +331,10 @@ public class BlockBase extends BlockContainer
 	 */
 	public void onNeighborBlockChange(World world, int x, int y, int z, int blockID)
 	{
-		TECarpentersBlock TE = null;
+		TECarpentersBlock TE = (TECarpentersBlock) world.getBlockTileEntity(x, y, z);
 
 		if (!world.isRemote)
 		{
-			TE = (TECarpentersBlock) world.getBlockTileEntity(x, y, z);
-
 			/*
 			 * Check for and eject side covers that are blocked by a
 			 * solid adjacent block.
@@ -377,8 +375,7 @@ public class BlockBase extends BlockContainer
 			}
 		}
 
-		if (TE != null)
-			auxiliaryOnNeighborBlockChange(TE, world, x, y, z, blockID);
+		auxiliaryOnNeighborBlockChange(TE, world, x, y, z, blockID);
 	}
 
 	@Override
@@ -433,9 +430,9 @@ public class BlockBase extends BlockContainer
 		return	entityPlayer.capabilities.isCreativeMode &&
 				heldItem != null &&
 				(
-						heldItem.getItem() == ItemHandler.itemCarpentersHammer ||
-						heldItem.getItem() == ItemHandler.itemCarpentersChisel
-						);
+					heldItem.getItem() == ItemHandler.itemCarpentersHammer ||
+					heldItem.getItem() == ItemHandler.itemCarpentersChisel
+				);
 	}
 
 	@Override
@@ -750,6 +747,7 @@ public class BlockBase extends BlockContainer
 	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack itemStack)
 	{
 		TECarpentersBlock TE = (TECarpentersBlock) world.getBlockTileEntity(x, y, z);
+
 		auxiliaryOnBlockPlacedBy(TE, world, x, y, z, entityLiving, itemStack);
 	}
 

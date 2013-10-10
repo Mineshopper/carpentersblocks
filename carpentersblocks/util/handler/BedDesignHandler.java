@@ -6,7 +6,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import net.minecraft.util.ResourceLocation;
-
 import carpentersblocks.util.ModLogger;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 

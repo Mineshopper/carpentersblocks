@@ -5,7 +5,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import carpentersblocks.CarpentersBlocks;
 import carpentersblocks.block.BlockBase;
 
 public class EventHandler

@@ -1,9 +1,9 @@
 package carpentersblocks.util.handler;
 
-import carpentersblocks.tileentity.TECarpentersBlock;
-import carpentersblocks.tileentity.TECarpentersBlockExt;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.Property;
+import carpentersblocks.tileentity.TECarpentersBlock;
+import carpentersblocks.tileentity.TECarpentersBlockExt;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
 

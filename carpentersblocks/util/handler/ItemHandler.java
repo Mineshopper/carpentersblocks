@@ -1,17 +1,15 @@
 package carpentersblocks.util.handler;
 
-import carpentersblocks.block.BlockCarpentersBed;
-import carpentersblocks.block.BlockCarpentersDoor;
+import net.minecraft.block.Block;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.Configuration;
 import carpentersblocks.item.ItemCarpentersBed;
 import carpentersblocks.item.ItemCarpentersChisel;
 import carpentersblocks.item.ItemCarpentersDoor;
 import carpentersblocks.item.ItemCarpentersHammer;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.Configuration;
 
 public class ItemHandler
 {

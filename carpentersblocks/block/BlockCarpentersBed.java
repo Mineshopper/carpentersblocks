@@ -3,7 +3,6 @@ package carpentersblocks.block;
 import java.util.Iterator;
 import java.util.Random;
 
-import net.minecraft.block.BlockBed;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -184,10 +183,10 @@ public class BlockCarpentersBed extends BlockBase
 		ForgeDirection dir = Bed.getDirection(TE);
 
 		if (isBedFoot(world, x, y, z)) {
-			if (world.getBlockId(x + dir.offsetX, y, z + dir.offsetZ) != this.blockID) {
+			if (world.getBlockId(x - dir.offsetX, y, z - dir.offsetZ) != this.blockID) {
 				world.setBlockToAir(x, y, z);
 			}
-		} else if (world.getBlockId(x - dir.offsetX, y, z - dir.offsetZ) != this.blockID) {
+		} else if (world.getBlockId(x + dir.offsetX, y, z + dir.offsetZ) != this.blockID) {
 			world.setBlockToAir(x, y, z);
 		}
 	}

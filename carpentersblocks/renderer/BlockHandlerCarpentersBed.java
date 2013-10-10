@@ -1,7 +1,6 @@
 package carpentersblocks.renderer;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockBed;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.util.Icon;
 import net.minecraftforge.common.ForgeDirection;
@@ -22,7 +21,7 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase
 	{
 		Block coverBlock = BlockProperties.getCoverBlock(TE, 6);
 
-		renderNormalBed(TE, renderBlocks, coverBlock, srcBlock, x, y, z);
+		//renderNormalBed(TE, renderBlocks, coverBlock, srcBlock, x, y, z);
 
 		return true;
 	}
@@ -60,7 +59,10 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase
 			blanketColor = BlockProperties.getDyeColor(isHead ? TE_opp : TE, 6);
 			frameColor = BlockProperties.getDyeColor(isHead ? TE : TE_opp, 6);
 		}
-
+		
+		// DEBUG CODE
+		if (renderBlocks.blockAccess.getBlockId(x, y, z) == srcBlock.blockID)
+			setLightnessOffset(-2.0F);
 
 		int design = Bed.getDesign(data);
 
@@ -536,6 +538,10 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase
 			break;
 		}
 		}
+		
+		// DEBUG CODE
+		if (renderBlocks.blockAccess.getBlockId(x, y, z) == srcBlock.blockID)
+			clearLightnessOffset();
 
 		/*
 		 * If this bed has a blanket design, we'll render part of the blanket

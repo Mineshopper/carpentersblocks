@@ -37,55 +37,45 @@ public class ItemCarpentersBed extends Item
 		itemIcon = iconRegister.registerIcon("carpentersblocks:bed");
 	}
 
+	@Override
 	/**
 	 * Callback for item usage. If the item does something special on right clicking, he will have one of those. Return
 	 * True if something happen and false if it don't. This is for ITEMS, not BLOCKS
 	 */
-	@Override
 	public boolean onItemUse(ItemStack itemStack, EntityPlayer entityPlayer, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
 	{
-		if (!world.isRemote && side == 1)
-		{
+		if (side == 1) {
 			++y;
-			int facing = MathHelper.floor_double(entityPlayer.rotationYaw * 4.0F / 360.0F + 0.5D) & 3;
-
+			int facing = BlockProperties.getEntityFacing(entityPlayer);
 			ForgeDirection dir = BlockProperties.getDirectionFromFacing(facing);
 
 			int x_offset = x - dir.offsetX;
 			int z_offset = z - dir.offsetZ;
 
-			if (entityPlayer.canPlayerEdit(x, y, z, side, itemStack) && entityPlayer.canPlayerEdit(x_offset, y, z_offset, side, itemStack)) {
+			if (
+					entityPlayer.canPlayerEdit(x, y, z, side, itemStack)				&&
+					entityPlayer.canPlayerEdit(x_offset, y, z_offset, side, itemStack)	&&
+					world.isAirBlock(x, y, z)											&&
+					world.isAirBlock(x_offset, y, z_offset)								&&
+					world.doesBlockHaveSolidTopSurface(x, y - 1, z)						&&
+					world.doesBlockHaveSolidTopSurface(x_offset, y - 1, z_offset)
+				)
+			{
+				/* Set foot of bed. */
+				world.setBlock(x, y, z, BlockHandler.blockCarpentersBed.blockID);
+				TECarpentersBlock TE_foot = (TECarpentersBlock) world.getBlockTileEntity(x, y, z);
+				Bed.setDirection(TE_foot, facing);
 
-				if (world.isAirBlock(x, y, z) && world.isAirBlock(x_offset, y, z_offset) && world.doesBlockHaveSolidTopSurface(x, y - 1, z) && world.doesBlockHaveSolidTopSurface(x_offset, y - 1, z_offset)) {
+				/* Set head of bed. */
+				world.setBlock(x_offset, y, z_offset, BlockHandler.blockCarpentersBed.blockID);
+				TECarpentersBlock TE_head = (TECarpentersBlock) world.getBlockTileEntity(x_offset, y, z_offset);
+				Bed.setHeadOfBed(TE_head);
+				Bed.setDirection(TE_head, facing);
 
-					/* Set foot of bed. */
-					world.setBlock(x, y, z, BlockHandler.blockCarpentersBedID);
-					
-					TECarpentersBlock TE_foot = (TECarpentersBlock) world.getBlockTileEntity(x, y, z);
-					Bed.setDirection(TE_foot, facing);
+				BlockProperties.playBlockPlacementSound(world, x, y, z, BlockHandler.blockCarpentersBed.blockID);
 
-					/* Set head of bed. */
-					world.setBlock(x_offset, y, z_offset, BlockHandler.blockCarpentersBedID);
-					
-					TECarpentersBlock TE_head = (TECarpentersBlock) world.getBlockTileEntity(x_offset,  y,  z_offset);
-					Bed.setHeadOfBed(TE_head, true);
-					Bed.setDirection(TE_head, facing);
-					
-					BlockProperties.playBlockPlacementSound(world, x, y, z, BlockHandler.blockCarpentersBedID);
-
-					--itemStack.stackSize;
-					return true;
-
-				}  else {
-
-					return false;
-
-				}
-
-			} else {
-
-				return false;
-
+				--itemStack.stackSize;
+				return true;
 			}
 		}
 

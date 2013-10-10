@@ -36,36 +36,30 @@ public class ItemCarpentersDoor extends Item
 
 	@Override
 	/**
-	 * Callback for item usage. If the item does something special on right clicking, he will have one of those. Return
+	 * Callback for item usage. If the item does something special on right clicking, it will have one of these. Return
 	 * True if something happen and false if it don't. This is for ITEMS, not BLOCKS
 	 */
 	public boolean onItemUse(ItemStack itemStack, EntityPlayer entityPlayer, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
 	{
-		if (side != 1) {
-			return false;
-		} else {
+		if (side == 1)
+		{
 			++y;
 			BlockCarpentersDoor blockRef = (BlockCarpentersDoor) BlockHandler.blockCarpentersDoor;
 
 			if (entityPlayer.canPlayerEdit(x, y, z, side, itemStack) && entityPlayer.canPlayerEdit(x, y + 1, z, side, itemStack))
 			{
-				if (!blockRef.canPlaceBlockAt(world, x, y, z))
-				{
+				if (!blockRef.canPlaceBlockAt(world, x, y, z)) {
 					return false;
-				}
-				else
-				{
+				} else {
 					int facing = MathHelper.floor_double((entityPlayer.rotationYaw + 180.0F) * 4.0F / 360.0F - 0.5D) & 3;
 					placeDoorBlock(world, x, y, z, facing, blockRef);
 					--itemStack.stackSize;
 					return true;
 				}
 			}
-			else
-			{
-				return false;
-			}
 		}
+		
+		return false;
 	}
 
 	private void placeDoorBlock(World world, int x, int y, int z, int facing, Block block)

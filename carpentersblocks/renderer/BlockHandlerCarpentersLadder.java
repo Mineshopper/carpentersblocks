@@ -80,7 +80,7 @@ public class BlockHandlerCarpentersLadder extends BlockHandlerBase
 	{
 		disableAO = true;
 
-		int metadata = renderBlocks.blockAccess.getBlockMetadata(x, y, z);
+		int data = BlockProperties.getData(TE);
 		Block coverBlock = BlockProperties.getCoverBlock(TE, 6);
 
 		double xLow = 0.0D;
@@ -91,12 +91,12 @@ public class BlockHandlerCarpentersLadder extends BlockHandlerBase
 		/*
 		 * Gather adjacent ladder metadata.
 		 */
-		boolean connects_XN = TE.worldObj.getBlockId(x - 1, y, z) == srcBlock.blockID && TE.worldObj.getBlockMetadata(x - 1, y, z) == metadata;
-		boolean connects_XP = TE.worldObj.getBlockId(x + 1, y, z) == srcBlock.blockID && TE.worldObj.getBlockMetadata(x + 1, y, z) == metadata;
-		boolean connects_ZN = TE.worldObj.getBlockId(x, y, z - 1) == srcBlock.blockID && TE.worldObj.getBlockMetadata(x, y, z - 1) == metadata;
-		boolean connects_ZP = TE.worldObj.getBlockId(x, y, z + 1) == srcBlock.blockID && TE.worldObj.getBlockMetadata(x, y, z + 1) == metadata;
+		boolean connects_XN = TE.worldObj.getBlockId(x - 1, y, z) == srcBlock.blockID && BlockProperties.getData((TECarpentersBlock)TE.worldObj.getBlockTileEntity(x - 1, y, z)) == data;
+		boolean connects_XP = TE.worldObj.getBlockId(x + 1, y, z) == srcBlock.blockID && BlockProperties.getData((TECarpentersBlock)TE.worldObj.getBlockTileEntity(x + 1, y, z)) == data;
+		boolean connects_ZN = TE.worldObj.getBlockId(x, y, z - 1) == srcBlock.blockID && BlockProperties.getData((TECarpentersBlock)TE.worldObj.getBlockTileEntity(x, y, z - 1)) == data;
+		boolean connects_ZP = TE.worldObj.getBlockId(x, y, z + 1) == srcBlock.blockID && BlockProperties.getData((TECarpentersBlock)TE.worldObj.getBlockTileEntity(x, y, z + 1)) == data;
 
-		switch (metadata) {
+		switch (data) {
 		case Ladder.FACING_ON_X:
 
 			// Side supports

@@ -112,21 +112,26 @@ public class BlockCarpentersLadder extends BlockBase
 	{
 		int metadata = world.getBlockMetadata(x, y, z);
 
-		TECarpentersBlock TE_adj = null;
-		
-		if (world.getBlockId(x, y - 1, z) == blockID) {
-			TE_adj = (TECarpentersBlock) world.getBlockTileEntity(x, y - 1, z);
-		} else if (world.getBlockId(x, y + 1, z) == blockID) {
-			TE_adj = (TECarpentersBlock) world.getBlockTileEntity(x, y + 1, z);
-		} else if (metadata < 2) {
+		if (metadata < 2) {
 			int facing = MathHelper.floor_double(entityLiving.rotationYaw * 4.0F / 360.0F + 0.5D) & 3;
 			BlockProperties.setData(TE, ((facing % 2) == 0 ? Ladder.FACING_ON_X : Ladder.FACING_ON_Z));
 		} else {
 			BlockProperties.setData(TE, metadata);
 		}
 		
-		if (TE_adj != null)
-			BlockProperties.setData(TE, BlockProperties.getData(TE_adj));
+		if (!entityLiving.isSneaking())
+		{
+			TECarpentersBlock TE_adj = null;
+		
+			if (world.getBlockId(x, y - 1, z) == blockID) {
+				TE_adj = (TECarpentersBlock) world.getBlockTileEntity(x, y - 1, z);
+			} else if (world.getBlockId(x, y + 1, z) == blockID) {
+				TE_adj = (TECarpentersBlock) world.getBlockTileEntity(x, y + 1, z);
+			}
+			
+			if (TE_adj != null)
+				BlockProperties.setData(TE, BlockProperties.getData(TE_adj));
+		}
 
 		/*
 		 * Force ladder to check whether it can stay.

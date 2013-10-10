@@ -5,10 +5,13 @@ import net.minecraft.block.BlockBreakable;
 import net.minecraft.block.BlockHalfSlab;
 import net.minecraft.block.BlockPane;
 import net.minecraft.block.BlockQuartz;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
@@ -20,7 +23,15 @@ public class BlockProperties
 {
 
 	/**
-	 * Will return direction from player facing (values 0 to 3).
+	 * Returns entity facing.
+	 */
+	public static int getEntityFacing(Entity entity)
+	{
+		return MathHelper.floor_double(entity.rotationYaw * 4.0F / 360.0F + 0.5D) & 3;
+	}
+	
+	/**
+	 * Will return direction from entity facing.
 	 */
 	public static ForgeDirection getDirectionFromFacing(int facing)
 	{
@@ -73,11 +84,11 @@ public class BlockProperties
 	}
 
 	/**
-	 * Converts byte to unsigned integer.
+	 * Converts signed data types to unsigned integer.
 	 */
-	public static int unsignedToBytes(byte value)
+	public static int getUnsignedInt(int value)
 	{
-		return value & 0xff;
+		return value & 0xffffffff;
 	}
 
 	/**
@@ -198,11 +209,11 @@ public class BlockProperties
 
 			return	!block.hasTileEntity(itemStack.getItemDamage()) &&
 					(
-							block.renderAsNormalBlock() ||
-							block instanceof BlockHalfSlab ||
-							block instanceof BlockPane ||
-							block instanceof BlockBreakable
-							);
+						block.renderAsNormalBlock() ||
+						block instanceof BlockHalfSlab ||
+						block instanceof BlockPane ||
+						block instanceof BlockBreakable
+					);
 		}
 
 		return false;
@@ -237,7 +248,7 @@ public class BlockProperties
 	 */
 	public final static int getData(TECarpentersBlock TE)
 	{
-		return TE.data;
+		return getUnsignedInt(TE.data);
 	}
 
 	/**
@@ -346,7 +357,7 @@ public class BlockProperties
 	 */
 	public static int getPattern(TECarpentersBlock TE, int side)
 	{
-		return unsignedToBytes(TE.pattern[side]);
+		return getUnsignedInt(TE.pattern[side]);
 	}
 
 	/**
