@@ -5,3 +5,4 @@ To Do:
 1. Merge Tarig's code.
 2. Sort out player bed sleeping direction.
 3. Convert dye colors to vanilla hex decimal colors.  Explore custom color support.
+4. Investigate blank hammer messages.
