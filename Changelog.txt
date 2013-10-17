@@ -1,7 +1,9 @@
 Changelog:
 1. Interactions with covered blocks no longer risks throwing crash.
+2. Block cover hit particles added.
 
 To Do:
-1. Merge Tarig's code.
+1. Merge Tarig's stepsound code.
 2. Convert dye colors to vanilla hex decimal colors.  Explore custom color support.
 3. Investigate blank hammer messages.
+4. Figure out head of bed tweaking out when right-clicked during the day.

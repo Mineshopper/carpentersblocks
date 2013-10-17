@@ -6,8 +6,10 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.BlockDirectional;
 import net.minecraft.block.BlockFlower;
+import net.minecraft.block.StepSound;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.particle.EffectRenderer;
+import net.minecraft.client.particle.EntityDiggingFX;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.EntityDragon;
@@ -17,6 +19,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.client.ForgeHooksClient;
@@ -27,6 +30,7 @@ import carpentersblocks.tileentity.TECarpentersBlock;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.handler.EventHandler;
 import carpentersblocks.util.handler.FeatureHandler;
+import carpentersblocks.util.handler.IconHandler;
 import carpentersblocks.util.handler.ItemHandler;
 import carpentersblocks.util.handler.OverlayHandler;
 import carpentersblocks.util.handler.PatternHandler;
@@ -445,6 +449,62 @@ public class BlockBase extends BlockContainer
 			return world.setBlockToAir(x, y, z);
 
 		onBlockClicked(world, x, y, z, entityPlayer);
+
+		return false;
+	}
+	
+	@Override
+    @SideOnly(Side.CLIENT)
+    /**
+     * Spawn a digging particle effect in the world, this is a wrapper
+     * around EffectRenderer.addBlockHitEffects to allow the block more
+     * control over the particles. Useful when you have entirely different
+     * texture sheets for different sides/locations in the world.
+     *
+     * @param world The current world
+     * @param target The target the player is looking at {x/y/z/side/sub}
+     * @param effectRenderer A reference to the current effect renderer.
+     * @return True to prevent vanilla digging particles form spawning.
+     */
+    public boolean addBlockHitEffects(World world, MovingObjectPosition target, EffectRenderer effectRenderer)
+	{
+		TECarpentersBlock TE = (TECarpentersBlock) world.getBlockTileEntity(target.blockX, target.blockY, target.blockZ);
+
+		if (BlockProperties.hasCover(TE, 6))
+		{
+			Block block = BlockProperties.getCoverBlock(TE, 6);
+			int metadata = world.getBlockMetadata(target.blockX, target.blockY, target.blockZ);
+
+			double xOffset = (double) target.blockX + world.rand.nextDouble() * (block.getBlockBoundsMaxX() - block.getBlockBoundsMinX() - (double) (0.1F * 2.0F)) + (double) 0.1F + block.getBlockBoundsMinX();
+			double yOffset = (double) target.blockY + world.rand.nextDouble() * (block.getBlockBoundsMaxY() - block.getBlockBoundsMinY() - (double) (0.1F * 2.0F)) + (double) 0.1F + block.getBlockBoundsMinY();
+			double zOffset = (double) target.blockZ + world.rand.nextDouble() * (block.getBlockBoundsMaxZ() - block.getBlockBoundsMinZ() - (double) (0.1F * 2.0F)) + (double) 0.1F + block.getBlockBoundsMinZ();
+
+			switch (target.sideHit) {
+			case 0:
+				yOffset = (double)target.blockY + block.getBlockBoundsMinY() - 0.1D;
+				break;
+			case 1:
+				yOffset = (double)target.blockY + block.getBlockBoundsMaxY() + 0.1D;
+				break;
+			case 2:
+				zOffset = (double)target.blockZ + block.getBlockBoundsMinZ() - 0.1D;
+				break;
+			case 3:
+				zOffset = (double)target.blockZ + block.getBlockBoundsMaxZ() + 0.1D;
+				break;
+			case 4:
+				xOffset = (double)target.blockX + block.getBlockBoundsMinX() - 0.1D;
+				break;
+			case 5:
+				xOffset = (double)target.blockX + block.getBlockBoundsMaxX() + 0.1D;
+				break;
+			}
+
+			EntityDiggingFX particle = new EntityDiggingFX(world, xOffset, yOffset, zOffset, 0.0D, 0.0D, 0.0D, block, metadata);
+			effectRenderer.addEffect(particle.applyColourMultiplier(target.blockX, target.blockY, target.blockZ).multiplyVelocity(0.2F).multipleParticleScaleBy(0.6F));
+
+			return true;
+		}
 
 		return false;
 	}

@@ -218,13 +218,15 @@ public class BlockCarpentersBed extends BlockBase
 		Bed.setOccupied(TE, isOccupied);
 		
 		/*
-		 * Restore metadata of foot of bed upon waking up.
+		 * Restore cover metadata of foot of bed upon waking up.
 		 */
-		if (!isOccupied && !Bed.isHeadOfBed(TE))
+		if (!isOccupied && !Bed.isHeadOfBed(TE)) {
 			world.setBlockMetadataWithNotify(x, y, z, BlockProperties.getCoverMetadata(TE, 6), 0);
+		}
 
-		if (TE_opp != null)
+		if (TE_opp != null) {
 			Bed.setOccupied(TE_opp, isOccupied);
+		}
 	}
 	
 	@Override
