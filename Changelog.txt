@@ -3,7 +3,6 @@ Changelog:
 
 To Do:
 1. Merge Tarig's code.
-2. Sort out player bed sleeping direction.
-3. Convert dye colors to vanilla hex decimal colors.  Explore custom color support.
-4. Investigate blank hammer messages.
-5. Fix bed dye colors not working 100%.
+2. Convert dye colors to vanilla hex decimal colors.  Explore custom color support.
+3. Investigate blank hammer messages.
+4. Fix bed dye colors not working 100%.

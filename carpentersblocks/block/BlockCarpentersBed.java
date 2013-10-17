@@ -11,6 +11,7 @@ import net.minecraft.entity.player.EnumStatus;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraftforge.common.ForgeDirection;
 import carpentersblocks.data.Bed;
 import carpentersblocks.tileentity.TECarpentersBlock;
 import carpentersblocks.util.BlockProperties;
@@ -133,8 +134,26 @@ public class BlockCarpentersBed extends BlockBase
 				 * Set metadata for bed while player is sleeping.
 				 * Needed because all the external bed methods use this.
 				 */
-				world.setBlockMetadataWithNotify(x, y, z, Bed.getDirection(TE).ordinal(), 0);
+
+				int direction = 0;
+				switch (Bed.getDirection(TE))
+				{
+				case NORTH:
+					direction = 0;
+					break;
+				case SOUTH:
+					direction = 2;
+					break;
+				case WEST:
+					direction = 3;
+					break;
+				default: // EAST
+					direction = 1;
+					break;
+				}
 				
+				world.setBlockMetadataWithNotify(x, y, z, direction, 0);
+
 				EnumStatus enumstatus = entityPlayer.sleepInBedAt(x, y, z);
 								
 				if (enumstatus == EnumStatus.OK)
