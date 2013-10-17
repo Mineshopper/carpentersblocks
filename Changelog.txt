@@ -5,4 +5,3 @@ To Do:
 1. Merge Tarig's code.
 2. Convert dye colors to vanilla hex decimal colors.  Explore custom color support.
 3. Investigate blank hammer messages.
-4. Fix bed dye colors not working 100%.

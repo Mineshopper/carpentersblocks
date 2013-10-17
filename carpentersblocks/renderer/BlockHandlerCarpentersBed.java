@@ -32,7 +32,7 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase
 		ForgeDirection dir = Bed.getDirection(TE);
 
 		disableAO = true;
-
+		
 		boolean isHead = Bed.isHeadOfBed(TE);
 
 		TECarpentersBlock TE_opp = Bed.getOppositeTE(TE);
