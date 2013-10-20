@@ -1,8 +1,5 @@
 Changelog:
-1. Interactions with covered blocks no longer risks throwing crash.
-2. Corrected miscellaneous crashes.
-3. Beds and ladders decoupled from metadata - reduces likelihood of crashes.
-4. Block cover hit particles added.
+
 
 To Do:
 1. Merge Tarig's stepsound and sprint particle code.
