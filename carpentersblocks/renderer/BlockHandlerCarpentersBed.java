@@ -30,7 +30,7 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase
 	{
 		int data = BlockProperties.getData(TE);
 		ForgeDirection dir = Bed.getDirection(TE);
-
+		
 		disableAO = true;
 		
 		boolean isHead = Bed.isHeadOfBed(TE);
@@ -124,6 +124,8 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase
 				suppressOverlay = true;
 				suppressPattern = true;
 
+				disableAO = false;
+				
 				// Render mattress
 				setMetadataOverride(0);
 				renderBlocks.setRenderBounds(bedParallelNeg ? 0.0D : 0.0625D, 0.3125D, 0.0D, bedParallelPos ? 1.0D : 0.9375D, 0.5625D, 0.875D);
@@ -149,6 +151,8 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase
 					renderStandardBlock(TE, renderBlocks, Block.cloth, srcBlock, x, y, z);
 					clearMetadataOverride();
 				}
+				
+				disableAO = true;
 
 				suppressDyeColor = false;
 				suppressOverlay = false;
@@ -180,6 +184,8 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase
 				suppressOverlay = true;
 				suppressPattern = true;
 
+				disableAO = false;
+				
 				// Render mattress
 				setMetadataOverride(0);
 				renderBlocks.setRenderBounds(bedParallelNeg ? 0.0D : 0.0625D, 0.3125D, 0.0625D, bedParallelPos ? 1.0D : 0.9375D, 0.5625D, 1.0D);
@@ -199,6 +205,8 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase
 					renderStandardBlock(TE, renderBlocks, Block.cloth, srcBlock, x, y, z);
 					clearMetadataOverride();
 				}
+				
+				disableAO = true;
 
 				suppressDyeColor = false;
 				suppressOverlay = false;
@@ -233,6 +241,8 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase
 				suppressOverlay = true;
 				suppressPattern = true;
 
+				disableAO = false;
+				
 				// Render mattress
 				setMetadataOverride(0);
 				renderBlocks.setRenderBounds(bedParallelNeg ? 0.0D : 0.0625D, 0.3125D, 0.125D, bedParallelPos ? 1.0D : 0.9375D, 0.5625D, 1.0D);
@@ -257,6 +267,8 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase
 					renderStandardBlock(TE, renderBlocks, Block.cloth, srcBlock, x, y, z);
 					clearMetadataOverride();
 				}
+				
+				disableAO = true;
 
 				suppressDyeColor = false;
 				suppressOverlay = false;
@@ -287,6 +299,8 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase
 				suppressDyeColor = true;
 				suppressOverlay = true;
 				suppressPattern = true;
+				
+				disableAO = false;
 
 				// Render mattress
 				setMetadataOverride(0);
@@ -308,6 +322,8 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase
 					clearMetadataOverride();
 				}
 
+				disableAO = true;
+				
 				suppressDyeColor = false;
 				suppressOverlay = false;
 				suppressPattern = false;
@@ -341,6 +357,8 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase
 				suppressOverlay = true;
 				suppressPattern = true;
 
+				disableAO = false;
+				
 				// Render mattress
 				setMetadataOverride(0);
 				renderBlocks.setRenderBounds(0.0D, 0.3125D, bedParallelNeg ? 0.0D : 0.0625D, 0.875D, 0.5625D, bedParallelPos ? 1.0D : 0.9375D);
@@ -366,6 +384,8 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase
 					renderStandardBlock(TE, renderBlocks, Block.cloth, srcBlock, x, y, z);
 					clearMetadataOverride();
 				}
+				
+				disableAO = true;
 
 				suppressDyeColor = false;
 				suppressOverlay = false;
@@ -397,6 +417,8 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase
 				suppressOverlay = true;
 				suppressPattern = true;
 
+				disableAO = false;
+				
 				// Render mattress
 				setMetadataOverride(0);
 				renderBlocks.setRenderBounds(0.0625D, 0.3125D, bedParallelNeg ? 0.0D : 0.0625D, 1.0D, 0.5625D, bedParallelPos ? 1.0D : 0.9375D);
@@ -416,6 +438,8 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase
 					renderStandardBlock(TE, renderBlocks, Block.cloth, srcBlock, x, y, z);
 					clearMetadataOverride();
 				}
+				
+				disableAO = true;
 
 				suppressDyeColor = false;
 				suppressOverlay = false;
@@ -449,6 +473,8 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase
 				suppressDyeColor = true;
 				suppressOverlay = true;
 				suppressPattern = true;
+				
+				disableAO = false;
 
 				// Render mattress
 				setMetadataOverride(0);
@@ -475,6 +501,8 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase
 					renderStandardBlock(TE, renderBlocks, Block.cloth, srcBlock, x, y, z);
 					clearMetadataOverride();
 				}
+				
+				disableAO = true;
 
 				suppressDyeColor = false;
 				suppressOverlay = false;
@@ -506,6 +534,8 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase
 				suppressOverlay = true;
 				suppressPattern = true;
 
+				disableAO = false;
+				
 				// Render mattress
 				setMetadataOverride(0);
 				renderBlocks.setRenderBounds(0.0D, 0.3125D, bedParallelNeg ? 0.0D : 0.0625D, 0.9375D, 0.5625D, bedParallelPos ? 1.0D : 0.9375D);
@@ -525,6 +555,8 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase
 					renderStandardBlock(TE, renderBlocks, Block.cloth, srcBlock, x, y, z);
 					clearMetadataOverride();
 				}
+				
+				disableAO = true;
 
 				suppressDyeColor = false;
 				suppressOverlay = false;
@@ -535,6 +567,8 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase
 		}
 		}
 
+		disableAO = false;
+		
 		/*
 		 * If this bed has a blanket design, we'll render part of the blanket
 		 * here to fill in the gaps (face at head of bed, bottom side).

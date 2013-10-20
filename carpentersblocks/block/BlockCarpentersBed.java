@@ -9,9 +9,9 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EnumStatus;
 import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
-import net.minecraftforge.common.ForgeDirection;
 import carpentersblocks.data.Bed;
 import carpentersblocks.tileentity.TECarpentersBlock;
 import carpentersblocks.util.BlockProperties;
@@ -90,15 +90,15 @@ public class BlockCarpentersBed extends BlockBase
 	{
 		if (!world.isRemote)
 		{
-			TECarpentersBlock TE_opp = Bed.getOppositeTE(TE);
-
-			if (TE_opp != null) {
-				if (Bed.isHeadOfBed(TE_opp)) {
+			
+            if (!Bed.isHeadOfBed(TE)) {
+            	TECarpentersBlock TE_opp = Bed.getOppositeTE(TE);
+            	if (TE_opp != null) {
 					x = TE_opp.xCoord;
 					z = TE_opp.zCoord;
-				}
-			} else {
-				return true;
+            	} else {
+            		return true;
+            	}
 			}
 
 			if (world.provider.canRespawnHere() && world.getBiomeGenForCoords(x, z) != BiomeGenBase.hell)
@@ -129,30 +129,6 @@ public class BlockCarpentersBed extends BlockBase
 
 					setBedOccupied(world, x, y, z, entityPlayer, false);
 				}
-
-				/*
-				 * Set metadata for bed while player is sleeping.
-				 * Needed because all the external bed methods use this.
-				 */
-
-				int direction = 0;
-				switch (Bed.getDirection(TE))
-				{
-				case NORTH:
-					direction = 0;
-					break;
-				case SOUTH:
-					direction = 2;
-					break;
-				case WEST:
-					direction = 3;
-					break;
-				default: // EAST
-					direction = 1;
-					break;
-				}
-				
-				world.setBlockMetadataWithNotify(x, y, z, direction, 0);
 
 				EnumStatus enumstatus = entityPlayer.sleepInBedAt(x, y, z);
 								
@@ -214,20 +190,39 @@ public class BlockCarpentersBed extends BlockBase
     	Bed.setOccupied(TE, isOccupied);
 
 		TECarpentersBlock TE_opp = Bed.getOppositeTE(TE);
-		
-		Bed.setOccupied(TE, isOccupied);
-		
-		/*
-		 * Restore cover metadata of foot of bed upon waking up.
-		 */
-		if (!isOccupied && !Bed.isHeadOfBed(TE)) {
-			world.setBlockMetadataWithNotify(x, y, z, BlockProperties.getCoverMetadata(TE, 6), 0);
-		}
 
 		if (TE_opp != null) {
 			Bed.setOccupied(TE_opp, isOccupied);
 		}
 	}
+	
+	@Override
+    /**
+     * Returns the direction of the block. Same values that
+     * are returned by BlockDirectional
+     *
+     * @param world The current world
+     * @param x X Position
+     * @param y Y Position
+     * @param z Z Position
+     * @return Bed direction
+     */
+    public int getBedDirection(IBlockAccess world, int x, int y, int z)
+    {
+		TECarpentersBlock TE = (TECarpentersBlock) world.getBlockTileEntity(x, y, z);
+		
+		switch (Bed.getDirection(TE))
+		{
+		case NORTH:
+			return 0;
+		case SOUTH:
+			return 2;
+		case WEST:
+			return 3;
+		default:
+			return 1;
+		}
+    }
 	
 	@Override
 	@SideOnly(Side.CLIENT)
