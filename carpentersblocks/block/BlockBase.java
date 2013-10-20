@@ -6,7 +6,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.BlockDirectional;
 import net.minecraft.block.BlockFlower;
-import net.minecraft.block.StepSound;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.client.particle.EntityDiggingFX;
@@ -30,7 +29,6 @@ import carpentersblocks.tileentity.TECarpentersBlock;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.handler.EventHandler;
 import carpentersblocks.util.handler.FeatureHandler;
-import carpentersblocks.util.handler.IconHandler;
 import carpentersblocks.util.handler.ItemHandler;
 import carpentersblocks.util.handler.OverlayHandler;
 import carpentersblocks.util.handler.PatternHandler;
@@ -475,28 +473,28 @@ public class BlockBase extends BlockContainer
 			Block block = BlockProperties.getCoverBlock(TE, 6);
 			int metadata = world.getBlockMetadata(target.blockX, target.blockY, target.blockZ);
 
-			double xOffset = (double) target.blockX + world.rand.nextDouble() * (block.getBlockBoundsMaxX() - block.getBlockBoundsMinX() - (double) (0.1F * 2.0F)) + (double) 0.1F + block.getBlockBoundsMinX();
-			double yOffset = (double) target.blockY + world.rand.nextDouble() * (block.getBlockBoundsMaxY() - block.getBlockBoundsMinY() - (double) (0.1F * 2.0F)) + (double) 0.1F + block.getBlockBoundsMinY();
-			double zOffset = (double) target.blockZ + world.rand.nextDouble() * (block.getBlockBoundsMaxZ() - block.getBlockBoundsMinZ() - (double) (0.1F * 2.0F)) + (double) 0.1F + block.getBlockBoundsMinZ();
+			double xOffset = target.blockX + world.rand.nextDouble() * (block.getBlockBoundsMaxX() - block.getBlockBoundsMinX() - 0.1F * 2.0F) + 0.1F + block.getBlockBoundsMinX();
+			double yOffset = target.blockY + world.rand.nextDouble() * (block.getBlockBoundsMaxY() - block.getBlockBoundsMinY() - 0.1F * 2.0F) + 0.1F + block.getBlockBoundsMinY();
+			double zOffset = target.blockZ + world.rand.nextDouble() * (block.getBlockBoundsMaxZ() - block.getBlockBoundsMinZ() - 0.1F * 2.0F) + 0.1F + block.getBlockBoundsMinZ();
 
 			switch (target.sideHit) {
 			case 0:
-				yOffset = (double)target.blockY + block.getBlockBoundsMinY() - 0.1D;
+				yOffset = target.blockY + block.getBlockBoundsMinY() - 0.1D;
 				break;
 			case 1:
-				yOffset = (double)target.blockY + block.getBlockBoundsMaxY() + 0.1D;
+				yOffset = target.blockY + block.getBlockBoundsMaxY() + 0.1D;
 				break;
 			case 2:
-				zOffset = (double)target.blockZ + block.getBlockBoundsMinZ() - 0.1D;
+				zOffset = target.blockZ + block.getBlockBoundsMinZ() - 0.1D;
 				break;
 			case 3:
-				zOffset = (double)target.blockZ + block.getBlockBoundsMaxZ() + 0.1D;
+				zOffset = target.blockZ + block.getBlockBoundsMaxZ() + 0.1D;
 				break;
 			case 4:
-				xOffset = (double)target.blockX + block.getBlockBoundsMinX() - 0.1D;
+				xOffset = target.blockX + block.getBlockBoundsMinX() - 0.1D;
 				break;
 			case 5:
-				xOffset = (double)target.blockX + block.getBlockBoundsMaxX() + 0.1D;
+				xOffset = target.blockX + block.getBlockBoundsMaxX() + 0.1D;
 				break;
 			}
 

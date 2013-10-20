@@ -1,9 +1,10 @@
 Changelog:
 1. Interactions with covered blocks no longer risks throwing crash.
-2. Block cover hit particles added.
+2. Corrected miscellaneous crashes.
+3. Beds and ladders decoupled from metadata - reduces likelihood of crashes.
+4. Block cover hit particles added.
 
 To Do:
-1. Merge Tarig's stepsound code.
+1. Merge Tarig's stepsound and sprint particle code.
 2. Convert dye colors to vanilla hex decimal colors.  Explore custom color support.
 3. Investigate blank hammer messages.
-4. Figure out head of bed tweaking out when right-clicked during the day.
