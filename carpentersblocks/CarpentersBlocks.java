@@ -17,45 +17,44 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 
 @Mod(
-        modid = "CarpentersBlocks",
-        name = "Carpenter's Blocks",
-        version = "v1.91",
-        dependencies = "required-after:Forge@[7.7.2.682,)"
-	)
+		modid = "CarpentersBlocks",
+		name = "Carpenter's Blocks",
+		version = "v1.92"
+		)
 @NetworkMod(
-        clientSideRequired = true,
-        serverSideRequired = false
-	)
+		clientSideRequired = true,
+		serverSideRequired = false
+		)
 public class CarpentersBlocks
 {
-	
-    @Instance("CarpentersBlocks")
-    public static CarpentersBlocks instance;
-    
-    @SidedProxy(clientSide = "carpentersblocks.proxy.ClientProxy", serverSide = "carpentersblocks.proxy.CommonProxy")
-    public static CommonProxy proxy;
-    
-    public static CreativeTabs tabCarpentersBlocks = new CarpentersBlocksTab("carpentersBlocks");
+
+	@Instance("CarpentersBlocks")
+	public static CarpentersBlocks instance;
+
+	@SidedProxy(clientSide = "carpentersblocks.proxy.ClientProxy", serverSide = "carpentersblocks.proxy.CommonProxy")
+	public static CommonProxy proxy;
+
+	public static CreativeTabs tabCarpentersBlocks = new CarpentersBlocksTab("carpentersBlocks");
 
     @PreInit
-    public void preInit(FMLPreInitializationEvent event)
-    {
-    	FeatureHandler.initProps(event);
-        BlockHandler.initBlocks(event);
-        ItemHandler.initItems(event);
-        
-        ModLogger.init();
-        
-        proxy.registerHandlers(event);
-    	proxy.registerRenderInformation(event);
-    }
+	public void preInit(FMLPreInitializationEvent event)
+	{
+		FeatureHandler.initProps(event);
+		BlockHandler.initBlocks(event);
+		ItemHandler.initItems(event);
+
+		ModLogger.init();
+
+		proxy.registerHandlers(event);
+		proxy.registerRenderInformation(event);
+	}
 
     @Init
-    public void init(FMLInitializationEvent event)
-    {
-    	FeatureHandler.registerTileEntities();
-    	BlockHandler.registerBlocks();
-    	ItemHandler.registerItems();
-    }
+	public void init(FMLInitializationEvent event)
+	{
+		FeatureHandler.registerTileEntities();
+		BlockHandler.registerBlocks();
+		ItemHandler.registerItems();
+	}
 
 }

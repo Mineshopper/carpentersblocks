@@ -28,28 +28,28 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 
 public class ClientProxy extends CommonProxy
 {
-	
+
 	@Override
-    public void registerRenderInformation(FMLPreInitializationEvent event)
-    {
-    	MinecraftForge.EVENT_BUS.register(new IconHandler());
-    	LanguageHandler.init(event);
-		
+	public void registerRenderInformation(FMLPreInitializationEvent event)
+	{
+		MinecraftForge.EVENT_BUS.register(new IconHandler());
+		LanguageHandler.init(event);
+
 		if (BlockHandler.enableBarrier) {
 			BlockHandler.carpentersBarrierRenderID = RenderingRegistry.getNextAvailableRenderId();
 			RenderingRegistry.registerBlockHandler(BlockHandler.carpentersBarrierRenderID, new BlockHandlerCarpentersBarrier());
 		}
-		
+
 		if (BlockHandler.enableButton) {
 			BlockHandler.carpentersButtonRenderID = RenderingRegistry.getNextAvailableRenderId();
 			RenderingRegistry.registerBlockHandler(BlockHandler.carpentersButtonRenderID, new BlockHandlerCarpentersButton());
 		}
-		
+
 		if (BlockHandler.enableDaylightSensor) {
 			BlockHandler.carpentersDaylightSensorRenderID = RenderingRegistry.getNextAvailableRenderId();
 			RenderingRegistry.registerBlockHandler(BlockHandler.carpentersDaylightSensorRenderID, new BlockHandlerCarpentersDaylightSensor());
 		}
-		
+
 		if (BlockHandler.enableGate) {
 			BlockHandler.carpentersGateRenderID = RenderingRegistry.getNextAvailableRenderId();
 			RenderingRegistry.registerBlockHandler(BlockHandler.carpentersGateRenderID, new BlockHandlerCarpentersGate());
@@ -64,44 +64,44 @@ public class ClientProxy extends CommonProxy
 			BlockHandler.carpentersPressurePlateRenderID = RenderingRegistry.getNextAvailableRenderId();
 			RenderingRegistry.registerBlockHandler(BlockHandler.carpentersPressurePlateRenderID, new BlockHandlerCarpentersPressurePlate());
 		}
-		
+
 		if (BlockHandler.enableSlope) {
 			BlockHandler.carpentersSlopeRenderID = RenderingRegistry.getNextAvailableRenderId();
 			RenderingRegistry.registerBlockHandler(BlockHandler.carpentersSlopeRenderID, new BlockHandlerCarpentersSlope());
 		}
-		
+
 		if (BlockHandler.enableStairs) {
 			BlockHandler.carpentersStairsRenderID = RenderingRegistry.getNextAvailableRenderId();
 			RenderingRegistry.registerBlockHandler(BlockHandler.carpentersStairsRenderID, new BlockHandlerCarpentersStairs());
 		}
-		
+
 		if (BlockHandler.enableHatch) {
 			BlockHandler.carpentersHatchRenderID = RenderingRegistry.getNextAvailableRenderId();
 			RenderingRegistry.registerBlockHandler(BlockHandler.carpentersHatchRenderID, new BlockHandlerCarpentersHatch());
 		}
-		
+
 		if (BlockHandler.enableDoor) {
 			BlockHandler.carpentersDoorRenderID = RenderingRegistry.getNextAvailableRenderId();
 			RenderingRegistry.registerBlockHandler(BlockHandler.carpentersDoorRenderID, new BlockHandlerCarpentersDoor());
 		}
-		
+
 		if (BlockHandler.enableBed) {
 			BlockHandler.carpentersBedRenderID = RenderingRegistry.getNextAvailableRenderId();
 			RenderingRegistry.registerBlockHandler(BlockHandler.carpentersBedRenderID, new BlockHandlerCarpentersBed());
 		}
-		
+
 		if (BlockHandler.enableLadder) {
 			BlockHandler.carpentersLadderRenderID = RenderingRegistry.getNextAvailableRenderId();
 			RenderingRegistry.registerBlockHandler(BlockHandler.carpentersLadderRenderID, new BlockHandlerCarpentersLadder());
 		}
-		
+
 		BlockHandler.carpentersBlockRenderID = RenderingRegistry.getNextAvailableRenderId();
 		RenderingRegistry.registerBlockHandler(BlockHandler.carpentersBlockRenderID, new BlockHandlerCarpentersBlock());
 
 		if (FeatureHandler.enableOptifineIntegration && FMLClientHandler.instance().hasOptifine())
 			FeatureHandler.enableOptifineIntegration = OptifineHandler.init();
-		
-        ClientRegistry.bindTileEntitySpecialRenderer(TECarpentersBlock.class, new TERendererCarpentersBlock()); 
-    }
-		
+
+		ClientRegistry.bindTileEntitySpecialRenderer(TECarpentersBlock.class, new TERendererCarpentersBlock());
+	}
+
 }

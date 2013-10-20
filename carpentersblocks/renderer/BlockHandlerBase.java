@@ -752,7 +752,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 	{
 		int data = BlockProperties.getData(TE);
 		int metadata = hasMetadataOverride ? metadataOverride : BlockProperties.getCoverMetadata(TE, coverRendering);
-		
+
 		Icon icon = coverBlock.getIcon(side, metadata);
 		
 		/* The daylight sensor grabs textures directly. */
@@ -812,14 +812,8 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 		 */
 		if (shouldRenderBlock(TE, renderBlocks, coverBlock, srcBlock, renderPass))
 		{
-			if (BlockProperties.blockRotates(TE.worldObj, coverBlock, x, y, z)) {
-				setDirectionalRotation(TE, renderBlocks, side);
-			}
-			
 			colorSide(TE, renderBlocks, coverBlock, srcBlock, side, x, y, z, icon, lightness);
 			renderSide(TE, renderBlocks, side, 0, x, y, z, icon);
-			
-			clearRotation(renderBlocks, side);
 		}
 
 		/* Do not render decorations on top if this is the daylight sensor block. */
@@ -827,6 +821,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 			return;
 		}
 
+		boolean temp_state = suppressDyeColor;
 		suppressDyeColor = true;
 		
 		/* Render pattern on side. */
@@ -839,7 +834,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 			renderOverlay(TE, renderBlocks, coverBlock, srcBlock, side, x, y, z, lightness, icon);
 		}
 		
-		suppressDyeColor = false;
+		suppressDyeColor = temp_state;
 	}
 
 	/**
@@ -871,12 +866,10 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 	{
 		Tessellator tessellator = Tessellator.instance;
 		float baseRGB[] = getRGB(renderBlocks.blockAccess, coverBlock, x, y, z);
-		float dyeRGB[];
+		float dyeRGB[] = { 1.0F, 1.0F, 1.0F };
 
-		if (hasDyeColorOverride) {
-			dyeRGB = DyeColorHandler.getDyeColorRGB(suppressDyeColor ? DyeColorHandler.NO_COLOR : dyeColorOverride);
-		} else {
-			dyeRGB = DyeColorHandler.getDyeColorRGB(suppressDyeColor ? DyeColorHandler.NO_COLOR : BlockProperties.getDyeColor(TE, coverRendering));
+		if (!suppressDyeColor) {
+			dyeRGB = DyeColorHandler.getDyeColorRGB(hasDyeColorOverride ? dyeColorOverride : BlockProperties.getDyeColor(TE, coverRendering));
 		}
 
 		if (hasLightnessOffset)
@@ -945,8 +938,8 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 			} else if (slope.slopeType.equals(SlopeType.OBLIQUE_INT) || slope.slopeType.equals(SlopeType.OBLIQUE_EXT) || slope.slopeType.equals(SlopeType.PYRAMID)) {
 				side = 2;
 			}
-		}
-
+		}		
+		
 		/*
 		 * If coverBlock is grass, we need to prerender the grass
 		 * sides before drawing any overlays.
@@ -991,7 +984,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 				case 0:
 					return;
 				case 1:
-					icon = IconHandler.icon_overlay_hay_top; // MC 1.5+ only, use hay block for 1.6+
+					icon = IconHandler.icon_overlay_hay_top; // MC 1.5+ only, use hay 
 					break;
 				default:
 					icon = IconHandler.icon_overlay_hay_side;

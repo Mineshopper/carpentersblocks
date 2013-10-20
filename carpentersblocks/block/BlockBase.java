@@ -8,6 +8,7 @@ import net.minecraft.block.BlockDirectional;
 import net.minecraft.block.BlockFlower;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.particle.EffectRenderer;
+import net.minecraft.client.particle.EntityDiggingFX;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
@@ -15,7 +16,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.client.ForgeHooksClient;
@@ -30,6 +31,7 @@ import carpentersblocks.util.handler.ItemHandler;
 import carpentersblocks.util.handler.OverlayHandler;
 import carpentersblocks.util.handler.PatternHandler;
 import carpentersblocks.util.handler.PlantHandler;
+import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -50,7 +52,7 @@ public class BlockBase extends BlockContainer
 
 		return BlockProperties.getCoverBlock(TE, 6).blockID == this.blockID;
 	}
-	
+
 	/**
 	 * Returns whether the block at given coordinates is an instance of
 	 * a Carpenter's block.
@@ -58,7 +60,7 @@ public class BlockBase extends BlockContainer
 	protected boolean extendsBlockBase(IBlockAccess world, int x, int y, int z)
 	{
 		int blockID = world.getBlockId(x, y, z);
-		
+
 		return blockID > 0 && Block.blocksList[blockID] instanceof BlockBase;
 	}
 
@@ -185,7 +187,7 @@ public class BlockBase extends BlockContainer
 			} else if (FeatureHandler.enableCovers && BlockProperties.isCover(itemStack)) {
 
 				Block block = Block.blocksList[itemStack.itemID];
-				int metadata = block instanceof BlockDirectional ? MathHelper.floor_double(EventHandler.eventEntity.rotationYaw * 4.0F / 360.0F + 2.5D) & 3 : itemStack.getItemDamage();		
+				int metadata = block instanceof BlockDirectional ? BlockProperties.getEntityFacing(EventHandler.eventEntity) : itemStack.getItemDamage();		
 				
 				if (!BlockProperties.hasCover(TE, 6)) {
 
@@ -211,7 +213,7 @@ public class BlockBase extends BlockContainer
 							 * cover.
 							 */
 
-							int facing = MathHelper.floor_double(EventHandler.eventEntity.rotationYaw * 4.0F / 360.0F + 2.5D) & 3;
+							int facing = BlockProperties.getEntityFacing(EventHandler.eventEntity);
 							int side_interpolated =	entityPlayer.rotationPitch < -45.0F ? 0 : entityPlayer.rotationPitch > 45 ? 1 : facing == 0 ? 3 : facing == 1 ? 4 : facing == 2 ? 2 : 5;
 							metadata = block.onBlockPlaced(world, x, y, z, side_interpolated, hitX, hitY, hitZ, metadata);
 						}
@@ -271,14 +273,14 @@ public class BlockBase extends BlockContainer
 		
 		return actionPerformed;
 	}
-	
+
 	/**
 	 * Cycles through chisel patterns.
 	 */
 	public boolean onChiselClick(TECarpentersBlock TE, int side, boolean leftClick)
 	{
 		int pattern = BlockProperties.getPattern(TE, side);
-		
+
 		/*
 		 * Try to match neighboring chisel pattern.
 		 */
@@ -291,7 +293,7 @@ public class BlockBase extends BlockContainer
 			TECarpentersBlock TE_YP = extendsBlockBase(TE.worldObj, TE.xCoord, TE.yCoord + 1, TE.zCoord) ? (TECarpentersBlock)TE.worldObj.getBlockTileEntity(TE.xCoord, TE.yCoord + 1, TE.zCoord) : null;
 			TECarpentersBlock TE_ZN = extendsBlockBase(TE.worldObj, TE.xCoord, TE.yCoord, TE.zCoord - 1) ? (TECarpentersBlock)TE.worldObj.getBlockTileEntity(TE.xCoord, TE.yCoord, TE.zCoord - 1) : null;
 			TECarpentersBlock TE_ZP = extendsBlockBase(TE.worldObj, TE.xCoord, TE.yCoord, TE.zCoord + 1) ? (TECarpentersBlock)TE.worldObj.getBlockTileEntity(TE.xCoord, TE.yCoord, TE.zCoord + 1) : null;
-			
+
 			if (TE_XN != null && BlockProperties.hasPattern(TE_XN, side)) {
 				pattern = BlockProperties.getPattern(TE_XN, side);
 				neighbor_pattern = pattern;
@@ -313,27 +315,26 @@ public class BlockBase extends BlockContainer
 			}
 		}
 
-		if (neighbor_pattern == 0)
+		if (neighbor_pattern == 0) {
 			pattern = leftClick ? PatternHandler.getPrev(pattern) : PatternHandler.getNext(pattern);
+		}
 
 		BlockProperties.setPattern(TE, side, pattern);
-			
+
 		return true;
 	}
-	
+
 	@Override
-    /**
-     * Lets the block know when one of its neighbor changes. Doesn't know which neighbor changed (coordinates passed are
-     * their own) Args: x, y, z, neighbor blockID
-     */
-    public void onNeighborBlockChange(World world, int x, int y, int z, int blockID)
+	/**
+	 * Lets the block know when one of its neighbor changes. Doesn't know which neighbor changed (coordinates passed are
+	 * their own) Args: x, y, z, neighbor blockID
+	 */
+	public void onNeighborBlockChange(World world, int x, int y, int z, int blockID)
 	{
-		TECarpentersBlock TE = null;
-		
+		TECarpentersBlock TE = (TECarpentersBlock) world.getBlockTileEntity(x, y, z);
+
 		if (!world.isRemote)
 		{
-			TE = (TECarpentersBlock) world.getBlockTileEntity(x, y, z);
-
 			/*
 			 * Check for and eject side covers that are blocked by a
 			 * solid adjacent block.
@@ -348,7 +349,7 @@ public class BlockBase extends BlockContainer
 						 * If block state no longer allows a side cover on
 						 * side, eject side cover.
 						 */
-						if (!this.canCoverSide(TE, world, x, y, z, side))
+						if (!canCoverSide(TE, world, x, y, z, side))
 						{
 							BlockProperties.clearAttributes(TE, side);
 							return;
@@ -373,53 +374,52 @@ public class BlockBase extends BlockContainer
 				}
 			}
 		}
-		
-		if (TE != null)
-			auxiliaryOnNeighborBlockChange(TE, world, x, y, z, blockID);
+
+		auxiliaryOnNeighborBlockChange(TE, world, x, y, z, blockID);
 	}
 
-    @Override
-    /**
-     * Returns true if the block is emitting indirect/weak redstone power on the specified side. If isBlockNormalCube
-     * returns true, standard redstone propagation rules will apply instead and this will not be called. Args: World, X,
-     * Y, Z, side. Note that the side is reversed - eg it is 1 (up) when checking the bottom of the block.
-     */
+	@Override
+	/**
+	 * Returns true if the block is emitting indirect/weak redstone power on the specified side. If isBlockNormalCube
+	 * returns true, standard redstone propagation rules will apply instead and this will not be called. Args: World, X,
+	 * Y, Z, side. Note that the side is reversed - eg it is 1 (up) when checking the bottom of the block.
+	 */
 	public int isProvidingWeakPower(IBlockAccess world, int x, int y, int z, int side)
-    {
+	{
 		if (!willCoverRecurse(world, x, y, z))
 		{
 			TECarpentersBlock TE = (TECarpentersBlock) world.getBlockTileEntity(x, y, z);
 			int effectiveSide = ForgeDirection.OPPOSITES[side];
-			
+
 			int power = BlockProperties.getCoverBlock(world, 6, x, y, z).isProvidingWeakPower(world, x, y, z, side);
 			int power_side = BlockProperties.hasCover(TE, effectiveSide) ? BlockProperties.getCoverBlock(TE, effectiveSide).isProvidingWeakPower(world, x, y, z, side) : 0;
-			
+
 			return power_side > power ? power_side : power;
 		}
-			
-		return 0;
-    }
 
-    @Override
-    /**
-     * Returns true if the block is emitting direct/strong redstone power on the specified side. Args: World, X, Y, Z,
-     * side. Note that the side is reversed - eg it is 1 (up) when checking the bottom of the block.
-     */
+		return 0;
+	}
+
+	@Override
+	/**
+	 * Returns true if the block is emitting direct/strong redstone power on the specified side. Args: World, X, Y, Z,
+	 * side. Note that the side is reversed - eg it is 1 (up) when checking the bottom of the block.
+	 */
 	public int isProvidingStrongPower(IBlockAccess world, int x, int y, int z, int side)
-    {
+	{
 		if (!willCoverRecurse(world, x, y, z))
 		{
 			TECarpentersBlock TE = (TECarpentersBlock) world.getBlockTileEntity(x, y, z);
 			int effectiveSide = ForgeDirection.OPPOSITES[side];
-						
+
 			int power = BlockProperties.getCoverBlock(world, 6, x, y, z).isProvidingStrongPower(world, x, y, z, side);
 			int power_side = BlockProperties.hasCover(TE, effectiveSide) ? BlockProperties.getCoverBlock(TE, effectiveSide).isProvidingStrongPower(world, x, y, z, side) : 0;
 
 			return power_side > power ? power_side : power;
 		}
-    	
-        return 0;
-    }
+
+		return 0;
+	}
 
 	/**
 	 * Indicates whether block destruction should be suppressed when block is clicked.
@@ -435,7 +435,7 @@ public class BlockBase extends BlockContainer
 				);
 	}
 
-    @Override
+	@Override
 	/**
 	 * Called when a player removes a block.
 	 * This controls block break behavior when a player in creative mode left-clicks on block while holding a Carpenter's Hammer
@@ -445,8 +445,64 @@ public class BlockBase extends BlockContainer
 		if (!suppressDestroyBlock(entityPlayer, entityPlayer.getHeldItem()))
 			return world.setBlockToAir(x, y, z);
 
-		this.onBlockClicked(world, x, y, z, entityPlayer);
+		onBlockClicked(world, x, y, z, entityPlayer);
+
+		return false;
+	}
+	
+	@Override
+    @SideOnly(Side.CLIENT)
+    /**
+     * Spawn a digging particle effect in the world, this is a wrapper
+     * around EffectRenderer.addBlockHitEffects to allow the block more
+     * control over the particles. Useful when you have entirely different
+     * texture sheets for different sides/locations in the world.
+     *
+     * @param world The current world
+     * @param target The target the player is looking at {x/y/z/side/sub}
+     * @param effectRenderer A reference to the current effect renderer.
+     * @return True to prevent vanilla digging particles form spawning.
+     */
+    public boolean addBlockHitEffects(World world, MovingObjectPosition target, EffectRenderer effectRenderer)
+	{
+		TECarpentersBlock TE = (TECarpentersBlock) world.getBlockTileEntity(target.blockX, target.blockY, target.blockZ);
+
+		if (BlockProperties.hasCover(TE, 6))
+		{
+			Block block = BlockProperties.getCoverBlock(TE, 6);
+			int metadata = world.getBlockMetadata(target.blockX, target.blockY, target.blockZ);
+
+			double xOffset = target.blockX + world.rand.nextDouble() * (block.getBlockBoundsMaxX() - block.getBlockBoundsMinX() - 0.1F * 2.0F) + 0.1F + block.getBlockBoundsMinX();
+			double yOffset = target.blockY + world.rand.nextDouble() * (block.getBlockBoundsMaxY() - block.getBlockBoundsMinY() - 0.1F * 2.0F) + 0.1F + block.getBlockBoundsMinY();
+			double zOffset = target.blockZ + world.rand.nextDouble() * (block.getBlockBoundsMaxZ() - block.getBlockBoundsMinZ() - 0.1F * 2.0F) + 0.1F + block.getBlockBoundsMinZ();
+
+			switch (target.sideHit) {
+			case 0:
+				yOffset = target.blockY + block.getBlockBoundsMinY() - 0.1D;
+				break;
+			case 1:
+				yOffset = target.blockY + block.getBlockBoundsMaxY() + 0.1D;
+				break;
+			case 2:
+				zOffset = target.blockZ + block.getBlockBoundsMinZ() - 0.1D;
+				break;
+			case 3:
+				zOffset = target.blockZ + block.getBlockBoundsMaxZ() + 0.1D;
+				break;
+			case 4:
+				xOffset = target.blockX + block.getBlockBoundsMinX() - 0.1D;
+				break;
+			case 5:
+				xOffset = target.blockX + block.getBlockBoundsMaxX() + 0.1D;
+				break;
+			}
+
+			EntityDiggingFX particle = new EntityDiggingFX(world, xOffset, yOffset, zOffset, 0.0D, 0.0D, 0.0D, block, target.sideHit, metadata, FMLClientHandler.instance().getClient().renderEngine);
+			effectRenderer.addEffect(particle.func_70596_a(target.blockX, target.blockY, target.blockZ).multiplyVelocity(0.2F).multipleParticleScaleBy(0.6F));
 		
+			return true;
+		}
+
 		return false;
 	}
 
@@ -467,10 +523,10 @@ public class BlockBase extends BlockContainer
 		 * be adequate most of the time.
 		 */
 
-		if (world.getBlockId(x, y, z) == this.blockID)
+		if (world.getBlockId(x, y, z) == blockID)
 		{
 			EntityPlayer entityPlayer = world.getClosestPlayer(x, y, z, 6.5F);
-			
+
 			if (entityPlayer != null)
 				return suppressDestroyBlock(entityPlayer, entityPlayer.getHeldItem());
 		}
@@ -478,19 +534,19 @@ public class BlockBase extends BlockContainer
 		return false;
 	}
 
-    @Override
+	@Override
 	/**
 	 * Returns light value based on cover or side covers.
 	 */
 	public int getLightValue(IBlockAccess world, int x, int y, int z)
 	{
 		Block block = blocksList[world.getBlockId(x, y, z)];
-    	
-		if (block != null && block.blockID == this.blockID)
+
+		if (block != null && block.blockID == blockID)
 		{
 			TECarpentersBlock TE = (TECarpentersBlock) world.getBlockTileEntity(x, y, z);
 			int lightOutput = 0;
-			
+
 			for (int side = 0; side < 7; ++side)
 			{
 				if (BlockProperties.hasCover(TE, side))
@@ -501,26 +557,26 @@ public class BlockBase extends BlockContainer
 						lightOutput = tempLightOutput;
 				}
 			}
-			
+
 			return lightOutput;
 		}
 
-		return lightValue[this.blockID];
+		return lightValue[blockID];
 	}
 
-    @Override
+	@Override
 	/**
 	 * Returns the block hardness at a location. Args: world, x, y, z
 	 */
 	public float getBlockHardness(World world, int x, int y, int z)
 	{
-		if (world.getBlockId(x, y, z) == this.blockID && !willCoverRecurse(world, x, y, z))
+		if (world.getBlockId(x, y, z) == blockID && !willCoverRecurse(world, x, y, z))
 			return BlockProperties.getCoverBlock(world, 6, x, y, z).getBlockHardness(world,  x,  y,  z);
 
-		return this.blockHardness;
+		return blockHardness;
 	}
 
-    @Override
+	@Override
 	/**
 	 * Chance that fire will spread and consume this block.
 	 */
@@ -529,7 +585,7 @@ public class BlockBase extends BlockContainer
 		return blockFlammability[BlockProperties.getCoverBlock(world, 6, x, y, z).blockID];
 	}
 
-    @Override
+	@Override
 	/**
 	 * Called when fire is updating on a neighbor block.
 	 */
@@ -538,7 +594,7 @@ public class BlockBase extends BlockContainer
 		return blockFlammability[BlockProperties.getCoverBlock(world, 6, x, y, z).blockID];
 	}
 
-    @Override
+	@Override
 	/**
 	 * Currently only called by fire when it is on top of this block.
 	 * Returning true will prevent the fire from naturally dying during updating.
@@ -555,7 +611,7 @@ public class BlockBase extends BlockContainer
 		return false;
 	}
 
-    @Override
+	@Override
 	/**
 	 * Location sensitive version of getExplosionRestance
 	 */
@@ -567,7 +623,7 @@ public class BlockBase extends BlockContainer
 		return this.getExplosionResistance(entity);
 	}
 
-    @Override
+	@Override
 	/**
 	 * Returns whether block is wood
 	 */
@@ -579,7 +635,7 @@ public class BlockBase extends BlockContainer
 		return false;
 	}
 
-    @Override
+	@Override
 	/**
 	 * Determines if this block is destroyed when a ender dragon tries to fly through it.
 	 * The block will be set to 0, nothing will drop.
@@ -592,7 +648,7 @@ public class BlockBase extends BlockContainer
 		return super.canDragonDestroy(world, x, y, z);
 	}
 
-    @Override
+	@Override
 	/**
 	 * Ejects contained items into the world, and notifies neighbors of an update, as appropriate
 	 */
@@ -603,13 +659,13 @@ public class BlockBase extends BlockContainer
 		if (TE != null) {
 			for (int side = 0; side < 7; ++side)
 				BlockProperties.clearAttributes(TE, side);
-	
+
 			auxiliaryBreakBlock(TE, world, x, y, z, blockID, metadata);
 		}
 
 		super.breakBlock(world, x, y, z, blockID, metadata);
 	}
-	
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	/**
@@ -619,154 +675,155 @@ public class BlockBase extends BlockContainer
 	{
 		if (!willCoverRecurse(world, x, y, z))
 			BlockProperties.getCoverBlock(world, 6, x, y, z).randomDisplayTick(world, x, y, z, random);
-		
-		if (world.getBlockId(x, y, z) == this.blockID)
+
+		if (world.getBlockId(x, y, z) == blockID)
 		{
 			TECarpentersBlock TE = (TECarpentersBlock) world.getBlockTileEntity(x, y, z);
-			
+
 			if (BlockProperties.getOverlay(TE, 6) == OverlayHandler.OVERLAY_MYCELIUM)
 				Block.mycelium.randomDisplayTick(world, x, y, z, random);
 		}
 	}
-	
-    @Override
-    /**
-     * Determines if this block can support the passed in plant, allowing it to be planted and grow.
-     */
-    public boolean canSustainPlant(World world, int x, int y, int z, ForgeDirection dir, IPlantable plant)
-    {
-    	TECarpentersBlock TE = (TECarpentersBlock)world.getBlockTileEntity(x, y, z);
-    	
-    	Block srcBlock = BlockProperties.getCoverBlock(TE, 6);
-    	Block topBlock = BlockProperties.getCoverBlock(TE, 1);
-    	
-    	int baseOverlay = BlockProperties.getOverlay(TE, 6);
-    	int topOverlay = BlockProperties.getOverlay(TE, 1);
-    	
-    	boolean canSupportPlant = false;
 
-    	int tempBlockID = this.blockID;
-    	
-    	for (int count = 0; count < 4; ++count)
-    	{
-    		switch (count)
-    		{
-    		case 0:
-    			tempBlockID = srcBlock.blockID;
-    			break;
-    		case 1:
-    			tempBlockID = topBlock.blockID;
-    			break;
-    		case 2:
-    			tempBlockID = baseOverlay == OverlayHandler.OVERLAY_GRASS || topOverlay == OverlayHandler.OVERLAY_GRASS ? Block.grass.blockID : this.blockID;
-    			break;
-    		case 3:
-    			tempBlockID = baseOverlay == OverlayHandler.OVERLAY_MYCELIUM || topOverlay == OverlayHandler.OVERLAY_MYCELIUM ? Block.mycelium.blockID : this.blockID;
-    			break;
-    		}
-    		
-        	if (canSustainPlantWithBlockIdOverride(TE, world, x, y, z, tempBlockID, dir, plant))
-        		canSupportPlant = true;
-    	}
+	@Override
+	/**
+	 * Determines if this block can support the passed in plant, allowing it to be planted and grow.
+	 */
+	public boolean canSustainPlant(World world, int x, int y, int z, ForgeDirection dir, IPlantable plant)
+	{
+		TECarpentersBlock TE = (TECarpentersBlock)world.getBlockTileEntity(x, y, z);
 
-        return canSupportPlant && this.isBlockSolidOnSide(world, x, y, z, ForgeDirection.UP);
-    }
-    
-    /**
-     * Copy of super function with block ID override.
-     */
-    protected boolean canSustainPlantWithBlockIdOverride(TECarpentersBlock TE, World world, int x, int y, int z, int blockID, ForgeDirection dir, IPlantable plant)
-    {
-    	if (FeatureHandler.enablePlantSupport)
-    	{
-	        int plantID = plant.getPlantID(world, x, y + 1, z);
-	        EnumPlantType plantType = plant.getPlantType(world, x, y + 1, z);
-	
-	        if (
-	        		plantID == cactus.blockID && blockID == cactus.blockID ||
-	        		plantID == reed.blockID && blockID == reed.blockID ||
-	        		plant instanceof BlockFlower && PlantHandler.canThisPlantGrowOnThisBlockID(blockID)
-	        	)
-	            return true;
-	
-	        switch (plantType)
-	        {
-	            case Desert: return blockID == sand.blockID;
-	            case Nether: return blockID == slowSand.blockID;
-	            case Crop:   return blockID == tilledField.blockID;
-	            case Cave:   return true;
-	            case Plains: return blockID == grass.blockID || blockID == dirt.blockID;
-	            case Water:  return BlockProperties.getCoverBlock(TE, 6).blockMaterial == Material.water && world.getBlockMetadata(x, y, z) == 0;
-	            case Beach:
-	                boolean isBeach = (blockID == Block.grass.blockID || blockID == Block.dirt.blockID || blockID == Block.sand.blockID);
-	                boolean hasWater = (world.getBlockMaterial(x - 1, y, z    ) == Material.water ||
-	                                    world.getBlockMaterial(x + 1, y, z    ) == Material.water ||
-	                                    world.getBlockMaterial(x,     y, z - 1) == Material.water ||
-	                                    world.getBlockMaterial(x,     y, z + 1) == Material.water);
-	                return isBeach && hasWater;
-	        }
-    	}
+		Block srcBlock = BlockProperties.getCoverBlock(TE, 6);
+		Block topBlock = BlockProperties.getCoverBlock(TE, 1);
 
-        return super.canSustainPlant(world, x, y, z, dir, plant);
-    }
-        
-    /**
-     * Returns whether this block is considered solid.
-     */
-    protected boolean isBlockSolid(World world, int x, int y, int z)
-    {		
-    	TECarpentersBlock TE = (TECarpentersBlock) world.getBlockTileEntity(x, y, z);
+		int baseOverlay = BlockProperties.getOverlay(TE, 6);
+		int topOverlay = BlockProperties.getOverlay(TE, 1);
 
-    	return !BlockProperties.hasCover(TE, 6) || BlockProperties.getCoverBlock(TE, 6).isOpaqueCube();
-    }
-    
-    @Override
-    /**
-     * Called when the block is placed in the world.
-     */
-    public void onBlockPlacedBy(World world, int x, int y, int z, EntityLiving entityLiving, ItemStack itemStack)
-    {
-    	TECarpentersBlock TE = (TECarpentersBlock) world.getBlockTileEntity(x, y, z);
-    	auxiliaryOnBlockPlacedBy(TE, world, x, y, z, entityLiving, itemStack);
-    }
-    
-    @Override
+		boolean canSupportPlant = false;
+
+		int tempBlockID = blockID;
+
+		for (int count = 0; count < 4; ++count)
+		{
+			switch (count)
+			{
+			case 0:
+				tempBlockID = srcBlock.blockID;
+				break;
+			case 1:
+				tempBlockID = topBlock.blockID;
+				break;
+			case 2:
+				tempBlockID = baseOverlay == OverlayHandler.OVERLAY_GRASS || topOverlay == OverlayHandler.OVERLAY_GRASS ? Block.grass.blockID : blockID;
+				break;
+			case 3:
+				tempBlockID = baseOverlay == OverlayHandler.OVERLAY_MYCELIUM || topOverlay == OverlayHandler.OVERLAY_MYCELIUM ? Block.mycelium.blockID : blockID;
+				break;
+			}
+
+			if (canSustainPlantWithBlockIdOverride(TE, world, x, y, z, tempBlockID, dir, plant))
+				canSupportPlant = true;
+		}
+
+		return canSupportPlant && isBlockSolidOnSide(world, x, y, z, ForgeDirection.UP);
+	}
+
+	/**
+	 * Copy of super function with block ID override.
+	 */
+	protected boolean canSustainPlantWithBlockIdOverride(TECarpentersBlock TE, World world, int x, int y, int z, int blockID, ForgeDirection dir, IPlantable plant)
+	{
+		if (FeatureHandler.enablePlantSupport)
+		{
+			int plantID = plant.getPlantID(world, x, y + 1, z);
+			EnumPlantType plantType = plant.getPlantType(world, x, y + 1, z);
+
+			if (
+					plantID == cactus.blockID && blockID == cactus.blockID ||
+					plantID == reed.blockID && blockID == reed.blockID ||
+					plant instanceof BlockFlower && PlantHandler.canThisPlantGrowOnThisBlockID(blockID)
+					)
+				return true;
+
+			switch (plantType)
+			{
+			case Desert: return blockID == sand.blockID;
+			case Nether: return blockID == slowSand.blockID;
+			case Crop:   return blockID == tilledField.blockID;
+			case Cave:   return true;
+			case Plains: return blockID == grass.blockID || blockID == dirt.blockID;
+			case Water:  return BlockProperties.getCoverBlock(TE, 6).blockMaterial == Material.water && world.getBlockMetadata(x, y, z) == 0;
+			case Beach:
+				boolean isBeach = (blockID == Block.grass.blockID || blockID == Block.dirt.blockID || blockID == Block.sand.blockID);
+				boolean hasWater = (world.getBlockMaterial(x - 1, y, z    ) == Material.water ||
+						world.getBlockMaterial(x + 1, y, z    ) == Material.water ||
+						world.getBlockMaterial(x,     y, z - 1) == Material.water ||
+						world.getBlockMaterial(x,     y, z + 1) == Material.water);
+				return isBeach && hasWater;
+			}
+		}
+
+		return super.canSustainPlant(world, x, y, z, dir, plant);
+	}
+
+	/**
+	 * Returns whether this block is considered solid.
+	 */
+	protected boolean isBlockSolid(World world, int x, int y, int z)
+	{
+		TECarpentersBlock TE = (TECarpentersBlock) world.getBlockTileEntity(x, y, z);
+
+		return !BlockProperties.hasCover(TE, 6) || BlockProperties.getCoverBlock(TE, 6).isOpaqueCube();
+	}
+
+	@Override
+	/**
+	 * Called when the block is placed in the world.
+	 */
+	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLiving entityLiving, ItemStack itemStack)
+	{
+		TECarpentersBlock TE = (TECarpentersBlock) world.getBlockTileEntity(x, y, z);
+
+		auxiliaryOnBlockPlacedBy(TE, world, x, y, z, entityLiving, itemStack);
+	}
+
+	@Override
 	@SideOnly(Side.CLIENT)
-    /**
-     * Returns true if the given side of this block type should be rendered, if the adjacent block is at the given
-     * coordinates.  Args: world, x, y, z, side
-     */
-    public boolean shouldSideBeRendered(IBlockAccess world, int x, int y, int z, int side)
-    {
-    	if (extendsBlockBase(world, x, y, z))
-    	{
-    		ForgeDirection side_src = ForgeDirection.getOrientation(side);
-    		ForgeDirection side_adj = ForgeDirection.getOrientation(ForgeDirection.OPPOSITES[side]);
+	/**
+	 * Returns true if the given side of this block type should be rendered, if the adjacent block is at the given
+	 * coordinates.  Args: world, x, y, z, side
+	 */
+	public boolean shouldSideBeRendered(IBlockAccess world, int x, int y, int z, int side)
+	{
+		if (extendsBlockBase(world, x, y, z))
+		{
+			ForgeDirection side_src = ForgeDirection.getOrientation(side);
+			ForgeDirection side_adj = ForgeDirection.getOrientation(ForgeDirection.OPPOSITES[side]);
 
-    		TECarpentersBlock TE_adj = (TECarpentersBlock) world.getBlockTileEntity(x, y, z);
-    		TECarpentersBlock TE_src = (TECarpentersBlock) world.getBlockTileEntity(x + side_adj.offsetX, y + side_adj.offsetY, z + side_adj.offsetZ);
+			TECarpentersBlock TE_adj = (TECarpentersBlock) world.getBlockTileEntity(x, y, z);
+			TECarpentersBlock TE_src = (TECarpentersBlock) world.getBlockTileEntity(x + side_adj.offsetX, y + side_adj.offsetY, z + side_adj.offsetZ);
 
-    		if (TE_adj.getBlockType().isBlockSolidOnSide(TE_adj.worldObj, x, y, z, side_adj) == TE_src.getBlockType().isBlockSolidOnSide(TE_src.worldObj, x + side_adj.offsetX, y + side_adj.offsetY, z + side_adj.offsetZ, ForgeDirection.getOrientation(side))) {
-    			if (shareFaces(TE_adj, TE_src, side_adj, side_src)) {
-	    			return BlockProperties.shouldRenderSharedFaceBasedOnCovers(TE_adj, TE_src);
-    			}
-    		}
-    	}
-    	
-    	return super.shouldSideBeRendered(world, x, y, z, side);
-    }
-    
-    /**
-     * Returns whether two blocks share faces.
-     * Primarily for slopes, stairs and slabs.
-     */
-    protected boolean shareFaces(TECarpentersBlock TE_adj, TECarpentersBlock TE_src, ForgeDirection side_adj, ForgeDirection side_src)
-    {
-    	return	TE_adj.getBlockType().isBlockSolidOnSide(TE_adj.worldObj, TE_adj.xCoord, TE_adj.yCoord, TE_adj.zCoord, side_adj) &&
-    			TE_src.getBlockType().isBlockSolidOnSide(TE_src.worldObj, TE_src.xCoord, TE_src.yCoord, TE_src.zCoord, side_src);
-    }
-        
-    @Override
+			if (TE_adj.getBlockType().isBlockSolidOnSide(TE_adj.worldObj, x, y, z, side_adj) == TE_src.getBlockType().isBlockSolidOnSide(TE_src.worldObj, x + side_adj.offsetX, y + side_adj.offsetY, z + side_adj.offsetZ, ForgeDirection.getOrientation(side))) {
+				if (shareFaces(TE_adj, TE_src, side_adj, side_src)) {
+					return BlockProperties.shouldRenderSharedFaceBasedOnCovers(TE_adj, TE_src);
+				}
+			}
+		}
+
+		return super.shouldSideBeRendered(world, x, y, z, side);
+	}
+
+	/**
+	 * Returns whether two blocks share faces.
+	 * Primarily for slopes, stairs and slabs.
+	 */
+	protected boolean shareFaces(TECarpentersBlock TE_adj, TECarpentersBlock TE_src, ForgeDirection side_adj, ForgeDirection side_src)
+	{
+		return	TE_adj.getBlockType().isBlockSolidOnSide(TE_adj.worldObj, TE_adj.xCoord, TE_adj.yCoord, TE_adj.zCoord, side_adj) &&
+				TE_src.getBlockType().isBlockSolidOnSide(TE_src.worldObj, TE_src.xCoord, TE_src.yCoord, TE_src.zCoord, side_src);
+	}
+
+	@Override
 	/**
 	 * Determines if this block should render in this pass.
 	 */
@@ -786,7 +843,7 @@ public class BlockBase extends BlockContainer
 		return 1;
 	}
 
-    @Override
+	@Override
 	/**
 	 * Is this block (a) opaque and (b) a full 1m cube?  This determines whether or not to render the shared face of two
 	 * adjacent blocks and also whether the player can attach torches, redstone wire, etc to this block.
@@ -796,7 +853,7 @@ public class BlockBase extends BlockContainer
 		return false;
 	}
 
-    @Override
+	@Override
 	/**
 	 * If this block doesn't render as an ordinary block it will return False (examples: signs, buttons, stairs, etc)
 	 */
@@ -805,13 +862,13 @@ public class BlockBase extends BlockContainer
 		return false;
 	}
 
-    @Override
+	@Override
 	/**
 	 * Called whenever the block is added into the world. Args: world, x, y, z
 	 */
 	public void onBlockAdded(World world, int x, int y, int z)
 	{
-        world.setBlockTileEntity(x, y, z, this.createNewTileEntity(world));
+		world.setBlockTileEntity(x, y, z, createNewTileEntity(world));
 	}
 
 	@Override
@@ -852,6 +909,6 @@ public class BlockBase extends BlockContainer
 		return false;
 	}
 
-    protected void auxiliaryOnNeighborBlockChange(TECarpentersBlock TE, World world, int x, int y, int z, int blockID) {}
+	protected void auxiliaryOnNeighborBlockChange(TECarpentersBlock TE, World world, int x, int y, int z, int blockID) {}
 
 }

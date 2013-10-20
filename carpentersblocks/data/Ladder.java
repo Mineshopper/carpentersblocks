@@ -13,5 +13,5 @@ public class Ladder
 	public final static byte FACING_SOUTH = 3;
 	public final static byte FACING_WEST = 4;
 	public final static byte FACING_EAST = 5;
-	
+
 }

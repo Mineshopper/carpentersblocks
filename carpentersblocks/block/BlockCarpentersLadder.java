@@ -16,6 +16,7 @@ import net.minecraftforge.common.ForgeDirection;
 import carpentersblocks.CarpentersBlocks;
 import carpentersblocks.data.Ladder;
 import carpentersblocks.tileentity.TECarpentersBlock;
+import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.handler.BlockHandler;
 import carpentersblocks.util.handler.IconHandler;
 import cpw.mods.fml.relauncher.Side;
@@ -23,16 +24,16 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockCarpentersLadder extends BlockBase
 {
-	
+
 	public BlockCarpentersLadder(int blockID)
 	{
 		super(blockID, Material.wood);
-		this.setHardness(Block.ladder.blockHardness);
-		this.setUnlocalizedName("blockCarpentersLadder");
-		this.setCreativeTab(CarpentersBlocks.tabCarpentersBlocks);
-		this.setStepSound(soundLadderFootstep);
+		setHardness(Block.ladder.blockHardness);
+		setUnlocalizedName("blockCarpentersLadder");
+		setCreativeTab(CarpentersBlocks.tabCarpentersBlocks);
+		setStepSound(soundLadderFootstep);
 	}
-
+	
 	@Override
 	@SideOnly(Side.CLIENT)
 	/**
@@ -51,12 +52,11 @@ public class BlockCarpentersLadder extends BlockBase
 	public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
 	{
 		TECarpentersBlock TE = (TECarpentersBlock) world.getBlockTileEntity(x, y, z);
-
-		int metadata = world.getBlockMetadata(x, y, z);
+		int data = BlockProperties.getData(TE);
 
 		float[] bounds;
 
-		switch (metadata) {
+		switch (data) {
 		case Ladder.FACING_NORTH: // Ladder on +Z
 			bounds = new float[] { 0.0F, 0.0F, 0.8125F, 1.0F, 1.0F, 1.0F };
 			break;
@@ -77,7 +77,7 @@ public class BlockCarpentersLadder extends BlockBase
 			break;
 		}
 
-		this.setBlockBounds(bounds[0], bounds[1], bounds[2], bounds[3], bounds[4], bounds[5]);
+		setBlockBounds(bounds[0], bounds[1], bounds[2], bounds[3], bounds[4], bounds[5]);
 	}
 
 	@Override
@@ -87,13 +87,13 @@ public class BlockCarpentersLadder extends BlockBase
 	 */
 	public void addCollisionBoxesToList(World world, int x, int y, int z, AxisAlignedBB axisAlignedBB, List list, Entity entity)
 	{
-		this.setBlockBoundsBasedOnState(world, x, y, z);
+		setBlockBoundsBasedOnState(world, x, y, z);
 		super.addCollisionBoxesToList(world, x, y, z, axisAlignedBB, list, entity);
 	}
-	
+
 	@Override
-    public boolean canPlaceBlockOnSide(World world, int x, int y, int z, int side)
-    {
+	public boolean canPlaceBlockOnSide(World world, int x, int y, int z, int side)
+	{
 		switch (ForgeDirection.getOrientation(side)) {
 		case NORTH:
 			return world.isBlockSolidOnSide(x, y, z + 1, ForgeDirection.SOUTH);
@@ -106,70 +106,78 @@ public class BlockCarpentersLadder extends BlockBase
 		default:
 			return true;
 		}
-    }
-	
-	@Override
-    /**
-     * Called when a block is placed using its ItemBlock. Args: World, X, Y, Z, side, hitX, hitY, hitZ, block metadata
-     */
-    public int onBlockPlaced(World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int initData)
-    {
-        return side;
-    }	
+	}
 
-    @Override
+	@Override
+	/**
+	 * Called when a block is placed using its ItemBlock. Args: World, X, Y, Z, side, hitX, hitY, hitZ, block metadata
+	 */
+	public int onBlockPlaced(World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int initData)
+	{
+		return side;
+	}
+
+	@Override
 	/**
 	 * Called when the block is placed in the world.
 	 * Uses cardinal direction to adjust metadata if player clicks top or bottom face of block.
 	 */
 	public void auxiliaryOnBlockPlacedBy(TECarpentersBlock TE, World world, int x, int y, int z, EntityLiving entityLiving, ItemStack itemStack)
 	{
-    	if (world.getBlockMetadata(x, y, z) < 2)
-    	{    		
-    		/*
-    		 * Try to match ladder facing above or below.
-    		 */
-    		if (world.getBlockId(x, y - 1, z) == blockID) {
-        		world.setBlockMetadataWithNotify(x, y, z, world.getBlockMetadata(x, y - 1, z), 2);
-    		} else if (world.getBlockId(x, y + 1, z) == blockID) {
-        		world.setBlockMetadataWithNotify(x, y, z, world.getBlockMetadata(x, y + 1, z), 2);
-    		} else {
-        		int facing = MathHelper.floor_double(entityLiving.rotationYaw * 4.0F / 360.0F + 0.5D) & 3;
-        		world.setBlockMetadataWithNotify(x, y, z, (facing % 2) == 0 ? Ladder.FACING_ON_X : Ladder.FACING_ON_Z, 2);
-    		}
-    	}
-    	
-    	/*
-    	 * Force ladder to check whether it can stay.
-    	 * This is done to correct misplacements due
-    	 * to ladder option to be free-standing.
-    	 */
-		this.onNeighborBlockChange(world, x, y, z, blockID);
+		int metadata = world.getBlockMetadata(x, y, z);
+
+		if (metadata < 2) {
+			int facing = MathHelper.floor_double(entityLiving.rotationYaw * 4.0F / 360.0F + 0.5D) & 3;
+			BlockProperties.setData(TE, ((facing % 2) == 0 ? Ladder.FACING_ON_X : Ladder.FACING_ON_Z));
+		} else {
+			BlockProperties.setData(TE, metadata);
+		}
+		
+		if (!entityLiving.isSneaking())
+		{
+			TECarpentersBlock TE_adj = null;
+		
+			if (world.getBlockId(x, y - 1, z) == blockID) {
+				TE_adj = (TECarpentersBlock) world.getBlockTileEntity(x, y - 1, z);
+			} else if (world.getBlockId(x, y + 1, z) == blockID) {
+				TE_adj = (TECarpentersBlock) world.getBlockTileEntity(x, y + 1, z);
+			}
+			
+			if (TE_adj != null)
+				BlockProperties.setData(TE, BlockProperties.getData(TE_adj));
+		}
+
+		/*
+		 * Force ladder to check whether it can stay.
+		 * This is done to correct misplacements due
+		 * to ladder option to be free-standing.
+		 */
+		onNeighborBlockChange(world, x, y, z, blockID);
 	}
-    
-    @Override
-    /**
-     * Lets the block know when one of its neighbor changes. Doesn't know which neighbor changed (coordinates passed are
-     * their own) Args: x, y, z, neighbor blockID
-     */
-    public void auxiliaryOnNeighborBlockChange(TECarpentersBlock TE, World world, int x, int y, int z, int blockID)
-    {
-        int metadata = world.getBlockMetadata(x, y, z);
-        
-        if (metadata > 1)
-        {
-        	if (
-		    		metadata == 2 && !world.isBlockSolidOnSide(x, y, z + 1, ForgeDirection.NORTH) ||
-		    		metadata == 3 && !world.isBlockSolidOnSide(x, y, z - 1, ForgeDirection.SOUTH) ||
-		    		metadata == 4 && !world.isBlockSolidOnSide(x + 1, y, z, ForgeDirection.WEST) ||
-		    		metadata == 5 && !world.isBlockSolidOnSide(x - 1, y, z, ForgeDirection.EAST)
-        		)
-	        {
-	            this.dropBlockAsItem(world, x, y, z, metadata, 0);
-	            world.setBlockToAir(x, y, z);
-	        }
-        }
-    }
+
+	@Override
+	/**
+	 * Lets the block know when one of its neighbor changes. Doesn't know which neighbor changed (coordinates passed are
+	 * their own) Args: x, y, z, neighbor blockID
+	 */
+	public void auxiliaryOnNeighborBlockChange(TECarpentersBlock TE, World world, int x, int y, int z, int blockID)
+	{
+		int data = BlockProperties.getData(TE);
+
+		if (data > 1)
+		{
+			if (
+					data == 2 && !world.isBlockSolidOnSide(x, y, z + 1, ForgeDirection.NORTH) ||
+					data == 3 && !world.isBlockSolidOnSide(x, y, z - 1, ForgeDirection.SOUTH) ||
+					data == 4 && !world.isBlockSolidOnSide(x + 1, y, z, ForgeDirection.WEST) ||
+					data == 5 && !world.isBlockSolidOnSide(x - 1, y, z, ForgeDirection.EAST)
+				)
+			{
+				dropBlockAsItem(world, x, y, z, data, 0);
+				world.setBlockToAir(x, y, z);
+			}
+		}
+	}
 
 	@Override
 	public boolean isLadder(World world, int x, int y, int z, EntityLiving entityLiving)

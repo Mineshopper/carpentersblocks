@@ -1,7 +1,5 @@
 package carpentersblocks.data;
 
-import net.minecraft.block.BlockBed;
-import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.common.ForgeDirection;
 import carpentersblocks.tileentity.TECarpentersBlock;
 import carpentersblocks.util.BlockProperties;
@@ -13,10 +11,10 @@ public class Bed
 	/**
 	 * 16-bit data components:
 	 *
-	 *	[000]	[00000000]	[0]			[0000]
-	 *  Unused	Design		Occupied	Type
+	 *	[0]		[00]		[00000000]	[0]			[0000]
+	 *  isHead	Direction	Design		isOccupied	Type
 	 */
-	
+
 	/*
 	 * Type definitions.
 	 */
@@ -49,7 +47,7 @@ public class Bed
 		int temp = data & 0x1fe0;
 		return temp >> 5;
 	}
-	
+
 	/**
 	 * Sets design.
 	 */
@@ -57,10 +55,10 @@ public class Bed
 	{
 		int temp = BlockProperties.getData(TE) & 0xe01f;
 		temp |= design << 5;
-		
+
 		BlockProperties.setData(TE, temp);
 	}
-	
+
 	/**
 	 * Returns whether bed is occupied.
 	 */
@@ -70,7 +68,7 @@ public class Bed
 
 		return temp != 0;
 	}
-	
+
 	/**
 	 * Sets occupation.
 	 */
@@ -80,50 +78,75 @@ public class Bed
 
 		if (isOccupied)
 			temp |= (1 << 4);
-		
+
 		BlockProperties.setData(TE, temp);
 	}
-		
+
+	/**
+	 * Returns TE for opposite piece.
+	 * Will return null if opposite piece doesn't exist (when creating or destroying block, for instance).
+	 */
+	public final static TECarpentersBlock getOppositeTE(final TECarpentersBlock TE)
+	{
+		ForgeDirection dir = getDirection(TE);
+		int x = TE.xCoord;
+		int z = TE.zCoord;
+
+		if (isHeadOfBed(TE)) {
+			x = TE.xCoord + dir.offsetX;
+			z = TE.zCoord + dir.offsetZ;
+		} else {
+			x = TE.xCoord - dir.offsetX;
+			z = TE.zCoord - dir.offsetZ;
+		}
+
+		if (TE.worldObj.getBlockId(x, TE.yCoord, z) == BlockHandler.blockCarpentersBedID)
+			return (TECarpentersBlock) TE.worldObj.getBlockTileEntity(x, TE.yCoord, z);
+		else
+			return null;
+	}
+	
     /**
-     * Converts player facing to ForgeDirection.
+     * Returns whether block is head of bed.
      */
-    public final static ForgeDirection getDirection(int facing)
+    public final static boolean isHeadOfBed(TECarpentersBlock TE)
     {
-    	switch (facing)
-    	{
-	    	case 0:
-	    		return ForgeDirection.NORTH;
-	    	case 1:
-	    		return ForgeDirection.EAST;
-	    	case 2:
-	    		return ForgeDirection.SOUTH;
-	    	default:
-	    		return ForgeDirection.WEST;
-    	}
+		int temp = BlockProperties.getData(TE) & 0x8000;
+
+		return temp != 0;
     }
     
     /**
-     * Returns TE for opposite piece.
-     * Will return null if opposite piece doesn't exist (when creating or destroying block, for instance).
+     * Sets block as head of bed.
      */
-    public final static TECarpentersBlock getOppositeTE(IBlockAccess blockAccess, int x, int y, int z)
+    public final static void setHeadOfBed(TECarpentersBlock TE)
     {
-		int metadata = blockAccess.getBlockMetadata(x, y, z);
-
-		ForgeDirection dir = Bed.getDirection(metadata & 3);
-
-    	if (BlockBed.isBlockHeadOfBed(metadata)) {
-	    	x += dir.offsetX;
-	    	z += dir.offsetZ;
-    	} else {
-    		x -= dir.offsetX;
-    		z -= dir.offsetZ;
-    	}
+    	int temp = BlockProperties.getData(TE) & 0x7fff;
+    	temp |= 1 << 15;
     	
-    	if (blockAccess.getBlockId(x, y, z) == BlockHandler.blockCarpentersBedID)
-    		return (TECarpentersBlock) blockAccess.getBlockTileEntity(x, y, z);
-    	else
-    		return null;
+		BlockProperties.setData(TE, temp);
     }
-	
+    
+    /**
+     * Returns direction of bed piece.
+     */
+    public final static ForgeDirection getDirection(TECarpentersBlock TE)
+    {
+    	int facing = BlockProperties.getData(TE) & 0x6000;
+    	
+    	return BlockProperties.getDirectionFromFacing(facing >> 13);
+    }
+    
+    /**
+     * Sets direction of bed piece.
+     * Stored as player facing from 0 to 3.
+     */
+    public final static void setDirection(TECarpentersBlock TE, int facing)
+    {
+		int temp = BlockProperties.getData(TE) & 0x9fff;
+		temp |= facing << 13;
+
+		BlockProperties.setData(TE, temp);
+    }
+
 }

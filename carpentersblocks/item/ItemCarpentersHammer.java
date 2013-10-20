@@ -13,20 +13,20 @@ public class ItemCarpentersHammer extends Item
 	public ItemCarpentersHammer(int itemID)
 	{
 		super(itemID);
-		this.setUnlocalizedName("itemCarpentersHammer");
+		setUnlocalizedName("itemCarpentersHammer");
 
 		if (ItemHandler.itemCarpentersToolsDamageable)
-        	this.setMaxDamage(300);
-		
-        this.canRepair = true;
-		this.setCreativeTab(CarpentersBlocks.tabCarpentersBlocks);
+			setMaxDamage(300);
+
+		canRepair = true;
+		setCreativeTab(CarpentersBlocks.tabCarpentersBlocks);
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IconRegister iconRegister)
 	{
-		this.itemIcon = iconRegister.registerIcon("carpentersblocks:hammer");
+		itemIcon = iconRegister.registerIcon("carpentersblocks:hammer");
 	}
-	
+
 }

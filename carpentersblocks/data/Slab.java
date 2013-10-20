@@ -14,5 +14,5 @@ public class Slab
 	public final static byte SLAB_Y_POS = 4;
 	public final static byte SLAB_Z_NEG = 5;
 	public final static byte SLAB_Z_POS = 6;
-	
+
 }

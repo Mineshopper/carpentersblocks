@@ -6,14 +6,14 @@ import carpentersblocks.util.BlockProperties;
 
 public class Hatch
 {
-	
+
 	/**
 	 * 16-bit data components:
 	 *
 	 *	[00000000]	[0]		[00]	[0]		[0]			[000]
 	 *  Unused		Rigid	Dir		State	Position	Type
 	 */
-	
+
 	/*
 	 * Type definitions.
 	 */
@@ -28,13 +28,13 @@ public class Hatch
 	 */
 	public final static byte STATE_CLOSED = 0;
 	public final static byte STATE_OPEN = 1;
-	
+
 	/*
 	 * High or low position.
 	 */
 	public final static byte POSITION_LOW = 0;
 	public final static byte POSITION_HIGH = 1;
-	
+
 	/*
 	 * Opening direction.
 	 */
@@ -42,13 +42,13 @@ public class Hatch
 	public final static byte DIR_Z_POS = 1;
 	public final static byte DIR_X_NEG = 2;
 	public final static byte DIR_X_POS = 3;
-	
+
 	/*
 	 * Hatch rigidity.
 	 */
 	public final static byte HINGED_NONRIGID = 0;
 	public final static byte HINGED_RIGID = 1;
-	
+
 	/**
 	 * Returns type.
 	 */
@@ -56,7 +56,7 @@ public class Hatch
 	{
 		return data & 0x7;
 	}
-	
+
 	/**
 	 * Sets type.
 	 */
@@ -64,10 +64,10 @@ public class Hatch
 	{
 		int temp = BlockProperties.getData(TE) & 0xfff8;
 		temp |= type;
-		
+
 		BlockProperties.setData(TE, temp);
 	}
-	
+
 	/**
 	 * Returns position (high or low).
 	 */
@@ -76,7 +76,7 @@ public class Hatch
 		int temp = data & 0x8;
 		return temp >> 3;
 	}
-	
+
 	/**
 	 * Sets position (high or low).
 	 */
@@ -84,10 +84,10 @@ public class Hatch
 	{
 		int temp = BlockProperties.getData(TE) & 0xfff7;
 		temp |= position << 3;
-		
+
 		BlockProperties.setData(TE, temp);
 	}
-	
+
 	/**
 	 * Returns state (open or closed).
 	 */
@@ -96,7 +96,7 @@ public class Hatch
 		int temp = data & 0x10;
 		return temp >> 4;
 	}
-	
+
 	/**
 	 * Sets state (open or closed).
 	 */
@@ -104,13 +104,13 @@ public class Hatch
 	{
 		int temp = BlockProperties.getData(TE) & 0xffef;
 		temp |= state << 4;
-		
+
 		BlockProperties.setData(TE, temp);
-		
+
 		if (!TE.worldObj.isRemote)
 			TE.worldObj.playAuxSFXAtEntity((EntityPlayer)null, 1003, TE.xCoord, TE.yCoord, TE.zCoord, 0);
 	}
-		
+
 	/**
 	 * Returns direction.
 	 */
@@ -119,7 +119,7 @@ public class Hatch
 		int temp = data & 0x60;
 		return temp >> 5;
 	}
-	
+
 	/**
 	 * Sets direction.
 	 */
@@ -127,10 +127,10 @@ public class Hatch
 	{
 		int temp = BlockProperties.getData(TE) & 0xff9f;
 		temp |= dir << 5;
-		
+
 		BlockProperties.setData(TE, temp);
 	}
-	
+
 	/**
 	 * Returns hatch rigidity (requires redstone for activation).
 	 */
@@ -139,7 +139,7 @@ public class Hatch
 		int temp = data & 0x80;
 		return temp >> 7;
 	}
-	
+
 	/**
 	 * Sets hatch rigidity (requires redstone for activation).
 	 */
@@ -147,8 +147,8 @@ public class Hatch
 	{
 		int temp = BlockProperties.getData(TE) & 0xff7f;
 		temp |= rigid << 7;
-		
+
 		BlockProperties.setData(TE, temp);
 	}
-	
+
 }

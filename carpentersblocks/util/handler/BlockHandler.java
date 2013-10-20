@@ -1,5 +1,10 @@
 package carpentersblocks.util.handler;
 
+import net.minecraft.block.Block;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.Configuration;
+import net.minecraftforge.oredict.ShapedOreRecipe;
 import carpentersblocks.block.BlockCarpentersBarrier;
 import carpentersblocks.block.BlockCarpentersBed;
 import carpentersblocks.block.BlockCarpentersBlock;
@@ -13,18 +18,12 @@ import carpentersblocks.block.BlockCarpentersLever;
 import carpentersblocks.block.BlockCarpentersPressurePlate;
 import carpentersblocks.block.BlockCarpentersSlope;
 import carpentersblocks.block.BlockCarpentersStairs;
-import carpentersblocks.item.ItemCarpentersBed;
-import carpentersblocks.item.ItemCarpentersDoor;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.Configuration;
-import net.minecraftforge.oredict.ShapedOreRecipe;
 
 public class BlockHandler
 {
+	
 	// References
     public static Block	blockCarpentersSlope;
     public static Block	blockCarpentersStairs;
@@ -167,8 +166,8 @@ public class BlockHandler
     	}
     	
     	if (enableBed) {
-        	BlockHandler.blockCarpentersBed = (new BlockCarpentersBed(BlockHandler.blockCarpentersBedID));
-    		GameRegistry.registerBlock(BlockHandler.blockCarpentersBed, "blockCarpentersBed");
+        	blockCarpentersBed = (new BlockCarpentersBed(blockCarpentersBedID));
+    		GameRegistry.registerBlock(blockCarpentersBed, "blockCarpentersBed");
         }
     	
     	if (enableBlock) {
@@ -190,8 +189,8 @@ public class BlockHandler
     	}
     	
     	if (enableDoor) {
-    		BlockHandler.blockCarpentersDoor = (new BlockCarpentersDoor(BlockHandler.blockCarpentersDoorID));
-    		GameRegistry.registerBlock(BlockHandler.blockCarpentersDoor, "blockCarpentersDoor");
+    		blockCarpentersDoor = (new BlockCarpentersDoor(blockCarpentersDoorID));
+    		GameRegistry.registerBlock(blockCarpentersDoor, "blockCarpentersDoor");
         }
     	
     	if (enableGate) {

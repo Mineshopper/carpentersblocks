@@ -29,13 +29,13 @@ public class BlockCarpentersSlope extends BlockBase
 {
 
 	private final int hitboxPrecision = FeatureHandler.hitboxPrecision;
-	
+
 	public BlockCarpentersSlope(int blockID)
 	{
 		super(blockID, Material.wood);
-		this.setHardness(0.2F);
-		this.setUnlocalizedName("blockCarpentersSlope");
-		this.setCreativeTab(CarpentersBlocks.tabCarpentersBlocks);
+		setHardness(0.2F);
+		setUnlocalizedName("blockCarpentersSlope");
+		setCreativeTab(CarpentersBlocks.tabCarpentersBlocks);
 	}
 	
     @Override
@@ -48,106 +48,106 @@ public class BlockCarpentersSlope extends BlockBase
     {
         this.blockIcon = IconHandler.icon_slope;
     }
-    
-    @Override
+
+	@Override
 	/**
 	 * Alters block direction.
 	 */
 	protected boolean onHammerLeftClick(TECarpentersBlock TE, EntityPlayer entityPlayer)
 	{
-    	int slopeID = BlockProperties.getData(TE);
-    	Slope slope = Slope.slopesList[slopeID];
+		int slopeID = BlockProperties.getData(TE);
+		Slope slope = Slope.slopesList[slopeID];
 
 		/*
 		 * Cycle between slope types based on current slope
 		 */
-    	switch (slope.slopeType)
-    	{
-    	case WEDGE_XZ:
+		switch (slope.slopeType)
+		{
+		case WEDGE_XZ:
 			if (++slopeID > 3)
 				slopeID = 0;
-    	break;
-    	case WEDGE_Y:
-    		if (slope.isPositive) {
-    			if (++slopeID > 11)
-    				slopeID = 8;
-    		} else {
-    			if (++slopeID > 7)
-    				slopeID = 4;
-    		}
-    	break;
-    	case WEDGE_INT:
-	    	if (slope.isPositive) {
+			break;
+		case WEDGE_Y:
+			if (slope.isPositive) {
+				if (++slopeID > 11)
+					slopeID = 8;
+			} else {
+				if (++slopeID > 7)
+					slopeID = 4;
+			}
+			break;
+		case WEDGE_INT:
+			if (slope.isPositive) {
 				if ((slopeID += 2) > 18)
 					slopeID = 12;
 			} else {
 				if ((slopeID += 2) > 19)
 					slopeID = 13;
 			}
-    	break;
-    	case WEDGE_EXT:
-    		if (slope.isPositive) {
+			break;
+		case WEDGE_EXT:
+			if (slope.isPositive) {
 				if ((slopeID += 2) > 26)
 					slopeID = 20;
 			} else {
 				if ((slopeID += 2) > 27)
 					slopeID = 21;
 			}
-    	break;
-    	case OBLIQUE_INT:
-	    	if (slope.isPositive) {
+			break;
+		case OBLIQUE_INT:
+			if (slope.isPositive) {
 				if ((slopeID += 2) > 34)
 					slopeID = 28;
 			} else {
 				if ((slopeID += 2) > 35)
 					slopeID = 29;
 			}
-    	break;
-    	case OBLIQUE_EXT:
-	    	if (slope.isPositive) {
+			break;
+		case OBLIQUE_EXT:
+			if (slope.isPositive) {
 				if ((slopeID += 2) > 42)
 					slopeID = 36;
 			} else {
 				if ((slopeID += 2) > 43)
 					slopeID = 37;
 			}
-    	break;
-    	case PYRAMID:
-    		slopeID = slope.equals(Slope.PYR_HALF_POS) ? Slope.PYR_HALF_NEG.slopeID : Slope.PYR_HALF_POS.slopeID;
-    	break;
-    	}
+			break;
+		case PYRAMID:
+			slopeID = slope.equals(Slope.PYR_HALF_POS) ? Slope.PYR_HALF_NEG.slopeID : Slope.PYR_HALF_POS.slopeID;
+			break;
+		}
 
 		BlockProperties.setData(TE, slopeID);
 
 		return true;
 	}
 
-    @Override
+	@Override
 	/**
 	 * Alters block type.
 	 */
 	protected boolean onHammerRightClick(TECarpentersBlock TE, EntityPlayer entityPlayer, int side)
 	{
-    	int slopeID = BlockProperties.getData(TE);
-    	Slope slope = Slope.slopesList[slopeID];
+		int slopeID = BlockProperties.getData(TE);
+		Slope slope = Slope.slopesList[slopeID];
 
 		/*
 		 * Transform slope to next type
 		 */
-    	switch (slope.slopeType)
-    	{
-    	case WEDGE_XZ:
-    		slopeID = 8;
-    	break;
-    	case WEDGE_Y:
-	    	if (slope.isPositive) {
+		switch (slope.slopeType)
+		{
+		case WEDGE_XZ:
+			slopeID = 8;
+			break;
+		case WEDGE_Y:
+			if (slope.isPositive) {
 				slopeID -= 4;
 			} else {
 				slopeID = 12;
 			}
-    	break;
-    	case WEDGE_INT:
-    		if (slope.isPositive) {
+			break;
+		case WEDGE_INT:
+			if (slope.isPositive) {
 				slopeID += 1;
 			} else {
 				if (slopeID == 13 || slopeID == 15) {
@@ -156,9 +156,9 @@ public class BlockCarpentersSlope extends BlockBase
 					slopeID +=3;
 				}
 			}
-    	break;
-    	case WEDGE_EXT:
-    		if (slope.isPositive) {
+			break;
+		case WEDGE_EXT:
+			if (slope.isPositive) {
 				slopeID += 1;
 			} else {
 				if (slopeID == 21 || slopeID == 23) {
@@ -167,8 +167,8 @@ public class BlockCarpentersSlope extends BlockBase
 					slopeID += 3;
 				}
 			}
-    	break;
-    	case OBLIQUE_INT:
+			break;
+		case OBLIQUE_INT:
 			if (slope.isPositive) {
 				slopeID += 1;
 			} else {
@@ -178,18 +178,18 @@ public class BlockCarpentersSlope extends BlockBase
 					slopeID += 3;
 				}
 			}
-    	break;
-    	case OBLIQUE_EXT:
-    		if (slope.isPositive) {
+			break;
+		case OBLIQUE_EXT:
+			if (slope.isPositive) {
 				slopeID += 1;
 			} else {
 				slopeID = 44;
 			}
-    	break;
-    	case PYRAMID:
+			break;
+		case PYRAMID:
 			slopeID = 0;
-    	break;
-    	}
+			break;
+		}
 
 		BlockProperties.setData(TE, slopeID);
 
@@ -202,7 +202,7 @@ public class BlockCarpentersSlope extends BlockBase
 	private float[] genBounds(Slope slope, int slice, int precision, int pass)
 	{
 		++pass;
-		
+
 		// For oblique exterior corners
 		float zeroPassOffset = (float) (pass - 1) / getNumPasses(slope);
 		float onePassOffset = (float) pass / getNumPasses(slope);
@@ -413,10 +413,10 @@ public class BlockCarpentersSlope extends BlockBase
 	{
 		switch (slope.slopeType)
 		{
-			case PYRAMID:
-				return hitboxPrecision / 2;
-			default:
-				return hitboxPrecision;
+		case PYRAMID:
+			return hitboxPrecision / 2;
+		default:
+			return hitboxPrecision;
 		}
 	}
 
@@ -427,14 +427,14 @@ public class BlockCarpentersSlope extends BlockBase
 	{
 		switch (slope.slopeType)
 		{
-			case OBLIQUE_EXT:
-				return getNumBoxesPerPass(slope);
-			case OBLIQUE_INT:
-				return 3;
-			case WEDGE_INT:
-				return 2;
-			default:
-				return 1;
+		case OBLIQUE_EXT:
+			return getNumBoxesPerPass(slope);
+		case OBLIQUE_INT:
+			return 3;
+		case WEDGE_INT:
+			return 2;
+		default:
+			return 1;
 		}
 	}
 
@@ -491,7 +491,7 @@ public class BlockCarpentersSlope extends BlockBase
 		return finalTrace;
 	}
 
-    @Override
+	@Override
 	/**
 	 * Adds all intersecting collision boxes to a list. (Be sure to only add boxes to the list if they intersect the
 	 * mask.) Parameters: World, X, Y, Z, mask, list, colliding entity
@@ -504,7 +504,7 @@ public class BlockCarpentersSlope extends BlockBase
 
 		int slopeID = BlockProperties.getData(TE);
 		Slope slope = Slope.slopesList[slopeID];
-		
+
 		int precision = getNumBoxesPerPass(slope);
 		int numPasses = getNumPasses(slope);
 
@@ -527,7 +527,7 @@ public class BlockCarpentersSlope extends BlockBase
 		}
 	}
 
-    @Override
+	@Override
 	/**
 	 * Checks if the block is a solid face on the given side, used by placement logic.
 	 */
@@ -540,30 +540,30 @@ public class BlockCarpentersSlope extends BlockBase
 
 		return false;
 	}
-    
-    @Override
-    /**
-     * Returns whether sides share faces based on sloping property and face shape.
-     */
+
+	@Override
+	/**
+	 * Returns whether sides share faces based on sloping property and face shape.
+	 */
 	protected boolean shareFaces(TECarpentersBlock TE_adj, TECarpentersBlock TE_src, ForgeDirection side_adj, ForgeDirection side_src)
 	{
-    	if (TE_adj.getBlockType() == this)
-    	{
+		if (TE_adj.getBlockType() == this)
+		{
 			Slope slope_src = Slope.slopesList[BlockProperties.getData(TE_src)];
 			Slope slope_adj = Slope.slopesList[BlockProperties.getData(TE_adj)];
-	
+
 			if (!slope_adj.hasSide(side_adj))
 				return false;
 			else if (slope_src.wedgeOrientation(side_src) == slope_adj.wedgeOrientation(side_adj))
 				return true;
 			else
 				return false;
-    	}
-    	
+		}
+
 		return super.shareFaces(TE_adj, TE_src, side_adj, side_src);
 	}
 
-    @Override
+	@Override
 	/**
 	 * Called when block is placed in world.
 	 * Sets slope angle depending on click coordinates on block face.
@@ -607,7 +607,7 @@ public class BlockCarpentersSlope extends BlockBase
 		}
 	}
 
-    @Override
+	@Override
 	/**
 	 * Called when the block is placed in the world.
 	 * Uses cardinal direction to adjust metadata if player clicks top or bottom face of block.
@@ -622,18 +622,18 @@ public class BlockCarpentersSlope extends BlockBase
 		if (slopeID > 11)
 		{
 			switch (facing) {
-				case 0:
-					slopeID = slopeID == 12 ? Slope.ID_WEDGE_NEG_N : Slope.ID_WEDGE_POS_N;
-					break;
-				case 1:
-					slopeID = slopeID == 12 ? Slope.ID_WEDGE_NEG_E : Slope.ID_WEDGE_POS_E;
-					break;
-				case 2:
-					slopeID = slopeID == 12 ? Slope.ID_WEDGE_NEG_S : Slope.ID_WEDGE_POS_S;
-					break;
-				case 3:
-					slopeID = slopeID == 12 ? Slope.ID_WEDGE_NEG_W : Slope.ID_WEDGE_POS_W;
-					break;
+			case 0:
+				slopeID = slopeID == 12 ? Slope.ID_WEDGE_NEG_N : Slope.ID_WEDGE_POS_N;
+				break;
+			case 1:
+				slopeID = slopeID == 12 ? Slope.ID_WEDGE_NEG_E : Slope.ID_WEDGE_POS_E;
+				break;
+			case 2:
+				slopeID = slopeID == 12 ? Slope.ID_WEDGE_NEG_S : Slope.ID_WEDGE_POS_S;
+				break;
+			case 3:
+				slopeID = slopeID == 12 ? Slope.ID_WEDGE_NEG_W : Slope.ID_WEDGE_POS_W;
+				break;
 			}
 		}
 
@@ -642,23 +642,23 @@ public class BlockCarpentersSlope extends BlockBase
 		{
 			Slope slope = Slope.slopesList[slopeID];
 
-			TECarpentersBlock TE_XN = world.getBlockId(x - 1, y, z) == this.blockID ? (TECarpentersBlock)world.getBlockTileEntity(x - 1, y, z) : null;
-			TECarpentersBlock TE_XP = world.getBlockId(x + 1, y, z) == this.blockID ? (TECarpentersBlock)world.getBlockTileEntity(x + 1, y, z) : null;
-			TECarpentersBlock TE_YP = world.getBlockId(x, y + 1, z) == this.blockID ? (TECarpentersBlock)world.getBlockTileEntity(x, y + 1, z) : null;
-			TECarpentersBlock TE_YN = world.getBlockId(x, y - 1, z) == this.blockID ? (TECarpentersBlock)world.getBlockTileEntity(x, y - 1, z) : null;
-			TECarpentersBlock TE_ZN = world.getBlockId(x, y, z - 1) == this.blockID ? (TECarpentersBlock)world.getBlockTileEntity(x, y, z - 1) : null;
-			TECarpentersBlock TE_ZP = world.getBlockId(x, y, z + 1) == this.blockID ? (TECarpentersBlock)world.getBlockTileEntity(x, y, z + 1) : null;
-			TECarpentersBlock TE_XYNN = world.getBlockId(x - 1, y - 1, z) == this.blockID ? (TECarpentersBlock)world.getBlockTileEntity(x - 1, y - 1, z) : null;
-			TECarpentersBlock TE_XYPN = world.getBlockId(x + 1, y - 1, z) == this.blockID ? (TECarpentersBlock)world.getBlockTileEntity(x + 1, y - 1, z) : null;
-			TECarpentersBlock TE_YZNN = world.getBlockId(x, y - 1, z - 1) == this.blockID ? (TECarpentersBlock)world.getBlockTileEntity(x, y - 1, z - 1) : null;
-			TECarpentersBlock TE_YZNP = world.getBlockId(x, y - 1, z + 1) == this.blockID ? (TECarpentersBlock)world.getBlockTileEntity(x, y - 1, z + 1) : null;
-			TECarpentersBlock TE_XYNP = world.getBlockId(x - 1, y + 1, z) == this.blockID ? (TECarpentersBlock)world.getBlockTileEntity(x - 1, y + 1, z) : null;
-			TECarpentersBlock TE_XYPP = world.getBlockId(x + 1, y + 1, z) == this.blockID ? (TECarpentersBlock)world.getBlockTileEntity(x + 1, y + 1, z) : null;
-			TECarpentersBlock TE_YZPN = world.getBlockId(x, y + 1, z - 1) == this.blockID ? (TECarpentersBlock)world.getBlockTileEntity(x, y + 1, z - 1) : null;
-			TECarpentersBlock TE_YZPP = world.getBlockId(x, y + 1, z + 1) == this.blockID ? (TECarpentersBlock)world.getBlockTileEntity(x, y + 1, z + 1) : null;
-			
+			TECarpentersBlock TE_XN = world.getBlockId(x - 1, y, z) == blockID ? (TECarpentersBlock)world.getBlockTileEntity(x - 1, y, z) : null;
+			TECarpentersBlock TE_XP = world.getBlockId(x + 1, y, z) == blockID ? (TECarpentersBlock)world.getBlockTileEntity(x + 1, y, z) : null;
+			TECarpentersBlock TE_YP = world.getBlockId(x, y + 1, z) == blockID ? (TECarpentersBlock)world.getBlockTileEntity(x, y + 1, z) : null;
+			TECarpentersBlock TE_YN = world.getBlockId(x, y - 1, z) == blockID ? (TECarpentersBlock)world.getBlockTileEntity(x, y - 1, z) : null;
+			TECarpentersBlock TE_ZN = world.getBlockId(x, y, z - 1) == blockID ? (TECarpentersBlock)world.getBlockTileEntity(x, y, z - 1) : null;
+			TECarpentersBlock TE_ZP = world.getBlockId(x, y, z + 1) == blockID ? (TECarpentersBlock)world.getBlockTileEntity(x, y, z + 1) : null;
+			TECarpentersBlock TE_XYNN = world.getBlockId(x - 1, y - 1, z) == blockID ? (TECarpentersBlock)world.getBlockTileEntity(x - 1, y - 1, z) : null;
+			TECarpentersBlock TE_XYPN = world.getBlockId(x + 1, y - 1, z) == blockID ? (TECarpentersBlock)world.getBlockTileEntity(x + 1, y - 1, z) : null;
+			TECarpentersBlock TE_YZNN = world.getBlockId(x, y - 1, z - 1) == blockID ? (TECarpentersBlock)world.getBlockTileEntity(x, y - 1, z - 1) : null;
+			TECarpentersBlock TE_YZNP = world.getBlockId(x, y - 1, z + 1) == blockID ? (TECarpentersBlock)world.getBlockTileEntity(x, y - 1, z + 1) : null;
+			TECarpentersBlock TE_XYNP = world.getBlockId(x - 1, y + 1, z) == blockID ? (TECarpentersBlock)world.getBlockTileEntity(x - 1, y + 1, z) : null;
+			TECarpentersBlock TE_XYPP = world.getBlockId(x + 1, y + 1, z) == blockID ? (TECarpentersBlock)world.getBlockTileEntity(x + 1, y + 1, z) : null;
+			TECarpentersBlock TE_YZPN = world.getBlockId(x, y + 1, z - 1) == blockID ? (TECarpentersBlock)world.getBlockTileEntity(x, y + 1, z - 1) : null;
+			TECarpentersBlock TE_YZPP = world.getBlockId(x, y + 1, z + 1) == blockID ? (TECarpentersBlock)world.getBlockTileEntity(x, y + 1, z + 1) : null;
+
 			/* Gather neighboring slopes */
-			
+
 			Slope slope_XN = TE_XN != null ? Slope.slopesList[BlockProperties.getData(TE_XN)] : (Slope)null;
 			Slope slope_XP = TE_XP != null ? Slope.slopesList[BlockProperties.getData(TE_XP)] : (Slope)null;
 			Slope slope_ZN = TE_ZN != null ? Slope.slopesList[BlockProperties.getData(TE_ZN)] : (Slope)null;
@@ -667,7 +667,7 @@ public class BlockCarpentersSlope extends BlockBase
 			Slope slope_YN = TE_YN != null ? Slope.slopesList[BlockProperties.getData(TE_YN)] : (Slope)null;
 
 			/* Store old slopes (to check against new ones at end of function) */
-			
+
 			Slope temp_slope_XN = TE_XN != null ? slope_XN : (Slope)null;
 			Slope temp_slope_XP = TE_XP != null ? slope_XP : (Slope)null;
 			Slope temp_slope_YP = TE_YP != null ? slope_YP : (Slope)null;
@@ -676,7 +676,7 @@ public class BlockCarpentersSlope extends BlockBase
 			Slope temp_slope_ZP = TE_ZP != null ? slope_ZP : (Slope)null;
 
 			/* Check if slope should transform to corner to match slope behind it. */
-			
+
 			if (slope.slopeType.equals(SlopeType.WEDGE_Y))
 			{
 				if (TE_XN != null) {
@@ -720,7 +720,7 @@ public class BlockCarpentersSlope extends BlockBase
 						if (slope_ZN.facings.contains(ForgeDirection.WEST) && !slope_ZN.facings.contains(ForgeDirection.SOUTH))
 							slopeID = slope_ZN.isPositive ? Slope.ID_WEDGE_EXT_POS_SW : Slope.ID_WEDGE_EXT_NEG_SW;
 					}
-				}				
+				}
 				if (TE_ZP != null) {
 					if (slope.facings.contains(ForgeDirection.NORTH)) {
 						if (slope_ZP.facings.contains(ForgeDirection.EAST) && !slope_ZP.facings.contains(ForgeDirection.NORTH))
@@ -738,7 +738,7 @@ public class BlockCarpentersSlope extends BlockBase
 			}
 
 			/* Check if slope should transform to corner. */
-			
+
 			if (TE_ZN != null) {
 				if (TE_XP != null) {
 					if (slope_ZN.facings.contains(ForgeDirection.EAST) && slope_XP.facings.contains(ForgeDirection.NORTH))
@@ -835,8 +835,8 @@ public class BlockCarpentersSlope extends BlockBase
 						Slope.slopesList[BlockProperties.getData(TE_XYPN)] == Slope.WEDGE_POS_E &&
 						Slope.slopesList[BlockProperties.getData(TE_YZNN)] == Slope.WEDGE_POS_N &&
 						Slope.slopesList[BlockProperties.getData(TE_YZNP)] == Slope.WEDGE_POS_S
-					)
-						slopeID = Slope.ID_PYR_HALF_POS;
+						)
+					slopeID = Slope.ID_PYR_HALF_POS;
 			}
 			if (TE_XYNP != null && TE_XYPP != null && TE_YZPN != null && TE_YZPP != null) {
 				if (
@@ -844,12 +844,12 @@ public class BlockCarpentersSlope extends BlockBase
 						Slope.slopesList[BlockProperties.getData(TE_XYPP)] == Slope.WEDGE_NEG_E &&
 						Slope.slopesList[BlockProperties.getData(TE_YZPN)] == Slope.WEDGE_NEG_N &&
 						Slope.slopesList[BlockProperties.getData(TE_YZPP)] == Slope.WEDGE_NEG_S
-					)
-						slopeID = Slope.ID_PYR_HALF_NEG;
+						)
+					slopeID = Slope.ID_PYR_HALF_NEG;
 			}
 
 			/* Check if slope below is interior corner, change to oblique if it is, and change this to side slope. */
-			
+
 			if (TE_YP != null) {
 				if (slope_YP == Slope.WEDGE_INT_NEG_NW) {
 					slopeID = Slope.ID_WEDGE_NW;
@@ -882,7 +882,7 @@ public class BlockCarpentersSlope extends BlockBase
 			}
 
 			/* Check if slope above or below is side slope or oblique interior slope, and, if so, make this a continuation. */
-			
+
 			if (TE_YP != null) {
 				if (slope_YP.slopeType.equals(SlopeType.WEDGE_XZ)) {
 					slopeID = slope_YP.slopeID;
@@ -925,36 +925,36 @@ public class BlockCarpentersSlope extends BlockBase
 			}
 
 			/* Check if slope should form into exterior oblique corner. */
-			
+
 			if (
 					TE_YP != null && (slope_YP.slopeType.equals(SlopeType.OBLIQUE_EXT) || slope_YP.slopeType.equals(SlopeType.WEDGE_XZ)) ||
 					TE_YN != null && (slope_YN.slopeType.equals(SlopeType.OBLIQUE_EXT) || slope_YN.slopeType.equals(SlopeType.WEDGE_XZ))
-				)
+					)
 			{
 				if (TE_XP != null && TE_ZN != null) {
-					
+
 					if (slope_XP.slopeType.equals(SlopeType.WEDGE_XZ) && slope_ZN.slopeType.equals(SlopeType.WEDGE_XZ) && slope_XP.isPositive == slope_ZN.isPositive)
 						if (slope_XP.facings.contains(ForgeDirection.SOUTH) && slope_ZN.facings.contains(ForgeDirection.WEST))
 							slopeID = slope_XP.isPositive ? Slope.ID_OBL_EXT_POS_SW : Slope.ID_OBL_EXT_NEG_SW;
-					
+
 				} else if (TE_ZN != null && TE_XN != null) {
-					
+
 					if (slope_ZN.slopeType.equals(SlopeType.WEDGE_XZ) && slope_XN.slopeType.equals(SlopeType.WEDGE_XZ) && slope_ZN.isPositive == slope_XN.isPositive)
 						if (slope_ZN.facings.contains(ForgeDirection.EAST) && slope_XN.facings.contains(ForgeDirection.SOUTH))
 							slopeID = slope_ZN.isPositive ? Slope.ID_OBL_EXT_POS_SE : Slope.ID_OBL_EXT_NEG_SE;
-					
+
 				} else if (TE_XN != null && TE_ZP != null) {
-					
+
 					if (slope_XN.slopeType.equals(SlopeType.WEDGE_XZ) && slope_ZP.slopeType.equals(SlopeType.WEDGE_XZ) && slope_XN.isPositive == slope_ZP.isPositive)
 						if (slope_XN.facings.contains(ForgeDirection.NORTH) && slope_ZP.facings.contains(ForgeDirection.EAST))
 							slopeID = slope_XN.isPositive ? Slope.ID_OBL_EXT_POS_NE : Slope.ID_OBL_EXT_NEG_NE;
-					
+
 				} else if (TE_ZP != null && TE_XP != null) {
-					
+
 					if (slope_ZP.slopeType.equals(SlopeType.WEDGE_XZ) && slope_XP.slopeType.equals(SlopeType.WEDGE_XZ) && slope_ZP.isPositive == slope_XP.isPositive)
 						if (slope_ZP.facings.contains(ForgeDirection.WEST) && slope_XP.facings.contains(ForgeDirection.NORTH))
 							slopeID = slope_ZP.isPositive ? Slope.ID_OBL_EXT_POS_NW : Slope.ID_OBL_EXT_NEG_NW;
-					
+
 				}
 			}
 
@@ -975,17 +975,17 @@ public class BlockCarpentersSlope extends BlockBase
 					BlockProperties.setData(TE_YP, slope_YP.slopeID);
 			}
 		}
-					
+
 		BlockProperties.setData(TE, slopeID);
 	}
 
 	@Override
 	public boolean canCoverSide(TECarpentersBlock TE, World world, int x, int y, int z, int side)
 	{
-		return this.isBlockSolidOnSide(world, x, y, z, ForgeDirection.getOrientation(side));
+		return isBlockSolidOnSide(world, x, y, z, ForgeDirection.getOrientation(side));
 	}
 
-    @Override
+	@Override
 	/**
 	 * The type of render function that is called for this block
 	 */

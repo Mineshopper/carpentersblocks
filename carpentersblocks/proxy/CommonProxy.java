@@ -13,19 +13,19 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 
 public class CommonProxy
 {
-	
+
 	public void registerHandlers(FMLPreInitializationEvent event)
 	{
-        FeatureHandler.enablePlantSupport = PlantHandler.init();
-        OverlayHandler.init();
-        DyeColorHandler.init();
-        PatternHandler.init(event);
-        BedDesignHandler.init(event);
-    	MinecraftForge.EVENT_BUS.register(new EventHandler());    	
+		FeatureHandler.enablePlantSupport = PlantHandler.init();
+		OverlayHandler.init();
+		DyeColorHandler.init();
+		PatternHandler.init(event);
+		BedDesignHandler.init(event);
+		MinecraftForge.EVENT_BUS.register(new EventHandler());
 	}
-	
-    public void registerRenderInformation(FMLPreInitializationEvent event)
-    {
 
-    }
+	public void registerRenderInformation(FMLPreInitializationEvent event)
+	{
+
+	}
 }

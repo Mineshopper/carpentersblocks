@@ -30,11 +30,11 @@ public class BlockCarpentersStairs extends BlockBase
 	public BlockCarpentersStairs(int blockID)
 	{
 		super(blockID, Material.wood);
-		this.setHardness(0.2F);
-		this.setUnlocalizedName("blockCarpentersStairs");
-		this.setCreativeTab(CarpentersBlocks.tabCarpentersBlocks);
+		setHardness(0.2F);
+		setUnlocalizedName("blockCarpentersStairs");
+		setCreativeTab(CarpentersBlocks.tabCarpentersBlocks);
 	}
-	
+
     @Override
     @SideOnly(Side.CLIENT)
     /**
@@ -45,117 +45,117 @@ public class BlockCarpentersStairs extends BlockBase
     {
         this.blockIcon = IconHandler.icon_stairs;
     }
-
-    @Override
+	
+	@Override
 	/**
 	 * Alters block direction.
 	 */
 	protected boolean onHammerLeftClick(TECarpentersBlock TE, EntityPlayer entityPlayer)
 	{
-    	int stairsID = BlockProperties.getData(TE);
-    	Stairs stairs = Stairs.stairsList[stairsID];
-    	
+		int stairsID = BlockProperties.getData(TE);
+		Stairs stairs = Stairs.stairsList[stairsID];
+
 		/*
 		 * Cycle between stairs direction based on current type
 		 */
-    	
-    	switch (stairs.stairsType)
-    	{
-	    	case NORMAL_XZ:
-	    		if (++stairsID > 3)
-					stairsID = 0;
-	    		break;
-	    	case NORMAL_Y:
-	    		if (stairs.arePositive) {
-					if (++stairsID > 11)
-						stairsID = 8;
-				} else {
-					if (++stairsID > 7)
-						stairsID = 4;
-				}
-	    		break;
-	    	case NORMAL_INT:
-		    	if (stairs.arePositive) {
-					if ((stairsID += 2) > 18)
-						stairsID = 12;
-				} else {
-					if ((stairsID += 2) > 19)
-						stairsID = 13;
-				}
-	    		break;
-	    	case NORMAL_EXT:
-				if (stairs.arePositive) {
-					if ((stairsID += 2) > 26)
-						stairsID = 20;
-				}  else {
-					if ((stairsID += 2) > 27)
-						stairsID = 21;
-				}
-				break;
-    	}
-    	
+
+		switch (stairs.stairsType)
+		{
+		case NORMAL_XZ:
+			if (++stairsID > 3)
+				stairsID = 0;
+			break;
+		case NORMAL_Y:
+			if (stairs.arePositive) {
+				if (++stairsID > 11)
+					stairsID = 8;
+			} else {
+				if (++stairsID > 7)
+					stairsID = 4;
+			}
+			break;
+		case NORMAL_INT:
+			if (stairs.arePositive) {
+				if ((stairsID += 2) > 18)
+					stairsID = 12;
+			} else {
+				if ((stairsID += 2) > 19)
+					stairsID = 13;
+			}
+			break;
+		case NORMAL_EXT:
+			if (stairs.arePositive) {
+				if ((stairsID += 2) > 26)
+					stairsID = 20;
+			}  else {
+				if ((stairsID += 2) > 27)
+					stairsID = 21;
+			}
+			break;
+		}
+
 		BlockProperties.setData(TE, stairsID);
-				
+
 		return true;
 	}
-	
-    @Override
+
+	@Override
 	/**
 	 * Alters block type.
 	 */
 	protected boolean onHammerRightClick(TECarpentersBlock TE, EntityPlayer entityPlayer, int side)
 	{
-    	int stairsID = BlockProperties.getData(TE);
-    	Stairs stairs = Stairs.stairsList[stairsID];
-    	
+		int stairsID = BlockProperties.getData(TE);
+		Stairs stairs = Stairs.stairsList[stairsID];
+
 		/*
 		 * Transform stairs to next type
 		 */
-    	
-    	switch (stairs.stairsType)
-    	{
-	    	case NORMAL_XZ:
-				stairsID = 8;
-	    		break;
-	    	case NORMAL_Y:
-				if (stairs.arePositive) {
-					stairsID -= 4;
+
+		switch (stairs.stairsType)
+		{
+		case NORMAL_XZ:
+			stairsID = 8;
+			break;
+		case NORMAL_Y:
+			if (stairs.arePositive) {
+				stairsID -= 4;
+			} else {
+				stairsID = 12;
+			}
+			break;
+		case NORMAL_INT:
+			if (stairs.arePositive) {
+				stairsID += 1;
+			} else {
+				if (stairsID == 13 || stairsID == 15) {
+					stairsID += 11;
 				} else {
-					stairsID = 12;
+					stairsID += 3;
 				}
-	    		break;
-	    	case NORMAL_INT:
-				if (stairs.arePositive) {
-					stairsID += 1;
-				} else {
-					if (stairsID == 13 || stairsID == 15) {
-						stairsID += 11;
-					} else {
-						stairsID += 3;
-					}
-				}
-	    		break;
-	    	case NORMAL_EXT:
-				if (stairs.arePositive) {
-					stairsID += 1;
-				} else {
-					stairsID = 0;
-				}
-	    		break;
-    	}
+			}
+			break;
+		case NORMAL_EXT:
+			if (stairs.arePositive) {
+				stairsID += 1;
+			} else {
+				stairsID = 0;
+			}
+			break;
+		}
 
 		BlockProperties.setData(TE, stairsID);
-		
+
 		return true;
 	}
-		
+
 	/**
 	 * Will return stairs boundaries.
 	 */
 	public float[] genBounds(int box, Stairs stairs)
 	{
 		++box;
-		
+
 		switch (stairs.stairsID)
 		{
 		case Stairs.ID_NORMAL_SW:
@@ -415,11 +415,11 @@ public class BlockCarpentersStairs extends BlockBase
 			}
 			break;
 		}
-		
+
 		return null;
 	}
-	
-    @Override
+
+	@Override
 	/**
 	 * Ray traces through the blocks collision from start vector to end vector returning a ray trace hit. Args: world,
 	 * x, y, z, startVec, endVec
@@ -429,7 +429,7 @@ public class BlockCarpentersStairs extends BlockBase
 		TECarpentersBlock TE = (TECarpentersBlock)world.getBlockTileEntity(x, y, z);
 
 		MovingObjectPosition finalTrace = null;
-		
+
 		int stairsID = BlockProperties.getData(TE);
 		Stairs stairs = Stairs.stairsList[stairsID];
 
@@ -440,12 +440,12 @@ public class BlockCarpentersStairs extends BlockBase
 		for (int box = 0; box < 3; ++box)
 		{
 			float[] bounds = genBounds(box, stairs);
-			
+
 			if (bounds != null)
 			{
-				this.setBlockBounds(bounds[0], bounds[1], bounds[2], bounds[3], bounds[4], bounds[5]);
+				setBlockBounds(bounds[0], bounds[1], bounds[2], bounds[3], bounds[4], bounds[5]);
 				MovingObjectPosition traceResult = super.collisionRayTrace(world, x, y, z, startVec, endVec);
-	
+
 				if (traceResult != null)
 				{
 					currDist = traceResult.hitVec.squareDistanceTo(endVec);
@@ -457,11 +457,11 @@ public class BlockCarpentersStairs extends BlockBase
 			}
 		}
 
-		this.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
+		setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
 		return finalTrace;
 	}
-	
-    @Override
+
+	@Override
 	/**
 	 * Adds all intersecting collision boxes to a list. (Be sure to only add boxes to the list if they intersect the
 	 * mask.) Parameters: World, X, Y, Z, mask, list, colliding entity
@@ -480,13 +480,13 @@ public class BlockCarpentersStairs extends BlockBase
 
 			if (bounds != null)
 				colBox = AxisAlignedBB.getAABBPool().getAABB(x + bounds[0], y + bounds[1], z + bounds[2], x + bounds[3], y + bounds[4], z + bounds[5]);
-				
+
 			if (colBox != null && axisAlignedBB.intersectsWith(colBox))
 				list.add(colBox);
 		}
 	}
-	
-    @Override
+
+	@Override
 	/**
 	 * Checks if the block is a solid face on the given side, used by placement logic.
 	 */
@@ -500,7 +500,7 @@ public class BlockCarpentersStairs extends BlockBase
 		return false;
 	}
 
-    @Override
+	@Override
 	/**
 	 * Called when block is placed in world.
 	 * Sets stairs angle depending on click coordinates on block face.
@@ -544,7 +544,7 @@ public class BlockCarpentersStairs extends BlockBase
 		}
 	}
 
-    @Override
+	@Override
 	/**
 	 * Called when the block is placed in the world.
 	 * Uses cardinal direction to adjust metadata if player clicks top or bottom face of block.
@@ -559,18 +559,18 @@ public class BlockCarpentersStairs extends BlockBase
 		if (stairsID > 11)
 		{
 			switch (facing) {
-				case 0:
-					stairsID = stairsID == 12 ? Stairs.ID_NORMAL_NEG_N : Stairs.ID_NORMAL_POS_N;
-					break;
-				case 1:
-					stairsID = stairsID == 12 ? Stairs.ID_NORMAL_NEG_E : Stairs.ID_NORMAL_POS_E;
-					break;
-				case 2:
-					stairsID = stairsID == 12 ? Stairs.ID_NORMAL_NEG_S : Stairs.ID_NORMAL_POS_S;
-					break;
-				case 3:
-					stairsID = stairsID == 12 ? Stairs.ID_NORMAL_NEG_W : Stairs.ID_NORMAL_POS_W;
-					break;
+			case 0:
+				stairsID = stairsID == 12 ? Stairs.ID_NORMAL_NEG_N : Stairs.ID_NORMAL_POS_N;
+				break;
+			case 1:
+				stairsID = stairsID == 12 ? Stairs.ID_NORMAL_NEG_E : Stairs.ID_NORMAL_POS_E;
+				break;
+			case 2:
+				stairsID = stairsID == 12 ? Stairs.ID_NORMAL_NEG_S : Stairs.ID_NORMAL_POS_S;
+				break;
+			case 3:
+				stairsID = stairsID == 12 ? Stairs.ID_NORMAL_NEG_W : Stairs.ID_NORMAL_POS_W;
+				break;
 			}
 		}
 
@@ -579,15 +579,15 @@ public class BlockCarpentersStairs extends BlockBase
 		{
 			Stairs stairs = Stairs.stairsList[stairsID];
 
-			TECarpentersBlock TE_XN = world.getBlockId(x - 1, y, z) == this.blockID ? (TECarpentersBlock)world.getBlockTileEntity(x - 1, y, z) : null;
-			TECarpentersBlock TE_XP = world.getBlockId(x + 1, y, z) == this.blockID ? (TECarpentersBlock)world.getBlockTileEntity(x + 1, y, z) : null;
-			TECarpentersBlock TE_YP = world.getBlockId(x, y + 1, z) == this.blockID ? (TECarpentersBlock)world.getBlockTileEntity(x, y + 1, z) : null;
-			TECarpentersBlock TE_YN = world.getBlockId(x, y - 1, z) == this.blockID ? (TECarpentersBlock)world.getBlockTileEntity(x, y - 1, z) : null;
-			TECarpentersBlock TE_ZN = world.getBlockId(x, y, z - 1) == this.blockID ? (TECarpentersBlock)world.getBlockTileEntity(x, y, z - 1) : null;
-			TECarpentersBlock TE_ZP = world.getBlockId(x, y, z + 1) == this.blockID ? (TECarpentersBlock)world.getBlockTileEntity(x, y, z + 1) : null;
-			
+			TECarpentersBlock TE_XN = world.getBlockId(x - 1, y, z) == blockID ? (TECarpentersBlock)world.getBlockTileEntity(x - 1, y, z) : null;
+			TECarpentersBlock TE_XP = world.getBlockId(x + 1, y, z) == blockID ? (TECarpentersBlock)world.getBlockTileEntity(x + 1, y, z) : null;
+			TECarpentersBlock TE_YP = world.getBlockId(x, y + 1, z) == blockID ? (TECarpentersBlock)world.getBlockTileEntity(x, y + 1, z) : null;
+			TECarpentersBlock TE_YN = world.getBlockId(x, y - 1, z) == blockID ? (TECarpentersBlock)world.getBlockTileEntity(x, y - 1, z) : null;
+			TECarpentersBlock TE_ZN = world.getBlockId(x, y, z - 1) == blockID ? (TECarpentersBlock)world.getBlockTileEntity(x, y, z - 1) : null;
+			TECarpentersBlock TE_ZP = world.getBlockId(x, y, z + 1) == blockID ? (TECarpentersBlock)world.getBlockTileEntity(x, y, z + 1) : null;
+
 			/* Gather neighboring stairs */
-			
+
 			Stairs stairs_XN = TE_XN != null ? Stairs.stairsList[BlockProperties.getData(TE_XN)] : (Stairs)null;
 			Stairs stairs_XP = TE_XP != null ? Stairs.stairsList[BlockProperties.getData(TE_XP)] : (Stairs)null;
 			Stairs stairs_ZN = TE_ZN != null ? Stairs.stairsList[BlockProperties.getData(TE_ZN)] : (Stairs)null;
@@ -596,7 +596,7 @@ public class BlockCarpentersStairs extends BlockBase
 			Stairs stairs_YN = TE_YN != null ? Stairs.stairsList[BlockProperties.getData(TE_YN)] : (Stairs)null;
 
 			/* Store old stairs (to check against new ones at end of function) */
-			
+
 			Stairs temp_stairs_XN = TE_XN != null ? stairs_XN : (Stairs)null;
 			Stairs temp_stairs_XP = TE_XP != null ? stairs_XP : (Stairs)null;
 			Stairs temp_stairs_YP = TE_YP != null ? stairs_YP : (Stairs)null;
@@ -605,7 +605,7 @@ public class BlockCarpentersStairs extends BlockBase
 			Stairs temp_stairs_ZP = TE_ZP != null ? stairs_ZP : (Stairs)null;
 
 			/* Check if stairs should transform into corner to match stairs behind it. */
-			
+
 			if (stairs.stairsType.equals(StairsType.NORMAL_Y))
 			{
 				if (TE_XN != null) {
@@ -649,7 +649,7 @@ public class BlockCarpentersStairs extends BlockBase
 						if (stairs_ZN.facings.contains(ForgeDirection.WEST) && !stairs_ZN.facings.contains(ForgeDirection.SOUTH))
 							stairsID = stairs_ZN.arePositive ? Stairs.ID_NORMAL_EXT_POS_SW : Stairs.ID_NORMAL_EXT_NEG_SW;
 					}
-				}				
+				}
 				if (TE_ZP != null) {
 					if (stairs.facings.contains(ForgeDirection.NORTH)) {
 						if (stairs_ZP.facings.contains(ForgeDirection.EAST) && !stairs_ZP.facings.contains(ForgeDirection.NORTH))
@@ -667,7 +667,7 @@ public class BlockCarpentersStairs extends BlockBase
 			}
 
 			/* Check if stairs should transform into corner. */
-			
+
 			if (TE_ZN != null) {
 				if (TE_XP != null) {
 					if (stairs_ZN.facings.contains(ForgeDirection.EAST) && stairs_XP.facings.contains(ForgeDirection.NORTH))
@@ -757,7 +757,7 @@ public class BlockCarpentersStairs extends BlockBase
 			}
 
 			/* Check if stairs above or below is side stairs or oblique interior stairs, and, if so, make this a continuation. */
-			
+
 			if (TE_YP != null) {
 				if (stairs_YP.stairsType.equals(StairsType.NORMAL_XZ)) {
 					stairsID = stairs_YP.stairsID;
@@ -786,20 +786,20 @@ public class BlockCarpentersStairs extends BlockBase
 					BlockProperties.setData(TE_YP, stairs_YP.stairsID);
 			}
 		}
-					
+
 		BlockProperties.setData(TE, stairsID);
 	}
-	
-    @Override
-    /**
-     * Returns whether block can support cover on side.
-     */
-	public boolean canCoverSide(TECarpentersBlock TE, World world, int x, int y, int z, int side)
-    {
-    	return true;
-    }
 
-    @Override
+	@Override
+	/**
+	 * Returns whether block can support cover on side.
+	 */
+	public boolean canCoverSide(TECarpentersBlock TE, World world, int x, int y, int z, int side)
+	{
+		return true;
+	}
+
+	@Override
 	/**
 	 * The type of render function that is called for this block
 	 */

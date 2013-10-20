@@ -31,7 +31,7 @@ public class Stairs
 	 * IDs 12 - 27 are mixed to retain compatibility
 	 * with older versions.
 	 */
-	
+
 	public final static byte ID_NORMAL_SE = 0;
 	public final static byte ID_NORMAL_NW = 1;
 	public final static byte ID_NORMAL_NE = 2;
@@ -130,7 +130,7 @@ public class Stairs
 		for (ForgeDirection face : facings)
 			this.facings.add(face);
 
-		this.arePositive = this.facings.contains(UP);
+		arePositive = this.facings.contains(UP);
 	}
 
 	public static final Stairs NORMAL_NW = new Stairs(ID_NORMAL_NW, StairsType.NORMAL_XZ, new ForgeDirection[] { NORTH, WEST }, new int[] { STAGGERED, STAGGERED, NO_FACE, FULL, NO_FACE, FULL }, new int[] { MAX_MAX, MAX_MAX, 0, 0, 0, 0 });
@@ -138,7 +138,7 @@ public class Stairs
 	public static final Stairs NORMAL_SW = new Stairs(ID_NORMAL_SW, StairsType.NORMAL_XZ, new ForgeDirection[] { SOUTH, WEST }, new int[] { STAGGERED, STAGGERED, FULL, NO_FACE, NO_FACE, FULL }, new int[] { MAX_MIN, MAX_MIN, 0, 0, 0, 0 });
 	public static final Stairs NORMAL_SE = new Stairs(ID_NORMAL_SE, StairsType.NORMAL_XZ, new ForgeDirection[] { SOUTH, EAST }, new int[] { STAGGERED, STAGGERED, FULL, NO_FACE, FULL, NO_FACE }, new int[] { MIN_MIN, MIN_MIN, 0, 0, 0, 0 });
 	public static final Stairs NORMAL_NEG_N = new Stairs(ID_NORMAL_NEG_N, StairsType.NORMAL_Y, new ForgeDirection[] { DOWN, NORTH }, new int[] { NO_FACE, FULL, NO_FACE, FULL, STAGGERED, STAGGERED }, new int[] { 0, 0, 0, 0, MAX_MAX, MAX_MAX });
-	public static final Stairs NORMAL_NEG_S = new Stairs(ID_NORMAL_NEG_S, StairsType.NORMAL_Y, new ForgeDirection[] { DOWN, SOUTH }, new int[] { NO_FACE, FULL, FULL, NO_FACE, STAGGERED, STAGGERED }, new int[] { 0, 0, 0, 0, MIN_MAX, MIN_MAX }); 
+	public static final Stairs NORMAL_NEG_S = new Stairs(ID_NORMAL_NEG_S, StairsType.NORMAL_Y, new ForgeDirection[] { DOWN, SOUTH }, new int[] { NO_FACE, FULL, FULL, NO_FACE, STAGGERED, STAGGERED }, new int[] { 0, 0, 0, 0, MIN_MAX, MIN_MAX });
 	public static final Stairs NORMAL_NEG_W = new Stairs(ID_NORMAL_NEG_W, StairsType.NORMAL_Y, new ForgeDirection[] { DOWN, WEST }, new int[] { NO_FACE, FULL, STAGGERED, STAGGERED, NO_FACE, FULL }, new int[] { 0, 0, MAX_MAX, MAX_MAX, 0, 0 });
 	public static final Stairs NORMAL_NEG_E = new Stairs(ID_NORMAL_NEG_E, StairsType.NORMAL_Y, new ForgeDirection[] { DOWN, EAST }, new int[] { NO_FACE, FULL, STAGGERED, STAGGERED, FULL, NO_FACE }, new int[] { 0, 0, MIN_MAX, MIN_MAX, 0, 0 });
 	public static final Stairs NORMAL_POS_N = new Stairs(ID_NORMAL_POS_N, StairsType.NORMAL_Y, new ForgeDirection[] { UP, NORTH }, new int[] { FULL, NO_FACE, NO_FACE, FULL, STAGGERED, STAGGERED }, new int[] { 0, 0, 0, 0, MAX_MIN, MAX_MIN });
@@ -164,12 +164,12 @@ public class Stairs
 
 	public boolean isFaceFull(ForgeDirection side)
 	{
-		return this.faceShape[side.ordinal()] == FULL;
+		return faceShape[side.ordinal()] == FULL;
 	}
 
 	public int staggeredOrientation(ForgeDirection side)
 	{
-		return this.staggeredCorner[side.ordinal()];
+		return staggeredCorner[side.ordinal()];
 	}
 
 }

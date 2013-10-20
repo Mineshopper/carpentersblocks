@@ -13,21 +13,21 @@ public class ItemCarpentersChisel extends Item
 	public ItemCarpentersChisel(int itemID)
 	{
 		super(itemID);
-		this.setUnlocalizedName("itemCarpentersChisel");
-		
+		setUnlocalizedName("itemCarpentersChisel");
+
 		if (ItemHandler.itemCarpentersToolsDamageable) {
-        	this.setMaxDamage(300);
-        	this.canRepair = true;
+			setMaxDamage(300);
+			canRepair = true;
 		}
-		
-		this.setCreativeTab(CarpentersBlocks.tabCarpentersBlocks);
+
+		setCreativeTab(CarpentersBlocks.tabCarpentersBlocks);
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IconRegister iconRegister)
 	{
-		this.itemIcon = iconRegister.registerIcon("carpentersblocks:chisel");
+		itemIcon = iconRegister.registerIcon("carpentersblocks:chisel");
 	}
-	
+
 }

@@ -15,12 +15,12 @@ public class CarpentersBlocksTab extends CreativeTabs
 		super(label);
 	}
 
-    @Override
+	@Override
 	@SideOnly(Side.CLIENT)
-    public Item getTabIconItem()
-    {
-        return ItemHandler.itemCarpentersHammer;
-    }
+	public Item getTabIconItem()
+	{
+		return ItemHandler.itemCarpentersHammer;
+	}
 
 	@Override
 	public String getTranslatedTabLabel()

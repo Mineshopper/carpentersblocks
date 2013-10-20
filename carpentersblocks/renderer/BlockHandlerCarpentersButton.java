@@ -11,15 +11,15 @@ import carpentersblocks.util.BlockProperties;
 
 public class BlockHandlerCarpentersButton extends BlockHandlerBase
 {
-	
-    @Override
-	public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderBlocks)
-    {
-    	Tessellator tessellator = Tessellator.instance;
-        GL11.glRotatef(90.0F, 0.0F, 1.0F, 0.0F);
-        GL11.glTranslatef(-0.5F, -0.5F, -0.5F);
 
-        renderBlocks.setRenderBounds(0.3125F, 0.375F, 0.375F, 0.6875F, 0.625F, 0.625F);
+	@Override
+	public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderBlocks)
+	{
+		Tessellator tessellator = Tessellator.instance;
+		GL11.glRotatef(90.0F, 0.0F, 1.0F, 0.0F);
+		GL11.glTranslatef(-0.5F, -0.5F, -0.5F);
+
+		renderBlocks.setRenderBounds(0.3125F, 0.375F, 0.375F, 0.6875F, 0.625F, 0.625F);
 
 		tessellator.startDrawingQuads();
 		tessellator.setNormal(0.0F, -1.0F, 0.0F);
@@ -45,23 +45,23 @@ public class BlockHandlerCarpentersButton extends BlockHandlerBase
 		tessellator.setNormal(1.0F, 0.0F, 0.0F);
 		renderBlocks.renderFaceXPos(block, 0.0D, 0.0D, 0.0D, block.getBlockTextureFromSide(5));
 		tessellator.draw();
-		
-        GL11.glTranslatef(0.5F, 0.5F, 0.5F);
-    }
+
+		GL11.glTranslatef(0.5F, 0.5F, 0.5F);
+	}
 
 	@Override
 	/**
 	 * Renders block
 	 */
-	public boolean renderCarpentersBlock(TECarpentersBlock TE, RenderBlocks renderBlocks, Block srcBlock, int renderPass, int x, int y, int z)
+	 public boolean renderCarpentersBlock(TECarpentersBlock TE, RenderBlocks renderBlocks, Block srcBlock, int renderPass, int x, int y, int z)
 	{
 		Block coverBlock = isSideCover ? BlockProperties.getCoverBlock(TE, coverRendering) : BlockProperties.getCoverBlock(TE, 6);
-		
+
 		renderBlocks.renderAllFaces = true;
 		renderStandardBlock(TE, renderBlocks, coverBlock, srcBlock, x, y, z);
 		renderBlocks.renderAllFaces = false;
 
-    	return true;
-    }
+		return true;
+	}
 
 }

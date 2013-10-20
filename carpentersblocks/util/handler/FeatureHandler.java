@@ -1,9 +1,9 @@
 package carpentersblocks.util.handler;
 
-import carpentersblocks.tileentity.TECarpentersBlock;
-import carpentersblocks.tileentity.TECarpentersBlockExt;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.Property;
+import carpentersblocks.tileentity.TECarpentersBlock;
+import carpentersblocks.tileentity.TECarpentersBlockExt;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
 
@@ -56,7 +56,10 @@ public class FeatureHandler
      */
     public static void registerTileEntities()
     {
-    	// String ID reflects old class name for compatibility with versions prior to v1.6
+    	/*
+    	 * Strings don't represent accurate names, but they're
+    	 * kept this way to retain compatibility.
+    	 */
     	GameRegistry.registerTileEntity(TECarpentersBlock.class, "TileEntityCarpentersSlope");
     	GameRegistry.registerTileEntity(TECarpentersBlockExt.class, "TileEntityCarpentersExt");
     }

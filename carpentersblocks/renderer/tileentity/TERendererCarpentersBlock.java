@@ -1,9 +1,9 @@
 package carpentersblocks.renderer.tileentity;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockBed;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
@@ -32,20 +32,13 @@ public class TERendererCarpentersBlock extends TileEntitySpecialRenderer
 		 * renders every frame.
 		 */
 		if (TE.getBlockType() == BlockHandler.blockCarpentersBed)
-			renderBedDesignAt(TE, x, y, z, f);
+			renderBedDesignAt((TECarpentersBlock)TE, x, y, z, f);
 	}
 	
-	private void renderBedDesignAt(TileEntity TE_d, double x, double y, double z, float f)
+	private void renderBedDesignAt(TECarpentersBlock TE, double x, double y, double z, float f)
 	{
-		TECarpentersBlock TE = (TECarpentersBlock) TE_d;
-		
 		int data = BlockProperties.getData(TE);
-		int metadata = TE.worldObj.getBlockMetadata(TE.xCoord, TE.yCoord, TE.zCoord);
-		
-		boolean isHead = BlockBed.isBlockHeadOfBed(metadata);
-		
-		TECarpentersBlock TE_opp = Bed.getOppositeTE(TE.worldObj, TE.xCoord, TE.yCoord, TE.zCoord);
-		
+		boolean isHead = Bed.isHeadOfBed(TE);
 		boolean isOccupied = Bed.isOccupied(TE);
 
 		int design = Bed.getDesign(data);
@@ -66,7 +59,7 @@ public class TERendererCarpentersBlock extends TileEntitySpecialRenderer
 		tessellator.startDrawingQuads();
 		GL11.glDisable(GL11.GL_LIGHTING);
 		
-		ForgeDirection dir = Bed.getDirection(metadata & 3);
+		ForgeDirection dir = Bed.getDirection(TE);
 		
 		if (isHead) {
 
@@ -140,7 +133,7 @@ public class TERendererCarpentersBlock extends TileEntitySpecialRenderer
 
 		Tessellator.instance.draw();
 		GL11.glEnable(GL11.GL_LIGHTING);
-		this.bindTextureByName("/terrain.png");		
+		this.bindTextureByName("/terrain.png");
 	}
 
 }

@@ -5,7 +5,6 @@ import java.lang.reflect.Method;
 import java.util.logging.Level;
 
 import net.minecraft.block.BlockFlower;
-import carpentersblocks.CarpentersBlocks;
 import carpentersblocks.util.ModLogger;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 

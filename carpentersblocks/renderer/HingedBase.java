@@ -21,7 +21,7 @@ public class HingedBase extends BlockHandlerBase
 					shouldRenderPattern(TE, renderPass);
 		}
 	}
-	
+
 	/**
 	 * Returns whether hinged screen, glass or handles should render.
 	 */
@@ -37,5 +37,5 @@ public class HingedBase extends BlockHandlerBase
 		 */
 		return renderPass == 0;
 	}
-	
+
 }
