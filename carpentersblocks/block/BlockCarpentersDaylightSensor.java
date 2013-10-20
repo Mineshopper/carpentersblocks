@@ -29,7 +29,7 @@ public class BlockCarpentersDaylightSensor extends BlockBase
 		setUnlocalizedName("blockCarpentersDaylightSensor");
 		setCreativeTab(CarpentersBlocks.tabCarpentersBlocks);
 		setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.375F, 1.0F);
-		func_111022_d("carpentersblocks:general/generic");
+		setTextureName("carpentersblocks:general/generic");
 	}
 
 	@Override

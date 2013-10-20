@@ -984,13 +984,13 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 				case 0:
 					return;
 				case 1:
-					icon = Block.field_111038_cB.getBlockTextureFromSide(1);
+					icon = Block.hay.getBlockTextureFromSide(1);
 					break;
 				default:
 					icon = IconHandler.icon_overlay_hay_side;
 					break;
 			}
-			colorSide(TE, renderBlocks, Block.field_111038_cB, srcBlock, side, x, y, z, icon, lightness);
+			colorSide(TE, renderBlocks, Block.hay, srcBlock, side, x, y, z, icon, lightness);
 			break;
 		}
 		case OverlayHandler.OVERLAY_WEB:

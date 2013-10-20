@@ -30,7 +30,7 @@ public class BlockCarpentersBed extends BlockBase
 		setHardness(0.4F);
 		setUnlocalizedName("blockCarpentersBed");
 		setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.625F, 1.0F);
-		func_111022_d("carpentersblocks:general/generic");
+		setTextureName("carpentersblocks:general/generic");
 	}
 
 	/**

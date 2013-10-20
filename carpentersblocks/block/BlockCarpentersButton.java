@@ -32,7 +32,7 @@ public class BlockCarpentersButton extends BlockBase
 		setUnlocalizedName("blockCarpentersButton");
 		setCreativeTab(CarpentersBlocks.tabCarpentersBlocks);
 		setTickRandomly(true);
-		func_111022_d("carpentersblocks:general/generic");
+		setTextureName("carpentersblocks:general/generic");
 	}
 
 	@Override

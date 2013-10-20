@@ -30,7 +30,7 @@ public class BlockCarpentersBarrier extends BlockBase
 		setHardness(0.2F);
 		setUnlocalizedName("blockCarpentersBarrier");
 		setCreativeTab(CarpentersBlocks.tabCarpentersBlocks);
-		func_111022_d("carpentersblocks:general/generic");
+		setTextureName("carpentersblocks:general/generic");
 	}
 
 	@Override

@@ -31,7 +31,7 @@ public class BlockCarpentersLever extends BlockBase
 		setHardness(0.2F);
 		setUnlocalizedName("blockCarpentersLever");
 		setCreativeTab(CarpentersBlocks.tabCarpentersBlocks);
-		func_111022_d("carpentersblocks:lever/lever");
+		setTextureName("carpentersblocks:lever/lever");
 	}
 
 	@Override

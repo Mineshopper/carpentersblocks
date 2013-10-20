@@ -28,7 +28,7 @@ public class BlockCarpentersLadder extends BlockBase
 		setUnlocalizedName("blockCarpentersLadder");
 		setCreativeTab(CarpentersBlocks.tabCarpentersBlocks);
 		setStepSound(soundLadderFootstep);
-		func_111022_d("carpentersblocks:general/generic");
+		setTextureName("carpentersblocks:general/generic");
 	}
 
 	@Override

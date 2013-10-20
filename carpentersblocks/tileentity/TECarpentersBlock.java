@@ -75,7 +75,7 @@ public class TECarpentersBlock extends TileEntity
 	 */
 	public void onDataPacket(INetworkManager net, Packet132TileEntityData pkt)
 	{
-		readFromNBT(pkt.customParam1);
+		readFromNBT(pkt.data);
 
 		if (worldObj.isRemote)
 		{
