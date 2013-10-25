@@ -75,7 +75,7 @@ public class BlockCarpentersPressurePlate extends BlockBase
 	/**
 	 * Alters trigger behavior.
 	 */
-	protected boolean onHammerRightClick(TECarpentersBlock TE, EntityPlayer entityPlayer, int side, double hitX, double hitZ)
+	protected boolean onHammerRightClick(TECarpentersBlock TE, EntityPlayer entityPlayer, int side, float hitX, float hitZ)
 	{
 		int data = BlockProperties.getData(TE);
 

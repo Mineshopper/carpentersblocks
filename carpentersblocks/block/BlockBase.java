@@ -187,7 +187,7 @@ public class BlockBase extends BlockContainer
 			} else if (FeatureHandler.enableCovers && BlockProperties.isCover(itemStack)) {
 
 				Block block = Block.blocksList[itemStack.itemID];
-				int metadata = block instanceof BlockDirectional ? MathHelper.floor_double((double)(entityPlayer.rotationYaw * 4.0F / 360.0F) + 2.5D) & 3 : itemStack.getItemDamage();		
+				int metadata = block instanceof BlockDirectional ? MathHelper.floor_double(entityPlayer.rotationYaw * 4.0F / 360.0F + 2.5D) & 3 : itemStack.getItemDamage();		
 				
 				if (!BlockProperties.hasCover(TE, 6)) {
 
@@ -891,7 +891,7 @@ public class BlockBase extends BlockContainer
 		return false;
 	}
 
-	protected boolean onHammerRightClick(TECarpentersBlock TE, EntityPlayer entityPlayer, int side, double hitX, double hitZ)
+	protected boolean onHammerRightClick(TECarpentersBlock TE, EntityPlayer entityPlayer, int side, float hitX, float hitZ)
 	{
 		return false;
 	}

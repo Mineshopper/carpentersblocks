@@ -48,7 +48,7 @@ public class BlockCarpentersCollapsibleBlock extends BlockBase
 	/**
 	 * Lower quadrant of block.
 	 */
-	protected boolean onHammerRightClick(TECarpentersBlock TE, EntityPlayer entityPlayer, int side, double hitX, double hitZ)
+	protected boolean onHammerRightClick(TECarpentersBlock TE, EntityPlayer entityPlayer, int side, float hitX, float hitZ)
 	{
 		int quad = Collapsible.getQuad(hitX, hitZ);
 		int quadHeight = Collapsible.getQuadHeight(TE, quad);

@@ -233,11 +233,12 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 		TECarpentersBlock TE = (TECarpentersBlock) blockAccess.getBlockTileEntity(x, y, z);
 
 		/*
-		 * RenderBlocks sets render bounds based on the block's bounds.
-		 * Because our RenderHelpers adjust UV based on full block bounds,
-		 * we need to reset this to avoid texture stretching.
+		 * Slopes and collapsible blocks need full render bounds to
+		 * texture correctly, even only partially filling the block space.
 		 */
-		renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
+		if (srcBlock.equals(BlockHandler.blockCarpentersSlope) || srcBlock.equals(BlockHandler.blockCarpentersCollapsibleBlock)) {
+			renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
+		}
 		
 		int renderPass = MinecraftForgeClient.getRenderPass();
 

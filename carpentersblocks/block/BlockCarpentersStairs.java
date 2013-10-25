@@ -103,7 +103,7 @@ public class BlockCarpentersStairs extends BlockBase
 	/**
 	 * Alters block type.
 	 */
-	protected boolean onHammerRightClick(TECarpentersBlock TE, EntityPlayer entityPlayer, int side, double hitX, double hitZ)
+	protected boolean onHammerRightClick(TECarpentersBlock TE, EntityPlayer entityPlayer, int side, float hitX, float hitZ)
 	{
 		int stairsID = BlockProperties.getData(TE);
 		Stairs stairs = Stairs.stairsList[stairsID];
