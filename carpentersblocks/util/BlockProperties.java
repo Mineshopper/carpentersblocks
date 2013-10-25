@@ -83,14 +83,6 @@ public class BlockProperties
 	}
 
 	/**
-	 * Converts signed data types to unsigned integer.
-	 */
-	public static int getUnsignedInt(int value)
-	{
-		return value & 0xffffffff;
-	}
-
-	/**
 	 * Plays block placement sound.
 	 */
 	public static void playBlockPlacementSound(TECarpentersBlock TE, int blockID)
@@ -244,10 +236,11 @@ public class BlockProperties
 
 	/**
 	 * Get block data.
+	 * Will handle signed data types automatically.
 	 */
 	public final static int getData(TECarpentersBlock TE)
 	{
-		return getUnsignedInt(TE.data);
+		return TE.data & 0xffff;
 	}
 
 	/**
@@ -356,7 +349,7 @@ public class BlockProperties
 	 */
 	public static int getPattern(TECarpentersBlock TE, int side)
 	{
-		return getUnsignedInt(TE.pattern[side]);
+		return TE.pattern[side] & 0xffff;
 	}
 
 	/**

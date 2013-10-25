@@ -13,7 +13,7 @@ import net.minecraft.world.World;
 import carpentersblocks.CarpentersBlocks;
 import carpentersblocks.data.DaylightSensor;
 import carpentersblocks.tileentity.TECarpentersBlock;
-import carpentersblocks.tileentity.TECarpentersBlockExt;
+import carpentersblocks.tileentity.TECarpentersBlockUpdateable;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.handler.BlockHandler;
 import carpentersblocks.util.handler.IconHandler;
@@ -143,7 +143,7 @@ public class BlockCarpentersDaylightSensor extends BlockBase
 	@Override
 	public TileEntity createNewTileEntity(World world)
 	{
-		return new TECarpentersBlockExt();
+		return new TECarpentersBlockUpdateable();
 	}
 
 	@Override

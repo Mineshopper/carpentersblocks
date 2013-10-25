@@ -15,6 +15,7 @@ tile.blockCarpentersBed.name=Carpenter's Bed
 tile.blockCarpentersBlock.name=Carpenter's Block
 tile.blockCarpentersButton.name=Carpenter's Button
 tile.blockCarpentersDaylightSensor.name=Carpenter's Daylight Sensor
+tile.blockCarpentersCollapsibleBlock.name=Carpenter's Collapsible Block
 tile.blockCarpentersDoor.name=Carpenter's Door
 tile.blockCarpentersGate.name=Carpenter's Gate
 tile.blockCarpentersHatch.name=Carpenter's Hatch

@@ -103,7 +103,7 @@ public class BlockCarpentersStairs extends BlockBase
 	/**
 	 * Alters block type.
 	 */
-	protected boolean onHammerRightClick(TECarpentersBlock TE, EntityPlayer entityPlayer, int side)
+	protected boolean onHammerRightClick(TECarpentersBlock TE, EntityPlayer entityPlayer, int side, double hitX, double hitZ)
 	{
 		int stairsID = BlockProperties.getData(TE);
 		Stairs stairs = Stairs.stairsList[stairsID];
@@ -478,11 +478,12 @@ public class BlockCarpentersStairs extends BlockBase
 		for (int box = 0; box < 3; ++box) {
 			float[] bounds = genBounds(box, stairs);
 
-			if (bounds != null)
+			if (bounds != null) {
 				colBox = AxisAlignedBB.getAABBPool().getAABB(x + bounds[0], y + bounds[1], z + bounds[2], x + bounds[3], y + bounds[4], z + bounds[5]);
-
-			if (colBox != null && axisAlignedBB.intersectsWith(colBox))
+			}
+			if (colBox != null && axisAlignedBB.intersectsWith(colBox)) {
 				list.add(colBox);
+			}
 		}
 	}
 

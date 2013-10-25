@@ -25,7 +25,7 @@ import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.IPlantable;
 import carpentersblocks.tileentity.TECarpentersBlock;
 import carpentersblocks.util.BlockProperties;
-import carpentersblocks.util.handler.EventHandler;
+import carpentersblocks.util.handler.BlockEventHandler;
 import carpentersblocks.util.handler.FeatureHandler;
 import carpentersblocks.util.handler.ItemHandler;
 import carpentersblocks.util.handler.OverlayHandler;
@@ -44,7 +44,9 @@ public class BlockBase extends BlockContainer
 	}
 
 	/**
-	 * Returns whether cover will return instanceof this, resulting in loop.
+	 * Returns whether cover will return the calling block, resulting in loop.
+	 * This happens because if the block has no cover, it will instead return
+	 * the block at the given coordinates.
 	 */
 	protected boolean willCoverRecurse(IBlockAccess world, int x, int y, int z)
 	{
@@ -88,7 +90,7 @@ public class BlockBase extends BlockContainer
 
 		if (itemStack != null)
 		{
-			int side = EventHandler.eventFace;
+			int side = BlockEventHandler.eventFace;
 			
 			int effectiveSide = BlockProperties.hasCover(TE, side) ? side : 6;
 			Item item = itemStack.getItem();
@@ -170,14 +172,11 @@ public class BlockBase extends BlockContainer
 			
 			if (itemStack.getItem() == ItemHandler.itemCarpentersHammer) {
 
-				actionPerformed = onHammerRightClick(TE, entityPlayer, side);
+				actionPerformed = onHammerRightClick(TE, entityPlayer, side, hitX, hitZ);
 
 			} else if (ItemHandler.enableChisel && itemStack.getItem() == ItemHandler.itemCarpentersChisel) {
 
-				/*
-				 * Skip client-side.
-				 * Will desynchronize server data.
-				 */
+				/* Skip clientside otherwise it will desynchronize server data. */
 				if (world.isRemote)
 					return true;
 				
@@ -187,7 +186,7 @@ public class BlockBase extends BlockContainer
 			} else if (FeatureHandler.enableCovers && BlockProperties.isCover(itemStack)) {
 
 				Block block = Block.blocksList[itemStack.itemID];
-				int metadata = block instanceof BlockDirectional ? BlockProperties.getEntityFacing(EventHandler.eventEntity) : itemStack.getItemDamage();		
+				int metadata = block instanceof BlockDirectional ? BlockProperties.getEntityFacing(entityPlayer) : itemStack.getItemDamage();		
 				
 				if (!BlockProperties.hasCover(TE, 6)) {
 
@@ -213,7 +212,7 @@ public class BlockBase extends BlockContainer
 							 * cover.
 							 */
 
-							int facing = BlockProperties.getEntityFacing(EventHandler.eventEntity);
+							int facing = BlockProperties.getEntityFacing(BlockEventHandler.eventEntity);
 							int side_interpolated =	entityPlayer.rotationPitch < -45.0F ? 0 : entityPlayer.rotationPitch > 45 ? 1 : facing == 0 ? 3 : facing == 1 ? 4 : facing == 2 ? 2 : 5;
 							metadata = block.onBlockPlaced(world, x, y, z, side_interpolated, hitX, hitY, hitZ, metadata);
 						}
@@ -226,10 +225,7 @@ public class BlockBase extends BlockContainer
 
 			} else if (FeatureHandler.enableOverlays && BlockProperties.isOverlay(itemStack)) {
 
-				/*
-				 * Skip client-side.
-				 * Will desynchronize server data.
-				 */
+				/* Skip clientside otherwise it will desynchronize server data. */
 				if (world.isRemote)
 					return true;
 				
@@ -238,10 +234,7 @@ public class BlockBase extends BlockContainer
 
 			} else if (FeatureHandler.enableDyeColors && itemStack.getItem() == Item.dyePowder && itemStack.getItemDamage() != 15) {
 
-				/*
-				 * Skip client-side.
-				 * Will desynchronize server data.
-				 */
+				/* Skip clientside otherwise it will desynchronize server data. */
 				if (world.isRemote)
 					return true;
 				
@@ -281,9 +274,7 @@ public class BlockBase extends BlockContainer
 	{
 		int pattern = BlockProperties.getPattern(TE, side);
 
-		/*
-		 * Try to match neighboring chisel pattern.
-		 */
+		/* Try to match neighboring chisel pattern. */
 		int neighbor_pattern = 0;
 		if (pattern == 0)
 		{
@@ -899,7 +890,7 @@ public class BlockBase extends BlockContainer
 		return false;
 	}
 
-	protected boolean onHammerRightClick(TECarpentersBlock TE, EntityPlayer entityPlayer, int side)
+	protected boolean onHammerRightClick(TECarpentersBlock TE, EntityPlayer entityPlayer, int side, double hitX, double hitZ)
 	{
 		return false;
 	}

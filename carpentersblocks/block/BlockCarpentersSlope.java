@@ -12,6 +12,7 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import carpentersblocks.CarpentersBlocks;
@@ -126,7 +127,7 @@ public class BlockCarpentersSlope extends BlockBase
 	/**
 	 * Alters block type.
 	 */
-	protected boolean onHammerRightClick(TECarpentersBlock TE, EntityPlayer entityPlayer, int side)
+	protected boolean onHammerRightClick(TECarpentersBlock TE, EntityPlayer entityPlayer, int side, double hitX, double hitZ)
 	{
 		int slopeID = BlockProperties.getData(TE);
 		Slope slope = Slope.slopesList[slopeID];
@@ -195,6 +196,29 @@ public class BlockCarpentersSlope extends BlockBase
 
 		return true;
 	}
+
+	@Override
+	/**
+	 * Updates the blocks bounds based on its current state. Args: world, x, y, z
+	 */
+	public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
+	{
+		TECarpentersBlock TE = (TECarpentersBlock) world.getBlockTileEntity(x, y, z);
+
+		int slopeID = BlockProperties.getData(TE);
+		Slope slope = Slope.slopesList[slopeID];
+		
+		switch (slope.slopeID)
+		{
+		case Slope.ID_PYR_HALF_NEG:
+			setBlockBounds(0.0F, 0.5F, 0.0F, 1.0F, 1.0F, 1.0F);
+			break;
+		case Slope.ID_PYR_HALF_POS:
+			setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.5F, 1.0F);
+			break;
+		}
+	}
+
 
 	/**
 	 * Will return slope boundaries for all slopes
@@ -481,8 +505,8 @@ public class BlockCarpentersSlope extends BlockBase
 			}
 		}
 
-		setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
-
+		this.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
+		
 		/* Determine true face hit since sloped faces are two or more shared faces. */
 		if (finalTrace != null) {
 			finalTrace = super.collisionRayTrace(world, x, y, z, startVec, endVec);
@@ -500,7 +524,7 @@ public class BlockCarpentersSlope extends BlockBase
 	{
 		AxisAlignedBB box = null;
 
-		TECarpentersBlock TE = (TECarpentersBlock)world.getBlockTileEntity(x, y, z);
+		TECarpentersBlock TE = (TECarpentersBlock) world.getBlockTileEntity(x, y, z);
 
 		int slopeID = BlockProperties.getData(TE);
 		Slope slope = Slope.slopesList[slopeID];
