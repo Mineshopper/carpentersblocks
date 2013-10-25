@@ -1,5 +1,7 @@
 Changelog:
-
+1. Added Collapsible Block.
+2. Improved hitbox selection for pyramid slopes.
+3. Fixed directional blocks having incorrect facing.
 
 To Do:
 1. Merge Tarig's stepsound and sprint particle code.

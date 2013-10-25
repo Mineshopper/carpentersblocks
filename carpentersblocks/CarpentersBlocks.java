@@ -18,12 +18,12 @@ import cpw.mods.fml.common.network.NetworkMod;
 @Mod(
 		modid = "CarpentersBlocks",
 		name = "Carpenter's Blocks",
-		version = "v1.92"
-		)
+		version = "v1.9.3"
+	)
 @NetworkMod(
 		clientSideRequired = true,
 		serverSideRequired = false
-		)
+	)
 public class CarpentersBlocks
 {
 

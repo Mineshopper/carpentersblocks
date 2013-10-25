@@ -48,7 +48,7 @@ public class BlockCarpentersDoor extends BlockBase
 	/**
 	 * Alters door type and redstone behavior.
 	 */
-	protected boolean onHammerRightClick(TECarpentersBlock TE, EntityPlayer entityPlayer, int side)
+	protected boolean onHammerRightClick(TECarpentersBlock TE, EntityPlayer entityPlayer, int side, float hitX, float hitZ)
 	{
 		int data = BlockProperties.getData(TE);
 

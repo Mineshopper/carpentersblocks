@@ -2,8 +2,8 @@ package carpentersblocks.proxy;
 
 import net.minecraftforge.common.MinecraftForge;
 import carpentersblocks.util.handler.BedDesignHandler;
+import carpentersblocks.util.handler.BlockEventHandler;
 import carpentersblocks.util.handler.DyeColorHandler;
-import carpentersblocks.util.handler.EventHandler;
 import carpentersblocks.util.handler.FeatureHandler;
 import carpentersblocks.util.handler.OverlayHandler;
 import carpentersblocks.util.handler.PatternHandler;
@@ -21,7 +21,7 @@ public class CommonProxy
 		DyeColorHandler.init();
 		PatternHandler.init(event);
 		BedDesignHandler.init(event);
-		MinecraftForge.EVENT_BUS.register(new EventHandler());
+		MinecraftForge.EVENT_BUS.register(new BlockEventHandler());
 	}
 
 	public void registerRenderInformation(FMLPreInitializationEvent event)

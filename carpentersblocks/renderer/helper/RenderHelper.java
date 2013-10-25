@@ -325,8 +325,6 @@ public class RenderHelper extends VertexHelper
 	{        
 		setBounds(renderBlocks, UP, x, y, z);
         setUV(renderBlocks, UP, renderBlocks.uvRotateTop, icon);
-        
-		int rotation = renderBlocks.uvRotateTop;
 
         setupVertex(renderBlocks, xMax, yMax, zMax, UV_UP[renderBlocks.uvRotateTop][0][0], UV_UP[renderBlocks.uvRotateTop][0][1], 0);
         setupVertex(renderBlocks, xMax, yMax, zMin, UV_UP[renderBlocks.uvRotateTop][1][0], UV_UP[renderBlocks.uvRotateTop][1][1], 1);

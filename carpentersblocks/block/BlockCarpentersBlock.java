@@ -50,7 +50,7 @@ public class BlockCarpentersBlock extends BlockBase
 	/**
 	 * Alternate between full 1m cube and slab.
 	 */
-	protected boolean onHammerRightClick(TECarpentersBlock TE, EntityPlayer entityPlayer, int side)
+	protected boolean onHammerRightClick(TECarpentersBlock TE, EntityPlayer entityPlayer, int side, float hitX, float hitZ)
 	{
 		int data = BlockProperties.getData(TE);
 

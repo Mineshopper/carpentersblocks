@@ -232,8 +232,16 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 	{
 		TECarpentersBlock TE = (TECarpentersBlock) blockAccess.getBlockTileEntity(x, y, z);
 
+		/*
+		 * Slopes and collapsible blocks need full render bounds to
+		 * texture correctly, even only partially filling the block space.
+		 */
+		if (srcBlock.equals(BlockHandler.blockCarpentersSlope) || srcBlock.equals(BlockHandler.blockCarpentersCollapsibleBlock)) {
+			renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
+		}
+		
 		int renderPass = MinecraftForgeClient.getRenderPass();
-
+		
 		/*
 		 * Render block and any side blocks
 		 */

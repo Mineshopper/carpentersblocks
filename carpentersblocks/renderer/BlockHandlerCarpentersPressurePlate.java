@@ -47,5 +47,5 @@ public class BlockHandlerCarpentersPressurePlate extends BlockHandlerBase
 
 		GL11.glTranslatef(0.5F, 0.5F, 0.5F);
 	}
-
+	
 }

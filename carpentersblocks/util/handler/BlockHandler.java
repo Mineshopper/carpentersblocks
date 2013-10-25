@@ -9,6 +9,7 @@ import carpentersblocks.block.BlockCarpentersBarrier;
 import carpentersblocks.block.BlockCarpentersBed;
 import carpentersblocks.block.BlockCarpentersBlock;
 import carpentersblocks.block.BlockCarpentersButton;
+import carpentersblocks.block.BlockCarpentersCollapsibleBlock;
 import carpentersblocks.block.BlockCarpentersDaylightSensor;
 import carpentersblocks.block.BlockCarpentersDoor;
 import carpentersblocks.block.BlockCarpentersGate;
@@ -38,6 +39,7 @@ public class BlockHandler
     public static Block	blockCarpentersDoor;
     public static Block	blockCarpentersBed;
     public static Block	blockCarpentersLadder;
+    public static Block blockCarpentersCollapsibleBlock;
     
     // Render IDs
     public static int carpentersSlopeRenderID;
@@ -53,6 +55,7 @@ public class BlockHandler
     public static int carpentersDoorRenderID;
     public static int carpentersBedRenderID;
     public static int carpentersLadderRenderID;
+    public static int carpentersCollapsibleBlockRenderID;
     
     // Block IDs
     public static int blockCarpentersSlopeID;
@@ -68,6 +71,7 @@ public class BlockHandler
     public static int blockCarpentersDoorID;
     public static int blockCarpentersBedID;
     public static int blockCarpentersLadderID;
+    public static int blockCarpentersCollapsibleBlockID;
     
     // Blocks enabled state
     public static boolean enableSlope = true;
@@ -83,6 +87,7 @@ public class BlockHandler
     public static boolean enableDoor = true;
     public static boolean enableBed = true;
     public static boolean enableLadder = true;
+    public static boolean enableCollapsibleBlock = true;
     
     // Recipe quantities
     public static int recipeQuantitySlope = 4;
@@ -98,6 +103,7 @@ public class BlockHandler
     public static int recipeQuantityDoor = 1;
     public static int recipeQuantityBed = 1;
     public static int recipeQuantityLadder = 4;
+    public static int recipeQuantityCollapsibleBlock = 9;
     
     /**
      * Registers block IDs.
@@ -122,6 +128,7 @@ public class BlockHandler
         enableDoor = config.get("control", "Enable Door", enableDoor).getBoolean(enableDoor);
         enableBed = config.get("control", "Enable Bed", enableBed).getBoolean(enableBed);
         enableLadder = config.get("control", "Enable Ladder", enableLadder).getBoolean(enableLadder);
+        enableCollapsibleBlock = config.get("control", "Enable Collapsible Block", enableCollapsibleBlock).getBoolean(enableCollapsibleBlock);
     	
 	    blockCarpentersSlopeID = config.getBlock("Slope", baseBlockID++).getInt(baseBlockID);
 	    blockCarpentersStairsID = config.getBlock("Stairs", baseBlockID++).getInt(baseBlockID);
@@ -136,6 +143,7 @@ public class BlockHandler
 	    blockCarpentersDoorID = config.getBlock("Door", baseBlockID++).getInt(baseBlockID);
 	    blockCarpentersBedID = config.getBlock("Bed", baseBlockID++).getInt(baseBlockID);
 	    blockCarpentersLadderID = config.getBlock("Ladder", baseBlockID++).getInt(baseBlockID);
+	    blockCarpentersCollapsibleBlockID = config.getBlock("Collapsible Block", baseBlockID++).getInt(baseBlockID);
 	    
 	    recipeQuantitySlope = config.get("recipe quantities", "Slope", recipeQuantitySlope).getInt(recipeQuantitySlope);
         recipeQuantityStairs = config.get("recipe quantities", "Stairs", recipeQuantityStairs).getInt(recipeQuantityStairs);
@@ -150,7 +158,8 @@ public class BlockHandler
         recipeQuantityDoor = config.get("recipe quantities", "Door", recipeQuantityDoor).getInt(recipeQuantityDoor);
         recipeQuantityBed = config.get("recipe quantities", "Bed", recipeQuantityBed).getInt(recipeQuantityBed);
         recipeQuantityLadder = config.get("recipe quantities", "Ladder", recipeQuantityLadder).getInt(recipeQuantityLadder);      
-    
+        recipeQuantityCollapsibleBlock = config.get("recipe quantities", "Collapsible Block", recipeQuantityCollapsibleBlock).getInt(recipeQuantityCollapsibleBlock);
+        
         config.save();
     }
     
@@ -233,6 +242,12 @@ public class BlockHandler
     		blockCarpentersStairs = (new BlockCarpentersStairs(blockCarpentersStairsID));
     		GameRegistry.registerBlock(blockCarpentersStairs, "blockCarpentersStairs");
     		GameRegistry.addRecipe(new ItemStack(blockCarpentersStairs, recipeQuantityStairs), new Object[] {"  X", " XX", "XXX", 'X', blockCarpentersBlock});
+    	}
+    	
+    	if (enableCollapsibleBlock) {
+    		blockCarpentersCollapsibleBlock = (new BlockCarpentersCollapsibleBlock(blockCarpentersCollapsibleBlockID));
+    		GameRegistry.registerBlock(blockCarpentersCollapsibleBlock, "blockCarpentersCollapsibleBlock");
+    		GameRegistry.addRecipe(new ItemStack(blockCarpentersCollapsibleBlock, recipeQuantityCollapsibleBlock), new Object[] {"XXX", "XXX", "XXX", 'X', blockCarpentersBlock});
     	}
     }
 	
