@@ -17,6 +17,7 @@ import net.minecraftforge.common.ForgeDirection;
 import carpentersblocks.CarpentersBlocks;
 import carpentersblocks.data.Collapsible;
 import carpentersblocks.tileentity.TECarpentersBlock;
+import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.handler.BlockHandler;
 import carpentersblocks.util.handler.IconHandler;
 import cpw.mods.fml.relauncher.Side;
@@ -151,11 +152,7 @@ public class BlockCarpentersCollapsibleBlock extends BlockBase
 		{
 			switch (side) {
 			case UP:
-				int combinedQuadHeight = 0;
-				for (int quad = 0; quad < 4; ++quad) {
-					combinedQuadHeight += Collapsible.getQuadHeight(TE, quad);
-				}
-				return combinedQuadHeight == 64;
+				return BlockProperties.getData(TE) == 0xffff;
 			case NORTH:
 				return (Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZNN) + Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZPN)) == 32;
 			case SOUTH:
@@ -319,6 +316,17 @@ public class BlockCarpentersCollapsibleBlock extends BlockBase
 
 		this.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
 		return finalTrace;
+	}
+	
+	@Override
+	@SideOnly(Side.CLIENT)
+	/**
+	 * Returns true if the given side of this block type should be rendered, if the adjacent block is at the given
+	 * coordinates.  Args: world, x, y, z, side
+	 */
+	public boolean shouldSideBeRendered(IBlockAccess world, int x, int y, int z, int side)
+	{
+		return side == ForgeDirection.UP.ordinal() ? true : super.shouldSideBeRendered(world, x, y, z, side);
 	}
 
 	@Override

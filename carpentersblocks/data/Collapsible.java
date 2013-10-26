@@ -60,22 +60,18 @@ public class Collapsible
 		case QUAD_XZNN:
 			data &= 0xfff;
 			data |= (15 - height) << 12;
-			System.out.println("DEBUG: new corner height = " + data);
 			break;
 		case QUAD_XZNP:
 			data &= 0xf0ff;
 			data |= (15 - height) << 8;
-			System.out.println("DEBUG: new corner height = " + data);
 			break;
 		case QUAD_XZPN:
 			data &= 0xff0f;
 			data |= (15 - height) << 4;
-			System.out.println("DEBUG: new corner height = " + data);
 			break;
 		case QUAD_XZPP:
 			data &= 0xfff0;
 			data |= (15 - height);
-			System.out.println("DEBUG: new corner height = " + data);
 			break;
 		}
 
