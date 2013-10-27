@@ -1,9 +1,10 @@
 Changelog:
-1. Added Collapsible Block.
-2. Improved hitbox selection for pyramid slopes.
-3. Fixed directional blocks having incorrect facing.
+1. Added chance to damage Hammer for Collapsible Block.
+2. Fixed abnormal pressure plate behavior and cleaned up code.
 
 To Do:
 1. Merge Tarig's stepsound and sprint particle code.
 2. Convert dye colors to vanilla hex decimal colors.  Explore custom color support.
 3. Investigate blank hammer messages.
+4. Add custom slope rendering for Collapsible block with full lighting support.
+5. Correct wedge lighting compression.
