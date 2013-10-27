@@ -15,6 +15,7 @@ tile.blockCarpentersBed.name=木匠床
 tile.blockCarpentersBlock.name=木匠方块
 tile.blockCarpentersButton.name=木匠按钮
 tile.blockCarpentersDaylightSensor.name=木匠阳光传感器
+tile.blockCarpentersCollapsibleBlock.name=木匠折叠方块
 tile.blockCarpentersDoor.name=木匠门
 tile.blockCarpentersGate.name=木匠活板门
 tile.blockCarpentersHatch.name=木匠货箱
