@@ -5,10 +5,8 @@ import java.util.Random;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -118,15 +116,6 @@ public class BlockCarpentersPressurePlate extends BlockBase
 
 	@Override
 	/**
-	 * Called when the block is placed in the world.
-	 */
-	public void auxiliaryOnBlockPlacedBy(TECarpentersBlock TE, World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack itemStack)
-	{
-		PressurePlate.setType(TE, world.getBlockMetadata(x, y, z));
-	}
-
-	@Override
-	/**
 	 * How many world ticks before ticking
 	 */
 	public int tickRate(World world)
@@ -160,17 +149,8 @@ public class BlockCarpentersPressurePlate extends BlockBase
 	 */
 	protected void auxiliaryOnNeighborBlockChange(TECarpentersBlock TE, World world, int x, int y, int z, int blockID)
 	{
-		boolean dropBlock = false;
-
-		if (!world.doesBlockHaveSolidTopSurface(x, y - 1, z) && world.getBlockId(x, y - 1, z) != BlockHandler.blockCarpentersBarrierID)
-			dropBlock = true;
-
-		if (dropBlock)
-		{
-			int data = BlockProperties.getData(TE);
-			int type = PressurePlate.getType(data);
-
-			dropBlockAsItem(world, x, y, z, type, 0);
+		if (!world.doesBlockHaveSolidTopSurface(x, y - 1, z) && world.getBlockId(x, y - 1, z) != BlockHandler.blockCarpentersBarrierID) {
+			dropBlockAsItem(world, x, y, z, 0, 0);
 			world.setBlockToAir(x, y, z);
 		}
 	}
@@ -187,11 +167,19 @@ public class BlockCarpentersPressurePlate extends BlockBase
 
 			List entityList = world.getEntitiesWithinAABB(Entity.class, getSensitiveAABB(x, y, z));
 
+			boolean shouldActivate = false;
 			if (!entityList.isEmpty()) {
-				for (int count = 0; count < entityList.size(); ++count)
-					setStateIfMobCollidesWithPlate(TE, (Entity)entityList.get(count), world, x, y, z);
+				for (int count = 0; count < entityList.size() && !shouldActivate; ++count) {
+					if (shouldTrigger(TE, (Entity)entityList.get(count), world, x, y, z)) {
+						shouldActivate = true;
+					}
+				}
+			}
+			
+			if (!shouldActivate && isDepressed(TE)) {
+				toggleOff(TE, world, x, y, z);
 			} else {
-				setStateIfMobCollidesWithPlate(TE, (Entity)null, world, x, y, z);
+				world.scheduleBlockUpdate(x, y, z, blockID, tickRate(world));
 			}
 		}
 	}
@@ -204,38 +192,31 @@ public class BlockCarpentersPressurePlate extends BlockBase
 	{
 		if (!world.isRemote)
 		{
-			List entityList = world.getEntitiesWithinAABB(Entity.class, getSensitiveAABB(x, y, z));
+			TECarpentersBlock TE = (TECarpentersBlock) world.getBlockTileEntity(x, y, z);
 
-			if (!entityList.isEmpty()) {
-				TECarpentersBlock TE = (TECarpentersBlock) world.getBlockTileEntity(x, y, z);
-
-				if (!isDepressed(TE))
-					for (int count = 0; count < entityList.size(); ++count)
-						setStateIfMobCollidesWithPlate(TE, (Entity)entityList.get(count), world, x, y, z);
+			if (shouldTrigger(TE, entity, world, x, y, z) && !isDepressed(TE)) {
+				toggleOn(TE, world, x, y, z);
 			}
 		}
 	}
 
 	/**
-	 * Checks if there are mobs on the plate. If a mob is on the plate and it is off, it turns it on, and vice versa.
+	 * Activates pressure plate.
 	 */
-	private void setStateIfMobCollidesWithPlate(TECarpentersBlock TE, Entity entity, World world, int x, int y, int z)
+	private void toggleOn(TECarpentersBlock TE, World world, int x, int y, int z)
 	{
-		BlockProperties.getData(TE);
-
-		boolean currently_triggered = isDepressed(TE);
-
-		if (shouldTrigger(TE, entity, world, x, y, z))
-		{
-			PressurePlate.setState(TE, PressurePlate.STATE_ON, true);
-			notifyNeighborsOfUpdate(world, x, y, z);
-			world.scheduleBlockUpdate(x, y, z, blockID, tickRate(world));
-		}
-		else if (currently_triggered)
-		{
-			PressurePlate.setState(TE, PressurePlate.STATE_OFF, true);
-			notifyNeighborsOfUpdate(world, x, y, z);
-		}
+		PressurePlate.setState(TE, PressurePlate.STATE_ON, true);
+		notifyNeighborsOfUpdate(world, x, y, z);
+		world.scheduleBlockUpdate(x, y, z, blockID, tickRate(world));
+	}
+	
+	/**
+	 * Deactivates pressure plate.
+	 */
+	private void toggleOff(TECarpentersBlock TE, World world, int x, int y, int z)
+	{
+		PressurePlate.setState(TE, PressurePlate.STATE_OFF, true);
+		notifyNeighborsOfUpdate(world, x, y, z);
 	}
 
 	private AxisAlignedBB getSensitiveAABB(int x, int y, int z)
@@ -254,8 +235,7 @@ public class BlockCarpentersPressurePlate extends BlockBase
 	 */
 	private boolean isDepressed(TECarpentersBlock TE)
 	{
-		int data = BlockProperties.getData(TE);
-		return PressurePlate.getState(data) == PressurePlate.STATE_ON;
+		return PressurePlate.getState(BlockProperties.getData(TE)) == PressurePlate.STATE_ON;
 	}
 
 	@Override
@@ -268,9 +248,7 @@ public class BlockCarpentersPressurePlate extends BlockBase
 	{
 		TECarpentersBlock TE = (TECarpentersBlock)world.getBlockTileEntity(x, y, z);
 
-		int data = BlockProperties.getData(TE);
-
-		return getPowerSupply(TE, data);
+		return getPowerSupply(TE, BlockProperties.getData(TE));
 	}
 
 	@Override
@@ -282,9 +260,7 @@ public class BlockCarpentersPressurePlate extends BlockBase
 	{
 		TECarpentersBlock TE = (TECarpentersBlock)world.getBlockTileEntity(x, y, z);
 
-		int data = BlockProperties.getData(TE);
-
-		return side == 1 ? getPowerSupply(TE, data) : 0;
+		return side == 1 ? getPowerSupply(TE, BlockProperties.getData(TE)) : 0;
 	}
 
 	@Override
@@ -328,7 +304,7 @@ public class BlockCarpentersPressurePlate extends BlockBase
 		case PressurePlate.TRIGGER_ANIMAL:
 			return entity.isCreatureType(EnumCreatureType.creature, false);
 		default: // TRIGGER_EVERYTHING
-		return true;
+			return true;
 		}
 	}
 
