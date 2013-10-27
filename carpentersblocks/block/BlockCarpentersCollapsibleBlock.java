@@ -60,6 +60,17 @@ public class BlockCarpentersCollapsibleBlock extends BlockBase
 		return true;
 	}
 	
+	@Override
+	/**
+	 * Damages hammer with a chance to not damage.
+	 */
+	protected void damageHammerWithChance(World world, EntityPlayer entityPlayer)
+	{
+		if (world.rand.nextFloat() <= 0.2F) {
+			entityPlayer.getCurrentEquippedItem().damageItem(1, entityPlayer);
+		}
+	}
+	
 	/**
 	 * Will attempt to smooth transitions to any adjacent collapsible blocks
 	 * given a TE and source quadrant.
