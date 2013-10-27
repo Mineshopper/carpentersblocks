@@ -252,7 +252,7 @@ public class BlockBase extends BlockContainer
 
 		} else {
 
-			itemStack.damageItem(1, entityPlayer);
+			this.damageHammerWithChance(world, entityPlayer);
 
 			if (!entityPlayer.capabilities.isCreativeMode)
 				world.playSoundEffect(x + 0.5D, y + 0.5D, z + 0.5D, "dig.wood", 4.0F, 1.0F);
@@ -917,6 +917,11 @@ public class BlockBase extends BlockContainer
 	protected boolean onHammerRightClick(TECarpentersBlock TE, EntityPlayer entityPlayer, int side, float hitX, float hitZ)
 	{
 		return false;
+	}
+	
+	protected void damageHammerWithChance(World world, EntityPlayer entityPlayer)
+	{
+		entityPlayer.getCurrentEquippedItem().damageItem(1, entityPlayer);
 	}
 
 	protected boolean canCoverSide(TECarpentersBlock TE, World world, int x, int y, int z, int side)

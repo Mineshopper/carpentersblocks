@@ -2,9 +2,6 @@ package carpentersblocks.block;
 
 import java.util.List;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -21,6 +18,8 @@ import carpentersblocks.data.Collapsible;
 import carpentersblocks.tileentity.TECarpentersBlock;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.handler.BlockHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockCarpentersCollapsibleBlock extends BlockBase
 {
@@ -47,6 +46,17 @@ public class BlockCarpentersCollapsibleBlock extends BlockBase
 		smoothAdjacentCollapsibles(TE, quad);
 
 		return true;
+	}
+	
+	@Override
+	/**
+	 * Damages hammer with a chance to not damage.
+	 */
+	protected void damageHammerWithChance(World world, EntityPlayer entityPlayer)
+	{
+		if (world.rand.nextFloat() <= 0.2F) {
+			entityPlayer.getCurrentEquippedItem().damageItem(1, entityPlayer);
+		}
 	}
 	
 	/**
