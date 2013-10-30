@@ -11,7 +11,7 @@ public class Button
 	/**
 	 * 16-bit data components:
 	 *
-	 *	[000000000000]	[0]			[0]		[00]
+	 *	[00000000000]	[0]			[0]		[000]
 	 *  Unused			Polarity	State	Facing
 	 */
 
@@ -34,7 +34,7 @@ public class Button
 	{
 		int data = BlockProperties.getData(TE);
 		
-		return ForgeDirection.getOrientation((data & 0x3) + 2);
+		return ForgeDirection.getOrientation(data & 0x7);
 	}
 
 	/**
@@ -42,7 +42,7 @@ public class Button
 	 */
 	public final static void setFacing(TECarpentersBlock TE, int side)
 	{
-		int temp = BlockProperties.getData(TE) & 0xfffc;
+		int temp = BlockProperties.getData(TE) & 0xfff8;
 		temp |= side;
 
 		BlockProperties.setData(TE, temp);
@@ -55,8 +55,8 @@ public class Button
 	{
 		int data = BlockProperties.getData(TE);
 		
-		int temp = data & 0x4;
-		return temp >> 2;
+		int temp = data & 0x8;
+		return temp >> 3;
 	}
 
 	/**
@@ -64,8 +64,8 @@ public class Button
 	 */
 	public final static void setState(TECarpentersBlock TE, int state, boolean playSound)
 	{
-		int temp = BlockProperties.getData(TE) & 0xfffb;
-		temp |= state << 2;
+		int temp = BlockProperties.getData(TE) & 0xfff7;
+		temp |= state << 3;
 
 		if (
 				!TE.worldObj.isRemote &&
@@ -86,8 +86,8 @@ public class Button
 	{
 		int data = BlockProperties.getData(TE);
 		
-		int temp = data & 0x8;
-		return temp >> 3;
+		int temp = data & 0x10;
+		return temp >> 4;
 	}
 
 	/**
@@ -95,8 +95,8 @@ public class Button
 	 */
 	public final static void setPolarity(TECarpentersBlock TE, int polarity)
 	{
-		int temp = BlockProperties.getData(TE) & 0xfff7;
-		temp |= polarity << 3;
+		int temp = BlockProperties.getData(TE) & 0xffef;
+		temp |= polarity << 4;
 
 		BlockProperties.setData(TE, temp);
 	}

@@ -89,7 +89,7 @@ public class BlockCarpentersButton extends BlockBase
 	 */
 	public int onBlockPlaced(World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int metadata)
 	{
-		return side - 2;
+		return side;
 	}
 	
 	@Override
@@ -109,8 +109,15 @@ public class BlockCarpentersButton extends BlockBase
 	protected void auxiliaryOnNeighborBlockChange(TECarpentersBlock TE, World world, int x, int y, int z, int blockID)
 	{
 		ForgeDirection dir = Button.getFacing(TE);
-		
-		if (!canPlaceBlockOnSide(world, x, y, z, dir.ordinal())) {
+
+		/*
+		 * When the block is placed in the world, the SERVER
+		 * hasn't caught up setting TE parameters before neighbor
+		 * blocks have a chance to notify this block of updates.
+		 * To correct this, the block starts with a facing out of
+		 * range in order to detect this anomaly.
+		 */
+		if (dir != ForgeDirection.DOWN && !canPlaceBlockOnSide(world, x, y, z, dir.ordinal())) {
 			dropBlockAsItem(world, x, y, z, 0, 0);
 			world.setBlockToAir(x, y, z);
 		}
