@@ -15,6 +15,7 @@ tile.blockCarpentersBed.name=Bett des Zimmermanns
 tile.blockCarpentersBlock.name=Block des Zimmermanns
 tile.blockCarpentersButton.name=Knopf des Zimmermanns
 tile.blockCarpentersDaylightSensor.name=Tageslichtsensor des Zimmermanns
+tile.blockCarpentersCollapsibleBlock.name=Zusammenklappbarer Block des Zimmermanns
 tile.blockCarpentersDoor.name=Tür des Zimmermanns
 tile.blockCarpentersGate.name=Zauntor des Zimmermanns
 tile.blockCarpentersHatch.name=Luke des Zimmermanns
