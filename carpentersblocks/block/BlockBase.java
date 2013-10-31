@@ -90,10 +90,10 @@ public class BlockBase extends BlockContainer
 
 		ItemStack itemStack = entityPlayer.getCurrentEquippedItem();
 
-		if (itemStack != null)
+		int side = BlockEventHandler.eventFace;
+		
+		if (itemStack != null && entityPlayer.canPlayerEdit(x, y, z, side, itemStack))
 		{
-			int side = BlockEventHandler.eventFace;
-			
 			int effectiveSide = BlockProperties.hasCover(TE, side) ? side : 6;
 			Item item = itemStack.getItem();
 
@@ -163,7 +163,7 @@ public class BlockBase extends BlockContainer
 		boolean actionPerformed = false;
 		boolean decrementInventory = false;
 
-		if (itemStack != null)
+		if (itemStack != null && entityPlayer.canPlayerEdit(x, y, z, side, itemStack))
 		{
 			/*
 			 * If the side is not covered, we're using side 6
