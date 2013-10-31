@@ -820,8 +820,14 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 		 */
 		if (shouldRenderBlock(TE, renderBlocks, coverBlock, srcBlock, renderPass))
 		{
+			if (BlockProperties.blockRotates(TE.worldObj, coverBlock, x, y, z)) {
+				setDirectionalRotation(TE, renderBlocks, side);
+			}
+			
 			colorSide(TE, renderBlocks, coverBlock, srcBlock, side, x, y, z, icon, lightness);
 			renderSide(TE, renderBlocks, side, 0, x, y, z, icon);
+			
+			clearRotation(renderBlocks, side);
 		}
 
 		/* Do not render decorations on top if this is the daylight sensor block. */
