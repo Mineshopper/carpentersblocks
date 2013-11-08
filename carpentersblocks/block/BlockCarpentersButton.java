@@ -13,6 +13,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import carpentersblocks.CarpentersBlocks;
 import carpentersblocks.data.Button;
+import carpentersblocks.data.Lever;
 import carpentersblocks.tileentity.TECarpentersBlock;
 import carpentersblocks.util.handler.BlockHandler;
 import carpentersblocks.util.handler.IconHandler;
@@ -112,6 +113,7 @@ public class BlockCarpentersButton extends BlockBase {
 	public void auxiliaryOnBlockPlacedBy(TECarpentersBlock TE, World world, int x, int y, int z, EntityLiving entityLiving, ItemStack itemStack)
 	{
 		Button.setFacing(TE, world.getBlockMetadata(x, y, z));
+		Button.setReady(TE);
 	}
 	
 	@Override
@@ -121,18 +123,14 @@ public class BlockCarpentersButton extends BlockBase {
 	 */
 	protected void auxiliaryOnNeighborBlockChange(TECarpentersBlock TE, World world, int x, int y, int z, int blockID)
 	{
-		ForgeDirection dir = Button.getFacing(TE);
+		if (Button.isReady(TE))
+		{
+			ForgeDirection dir = Button.getFacing(TE);
 
-		/*
-		 * When the block is placed in the world, the SERVER
-		 * hasn't caught up setting TE parameters before neighbor
-		 * blocks have a chance to notify this block of updates.
-		 * To correct this, the block starts with a facing out of
-		 * range in order to detect this anomaly.
-		 */
-		if (dir != ForgeDirection.DOWN && !canPlaceBlockOnSide(world, x, y, z, dir.ordinal())) {
-			dropBlockAsItem(world, x, y, z, 0, 0);
-			world.setBlockToAir(x, y, z);
+			if (!canPlaceBlockOnSide(world, x, y, z, dir.ordinal())) {
+				dropBlockAsItem(world, x, y, z, 0, 0);
+				world.setBlockToAir(x, y, z);
+			}
 		}
 	}
 
@@ -171,12 +169,11 @@ public class BlockCarpentersButton extends BlockBase {
 	 */
 	public boolean auxiliaryOnBlockActivated(TECarpentersBlock TE, World world, int x, int y, int z, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ)
 	{
-		ForgeDirection dir = Button.getFacing(TE);
-
 		if (!isDepressed(TE))
 		{
+			ForgeDirection facing = Button.getFacing(TE);
 			Button.setState(TE, Button.STATE_ON, true);
-			notifySideNeighbor(world, x, y, z, dir.ordinal());
+			notifySideNeighbor(world, x, y, z, facing.ordinal());
 			world.scheduleBlockUpdate(x, y, z, blockID, tickRate(world));
 			return true;
 		}
@@ -213,7 +210,7 @@ public class BlockCarpentersButton extends BlockBase {
 	 */
 	public int isProvidingWeakPower(IBlockAccess world, int x, int y, int z, int side)
 	{
-		TECarpentersBlock TE = (TECarpentersBlock)world.getBlockTileEntity(x, y, z);
+		TECarpentersBlock TE = (TECarpentersBlock) world.getBlockTileEntity(x, y, z);
 
 		return getPowerSupply(TE);
 	}
@@ -225,7 +222,7 @@ public class BlockCarpentersButton extends BlockBase {
 	 */
 	public int isProvidingStrongPower(IBlockAccess world, int x, int y, int z, int side)
 	{
-		TECarpentersBlock TE = (TECarpentersBlock)world.getBlockTileEntity(x, y, z);
+		TECarpentersBlock TE = (TECarpentersBlock) world.getBlockTileEntity(x, y, z);
 
 		ForgeDirection dir = Button.getFacing(TE);
 
@@ -263,7 +260,7 @@ public class BlockCarpentersButton extends BlockBase {
 	{
 		if (!world.isRemote)
 		{
-			TECarpentersBlock TE = (TECarpentersBlock)world.getBlockTileEntity(x, y, z);
+			TECarpentersBlock TE = (TECarpentersBlock) world.getBlockTileEntity(x, y, z);
 
 			ForgeDirection dir = Button.getFacing(TE);
 
