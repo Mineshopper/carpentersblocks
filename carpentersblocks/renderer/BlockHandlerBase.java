@@ -1251,9 +1251,6 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 			prepareRender(TE, renderBlocks, coverBlock, srcBlock, 5, x, y, z, 0.6F);
 			side_rendered = true;
 		}
-		
-		if (base_ao[0] > 0)
-			
 
 		renderBlocks.enableAO = false;
 		return side_rendered;
