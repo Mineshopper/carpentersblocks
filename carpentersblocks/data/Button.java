@@ -11,8 +11,8 @@ public class Button
 	/**
 	 * 16-bit data components:
 	 *
-	 *	[00000000000]	[0]			[0]		[000]
-	 *  Unused			Polarity	State	Facing
+	 *	[000000000]		[0]		[0]			[0]		[000]
+	 *  Unused			Ready	Polarity	State	Facing
 	 */
 
 	/*
@@ -97,6 +97,30 @@ public class Button
 	{
 		int temp = BlockProperties.getData(TE) & 0xffef;
 		temp |= polarity << 4;
+
+		BlockProperties.setData(TE, temp);
+	}
+	
+	/**
+	 * Returns whether block is capable of handling logic functions.
+	 * This is implemented because for buttons and levers the SERVER
+	 * lags behind the client and will cause the block to pop of walls
+	 * before it has a chance to set the correct facing.
+	 */
+	public final static boolean isReady(TECarpentersBlock TE)
+	{
+		int data = BlockProperties.getData(TE);
+
+		return (data & 0x20) > 1;
+	}
+
+	/**
+	 * Sets block as ready.
+	 */
+	public final static void setReady(TECarpentersBlock TE)
+	{
+		int temp = BlockProperties.getData(TE) & 0xffdf;
+		temp |= 1 << 5;
 
 		BlockProperties.setData(TE, temp);
 	}
