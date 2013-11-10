@@ -21,6 +21,9 @@ public class IconHandler
 	public static Icon icon_slope;
 	public static Icon icon_stairs;
 	public static Icon icon_lever;
+	public static Icon icon_torch_lit;
+	public static Icon icon_torch_head_smoldering;
+	public static Icon icon_torch_head_unlit;
 	public static Icon icon_door_screen_tall;
 	public static Icon icon_door_glass_tall_top;
 	public static Icon icon_door_glass_tall_bottom;
@@ -51,6 +54,9 @@ public class IconHandler
 			icon_slope = event.map.registerIcon("carpentersblocks:slope/slope");
 			icon_stairs = event.map.registerIcon("carpentersblocks:stairs/stairs");
 			icon_lever = event.map.registerIcon("carpentersblocks:lever/lever");
+			icon_torch_lit = event.map.registerIcon("carpentersblocks:torch/torch_lit");
+			icon_torch_head_smoldering = event.map.registerIcon("carpentersblocks:torch/torch_head_smoldering");
+			icon_torch_head_unlit = event.map.registerIcon("carpentersblocks:torch/torch_head_unlit");
 			
 			// Overlay icons
 			icon_overlay_fast_grass_side = event.map.registerIcon("carpentersblocks:overlay/overlay_fast_grass_side");
