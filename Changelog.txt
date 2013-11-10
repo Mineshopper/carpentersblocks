@@ -1,10 +1,6 @@
 CHANGELOG
 --------------------------------------------------------------------
-- Added chance to damage Hammer for Collapsible Block.
-- Fixed abnormal pressure plate behavior and cleaned up code.
-- Button code refactored, some bugs fixed.
-- Lever code refactored, some bugs fixed.
-- Fixed textures not rotating (v1.9.2 mistake).
+1. Added Carpenters Torch.
 
 TO DO
 --------------------------------------------------------------------
@@ -13,8 +9,7 @@ High Priority:
 
 Low Priority:
 - Improve Collapsible Block rendering and lighting.
-- Add basic op block permissions.
+- Explore block permission options.
 - Convert dye colors to vanilla hex decimal colors.  Explore custom color support.
 - Investigate blank hammer messages.
-- Investigate block rotation with regards to Archimedes' Ships.
-- Figure out invisible blocks on Archimedes' Ships.
+- Figure out invisible blocks on Archimedes' Ships (may indicate problem).

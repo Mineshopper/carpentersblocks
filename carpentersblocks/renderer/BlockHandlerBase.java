@@ -234,7 +234,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 
 		/*
 		 * Slopes and collapsible blocks need full render bounds to
-		 * texture correctly, even only partially filling the block space.
+		 * texture correctly, even if only partially filling the block space.
 		 */
 		if (srcBlock.equals(BlockHandler.blockCarpentersSlope) || srcBlock.equals(BlockHandler.blockCarpentersCollapsibleBlock)) {
 			renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
@@ -249,7 +249,9 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 		renderSideCovers(TE, renderBlocks, srcBlock, renderPass, x, y, z);
 
 		/*
-		 * Render fancy fluids
+		 * Render fancy fluids.
+		 * Fancy fluids allows stationary blocks of fluid to inundate
+		 * Carpenter's blocks that have valid fill paths.
 		 */
 		if (renderPass >= 0 && FeatureHandler.enableFancyFluids && Minecraft.isFancyGraphicsEnabled() && BlockProperties.hasCover(TE, 6)) {
 			renderFancyFluids(TE, renderBlocks, x, y, z, renderPass);
@@ -281,21 +283,22 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 			return	renderBlocks.hasOverrideBlockTexture() ||
 					coverBlock.getRenderBlockPass() == renderPass ||
 					coverBlock instanceof BlockBase && renderPass == 0 ||
-					hasAccessories(srcBlock);
+					hasBlockDeterminantRendering(srcBlock);
 		}
 	}
 
 	/**
-	 * Returns whether srcBlock requires block rendering pass
-	 * requirements independently to handle accessories.
+	 * Returns whether srcBlock controls rendering per pass.
 	 * 
-	 * This is required for doors and hatches for example because
-	 * the handles and inset screen or glass render differently.
+	 * This is required for torches, doors and hatches, for example,
+	 * because block components don't all necessarily share the same
+	 * render pass.
 	 */
-	private boolean hasAccessories(Block srcBlock)
+	private boolean hasBlockDeterminantRendering(Block srcBlock)
 	{
 		return	srcBlock == BlockHandler.blockCarpentersDoor ||
-				srcBlock == BlockHandler.blockCarpentersHatch;
+				srcBlock == BlockHandler.blockCarpentersHatch ||
+				srcBlock == BlockHandler.blockCarpentersTorch;
 	}
 
 	/**
@@ -771,6 +774,18 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 		/* The lever icon defaults to the handle.  We set the box icon here. */
 		if (coverBlock == BlockHandler.blockCarpentersLever) {
 			icon = IconHandler.icon_generic;
+		}
+		
+		/* The torch icon defaults to the item icon.  This is the handle, and needs the generic texture. */
+		if (coverBlock == BlockHandler.blockCarpentersTorch)
+		{
+			if (renderBlocks.hasOverrideBlockTexture()) {
+				icon = renderBlocks.overrideBlockTexture;
+			} else if (BlockProperties.hasCover(TE, 6)) {
+				icon = coverBlock.getIcon(2, renderBlocks.blockAccess.getBlockMetadata(x, y, z));
+			} else {
+				icon = IconHandler.icon_generic;
+			}
 		}
 		
 		/* If the face is sloped, set icons accordingly. */
