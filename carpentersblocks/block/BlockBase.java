@@ -245,12 +245,13 @@ public class BlockBase extends BlockContainer
 			}
 		}
 
+		/* Should probably only do this if nothing happened. */
 		if (!actionPerformed) {
-
 			actionPerformed = auxiliaryOnBlockActivated(TE, world, x, y, z, entityPlayer, side, hitX, hitY, hitZ);
-
-		} else {
-
+		}
+		
+		if (actionPerformed)
+		{
 			this.damageHammerWithChance(world, entityPlayer);
 
 			if (!entityPlayer.capabilities.isCreativeMode)
@@ -537,7 +538,7 @@ public class BlockBase extends BlockContainer
 		if (block != null && block.blockID == blockID)
 		{
 			TECarpentersBlock TE = (TECarpentersBlock) world.getBlockTileEntity(x, y, z);
-			int lightOutput = 0;
+			int lightOutput = Block.lightValue[this.blockID];
 
 			for (int side = 0; side < 7; ++side)
 			{
