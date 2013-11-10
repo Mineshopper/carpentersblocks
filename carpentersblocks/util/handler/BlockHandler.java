@@ -19,6 +19,7 @@ import carpentersblocks.block.BlockCarpentersLever;
 import carpentersblocks.block.BlockCarpentersPressurePlate;
 import carpentersblocks.block.BlockCarpentersSlope;
 import carpentersblocks.block.BlockCarpentersStairs;
+import carpentersblocks.block.BlockCarpentersTorch;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
 
@@ -40,6 +41,7 @@ public class BlockHandler
     public static Block	blockCarpentersBed;
     public static Block	blockCarpentersLadder;
     public static Block blockCarpentersCollapsibleBlock;
+    public static Block blockCarpentersTorch;
     
     // Render IDs
     public static int carpentersSlopeRenderID;
@@ -56,6 +58,7 @@ public class BlockHandler
     public static int carpentersBedRenderID;
     public static int carpentersLadderRenderID;
     public static int carpentersCollapsibleBlockRenderID;
+    public static int carpentersTorchRenderID;
     
     // Block IDs
     public static int blockCarpentersSlopeID;
@@ -72,6 +75,7 @@ public class BlockHandler
     public static int blockCarpentersBedID;
     public static int blockCarpentersLadderID;
     public static int blockCarpentersCollapsibleBlockID;
+    public static int blockCarpentersTorchID;
     
     // Blocks enabled state
     public static boolean enableSlope = true;
@@ -88,6 +92,7 @@ public class BlockHandler
     public static boolean enableBed = true;
     public static boolean enableLadder = true;
     public static boolean enableCollapsibleBlock = true;
+    public static boolean enableTorch = true;
     
     // Recipe quantities
     public static int recipeQuantitySlope = 4;
@@ -104,6 +109,7 @@ public class BlockHandler
     public static int recipeQuantityBed = 1;
     public static int recipeQuantityLadder = 4;
     public static int recipeQuantityCollapsibleBlock = 9;
+    public static int recipeQuantityTorch = 6;
     
     /**
      * Registers block IDs.
@@ -129,7 +135,8 @@ public class BlockHandler
         enableBed = config.get("control", "Enable Bed", enableBed).getBoolean(enableBed);
         enableLadder = config.get("control", "Enable Ladder", enableLadder).getBoolean(enableLadder);
         enableCollapsibleBlock = config.get("control", "Enable Collapsible Block", enableCollapsibleBlock).getBoolean(enableCollapsibleBlock);
-    	
+        enableTorch = config.get("control", "Enable Torch", enableTorch).getBoolean(enableTorch);
+        
 	    blockCarpentersSlopeID = config.getBlock("Slope", baseBlockID++).getInt(baseBlockID);
 	    blockCarpentersStairsID = config.getBlock("Stairs", baseBlockID++).getInt(baseBlockID);
 	    blockCarpentersBarrierID = config.getBlock("Barrier", baseBlockID++).getInt(baseBlockID);
@@ -144,6 +151,7 @@ public class BlockHandler
 	    blockCarpentersBedID = config.getBlock("Bed", baseBlockID++).getInt(baseBlockID);
 	    blockCarpentersLadderID = config.getBlock("Ladder", baseBlockID++).getInt(baseBlockID);
 	    blockCarpentersCollapsibleBlockID = config.getBlock("Collapsible Block", baseBlockID++).getInt(baseBlockID);
+	    blockCarpentersTorchID = config.getBlock("Torch", baseBlockID++).getInt(baseBlockID);
 	    
 	    recipeQuantitySlope = config.get("recipe quantities", "Slope", recipeQuantitySlope).getInt(recipeQuantitySlope);
         recipeQuantityStairs = config.get("recipe quantities", "Stairs", recipeQuantityStairs).getInt(recipeQuantityStairs);
@@ -157,8 +165,9 @@ public class BlockHandler
         recipeQuantityHatch = config.get("recipe quantities", "Hatch", recipeQuantityHatch).getInt(recipeQuantityHatch);
         recipeQuantityDoor = config.get("recipe quantities", "Door", recipeQuantityDoor).getInt(recipeQuantityDoor);
         recipeQuantityBed = config.get("recipe quantities", "Bed", recipeQuantityBed).getInt(recipeQuantityBed);
-        recipeQuantityLadder = config.get("recipe quantities", "Ladder", recipeQuantityLadder).getInt(recipeQuantityLadder);      
+        recipeQuantityLadder = config.get("recipe quantities", "Ladder", recipeQuantityLadder).getInt(recipeQuantityLadder);
         recipeQuantityCollapsibleBlock = config.get("recipe quantities", "Collapsible Block", recipeQuantityCollapsibleBlock).getInt(recipeQuantityCollapsibleBlock);
+        recipeQuantityTorch = config.get("recipe quantities", "Torch", recipeQuantityTorch).getInt(recipeQuantityTorch);
         
         config.save();
     }
@@ -248,6 +257,12 @@ public class BlockHandler
     		blockCarpentersCollapsibleBlock = (new BlockCarpentersCollapsibleBlock(blockCarpentersCollapsibleBlockID));
     		GameRegistry.registerBlock(blockCarpentersCollapsibleBlock, "blockCarpentersCollapsibleBlock");
     		GameRegistry.addRecipe(new ItemStack(blockCarpentersCollapsibleBlock, recipeQuantityCollapsibleBlock), new Object[] {"XXX", "XXX", "XXX", 'X', blockCarpentersBlock});
+    	}
+    	
+    	if (enableTorch) {
+    		blockCarpentersTorch = (new BlockCarpentersTorch(blockCarpentersTorchID));
+    		GameRegistry.registerBlock(blockCarpentersTorch, "blockCarpentersTorch");
+    		GameRegistry.addRecipe(new ItemStack(blockCarpentersTorch, recipeQuantityTorch), new Object[] {"X", "Y", 'X', Item.coal, 'Y', blockCarpentersBlock});
     	}
     }
 	
