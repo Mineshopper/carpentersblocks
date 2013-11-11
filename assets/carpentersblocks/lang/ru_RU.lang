@@ -15,6 +15,7 @@ tile.blockCarpentersBed.name=Кровать плотника
 tile.blockCarpentersBlock.name=Блок плотника
 tile.blockCarpentersButton.name=Кнопка плотника
 tile.blockCarpentersDaylightSensor.name=Датчик дневного света плотника
+tile.blockCarpentersCollapsibleBlock.name=Складной блок плотника
 tile.blockCarpentersDoor.name=Дверь плотника
 tile.blockCarpentersGate.name=Калитка плотника
 tile.blockCarpentersHatch.name=Люк плотника
@@ -23,6 +24,7 @@ tile.blockCarpentersLever.name=Рычаг плотника
 tile.blockCarpentersPressurePlate.name=Нажимная пластина плотника
 tile.blockCarpentersSlope.name=Склон плотника
 tile.blockCarpentersStairs.name=Ступеньки плотника
+tile.blockCarpentersTorch.name=Факел плотника
 
 # MESSAGES
 message.polarity_pos.name=\u00a76ПОЛЯРНОСТЬ: \u00a7fНормальный выходной сингнал красного камня.
