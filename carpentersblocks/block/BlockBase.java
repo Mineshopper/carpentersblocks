@@ -251,7 +251,7 @@ public class BlockBase extends BlockContainer
 		
 		} else {
 			
-			this.damageHammerWithChance(world, entityPlayer);
+			this.damageItemWithChance(world, entityPlayer);
 
 			if (!entityPlayer.capabilities.isCreativeMode)
 				world.playSoundEffect(x + 0.5D, y + 0.5D, z + 0.5D, "dig.wood", 4.0F, 1.0F);
@@ -896,7 +896,7 @@ public class BlockBase extends BlockContainer
 		return false;
 	}
 	
-	protected void damageHammerWithChance(World world, EntityPlayer entityPlayer)
+	protected void damageItemWithChance(World world, EntityPlayer entityPlayer)
 	{
 		entityPlayer.getCurrentEquippedItem().damageItem(1, entityPlayer);
 	}

@@ -64,7 +64,7 @@ public class BlockCarpentersCollapsibleBlock extends BlockBase
 	/**
 	 * Damages hammer with a chance to not damage.
 	 */
-	protected void damageHammerWithChance(World world, EntityPlayer entityPlayer)
+	protected void damageItemWithChance(World world, EntityPlayer entityPlayer)
 	{
 		if (world.rand.nextFloat() <= 0.2F) {
 			entityPlayer.getCurrentEquippedItem().damageItem(1, entityPlayer);
