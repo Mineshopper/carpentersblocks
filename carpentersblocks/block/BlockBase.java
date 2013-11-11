@@ -246,14 +246,13 @@ public class BlockBase extends BlockContainer
 			}
 		}
 
-		/* Should probably only do this if nothing happened. */
 		if (!actionPerformed) {
+
 			actionPerformed = auxiliaryOnBlockActivated(TE, world, x, y, z, entityPlayer, side, hitX, hitY, hitZ);
-		}
-		
-		if (actionPerformed)
-		{
-			this.damageHammerWithChance(world, entityPlayer);
+
+		} else {
+
+			this.damageItemWithChance(world, entityPlayer);
 
 			if (!entityPlayer.capabilities.isCreativeMode)
 				world.playSoundEffect(x + 0.5D, y + 0.5D, z + 0.5D, "dig.wood", 4.0F, 1.0F);
@@ -920,7 +919,7 @@ public class BlockBase extends BlockContainer
 		return false;
 	}
 	
-	protected void damageHammerWithChance(World world, EntityPlayer entityPlayer)
+	protected void damageItemWithChance(World world, EntityPlayer entityPlayer)
 	{
 		entityPlayer.getCurrentEquippedItem().damageItem(1, entityPlayer);
 	}
