@@ -3,14 +3,14 @@ package carpentersblocks.renderer;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import carpentersblocks.block.BlockBase;
-import carpentersblocks.tileentity.TECarpentersBlock;
+import carpentersblocks.tileentity.TEBase;
 
 public class HingedBase extends BlockHandlerBase
 {
 	/**
 	 * Returns whether hinged frame should render.
 	 */
-	protected boolean shouldRenderFrame(TECarpentersBlock TE, RenderBlocks renderBlocks, Block coverBlock, int renderPass)
+	protected boolean shouldRenderFrame(TEBase TE, RenderBlocks renderBlocks, Block coverBlock, int renderPass)
 	{
 		if (renderAlphaOverride) {
 			return renderPass == 1;
@@ -25,7 +25,7 @@ public class HingedBase extends BlockHandlerBase
 	/**
 	 * Returns whether hinged screen, glass or handles should render.
 	 */
-	protected boolean shouldRenderPieces(TECarpentersBlock TE, RenderBlocks renderBlocks, Block coverBlock, int renderPass)
+	protected boolean shouldRenderPieces(TEBase TE, RenderBlocks renderBlocks, Block coverBlock, int renderPass)
 	{
 		/*
 		 * Door pieces like the screen and glass will automatically

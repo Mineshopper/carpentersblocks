@@ -1,7 +1,7 @@
 package carpentersblocks.data;
 
 import net.minecraft.entity.player.EntityPlayer;
-import carpentersblocks.tileentity.TECarpentersBlock;
+import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 
 public class Hatch
@@ -60,7 +60,7 @@ public class Hatch
 	/**
 	 * Sets type.
 	 */
-	public final static void setType(TECarpentersBlock TE, int type)
+	public final static void setType(TEBase TE, int type)
 	{
 		int temp = BlockProperties.getData(TE) & 0xfff8;
 		temp |= type;
@@ -80,7 +80,7 @@ public class Hatch
 	/**
 	 * Sets position (high or low).
 	 */
-	public final static void setPos(TECarpentersBlock TE, int position)
+	public final static void setPos(TEBase TE, int position)
 	{
 		int temp = BlockProperties.getData(TE) & 0xfff7;
 		temp |= position << 3;
@@ -100,7 +100,7 @@ public class Hatch
 	/**
 	 * Sets state (open or closed).
 	 */
-	public final static void setState(TECarpentersBlock TE, int state)
+	public final static void setState(TEBase TE, int state)
 	{
 		int temp = BlockProperties.getData(TE) & 0xffef;
 		temp |= state << 4;
@@ -123,7 +123,7 @@ public class Hatch
 	/**
 	 * Sets direction.
 	 */
-	public final static void setDir(TECarpentersBlock TE, int dir)
+	public final static void setDir(TEBase TE, int dir)
 	{
 		int temp = BlockProperties.getData(TE) & 0xff9f;
 		temp |= dir << 5;
@@ -143,7 +143,7 @@ public class Hatch
 	/**
 	 * Sets hatch rigidity (requires redstone for activation).
 	 */
-	public final static void setRigidity(TECarpentersBlock TE, int rigid)
+	public final static void setRigidity(TEBase TE, int rigid)
 	{
 		int temp = BlockProperties.getData(TE) & 0xff7f;
 		temp |= rigid << 7;

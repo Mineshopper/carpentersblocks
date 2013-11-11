@@ -2,7 +2,7 @@ package carpentersblocks.data;
 
 import net.minecraft.block.material.Material;
 import net.minecraftforge.common.ForgeDirection;
-import carpentersblocks.tileentity.TECarpentersBlock;
+import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 
 public class Lever
@@ -35,7 +35,7 @@ public class Lever
 	/**
 	 * Returns facing.
 	 */
-	public final static ForgeDirection getFacing(TECarpentersBlock TE)
+	public final static ForgeDirection getFacing(TEBase TE)
 	{
 		int data = BlockProperties.getData(TE);
 		
@@ -45,7 +45,7 @@ public class Lever
 	/**
 	 * Sets facing.
 	 */
-	public final static void setFacing(TECarpentersBlock TE, int side)
+	public final static void setFacing(TEBase TE, int side)
 	{
 		int temp = BlockProperties.getData(TE) & 0xfff8;
 		temp |= side;
@@ -56,7 +56,7 @@ public class Lever
 	/**
 	 * Returns state.
 	 */
-	public final static int getState(TECarpentersBlock TE)
+	public final static int getState(TEBase TE)
 	{
 		int data = BlockProperties.getData(TE);
 		
@@ -67,7 +67,7 @@ public class Lever
 	/**
 	 * Sets state.
 	 */
-	public final static void setState(TECarpentersBlock TE, int state, boolean playSound)
+	public final static void setState(TEBase TE, int state, boolean playSound)
 	{
 		int temp = BlockProperties.getData(TE) & 0xfff7;
 		temp |= state << 3;
@@ -87,7 +87,7 @@ public class Lever
 	/**
 	 * Returns polarity.
 	 */
-	public final static int getPolarity(TECarpentersBlock TE)
+	public final static int getPolarity(TEBase TE)
 	{
 		int data = BlockProperties.getData(TE);
 		
@@ -98,7 +98,7 @@ public class Lever
 	/**
 	 * Sets polarity.
 	 */
-	public final static void setPolarity(TECarpentersBlock TE, int polarity)
+	public final static void setPolarity(TEBase TE, int polarity)
 	{
 		int temp = BlockProperties.getData(TE) & 0xffef;
 		temp |= polarity << 4;
@@ -109,7 +109,7 @@ public class Lever
 	/**
 	 * Returns rotation axis.
 	 */
-	public final static Axis getAxis(TECarpentersBlock TE)
+	public final static Axis getAxis(TEBase TE)
 	{
 		int data = BlockProperties.getData(TE);
 		
@@ -120,7 +120,7 @@ public class Lever
 	/**
 	 * Sets rotation axis.
 	 */
-	public final static void setAxis(TECarpentersBlock TE, Axis axis)
+	public final static void setAxis(TEBase TE, Axis axis)
 	{
 		int temp = BlockProperties.getData(TE) & 0xffbf;
 		temp |= axis.ordinal() << 6;
@@ -134,7 +134,7 @@ public class Lever
 	 * lags behind the client and will cause the block to pop of walls
 	 * before it has a chance to set the correct facing.
 	 */
-	public final static boolean isReady(TECarpentersBlock TE)
+	public final static boolean isReady(TEBase TE)
 	{
 		int data = BlockProperties.getData(TE);
 
@@ -144,7 +144,7 @@ public class Lever
 	/**
 	 * Sets block as ready.
 	 */
-	public final static void setReady(TECarpentersBlock TE)
+	public final static void setReady(TEBase TE)
 	{
 		int temp = BlockProperties.getData(TE) & 0xffdf;
 		temp |= 1 << 5;

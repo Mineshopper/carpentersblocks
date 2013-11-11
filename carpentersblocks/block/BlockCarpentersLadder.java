@@ -15,7 +15,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import carpentersblocks.CarpentersBlocks;
 import carpentersblocks.data.Ladder;
-import carpentersblocks.tileentity.TECarpentersBlock;
+import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.handler.BlockHandler;
 import carpentersblocks.util.handler.IconHandler;
@@ -51,7 +51,7 @@ public class BlockCarpentersLadder extends BlockBase
 	 */
 	public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
 	{
-		TECarpentersBlock TE = (TECarpentersBlock) world.getBlockTileEntity(x, y, z);
+		TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
 		int data = BlockProperties.getData(TE);
 
 		float[] bounds;
@@ -122,7 +122,7 @@ public class BlockCarpentersLadder extends BlockBase
 	 * Called when the block is placed in the world.
 	 * Uses cardinal direction to adjust metadata if player clicks top or bottom face of block.
 	 */
-	public void auxiliaryOnBlockPlacedBy(TECarpentersBlock TE, World world, int x, int y, int z, EntityLiving entityLiving, ItemStack itemStack)
+	public void auxiliaryOnBlockPlacedBy(TEBase TE, World world, int x, int y, int z, EntityLiving entityLiving, ItemStack itemStack)
 	{
 		int metadata = world.getBlockMetadata(x, y, z);
 
@@ -135,12 +135,12 @@ public class BlockCarpentersLadder extends BlockBase
 		
 		if (!entityLiving.isSneaking())
 		{
-			TECarpentersBlock TE_adj = null;
+			TEBase TE_adj = null;
 		
 			if (world.getBlockId(x, y - 1, z) == blockID) {
-				TE_adj = (TECarpentersBlock) world.getBlockTileEntity(x, y - 1, z);
+				TE_adj = (TEBase) world.getBlockTileEntity(x, y - 1, z);
 			} else if (world.getBlockId(x, y + 1, z) == blockID) {
-				TE_adj = (TECarpentersBlock) world.getBlockTileEntity(x, y + 1, z);
+				TE_adj = (TEBase) world.getBlockTileEntity(x, y + 1, z);
 			}
 			
 			if (TE_adj != null)
@@ -160,7 +160,7 @@ public class BlockCarpentersLadder extends BlockBase
 	 * Lets the block know when one of its neighbor changes. Doesn't know which neighbor changed (coordinates passed are
 	 * their own) Args: x, y, z, neighbor blockID
 	 */
-	public void auxiliaryOnNeighborBlockChange(TECarpentersBlock TE, World world, int x, int y, int z, int blockID)
+	public void auxiliaryOnNeighborBlockChange(TEBase TE, World world, int x, int y, int z, int blockID)
 	{
 		int data = BlockProperties.getData(TE);
 

@@ -16,7 +16,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import carpentersblocks.CarpentersBlocks;
 import carpentersblocks.data.Collapsible;
-import carpentersblocks.tileentity.TECarpentersBlock;
+import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.handler.BlockHandler;
 import carpentersblocks.util.handler.IconHandler;
@@ -49,7 +49,7 @@ public class BlockCarpentersCollapsibleBlock extends BlockBase
 	/**
 	 * Lower quadrant of block.
 	 */
-	protected boolean onHammerRightClick(TECarpentersBlock TE, EntityPlayer entityPlayer, int side, float hitX, float hitZ)
+	protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer, int side, float hitX, float hitZ)
 	{
 		int quad = Collapsible.getQuad(hitX, hitZ);
 		int quadHeight = Collapsible.getQuadHeight(TE, quad);
@@ -75,16 +75,16 @@ public class BlockCarpentersCollapsibleBlock extends BlockBase
 	 * Will attempt to smooth transitions to any adjacent collapsible blocks
 	 * given a TE and source quadrant.
 	 */
-	private void smoothAdjacentCollapsibles(TECarpentersBlock TE, int src_quadrant)
+	private void smoothAdjacentCollapsibles(TEBase TE, int src_quadrant)
 	{
-		TECarpentersBlock TE_XN = TE.worldObj.getBlockId(TE.xCoord - 1, TE.yCoord, TE.zCoord) == blockID ? (TECarpentersBlock)TE.worldObj.getBlockTileEntity(TE.xCoord - 1, TE.yCoord, TE.zCoord) : null;
-		TECarpentersBlock TE_XP = TE.worldObj.getBlockId(TE.xCoord + 1, TE.yCoord, TE.zCoord) == blockID ? (TECarpentersBlock)TE.worldObj.getBlockTileEntity(TE.xCoord + 1, TE.yCoord, TE.zCoord) : null;
-		TECarpentersBlock TE_ZN = TE.worldObj.getBlockId(TE.xCoord, TE.yCoord, TE.zCoord - 1) == blockID ? (TECarpentersBlock)TE.worldObj.getBlockTileEntity(TE.xCoord, TE.yCoord, TE.zCoord - 1) : null;
-		TECarpentersBlock TE_ZP = TE.worldObj.getBlockId(TE.xCoord, TE.yCoord, TE.zCoord + 1) == blockID ? (TECarpentersBlock)TE.worldObj.getBlockTileEntity(TE.xCoord, TE.yCoord, TE.zCoord + 1) : null;
-		TECarpentersBlock TE_XZNN = TE.worldObj.getBlockId(TE.xCoord - 1, TE.yCoord, TE.zCoord - 1) == blockID ? (TECarpentersBlock)TE.worldObj.getBlockTileEntity(TE.xCoord - 1, TE.yCoord, TE.zCoord - 1) : null;
-		TECarpentersBlock TE_XZNP = TE.worldObj.getBlockId(TE.xCoord - 1, TE.yCoord, TE.zCoord + 1) == blockID ? (TECarpentersBlock)TE.worldObj.getBlockTileEntity(TE.xCoord - 1, TE.yCoord, TE.zCoord + 1) : null;
-		TECarpentersBlock TE_XZPN = TE.worldObj.getBlockId(TE.xCoord + 1, TE.yCoord, TE.zCoord - 1) == blockID ? (TECarpentersBlock)TE.worldObj.getBlockTileEntity(TE.xCoord + 1, TE.yCoord, TE.zCoord - 1) : null;
-		TECarpentersBlock TE_XZPP = TE.worldObj.getBlockId(TE.xCoord + 1, TE.yCoord, TE.zCoord + 1) == blockID ? (TECarpentersBlock)TE.worldObj.getBlockTileEntity(TE.xCoord + 1, TE.yCoord, TE.zCoord + 1) : null;
+		TEBase TE_XN = TE.worldObj.getBlockId(TE.xCoord - 1, TE.yCoord, TE.zCoord) == blockID ? (TEBase)TE.worldObj.getBlockTileEntity(TE.xCoord - 1, TE.yCoord, TE.zCoord) : null;
+		TEBase TE_XP = TE.worldObj.getBlockId(TE.xCoord + 1, TE.yCoord, TE.zCoord) == blockID ? (TEBase)TE.worldObj.getBlockTileEntity(TE.xCoord + 1, TE.yCoord, TE.zCoord) : null;
+		TEBase TE_ZN = TE.worldObj.getBlockId(TE.xCoord, TE.yCoord, TE.zCoord - 1) == blockID ? (TEBase)TE.worldObj.getBlockTileEntity(TE.xCoord, TE.yCoord, TE.zCoord - 1) : null;
+		TEBase TE_ZP = TE.worldObj.getBlockId(TE.xCoord, TE.yCoord, TE.zCoord + 1) == blockID ? (TEBase)TE.worldObj.getBlockTileEntity(TE.xCoord, TE.yCoord, TE.zCoord + 1) : null;
+		TEBase TE_XZNN = TE.worldObj.getBlockId(TE.xCoord - 1, TE.yCoord, TE.zCoord - 1) == blockID ? (TEBase)TE.worldObj.getBlockTileEntity(TE.xCoord - 1, TE.yCoord, TE.zCoord - 1) : null;
+		TEBase TE_XZNP = TE.worldObj.getBlockId(TE.xCoord - 1, TE.yCoord, TE.zCoord + 1) == blockID ? (TEBase)TE.worldObj.getBlockTileEntity(TE.xCoord - 1, TE.yCoord, TE.zCoord + 1) : null;
+		TEBase TE_XZPN = TE.worldObj.getBlockId(TE.xCoord + 1, TE.yCoord, TE.zCoord - 1) == blockID ? (TEBase)TE.worldObj.getBlockTileEntity(TE.xCoord + 1, TE.yCoord, TE.zCoord - 1) : null;
+		TEBase TE_XZPP = TE.worldObj.getBlockId(TE.xCoord + 1, TE.yCoord, TE.zCoord + 1) == blockID ? (TEBase)TE.worldObj.getBlockTileEntity(TE.xCoord + 1, TE.yCoord, TE.zCoord + 1) : null;
 		
 		int height = Collapsible.getQuadHeight(TE, src_quadrant);
 		
@@ -143,7 +143,7 @@ public class BlockCarpentersCollapsibleBlock extends BlockBase
 	 */
 	public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
 	{
-		TECarpentersBlock TE = (TECarpentersBlock) world.getBlockTileEntity(x, y, z);
+		TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
 
 		float maxHeight = getMaxHeight(TE);
 
@@ -157,7 +157,7 @@ public class BlockCarpentersCollapsibleBlock extends BlockBase
 	 */
 	public boolean isBlockSolidOnSide(World world, int x, int y, int z, ForgeDirection side)
 	{
-		TECarpentersBlock TE = (TECarpentersBlock)world.getBlockTileEntity(x, y, z);
+		TEBase TE = (TEBase)world.getBlockTileEntity(x, y, z);
 
 		if (isBlockSolid(world, x, y, z))
 		{
@@ -184,17 +184,17 @@ public class BlockCarpentersCollapsibleBlock extends BlockBase
 	/**
 	 * Called when the block is placed in the world.
 	 */
-	public void auxiliaryOnBlockPlacedBy(TECarpentersBlock TE, World world, int x, int y, int z, EntityLiving entityLiving, ItemStack itemStack)
+	public void auxiliaryOnBlockPlacedBy(TEBase TE, World world, int x, int y, int z, EntityLiving entityLiving, ItemStack itemStack)
 	{
 		// If shift key is down, skip auto-setting quadrant heights
 		if (!entityLiving.isSneaking())
 		{
 			/* Match adjacent collapsible quadrant heights. */
 			
-			TECarpentersBlock TE_XN = world.getBlockId(x - 1, y, z) == blockID ? (TECarpentersBlock)world.getBlockTileEntity(x - 1, y, z) : null;
-			TECarpentersBlock TE_XP = world.getBlockId(x + 1, y, z) == blockID ? (TECarpentersBlock)world.getBlockTileEntity(x + 1, y, z) : null;
-			TECarpentersBlock TE_ZN = world.getBlockId(x, y, z - 1) == blockID ? (TECarpentersBlock)world.getBlockTileEntity(x, y, z - 1) : null;
-			TECarpentersBlock TE_ZP = world.getBlockId(x, y, z + 1) == blockID ? (TECarpentersBlock)world.getBlockTileEntity(x, y, z + 1) : null;
+			TEBase TE_XN = world.getBlockId(x - 1, y, z) == blockID ? (TEBase)world.getBlockTileEntity(x - 1, y, z) : null;
+			TEBase TE_XP = world.getBlockId(x + 1, y, z) == blockID ? (TEBase)world.getBlockTileEntity(x + 1, y, z) : null;
+			TEBase TE_ZN = world.getBlockId(x, y, z - 1) == blockID ? (TEBase)world.getBlockTileEntity(x, y, z - 1) : null;
+			TEBase TE_ZP = world.getBlockId(x, y, z + 1) == blockID ? (TEBase)world.getBlockTileEntity(x, y, z + 1) : null;
 
 			if (TE_XN != null) {
 				Collapsible.setQuadHeight(TE, Collapsible.QUAD_XZNN, Collapsible.getQuadHeight(TE_XN, Collapsible.QUAD_XZPN));
@@ -218,7 +218,7 @@ public class BlockCarpentersCollapsibleBlock extends BlockBase
 	/**
 	 * Returns block height determined by the highest quadrant.
 	 */
-	private float getMaxHeight(TECarpentersBlock TE)
+	private float getMaxHeight(TEBase TE)
 	{
 		float maxHeight = 1.0F / 16.0F;
 		
@@ -234,7 +234,7 @@ public class BlockCarpentersCollapsibleBlock extends BlockBase
 	/**
 	 * Will generate four boxes with max height represented by quadrant height.
 	 */
-	private float[] genBounds(TECarpentersBlock TE, int quad)
+	private float[] genBounds(TEBase TE, int quad)
 	{
 		float xMin = 0.0F;
 		float zMin = 0.0F;
@@ -280,7 +280,7 @@ public class BlockCarpentersCollapsibleBlock extends BlockBase
 	{
 		AxisAlignedBB colBox = null;
 
-		TECarpentersBlock TE = (TECarpentersBlock)world.getBlockTileEntity(x, y, z);
+		TEBase TE = (TEBase)world.getBlockTileEntity(x, y, z);
 
 		for (int quad = 0; quad < 4; ++quad)
 		{
@@ -300,7 +300,7 @@ public class BlockCarpentersCollapsibleBlock extends BlockBase
 	 */
 	public MovingObjectPosition collisionRayTrace(World world, int x, int y, int z, Vec3 startVec, Vec3 endVec)
 	{
-		TECarpentersBlock TE = (TECarpentersBlock) world.getBlockTileEntity(x, y, z);
+		TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
 
 		MovingObjectPosition finalTrace = null;
 

@@ -8,7 +8,7 @@ import net.minecraft.util.Vec3;
 import net.minecraftforge.common.ForgeDirection;
 import carpentersblocks.block.BlockBase;
 import carpentersblocks.data.Torch;
-import carpentersblocks.tileentity.TECarpentersBlock;
+import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.handler.IconHandler;
 
@@ -25,7 +25,7 @@ public class BlockHandlerCarpentersTorch extends BlockHandlerBase
 	/**
 	 * Returns whether torch handle should render.
 	 */
-	protected boolean shouldRenderTorchHandle(TECarpentersBlock TE, RenderBlocks renderBlocks, Block coverBlock, int renderPass)
+	protected boolean shouldRenderTorchHandle(TEBase TE, RenderBlocks renderBlocks, Block coverBlock, int renderPass)
 	{
 		if (renderAlphaOverride) {
 			return renderPass == 1;
@@ -41,7 +41,7 @@ public class BlockHandlerCarpentersTorch extends BlockHandlerBase
 	/**
 	 * Renders block
 	 */
-	public boolean renderCarpentersBlock(TECarpentersBlock TE, RenderBlocks renderBlocks, Block srcBlock, int renderPass, int x, int y, int z)
+	public boolean renderCarpentersBlock(TEBase TE, RenderBlocks renderBlocks, Block srcBlock, int renderPass, int x, int y, int z)
 	{
 		Block coverBlock = isSideCover ? BlockProperties.getCoverBlock(TE, coverRendering) : BlockProperties.getCoverBlock(TE, 6);
 
@@ -53,7 +53,7 @@ public class BlockHandlerCarpentersTorch extends BlockHandlerBase
     /**
      * Renders a torch at the given coordinates
      */
-    public boolean renderTorch(TECarpentersBlock TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int renderPass, int x, int y, int z)
+    public boolean renderTorch(TEBase TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int renderPass, int x, int y, int z)
     {
     	if (renderPass == 0) {
     		renderTorchHead(TE, renderBlocks, coverBlock, srcBlock, x, y, z);
@@ -69,7 +69,7 @@ public class BlockHandlerCarpentersTorch extends BlockHandlerBase
     /**
      * Renders a torch head at the given coordinates.
      */
-	private boolean renderTorchHead(TECarpentersBlock TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int x, int y, int z)
+	private boolean renderTorchHead(TEBase TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int x, int y, int z)
 	{
 		Tessellator tessellator = Tessellator.instance;
 		tessellator.setBrightness(srcBlock.getMixedBrightnessForBlock(renderBlocks.blockAccess, TE.xCoord, TE.yCoord, TE.zCoord));
@@ -113,7 +113,7 @@ public class BlockHandlerCarpentersTorch extends BlockHandlerBase
     /**
      * Renders a torch handle at the given coordinates.
      */
-	private boolean renderTorchHandle(TECarpentersBlock TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int x, int y, int z)
+	private boolean renderTorchHandle(TEBase TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int x, int y, int z)
 	{
 		Tessellator tessellator = Tessellator.instance;
 		tessellator.setBrightness(srcBlock.getMixedBrightnessForBlock(renderBlocks.blockAccess, TE.xCoord, TE.yCoord, TE.zCoord));
@@ -204,7 +204,7 @@ public class BlockHandlerCarpentersTorch extends BlockHandlerBase
 	/**
 	 * Renders side.
 	 */
-	protected void renderSide(TECarpentersBlock TE, RenderBlocks renderBlocks, int side, double offset, int x, int y, int z, Icon icon)
+	protected void renderSide(TEBase TE, RenderBlocks renderBlocks, int side, double offset, int x, int y, int z, Icon icon)
 	{
 		renderFace(Tessellator.instance, side, icon, true);
 	}

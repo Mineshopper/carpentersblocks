@@ -12,7 +12,7 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import carpentersblocks.data.Door;
-import carpentersblocks.tileentity.TECarpentersBlock;
+import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.handler.BlockHandler;
 import carpentersblocks.util.handler.IconHandler;
@@ -46,7 +46,7 @@ public class BlockCarpentersDoor extends BlockBase
 	/**
 	 * Alters hinge side.
 	 */
-	protected boolean onHammerLeftClick(TECarpentersBlock TE, EntityPlayer entityPlayer)
+	protected boolean onHammerLeftClick(TEBase TE, EntityPlayer entityPlayer)
 	{
 		int data = BlockProperties.getData(TE);
 		int hinge = Door.getHinge(data);
@@ -60,7 +60,7 @@ public class BlockCarpentersDoor extends BlockBase
 	/**
 	 * Alters door type and redstone behavior.
 	 */
-	protected boolean onHammerRightClick(TECarpentersBlock TE, EntityPlayer entityPlayer, int side, float hitX, float hitZ)
+	protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer, int side, float hitX, float hitZ)
 	{
 		int data = BlockProperties.getData(TE);
 
@@ -101,7 +101,7 @@ public class BlockCarpentersDoor extends BlockBase
 	/**
 	 * Opens or closes door on right click.
 	 */
-	public boolean auxiliaryOnBlockActivated(TECarpentersBlock TE, World world, int x, int y, int z, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ)
+	public boolean auxiliaryOnBlockActivated(TEBase TE, World world, int x, int y, int z, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ)
 	{
 		int data = BlockProperties.getData(TE);
 
@@ -114,7 +114,7 @@ public class BlockCarpentersDoor extends BlockBase
 	/**
 	 * Returns whether door requires redstone activation.
 	 */
-	private boolean activationRequiresRedstone(TECarpentersBlock TE)
+	private boolean activationRequiresRedstone(TEBase TE)
 	{
 		return Door.getRigidity(BlockProperties.getData(TE)) == Door.HINGED_RIGID;
 	}
@@ -122,7 +122,7 @@ public class BlockCarpentersDoor extends BlockBase
 	/**
 	 * Returns a list of door tile entities that make up either a single door or two connected double doors.
 	 */
-	private List<TECarpentersBlock> getDoorPieces(TECarpentersBlock TE)
+	private List<TEBase> getDoorPieces(TEBase TE)
 	{
 		ArrayList arrayList = new ArrayList();
 
@@ -142,10 +142,10 @@ public class BlockCarpentersDoor extends BlockBase
 		/*
 		 * Begin searching for and adding other neighboring pieces
 		 */
-		TECarpentersBlock TE_ZN = TE.worldObj.getBlockId(TE.xCoord, TE.yCoord, TE.zCoord - 1) == blockID ? (TECarpentersBlock) TE.worldObj.getBlockTileEntity(TE.xCoord, TE.yCoord, TE.zCoord - 1) : null;
-		TECarpentersBlock TE_ZP = TE.worldObj.getBlockId(TE.xCoord, TE.yCoord, TE.zCoord + 1) == blockID ? (TECarpentersBlock) TE.worldObj.getBlockTileEntity(TE.xCoord, TE.yCoord, TE.zCoord + 1) : null;
-		TECarpentersBlock TE_XN = TE.worldObj.getBlockId(TE.xCoord - 1, TE.yCoord, TE.zCoord) == blockID ? (TECarpentersBlock) TE.worldObj.getBlockTileEntity(TE.xCoord - 1, TE.yCoord, TE.zCoord) : null;
-		TECarpentersBlock TE_XP = TE.worldObj.getBlockId(TE.xCoord + 1, TE.yCoord, TE.zCoord) == blockID ? (TECarpentersBlock) TE.worldObj.getBlockTileEntity(TE.xCoord + 1, TE.yCoord, TE.zCoord) : null;
+		TEBase TE_ZN = TE.worldObj.getBlockId(TE.xCoord, TE.yCoord, TE.zCoord - 1) == blockID ? (TEBase) TE.worldObj.getBlockTileEntity(TE.xCoord, TE.yCoord, TE.zCoord - 1) : null;
+		TEBase TE_ZP = TE.worldObj.getBlockId(TE.xCoord, TE.yCoord, TE.zCoord + 1) == blockID ? (TEBase) TE.worldObj.getBlockTileEntity(TE.xCoord, TE.yCoord, TE.zCoord + 1) : null;
+		TEBase TE_XN = TE.worldObj.getBlockId(TE.xCoord - 1, TE.yCoord, TE.zCoord) == blockID ? (TEBase) TE.worldObj.getBlockTileEntity(TE.xCoord - 1, TE.yCoord, TE.zCoord) : null;
+		TEBase TE_XP = TE.worldObj.getBlockId(TE.xCoord + 1, TE.yCoord, TE.zCoord) == blockID ? (TEBase) TE.worldObj.getBlockTileEntity(TE.xCoord + 1, TE.yCoord, TE.zCoord) : null;
 
 		switch (facing)
 		{
@@ -242,7 +242,7 @@ public class BlockCarpentersDoor extends BlockBase
 	 */
 	public AxisAlignedBB getSelectedBoundingBoxFromPool(World world, int x, int y, int z)
 	{
-		TECarpentersBlock TE = world.getBlockId(x, y, z) == blockID ? (TECarpentersBlock)world.getBlockTileEntity(x, y, z) : null;
+		TEBase TE = world.getBlockId(x, y, z) == blockID ? (TEBase)world.getBlockTileEntity(x, y, z) : null;
 
 		if (TE != null)
 			setBlockBoundsBasedOnState(world, x, y, z);
@@ -257,7 +257,7 @@ public class BlockCarpentersDoor extends BlockBase
 	 */
 	public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int x, int y, int z)
 	{
-		TECarpentersBlock TE = world.getBlockId(x, y, z) == blockID ? (TECarpentersBlock)world.getBlockTileEntity(x, y, z) : null;
+		TEBase TE = world.getBlockId(x, y, z) == blockID ? (TEBase)world.getBlockTileEntity(x, y, z) : null;
 
 		if (TE != null)
 			setBlockBoundsBasedOnState(world, x, y, z);
@@ -271,7 +271,7 @@ public class BlockCarpentersDoor extends BlockBase
 	 */
 	public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
 	{
-		TECarpentersBlock TE = (TECarpentersBlock) world.getBlockTileEntity(x, y, z);
+		TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
 		int data = BlockProperties.getData(TE);
 		int facing = Door.getFacing(data);
 		int hinge = Door.getHinge(data);
@@ -325,9 +325,9 @@ public class BlockCarpentersDoor extends BlockBase
 	 * Cycle door state.
 	 * Will update all connecting door pieces.
 	 */
-	public void setDoorState(TECarpentersBlock TE, int state)
+	public void setDoorState(TEBase TE, int state)
 	{
-		for (TECarpentersBlock piece : getDoorPieces(TE))
+		for (TEBase piece : getDoorPieces(TE))
 			Door.setState(piece, state, piece == TE ? true : false);
 	}
 
@@ -335,7 +335,7 @@ public class BlockCarpentersDoor extends BlockBase
 	 * Updates door type.
 	 * Will also update adjoining door piece.
 	 */
-	public void setDoorType(TECarpentersBlock TE, int type)
+	public void setDoorType(TEBase TE, int type)
 	{
 		Door.setType(TE, type);
 		updateAdjoiningDoorPiece(TE);
@@ -345,9 +345,9 @@ public class BlockCarpentersDoor extends BlockBase
 	 * Set door rigidity.
 	 * Will update all connecting door pieces.
 	 */
-	public void setDoorRigidity(TECarpentersBlock TE, int rigidity)
+	public void setDoorRigidity(TEBase TE, int rigidity)
 	{
-		for (TECarpentersBlock piece : getDoorPieces(TE))
+		for (TEBase piece : getDoorPieces(TE))
 			Door.setRigidity(piece, rigidity);
 	}
 
@@ -355,7 +355,7 @@ public class BlockCarpentersDoor extends BlockBase
 	 * Updates door hinge side.
 	 * Will also update adjoining door piece.
 	 */
-	public void setDoorHinge(TECarpentersBlock TE, int hinge)
+	public void setDoorHinge(TEBase TE, int hinge)
 	{
 		Door.setHingeSide(TE, hinge);
 		updateAdjoiningDoorPiece(TE);
@@ -366,7 +366,7 @@ public class BlockCarpentersDoor extends BlockBase
 	 * Lets the block know when one of its neighbor changes. Doesn't know which neighbor changed (coordinates passed are
 	 * their own) Args: x, y, z, neighbor blockID
 	 */
-	protected void auxiliaryOnNeighborBlockChange(TECarpentersBlock TE, World world, int x, int y, int z, int blockID)
+	protected void auxiliaryOnNeighborBlockChange(TEBase TE, World world, int x, int y, int z, int blockID)
 	{
 		int data = BlockProperties.getData(TE);
 		boolean isOpen = Door.getState(data) == Door.STATE_OPEN;
@@ -394,7 +394,7 @@ public class BlockCarpentersDoor extends BlockBase
 		 * door piece receives this event.
 		 */
 		boolean isPowered = false;
-		for (TECarpentersBlock piece : getDoorPieces(TE))
+		for (TEBase piece : getDoorPieces(TE))
 			if (world.isBlockIndirectlyGettingPowered(piece.xCoord, piece.yCoord, piece.zCoord))
 				isPowered = true;
 
@@ -427,7 +427,7 @@ public class BlockCarpentersDoor extends BlockBase
 	/**
 	 * Updates state, hinge and type for adjoining door piece.
 	 */
-	private void updateAdjoiningDoorPiece(TECarpentersBlock TE)
+	private void updateAdjoiningDoorPiece(TEBase TE)
 	{
 		int data = BlockProperties.getData(TE);
 		int state = Door.getState(data);
@@ -437,11 +437,11 @@ public class BlockCarpentersDoor extends BlockBase
 
 		boolean isTop = Door.getPiece(data) == Door.PIECE_TOP;
 
-		TECarpentersBlock TE_adj;
+		TEBase TE_adj;
 		if (isTop)
-			TE_adj = (TECarpentersBlock) TE.worldObj.getBlockTileEntity(TE.xCoord, TE.yCoord - 1, TE.zCoord);
+			TE_adj = (TEBase) TE.worldObj.getBlockTileEntity(TE.xCoord, TE.yCoord - 1, TE.zCoord);
 		else
-			TE_adj = (TECarpentersBlock) TE.worldObj.getBlockTileEntity(TE.xCoord, TE.yCoord + 1, TE.zCoord);
+			TE_adj = (TEBase) TE.worldObj.getBlockTileEntity(TE.xCoord, TE.yCoord + 1, TE.zCoord);
 
 		Door.setState(TE_adj, state, false);
 		Door.setHingeSide(TE_adj, hinge);

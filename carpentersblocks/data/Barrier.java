@@ -1,6 +1,6 @@
 package carpentersblocks.data;
 
-import carpentersblocks.tileentity.TECarpentersBlock;
+import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 
 public class Barrier
@@ -41,7 +41,7 @@ public class Barrier
 	/**
 	 * Sets data (vanilla, picket, etc).
 	 */
-	public final static void setType(TECarpentersBlock TE, int type)
+	public final static void setType(TEBase TE, int type)
 	{
 		int temp = BlockProperties.getData(TE) & 0xfff0;
 		temp |= type;
@@ -60,7 +60,7 @@ public class Barrier
 	/**
 	 * Sets post bit.
 	 */
-	public final static void setPost(TECarpentersBlock TE, int post)
+	public final static void setPost(TEBase TE, int post)
 	{
 		int temp = BlockProperties.getData(TE) & 0xffef;
 		temp |= post << 4;

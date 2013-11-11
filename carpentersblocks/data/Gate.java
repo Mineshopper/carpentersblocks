@@ -1,7 +1,7 @@
 package carpentersblocks.data;
 
 import net.minecraft.entity.player.EntityPlayer;
-import carpentersblocks.tileentity.TECarpentersBlock;
+import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 
 public class Gate
@@ -54,7 +54,7 @@ public class Gate
 	/**
 	 * Sets type (vanilla, picket, etc).
 	 */
-	public final static void setType(TECarpentersBlock TE, int type)
+	public final static void setType(TEBase TE, int type)
 	{
 		int temp = BlockProperties.getData(TE) & 0xfff0;
 		temp |= type;
@@ -74,7 +74,7 @@ public class Gate
 	/**
 	 * Sets facing (path on x, or path on z).
 	 */
-	public final static void setFacing(TECarpentersBlock TE, int facing)
+	public final static void setFacing(TEBase TE, int facing)
 	{
 		int temp = BlockProperties.getData(TE) & 0xffdf;
 		temp |= facing << 5;
@@ -94,7 +94,7 @@ public class Gate
 	/**
 	 * Sets state (open or closed).
 	 */
-	public final static void setState(TECarpentersBlock TE, int state, boolean playSound)
+	public final static void setState(TEBase TE, int state, boolean playSound)
 	{
 		int temp = BlockProperties.getData(TE) & 0xffbf;
 		temp |= state << 6;
@@ -117,7 +117,7 @@ public class Gate
 	/**
 	 * Sets opening direction (positive or negative on axis opposite of facing).
 	 */
-	public final static void setDirOpen(TECarpentersBlock TE, int dirOpen)
+	public final static void setDirOpen(TEBase TE, int dirOpen)
 	{
 		int temp = BlockProperties.getData(TE) & 0xffef;
 		temp |= dirOpen << 4;

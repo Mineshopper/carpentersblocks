@@ -19,7 +19,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import carpentersblocks.CarpentersBlocks;
 import carpentersblocks.data.Hatch;
-import carpentersblocks.tileentity.TECarpentersBlock;
+import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.handler.BlockHandler;
 import carpentersblocks.util.handler.IconHandler;
@@ -53,7 +53,7 @@ public class BlockCarpentersHatch extends BlockBase
 	/**
 	 * Alters direction based on valid sides detected.
 	 */
-	protected boolean onHammerLeftClick(TECarpentersBlock TE, EntityPlayer entityPlayer)
+	protected boolean onHammerLeftClick(TEBase TE, EntityPlayer entityPlayer)
 	{
 		BlockProperties.getData(TE);
 
@@ -67,7 +67,7 @@ public class BlockCarpentersHatch extends BlockBase
 	/**
 	 * Alters hatch type and redstone behavior.
 	 */
-	protected boolean onHammerRightClick(TECarpentersBlock TE, EntityPlayer entityPlayer, int side, float hitX, float hitZ)
+	protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer, int side, float hitX, float hitZ)
 	{
 		int data = BlockProperties.getData(TE);
 
@@ -107,7 +107,7 @@ public class BlockCarpentersHatch extends BlockBase
 	/**
 	 * Called upon block activation (right click on the block.)
 	 */
-	public boolean auxiliaryOnBlockActivated(TECarpentersBlock TE, World world, int x, int y, int z, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ)
+	public boolean auxiliaryOnBlockActivated(TEBase TE, World world, int x, int y, int z, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ)
 	{
 		int data = BlockProperties.getData(TE);
 
@@ -120,7 +120,7 @@ public class BlockCarpentersHatch extends BlockBase
 	/**
 	 * Returns whether hatch requires redstone activation.
 	 */
-	private boolean activationRequiresRedstone(TECarpentersBlock TE, int data)
+	private boolean activationRequiresRedstone(TEBase TE, int data)
 	{
 		return Hatch.getRigidity(data) == Hatch.HINGED_RIGID;
 	}
@@ -131,7 +131,7 @@ public class BlockCarpentersHatch extends BlockBase
 	 */
 	public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
 	{
-		TECarpentersBlock TE = (TECarpentersBlock) world.getBlockTileEntity(x, y, z);
+		TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
 
 		int data = BlockProperties.getData(TE);
 		boolean isHigh = Hatch.getPos(data) == Hatch.POSITION_HIGH;
@@ -179,7 +179,7 @@ public class BlockCarpentersHatch extends BlockBase
 	 * Lets the block know when one of its neighbor changes. Doesn't know which neighbor changed (coordinates passed are
 	 * their own) Args: x, y, z, neighbor blockID
 	 */
-	protected void auxiliaryOnNeighborBlockChange(TECarpentersBlock TE, World world, int x, int y, int z, int blockID)
+	protected void auxiliaryOnNeighborBlockChange(TEBase TE, World world, int x, int y, int z, int blockID)
 	{
 		int data = BlockProperties.getData(TE);
 		int dir = Hatch.getDir(data);
@@ -247,7 +247,7 @@ public class BlockCarpentersHatch extends BlockBase
 	 * Called when the block is placed in the world.
 	 * Uses cardinal direction to adjust metadata if player clicks top or bottom face of block.
 	 */
-	public void auxiliaryOnBlockPlacedBy(TECarpentersBlock TE, World world, int x, int y, int z, EntityLiving entityLiving, ItemStack itemStack)
+	public void auxiliaryOnBlockPlacedBy(TEBase TE, World world, int x, int y, int z, EntityLiving entityLiving, ItemStack itemStack)
 	{
 		int metadata = world.getBlockMetadata(x, y, z);
 
@@ -283,7 +283,7 @@ public class BlockCarpentersHatch extends BlockBase
 	 * Will find and set a new direction for hatch if an adjacent block can support it.
 	 * If nothing is found, block will break.
 	 */
-	private void findNextSideSupportBlock(TECarpentersBlock TE, World world, int x, int y, int z)
+	private void findNextSideSupportBlock(TEBase TE, World world, int x, int y, int z)
 	{
 		int data = BlockProperties.getData(TE);
 		int dir = Hatch.getDir(data);

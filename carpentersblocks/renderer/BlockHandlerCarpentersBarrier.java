@@ -10,7 +10,7 @@ import org.lwjgl.opengl.GL11;
 
 import carpentersblocks.block.BlockCarpentersBarrier;
 import carpentersblocks.data.Barrier;
-import carpentersblocks.tileentity.TECarpentersBlock;
+import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.handler.BlockHandler;
 
@@ -74,7 +74,7 @@ public class BlockHandlerCarpentersBarrier extends BlockHandlerBase
 	/**
 	 * Renders barrier
 	 */
-	 public boolean renderCarpentersBlock(TECarpentersBlock TE, RenderBlocks renderBlocks, Block srcBlock, int renderPass, int x, int y, int z)
+	 public boolean renderCarpentersBlock(TEBase TE, RenderBlocks renderBlocks, Block srcBlock, int renderPass, int x, int y, int z)
 	{
 		Block coverBlock = isSideCover ? BlockProperties.getCoverBlock(TE, coverRendering) : BlockProperties.getCoverBlock(TE, 6);
 
@@ -105,7 +105,7 @@ public class BlockHandlerCarpentersBarrier extends BlockHandlerBase
 	{
 		if (blockAccess.getBlockId(x, y, z) == BlockHandler.blockCarpentersBarrierID)
 		{
-			TECarpentersBlock TE = (TECarpentersBlock) blockAccess.getBlockTileEntity(x, y, z);
+			TEBase TE = (TEBase) blockAccess.getBlockTileEntity(x, y, z);
 
 			BlockCarpentersBarrier blockRef = (BlockCarpentersBarrier) BlockHandler.blockCarpentersBarrier;
 
@@ -130,7 +130,7 @@ public class BlockHandlerCarpentersBarrier extends BlockHandlerBase
 	/**
 	 * Renders vanilla fence at given coordinates
 	 */
-	public boolean renderFence(TECarpentersBlock TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int x, int y, int z)
+	public boolean renderFence(TEBase TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int x, int y, int z)
 	{
 		int data = BlockProperties.getData(TE);
 		BlockCarpentersBarrier blockRef = (BlockCarpentersBarrier) BlockHandler.blockCarpentersBarrier;
@@ -213,7 +213,7 @@ public class BlockHandlerCarpentersBarrier extends BlockHandlerBase
 	/**
 	 * Renders picket fence block at given coordinates
 	 */
-	public boolean renderPicketFence(TECarpentersBlock TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int x, int y, int z)
+	public boolean renderPicketFence(TEBase TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int x, int y, int z)
 	{
 		int data = BlockProperties.getData(TE);
 		BlockCarpentersBarrier blockRef = (BlockCarpentersBarrier) BlockHandler.blockCarpentersBarrier;
@@ -453,7 +453,7 @@ public class BlockHandlerCarpentersBarrier extends BlockHandlerBase
 	/**
 	 * Renders wall block at given coordinates
 	 */
-	public boolean renderWall(TECarpentersBlock TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int x, int y, int z)
+	public boolean renderWall(TEBase TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int x, int y, int z)
 	{
 		BlockProperties.getData(TE);
 		BlockCarpentersBarrier blockRef = (BlockCarpentersBarrier) BlockHandler.blockCarpentersBarrier;
@@ -510,7 +510,7 @@ public class BlockHandlerCarpentersBarrier extends BlockHandlerBase
 	/**
 	 * Renders wall block at given coordinates
 	 */
-	public boolean renderVerticalPlankFence(TECarpentersBlock TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int x, int y, int z)
+	public boolean renderVerticalPlankFence(TEBase TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int x, int y, int z)
 	{
 		BlockProperties.getData(TE);
 		BlockCarpentersBarrier blockRef = (BlockCarpentersBarrier) BlockHandler.blockCarpentersBarrier;

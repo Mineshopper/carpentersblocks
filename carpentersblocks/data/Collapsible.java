@@ -1,6 +1,6 @@
 package carpentersblocks.data;
 
-import carpentersblocks.tileentity.TECarpentersBlock;
+import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 
 public class Collapsible
@@ -45,7 +45,7 @@ public class Collapsible
 	 * Sets height of corner as value from 1 to 16.
 	 * Will correct out-of-range values automatically, and won't cause block update if height doesn't change.
 	 */
-	public final static void setQuadHeight(TECarpentersBlock TE, int corner, int height)
+	public final static void setQuadHeight(TEBase TE, int corner, int height)
 	{
 		int data = BlockProperties.getData(TE);
 		
@@ -83,7 +83,7 @@ public class Collapsible
 	/**
 	 * Returns height of corner as value from 1 to 16.
 	 */
-	public final static int getQuadHeight(final TECarpentersBlock TE, int corner)
+	public final static int getQuadHeight(final TEBase TE, int corner)
 	{
 		int data = BlockProperties.getData(TE);
 		

@@ -7,6 +7,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
@@ -16,7 +17,8 @@ import net.minecraftforge.common.ForgeDirection;
 import carpentersblocks.CarpentersBlocks;
 import carpentersblocks.data.Torch;
 import carpentersblocks.data.Torch.State;
-import carpentersblocks.tileentity.TECarpentersBlock;
+import carpentersblocks.tileentity.TEBase;
+import carpentersblocks.tileentity.TECarpentersTorch;
 import carpentersblocks.util.handler.BlockHandler;
 import carpentersblocks.util.handler.IconHandler;
 import cpw.mods.fml.relauncher.Side;
@@ -56,7 +58,7 @@ public class BlockCarpentersTorch extends BlockBase
 
 		if (block != null && block.blockID == blockID)
 		{
-			TECarpentersBlock TE = (TECarpentersBlock) world.getBlockTileEntity(x, y, z);
+			TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
 			
 			int coverLight = super.getLightValue(world, x, y, z);
 			int torchLight = 0;
@@ -119,7 +121,7 @@ public class BlockCarpentersTorch extends BlockBase
 	/**
 	 * Called when the block is placed in the world.
 	 */
-	public void auxiliaryOnBlockPlacedBy(TECarpentersBlock TE, World world, int x, int y, int z, EntityLiving entityLiving, ItemStack itemStack)
+	public void auxiliaryOnBlockPlacedBy(TEBase TE, World world, int x, int y, int z, EntityLiving entityLiving, ItemStack itemStack)
 	{
 		int facing = world.getBlockMetadata(x, y, z);
 		
@@ -132,7 +134,7 @@ public class BlockCarpentersTorch extends BlockBase
 	 * Lets the block know when one of its neighbor changes. Doesn't know which neighbor changed (coordinates passed are
 	 * their own) Args: x, y, z, neighbor blockID
 	 */
-	protected void auxiliaryOnNeighborBlockChange(TECarpentersBlock TE, World world, int x, int y, int z, int blockID)
+	protected void auxiliaryOnNeighborBlockChange(TEBase TE, World world, int x, int y, int z, int blockID)
 	{
 		if (Torch.isReady(TE))
 		{
@@ -152,7 +154,7 @@ public class BlockCarpentersTorch extends BlockBase
     @Override
 	public MovingObjectPosition collisionRayTrace(World world, int x, int y, int z, Vec3 startVec, Vec3 endVec)
     {
-		TECarpentersBlock TE = (TECarpentersBlock) world.getBlockTileEntity(x, y, z);
+		TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
 
 		ForgeDirection facing = Torch.getFacing(TE);
 
@@ -185,14 +187,8 @@ public class BlockCarpentersTorch extends BlockBase
     {
     	if (!world.isRemote)
     	{
-	    	TECarpentersBlock TE = (TECarpentersBlock) world.getBlockTileEntity(x, y, z);
-	
-	    	double xOffset = x + 0.5F;
-	    	double yOffset = y + 0.7F;
-	    	double zOffset = z + 0.5F;
-	    	double offset1 = 0.2199999988079071D;
-	    	double offset2 = 0.27000001072883606D;
-	    	
+	    	TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
+
 	    	boolean isWet = world.isRaining() && world.canBlockSeeTheSky(x, y, z);
 	    	
 	    	switch (Torch.getState(TE))
@@ -200,14 +196,11 @@ public class BlockCarpentersTorch extends BlockBase
 		    	case LIT:
 		    		if (isWet) {
 		    			Torch.setState(TE, State.SMOLDERING);
-		    			world.playSoundEffect(x + 0.5D, y + 0.5D, z + 0.5D, "random.fizz", 0.5F, 2.6F + (random.nextFloat() - random.nextFloat()) * 0.8F);
-		    			world.spawnParticle("largesmoke", xOffset, yOffset + offset1, zOffset - offset2, 0.0D, 0.0D, 0.0D);
 		    		}
 		    		break;
 		    	case SMOLDERING:
 		    		if (isWet) {
 		    			Torch.setState(TE, State.UNLIT);
-			    		world.playSoundEffect(x + 0.5D, y + 0.5D, z + 0.5D, "random.fizz", 0.5F, 2.6F + (random.nextFloat() - random.nextFloat()) * 0.8F);
 		    		} else {
 			    		Torch.setState(TE, State.LIT);
 		    		}
@@ -229,54 +222,27 @@ public class BlockCarpentersTorch extends BlockBase
      */
     public void randomDisplayTick(World world, int x, int y, int z, Random random)
     {
-    	TECarpentersBlock TE = (TECarpentersBlock) world.getBlockTileEntity(x, y, z);
+    	TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
     	
     	State state = Torch.getState(TE);
 
     	if (!state.equals(State.UNLIT))
     	{
-	    	double xOffset = x + 0.5F;
-	    	double yOffset = y + 0.7F;
-	    	double zOffset = z + 0.5F;
-	    	double offset1 = 0.2199999988079071D;
-	    	double offset2 = 0.27000001072883606D;
-
-		    ForgeDirection facing = Torch.getFacing(TE);
-				
-	        switch (facing) {
-	        case NORTH:
-	            world.spawnParticle("smoke", xOffset, yOffset + offset1, zOffset + offset2, 0.0D, 0.0D, 0.0D);
-	            if (state.equals(State.LIT)) {
-	            	world.spawnParticle("flame", xOffset, yOffset + offset1, zOffset + offset2, 0.0D, 0.0D, 0.0D);
-	            }
-	        	break;
-	        case SOUTH:
-	            world.spawnParticle("smoke", xOffset, yOffset + offset1, zOffset - offset2, 0.0D, 0.0D, 0.0D);
-	            if (state.equals(State.LIT)) {
-	            	world.spawnParticle("flame", xOffset, yOffset + offset1, zOffset - offset2, 0.0D, 0.0D, 0.0D);
-	            }
-	        	break;
-	        case WEST:
-	            world.spawnParticle("smoke", xOffset + offset2, yOffset + offset1, zOffset, 0.0D, 0.0D, 0.0D);
-	            if (state.equals(State.LIT)) {
-	            	world.spawnParticle("flame", xOffset + offset2, yOffset + offset1, zOffset, 0.0D, 0.0D, 0.0D);
-	            }
-	        	break;
-	        case EAST:
-	            world.spawnParticle("smoke", xOffset - offset2, yOffset + offset1, zOffset, 0.0D, 0.0D, 0.0D);
-	            if (state.equals(State.LIT)) {
-	            	world.spawnParticle("flame", xOffset - offset2, yOffset + offset1, zOffset, 0.0D, 0.0D, 0.0D);
-	            }
-	        	break;
-	        default:
-	            world.spawnParticle("smoke", xOffset, yOffset, zOffset, 0.0D, 0.0D, 0.0D);
-	            if (state.equals(State.LIT)) {
-	            	world.spawnParticle("flame", xOffset, yOffset, zOffset, 0.0D, 0.0D, 0.0D);
-	            }
-	        	break;
-	        }
+    		double[] headCoords = Torch.getHeadCoordinates(TE);
+    		
+            world.spawnParticle("smoke", headCoords[0], headCoords[1], headCoords[2], 0.0D, 0.0D, 0.0D);
+    		
+    		if (state.equals(State.LIT)) {
+    			world.spawnParticle("flame", headCoords[0], headCoords[1], headCoords[2], 0.0D, 0.0D, 0.0D);
+    		}
     	}
     }
+    
+	@Override
+	public TileEntity createNewTileEntity(World world)
+	{
+		return new TECarpentersTorch();
+	}
     
 	@Override
 	/**

@@ -7,7 +7,7 @@ import static net.minecraftforge.common.ForgeDirection.SOUTH;
 import static net.minecraftforge.common.ForgeDirection.UP;
 import static net.minecraftforge.common.ForgeDirection.WEST;
 import carpentersblocks.data.Collapsible;
-import carpentersblocks.tileentity.TECarpentersBlock;
+import carpentersblocks.tileentity.TEBase;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.util.Icon;
 import net.minecraftforge.common.ForgeDirection;
@@ -20,7 +20,7 @@ public class RenderHelperCollapsible extends RenderHelper
 	private static double offset_XZPN;
 	private static double offset_XZPP;
 	
-	private static void computeOffsets(TECarpentersBlock TE)
+	private static void computeOffsets(TEBase TE)
 	{
 		offset_XZNN = Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZNN) / 16.0D;
 		offset_XZNP = Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZNP) / 16.0D;
@@ -31,7 +31,7 @@ public class RenderHelperCollapsible extends RenderHelper
 	/**
 	 * Renders the given texture to the top face of the block.
 	 */
-	public static void renderFaceYPos(TECarpentersBlock TE, RenderBlocks renderBlocks, double x, double y, double z, Icon icon)
+	public static void renderFaceYPos(TEBase TE, RenderBlocks renderBlocks, double x, double y, double z, Icon icon)
 	{
 		setBounds(renderBlocks, UP, x, y, z);
         setUV(renderBlocks, UP, renderBlocks.uvRotateTop, icon);
@@ -46,7 +46,7 @@ public class RenderHelperCollapsible extends RenderHelper
 	/**
 	 * Renders the given texture to the North face of the block.
 	 */
-	public static void renderFaceZNeg(TECarpentersBlock TE, RenderBlocks renderBlocks, double x, double y, double z, Icon icon)
+	public static void renderFaceZNeg(TEBase TE, RenderBlocks renderBlocks, double x, double y, double z, Icon icon)
 	{        
 		setBounds(renderBlocks, NORTH, x, y, z);
 		setUV(renderBlocks, NORTH, renderBlocks.uvRotateEast, icon);
@@ -74,7 +74,7 @@ public class RenderHelperCollapsible extends RenderHelper
 	/**
 	 * Renders the given texture to the South face of the block.
 	 */
-	public static void renderFaceZPos(TECarpentersBlock TE, RenderBlocks renderBlocks, double x, double y, double z, Icon icon)
+	public static void renderFaceZPos(TEBase TE, RenderBlocks renderBlocks, double x, double y, double z, Icon icon)
 	{
 		setBounds(renderBlocks, SOUTH, x, y, z);
 		setUV(renderBlocks, SOUTH, renderBlocks.uvRotateWest, icon);
@@ -102,7 +102,7 @@ public class RenderHelperCollapsible extends RenderHelper
 	/**
 	 * Renders the given texture to the West face of the block.
 	 */
-	public static void renderFaceXNeg(TECarpentersBlock TE, RenderBlocks renderBlocks, double x, double y, double z, Icon icon)
+	public static void renderFaceXNeg(TEBase TE, RenderBlocks renderBlocks, double x, double y, double z, Icon icon)
 	{
 		setBounds(renderBlocks, WEST, x, y, z);
 		setUV(renderBlocks, WEST, renderBlocks.uvRotateNorth, icon);
@@ -130,7 +130,7 @@ public class RenderHelperCollapsible extends RenderHelper
 	/**
 	 * Renders the given texture to the East face of the block.
 	 */
-	public static void renderFaceXPos(TECarpentersBlock TE, RenderBlocks renderBlocks, double x, double y, double z, Icon icon)
+	public static void renderFaceXPos(TEBase TE, RenderBlocks renderBlocks, double x, double y, double z, Icon icon)
 	{
 		setBounds(renderBlocks, EAST, x, y, z);
 		setUV(renderBlocks, EAST, renderBlocks.uvRotateSouth, icon);

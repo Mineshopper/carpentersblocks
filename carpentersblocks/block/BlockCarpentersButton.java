@@ -13,7 +13,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import carpentersblocks.CarpentersBlocks;
 import carpentersblocks.data.Button;
-import carpentersblocks.tileentity.TECarpentersBlock;
+import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.handler.BlockHandler;
 import carpentersblocks.util.handler.IconHandler;
 import cpw.mods.fml.common.registry.LanguageRegistry;
@@ -46,7 +46,7 @@ public class BlockCarpentersButton extends BlockBase {
 	/**
 	 * Alters polarity.
 	 */
-	protected boolean onHammerLeftClick(TECarpentersBlock TE, EntityPlayer entityPlayer)
+	protected boolean onHammerLeftClick(TEBase TE, EntityPlayer entityPlayer)
 	{
 		int polarity = Button.getPolarity(TE) == Button.POLARITY_POSITIVE ? Button.POLARITY_NEGATIVE : Button.POLARITY_POSITIVE;
 
@@ -109,7 +109,7 @@ public class BlockCarpentersButton extends BlockBase {
 	/**
 	 * Called when the block is placed in the world.
 	 */
-	public void auxiliaryOnBlockPlacedBy(TECarpentersBlock TE, World world, int x, int y, int z, EntityLiving entityLiving, ItemStack itemStack)
+	public void auxiliaryOnBlockPlacedBy(TEBase TE, World world, int x, int y, int z, EntityLiving entityLiving, ItemStack itemStack)
 	{
 		Button.setFacing(TE, world.getBlockMetadata(x, y, z));
 		Button.setReady(TE);
@@ -120,7 +120,7 @@ public class BlockCarpentersButton extends BlockBase {
 	 * Lets the block know when one of its neighbor changes. Doesn't know which neighbor changed (coordinates passed are
 	 * their own) Args: x, y, z, neighbor blockID
 	 */
-	protected void auxiliaryOnNeighborBlockChange(TECarpentersBlock TE, World world, int x, int y, int z, int blockID)
+	protected void auxiliaryOnNeighborBlockChange(TEBase TE, World world, int x, int y, int z, int blockID)
 	{
 		if (Button.isReady(TE))
 		{
@@ -139,7 +139,7 @@ public class BlockCarpentersButton extends BlockBase {
 	 */
 	public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
 	{
-		TECarpentersBlock TE = (TECarpentersBlock) world.getBlockTileEntity(x, y, z);
+		TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
 
 		ForgeDirection dir = Button.getFacing(TE);
 
@@ -166,7 +166,7 @@ public class BlockCarpentersButton extends BlockBase {
 	/**
 	 * Called upon block activation (right click on the block.)
 	 */
-	public boolean auxiliaryOnBlockActivated(TECarpentersBlock TE, World world, int x, int y, int z, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ)
+	public boolean auxiliaryOnBlockActivated(TEBase TE, World world, int x, int y, int z, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ)
 	{
 		if (!isDepressed(TE))
 		{
@@ -184,7 +184,7 @@ public class BlockCarpentersButton extends BlockBase {
 	/**
 	 * Ejects contained items into the world, and notifies neighbours of an update, as appropriate
 	 */
-	public void auxiliaryBreakBlock(TECarpentersBlock TE, World world, int x, int y, int z, int par5, int metadata)
+	public void auxiliaryBreakBlock(TEBase TE, World world, int x, int y, int z, int par5, int metadata)
 	{
 		ForgeDirection dir = Button.getFacing(TE);
 
@@ -196,7 +196,7 @@ public class BlockCarpentersButton extends BlockBase {
 	/**
 	 * Returns whether button is in depressed state
 	 */
-	private boolean isDepressed(TECarpentersBlock TE)
+	private boolean isDepressed(TEBase TE)
 	{
 		return Button.getState(TE) == Button.STATE_ON;
 	}
@@ -209,7 +209,7 @@ public class BlockCarpentersButton extends BlockBase {
 	 */
 	public int isProvidingWeakPower(IBlockAccess world, int x, int y, int z, int side)
 	{
-		TECarpentersBlock TE = (TECarpentersBlock) world.getBlockTileEntity(x, y, z);
+		TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
 
 		return getPowerSupply(TE);
 	}
@@ -221,7 +221,7 @@ public class BlockCarpentersButton extends BlockBase {
 	 */
 	public int isProvidingStrongPower(IBlockAccess world, int x, int y, int z, int side)
 	{
-		TECarpentersBlock TE = (TECarpentersBlock) world.getBlockTileEntity(x, y, z);
+		TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
 
 		ForgeDirection dir = Button.getFacing(TE);
 
@@ -231,7 +231,7 @@ public class BlockCarpentersButton extends BlockBase {
 	/**
 	 * Returns power level (0 or 15)
 	 */
-	private int getPowerSupply(TECarpentersBlock TE)
+	private int getPowerSupply(TEBase TE)
 	{
 		int polarity = Button.getPolarity(TE);
 
@@ -259,7 +259,7 @@ public class BlockCarpentersButton extends BlockBase {
 	{
 		if (!world.isRemote)
 		{
-			TECarpentersBlock TE = (TECarpentersBlock) world.getBlockTileEntity(x, y, z);
+			TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
 
 			ForgeDirection dir = Button.getFacing(TE);
 

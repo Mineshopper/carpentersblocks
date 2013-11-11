@@ -8,7 +8,7 @@ import carpentersblocks.block.BlockCarpentersDoor;
 import carpentersblocks.data.Door;
 import carpentersblocks.renderer.helper.RenderHelper;
 import carpentersblocks.renderer.helper.VertexHelper;
-import carpentersblocks.tileentity.TECarpentersBlock;
+import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.handler.BlockHandler;
 import carpentersblocks.util.handler.IconHandler;
@@ -26,7 +26,7 @@ public class BlockHandlerCarpentersDoor extends HingedBase
 	/**
 	 * Renders block
 	 */
-	public boolean renderCarpentersBlock(TECarpentersBlock TE, RenderBlocks renderBlocks, Block srcBlock, int renderPass, int x, int y, int z)
+	public boolean renderCarpentersBlock(TEBase TE, RenderBlocks renderBlocks, Block srcBlock, int renderPass, int x, int y, int z)
 	{
 		Block coverBlock = isSideCover ? BlockProperties.getCoverBlock(TE, coverRendering) : BlockProperties.getCoverBlock(TE, 6);
 
@@ -64,7 +64,7 @@ public class BlockHandlerCarpentersDoor extends HingedBase
 	/**
 	 * Renders a French glass door at the given coordinates
 	 */
-	public boolean renderFrenchGlassDoor(TECarpentersBlock TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int renderPass, int x, int y, int z)
+	public boolean renderFrenchGlassDoor(TEBase TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int renderPass, int x, int y, int z)
 	{
 		int data = BlockProperties.getData(TE);
 		int hinge = Door.getHinge(data);
@@ -358,7 +358,7 @@ public class BlockHandlerCarpentersDoor extends HingedBase
 	/**
 	 * Renders a glass top door at the given coordinates
 	 */
-	public boolean renderGlassTopDoor(TECarpentersBlock TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int renderPass, int x, int y, int z)
+	public boolean renderGlassTopDoor(TEBase TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int renderPass, int x, int y, int z)
 	{
 		int data = BlockProperties.getData(TE);
 		int hinge = Door.getHinge(data);
@@ -627,7 +627,7 @@ public class BlockHandlerCarpentersDoor extends HingedBase
 	/**
 	 * Renders a panels door at the given coordinates
 	 */
-	public boolean renderPanelsDoor(TECarpentersBlock TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int renderPass, int x, int y, int z)
+	public boolean renderPanelsDoor(TEBase TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int renderPass, int x, int y, int z)
 	{
 		int data = BlockProperties.getData(TE);
 		int hinge = Door.getHinge(data);
@@ -861,7 +861,7 @@ public class BlockHandlerCarpentersDoor extends HingedBase
 	/**
 	 * Renders a tall glass or screen door at the given coordinates
 	 */
-	public boolean renderTallDoor(TECarpentersBlock TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int renderPass, int x, int y, int z)
+	public boolean renderTallDoor(TEBase TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int renderPass, int x, int y, int z)
 	{
 		int data = BlockProperties.getData(TE);
 		int hinge = Door.getHinge(data);
@@ -1072,7 +1072,7 @@ public class BlockHandlerCarpentersDoor extends HingedBase
 	/**
 	 * Renders a hidden door at the given coordinates
 	 */
-	public boolean renderHiddenDoor(TECarpentersBlock TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int renderPass, int x, int y, int z)
+	public boolean renderHiddenDoor(TEBase TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int renderPass, int x, int y, int z)
 	{
 		if (shouldRenderFrame(TE, renderBlocks, coverBlock, renderPass))
 		{
@@ -1090,7 +1090,7 @@ public class BlockHandlerCarpentersDoor extends HingedBase
 	/**
 	 * Renders a door handle for the given coordinates
 	 */
-	public boolean renderHandle(TECarpentersBlock TE, RenderBlocks renderBlocks, Block block, int x, int y, int z, boolean render_inside_handle, boolean render_outside_handle)
+	public boolean renderHandle(TEBase TE, RenderBlocks renderBlocks, Block block, int x, int y, int z, boolean render_inside_handle, boolean render_outside_handle)
 	{
 		if (!render_inside_handle && !render_outside_handle)
 			return false;

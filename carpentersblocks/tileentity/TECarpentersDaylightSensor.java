@@ -2,7 +2,7 @@ package carpentersblocks.tileentity;
 
 import carpentersblocks.block.BlockCarpentersDaylightSensor;
 
-public class TECarpentersBlockUpdateable extends TECarpentersBlock
+public class TECarpentersDaylightSensor extends TEBase
 {
 
 	/**
@@ -16,13 +16,8 @@ public class TECarpentersBlockUpdateable extends TECarpentersBlock
 		{
 			blockType = getBlockType();
 
-			if (blockType != null)
-			{
-				/*
-				 * Update daylight sensor light level once per second.
-				 */
-				if (blockType instanceof BlockCarpentersDaylightSensor)
-					((BlockCarpentersDaylightSensor) getBlockType()).updateLightLevel(worldObj, xCoord, yCoord, zCoord);
+			if (blockType != null) {
+				((BlockCarpentersDaylightSensor) getBlockType()).updateLightLevel(worldObj, xCoord, yCoord, zCoord);
 			}
 		}
 	}

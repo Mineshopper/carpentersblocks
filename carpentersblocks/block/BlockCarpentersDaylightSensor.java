@@ -12,8 +12,8 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import carpentersblocks.CarpentersBlocks;
 import carpentersblocks.data.DaylightSensor;
-import carpentersblocks.tileentity.TECarpentersBlock;
-import carpentersblocks.tileentity.TECarpentersBlockUpdateable;
+import carpentersblocks.tileentity.TEBase;
+import carpentersblocks.tileentity.TECarpentersDaylightSensor;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.handler.BlockHandler;
 import carpentersblocks.util.handler.IconHandler;
@@ -58,7 +58,7 @@ public class BlockCarpentersDaylightSensor extends BlockBase
 	/**
 	 * Alters polarity.
 	 */
-	protected boolean onHammerLeftClick(TECarpentersBlock TE, EntityPlayer entityPlayer)
+	protected boolean onHammerLeftClick(TEBase TE, EntityPlayer entityPlayer)
 	{
 		int data = BlockProperties.getData(TE);
 		int polarity = DaylightSensor.getPolarity(data) == DaylightSensor.POLARITY_POSITIVE ? DaylightSensor.POLARITY_NEGATIVE : DaylightSensor.POLARITY_POSITIVE;
@@ -86,7 +86,7 @@ public class BlockCarpentersDaylightSensor extends BlockBase
 	 */
 	public int isProvidingWeakPower(IBlockAccess world, int x, int y, int z, int side)
 	{
-		TECarpentersBlock TE = (TECarpentersBlock)world.getBlockTileEntity(x, y, z);
+		TEBase TE = (TEBase)world.getBlockTileEntity(x, y, z);
 
 		int data = BlockProperties.getData(TE);
 		int type = DaylightSensor.getType(data);
@@ -101,7 +101,7 @@ public class BlockCarpentersDaylightSensor extends BlockBase
 	{
 		if (!world.provider.hasNoSky)
 		{
-			TECarpentersBlock TE = (TECarpentersBlock)world.getBlockTileEntity(x, y, z);
+			TEBase TE = (TEBase)world.getBlockTileEntity(x, y, z);
 
 			int data = BlockProperties.getData(TE);
 			int old_lightValue = DaylightSensor.getType(data);
@@ -143,7 +143,7 @@ public class BlockCarpentersDaylightSensor extends BlockBase
 	@Override
 	public TileEntity createNewTileEntity(World world)
 	{
-		return new TECarpentersBlockUpdateable();
+		return new TECarpentersDaylightSensor();
 	}
 
 	@Override

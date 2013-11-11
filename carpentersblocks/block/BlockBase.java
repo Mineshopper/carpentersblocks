@@ -24,7 +24,7 @@ import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.common.EnumPlantType;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.IPlantable;
-import carpentersblocks.tileentity.TECarpentersBlock;
+import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.handler.BlockEventHandler;
 import carpentersblocks.util.handler.FeatureHandler;
@@ -51,7 +51,7 @@ public class BlockBase extends BlockContainer
 	 */
 	protected boolean willCoverRecurse(IBlockAccess world, int x, int y, int z)
 	{
-		TECarpentersBlock TE = (TECarpentersBlock) world.getBlockTileEntity(x, y, z);
+		TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
 
 		return BlockProperties.getCoverBlock(TE, 6).blockID == this.blockID;
 	}
@@ -74,7 +74,7 @@ public class BlockBase extends BlockContainer
 	 */
 	public Icon getBlockTexture(IBlockAccess world, int x, int y, int z, int side)
 	{
-		TECarpentersBlock TE = (TECarpentersBlock) world.getBlockTileEntity(x, y, z);
+		TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
 
 		return BlockProperties.getCoverBlock(TE, 6).getIcon(side, BlockProperties.getCoverMetadata(TE, 6));
 	}
@@ -85,7 +85,7 @@ public class BlockBase extends BlockContainer
 	 */
 	public void onBlockClicked(World world, int x, int y, int z, EntityPlayer entityPlayer)
 	{
-		TECarpentersBlock TE = (TECarpentersBlock) world.getBlockTileEntity(x, y, z);
+		TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
 
 		ItemStack itemStack = entityPlayer.getCurrentEquippedItem();
 
@@ -157,7 +157,7 @@ public class BlockBase extends BlockContainer
 	 */
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ)
 	{
-		TECarpentersBlock TE = (TECarpentersBlock) world.getBlockTileEntity(x, y, z);
+		TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
 		ItemStack itemStack = entityPlayer.getCurrentEquippedItem();
 		boolean actionPerformed = false;
 		boolean decrementInventory = false;
@@ -271,7 +271,7 @@ public class BlockBase extends BlockContainer
 	/**
 	 * Cycles through chisel patterns.
 	 */
-	public boolean onChiselClick(TECarpentersBlock TE, int side, boolean leftClick)
+	public boolean onChiselClick(TEBase TE, int side, boolean leftClick)
 	{
 		int pattern = BlockProperties.getPattern(TE, side);
 
@@ -279,12 +279,12 @@ public class BlockBase extends BlockContainer
 		int neighbor_pattern = 0;
 		if (pattern == 0)
 		{
-			TECarpentersBlock TE_XN = extendsBlockBase(TE.worldObj, TE.xCoord - 1, TE.yCoord, TE.zCoord) ? (TECarpentersBlock)TE.worldObj.getBlockTileEntity(TE.xCoord - 1, TE.yCoord, TE.zCoord) : null;
-			TECarpentersBlock TE_XP = extendsBlockBase(TE.worldObj, TE.xCoord + 1, TE.yCoord, TE.zCoord) ? (TECarpentersBlock)TE.worldObj.getBlockTileEntity(TE.xCoord + 1, TE.yCoord, TE.zCoord) : null;
-			TECarpentersBlock TE_YN = extendsBlockBase(TE.worldObj, TE.xCoord, TE.yCoord - 1, TE.zCoord) ? (TECarpentersBlock)TE.worldObj.getBlockTileEntity(TE.xCoord, TE.yCoord - 1, TE.zCoord) : null;
-			TECarpentersBlock TE_YP = extendsBlockBase(TE.worldObj, TE.xCoord, TE.yCoord + 1, TE.zCoord) ? (TECarpentersBlock)TE.worldObj.getBlockTileEntity(TE.xCoord, TE.yCoord + 1, TE.zCoord) : null;
-			TECarpentersBlock TE_ZN = extendsBlockBase(TE.worldObj, TE.xCoord, TE.yCoord, TE.zCoord - 1) ? (TECarpentersBlock)TE.worldObj.getBlockTileEntity(TE.xCoord, TE.yCoord, TE.zCoord - 1) : null;
-			TECarpentersBlock TE_ZP = extendsBlockBase(TE.worldObj, TE.xCoord, TE.yCoord, TE.zCoord + 1) ? (TECarpentersBlock)TE.worldObj.getBlockTileEntity(TE.xCoord, TE.yCoord, TE.zCoord + 1) : null;
+			TEBase TE_XN = extendsBlockBase(TE.worldObj, TE.xCoord - 1, TE.yCoord, TE.zCoord) ? (TEBase)TE.worldObj.getBlockTileEntity(TE.xCoord - 1, TE.yCoord, TE.zCoord) : null;
+			TEBase TE_XP = extendsBlockBase(TE.worldObj, TE.xCoord + 1, TE.yCoord, TE.zCoord) ? (TEBase)TE.worldObj.getBlockTileEntity(TE.xCoord + 1, TE.yCoord, TE.zCoord) : null;
+			TEBase TE_YN = extendsBlockBase(TE.worldObj, TE.xCoord, TE.yCoord - 1, TE.zCoord) ? (TEBase)TE.worldObj.getBlockTileEntity(TE.xCoord, TE.yCoord - 1, TE.zCoord) : null;
+			TEBase TE_YP = extendsBlockBase(TE.worldObj, TE.xCoord, TE.yCoord + 1, TE.zCoord) ? (TEBase)TE.worldObj.getBlockTileEntity(TE.xCoord, TE.yCoord + 1, TE.zCoord) : null;
+			TEBase TE_ZN = extendsBlockBase(TE.worldObj, TE.xCoord, TE.yCoord, TE.zCoord - 1) ? (TEBase)TE.worldObj.getBlockTileEntity(TE.xCoord, TE.yCoord, TE.zCoord - 1) : null;
+			TEBase TE_ZP = extendsBlockBase(TE.worldObj, TE.xCoord, TE.yCoord, TE.zCoord + 1) ? (TEBase)TE.worldObj.getBlockTileEntity(TE.xCoord, TE.yCoord, TE.zCoord + 1) : null;
 
 			if (TE_XN != null && BlockProperties.hasPattern(TE_XN, side)) {
 				pattern = BlockProperties.getPattern(TE_XN, side);
@@ -323,7 +323,7 @@ public class BlockBase extends BlockContainer
 	 */
 	public void onNeighborBlockChange(World world, int x, int y, int z, int blockID)
 	{
-		TECarpentersBlock TE = (TECarpentersBlock) world.getBlockTileEntity(x, y, z);
+		TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
 
 		if (!world.isRemote)
 		{
@@ -380,7 +380,7 @@ public class BlockBase extends BlockContainer
 	{
 		if (!willCoverRecurse(world, x, y, z))
 		{
-			TECarpentersBlock TE = (TECarpentersBlock) world.getBlockTileEntity(x, y, z);
+			TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
 			int effectiveSide = ForgeDirection.OPPOSITES[side];
 
 			int power = BlockProperties.getCoverBlock(world, 6, x, y, z).isProvidingWeakPower(world, x, y, z, side);
@@ -401,7 +401,7 @@ public class BlockBase extends BlockContainer
 	{
 		if (!willCoverRecurse(world, x, y, z))
 		{
-			TECarpentersBlock TE = (TECarpentersBlock) world.getBlockTileEntity(x, y, z);
+			TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
 			int effectiveSide = ForgeDirection.OPPOSITES[side];
 
 			int power = BlockProperties.getCoverBlock(world, 6, x, y, z).isProvidingStrongPower(world, x, y, z, side);
@@ -457,7 +457,7 @@ public class BlockBase extends BlockContainer
      */
     public boolean addBlockHitEffects(World world, MovingObjectPosition target, EffectRenderer effectRenderer)
 	{
-		TECarpentersBlock TE = (TECarpentersBlock) world.getBlockTileEntity(target.blockX, target.blockY, target.blockZ);
+		TEBase TE = (TEBase) world.getBlockTileEntity(target.blockX, target.blockY, target.blockZ);
 
 		if (BlockProperties.hasCover(TE, 6))
 		{
@@ -536,7 +536,7 @@ public class BlockBase extends BlockContainer
 
 		if (block != null && block.blockID == blockID)
 		{
-			TECarpentersBlock TE = (TECarpentersBlock) world.getBlockTileEntity(x, y, z);
+			TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
 			int lightOutput = Block.lightValue[this.blockID];
 
 			for (int side = 0; side < 7; ++side)
@@ -646,7 +646,7 @@ public class BlockBase extends BlockContainer
 	 */
 	public void breakBlock(World world, int x, int y, int z, int blockID, int metadata)
 	{
-		TECarpentersBlock TE = (TECarpentersBlock) world.getBlockTileEntity(x, y, z);
+		TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
 
 		if (TE != null) {
 			for (int side = 0; side < 7; ++side)
@@ -670,7 +670,7 @@ public class BlockBase extends BlockContainer
 
 		if (world.getBlockId(x, y, z) == blockID)
 		{
-			TECarpentersBlock TE = (TECarpentersBlock) world.getBlockTileEntity(x, y, z);
+			TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
 
 			if (BlockProperties.getOverlay(TE, 6) == OverlayHandler.OVERLAY_MYCELIUM)
 				Block.mycelium.randomDisplayTick(world, x, y, z, random);
@@ -683,7 +683,7 @@ public class BlockBase extends BlockContainer
 	 */
 	public boolean canSustainPlant(World world, int x, int y, int z, ForgeDirection dir, IPlantable plant)
 	{
-		TECarpentersBlock TE = (TECarpentersBlock)world.getBlockTileEntity(x, y, z);
+		TEBase TE = (TEBase)world.getBlockTileEntity(x, y, z);
 
 		Block srcBlock = BlockProperties.getCoverBlock(TE, 6);
 		Block topBlock = BlockProperties.getCoverBlock(TE, 1);
@@ -723,7 +723,7 @@ public class BlockBase extends BlockContainer
 	/**
 	 * Copy of super function with block ID override.
 	 */
-	protected boolean canSustainPlantWithBlockIdOverride(TECarpentersBlock TE, World world, int x, int y, int z, int blockID, ForgeDirection dir, IPlantable plant)
+	protected boolean canSustainPlantWithBlockIdOverride(TEBase TE, World world, int x, int y, int z, int blockID, ForgeDirection dir, IPlantable plant)
 	{
 		if (FeatureHandler.enablePlantSupport)
 		{
@@ -763,7 +763,7 @@ public class BlockBase extends BlockContainer
 	 */
 	protected boolean isBlockSolid(World world, int x, int y, int z)
 	{
-		TECarpentersBlock TE = (TECarpentersBlock) world.getBlockTileEntity(x, y, z);
+		TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
 
 		return !BlockProperties.hasCover(TE, 6) || BlockProperties.getCoverBlock(TE, 6).isOpaqueCube();
 	}
@@ -774,7 +774,7 @@ public class BlockBase extends BlockContainer
 	 */
 	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLiving entityLiving, ItemStack itemStack)
 	{
-		TECarpentersBlock TE = (TECarpentersBlock) world.getBlockTileEntity(x, y, z);
+		TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
 
 		auxiliaryOnBlockPlacedBy(TE, world, x, y, z, entityLiving, itemStack);
 	}
@@ -792,8 +792,8 @@ public class BlockBase extends BlockContainer
 			ForgeDirection side_src = ForgeDirection.getOrientation(side);
 			ForgeDirection side_adj = ForgeDirection.getOrientation(ForgeDirection.OPPOSITES[side]);
 
-			TECarpentersBlock TE_adj = (TECarpentersBlock) world.getBlockTileEntity(x, y, z);
-			TECarpentersBlock TE_src = (TECarpentersBlock) world.getBlockTileEntity(x + side_adj.offsetX, y + side_adj.offsetY, z + side_adj.offsetZ);
+			TEBase TE_adj = (TEBase) world.getBlockTileEntity(x, y, z);
+			TEBase TE_src = (TEBase) world.getBlockTileEntity(x + side_adj.offsetX, y + side_adj.offsetY, z + side_adj.offsetZ);
 
 			if (TE_adj.getBlockType().isBlockSolidOnSide(TE_adj.worldObj, x, y, z, side_adj) == TE_src.getBlockType().isBlockSolidOnSide(TE_src.worldObj, x + side_adj.offsetX, y + side_adj.offsetY, z + side_adj.offsetZ, ForgeDirection.getOrientation(side))) {
 				if (shareFaces(TE_adj, TE_src, side_adj, side_src)) {
@@ -809,7 +809,7 @@ public class BlockBase extends BlockContainer
 	 * Returns whether two blocks share faces.
 	 * Primarily for slopes, stairs and slabs.
 	 */
-	protected boolean shareFaces(TECarpentersBlock TE_adj, TECarpentersBlock TE_src, ForgeDirection side_adj, ForgeDirection side_src)
+	protected boolean shareFaces(TEBase TE_adj, TEBase TE_src, ForgeDirection side_adj, ForgeDirection side_src)
 	{
 		return	TE_adj.getBlockType().isBlockSolidOnSide(TE_adj.worldObj, TE_adj.xCoord, TE_adj.yCoord, TE_adj.zCoord, side_adj) &&
 				TE_src.getBlockType().isBlockSolidOnSide(TE_src.worldObj, TE_src.xCoord, TE_src.yCoord, TE_src.zCoord, side_src);
@@ -866,7 +866,7 @@ public class BlockBase extends BlockContainer
 	@Override
 	public TileEntity createNewTileEntity(World world)
 	{
-		return new TECarpentersBlock();
+		return new TEBase();
 	}
 
 	@Override
@@ -875,23 +875,23 @@ public class BlockBase extends BlockContainer
 		return true;
 	}
 
-	protected void auxiliaryOnBlockClicked(TECarpentersBlock TE, World world, int x, int y, int z, EntityPlayer entityPlayer) {}
+	protected void auxiliaryOnBlockClicked(TEBase TE, World world, int x, int y, int z, EntityPlayer entityPlayer) {}
 
-	protected void auxiliaryOnBlockPlacedBy(TECarpentersBlock TE, World world, int x, int y, int z, EntityLiving entityLiving, ItemStack itemStack) {}
+	protected void auxiliaryOnBlockPlacedBy(TEBase TE, World world, int x, int y, int z, EntityLiving entityLiving, ItemStack itemStack) {}
 
-	protected boolean auxiliaryOnBlockActivated(TECarpentersBlock TE, World world, int x, int y, int z, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ)
+	protected boolean auxiliaryOnBlockActivated(TEBase TE, World world, int x, int y, int z, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ)
 	{
 		return false;
 	}
 
-	protected void auxiliaryBreakBlock(TECarpentersBlock TE, World world, int x, int y, int z, int var5, int var6) {}
+	protected void auxiliaryBreakBlock(TEBase TE, World world, int x, int y, int z, int var5, int var6) {}
 
-	protected boolean onHammerLeftClick(TECarpentersBlock TE, EntityPlayer entityPlayer)
+	protected boolean onHammerLeftClick(TEBase TE, EntityPlayer entityPlayer)
 	{
 		return false;
 	}
 
-	protected boolean onHammerRightClick(TECarpentersBlock TE, EntityPlayer entityPlayer, int side, float hitX, float hitZ)
+	protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer, int side, float hitX, float hitZ)
 	{
 		return false;
 	}
@@ -901,11 +901,11 @@ public class BlockBase extends BlockContainer
 		entityPlayer.getCurrentEquippedItem().damageItem(1, entityPlayer);
 	}
 
-	protected boolean canCoverSide(TECarpentersBlock TE, World world, int x, int y, int z, int side)
+	protected boolean canCoverSide(TEBase TE, World world, int x, int y, int z, int side)
 	{
 		return false;
 	}
 
-	protected void auxiliaryOnNeighborBlockChange(TECarpentersBlock TE, World world, int x, int y, int z, int blockID) {}
+	protected void auxiliaryOnNeighborBlockChange(TEBase TE, World world, int x, int y, int z, int blockID) {}
 
 }

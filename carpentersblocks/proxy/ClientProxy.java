@@ -17,7 +17,7 @@ import carpentersblocks.renderer.BlockHandlerCarpentersSlope;
 import carpentersblocks.renderer.BlockHandlerCarpentersStairs;
 import carpentersblocks.renderer.BlockHandlerCarpentersTorch;
 import carpentersblocks.renderer.tileentity.TERendererCarpentersBlock;
-import carpentersblocks.tileentity.TECarpentersBlock;
+import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.handler.BlockHandler;
 import carpentersblocks.util.handler.FeatureHandler;
 import carpentersblocks.util.handler.IconHandler;
@@ -113,7 +113,7 @@ public class ClientProxy extends CommonProxy
 		if (FeatureHandler.enableOptifineIntegration && FMLClientHandler.instance().hasOptifine())
 			FeatureHandler.enableOptifineIntegration = OptifineHandler.init();
 
-		ClientRegistry.bindTileEntitySpecialRenderer(TECarpentersBlock.class, new TERendererCarpentersBlock());
+		ClientRegistry.bindTileEntitySpecialRenderer(TEBase.class, new TERendererCarpentersBlock());
 	}
 
 }

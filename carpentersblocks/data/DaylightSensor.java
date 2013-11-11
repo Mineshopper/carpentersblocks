@@ -1,6 +1,6 @@
 package carpentersblocks.data;
 
-import carpentersblocks.tileentity.TECarpentersBlock;
+import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 
 public class DaylightSensor
@@ -30,7 +30,7 @@ public class DaylightSensor
 	/**
 	 * Sets type (light value).
 	 */
-	public final static void setType(TECarpentersBlock TE, int type)
+	public final static void setType(TEBase TE, int type)
 	{
 		int temp = BlockProperties.getData(TE) & 0xfff0;
 		temp |= type;
@@ -50,7 +50,7 @@ public class DaylightSensor
 	/**
 	 * Sets polarity.
 	 */
-	public final static void setPolarity(TECarpentersBlock TE, int state)
+	public final static void setPolarity(TEBase TE, int state)
 	{
 		int temp = BlockProperties.getData(TE) & 0xffef;
 		temp |= state << 4;
