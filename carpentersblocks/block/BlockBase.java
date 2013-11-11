@@ -245,13 +245,12 @@ public class BlockBase extends BlockContainer
 			}
 		}
 
-		/* Should probably only do this if nothing happened. */
 		if (!actionPerformed) {
-			actionPerformed = auxiliaryOnBlockActivated(TE, world, x, y, z, entityPlayer, side, hitX, hitY, hitZ);
-		}
 		
-		if (actionPerformed)
-		{
+			actionPerformed = auxiliaryOnBlockActivated(TE, world, x, y, z, entityPlayer, side, hitX, hitY, hitZ);
+		
+		} else {
+			
 			this.damageHammerWithChance(world, entityPlayer);
 
 			if (!entityPlayer.capabilities.isCreativeMode)
