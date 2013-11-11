@@ -12,7 +12,7 @@ import org.lwjgl.opengl.GL11;
 
 import carpentersblocks.data.Bed;
 import carpentersblocks.renderer.helper.BedDesignHelper;
-import carpentersblocks.tileentity.TECarpentersBlock;
+import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.handler.BedDesignHandler;
 import carpentersblocks.util.handler.BlockHandler;
@@ -32,10 +32,10 @@ public class TERendererCarpentersBlock extends TileEntitySpecialRenderer
 		 * renders every frame.
 		 */
 		if (TE.getBlockType() == BlockHandler.blockCarpentersBed)
-			renderBedDesignAt((TECarpentersBlock)TE, x, y, z, f);
+			renderBedDesignAt((TEBase)TE, x, y, z, f);
 	}
 	
-	private void renderBedDesignAt(TECarpentersBlock TE, double x, double y, double z, float f)
+	private void renderBedDesignAt(TEBase TE, double x, double y, double z, float f)
 	{
 		int data = BlockProperties.getData(TE);
 		boolean isHead = Bed.isHeadOfBed(TE);

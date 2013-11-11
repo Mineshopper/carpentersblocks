@@ -8,7 +8,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import carpentersblocks.CarpentersBlocks;
 import carpentersblocks.data.Bed;
-import carpentersblocks.tileentity.TECarpentersBlock;
+import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.handler.BlockHandler;
 import cpw.mods.fml.relauncher.Side;
@@ -63,12 +63,12 @@ public class ItemCarpentersBed extends Item
 			{
 				/* Set foot of bed. */
 				world.setBlock(x, y, z, BlockHandler.blockCarpentersBed.blockID);
-				TECarpentersBlock TE_foot = (TECarpentersBlock) world.getBlockTileEntity(x, y, z);
+				TEBase TE_foot = (TEBase) world.getBlockTileEntity(x, y, z);
 				Bed.setDirection(TE_foot, facing);
 
 				/* Set head of bed. */
 				world.setBlock(x_offset, y, z_offset, BlockHandler.blockCarpentersBed.blockID);
-				TECarpentersBlock TE_head = (TECarpentersBlock) world.getBlockTileEntity(x_offset, y, z_offset);
+				TEBase TE_head = (TEBase) world.getBlockTileEntity(x_offset, y, z_offset);
 				Bed.setHeadOfBed(TE_head);
 				Bed.setDirection(TE_head, facing);
 

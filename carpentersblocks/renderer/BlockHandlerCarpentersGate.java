@@ -8,7 +8,7 @@ import net.minecraftforge.common.ForgeDirection;
 import org.lwjgl.opengl.GL11;
 
 import carpentersblocks.data.Gate;
-import carpentersblocks.tileentity.TECarpentersBlock;
+import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 
@@ -68,7 +68,7 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
 	/**
 	 * Renders gate
 	 */
-	 public boolean renderCarpentersBlock(TECarpentersBlock TE, RenderBlocks renderBlocks, Block srcBlock, int renderPass, int x, int y, int z)
+	 public boolean renderCarpentersBlock(TEBase TE, RenderBlocks renderBlocks, Block srcBlock, int renderPass, int x, int y, int z)
 	{
 		Block coverBlock = isSideCover ? BlockProperties.getCoverBlock(TE, coverRendering) : BlockProperties.getCoverBlock(TE, 6);
 
@@ -96,7 +96,7 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
 	/**
 	 * Renders gate at given coordinates
 	 */
-	private void renderVanillaGate(TECarpentersBlock TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int x, int y, int z)
+	private void renderVanillaGate(TEBase TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int x, int y, int z)
 	{
 		int data = BlockProperties.getData(TE);
 
@@ -316,7 +316,7 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
 	/**
 	 * Renders gate at given coordinates
 	 */
-	private void renderPicketGate(TECarpentersBlock TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int x, int y, int z)
+	private void renderPicketGate(TEBase TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int x, int y, int z)
 	{
 		int data = BlockProperties.getData(TE);
 		boolean isGateOpen = Gate.getState(data) == Gate.STATE_OPEN;
@@ -819,7 +819,7 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
 	/**
 	 * Renders gate at given coordinates
 	 */
-	private void renderVerticalPlankGate(TECarpentersBlock TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int x, int y, int z)
+	private void renderVerticalPlankGate(TEBase TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int x, int y, int z)
 	{
 		int data = BlockProperties.getData(TE);
 		boolean isGateOpen = Gate.getState(data) == Gate.STATE_OPEN;
@@ -1282,7 +1282,7 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
 	/**
 	 * Renders gate at given coordinates
 	 */
-	private void renderWallGate(TECarpentersBlock TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int x, int y, int z)
+	private void renderWallGate(TEBase TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int x, int y, int z)
 	{
 		int data = BlockProperties.getData(TE);
 		boolean isGateOpen = Gate.getState(data) == Gate.STATE_OPEN;

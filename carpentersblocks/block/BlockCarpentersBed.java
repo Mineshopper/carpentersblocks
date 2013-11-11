@@ -13,7 +13,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
 import carpentersblocks.data.Bed;
-import carpentersblocks.tileentity.TECarpentersBlock;
+import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.handler.BedDesignHandler;
 import carpentersblocks.util.handler.BlockHandler;
@@ -48,14 +48,14 @@ public class BlockCarpentersBed extends BlockBase
 	/**
 	 * Cycle backward through bed designs.
 	 */
-	protected boolean onHammerLeftClick(TECarpentersBlock TE, EntityPlayer entityPlayer)
+	protected boolean onHammerLeftClick(TEBase TE, EntityPlayer entityPlayer)
 	{
 		int data = BlockProperties.getData(TE);
 		int design = BedDesignHandler.getPrev(Bed.getDesign(data));
 
 		Bed.setDesign(TE, design);
 
-		TECarpentersBlock TE_opp = Bed.getOppositeTE(TE);
+		TEBase TE_opp = Bed.getOppositeTE(TE);
 
 		if (TE_opp != null)
 			Bed.setDesign(TE_opp, design);
@@ -67,14 +67,14 @@ public class BlockCarpentersBed extends BlockBase
 	/**
 	 * Cycle forward through bed designs.
 	 */
-	protected boolean onHammerRightClick(TECarpentersBlock TE, EntityPlayer entityPlayer, int side, float hitX, float hitZ)
+	protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer, int side, float hitX, float hitZ)
 	{
 		int data = BlockProperties.getData(TE);
 		int design = BedDesignHandler.getNext(Bed.getDesign(data));
 
 		Bed.setDesign(TE, design);
 
-		TECarpentersBlock TE_opp = Bed.getOppositeTE(TE);
+		TEBase TE_opp = Bed.getOppositeTE(TE);
 
 		if (TE_opp != null)
 			Bed.setDesign(TE_opp, design);
@@ -86,13 +86,13 @@ public class BlockCarpentersBed extends BlockBase
 	/**
 	 * Called upon block activation (right click on the block.)
 	 */
-	public boolean auxiliaryOnBlockActivated(TECarpentersBlock TE, World world, int x, int y, int z, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ)
+	public boolean auxiliaryOnBlockActivated(TEBase TE, World world, int x, int y, int z, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ)
 	{
 		if (!world.isRemote)
 		{
 			
             if (!Bed.isHeadOfBed(TE)) {
-            	TECarpentersBlock TE_opp = Bed.getOppositeTE(TE);
+            	TEBase TE_opp = Bed.getOppositeTE(TE);
             	if (TE_opp != null) {
 					x = TE_opp.xCoord;
 					z = TE_opp.zCoord;
@@ -164,7 +164,7 @@ public class BlockCarpentersBed extends BlockBase
 	 * their own) Args: x, y, z, neighbor blockID
 	 */
 	@Override
-	protected void auxiliaryOnNeighborBlockChange(TECarpentersBlock TE, World world, int x, int y, int z, int blockID)
+	protected void auxiliaryOnNeighborBlockChange(TEBase TE, World world, int x, int y, int z, int blockID)
 	{
 		if (Bed.getOppositeTE(TE) == null) {
 			world.setBlockToAir(x, y, z);
@@ -186,10 +186,10 @@ public class BlockCarpentersBed extends BlockBase
 	 */
 	public void setBedOccupied(World world, int x, int y, int z, EntityPlayer entityPlayer, boolean isOccupied)
 	{
-    	TECarpentersBlock TE = (TECarpentersBlock) world.getBlockTileEntity(x, y, z);
+    	TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
     	Bed.setOccupied(TE, isOccupied);
 
-		TECarpentersBlock TE_opp = Bed.getOppositeTE(TE);
+		TEBase TE_opp = Bed.getOppositeTE(TE);
 
 		if (TE_opp != null) {
 			Bed.setOccupied(TE_opp, isOccupied);
@@ -209,7 +209,7 @@ public class BlockCarpentersBed extends BlockBase
      */
     public int getBedDirection(IBlockAccess world, int x, int y, int z)
     {
-		TECarpentersBlock TE = (TECarpentersBlock) world.getBlockTileEntity(x, y, z);
+		TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
 		
 		switch (Bed.getDirection(TE))
 		{

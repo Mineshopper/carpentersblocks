@@ -15,7 +15,7 @@ import net.minecraftforge.common.ForgeDirection;
 import carpentersblocks.CarpentersBlocks;
 import carpentersblocks.data.Barrier;
 import carpentersblocks.data.Gate;
-import carpentersblocks.tileentity.TECarpentersBlock;
+import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.handler.BlockHandler;
 import cpw.mods.fml.relauncher.Side;
@@ -37,7 +37,7 @@ public class BlockCarpentersBarrier extends BlockBase
 	/**
 	 * Toggles post.
 	 */
-	protected boolean onHammerLeftClick(TECarpentersBlock TE, EntityPlayer entityPlayer)
+	protected boolean onHammerLeftClick(TEBase TE, EntityPlayer entityPlayer)
 	{
 		int data = BlockProperties.getData(TE);
 
@@ -50,7 +50,7 @@ public class BlockCarpentersBarrier extends BlockBase
 	/**
 	 * Alters barrier type or sub-type.
 	 */
-	protected boolean onHammerRightClick(TECarpentersBlock TE, EntityPlayer entityPlayer, int side, float hitX, float hitZ)
+	protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer, int side, float hitX, float hitZ)
 	{
 		int data = BlockProperties.getData(TE);
 		int type = Barrier.getType(data);
@@ -86,17 +86,17 @@ public class BlockCarpentersBarrier extends BlockBase
 	/**
 	 * Called when the block is placed in the world.
 	 */
-	public void auxiliaryOnBlockPlacedBy(TECarpentersBlock TE, World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack itemStack)
+	public void auxiliaryOnBlockPlacedBy(TEBase TE, World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack itemStack)
 	{
 		/*
 		 * Match gate type with adjacent type or barrier type if possible
 		 */
-		TECarpentersBlock TE_YN = (world.getBlockId(x, y - 1, z) == blockID || world.getBlockId(x, y - 1, z) == BlockHandler.blockCarpentersGateID) ? (TECarpentersBlock)world.getBlockTileEntity(x, y - 1, z) : null;
-		TECarpentersBlock TE_YP = (world.getBlockId(x, y + 1, z) == blockID || world.getBlockId(x, y + 1, z) == BlockHandler.blockCarpentersGateID) ? (TECarpentersBlock)world.getBlockTileEntity(x, y + 1, z) : null;
-		TECarpentersBlock TE_XN = (world.getBlockId(x - 1, y, z) == blockID || world.getBlockId(x - 1, y, z) == BlockHandler.blockCarpentersGateID) ? (TECarpentersBlock)world.getBlockTileEntity(x - 1, y, z) : null;
-		TECarpentersBlock TE_XP = (world.getBlockId(x + 1, y, z) == blockID || world.getBlockId(x + 1, y, z) == BlockHandler.blockCarpentersGateID) ? (TECarpentersBlock)world.getBlockTileEntity(x + 1, y, z) : null;
-		TECarpentersBlock TE_ZN = (world.getBlockId(x, y, z - 1) == blockID || world.getBlockId(x, y, z - 1) == BlockHandler.blockCarpentersGateID) ? (TECarpentersBlock)world.getBlockTileEntity(x, y, z - 1) : null;
-		TECarpentersBlock TE_ZP = (world.getBlockId(x, y, z + 1) == blockID || world.getBlockId(x, y, z + 1) == BlockHandler.blockCarpentersGateID) ? (TECarpentersBlock)world.getBlockTileEntity(x, y, z + 1) : null;
+		TEBase TE_YN = (world.getBlockId(x, y - 1, z) == blockID || world.getBlockId(x, y - 1, z) == BlockHandler.blockCarpentersGateID) ? (TEBase)world.getBlockTileEntity(x, y - 1, z) : null;
+		TEBase TE_YP = (world.getBlockId(x, y + 1, z) == blockID || world.getBlockId(x, y + 1, z) == BlockHandler.blockCarpentersGateID) ? (TEBase)world.getBlockTileEntity(x, y + 1, z) : null;
+		TEBase TE_XN = (world.getBlockId(x - 1, y, z) == blockID || world.getBlockId(x - 1, y, z) == BlockHandler.blockCarpentersGateID) ? (TEBase)world.getBlockTileEntity(x - 1, y, z) : null;
+		TEBase TE_XP = (world.getBlockId(x + 1, y, z) == blockID || world.getBlockId(x + 1, y, z) == BlockHandler.blockCarpentersGateID) ? (TEBase)world.getBlockTileEntity(x + 1, y, z) : null;
+		TEBase TE_ZN = (world.getBlockId(x, y, z - 1) == blockID || world.getBlockId(x, y, z - 1) == BlockHandler.blockCarpentersGateID) ? (TEBase)world.getBlockTileEntity(x, y, z - 1) : null;
+		TEBase TE_ZP = (world.getBlockId(x, y, z + 1) == blockID || world.getBlockId(x, y, z + 1) == BlockHandler.blockCarpentersGateID) ? (TEBase)world.getBlockTileEntity(x, y, z + 1) : null;
 
 		if (TE_YN != null) {
 			int temp_data = BlockProperties.getData(TE_YN);
@@ -126,7 +126,7 @@ public class BlockCarpentersBarrier extends BlockBase
 	 */
 	public void addCollisionBoxesToList(World world, int x, int y, int z, AxisAlignedBB axisAlignedBB, List list, Entity entity)
 	{
-		TECarpentersBlock TE = (TECarpentersBlock)world.getBlockTileEntity(x, y, z);
+		TEBase TE = (TEBase)world.getBlockTileEntity(x, y, z);
 
 		boolean connect_ZN = canConnectBarrierTo(TE, world, x, y, z - 1, ForgeDirection.SOUTH);
 		boolean connect_ZP = canConnectBarrierTo(TE, world, x, y, z + 1, ForgeDirection.NORTH);
@@ -180,7 +180,7 @@ public class BlockCarpentersBarrier extends BlockBase
 	 */
 	public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
 	{
-		TECarpentersBlock TE = (TECarpentersBlock)world.getBlockTileEntity(x, y, z);
+		TEBase TE = (TEBase)world.getBlockTileEntity(x, y, z);
 		int type = Barrier.getType(BlockProperties.getData(TE));
 
 		boolean connect_ZN = canConnectBarrierTo(TE, world, x, y, z - 1, ForgeDirection.SOUTH);
@@ -247,7 +247,7 @@ public class BlockCarpentersBarrier extends BlockBase
 	/**
 	 * Returns true if block can connect to specified side of neighbor block.
 	 */
-	public boolean canConnectBarrierTo(TECarpentersBlock TE, IBlockAccess world, int x, int y, int z, ForgeDirection side)
+	public boolean canConnectBarrierTo(TEBase TE, IBlockAccess world, int x, int y, int z, ForgeDirection side)
 	{
 		int data = BlockProperties.getData(TE);
 		int blockID = world.getBlockId(x, y, z);

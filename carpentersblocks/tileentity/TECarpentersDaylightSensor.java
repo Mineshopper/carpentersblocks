@@ -2,7 +2,7 @@ package carpentersblocks.tileentity;
 
 import carpentersblocks.block.BlockCarpentersDaylightSensor;
 
-public class TECarpentersBlockUpdateable extends TECarpentersBlock
+public class TECarpentersDaylightSensor extends TEBase
 {
 
 	/**

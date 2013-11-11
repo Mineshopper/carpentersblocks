@@ -2,8 +2,8 @@ package carpentersblocks.util.handler;
 
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.Property;
-import carpentersblocks.tileentity.TECarpentersBlock;
-import carpentersblocks.tileentity.TECarpentersBlockUpdateable;
+import carpentersblocks.tileentity.TEBase;
+import carpentersblocks.tileentity.TECarpentersDaylightSensor;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
 
@@ -25,7 +25,7 @@ public class FeatureHandler
     /**
      * Initializes configuration properties.
      */
-    public static void initProps(FMLPreInitializationEvent event)
+    public static void initFeatures(FMLPreInitializationEvent event)
     {
         Configuration config = new Configuration(event.getSuggestedConfigurationFile());
         config.load();
@@ -50,18 +50,5 @@ public class FeatureHandler
         
         config.save();
     }
-    
-    /**
-     * Registers tile entities.
-     */
-    public static void registerTileEntities()
-    {
-    	/*
-    	 * Strings don't represent accurate names, but they're
-    	 * kept this way to retain compatibility.
-    	 */
-    	GameRegistry.registerTileEntity(TECarpentersBlock.class, "TileEntityCarpentersSlope");
-    	GameRegistry.registerTileEntity(TECarpentersBlockUpdateable.class, "TileEntityCarpentersExt");
-    }
-	
+    	
 }

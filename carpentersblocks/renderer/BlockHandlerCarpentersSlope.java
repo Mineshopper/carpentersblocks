@@ -14,7 +14,7 @@ import carpentersblocks.renderer.helper.slope.HelperOblique;
 import carpentersblocks.renderer.helper.slope.HelperPyramid;
 import carpentersblocks.renderer.helper.slope.HelperWedge;
 import carpentersblocks.renderer.helper.slope.HelperWedgeCorner;
-import carpentersblocks.tileentity.TECarpentersBlock;
+import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 
 public class BlockHandlerCarpentersSlope extends BlockHandlerBase
@@ -150,7 +150,7 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerBase
     /**
      * Sets slope-specific variables and calls prepareRender().
      */
-    private void prepareSlopeRender(TECarpentersBlock TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int side, int renderID, int x, int y, int z, float lightness)
+    private void prepareSlopeRender(TEBase TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int side, int renderID, int x, int y, int z, float lightness)
     {
 		slopeRenderID = renderID;
 		prepareRender(TE, renderBlocks, coverBlock, srcBlock, side, x, y, z, lightness);
@@ -160,7 +160,7 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerBase
     /**
      * Renders side.
      */
-    protected void renderSide(TECarpentersBlock TE, RenderBlocks renderBlocks, int side, double offset, int x, int y, int z, Icon icon)
+    protected void renderSide(TEBase TE, RenderBlocks renderBlocks, int side, double offset, int x, int y, int z, Icon icon)
     {
     	if (isSideCover) {
 
@@ -252,7 +252,7 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerBase
     /**
      * Render slope using Ambient Occlusion (both minimum and maximum are handled here)
      */
-	public boolean renderStandardSlopeWithAmbientOcclusion(TECarpentersBlock TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int x, int y, int z, float red, float green, float blue)
+	public boolean renderStandardSlopeWithAmbientOcclusion(TEBase TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int x, int y, int z, float red, float green, float blue)
     {
     	int slopeID = BlockProperties.getData(TE);
     	Slope slope = Slope.slopesList[slopeID];
@@ -591,7 +591,7 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerBase
     	}
     }
     
-    private void prepareHorizontalWedge(TECarpentersBlock TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, Slope slope, int x, int y, int z)
+    private void prepareHorizontalWedge(TEBase TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, Slope slope, int x, int y, int z)
     {
     	setWedgeSlopeLighting(renderBlocks, slope);
     	
@@ -602,7 +602,7 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerBase
     	}
     }
     
-    private void prepareVerticalWedge(TECarpentersBlock TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, Slope slope, int x, int y, int z)
+    private void prepareVerticalWedge(TEBase TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, Slope slope, int x, int y, int z)
     {
     	setWedgeSlopeLighting(renderBlocks, slope);
 
@@ -619,7 +619,7 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerBase
     	}
     }
     
-    private void prepareWedgeIntCorner(TECarpentersBlock TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, Slope slope, int x, int y, int z)
+    private void prepareWedgeIntCorner(TEBase TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, Slope slope, int x, int y, int z)
     {
     	/* X Slope */
 
@@ -646,7 +646,7 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerBase
     	}
     }
     
-    private void prepareWedgeExtCorner(TECarpentersBlock TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, Slope slope, int x, int y, int z)
+    private void prepareWedgeExtCorner(TEBase TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, Slope slope, int x, int y, int z)
     {
     	/* X Slope */
     	
@@ -787,7 +787,7 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerBase
     	}
     }
     
-    private void prepareObliqueIntCorner(TECarpentersBlock TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, Slope slope, int x, int y, int z)
+    private void prepareObliqueIntCorner(TEBase TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, Slope slope, int x, int y, int z)
     {
     	if (renderBlocks.enableAO) {
     		setObliqueIntSlopeLighting(renderBlocks, slope);
@@ -914,7 +914,7 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerBase
     	}
     }
     
-    private void prepareObliqueExtCorner(TECarpentersBlock TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, Slope slope, int x, int y, int z)
+    private void prepareObliqueExtCorner(TEBase TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, Slope slope, int x, int y, int z)
     {
     	if (renderBlocks.enableAO) {
     		setObliqueExtSlopeLighting(renderBlocks, slope);
@@ -927,7 +927,7 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerBase
     	}
     }
     
-    private void preparePyramid(TECarpentersBlock TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, Slope slope, int x, int y, int z)
+    private void preparePyramid(TEBase TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, Slope slope, int x, int y, int z)
     {
 		float aoLightValue = coverBlock.getAmbientOcclusionLightValue(renderBlocks.blockAccess, x, y, z);
     	int mixedBrightness = coverBlock.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y, z);
@@ -1066,7 +1066,7 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerBase
     /**
      * Prepare bottom face.
      */
-    private void prepareFaceYNeg(TECarpentersBlock TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, Slope slope, int x, int y, int z)
+    private void prepareFaceYNeg(TEBase TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, Slope slope, int x, int y, int z)
     {
 		if (renderBlocks.enableAO)
 		{    	
@@ -1090,7 +1090,7 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerBase
     /**
      * Prepare top face.
      */
-    private void prepareFaceYPos(TECarpentersBlock TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, Slope slope, int x, int y, int z)
+    private void prepareFaceYPos(TEBase TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, Slope slope, int x, int y, int z)
     {
 		if (renderBlocks.enableAO)
 		{
@@ -1114,7 +1114,7 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerBase
     /**
      * Prepare North face.
      */
-    private void prepareFaceZNeg(TECarpentersBlock TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, Slope slope, int x, int y, int z)
+    private void prepareFaceZNeg(TEBase TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, Slope slope, int x, int y, int z)
     {
 		if (renderBlocks.enableAO)
 		{
@@ -1138,7 +1138,7 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerBase
     /**
      * Prepare South face.
      */
-    private void prepareFaceZPos(TECarpentersBlock TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, Slope slope, int x, int y, int z)
+    private void prepareFaceZPos(TEBase TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, Slope slope, int x, int y, int z)
     {
 		if (renderBlocks.enableAO)
 		{
@@ -1162,7 +1162,7 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerBase
     /**
      * Prepare West face.
      */
-    private void prepareFaceXNeg(TECarpentersBlock TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, Slope slope, int x, int y, int z)
+    private void prepareFaceXNeg(TEBase TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, Slope slope, int x, int y, int z)
     {
 		if (renderBlocks.enableAO)
 		{
@@ -1186,7 +1186,7 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerBase
     /**
      * Prepare East face.
      */
-    private void prepareFaceXPos(TECarpentersBlock TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, Slope slope, int x, int y, int z)
+    private void prepareFaceXPos(TEBase TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, Slope slope, int x, int y, int z)
     {
 		if (renderBlocks.enableAO)
 		{
@@ -1211,7 +1211,7 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerBase
     /**
      * Renders a slope block at the given coordinates, with a given color ratio.  Args: block, x, y, z, r, g, b
      */
-	public boolean renderStandardSlopeWithColorMultiplier(TECarpentersBlock TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int x, int y, int z, float red, float green, float blue)
+	public boolean renderStandardSlopeWithColorMultiplier(TEBase TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int x, int y, int z, float red, float green, float blue)
     {
     	int slopeID = BlockProperties.getData(TE);
     	Slope slope = Slope.slopesList[slopeID];

@@ -14,7 +14,7 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
-import carpentersblocks.tileentity.TECarpentersBlock;
+import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.handler.DyeColorHandler;
 import carpentersblocks.util.handler.OverlayHandler;
 
@@ -55,7 +55,7 @@ public class BlockProperties
 	/**
 	 * Ejects an item at given coordinates.
 	 */
-	private static void ejectEntity(TECarpentersBlock TE, ItemStack itemStack)
+	private static void ejectEntity(TEBase TE, ItemStack itemStack)
 	{
 		if (!TE.worldObj.isRemote)
 		{
@@ -85,7 +85,7 @@ public class BlockProperties
 	/**
 	 * Plays block placement sound.
 	 */
-	public static void playBlockPlacementSound(TECarpentersBlock TE, int blockID)
+	public static void playBlockPlacementSound(TEBase TE, int blockID)
 	{
 		playBlockPlacementSound(TE.worldObj, TE.xCoord, TE.yCoord, TE.zCoord, blockID);
 	}
@@ -105,7 +105,7 @@ public class BlockProperties
 	/**
 	 * Strips side of all properties.
 	 */
-	public static void clearAttributes(TECarpentersBlock TE, int side)
+	public static void clearAttributes(TEBase TE, int side)
 	{
 		suppressUpdate = true;
 
@@ -122,7 +122,7 @@ public class BlockProperties
 	/**
 	 * Returns cover block ID.
 	 */
-	public static int getCoverID(TECarpentersBlock TE, int side)
+	public static int getCoverID(TEBase TE, int side)
 	{
 		return TE.cover[side] & 0xfff;
 	}
@@ -130,7 +130,7 @@ public class BlockProperties
 	/**
 	 * Returns cover block metadata.
 	 */
-	public static int getCoverMetadata(TECarpentersBlock TE, int side)
+	public static int getCoverMetadata(TEBase TE, int side)
 	{
 		return (TE.cover[side] & 0xf000) >>> 12;
 	}
@@ -139,7 +139,7 @@ public class BlockProperties
 	 * Returns whether block has a cover.
 	 * Checks if block ID exists and whether it is a valid cover block.
 	 */
-	public static boolean hasCover(TECarpentersBlock TE, int side)
+	public static boolean hasCover(TEBase TE, int side)
 	{
 		int coverID = getCoverID(TE, side);
 		int metadata = getCoverMetadata(TE, side);
@@ -152,7 +152,7 @@ public class BlockProperties
 	/**
 	 * Returns whether block has side covers.
 	 */
-	public static boolean hasSideCovers(TECarpentersBlock TE)
+	public static boolean hasSideCovers(TEBase TE)
 	{
 		for (int side = 0; side < 6; ++side) {
 			if (hasCover(TE, side)) {
@@ -168,7 +168,7 @@ public class BlockProperties
 	 */
 	public static Block getCoverBlock(IBlockAccess world, int side, int x, int y, int z)
 	{
-		TECarpentersBlock TE = (TECarpentersBlock) world.getBlockTileEntity(x, y, z);
+		TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
 
 		return getCoverBlock(TE, side);
 	}
@@ -176,7 +176,7 @@ public class BlockProperties
 	/**
 	 * Returns cover block.
 	 */
-	public static Block getCoverBlock(TECarpentersBlock TE, int side)
+	public static Block getCoverBlock(TEBase TE, int side)
 	{
 		Block coverBlock;
 
@@ -213,7 +213,7 @@ public class BlockProperties
 	/**
 	 * Sets cover block.
 	 */
-	public static boolean setCover(TECarpentersBlock TE, int side, int metadata, ItemStack itemStack)
+	public static boolean setCover(TEBase TE, int side, int metadata, ItemStack itemStack)
 	{		
 		if (hasCover(TE, side))
 			ejectEntity(TE, new ItemStack(getCoverID(TE, side), 1, getCoverMetadata(TE, side)));
@@ -238,7 +238,7 @@ public class BlockProperties
 	 * Get block data.
 	 * Will handle signed data types automatically.
 	 */
-	public final static int getData(TECarpentersBlock TE)
+	public final static int getData(TEBase TE)
 	{
 		return TE.data & 0xffff;
 	}
@@ -246,7 +246,7 @@ public class BlockProperties
 	/**
 	 * Set block data.
 	 */
-	public static void setData(TECarpentersBlock TE, int data)
+	public static void setData(TEBase TE, int data)
 	{
 		/*
 		 * No need to update if data hasn't changed.
@@ -263,7 +263,7 @@ public class BlockProperties
 	/**
 	 * Returns whether side has cover.
 	 */
-	public static boolean hasDyeColor(TECarpentersBlock TE, int side)
+	public static boolean hasDyeColor(TEBase TE, int side)
 	{
 		return TE.color[side] > 0;
 	}
@@ -271,7 +271,7 @@ public class BlockProperties
 	/**
 	 * Sets color for side.
 	 */
-	public static boolean setDyeColor(TECarpentersBlock TE, int side, int metadata)
+	public static boolean setDyeColor(TEBase TE, int side, int metadata)
 	{
 		if (TE.color[side] > 0) {
 			ejectEntity(TE, new ItemStack(Item.dyePowder, 1, (15 - TE.color[side])));
@@ -289,7 +289,7 @@ public class BlockProperties
 	/**
 	 * Returns dye color for side.
 	 */
-	public static int getDyeColor(TECarpentersBlock TE, int side)
+	public static int getDyeColor(TEBase TE, int side)
 	{
 		return TE.color[side];
 	}
@@ -297,7 +297,7 @@ public class BlockProperties
 	/**
 	 * Sets overlay.
 	 */
-	public static boolean setOverlay(TECarpentersBlock TE, int side, ItemStack itemStack)
+	public static boolean setOverlay(TEBase TE, int side, ItemStack itemStack)
 	{
 		if (hasOverlay(TE, side)) {
 			ejectEntity(TE, OverlayHandler.getItemStack(TE.overlay[side]));
@@ -315,7 +315,7 @@ public class BlockProperties
 	/**
 	 * Returns overlay.
 	 */
-	public static int getOverlay(TECarpentersBlock TE, int side)
+	public static int getOverlay(TEBase TE, int side)
 	{
 		return TE.overlay[side];
 	}
@@ -323,7 +323,7 @@ public class BlockProperties
 	/**
 	 * Returns whether block has overlay.
 	 */
-	public static boolean hasOverlay(TECarpentersBlock TE, int side)
+	public static boolean hasOverlay(TEBase TE, int side)
 	{
 		return TE.overlay[side] > 0;
 	}
@@ -339,7 +339,7 @@ public class BlockProperties
 	/**
 	 * Returns whether block has pattern.
 	 */
-	public static boolean hasPattern(TECarpentersBlock TE, int side)
+	public static boolean hasPattern(TEBase TE, int side)
 	{
 		return getPattern(TE, side) > 0;
 	}
@@ -347,7 +347,7 @@ public class BlockProperties
 	/**
 	 * Returns pattern.
 	 */
-	public static int getPattern(TECarpentersBlock TE, int side)
+	public static int getPattern(TEBase TE, int side)
 	{
 		return TE.pattern[side] & 0xffff;
 	}
@@ -355,7 +355,7 @@ public class BlockProperties
 	/**
 	 * Sets pattern.
 	 */
-	public static boolean setPattern(TECarpentersBlock TE, int side, int pattern)
+	public static boolean setPattern(TEBase TE, int side, int pattern)
 	{
 		TE.pattern[side] = (byte) pattern;
 
@@ -370,7 +370,7 @@ public class BlockProperties
 	 * Returns whether side should render based on cover blocks
 	 * of both source and adjacent block.
 	 */
-	public static boolean shouldRenderSharedFaceBasedOnCovers(TECarpentersBlock TE_adj, TECarpentersBlock TE_src)
+	public static boolean shouldRenderSharedFaceBasedOnCovers(TEBase TE_adj, TEBase TE_src)
 	{
 		Block block_adj= BlockProperties.getCoverBlock(TE_adj, 6);
 		Block block_src = BlockProperties.getCoverBlock(TE_src, 6);

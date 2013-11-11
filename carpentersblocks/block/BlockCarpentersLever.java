@@ -13,7 +13,7 @@ import net.minecraftforge.common.ForgeDirection;
 import carpentersblocks.CarpentersBlocks;
 import carpentersblocks.data.Lever;
 import carpentersblocks.data.Lever.Axis;
-import carpentersblocks.tileentity.TECarpentersBlock;
+import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.handler.BlockHandler;
 import cpw.mods.fml.common.registry.LanguageRegistry;
@@ -35,7 +35,7 @@ public class BlockCarpentersLever extends BlockBase
 	 * Alters polarity.
 	 * Handled differently for Levers since type is split into sub-components.
 	 */
-	protected boolean onHammerLeftClick(TECarpentersBlock TE, EntityPlayer entityPlayer)
+	protected boolean onHammerLeftClick(TEBase TE, EntityPlayer entityPlayer)
 	{
 		int data = BlockProperties.getData(TE);
 		int polarity = Lever.getPolarity(TE) == Lever.POLARITY_POSITIVE ? Lever.POLARITY_NEGATIVE : Lever.POLARITY_POSITIVE;
@@ -90,7 +90,7 @@ public class BlockCarpentersLever extends BlockBase
 	/**
 	 * Called when the block is placed in the world.
 	 */
-	public void auxiliaryOnBlockPlacedBy(TECarpentersBlock TE, World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack itemStack)
+	public void auxiliaryOnBlockPlacedBy(TEBase TE, World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack itemStack)
 	{
 		int facing = world.getBlockMetadata(x, y, z);
 		
@@ -117,7 +117,7 @@ public class BlockCarpentersLever extends BlockBase
 	 * Lets the block know when one of its neighbor changes. Doesn't know which neighbor changed (coordinates passed are
 	 * their own) Args: x, y, z, neighbor blockID
 	 */
-	protected void auxiliaryOnNeighborBlockChange(TECarpentersBlock TE, World world, int x, int y, int z, int blockID)
+	protected void auxiliaryOnNeighborBlockChange(TEBase TE, World world, int x, int y, int z, int blockID)
 	{
 		if (Lever.isReady(TE))
 		{
@@ -136,7 +136,7 @@ public class BlockCarpentersLever extends BlockBase
 	 */
 	public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
 	{
-		TECarpentersBlock TE = (TECarpentersBlock)world.getBlockTileEntity(x, y, z);
+		TEBase TE = (TEBase)world.getBlockTileEntity(x, y, z);
 
 		ForgeDirection facing = Lever.getFacing(TE);
 		Axis axis = Lever.getAxis(TE);
@@ -179,7 +179,7 @@ public class BlockCarpentersLever extends BlockBase
 	/**
 	 * Called upon block activation.
 	 */
-	public boolean auxiliaryOnBlockActivated(TECarpentersBlock TE, World world, int x, int y, int z, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ)
+	public boolean auxiliaryOnBlockActivated(TEBase TE, World world, int x, int y, int z, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ)
 	{
 		ForgeDirection facing = Lever.getFacing(TE);
 
@@ -194,7 +194,7 @@ public class BlockCarpentersLever extends BlockBase
 	/**
 	 * Returns whether lever is in active state
 	 */
-	private boolean isActive(TECarpentersBlock TE)
+	private boolean isActive(TEBase TE)
 	{
 		return Lever.getState(TE) == Lever.STATE_ON;
 	}
@@ -207,7 +207,7 @@ public class BlockCarpentersLever extends BlockBase
 	 */
 	public int isProvidingWeakPower(IBlockAccess world, int x, int y, int z, int side)
 	{
-		TECarpentersBlock TE = (TECarpentersBlock) world.getBlockTileEntity(x, y, z);
+		TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
 
 		return getPowerSupply(TE);
 	}
@@ -219,7 +219,7 @@ public class BlockCarpentersLever extends BlockBase
 	 */
 	public int isProvidingStrongPower(IBlockAccess world, int x, int y, int z, int side)
 	{
-		TECarpentersBlock TE = (TECarpentersBlock) world.getBlockTileEntity(x, y, z);
+		TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
 
 		return Lever.getFacing(TE).ordinal() == side ? getPowerSupply(TE) : 0;
 	}
@@ -227,7 +227,7 @@ public class BlockCarpentersLever extends BlockBase
 	/**
 	 * Returns power level (0 or 15)
 	 */
-	private int getPowerSupply(TECarpentersBlock TE)
+	private int getPowerSupply(TEBase TE)
 	{
 		if (isActive(TE)) {
 			return Lever.getPolarity(TE) == Lever.POLARITY_POSITIVE ? 15 : 0;
@@ -266,7 +266,7 @@ public class BlockCarpentersLever extends BlockBase
 	/**
 	 * Ejects contained items into the world, and notifies neighbours of an update, as appropriate
 	 */
-	public void auxiliaryBreakBlock(TECarpentersBlock TE, World world, int x, int y, int z, int par5, int metadata)
+	public void auxiliaryBreakBlock(TEBase TE, World world, int x, int y, int z, int par5, int metadata)
 	{
 		if (isActive(TE)) {
 			world.notifyBlocksOfNeighborChange(x, y, z, blockID);

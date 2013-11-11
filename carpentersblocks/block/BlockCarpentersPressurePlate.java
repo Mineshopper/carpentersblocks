@@ -12,7 +12,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import carpentersblocks.CarpentersBlocks;
 import carpentersblocks.data.PressurePlate;
-import carpentersblocks.tileentity.TECarpentersBlock;
+import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.handler.BlockHandler;
 import cpw.mods.fml.common.registry.LanguageRegistry;
@@ -36,7 +36,7 @@ public class BlockCarpentersPressurePlate extends BlockBase
 	/**
 	 * Alters polarity.
 	 */
-	protected boolean onHammerLeftClick(TECarpentersBlock TE, EntityPlayer entityPlayer)
+	protected boolean onHammerLeftClick(TEBase TE, EntityPlayer entityPlayer)
 	{
 		int data = BlockProperties.getData(TE);
 		int polarity = PressurePlate.getPolarity(data) == PressurePlate.POLARITY_POSITIVE ? PressurePlate.POLARITY_NEGATIVE : PressurePlate.POLARITY_POSITIVE;
@@ -61,7 +61,7 @@ public class BlockCarpentersPressurePlate extends BlockBase
 	/**
 	 * Alters trigger behavior.
 	 */
-	protected boolean onHammerRightClick(TECarpentersBlock TE, EntityPlayer entityPlayer, int side, float hitX, float hitZ)
+	protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer, int side, float hitX, float hitZ)
 	{
 		int data = BlockProperties.getData(TE);
 
@@ -109,7 +109,7 @@ public class BlockCarpentersPressurePlate extends BlockBase
 	 */
 	public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
 	{
-		TECarpentersBlock TE = (TECarpentersBlock) world.getBlockTileEntity(x, y, z);
+		TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
 
 		setBlockBounds(0.0625F, 0.0F, 0.0625F, 1.0F - 0.0625F, isDepressed(TE) ? 0.03125F : 0.0625F, 1.0F - 0.0625F);
 	}
@@ -147,7 +147,7 @@ public class BlockCarpentersPressurePlate extends BlockBase
 	 * Lets the block know when one of its neighbor changes. Doesn't know which neighbor changed (coordinates passed are
 	 * their own) Args: x, y, z, neighbor blockID
 	 */
-	protected void auxiliaryOnNeighborBlockChange(TECarpentersBlock TE, World world, int x, int y, int z, int blockID)
+	protected void auxiliaryOnNeighborBlockChange(TEBase TE, World world, int x, int y, int z, int blockID)
 	{
 		if (!world.doesBlockHaveSolidTopSurface(x, y - 1, z) && world.getBlockId(x, y - 1, z) != BlockHandler.blockCarpentersBarrierID) {
 			dropBlockAsItem(world, x, y, z, 0, 0);
@@ -163,7 +163,7 @@ public class BlockCarpentersPressurePlate extends BlockBase
 	{
 		if (!world.isRemote)
 		{
-			TECarpentersBlock TE = (TECarpentersBlock) world.getBlockTileEntity(x, y, z);
+			TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
 
 			List entityList = world.getEntitiesWithinAABB(Entity.class, getSensitiveAABB(x, y, z));
 
@@ -192,7 +192,7 @@ public class BlockCarpentersPressurePlate extends BlockBase
 	{
 		if (!world.isRemote)
 		{
-			TECarpentersBlock TE = (TECarpentersBlock) world.getBlockTileEntity(x, y, z);
+			TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
 
 			if (shouldTrigger(TE, entity, world, x, y, z) && !isDepressed(TE)) {
 				toggleOn(TE, world, x, y, z);
@@ -203,7 +203,7 @@ public class BlockCarpentersPressurePlate extends BlockBase
 	/**
 	 * Activates pressure plate.
 	 */
-	private void toggleOn(TECarpentersBlock TE, World world, int x, int y, int z)
+	private void toggleOn(TEBase TE, World world, int x, int y, int z)
 	{
 		PressurePlate.setState(TE, PressurePlate.STATE_ON, true);
 		notifyNeighborsOfUpdate(world, x, y, z);
@@ -213,7 +213,7 @@ public class BlockCarpentersPressurePlate extends BlockBase
 	/**
 	 * Deactivates pressure plate.
 	 */
-	private void toggleOff(TECarpentersBlock TE, World world, int x, int y, int z)
+	private void toggleOff(TEBase TE, World world, int x, int y, int z)
 	{
 		PressurePlate.setState(TE, PressurePlate.STATE_OFF, true);
 		notifyNeighborsOfUpdate(world, x, y, z);
@@ -233,7 +233,7 @@ public class BlockCarpentersPressurePlate extends BlockBase
 	/**
 	 * Returns whether pressure plate is in depressed state
 	 */
-	private boolean isDepressed(TECarpentersBlock TE)
+	private boolean isDepressed(TEBase TE)
 	{
 		return PressurePlate.getState(BlockProperties.getData(TE)) == PressurePlate.STATE_ON;
 	}
@@ -246,7 +246,7 @@ public class BlockCarpentersPressurePlate extends BlockBase
 	 */
 	public int isProvidingWeakPower(IBlockAccess world, int x, int y, int z, int side)
 	{
-		TECarpentersBlock TE = (TECarpentersBlock)world.getBlockTileEntity(x, y, z);
+		TEBase TE = (TEBase)world.getBlockTileEntity(x, y, z);
 
 		return getPowerSupply(TE, BlockProperties.getData(TE));
 	}
@@ -258,7 +258,7 @@ public class BlockCarpentersPressurePlate extends BlockBase
 	 */
 	public int isProvidingStrongPower(IBlockAccess world, int x, int y, int z, int side)
 	{
-		TECarpentersBlock TE = (TECarpentersBlock)world.getBlockTileEntity(x, y, z);
+		TEBase TE = (TEBase)world.getBlockTileEntity(x, y, z);
 
 		return side == 1 ? getPowerSupply(TE, BlockProperties.getData(TE)) : 0;
 	}
@@ -275,7 +275,7 @@ public class BlockCarpentersPressurePlate extends BlockBase
 	/**
 	 * Returns power level (0 or 15)
 	 */
-	private int getPowerSupply(TECarpentersBlock TE, int data)
+	private int getPowerSupply(TEBase TE, int data)
 	{
 		int polarity = PressurePlate.getPolarity(data);
 
@@ -289,7 +289,7 @@ public class BlockCarpentersPressurePlate extends BlockBase
 	/**
 	 * Returns whether pressure plate should trigger based on entity colliding with it.
 	 */
-	private boolean shouldTrigger(TECarpentersBlock TE, Entity entity, World world, int x, int y, int z)
+	private boolean shouldTrigger(TEBase TE, Entity entity, World world, int x, int y, int z)
 	{
 		if (entity == null)
 			return false;
@@ -312,7 +312,7 @@ public class BlockCarpentersPressurePlate extends BlockBase
 	/**
 	 * Ejects contained items into the world, and notifies neighbours of an update, as appropriate
 	 */
-	public void auxiliaryBreakBlock(TECarpentersBlock TE, World world, int x, int y, int z, int par5, int metadata)
+	public void auxiliaryBreakBlock(TEBase TE, World world, int x, int y, int z, int par5, int metadata)
 	{
 		if (isDepressed(TE))
 			notifyNeighborsOfUpdate(world, x, y, z);

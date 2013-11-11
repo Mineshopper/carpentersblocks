@@ -9,7 +9,7 @@ import org.lwjgl.opengl.GL11;
 
 import carpentersblocks.renderer.helper.RenderHelper;
 import carpentersblocks.renderer.helper.RenderHelperCollapsible;
-import carpentersblocks.tileentity.TECarpentersBlock;
+import carpentersblocks.tileentity.TEBase;
 
 public class BlockHandlerCarpentersCollapsibleBlock extends BlockHandlerBase
 {
@@ -55,7 +55,7 @@ public class BlockHandlerCarpentersCollapsibleBlock extends BlockHandlerBase
 	/**
 	 * Renders side.
 	 */
-	protected void renderSide(TECarpentersBlock TE, RenderBlocks renderBlocks, int side, double offset, int x, int y, int z, Icon icon)
+	protected void renderSide(TEBase TE, RenderBlocks renderBlocks, int side, double offset, int x, int y, int z, Icon icon)
 	{
 		switch (side)
 		{

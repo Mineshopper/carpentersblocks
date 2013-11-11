@@ -1,7 +1,7 @@
 package carpentersblocks.data;
 
 import net.minecraft.entity.player.EntityPlayer;
-import carpentersblocks.tileentity.TECarpentersBlock;
+import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 
 public class Door
@@ -67,7 +67,7 @@ public class Door
 	/**
 	 * Sets type.
 	 */
-	public final static void setType(TECarpentersBlock TE, int type)
+	public final static void setType(TEBase TE, int type)
 	{
 		int temp = BlockProperties.getData(TE) & 0xfff8;
 		temp |= type;
@@ -87,7 +87,7 @@ public class Door
 	/**
 	 * Sets hinge side (relative to facing).
 	 */
-	public final static void setHingeSide(TECarpentersBlock TE, int hingeSide)
+	public final static void setHingeSide(TEBase TE, int hingeSide)
 	{
 		int temp = BlockProperties.getData(TE) & 0xfff7;
 		temp |= hingeSide << 3;
@@ -107,7 +107,7 @@ public class Door
 	/**
 	 * Sets facing (faces opening direction).
 	 */
-	public final static void setFacing(TECarpentersBlock TE, int facing)
+	public final static void setFacing(TEBase TE, int facing)
 	{
 		int temp = BlockProperties.getData(TE) & 0xffcf;
 		temp |= facing << 4;
@@ -127,7 +127,7 @@ public class Door
 	/**
 	 * Sets state (open or closed).
 	 */
-	public final static void setState(TECarpentersBlock TE, int state, boolean playSound)
+	public final static void setState(TEBase TE, int state, boolean playSound)
 	{
 		int temp = BlockProperties.getData(TE) & 0xffbf;
 		temp |= state << 6;
@@ -150,7 +150,7 @@ public class Door
 	/**
 	 * Sets door piece (top or bottom).
 	 */
-	public final static void setPiece(TECarpentersBlock TE, int piece)
+	public final static void setPiece(TEBase TE, int piece)
 	{
 		int temp = BlockProperties.getData(TE) & 0xff7f;
 		temp |= piece << 7;
@@ -170,7 +170,7 @@ public class Door
 	/**
 	 * Sets door rigidity (requires redstone for activation).
 	 */
-	public final static void setRigidity(TECarpentersBlock TE, int rigid)
+	public final static void setRigidity(TEBase TE, int rigid)
 	{
 		int temp = BlockProperties.getData(TE) & 0xfeff;
 		temp |= rigid << 8;

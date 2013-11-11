@@ -16,7 +16,7 @@ import net.minecraftforge.common.ForgeDirection;
 import carpentersblocks.CarpentersBlocks;
 import carpentersblocks.data.Stairs;
 import carpentersblocks.data.Stairs.StairsType;
-import carpentersblocks.tileentity.TECarpentersBlock;
+import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.handler.BlockHandler;
 
@@ -36,7 +36,7 @@ public class BlockCarpentersStairs extends BlockBase
 	/**
 	 * Alters block direction.
 	 */
-	protected boolean onHammerLeftClick(TECarpentersBlock TE, EntityPlayer entityPlayer)
+	protected boolean onHammerLeftClick(TEBase TE, EntityPlayer entityPlayer)
 	{
 		int stairsID = BlockProperties.getData(TE);
 		Stairs stairs = Stairs.stairsList[stairsID];
@@ -89,7 +89,7 @@ public class BlockCarpentersStairs extends BlockBase
 	/**
 	 * Alters block type.
 	 */
-	protected boolean onHammerRightClick(TECarpentersBlock TE, EntityPlayer entityPlayer, int side, float hitX, float hitZ)
+	protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer, int side, float hitX, float hitZ)
 	{
 		int stairsID = BlockProperties.getData(TE);
 		Stairs stairs = Stairs.stairsList[stairsID];
@@ -412,7 +412,7 @@ public class BlockCarpentersStairs extends BlockBase
 	 */
 	public MovingObjectPosition collisionRayTrace(World world, int x, int y, int z, Vec3 startVec, Vec3 endVec)
 	{
-		TECarpentersBlock TE = (TECarpentersBlock)world.getBlockTileEntity(x, y, z);
+		TEBase TE = (TEBase)world.getBlockTileEntity(x, y, z);
 
 		MovingObjectPosition finalTrace = null;
 
@@ -456,7 +456,7 @@ public class BlockCarpentersStairs extends BlockBase
 	{
 		AxisAlignedBB colBox = null;
 
-		TECarpentersBlock TE = (TECarpentersBlock)world.getBlockTileEntity(x, y, z);
+		TEBase TE = (TEBase)world.getBlockTileEntity(x, y, z);
 
 		int stairsID = BlockProperties.getData(TE);
 		Stairs stairs = Stairs.stairsList[stairsID];
@@ -480,7 +480,7 @@ public class BlockCarpentersStairs extends BlockBase
 	 */
 	public boolean isBlockSolidOnSide(World world, int x, int y, int z, ForgeDirection side)
 	{
-		TECarpentersBlock TE = (TECarpentersBlock)world.getBlockTileEntity(x, y, z);
+		TEBase TE = (TEBase)world.getBlockTileEntity(x, y, z);
 
 		if (isBlockSolid(world, x, y, z))
 			return Stairs.stairsList[BlockProperties.getData(TE)].isFaceFull(side);
@@ -537,7 +537,7 @@ public class BlockCarpentersStairs extends BlockBase
 	 * Called when the block is placed in the world.
 	 * Uses cardinal direction to adjust metadata if player clicks top or bottom face of block.
 	 */
-	public void auxiliaryOnBlockPlacedBy(TECarpentersBlock TE, World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack itemStack)
+	public void auxiliaryOnBlockPlacedBy(TEBase TE, World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack itemStack)
 	{
 		int facing = MathHelper.floor_double(entityLiving.rotationYaw * 4.0F / 360.0F + 0.5D) & 3;
 
@@ -567,12 +567,12 @@ public class BlockCarpentersStairs extends BlockBase
 		{
 			Stairs stairs = Stairs.stairsList[stairsID];
 
-			TECarpentersBlock TE_XN = world.getBlockId(x - 1, y, z) == blockID ? (TECarpentersBlock)world.getBlockTileEntity(x - 1, y, z) : null;
-			TECarpentersBlock TE_XP = world.getBlockId(x + 1, y, z) == blockID ? (TECarpentersBlock)world.getBlockTileEntity(x + 1, y, z) : null;
-			TECarpentersBlock TE_YP = world.getBlockId(x, y + 1, z) == blockID ? (TECarpentersBlock)world.getBlockTileEntity(x, y + 1, z) : null;
-			TECarpentersBlock TE_YN = world.getBlockId(x, y - 1, z) == blockID ? (TECarpentersBlock)world.getBlockTileEntity(x, y - 1, z) : null;
-			TECarpentersBlock TE_ZN = world.getBlockId(x, y, z - 1) == blockID ? (TECarpentersBlock)world.getBlockTileEntity(x, y, z - 1) : null;
-			TECarpentersBlock TE_ZP = world.getBlockId(x, y, z + 1) == blockID ? (TECarpentersBlock)world.getBlockTileEntity(x, y, z + 1) : null;
+			TEBase TE_XN = world.getBlockId(x - 1, y, z) == blockID ? (TEBase)world.getBlockTileEntity(x - 1, y, z) : null;
+			TEBase TE_XP = world.getBlockId(x + 1, y, z) == blockID ? (TEBase)world.getBlockTileEntity(x + 1, y, z) : null;
+			TEBase TE_YP = world.getBlockId(x, y + 1, z) == blockID ? (TEBase)world.getBlockTileEntity(x, y + 1, z) : null;
+			TEBase TE_YN = world.getBlockId(x, y - 1, z) == blockID ? (TEBase)world.getBlockTileEntity(x, y - 1, z) : null;
+			TEBase TE_ZN = world.getBlockId(x, y, z - 1) == blockID ? (TEBase)world.getBlockTileEntity(x, y, z - 1) : null;
+			TEBase TE_ZP = world.getBlockId(x, y, z + 1) == blockID ? (TEBase)world.getBlockTileEntity(x, y, z + 1) : null;
 
 			/* Gather neighboring stairs */
 
@@ -782,7 +782,7 @@ public class BlockCarpentersStairs extends BlockBase
 	/**
 	 * Returns whether block can support cover on side.
 	 */
-	public boolean canCoverSide(TECarpentersBlock TE, World world, int x, int y, int z, int side)
+	public boolean canCoverSide(TEBase TE, World world, int x, int y, int z, int side)
 	{
 		return true;
 	}

@@ -8,7 +8,7 @@ public class CompatibilityHelper
 	/**
 	 * Converts old data types to new ones.
 	 */
-	public static void convertData(TECarpentersBlock TE, NBTTagCompound nbt)
+	public static void convertData(TEBase TE, NBTTagCompound nbt)
 	{
 		/*
 		 * Set temporary variables

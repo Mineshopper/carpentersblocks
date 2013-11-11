@@ -5,7 +5,7 @@ import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.util.Icon;
 import net.minecraftforge.common.ForgeDirection;
 import carpentersblocks.data.Bed;
-import carpentersblocks.tileentity.TECarpentersBlock;
+import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.handler.BedDesignHandler;
 import carpentersblocks.util.handler.IconHandler;
@@ -17,7 +17,7 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase
 	/**
 	 * Renders bed
 	 */
-	public boolean renderCarpentersBlock(TECarpentersBlock TE, RenderBlocks renderBlocks, Block srcBlock, int renderPass, int x, int y, int z)
+	public boolean renderCarpentersBlock(TEBase TE, RenderBlocks renderBlocks, Block srcBlock, int renderPass, int x, int y, int z)
 	{
 		Block coverBlock = BlockProperties.getCoverBlock(TE, 6);
 
@@ -26,7 +26,7 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase
 		return true;
 	}
 
-	public boolean renderNormalBed(TECarpentersBlock TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int x, int y, int z)
+	public boolean renderNormalBed(TEBase TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int x, int y, int z)
 	{
 		int data = BlockProperties.getData(TE);
 		ForgeDirection dir = Bed.getDirection(TE);
@@ -35,7 +35,7 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase
 		
 		boolean isHead = Bed.isHeadOfBed(TE);
 
-		TECarpentersBlock TE_opp = Bed.getOppositeTE(TE);
+		TEBase TE_opp = Bed.getOppositeTE(TE);
 
 		boolean isOccupied = Bed.isOccupied(TE);
 		int	blanketColor = 0;
@@ -75,22 +75,22 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase
 		if (dir.equals(ForgeDirection.NORTH) || dir.equals(ForgeDirection.SOUTH)) 
 		{
 			if (renderBlocks.blockAccess.getBlockId(x + 1, y, z) == srcBlock.blockID) {
-				TECarpentersBlock TE_adj = (TECarpentersBlock) renderBlocks.blockAccess.getBlockTileEntity(x + 1,  y,  z);
+				TEBase TE_adj = (TEBase) renderBlocks.blockAccess.getBlockTileEntity(x + 1,  y,  z);
 				bedParallelPos = Bed.isHeadOfBed(TE) == Bed.isHeadOfBed(TE_adj) && Bed.getDirection(TE) == Bed.getDirection(TE_adj);
 			}
 			if (renderBlocks.blockAccess.getBlockId(x - 1, y, z) == srcBlock.blockID) {
-				TECarpentersBlock TE_adj = (TECarpentersBlock) renderBlocks.blockAccess.getBlockTileEntity(x - 1,  y,  z);
+				TEBase TE_adj = (TEBase) renderBlocks.blockAccess.getBlockTileEntity(x - 1,  y,  z);
 				bedParallelNeg = Bed.isHeadOfBed(TE) == Bed.isHeadOfBed(TE_adj) && Bed.getDirection(TE) == Bed.getDirection(TE_adj);
 			}
 			
 		} else {
 			
 			if (renderBlocks.blockAccess.getBlockId(x, y, z + 1) == srcBlock.blockID) {
-				TECarpentersBlock TE_adj = (TECarpentersBlock) renderBlocks.blockAccess.getBlockTileEntity(x,  y, z + 1);
+				TEBase TE_adj = (TEBase) renderBlocks.blockAccess.getBlockTileEntity(x,  y, z + 1);
 				bedParallelPos = Bed.isHeadOfBed(TE) == Bed.isHeadOfBed(TE_adj) && Bed.getDirection(TE) == Bed.getDirection(TE_adj);
 			}
 			if (renderBlocks.blockAccess.getBlockId(x, y, z - 1) == srcBlock.blockID) {
-				TECarpentersBlock TE_adj = (TECarpentersBlock) renderBlocks.blockAccess.getBlockTileEntity(x,  y, z - 1);
+				TEBase TE_adj = (TEBase) renderBlocks.blockAccess.getBlockTileEntity(x,  y, z - 1);
 				bedParallelNeg = Bed.isHeadOfBed(TE) == Bed.isHeadOfBed(TE_adj) && Bed.getDirection(TE) == Bed.getDirection(TE_adj);
 			}
 			

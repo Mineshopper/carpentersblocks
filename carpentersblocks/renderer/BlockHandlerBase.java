@@ -18,7 +18,7 @@ import carpentersblocks.data.Slope;
 import carpentersblocks.data.Slope.SlopeType;
 import carpentersblocks.renderer.helper.RenderHelper;
 import carpentersblocks.renderer.helper.VertexHelper;
-import carpentersblocks.tileentity.TECarpentersBlock;
+import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.handler.BlockHandler;
 import carpentersblocks.util.handler.DyeColorHandler;
@@ -59,7 +59,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 	/**
 	 * Sets directional block side rotation in RenderBlocks.
 	 */
-	protected void setDirectionalRotation(TECarpentersBlock TE, RenderBlocks renderBlocks, int side)
+	protected void setDirectionalRotation(TEBase TE, RenderBlocks renderBlocks, int side)
 	{
         int metadata = BlockProperties.getCoverMetadata(TE, coverRendering);
         int dir = metadata & 12;
@@ -230,7 +230,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 	@Override
 	public boolean renderWorldBlock(IBlockAccess blockAccess, int x, int y, int z, Block srcBlock, int modelID, RenderBlocks renderBlocks)
 	{
-		TECarpentersBlock TE = (TECarpentersBlock) blockAccess.getBlockTileEntity(x, y, z);
+		TEBase TE = (TEBase) blockAccess.getBlockTileEntity(x, y, z);
 
 		/*
 		 * Slopes and collapsible blocks need full render bounds to
@@ -275,7 +275,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 	/**
 	 * Returns whether block should render this pass.
 	 */
-	protected boolean shouldRenderBlock(TECarpentersBlock TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int renderPass)
+	protected boolean shouldRenderBlock(TEBase TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int renderPass)
 	{
 		if (renderAlphaOverride) {
 			return renderPass == 1;
@@ -304,7 +304,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 	/**
 	 * Returns whether overlay should render.
 	 */
-	protected boolean shouldRenderOverlay(TECarpentersBlock TE, int renderPass)
+	protected boolean shouldRenderOverlay(TEBase TE, int renderPass)
 	{
 		if (!suppressOverlay)
 		{
@@ -335,7 +335,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 	/**
 	 * Returns whether pattern should render.
 	 */
-	protected boolean shouldRenderPattern(TECarpentersBlock TE, int renderPass)
+	protected boolean shouldRenderPattern(TEBase TE, int renderPass)
 	{
 		if (!suppressPattern)
 		{
@@ -352,7 +352,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 	/**
 	 * Renders fancy fluids in block space.
 	 */
-	private void renderFancyFluids(TECarpentersBlock TE, RenderBlocks renderBlocks, int x, int y, int z, int renderPass)
+	private void renderFancyFluids(TEBase TE, RenderBlocks renderBlocks, int x, int y, int z, int renderPass)
 	{
 		/*
 		 * Render fluid in same block space if near fluid
@@ -559,7 +559,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 	/**
 	 * Override for shape specific render methods.
 	 */
-	public boolean renderCarpentersBlock(TECarpentersBlock TE, RenderBlocks renderBlocks, Block srcBlock, int renderPass, int x, int y, int z)
+	public boolean renderCarpentersBlock(TEBase TE, RenderBlocks renderBlocks, Block srcBlock, int renderPass, int x, int y, int z)
 	{
 		Block coverBlock = BlockProperties.getCoverBlock(TE, coverRendering);
 		renderStandardBlock(TE, renderBlocks, coverBlock, srcBlock, x, y, z);
@@ -570,7 +570,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 	 * Sets up side cover rendering bounds.
 	 * Will return block location where side cover should be rendered.
 	 */
-	protected int[] setSideCoverRenderBounds(TECarpentersBlock TE, RenderBlocks renderBlocks, int x, int y, int z, int side)
+	protected int[] setSideCoverRenderBounds(TEBase TE, RenderBlocks renderBlocks, int x, int y, int z, int side)
 	{
 		double offset = 1.0D / 16.0D;
 
@@ -658,7 +658,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 	/**
 	 * Renders side covers.
 	 */
-	protected void renderSideCovers(TECarpentersBlock TE, RenderBlocks renderBlocks, Block srcBlock, int renderPass, int x, int y, int z)
+	protected void renderSideCovers(TEBase TE, RenderBlocks renderBlocks, Block srcBlock, int renderPass, int x, int y, int z)
 	{
 		isSideCover = true;
 		renderBlocks.renderAllFaces = true;
@@ -708,7 +708,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 	/**
 	 * Sets AO color.
 	 */
-	protected void aoSetColor(TECarpentersBlock TE, RenderBlocks renderBlocks, Block block, int side, float red, float green, float blue, float lightness)
+	protected void aoSetColor(TEBase TE, RenderBlocks renderBlocks, Block block, int side, float red, float green, float blue, float lightness)
 	{
 		/*
 		 * Set base light values against color multiplier
@@ -759,7 +759,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 	/**
 	 * Returns icon for face.
 	 */
-	protected Icon getIcon(TECarpentersBlock TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int side, int x, int y, int z)
+	protected Icon getIcon(TEBase TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int side, int x, int y, int z)
 	{
 		int data = BlockProperties.getData(TE);
 		int metadata = hasMetadataOverride ? metadataOverride : BlockProperties.getCoverMetadata(TE, coverRendering);
@@ -826,7 +826,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 	/**
 	 * Renders multiple textures to side.
 	 */
-	protected void renderMultiTexturedSide(TECarpentersBlock TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int side, int x, int y, int z, float lightness, Icon icon)
+	protected void renderMultiTexturedSide(TEBase TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int side, int x, int y, int z, float lightness, Icon icon)
 	{
 		int renderPass = MinecraftForgeClient.getRenderPass();
 
@@ -869,7 +869,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 	/**
 	 * Sets icon, applies color and renders given side.
 	 */
-	protected void prepareRender(TECarpentersBlock TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int side, int x, int y, int z, float lightness)
+	protected void prepareRender(TEBase TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int side, int x, int y, int z, float lightness)
 	{
 		Icon icon = getIcon(TE, renderBlocks, coverBlock, srcBlock, side, x, y, z);
 		
@@ -891,7 +891,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 	/**
 	 * Apply color to AO or tessellator
 	 */
-	protected void colorSide(TECarpentersBlock TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int side, int x, int y, int z, Icon icon, float lightness)
+	protected void colorSide(TEBase TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int side, int x, int y, int z, Icon icon, float lightness)
 	{
 		Tessellator tessellator = Tessellator.instance;
 		float baseRGB[] = getRGB(renderBlocks.blockAccess, coverBlock, x, y, z);
@@ -935,7 +935,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 	/**
 	 * Returns whether block side color component should be used.
 	 */
-	protected boolean useColorComponent(TECarpentersBlock TE, Block coverBlock, Block srcBlock, int side, Icon icon)
+	protected boolean useColorComponent(TEBase TE, Block coverBlock, Block srcBlock, int side, Icon icon)
 	{
 		if (coverBlock == Block.grass || BlockProperties.getOverlay(TE, side) == OverlayHandler.OVERLAY_GRASS)
 		{
@@ -954,7 +954,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 	/**
 	 * Renders overlay on side.
 	 */
-	protected void renderOverlay(TECarpentersBlock TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int side, int x, int y, int z, float lightness, Icon icon)
+	protected void renderOverlay(TEBase TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int side, int x, int y, int z, float lightness, Icon icon)
 	{
 		int data = BlockProperties.getData(TE);
 		int overlay = BlockProperties.getOverlay(TE, coverRendering);
@@ -1077,7 +1077,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 	 * is the only real exception in the game due to biome-specific
 	 * coloring and side specificity.
 	 */
-	protected Icon getGrassOverlayIcon(TECarpentersBlock TE, int side)
+	protected Icon getGrassOverlayIcon(TEBase TE, int side)
 	{
 		boolean isPositiveSlope = isSideSloped ? Slope.slopesList[BlockProperties.getData(TE)].isPositive : false;
 		
@@ -1107,7 +1107,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 	/**
 	 * Renders pattern on side.
 	 */
-	protected void renderPattern(TECarpentersBlock TE, RenderBlocks renderBlocks, Block srcBlock, int side, int x, int y, int z, float lightness)
+	protected void renderPattern(TEBase TE, RenderBlocks renderBlocks, Block srcBlock, int side, int x, int y, int z, float lightness)
 	{
 		int pattern = BlockProperties.getPattern(TE, coverRendering);
 		Icon icon = IconHandler.icon_pattern[pattern];
@@ -1119,7 +1119,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 	/**
 	 * Renders side.
 	 */
-	protected void renderSide(TECarpentersBlock TE, RenderBlocks renderBlocks, int side, double offset, int x, int y, int z, Icon icon)
+	protected void renderSide(TEBase TE, RenderBlocks renderBlocks, int side, double offset, int x, int y, int z, Icon icon)
 	{
 		if (offset != 0) {
 			VertexHelper.setOffset(offset);
@@ -1175,7 +1175,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 	/**
 	 * Sets up color and renders standard cube based on lighting settings.
 	 */
-	protected boolean renderStandardBlock(TECarpentersBlock TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int x, int y, int z)
+	protected boolean renderStandardBlock(TEBase TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int x, int y, int z)
 	{
 		float rgb[] = getRGB(renderBlocks.blockAccess, coverBlock, x, y, z);
 		
@@ -1203,7 +1203,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 	/**
 	 * Overridden by slopes.
 	 */
-	protected boolean renderStandardSlopeWithAmbientOcclusion(TECarpentersBlock TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int x, int y, int z, float red, float green, float blue)
+	protected boolean renderStandardSlopeWithAmbientOcclusion(TEBase TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int x, int y, int z, float red, float green, float blue)
 	{
 		return false;
 	}
@@ -1211,7 +1211,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 	/**
 	 * Overridden by slopes.
 	 */
-	protected boolean renderStandardSlopeWithColorMultiplier(TECarpentersBlock TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int x, int y, int z, float red, float green, float blue)
+	protected boolean renderStandardSlopeWithColorMultiplier(TEBase TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int x, int y, int z, float red, float green, float blue)
 	{
 		return false;
 	}
@@ -1219,7 +1219,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 	/**
 	 * Render block using ambient occlusion.
 	 */
-	protected boolean renderStandardBlockWithAmbientOcclusion(TECarpentersBlock TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int x, int y, int z, float red, float green, float blue)
+	protected boolean renderStandardBlockWithAmbientOcclusion(TEBase TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int x, int y, int z, float red, float green, float blue)
 	{
 		renderBlocks.enableAO = true;
 		boolean side_rendered = false;
@@ -1843,7 +1843,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 	/**
 	 * Renders a standard cube block at the given coordinates, with a given color ratio.  Args: block, x, y, z, r, g, b
 	 */
-	protected boolean renderStandardBlockWithColorMultiplier(TECarpentersBlock TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int x, int y, int z, float red, float green, float blue)
+	protected boolean renderStandardBlockWithColorMultiplier(TEBase TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int x, int y, int z, float red, float green, float blue)
 	{
 		renderBlocks.enableAO = false;
 		Tessellator tessellator = Tessellator.instance;

@@ -11,7 +11,7 @@ import carpentersblocks.block.BlockCarpentersHatch;
 import carpentersblocks.data.Hatch;
 import carpentersblocks.renderer.helper.RenderHelper;
 import carpentersblocks.renderer.helper.VertexHelper;
-import carpentersblocks.tileentity.TECarpentersBlock;
+import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.handler.BlockHandler;
 import carpentersblocks.util.handler.IconHandler;
@@ -77,7 +77,7 @@ public class BlockHandlerCarpentersHatch extends HingedBase
 	/**
 	 * Renders block
 	 */
-	 public boolean renderCarpentersBlock(TECarpentersBlock TE, RenderBlocks renderBlocks, Block srcBlock, int renderPass, int x, int y, int z)
+	 public boolean renderCarpentersBlock(TEBase TE, RenderBlocks renderBlocks, Block srcBlock, int renderPass, int x, int y, int z)
 	{
 		Block coverBlock = isSideCover ? BlockProperties.getCoverBlock(TE, coverRendering) : BlockProperties.getCoverBlock(TE, 6);
 
@@ -108,7 +108,7 @@ public class BlockHandlerCarpentersHatch extends HingedBase
 	/**
 	 * Renders hidden hatch at given coordinates
 	 */
-	public boolean renderHiddenHatch(TECarpentersBlock TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int renderPass, int x, int y, int z)
+	public boolean renderHiddenHatch(TEBase TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int renderPass, int x, int y, int z)
 	{
 		if (shouldRenderFrame(TE, renderBlocks, coverBlock, renderPass))
 		{
@@ -126,7 +126,7 @@ public class BlockHandlerCarpentersHatch extends HingedBase
 	/**
 	 * Renders a window or screen hatch at given coordinates
 	 */
-	public boolean renderHollowHatch(TECarpentersBlock TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int renderPass, int x, int y, int z)
+	public boolean renderHollowHatch(TEBase TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int renderPass, int x, int y, int z)
 	{
 		renderBlocks.renderAllFaces = true;
 
@@ -269,7 +269,7 @@ public class BlockHandlerCarpentersHatch extends HingedBase
 	/**
 	 * Renders a French window hatch at given coordinates
 	 */
-	public boolean renderFrenchWindowHatch(TECarpentersBlock TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int renderPass, int x, int y, int z)
+	public boolean renderFrenchWindowHatch(TEBase TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int renderPass, int x, int y, int z)
 	{
 		renderBlocks.renderAllFaces = true;
 
@@ -451,7 +451,7 @@ public class BlockHandlerCarpentersHatch extends HingedBase
 	/**
 	 * Renders a panel hatch at given coordinates
 	 */
-	public boolean renderPanelHatch(TECarpentersBlock TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int renderPass, int x, int y, int z)
+	public boolean renderPanelHatch(TEBase TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int renderPass, int x, int y, int z)
 	{
 		renderBlocks.renderAllFaces = true;
 
@@ -620,7 +620,7 @@ public class BlockHandlerCarpentersHatch extends HingedBase
 	/**
 	 * Renders a hatch handle for the given coordinates
 	 */
-	public boolean renderHandle(TECarpentersBlock TE, RenderBlocks renderBlocks, Block block, int x, int y, int z, boolean render_inside_handle, boolean render_outside_handle)
+	public boolean renderHandle(TEBase TE, RenderBlocks renderBlocks, Block block, int x, int y, int z, boolean render_inside_handle, boolean render_outside_handle)
 	{
 		if (!render_inside_handle && !render_outside_handle)
 			return false;

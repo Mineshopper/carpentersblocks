@@ -10,7 +10,7 @@ import net.minecraft.world.World;
 import carpentersblocks.CarpentersBlocks;
 import carpentersblocks.block.BlockCarpentersDoor;
 import carpentersblocks.data.Door;
-import carpentersblocks.tileentity.TECarpentersBlock;
+import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.handler.BlockHandler;
 import cpw.mods.fml.relauncher.Side;
@@ -71,7 +71,7 @@ public class ItemCarpentersDoor extends Item
 		/*
 		 * Create bottom door piece.
 		 */
-		TECarpentersBlock TE = (TECarpentersBlock) world.getBlockTileEntity(x, y, z);
+		TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
 		Door.setFacing(TE, facing);
 		Door.setHingeSide(TE, getHingePoint(TE, block.blockID));
 		Door.setPiece(TE, Door.PIECE_BOTTOM);
@@ -79,10 +79,10 @@ public class ItemCarpentersDoor extends Item
 		/*
 		 * Match door type and rigidity with adjacent type if possible
 		 */
-		TECarpentersBlock TE_XN = world.getBlockId(x - 1, y, z) == block.blockID ? (TECarpentersBlock) world.getBlockTileEntity(x - 1, y, z) : null;
-		TECarpentersBlock TE_XP = world.getBlockId(x + 1, y, z) == block.blockID ? (TECarpentersBlock) world.getBlockTileEntity(x + 1, y, z) : null;
-		TECarpentersBlock TE_ZN = world.getBlockId(x, y, z - 1) == block.blockID ? (TECarpentersBlock) world.getBlockTileEntity(x, y, z - 1) : null;
-		TECarpentersBlock TE_ZP = world.getBlockId(x, y, z + 1) == block.blockID ? (TECarpentersBlock) world.getBlockTileEntity(x, y, z + 1) : null;
+		TEBase TE_XN = world.getBlockId(x - 1, y, z) == block.blockID ? (TEBase) world.getBlockTileEntity(x - 1, y, z) : null;
+		TEBase TE_XP = world.getBlockId(x + 1, y, z) == block.blockID ? (TEBase) world.getBlockTileEntity(x + 1, y, z) : null;
+		TEBase TE_ZN = world.getBlockId(x, y, z - 1) == block.blockID ? (TEBase) world.getBlockTileEntity(x, y, z - 1) : null;
+		TEBase TE_ZP = world.getBlockId(x, y, z + 1) == block.blockID ? (TEBase) world.getBlockTileEntity(x, y, z + 1) : null;
 
 		int type = 0;
 		if (TE_XN != null) {
@@ -111,7 +111,7 @@ public class ItemCarpentersDoor extends Item
 		 * Create top door piece.
 		 */
 		 world.setBlock(x, y + 1, z, block.blockID);
-		 TECarpentersBlock TE_YP = (TECarpentersBlock) world.getBlockTileEntity(x, y + 1, z);
+		 TEBase TE_YP = (TEBase) world.getBlockTileEntity(x, y + 1, z);
 		 Door.setFacing(TE_YP, facing);
 		 Door.setType(TE_YP, type);
 		 Door.setHingeSide(TE_YP, Door.getHinge(BlockProperties.getData(TE)));
@@ -123,7 +123,7 @@ public class ItemCarpentersDoor extends Item
 	 * Returns a hinge point allowing double-doors if a matching neighboring door is found.
 	 * It returns the default hinge point if no neighboring doors are found.
 	 */
-	private int getHingePoint(TECarpentersBlock TE, int blockID)
+	private int getHingePoint(TEBase TE, int blockID)
 	{
 		int data = BlockProperties.getData(TE);
 		int facing = Door.getFacing(data);
@@ -131,10 +131,10 @@ public class ItemCarpentersDoor extends Item
 		Door.getState(data);
 		int piece = Door.getPiece(data);
 
-		TECarpentersBlock TE_ZN = TE.worldObj.getBlockId(TE.xCoord, TE.yCoord, TE.zCoord - 1) == blockID ? (TECarpentersBlock) TE.worldObj.getBlockTileEntity(TE.xCoord, TE.yCoord, TE.zCoord - 1) : null;
-		TECarpentersBlock TE_ZP = TE.worldObj.getBlockId(TE.xCoord, TE.yCoord, TE.zCoord + 1) == blockID ? (TECarpentersBlock) TE.worldObj.getBlockTileEntity(TE.xCoord, TE.yCoord, TE.zCoord + 1) : null;
-		TECarpentersBlock TE_XN = TE.worldObj.getBlockId(TE.xCoord - 1, TE.yCoord, TE.zCoord) == blockID ? (TECarpentersBlock) TE.worldObj.getBlockTileEntity(TE.xCoord - 1, TE.yCoord, TE.zCoord) : null;
-		TECarpentersBlock TE_XP = TE.worldObj.getBlockId(TE.xCoord + 1, TE.yCoord, TE.zCoord) == blockID ? (TECarpentersBlock) TE.worldObj.getBlockTileEntity(TE.xCoord + 1, TE.yCoord, TE.zCoord) : null;
+		TEBase TE_ZN = TE.worldObj.getBlockId(TE.xCoord, TE.yCoord, TE.zCoord - 1) == blockID ? (TEBase) TE.worldObj.getBlockTileEntity(TE.xCoord, TE.yCoord, TE.zCoord - 1) : null;
+		TEBase TE_ZP = TE.worldObj.getBlockId(TE.xCoord, TE.yCoord, TE.zCoord + 1) == blockID ? (TEBase) TE.worldObj.getBlockTileEntity(TE.xCoord, TE.yCoord, TE.zCoord + 1) : null;
+		TEBase TE_XN = TE.worldObj.getBlockId(TE.xCoord - 1, TE.yCoord, TE.zCoord) == blockID ? (TEBase) TE.worldObj.getBlockTileEntity(TE.xCoord - 1, TE.yCoord, TE.zCoord) : null;
+		TEBase TE_XP = TE.worldObj.getBlockId(TE.xCoord + 1, TE.yCoord, TE.zCoord) == blockID ? (TEBase) TE.worldObj.getBlockTileEntity(TE.xCoord + 1, TE.yCoord, TE.zCoord) : null;
 
 		switch (facing)
 		{

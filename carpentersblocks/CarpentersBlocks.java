@@ -7,6 +7,7 @@ import carpentersblocks.util.ModLogger;
 import carpentersblocks.util.handler.BlockHandler;
 import carpentersblocks.util.handler.FeatureHandler;
 import carpentersblocks.util.handler.ItemHandler;
+import carpentersblocks.util.handler.TileEntityHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -38,7 +39,7 @@ public class CarpentersBlocks
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event)
 	{
-		FeatureHandler.initProps(event);
+		FeatureHandler.initFeatures(event);
 		BlockHandler.initBlocks(event);
 		ItemHandler.initItems(event);
 
@@ -51,7 +52,7 @@ public class CarpentersBlocks
 	@EventHandler
 	public void init(FMLInitializationEvent event)
 	{
-		FeatureHandler.registerTileEntities();
+		TileEntityHandler.registerTileEntities();
 		BlockHandler.registerBlocks();
 		ItemHandler.registerItems();
 	}

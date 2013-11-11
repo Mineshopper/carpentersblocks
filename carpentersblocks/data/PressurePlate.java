@@ -1,7 +1,7 @@
 package carpentersblocks.data;
 
 import net.minecraft.block.material.Material;
-import carpentersblocks.tileentity.TECarpentersBlock;
+import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 
 public class PressurePlate
@@ -45,7 +45,7 @@ public class PressurePlate
 	/**
 	 * Sets type.
 	 */
-	public final static void setType(TECarpentersBlock TE, int type)
+	public final static void setType(TEBase TE, int type)
 	{
 		int temp = BlockProperties.getData(TE) & 0xfff8;
 		temp |= type;
@@ -65,7 +65,7 @@ public class PressurePlate
 	/**
 	 * Sets state.
 	 */
-	public final static void setState(TECarpentersBlock TE, int state, boolean playSound)
+	public final static void setState(TEBase TE, int state, boolean playSound)
 	{
 		int temp = BlockProperties.getData(TE) & 0xfff7;
 		temp |= state << 3;
@@ -96,7 +96,7 @@ public class PressurePlate
 	/**
 	 * Sets polarity.
 	 */
-	public final static void setPolarity(TECarpentersBlock TE, int polarity)
+	public final static void setPolarity(TEBase TE, int polarity)
 	{
 		int temp = BlockProperties.getData(TE) & 0xffef;
 		temp |= polarity << 4;
@@ -116,7 +116,7 @@ public class PressurePlate
 	/**
 	 * Sets trigger entity.
 	 */
-	public final static void setTriggerEntity(TECarpentersBlock TE, int trigger)
+	public final static void setTriggerEntity(TEBase TE, int trigger)
 	{
 		int temp = BlockProperties.getData(TE) & 0xff9f;
 		temp |= trigger << 5;

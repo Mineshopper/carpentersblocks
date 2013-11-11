@@ -9,7 +9,7 @@ import net.minecraftforge.common.ForgeDirection;
 import carpentersblocks.block.BlockCarpentersLever;
 import carpentersblocks.data.Lever;
 import carpentersblocks.data.Lever.Axis;
-import carpentersblocks.tileentity.TECarpentersBlock;
+import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.handler.BlockHandler;
 import carpentersblocks.util.handler.IconHandler;
@@ -26,7 +26,7 @@ public class BlockHandlerCarpentersLever extends BlockHandlerBase
 	/**
 	 * Renders block
 	 */
-	public boolean renderCarpentersBlock(TECarpentersBlock TE, RenderBlocks renderBlocks, Block srcBlock, int renderPass, int x, int y, int z)
+	public boolean renderCarpentersBlock(TEBase TE, RenderBlocks renderBlocks, Block srcBlock, int renderPass, int x, int y, int z)
 	{
 		Block coverBlock = isSideCover ? BlockProperties.getCoverBlock(TE, coverRendering) : BlockProperties.getCoverBlock(TE, 6);
 
@@ -38,7 +38,7 @@ public class BlockHandlerCarpentersLever extends BlockHandlerBase
 	/**
 	 * Renders lever.
 	 */
-	public boolean renderLever(TECarpentersBlock TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int x, int y, int z)
+	public boolean renderLever(TEBase TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int x, int y, int z)
 	{
 		/* Set block bounds and render lever base. */
 		
@@ -60,7 +60,7 @@ public class BlockHandlerCarpentersLever extends BlockHandlerBase
 	/**
 	 * Renders the lever handle.
 	 */
-	private boolean renderLeverHandle(TECarpentersBlock TE, RenderBlocks renderBlocks, int x, int y, int z)
+	private boolean renderLeverHandle(TEBase TE, RenderBlocks renderBlocks, int x, int y, int z)
 	{
 		Tessellator tessellator = Tessellator.instance;
 		tessellator.setBrightness(Block.dirt.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y, z));

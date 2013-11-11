@@ -14,7 +14,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import carpentersblocks.CarpentersBlocks;
 import carpentersblocks.data.Slab;
-import carpentersblocks.tileentity.TECarpentersBlock;
+import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.handler.BlockHandler;
 
@@ -34,7 +34,7 @@ public class BlockCarpentersBlock extends BlockBase
 	/**
 	 * Alter type.
 	 */
-	protected boolean onHammerLeftClick(TECarpentersBlock TE, EntityPlayer entityPlayer)
+	protected boolean onHammerLeftClick(TEBase TE, EntityPlayer entityPlayer)
 	{
 		int data = BlockProperties.getData(TE);
 
@@ -50,7 +50,7 @@ public class BlockCarpentersBlock extends BlockBase
 	/**
 	 * Alternate between full 1m cube and slab.
 	 */
-	protected boolean onHammerRightClick(TECarpentersBlock TE, EntityPlayer entityPlayer, int side, float hitX, float hitZ)
+	protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer, int side, float hitX, float hitZ)
 	{
 		int data = BlockProperties.getData(TE);
 
@@ -91,7 +91,7 @@ public class BlockCarpentersBlock extends BlockBase
 	 */
 	public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
 	{
-		TECarpentersBlock TE = (TECarpentersBlock) world.getBlockTileEntity(x, y, z);
+		TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
 
 		int data = BlockProperties.getData(TE);
 
@@ -136,7 +136,7 @@ public class BlockCarpentersBlock extends BlockBase
 	/**
 	 * Called when the block is placed in the world.
 	 */
-	public void auxiliaryOnBlockPlacedBy(TECarpentersBlock TE, World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack itemStack)
+	public void auxiliaryOnBlockPlacedBy(TEBase TE, World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack itemStack)
 	{
 		int data = Slab.BLOCK_FULL;
 
@@ -146,12 +146,12 @@ public class BlockCarpentersBlock extends BlockBase
 			/*
 			 * Match block type with adjacent type if possible
 			 */
-			TECarpentersBlock TE_YN = world.getBlockId(x, y - 1, z) == blockID ? (TECarpentersBlock)world.getBlockTileEntity(x, y - 1, z) : null;
-			TECarpentersBlock TE_YP = world.getBlockId(x, y + 1, z) == blockID ? (TECarpentersBlock)world.getBlockTileEntity(x, y + 1, z) : null;
-			TECarpentersBlock TE_XN = world.getBlockId(x - 1, y, z) == blockID ? (TECarpentersBlock)world.getBlockTileEntity(x - 1, y, z) : null;
-			TECarpentersBlock TE_XP = world.getBlockId(x + 1, y, z) == blockID ? (TECarpentersBlock)world.getBlockTileEntity(x + 1, y, z) : null;
-			TECarpentersBlock TE_ZN = world.getBlockId(x, y, z - 1) == blockID ? (TECarpentersBlock)world.getBlockTileEntity(x, y, z - 1) : null;
-			TECarpentersBlock TE_ZP = world.getBlockId(x, y, z + 1) == blockID ? (TECarpentersBlock)world.getBlockTileEntity(x, y, z + 1) : null;
+			TEBase TE_YN = world.getBlockId(x, y - 1, z) == blockID ? (TEBase)world.getBlockTileEntity(x, y - 1, z) : null;
+			TEBase TE_YP = world.getBlockId(x, y + 1, z) == blockID ? (TEBase)world.getBlockTileEntity(x, y + 1, z) : null;
+			TEBase TE_XN = world.getBlockId(x - 1, y, z) == blockID ? (TEBase)world.getBlockTileEntity(x - 1, y, z) : null;
+			TEBase TE_XP = world.getBlockId(x + 1, y, z) == blockID ? (TEBase)world.getBlockTileEntity(x + 1, y, z) : null;
+			TEBase TE_ZN = world.getBlockId(x, y, z - 1) == blockID ? (TEBase)world.getBlockTileEntity(x, y, z - 1) : null;
+			TEBase TE_ZP = world.getBlockId(x, y, z + 1) == blockID ? (TEBase)world.getBlockTileEntity(x, y, z + 1) : null;
 
 			if (TE_YN != null)
 				data = BlockProperties.getData(TE_YN);
@@ -178,7 +178,7 @@ public class BlockCarpentersBlock extends BlockBase
 	 */
 	public boolean isBlockNormalCube(World world, int x, int y, int z)
 	{
-		TECarpentersBlock TE = (TECarpentersBlock) world.getBlockTileEntity(x, y, z);
+		TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
 		return BlockProperties.getData(TE) == Slab.BLOCK_FULL;
 	}
 
@@ -188,7 +188,7 @@ public class BlockCarpentersBlock extends BlockBase
 	 */
 	public boolean isBlockSolidOnSide(World world, int x, int y, int z, ForgeDirection side)
 	{
-		TECarpentersBlock TE = (TECarpentersBlock)world.getBlockTileEntity(x, y, z);
+		TEBase TE = (TEBase)world.getBlockTileEntity(x, y, z);
 
 		if (isBlockSolid(world, x, y, z))
 		{
@@ -218,7 +218,7 @@ public class BlockCarpentersBlock extends BlockBase
 	 * Compares dimensions and coordinates of two opposite
 	 * sides to determine whether they share faces.
 	 */
-	protected boolean shareFaces(TECarpentersBlock TE_adj, TECarpentersBlock TE_src, ForgeDirection side_adj, ForgeDirection side_src)
+	protected boolean shareFaces(TEBase TE_adj, TEBase TE_src, ForgeDirection side_adj, ForgeDirection side_src)
 	{
 		if (TE_adj.getBlockType() == this)
 		{
@@ -303,7 +303,7 @@ public class BlockCarpentersBlock extends BlockBase
 	/**
 	 * Returns whether block can support cover on side.
 	 */
-	public boolean canCoverSide(TECarpentersBlock TE, World world, int x, int y, int z, int side)
+	public boolean canCoverSide(TEBase TE, World world, int x, int y, int z, int side)
 	{
 		return true;
 	}

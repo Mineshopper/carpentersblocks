@@ -8,7 +8,7 @@ import org.lwjgl.opengl.GL11;
 
 import carpentersblocks.block.BlockCarpentersStairs;
 import carpentersblocks.data.Stairs;
-import carpentersblocks.tileentity.TECarpentersBlock;
+import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.handler.BlockHandler;
 
@@ -68,7 +68,7 @@ public class BlockHandlerCarpentersStairs extends BlockHandlerBase
 	/**
 	 * Renders stairs at the given coordinates
 	 */
-	 public boolean renderCarpentersBlock(TECarpentersBlock TE, RenderBlocks renderBlocks, Block srcBlock, int renderPass, int x, int y, int z)
+	 public boolean renderCarpentersBlock(TEBase TE, RenderBlocks renderBlocks, Block srcBlock, int renderPass, int x, int y, int z)
 	{
 		Block coverBlock = isSideCover ? BlockProperties.getCoverBlock(TE, coverRendering) : BlockProperties.getCoverBlock(TE, 6);
 
@@ -96,7 +96,7 @@ public class BlockHandlerCarpentersStairs extends BlockHandlerBase
 	/**
 	 * Renders side covers (stair specific).
 	 */
-	protected void renderSideCovers(TECarpentersBlock TE, RenderBlocks renderBlocks, Block srcBlock, int renderPass, int x, int y, int z)
+	protected void renderSideCovers(TEBase TE, RenderBlocks renderBlocks, Block srcBlock, int renderPass, int x, int y, int z)
 	{
 		isSideCover = true;
 		renderBlocks.renderAllFaces = true;

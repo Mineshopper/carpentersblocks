@@ -7,7 +7,7 @@ import net.minecraft.client.renderer.Tessellator;
 import org.lwjgl.opengl.GL11;
 
 import carpentersblocks.data.Ladder;
-import carpentersblocks.tileentity.TECarpentersBlock;
+import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 
 public class BlockHandlerCarpentersLadder extends BlockHandlerBase
@@ -76,7 +76,7 @@ public class BlockHandlerCarpentersLadder extends BlockHandlerBase
 	/**
 	 * Renders ladder.
 	 */
-	public boolean renderCarpentersBlock(TECarpentersBlock TE, RenderBlocks renderBlocks, Block srcBlock, int renderPass, int x, int y, int z)
+	public boolean renderCarpentersBlock(TEBase TE, RenderBlocks renderBlocks, Block srcBlock, int renderPass, int x, int y, int z)
 	{
 		disableAO = true;
 
@@ -91,10 +91,10 @@ public class BlockHandlerCarpentersLadder extends BlockHandlerBase
 		/*
 		 * Gather adjacent ladder metadata.
 		 */
-		boolean connects_XN = TE.worldObj.getBlockId(x - 1, y, z) == srcBlock.blockID && BlockProperties.getData((TECarpentersBlock)TE.worldObj.getBlockTileEntity(x - 1, y, z)) == data;
-		boolean connects_XP = TE.worldObj.getBlockId(x + 1, y, z) == srcBlock.blockID && BlockProperties.getData((TECarpentersBlock)TE.worldObj.getBlockTileEntity(x + 1, y, z)) == data;
-		boolean connects_ZN = TE.worldObj.getBlockId(x, y, z - 1) == srcBlock.blockID && BlockProperties.getData((TECarpentersBlock)TE.worldObj.getBlockTileEntity(x, y, z - 1)) == data;
-		boolean connects_ZP = TE.worldObj.getBlockId(x, y, z + 1) == srcBlock.blockID && BlockProperties.getData((TECarpentersBlock)TE.worldObj.getBlockTileEntity(x, y, z + 1)) == data;
+		boolean connects_XN = TE.worldObj.getBlockId(x - 1, y, z) == srcBlock.blockID && BlockProperties.getData((TEBase)TE.worldObj.getBlockTileEntity(x - 1, y, z)) == data;
+		boolean connects_XP = TE.worldObj.getBlockId(x + 1, y, z) == srcBlock.blockID && BlockProperties.getData((TEBase)TE.worldObj.getBlockTileEntity(x + 1, y, z)) == data;
+		boolean connects_ZN = TE.worldObj.getBlockId(x, y, z - 1) == srcBlock.blockID && BlockProperties.getData((TEBase)TE.worldObj.getBlockTileEntity(x, y, z - 1)) == data;
+		boolean connects_ZP = TE.worldObj.getBlockId(x, y, z + 1) == srcBlock.blockID && BlockProperties.getData((TEBase)TE.worldObj.getBlockTileEntity(x, y, z + 1)) == data;
 
 		switch (data) {
 		case Ladder.FACING_ON_X:

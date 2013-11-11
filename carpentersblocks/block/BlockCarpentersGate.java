@@ -12,7 +12,7 @@ import net.minecraft.world.World;
 import carpentersblocks.CarpentersBlocks;
 import carpentersblocks.data.Barrier;
 import carpentersblocks.data.Gate;
-import carpentersblocks.tileentity.TECarpentersBlock;
+import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.handler.BlockHandler;
 import cpw.mods.fml.relauncher.Side;
@@ -34,7 +34,7 @@ public class BlockCarpentersGate extends BlockBase
 	/**
 	 * Alters gate type or sub-type and returns result.
 	 */
-	protected boolean onHammerRightClick(TECarpentersBlock TE, EntityPlayer entityPlayer, int side, float hitX, float hitZ)
+	protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer, int side, float hitX, float hitZ)
 	{
 		int data = BlockProperties.getData(TE);
 		int type = Gate.getType(data);
@@ -70,7 +70,7 @@ public class BlockCarpentersGate extends BlockBase
 	/**
 	 * Opens or closes gate on right click.
 	 */
-	public boolean auxiliaryOnBlockActivated(TECarpentersBlock TE, World world, int x, int y, int z, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ)
+	public boolean auxiliaryOnBlockActivated(TEBase TE, World world, int x, int y, int z, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ)
 	{
 		int data = BlockProperties.getData(TE);
 
@@ -111,7 +111,7 @@ public class BlockCarpentersGate extends BlockBase
 	 */
 	public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int x, int y, int z)
 	{
-		TECarpentersBlock TE = world.getBlockId(x, y, z) == blockID ? (TECarpentersBlock)world.getBlockTileEntity(x, y, z) : null;
+		TEBase TE = world.getBlockId(x, y, z) == blockID ? (TEBase)world.getBlockTileEntity(x, y, z) : null;
 
 		if (TE != null) {
 			int data = BlockProperties.getData(TE);
@@ -140,7 +140,7 @@ public class BlockCarpentersGate extends BlockBase
 	 */
 	public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
 	{
-		TECarpentersBlock TE = (TECarpentersBlock)world.getBlockTileEntity(x, y, z);
+		TEBase TE = (TEBase)world.getBlockTileEntity(x, y, z);
 
 		int data = BlockProperties.getData(TE);
 
@@ -171,7 +171,7 @@ public class BlockCarpentersGate extends BlockBase
 		 */
 		if (isGateBelow) {
 
-			TECarpentersBlock TE_YN = (TECarpentersBlock)world.getBlockTileEntity(x, y - 1, z);
+			TEBase TE_YN = (TEBase)world.getBlockTileEntity(x, y - 1, z);
 			if (Gate.getFacing(BlockProperties.getData(TE_YN)) == Gate.getFacing(data)) {
 				Gate.setDirOpen(TE_YN, Gate.getDirOpen(data));
 				Gate.setState(TE_YN, Gate.getState(data), false);
@@ -179,7 +179,7 @@ public class BlockCarpentersGate extends BlockBase
 
 		} else if (isGateAbove) {
 
-			TECarpentersBlock TE_YP = (TECarpentersBlock)world.getBlockTileEntity(x, y + 1, z);
+			TEBase TE_YP = (TEBase)world.getBlockTileEntity(x, y + 1, z);
 			if (Gate.getFacing(BlockProperties.getData(TE_YP)) == Gate.getFacing(data)) {
 				Gate.setDirOpen(TE_YP, Gate.getDirOpen(data));
 				Gate.setState(TE_YP, Gate.getState(data), false);
@@ -192,7 +192,7 @@ public class BlockCarpentersGate extends BlockBase
 	/**
 	 * Called when the block is placed in the world.
 	 */
-	public void auxiliaryOnBlockPlacedBy(TECarpentersBlock TE, World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack itemStack)
+	public void auxiliaryOnBlockPlacedBy(TEBase TE, World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack itemStack)
 	{
 		int facing = (MathHelper.floor_double(entityLiving.rotationYaw * 4.0F / 360.0F + 0.5D) & 3) % 4;
 
@@ -201,12 +201,12 @@ public class BlockCarpentersGate extends BlockBase
 		/*
 		 * Match barrier type with adjacent type or gate type if possible
 		 */
-		TECarpentersBlock TE_YN = (world.getBlockId(x, y - 1, z) == blockID || world.getBlockId(x, y - 1, z) == BlockHandler.blockCarpentersBarrierID) ? (TECarpentersBlock)world.getBlockTileEntity(x, y - 1, z) : null;
-		TECarpentersBlock TE_YP = (world.getBlockId(x, y + 1, z) == blockID || world.getBlockId(x, y + 1, z) == BlockHandler.blockCarpentersBarrierID) ? (TECarpentersBlock)world.getBlockTileEntity(x, y + 1, z) : null;
-		TECarpentersBlock TE_XN = (world.getBlockId(x - 1, y, z) == blockID || world.getBlockId(x - 1, y, z) == BlockHandler.blockCarpentersBarrierID) ? (TECarpentersBlock)world.getBlockTileEntity(x - 1, y, z) : null;
-		TECarpentersBlock TE_XP = (world.getBlockId(x + 1, y, z) == blockID || world.getBlockId(x + 1, y, z) == BlockHandler.blockCarpentersBarrierID) ? (TECarpentersBlock)world.getBlockTileEntity(x + 1, y, z) : null;
-		TECarpentersBlock TE_ZN = (world.getBlockId(x, y, z - 1) == blockID || world.getBlockId(x, y, z - 1) == BlockHandler.blockCarpentersBarrierID) ? (TECarpentersBlock)world.getBlockTileEntity(x, y, z - 1) : null;
-		TECarpentersBlock TE_ZP = (world.getBlockId(x, y, z + 1) == blockID || world.getBlockId(x, y, z + 1) == BlockHandler.blockCarpentersBarrierID) ? (TECarpentersBlock)world.getBlockTileEntity(x, y, z + 1) : null;
+		TEBase TE_YN = (world.getBlockId(x, y - 1, z) == blockID || world.getBlockId(x, y - 1, z) == BlockHandler.blockCarpentersBarrierID) ? (TEBase)world.getBlockTileEntity(x, y - 1, z) : null;
+		TEBase TE_YP = (world.getBlockId(x, y + 1, z) == blockID || world.getBlockId(x, y + 1, z) == BlockHandler.blockCarpentersBarrierID) ? (TEBase)world.getBlockTileEntity(x, y + 1, z) : null;
+		TEBase TE_XN = (world.getBlockId(x - 1, y, z) == blockID || world.getBlockId(x - 1, y, z) == BlockHandler.blockCarpentersBarrierID) ? (TEBase)world.getBlockTileEntity(x - 1, y, z) : null;
+		TEBase TE_XP = (world.getBlockId(x + 1, y, z) == blockID || world.getBlockId(x + 1, y, z) == BlockHandler.blockCarpentersBarrierID) ? (TEBase)world.getBlockTileEntity(x + 1, y, z) : null;
+		TEBase TE_ZN = (world.getBlockId(x, y, z - 1) == blockID || world.getBlockId(x, y, z - 1) == BlockHandler.blockCarpentersBarrierID) ? (TEBase)world.getBlockTileEntity(x, y, z - 1) : null;
+		TEBase TE_ZP = (world.getBlockId(x, y, z + 1) == blockID || world.getBlockId(x, y, z + 1) == BlockHandler.blockCarpentersBarrierID) ? (TEBase)world.getBlockTileEntity(x, y, z + 1) : null;
 
 		if (TE_YN != null) {
 			int data = BlockProperties.getData(TE_YN);
@@ -234,7 +234,7 @@ public class BlockCarpentersGate extends BlockBase
 	 * Lets the block know when one of its neighbor changes. Doesn't know which neighbor changed (coordinates passed are
 	 * their own) Args: x, y, z, neighbor blockID
 	 */
-	protected void auxiliaryOnNeighborBlockChange(TECarpentersBlock TE, World world, int x, int y, int z, int neighborBlockID)
+	protected void auxiliaryOnNeighborBlockChange(TEBase TE, World world, int x, int y, int z, int neighborBlockID)
 	{
 		boolean isPowered = world.isBlockIndirectlyGettingPowered(x, y, z);
 
