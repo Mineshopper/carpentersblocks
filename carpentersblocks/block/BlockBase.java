@@ -9,6 +9,7 @@ import net.minecraft.block.BlockFlower;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.client.particle.EntityDiggingFX;
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.EntityDragon;
@@ -39,10 +40,30 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockBase extends BlockContainer
 {
+	private Icon OverrideIcon;
 
 	public BlockBase(int blockID, Material material)
 	{
 		super(blockID, material);
+	}
+	
+	public void setBlockIcon(Icon newIcon) {
+		this.OverrideIcon = newIcon;
+	}
+
+	@Override
+	public void registerIcons(IconRegister par1IconRegister) {
+		super.registerIcons(par1IconRegister);
+		this.OverrideIcon = this.blockIcon;
+	}
+
+	@Override
+	public Icon getIcon(int par1, int par2) {
+		StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
+		if (stackTraceElements[2].getClassName().equals(EntityDiggingFX.class.getName()))
+
+		return this.OverrideIcon;
+		else return this.blockIcon;
 	}
 
 	/**

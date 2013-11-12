@@ -2,10 +2,14 @@ package carpentersblocks.util.handler;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.MathHelper;
 import net.minecraftforge.event.ForgeSubscribe;
+import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import carpentersblocks.block.BlockBase;
+import carpentersblocks.tileentity.TECarpentersBlock;
 
 public class BlockEventHandler
 {
@@ -53,5 +57,32 @@ public class BlockEventHandler
 			}
 		}
 	}
+	
+	@ForgeSubscribe
+    public void livingUpdateEvent(LivingUpdateEvent event) {
+            EntityLivingBase entity = event.entityLiving;
+
+            if (entity.isSprinting() && !entity.isInWater()) {
+                    int x = MathHelper.floor_double(entity.posX);
+                    int y = MathHelper.floor_double(entity.posY - 0.20000000298023224D
+                                                                                    - (double) entity.yOffset);
+                    int z = MathHelper.floor_double(entity.posZ);
+                    int id = entity.worldObj.getBlockId(x,
+                                                                                            y,
+                                                                                            z);
+                    if (Block.blocksList[id] instanceof BlockBase) {
+                            TECarpentersBlock slope = (TECarpentersBlock) entity.worldObj.getBlockTileEntity(        x,
+                                                                                                                                                                                                    y,
+                                                                                                                                                                                                    z);
+                            if (slope != null) {
+                                    ((BlockBase) Block.blocksList[id]).setBlockIcon(Block.blocksList[id].getBlockTexture(        entity.worldObj,
+                                                                                                                                                                                                                    x,
+                                                                                                                                                                                                                    y,
+                                                                                                                                                                                                                    z,
+                                                                                                                                                                                                                    0));
+                            }
+                    }
+            }
+    }
 
 }
