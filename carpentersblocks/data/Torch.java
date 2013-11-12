@@ -59,7 +59,7 @@ public class Torch
 	 */
 	public final static void setState(TEBase TE, State state)
 	{
-		if (!state.equals(State.LIT)) {
+		if (state.ordinal() > getState(TE).ordinal()) {
 			double[] headCoords = getHeadCoordinates(TE);
 			TE.worldObj.playSoundEffect(headCoords[0], headCoords[1], headCoords[2], "random.fizz", 0.5F, 2.6F + (TE.worldObj.rand.nextFloat() - TE.worldObj.rand.nextFloat()) * 0.8F);
 		}
