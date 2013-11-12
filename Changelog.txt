@@ -1,6 +1,7 @@
 CHANGELOG
 --------------------------------------------------------------------
-1. Added Carpenters Torch.
+- Fixed torch sounds playing when they shouldn't.
+- Added cover sprint particles.
 
 TO DO
 --------------------------------------------------------------------
