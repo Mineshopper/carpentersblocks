@@ -38,32 +38,49 @@ import carpentersblocks.util.handler.PlantHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class BlockBase extends BlockContainer
-{
-	private Icon OverrideIcon;
+public class BlockBase extends BlockContainer {
+	
+	private Icon iconOverride;
 
 	public BlockBase(int blockID, Material material)
 	{
 		super(blockID, material);
 	}
 	
-	public void setBlockIcon(Icon newIcon) {
-		this.OverrideIcon = newIcon;
+	public void setBlockIcon(Icon icon)
+	{
+		this.iconOverride = icon;
 	}
 
 	@Override
-	public void registerIcons(IconRegister par1IconRegister) {
+	public void registerIcons(IconRegister par1IconRegister)
+	{
 		super.registerIcons(par1IconRegister);
-		this.OverrideIcon = this.blockIcon;
+		this.iconOverride = this.blockIcon;
 	}
 
 	@Override
-	public Icon getIcon(int par1, int par2) {
+	public Icon getIcon(int side, int metadata)
+	{
 		StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
-		if (stackTraceElements[2].getClassName().equals(EntityDiggingFX.class.getName()))
+		
+		if (stackTraceElements[2].getClassName().equals(EntityDiggingFX.class.getName())) {
+			return this.iconOverride;
+		} else {
+			return this.blockIcon;
+		}
+	}
+	
+	@Override
+	@SideOnly(Side.CLIENT)
+	/**
+	 * Retrieves the block texture to use based on the display side. Args: iBlockAccess, x, y, z, side
+	 */
+	public Icon getBlockTexture(IBlockAccess world, int x, int y, int z, int side)
+	{
+		TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
 
-		return this.OverrideIcon;
-		else return this.blockIcon;
+		return BlockProperties.getCoverBlock(TE, 6).getIcon(side, BlockProperties.getCoverMetadata(TE, 6));
 	}
 
 	/**
@@ -87,18 +104,6 @@ public class BlockBase extends BlockContainer
 		int blockID = world.getBlockId(x, y, z);
 
 		return blockID > 0 && Block.blocksList[blockID] instanceof BlockBase;
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	/**
-	 * Retrieves the block texture to use based on the display side. Args: iBlockAccess, x, y, z, side
-	 */
-	public Icon getBlockTexture(IBlockAccess world, int x, int y, int z, int side)
-	{
-		TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
-
-		return BlockProperties.getCoverBlock(TE, 6).getIcon(side, BlockProperties.getCoverMetadata(TE, 6));
 	}
 
 	@Override
