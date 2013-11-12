@@ -9,6 +9,7 @@ import net.minecraft.block.BlockFlower;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.client.particle.EntityDiggingFX;
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
@@ -36,12 +37,49 @@ import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class BlockBase extends BlockContainer
-{
+public class BlockBase extends BlockContainer {
+	
+	private Icon iconOverride;
 
 	public BlockBase(int blockID, Material material)
 	{
 		super(blockID, material);
+	}
+	
+	public void setBlockIcon(Icon icon)
+	{
+		this.iconOverride = icon;
+	}
+
+	@Override
+	public void registerIcons(IconRegister iconRegister)
+	{
+		super.registerIcons(iconRegister);
+		this.iconOverride = this.blockIcon;
+	}
+
+	@Override
+	public Icon getIcon(int side, int metadata)
+	{
+		StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
+		
+		if (stackTraceElements[2].getClassName().equals(EntityDiggingFX.class.getName())) {
+			return this.iconOverride;
+		} else {
+			return this.blockIcon;
+		}
+	}
+	
+	@Override
+	@SideOnly(Side.CLIENT)
+	/**
+	 * Retrieves the block texture to use based on the display side. Args: iBlockAccess, x, y, z, side
+	 */
+	public Icon getBlockTexture(IBlockAccess world, int x, int y, int z, int side)
+	{
+		TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
+
+		return BlockProperties.getCoverBlock(TE, 6).getIcon(side, BlockProperties.getCoverMetadata(TE, 6));
 	}
 
 	/**
@@ -55,7 +93,7 @@ public class BlockBase extends BlockContainer
 
 		return BlockProperties.getCoverBlock(TE, 6).blockID == this.blockID;
 	}
-
+	
 	/**
 	 * Returns whether the block at given coordinates is an instance of
 	 * a Carpenter's block.
@@ -65,18 +103,6 @@ public class BlockBase extends BlockContainer
 		int blockID = world.getBlockId(x, y, z);
 
 		return blockID > 0 && Block.blocksList[blockID] instanceof BlockBase;
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	/**
-	 * Retrieves the block texture to use based on the display side. Args: iBlockAccess, x, y, z, side
-	 */
-	public Icon getBlockTexture(IBlockAccess world, int x, int y, int z, int side)
-	{
-		TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
-
-		return BlockProperties.getCoverBlock(TE, 6).getIcon(side, BlockProperties.getCoverMetadata(TE, 6));
 	}
 
 	@Override
