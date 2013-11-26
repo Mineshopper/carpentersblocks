@@ -24,6 +24,7 @@ tile.blockCarpentersLever.name=木匠拉杆
 tile.blockCarpentersPressurePlate.name=木匠压力盘
 tile.blockCarpentersSlope.name=木匠斜坡
 tile.blockCarpentersStairs.name=木匠楼梯
+tile.blockCarpentersTorch.name=木匠火把
 
 # MESSAGES
 message.polarity_pos.name=\u00a76输出相: \u00a7f标准红石信号输出.
