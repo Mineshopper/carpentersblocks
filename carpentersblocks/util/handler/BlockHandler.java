@@ -185,7 +185,7 @@ public class BlockHandler
     	
     	if (enableBed) {
         	blockCarpentersBed = (new BlockCarpentersBed(blockCarpentersBedID));
-    		GameRegistry.registerBlock(blockCarpentersBed, "blockCarpentersBed");
+    		//GameRegistry.registerBlock(blockCarpentersBed, "blockCarpentersBed");
         }
     	
     	if (enableBlock) {
@@ -208,7 +208,7 @@ public class BlockHandler
     	
     	if (enableDoor) {
     		blockCarpentersDoor = (new BlockCarpentersDoor(blockCarpentersDoorID));
-    		GameRegistry.registerBlock(blockCarpentersDoor, "blockCarpentersDoor");
+    		//GameRegistry.registerBlock(blockCarpentersDoor, "blockCarpentersDoor");
         }
     	
     	if (enableGate) {
