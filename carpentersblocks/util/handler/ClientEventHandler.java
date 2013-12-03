@@ -1,7 +1,6 @@
 package carpentersblocks.util.handler;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.StepSound;
 import net.minecraft.client.audio.SoundPoolEntry;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
@@ -57,13 +56,17 @@ public class ClientEventHandler {
 		if (event != null && event.name != null
 			&& event.name.startsWith("step.carpentermod")) {
 			TileEntity tileentity = event.entity.worldObj.getBlockTileEntity(	event.entity.chunkCoordX,
-																				event.entity.chunkCoordY,
+																				MathHelper.floor_double(event.entity.posY
+																										- 0.20000000298023224D
+																										- (double) event.entity.yOffset),
 																				event.entity.chunkCoordZ);
 			if (tileentity != null && tileentity instanceof TEBase) {
-				StepSound stepsound = BlockProperties.getCoverBlock(((TEBase) tileentity),
-																	6).stepSound;
-				if (stepsound != null) {
-					event.name = stepsound.getStepSound();
+				Block block = BlockProperties.getCoverBlock(((TEBase) tileentity),
+															6);
+				if (block instanceof BlockBase) {
+					event.name = Block.soundWoodFootstep.getStepSound();
+				} else if (block.stepSound != null) {
+					event.name = block.stepSound.getStepSound();
 				}
 			}
 		}
