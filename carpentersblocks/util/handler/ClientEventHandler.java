@@ -55,11 +55,11 @@ public class ClientEventHandler {
 	public void StepSoundInterrupt(PlaySoundAtEntityEvent event) {
 		if (event != null && event.name != null
 			&& event.name.startsWith("step.carpentermod")) {
-			TileEntity tileentity = event.entity.worldObj.getBlockTileEntity(	event.entity.chunkCoordX,
-																				MathHelper.floor_double(event.entity.posY
+			TileEntity tileentity = event.entity.worldObj.getBlockTileEntity(	MathHelper.floor_double(event.entity.posX),
+																				MathHelper.floor_double(event.entity.boundingBox.minY
 																										- 0.20000000298023224D
 																										- (double) event.entity.yOffset),
-																				event.entity.chunkCoordZ);
+																				MathHelper.floor_double(event.entity.posZ));
 			if (tileentity != null && tileentity instanceof TEBase) {
 				Block block = BlockProperties.getCoverBlock(((TEBase) tileentity),
 															6);
