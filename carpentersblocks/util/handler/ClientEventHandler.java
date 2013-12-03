@@ -56,7 +56,7 @@ public class ClientEventHandler {
 		if (event != null && event.name != null
 			&& event.name.startsWith("step.carpentermod")) {
 			TileEntity tileentity = event.entity.worldObj.getBlockTileEntity(	MathHelper.floor_double(event.entity.posX),
-																				MathHelper.floor_double(event.entity.boundingBox.minY
+																				MathHelper.floor_double(event.entity.posY
 																										- 0.20000000298023224D
 																										- (double) event.entity.yOffset),
 																				MathHelper.floor_double(event.entity.posZ));
