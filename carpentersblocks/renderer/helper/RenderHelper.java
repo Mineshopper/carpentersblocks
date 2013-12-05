@@ -6,9 +6,18 @@ import static net.minecraftforge.common.ForgeDirection.NORTH;
 import static net.minecraftforge.common.ForgeDirection.SOUTH;
 import static net.minecraftforge.common.ForgeDirection.UP;
 import static net.minecraftforge.common.ForgeDirection.WEST;
+import net.minecraft.block.Block;
+import net.minecraft.client.particle.EffectRenderer;
+import net.minecraft.client.particle.EntityDiggingFX;
 import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraft.entity.Entity;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
+import net.minecraft.util.MathHelper;
+import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
+import carpentersblocks.tileentity.TEBase;
+import carpentersblocks.util.BlockProperties;
 
 public class RenderHelper extends VertexHelper
 {
@@ -386,6 +395,75 @@ public class RenderHelper extends VertexHelper
 		setupVertex(renderBlocks, xMax, yMin, zMin, UV_EAST[renderBlocks.uvRotateSouth][1][0], UV_EAST[renderBlocks.uvRotateSouth][1][1], 1);
 		setupVertex(renderBlocks, xMax, yMax, zMin, UV_EAST[renderBlocks.uvRotateSouth][2][0], UV_EAST[renderBlocks.uvRotateSouth][2][1], 2);
 		setupVertex(renderBlocks, xMax, yMax, zMax, UV_EAST[renderBlocks.uvRotateSouth][3][0], UV_EAST[renderBlocks.uvRotateSouth][3][1], 3);
+	}
+	
+	/**
+	 * Spawns a particle at the base of an entity
+	 * 
+	 * @param world the world to spawn the particle
+	 * @param entity the entity at which feet the particles will spawn
+	 * @param blockId the ID of the block to reference for the particle
+	 * @param metadata the metadata of the block for the particle
+	 */
+	public static void spawnTileParticleAt(World world, Entity entity, int blockId, int metadata)
+	{
+		Block block = Block.blocksList[blockId];
+		if (block != null)
+		{
+			entity.worldObj
+					.spawnParticle(
+							"tilecrack_" + blockId + "_" + metadata,
+							entity.posX
+									+ ((double) entity.worldObj.rand
+											.nextFloat() - 0.5D)
+									* (double) entity.width,
+							entity.boundingBox.minY + 0.1D,
+							entity.posZ
+									+ ((double) entity.worldObj.rand
+											.nextFloat() - 0.5D)
+									* (double) entity.width,
+							-entity.motionX * 4.0D, 1.5D,
+							-entity.motionZ * 4.0D);
+		}
+	}
+	
+	/**
+	 * This is to allow us to add the 'final' destroy effect on a Carpenter's
+	 * Block
+	 * 
+	 * @param world where to add the effect
+	 * @param x blockX
+	 * @param y blockY
+	 * @param z blockZ
+	 * @param blockId the ID of the block to reference into the Renderer
+	 * @param metadata the metadata of the block
+	 * @param effectRenderer the renderer to add the effect with
+	 */
+	public static void addDestroyEffect(World world, int x, int y, int z, int blockId, int metadata, EffectRenderer effectRenderer)
+	{
+		Block block = Block.blocksList[blockId];
+		if (block != null)
+		{
+			byte b0 = 4;
+
+			for (int posX = 0; posX < b0; ++posX)
+			{
+				for (int posY = 0; posY < b0; ++posY)
+				{
+					for (int posZ = 0; posZ < b0; ++posZ)
+					{
+						double dirX = (double) x + ((double) posX + 0.5D) / (double) b0;
+						double dirY = (double) y + ((double) posY + 0.5D) / (double) b0;
+						double dirZ = (double) z + ((double) posZ + 0.5D) / (double) b0;
+						effectRenderer.addEffect((new EntityDiggingFX(world,
+								dirX, dirY, dirZ, dirX - (double) x - 0.5D,
+								dirY - (double) y - 0.5D, dirZ - (double) z
+										- 0.5D, block, metadata))
+								.applyColourMultiplier(x, y, z));
+					}
+				}
+			}
+		}
 	}
 	
 }

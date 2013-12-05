@@ -12,6 +12,7 @@ public class IconRegistry
 {
 	
 	@SideOnly(Side.CLIENT)
+    public static Icon icon_blank;
 	public static Icon icon_generic;
 	public static Icon icon_slope_oblique_pt_high;
 	public static Icon icon_slope_oblique_pt_low;
@@ -49,6 +50,7 @@ public class IconRegistry
 		if (event.map.textureType == 0)
 		{
 			// General icons
+		    icon_blank = event.map.registerIcon("carpentersblocks:general/blank");
 			icon_generic = event.map.registerIcon("carpentersblocks:general/generic");
 			icon_slope_oblique_pt_low = event.map.registerIcon("carpentersblocks:slope/oblique_pt_low");
 			icon_slope_oblique_pt_high = event.map.registerIcon("carpentersblocks:slope/oblique_pt_high");
