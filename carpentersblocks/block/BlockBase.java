@@ -554,33 +554,38 @@ public class BlockBase extends BlockContainer {
 		 * closest. This should be adequate most of the time.
 		 */
 
-		int blockId = world.getBlockId(x, y, z);
+		int blockID = world.getBlockId(x, y, z);
 		metadata = 1000;
-		if (blockId == this.blockID)
-		{
+		
+		if (blockID == this.blockID) {
+			
 			EntityPlayer entityPlayer = world.getClosestPlayer(x, y, z, 6.5F);
 
-			if (entityPlayer != null)
-			{
-				if (!suppressDestroyBlock(entityPlayer, entityPlayer.getHeldItem()))
-				{
-					TileEntity tileentity = world.getBlockTileEntity(x, y, z);
-					if (tileentity instanceof TEBase)
+			if (entityPlayer != null) {
+				
+				if (!suppressDestroyBlock(entityPlayer, entityPlayer.getHeldItem())) {
+					
+					TileEntity TE_normal = world.getBlockTileEntity(x, y, z);
+					
+					if (TE_normal instanceof TEBase)
 					{
-						TEBase tec = (TEBase) tileentity;
+						TEBase TE = (TEBase) TE_normal;
 
-						if (BlockProperties.hasCover(tec, 6))
+						if (BlockProperties.hasCover(TE, 6))
 						{
-							blockId = BlockProperties.getCoverID(tec, 6);
-							metadata = BlockProperties.getCoverMetadata(tec, 6);
+							blockID = BlockProperties.getCoverID(TE, 6);
+							metadata = BlockProperties.getCoverMetadata(TE, 6);
 						}
 					}
-					RenderHelper.addDestroyEffect(world, x, y, z, blockId, metadata, effectRenderer);
-				}
-				else
-				{
+					
+					RenderHelper.addDestroyEffect(world, x, y, z, blockID, metadata, effectRenderer);
+					
+				} else {
+					
 					return true;
+					
 				}
+				
 			}
 		}
 
