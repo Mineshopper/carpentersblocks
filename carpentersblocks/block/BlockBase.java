@@ -6,6 +6,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.BlockDirectional;
 import net.minecraft.block.BlockFlower;
+import net.minecraft.block.StepSound;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.client.particle.EntityDiggingFX;
@@ -45,6 +46,12 @@ public class BlockBase extends BlockContainer {
 	public BlockBase(int blockID, Material material)
 	{
 		super(blockID, material);
+		this.setStepSound(new StepSound("carpentermod", 1.0f, 1.0f){
+			         public String getPlaceSound()
+			         {
+			             return "place." + this.stepSoundName;
+			         }
+			     });
 	}
 	
 	public void setBlockIcon(Icon icon)
