@@ -17,9 +17,9 @@ import carpentersblocks.data.Bed;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.handler.BedDesignHandler;
-import carpentersblocks.util.handler.BlockHandler;
-import carpentersblocks.util.handler.IconHandler;
-import carpentersblocks.util.handler.ItemHandler;
+import carpentersblocks.util.registry.BlockRegistry;
+import carpentersblocks.util.registry.IconRegistry;
+import carpentersblocks.util.registry.ItemRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -34,16 +34,17 @@ public class BlockCarpentersBed extends BlockBase
 		setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.625F, 1.0F);
 	}
 	
-    @Override
     @SideOnly(Side.CLIENT)
+    @Override
     /**
      * When this method is called, your block should register all the icons it needs with the given IconRegister. This
      * is the only chance you get to register icons.
      */
-    public void registerIcons(IconRegister iconRegister)
-    {
-		this.blockIcon = IconHandler.icon_generic;
-    }
+	public void registerIcons(IconRegister iconRegister)
+	{
+		this.blockIcon = IconRegistry.icon_generic;
+		super.registerIcons(iconRegister);
+	}
 
 	/**
 	 * Determines if this block is classified as a Bed, Allowing
@@ -178,8 +179,11 @@ public class BlockCarpentersBed extends BlockBase
 	@Override
 	protected void auxiliaryOnNeighborBlockChange(TEBase TE, World world, int x, int y, int z, int blockID)
 	{
-		if (Bed.getOppositeTE(TE) == null) {
-			world.setBlockToAir(x, y, z);
+		if (TE != null)
+		{
+			if (Bed.getOppositeTE(TE) == null) {
+				world.setBlockToAir(x, y, z);
+			}
 		}
 	}
 
@@ -189,7 +193,7 @@ public class BlockCarpentersBed extends BlockBase
 	@Override
 	public int idDropped(int par1, Random random, int par3)
 	{
-		return ItemHandler.itemCarpentersBedID;
+		return ItemRegistry.itemCarpentersBedID;
 	}
 
 	@Override
@@ -243,7 +247,7 @@ public class BlockCarpentersBed extends BlockBase
 	 */
 	public int idPicked(World world, int x, int y, int z)
 	{
-		return ItemHandler.itemCarpentersBedID;
+		return ItemRegistry.itemCarpentersBedID;
 	}
 
 	@Override
@@ -252,7 +256,7 @@ public class BlockCarpentersBed extends BlockBase
 	 */
 	public int getRenderType()
 	{
-		return BlockHandler.carpentersBedRenderID;
+		return BlockRegistry.carpentersBedRenderID;
 	}
 
 }

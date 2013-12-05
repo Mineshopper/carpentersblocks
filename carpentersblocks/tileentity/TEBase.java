@@ -77,7 +77,8 @@ public class TEBase extends TileEntity
 	{
 		readFromNBT(pkt.customParam1);
 
-		if (worldObj.isRemote) {
+		if (worldObj.isRemote)
+		{
 			Minecraft.getMinecraft().renderGlobal.markBlockForRenderUpdate(xCoord, yCoord, zCoord);
 			worldObj.updateAllLightTypes(xCoord, yCoord, zCoord);
 		}

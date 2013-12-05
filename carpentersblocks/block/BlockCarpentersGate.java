@@ -15,8 +15,8 @@ import carpentersblocks.data.Barrier;
 import carpentersblocks.data.Gate;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
-import carpentersblocks.util.handler.BlockHandler;
-import carpentersblocks.util.handler.IconHandler;
+import carpentersblocks.util.registry.BlockRegistry;
+import carpentersblocks.util.registry.IconRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -31,16 +31,17 @@ public class BlockCarpentersGate extends BlockBase
 		setCreativeTab(CarpentersBlocks.tabCarpentersBlocks);
 	}
 	
-    @Override
     @SideOnly(Side.CLIENT)
+    @Override
     /**
      * When this method is called, your block should register all the icons it needs with the given IconRegister. This
      * is the only chance you get to register icons.
      */
-    public void registerIcons(IconRegister iconRegister)
-    {
-		this.blockIcon = IconHandler.icon_generic;
-    }
+	public void registerIcons(IconRegister iconRegister)
+	{
+		this.blockIcon = IconRegistry.icon_generic;
+		super.registerIcons(iconRegister);
+	}
 
 	@Override
 	/**
@@ -213,12 +214,12 @@ public class BlockCarpentersGate extends BlockBase
 		/*
 		 * Match barrier type with adjacent type or gate type if possible
 		 */
-		TEBase TE_YN = (world.getBlockId(x, y - 1, z) == blockID || world.getBlockId(x, y - 1, z) == BlockHandler.blockCarpentersBarrierID) ? (TEBase)world.getBlockTileEntity(x, y - 1, z) : null;
-		TEBase TE_YP = (world.getBlockId(x, y + 1, z) == blockID || world.getBlockId(x, y + 1, z) == BlockHandler.blockCarpentersBarrierID) ? (TEBase)world.getBlockTileEntity(x, y + 1, z) : null;
-		TEBase TE_XN = (world.getBlockId(x - 1, y, z) == blockID || world.getBlockId(x - 1, y, z) == BlockHandler.blockCarpentersBarrierID) ? (TEBase)world.getBlockTileEntity(x - 1, y, z) : null;
-		TEBase TE_XP = (world.getBlockId(x + 1, y, z) == blockID || world.getBlockId(x + 1, y, z) == BlockHandler.blockCarpentersBarrierID) ? (TEBase)world.getBlockTileEntity(x + 1, y, z) : null;
-		TEBase TE_ZN = (world.getBlockId(x, y, z - 1) == blockID || world.getBlockId(x, y, z - 1) == BlockHandler.blockCarpentersBarrierID) ? (TEBase)world.getBlockTileEntity(x, y, z - 1) : null;
-		TEBase TE_ZP = (world.getBlockId(x, y, z + 1) == blockID || world.getBlockId(x, y, z + 1) == BlockHandler.blockCarpentersBarrierID) ? (TEBase)world.getBlockTileEntity(x, y, z + 1) : null;
+		TEBase TE_YN = (world.getBlockId(x, y - 1, z) == blockID || world.getBlockId(x, y - 1, z) == BlockRegistry.blockCarpentersBarrierID) ? (TEBase)world.getBlockTileEntity(x, y - 1, z) : null;
+		TEBase TE_YP = (world.getBlockId(x, y + 1, z) == blockID || world.getBlockId(x, y + 1, z) == BlockRegistry.blockCarpentersBarrierID) ? (TEBase)world.getBlockTileEntity(x, y + 1, z) : null;
+		TEBase TE_XN = (world.getBlockId(x - 1, y, z) == blockID || world.getBlockId(x - 1, y, z) == BlockRegistry.blockCarpentersBarrierID) ? (TEBase)world.getBlockTileEntity(x - 1, y, z) : null;
+		TEBase TE_XP = (world.getBlockId(x + 1, y, z) == blockID || world.getBlockId(x + 1, y, z) == BlockRegistry.blockCarpentersBarrierID) ? (TEBase)world.getBlockTileEntity(x + 1, y, z) : null;
+		TEBase TE_ZN = (world.getBlockId(x, y, z - 1) == blockID || world.getBlockId(x, y, z - 1) == BlockRegistry.blockCarpentersBarrierID) ? (TEBase)world.getBlockTileEntity(x, y, z - 1) : null;
+		TEBase TE_ZP = (world.getBlockId(x, y, z + 1) == blockID || world.getBlockId(x, y, z + 1) == BlockRegistry.blockCarpentersBarrierID) ? (TEBase)world.getBlockTileEntity(x, y, z + 1) : null;
 
 		if (TE_YN != null) {
 			int data = BlockProperties.getData(TE_YN);
@@ -282,7 +283,7 @@ public class BlockCarpentersGate extends BlockBase
 	 */
 	public int getRenderType()
 	{
-		return BlockHandler.carpentersGateRenderID;
+		return BlockRegistry.carpentersGateRenderID;
 	}
 
 }

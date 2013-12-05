@@ -16,8 +16,13 @@ public class TECarpentersDaylightSensor extends TEBase
 		{
 			blockType = getBlockType();
 
-			if (blockType != null) {
-				((BlockCarpentersDaylightSensor) getBlockType()).updateLightLevel(worldObj, xCoord, yCoord, zCoord);
+			if (blockType != null)
+			{
+				/*
+				 * Update daylight sensor light level once per second.
+				 */
+				if (blockType instanceof BlockCarpentersDaylightSensor)
+					((BlockCarpentersDaylightSensor) getBlockType()).updateLightLevel(worldObj, xCoord, yCoord, zCoord);
 			}
 		}
 	}

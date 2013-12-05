@@ -12,7 +12,7 @@ import carpentersblocks.block.BlockCarpentersDoor;
 import carpentersblocks.data.Door;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
-import carpentersblocks.util.handler.BlockHandler;
+import carpentersblocks.util.registry.BlockRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -44,7 +44,7 @@ public class ItemCarpentersDoor extends Item
 		if (side == 1)
 		{
 			++y;
-			BlockCarpentersDoor blockRef = (BlockCarpentersDoor) BlockHandler.blockCarpentersDoor;
+			BlockCarpentersDoor blockRef = (BlockCarpentersDoor) BlockRegistry.blockCarpentersDoor;
 
 			if (entityPlayer.canPlayerEdit(x, y, z, side, itemStack) && entityPlayer.canPlayerEdit(x, y + 1, z, side, itemStack))
 			{
@@ -66,7 +66,7 @@ public class ItemCarpentersDoor extends Item
 	{
 		world.setBlock(x, y, z, block.blockID);
 
-		BlockProperties.playBlockPlacementSound(world, x, y, z, BlockHandler.blockCarpentersDoorID);
+		BlockProperties.playBlockPlacementSound(world, x, y, z, BlockRegistry.blockCarpentersDoorID);
 
 		/*
 		 * Create bottom door piece.

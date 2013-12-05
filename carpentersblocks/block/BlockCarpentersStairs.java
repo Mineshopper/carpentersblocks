@@ -19,8 +19,8 @@ import carpentersblocks.data.Stairs;
 import carpentersblocks.data.Stairs.StairsType;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
-import carpentersblocks.util.handler.BlockHandler;
-import carpentersblocks.util.handler.IconHandler;
+import carpentersblocks.util.registry.BlockRegistry;
+import carpentersblocks.util.registry.IconRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -34,18 +34,19 @@ public class BlockCarpentersStairs extends BlockBase
 		setUnlocalizedName("blockCarpentersStairs");
 		setCreativeTab(CarpentersBlocks.tabCarpentersBlocks);
 	}
-
-    @Override
+	
     @SideOnly(Side.CLIENT)
+    @Override
     /**
      * When this method is called, your block should register all the icons it needs with the given IconRegister. This
      * is the only chance you get to register icons.
      */
-    public void registerIcons(IconRegister iconRegister)
-    {
-        this.blockIcon = IconHandler.icon_stairs;
-    }
-	
+	public void registerIcons(IconRegister iconRegister)
+	{
+		this.blockIcon = IconRegistry.icon_stairs;
+		super.registerIcons(iconRegister);
+	}
+
 	@Override
 	/**
 	 * Alters block direction.
@@ -475,7 +476,8 @@ public class BlockCarpentersStairs extends BlockBase
 		int stairsID = BlockProperties.getData(TE);
 		Stairs stairs = Stairs.stairsList[stairsID];
 
-		for (int box = 0; box < 3; ++box) {
+		for (int box = 0; box < 3; ++box)
+		{
 			float[] bounds = genBounds(box, stairs);
 
 			if (bounds != null) {
@@ -806,7 +808,7 @@ public class BlockCarpentersStairs extends BlockBase
 	 */
 	public int getRenderType()
 	{
-		return BlockHandler.carpentersStairsRenderID;
+		return BlockRegistry.carpentersStairsRenderID;
 	}
 
 }

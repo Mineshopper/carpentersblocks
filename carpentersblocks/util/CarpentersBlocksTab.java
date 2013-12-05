@@ -2,7 +2,7 @@ package carpentersblocks.util;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
-import carpentersblocks.util.handler.ItemHandler;
+import carpentersblocks.util.registry.ItemRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -19,7 +19,7 @@ public class CarpentersBlocksTab extends CreativeTabs
 	@SideOnly(Side.CLIENT)
 	public Item getTabIconItem()
 	{
-		return ItemHandler.itemCarpentersHammer;
+		return ItemRegistry.itemCarpentersHammer;
 	}
 
 	@Override

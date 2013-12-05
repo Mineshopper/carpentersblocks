@@ -3,7 +3,7 @@ package carpentersblocks.item;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.item.Item;
 import carpentersblocks.CarpentersBlocks;
-import carpentersblocks.util.handler.ItemHandler;
+import carpentersblocks.util.registry.ItemRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -15,7 +15,7 @@ public class ItemCarpentersHammer extends Item
 		super(itemID);
 		setUnlocalizedName("itemCarpentersHammer");
 
-		if (ItemHandler.itemCarpentersToolsDamageable)
+		if (ItemRegistry.itemCarpentersToolsDamageable)
 			setMaxDamage(300);
 
 		canRepair = true;

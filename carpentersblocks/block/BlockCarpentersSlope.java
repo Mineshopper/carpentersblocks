@@ -20,16 +20,16 @@ import carpentersblocks.data.Slope;
 import carpentersblocks.data.Slope.SlopeType;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
-import carpentersblocks.util.handler.BlockHandler;
-import carpentersblocks.util.handler.FeatureHandler;
-import carpentersblocks.util.handler.IconHandler;
+import carpentersblocks.util.registry.BlockRegistry;
+import carpentersblocks.util.registry.FeatureRegistry;
+import carpentersblocks.util.registry.IconRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockCarpentersSlope extends BlockBase
 {
 
-	private final int hitboxPrecision = FeatureHandler.hitboxPrecision;
+	private final int hitboxPrecision = FeatureRegistry.hitboxPrecision;
 
 	public BlockCarpentersSlope(int blockID)
 	{
@@ -39,16 +39,17 @@ public class BlockCarpentersSlope extends BlockBase
 		setCreativeTab(CarpentersBlocks.tabCarpentersBlocks);
 	}
 	
-    @Override
     @SideOnly(Side.CLIENT)
+    @Override
     /**
      * When this method is called, your block should register all the icons it needs with the given IconRegister. This
      * is the only chance you get to register icons.
      */
-    public void registerIcons(IconRegister iconRegister)
-    {
-        this.blockIcon = IconHandler.icon_slope;
-    }
+	public void registerIcons(IconRegister iconRegister)
+	{
+		this.blockIcon = IconRegistry.icon_slope;
+		super.registerIcons(iconRegister);
+	}
 
 	@Override
 	/**
@@ -1015,7 +1016,7 @@ public class BlockCarpentersSlope extends BlockBase
 	 */
 	public int getRenderType()
 	{
-		return BlockHandler.carpentersSlopeRenderID;
+		return BlockRegistry.carpentersSlopeRenderID;
 	}
 
 }

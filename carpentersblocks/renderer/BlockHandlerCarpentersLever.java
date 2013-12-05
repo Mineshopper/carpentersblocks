@@ -11,8 +11,8 @@ import carpentersblocks.data.Lever;
 import carpentersblocks.data.Lever.Axis;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
-import carpentersblocks.util.handler.BlockHandler;
-import carpentersblocks.util.handler.IconHandler;
+import carpentersblocks.util.registry.BlockRegistry;
+import carpentersblocks.util.registry.IconRegistry;
 
 public class BlockHandlerCarpentersLever extends BlockHandlerBase
 {
@@ -42,7 +42,7 @@ public class BlockHandlerCarpentersLever extends BlockHandlerBase
 	{
 		/* Set block bounds and render lever base. */
 		
-		BlockCarpentersLever blockRef = (BlockCarpentersLever) BlockHandler.blockCarpentersLever;
+		BlockCarpentersLever blockRef = (BlockCarpentersLever) BlockRegistry.blockCarpentersLever;
 		blockRef.setBlockBoundsBasedOnState(renderBlocks.blockAccess, x, y, z);
 		renderBlocks.setRenderBoundsFromBlock(blockRef);
 
@@ -70,7 +70,7 @@ public class BlockHandlerCarpentersLever extends BlockHandlerBase
 		boolean toggleState = Lever.getState(TE) == Lever.STATE_ON;
 		boolean rotateLever = Lever.getAxis(TE) == Axis.X;
 
-		Icon icon = renderBlocks.hasOverrideBlockTexture() ? renderBlocks.overrideBlockTexture : IconHandler.icon_lever;
+		Icon icon = renderBlocks.hasOverrideBlockTexture() ? renderBlocks.overrideBlockTexture : IconRegistry.icon_lever;
 
 		double uMin = icon.getMinU();
 		double uMax = icon.getMaxU();

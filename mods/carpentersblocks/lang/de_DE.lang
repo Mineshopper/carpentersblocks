@@ -15,6 +15,7 @@ tile.blockCarpentersBed.name=Bett des Zimmermanns
 tile.blockCarpentersBlock.name=Block des Zimmermanns
 tile.blockCarpentersButton.name=Knopf des Zimmermanns
 tile.blockCarpentersDaylightSensor.name=Tageslichtsensor des Zimmermanns
+tile.blockCarpentersCollapsibleBlock.name=Zusammenklappbarer Block des Zimmermanns
 tile.blockCarpentersDoor.name=Tür des Zimmermanns
 tile.blockCarpentersGate.name=Zauntor des Zimmermanns
 tile.blockCarpentersHatch.name=Luke des Zimmermanns
@@ -23,6 +24,7 @@ tile.blockCarpentersLever.name=Hebel des Zimmermanns
 tile.blockCarpentersPressurePlate.name=Druckplatte des Zimmermanns
 tile.blockCarpentersSlope.name=Rampe des Zimmermanns
 tile.blockCarpentersStairs.name=Treppe des Zimmermanns
+tile.blockCarpentersTorch.name=Fackel des Zimmermanns
 
 # MESSAGES
 message.polarity_pos.name=\u00a76POLARITÄT: \u00a7fNormaler Redstone-Output.

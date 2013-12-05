@@ -20,19 +20,19 @@ import carpentersblocks.renderer.helper.RenderHelper;
 import carpentersblocks.renderer.helper.VertexHelper;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
-import carpentersblocks.util.handler.BlockHandler;
 import carpentersblocks.util.handler.DyeColorHandler;
-import carpentersblocks.util.handler.FeatureHandler;
-import carpentersblocks.util.handler.IconHandler;
 import carpentersblocks.util.handler.OptifineHandler;
 import carpentersblocks.util.handler.OverlayHandler;
+import carpentersblocks.util.registry.BlockRegistry;
+import carpentersblocks.util.registry.FeatureRegistry;
+import carpentersblocks.util.registry.IconRegistry;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 
 public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 {
 
 	protected boolean isSideCover = false;
-	protected boolean renderAlphaOverride = FeatureHandler.enableZFightingFix;
+	protected boolean renderAlphaOverride = FeatureRegistry.enableZFightingFix;
 	protected boolean hasMetadataOverride = false;
 	protected boolean hasLightnessOffset = false;
 	protected boolean hasDyeColorOverride = false;
@@ -236,12 +236,12 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 		 * Slopes and collapsible blocks need full render bounds to
 		 * texture correctly, even if only partially filling the block space.
 		 */
-		if (srcBlock.equals(BlockHandler.blockCarpentersSlope) || srcBlock.equals(BlockHandler.blockCarpentersCollapsibleBlock)) {
+		if (srcBlock.equals(BlockRegistry.blockCarpentersSlope) || srcBlock.equals(BlockRegistry.blockCarpentersCollapsibleBlock)) {
 			renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
 		}
 		
 		int renderPass = MinecraftForgeClient.getRenderPass();
-
+		
 		/*
 		 * Render block and any side blocks
 		 */
@@ -253,7 +253,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 		 * Fancy fluids allows stationary blocks of fluid to inundate
 		 * Carpenter's blocks that have valid fill paths.
 		 */
-		if (renderPass >= 0 && FeatureHandler.enableFancyFluids && Minecraft.isFancyGraphicsEnabled() && BlockProperties.hasCover(TE, 6)) {
+		if (renderPass >= 0 && FeatureRegistry.enableFancyFluids && Minecraft.isFancyGraphicsEnabled() && BlockProperties.hasCover(TE, 6)) {
 			renderFancyFluids(TE, renderBlocks, x, y, z, renderPass);
 		}
 
@@ -294,11 +294,9 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 	 * because block components don't all necessarily share the same
 	 * render pass.
 	 */
-	private boolean hasBlockDeterminantRendering(Block srcBlock)
+	protected boolean hasBlockDeterminantRendering(Block srcBlock)
 	{
-		return	srcBlock == BlockHandler.blockCarpentersDoor ||
-				srcBlock == BlockHandler.blockCarpentersHatch ||
-				srcBlock == BlockHandler.blockCarpentersTorch;
+		return false;
 	}
 
 	/**
@@ -358,7 +356,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 		 * Render fluid in same block space if near fluid
 		 * and fluid has a valid fill path to block.
 		 */
-		if (FeatureHandler.enableFancyFluids)
+		if (FeatureRegistry.enableFancyFluids)
 		{
 			Block block_XN = !renderBlocks.blockAccess.isAirBlock(x - 1, y, z) ? Block.blocksList[renderBlocks.blockAccess.getBlockId(x - 1, y, z)] : null;
 			Block block_XP = !renderBlocks.blockAccess.isAirBlock(x + 1, y, z) ? Block.blocksList[renderBlocks.blockAccess.getBlockId(x + 1, y, z)] : null;
@@ -767,24 +765,24 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 		Icon icon = coverBlock.getIcon(side, metadata);
 		
 		/* The daylight sensor grabs textures directly. */
-		if (srcBlock == BlockHandler.blockCarpentersDaylightSensor) {
+		if (srcBlock == BlockRegistry.blockCarpentersDaylightSensor) {
 			icon = srcBlock.getBlockTexture(renderBlocks.blockAccess, x, y, z, side);
 		}
 
 		/* The lever icon defaults to the handle.  We set the box icon here. */
-		if (coverBlock == BlockHandler.blockCarpentersLever) {
-			icon = IconHandler.icon_generic;
+		if (coverBlock == BlockRegistry.blockCarpentersLever) {
+			icon = IconRegistry.icon_generic;
 		}
-
+		
 		/* The torch icon defaults to the item icon.  This is the handle, and needs the generic texture. */
-		if (coverBlock == BlockHandler.blockCarpentersTorch)
+		if (coverBlock == BlockRegistry.blockCarpentersTorch)
 		{
 			if (renderBlocks.hasOverrideBlockTexture()) {
 				icon = renderBlocks.overrideBlockTexture;
 			} else if (BlockProperties.hasCover(TE, 6)) {
 				icon = coverBlock.getIcon(2, renderBlocks.blockAccess.getBlockMetadata(x, y, z));
 			} else {
-				icon = IconHandler.icon_generic;
+				icon = IconRegistry.icon_generic;
 			}
 		}
 		
@@ -797,9 +795,9 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 			if (!BlockProperties.hasCover(TE, 6))
 			{
 				if (slope.slopeType.equals(SlopeType.OBLIQUE_INT)) {
-					icon = slope.isPositive ? IconHandler.icon_slope_oblique_pt_low : IconHandler.icon_slope_oblique_pt_high;
+					icon = slope.isPositive ? IconRegistry.icon_slope_oblique_pt_low : IconRegistry.icon_slope_oblique_pt_high;
 				} else if (slope.slopeType.equals(SlopeType.OBLIQUE_EXT)) {
-					icon = slope.isPositive ? IconHandler.icon_slope_oblique_pt_high : IconHandler.icon_slope_oblique_pt_low;
+					icon = slope.isPositive ? IconRegistry.icon_slope_oblique_pt_high : IconRegistry.icon_slope_oblique_pt_low;
 				}
 			}
 			
@@ -830,9 +828,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 	{
 		int renderPass = MinecraftForgeClient.getRenderPass();
 
-		/*
-		 * Render side
-		 */
+		/* Render side */
 		if (shouldRenderBlock(TE, renderBlocks, coverBlock, srcBlock, renderPass))
 		{
 			if (BlockProperties.blockRotates(TE.worldObj, coverBlock, x, y, z)) {
@@ -846,7 +842,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 		}
 
 		/* Do not render decorations on top if this is the daylight sensor block. */
-		if (srcBlock == BlockHandler.blockCarpentersDaylightSensor && side == 1) {
+		if (srcBlock == BlockRegistry.blockCarpentersDaylightSensor && side == 1) {
 			return;
 		}
 
@@ -942,7 +938,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 			boolean isPositiveSlope = isSideSloped ? Slope.slopesList[BlockProperties.getData(TE)].isPositive : false;
 			
 			if (side == 1 || icon == BlockGrass.getIconSideOverlay() || isPositiveSlope) {
-				return srcBlock == BlockHandler.blockCarpentersDaylightSensor ? side != 1 : true;
+				return srcBlock == BlockRegistry.blockCarpentersDaylightSensor ? side != 1 : true;
 			} else {
 				return false;
 			}
@@ -1000,7 +996,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 				icon = Block.snow.getBlockTextureFromSide(1);
 				break;
 			default:
-				icon = IconHandler.icon_overlay_snow_side;
+				icon = IconRegistry.icon_overlay_snow_side;
 				break;
 			}
 			colorSide(TE, renderBlocks, Block.blockSnow, srcBlock, side, x, y, z, icon, lightness);
@@ -1013,13 +1009,13 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 				case 0:
 					return;
 				case 1:
-					icon = IconHandler.icon_overlay_hay_top; // MC 1.5+ only, use hay 
+					icon = IconRegistry.icon_overlay_hay_top; // MC 1.5+ only, use hay 
 					break;
 				default:
-					icon = IconHandler.icon_overlay_hay_side;
+					icon = IconRegistry.icon_overlay_hay_side;
 					break;
 			}
-			colorSide(TE, renderBlocks, Block.dirt, srcBlock, side, x, y, z, icon, lightness); // MC 1.5+ only, use hay block for 1.6+
+			colorSide(TE, renderBlocks, Block.dirt, srcBlock, side, x, y, z, icon, lightness);
 			break;
 		}
 		case OverlayHandler.OVERLAY_WEB:
@@ -1044,7 +1040,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 					icon = Block.mycelium.getBlockTextureFromSide(1);
 					break;
 				default:
-					icon = IconHandler.icon_overlay_mycelium_side;
+					icon = IconRegistry.icon_overlay_mycelium_side;
 					break;
 			}
 			colorSide(TE, renderBlocks, Block.mycelium, srcBlock, side, x, y, z, icon, lightness);
@@ -1097,7 +1093,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 			if (RenderBlocks.fancyGrass) {
 				return BlockGrass.getIconSideOverlay();
 			} else {
-				return IconHandler.icon_overlay_fast_grass_side;
+				return IconRegistry.icon_overlay_fast_grass_side;
 			}
 		}
 
@@ -1110,7 +1106,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 	protected void renderPattern(TEBase TE, RenderBlocks renderBlocks, Block srcBlock, int side, int x, int y, int z, float lightness)
 	{
 		int pattern = BlockProperties.getPattern(TE, coverRendering);
-		Icon icon = IconHandler.icon_pattern[pattern];
+		Icon icon = IconRegistry.icon_pattern[pattern];
 
 		colorSide(TE, renderBlocks, Block.glass, srcBlock, side, x, y, z, icon, lightness);
 		renderSide(TE, renderBlocks, side, 0, x, y, z, icon);
@@ -1156,7 +1152,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 	{
 		float[] rgb = { 0, 0, 0 };
 
-		int color = FeatureHandler.enableOptifineIntegration ? OptifineHandler.getColorMultiplier(block, blockAccess, x, y, z) : block.colorMultiplier(blockAccess, x, y, z);
+		int color = FeatureRegistry.enableOptifineIntegration ? OptifineHandler.getColorMultiplier(block, blockAccess, x, y, z) : block.colorMultiplier(blockAccess, x, y, z);
 
 		rgb[0] = (color >> 16 & 255) / 255.0F;
 		rgb[1] = (color >> 8 & 255) / 255.0F;
@@ -1179,7 +1175,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler
 	{
 		float rgb[] = getRGB(renderBlocks.blockAccess, coverBlock, x, y, z);
 		
-		if (srcBlock == BlockHandler.blockCarpentersSlope && !isSideCover) {
+		if (srcBlock == BlockRegistry.blockCarpentersSlope && !isSideCover) {
 
 			if (Minecraft.isAmbientOcclusionEnabled() && Block.lightValue[coverBlock.blockID] == 0) {
 				renderStandardSlopeWithAmbientOcclusion(TE, renderBlocks, coverBlock, srcBlock, x, y, z, rgb[0], rgb[1], rgb[2]);

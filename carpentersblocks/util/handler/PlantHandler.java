@@ -6,6 +6,7 @@ import java.util.logging.Level;
 
 import net.minecraft.block.BlockFlower;
 import carpentersblocks.util.ModLogger;
+import carpentersblocks.util.registry.FeatureRegistry;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 
 public class PlantHandler
@@ -38,7 +39,7 @@ public class PlantHandler
 			canSupportPlant = tempCanSupportPlant;
 		} catch (InvocationTargetException E) {
 			ModLogger.log(Level.WARNING, "Extended plant compatibility failed, disabling plant support integration.");
-			FeatureHandler.enablePlantSupport = false;
+			FeatureRegistry.enablePlantSupport = false;
 		} catch (Exception E) {}
 
 		return canSupportPlant;

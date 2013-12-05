@@ -7,6 +7,7 @@ import java.util.logging.Level;
 import net.minecraft.block.Block;
 import net.minecraft.world.IBlockAccess;
 import carpentersblocks.util.ModLogger;
+import carpentersblocks.util.registry.FeatureRegistry;
 
 public class OptifineHandler
 {
@@ -38,7 +39,7 @@ public class OptifineHandler
 			colorMultiplier = tempColorMultiplier;
 		} catch (InvocationTargetException E) {
 			ModLogger.log(Level.WARNING, "Block custom coloring failed, disabling Optifine integration.");
-			FeatureHandler.enableOptifineIntegration = false;
+			FeatureRegistry.enableOptifineIntegration = false;
 		} catch (Exception E) {}
 
 		return colorMultiplier;

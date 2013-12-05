@@ -19,8 +19,9 @@ import carpentersblocks.data.Torch;
 import carpentersblocks.data.Torch.State;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.tileentity.TECarpentersTorch;
-import carpentersblocks.util.handler.BlockHandler;
-import carpentersblocks.util.handler.IconHandler;
+import carpentersblocks.util.registry.BlockRegistry;
+import carpentersblocks.util.registry.FeatureRegistry;
+import carpentersblocks.util.registry.IconRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -32,21 +33,22 @@ public class BlockCarpentersTorch extends BlockBase
     public BlockCarpentersTorch(int blockID)
     {
         super(blockID, Material.circuits);
-        this.setTickRandomly(true);
 		this.setUnlocalizedName("blockCarpentersTorch");
 		this.setCreativeTab(CarpentersBlocks.tabCarpentersBlocks);
+		this.setTickRandomly(true);
     }
-
-    @Override
+    
     @SideOnly(Side.CLIENT)
+    @Override
     /**
      * When this method is called, your block should register all the icons it needs with the given IconRegister. This
      * is the only chance you get to register icons.
      */
-    public void registerIcons(IconRegister iconRegister)
-    {
-		this.blockIcon = IconHandler.icon_torch_lit;
-    }
+	public void registerIcons(IconRegister iconRegister)
+	{
+		this.blockIcon = IconRegistry.icon_torch_lit;
+		super.registerIcons(iconRegister);
+	}
     
 	@Override
 	/**
@@ -188,25 +190,26 @@ public class BlockCarpentersTorch extends BlockBase
     	if (!world.isRemote)
     	{
 	    	TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
-
+	    	
+	    	boolean canDropState = FeatureRegistry.enableTorchWeatherEffects;
 	    	boolean isWet = world.isRaining() && world.canBlockSeeTheSky(x, y, z);
 	    	
 	    	switch (Torch.getState(TE))
 	    	{
 		    	case LIT:
-		    		if (isWet) {
+		    		if (canDropState && isWet) {
 		    			Torch.setState(TE, State.SMOLDERING);
 		    		}
 		    		break;
 		    	case SMOLDERING:
-		    		if (isWet) {
+		    		if (canDropState && isWet) {
 		    			Torch.setState(TE, State.UNLIT);
 		    		} else {
 			    		Torch.setState(TE, State.LIT);
 		    		}
 		    		break;
 		    	case UNLIT:
-		    		if (!isWet) {
+		    		if (!canDropState || !isWet) {
 		    			Torch.setState(TE, State.SMOLDERING);
 		    		}
 		    		break;
@@ -250,7 +253,7 @@ public class BlockCarpentersTorch extends BlockBase
 	 */
 	public int getRenderType()
 	{
-		return BlockHandler.carpentersTorchRenderID;
+		return BlockRegistry.carpentersTorchRenderID;
 	}
     
 }

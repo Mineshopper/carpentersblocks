@@ -6,7 +6,7 @@ import net.minecraft.client.renderer.Tessellator;
 
 import org.lwjgl.opengl.GL11;
 
-import carpentersblocks.util.handler.BlockHandler;
+import carpentersblocks.util.registry.BlockRegistry;
 
 public class BlockHandlerCarpentersPressurePlate extends BlockHandlerBase
 {
@@ -30,22 +30,22 @@ public class BlockHandlerCarpentersPressurePlate extends BlockHandlerBase
 		tessellator.draw();
 		tessellator.startDrawingQuads();
 		tessellator.setNormal(0.0F, 0.0F, -1.0F);
-		renderBlocks.renderFaceZNeg(block, 0.0D, 0.0D, 0.0D, BlockHandler.blockCarpentersBarrier.getBlockTextureFromSide(2));
+		renderBlocks.renderFaceZNeg(block, 0.0D, 0.0D, 0.0D, BlockRegistry.blockCarpentersBarrier.getBlockTextureFromSide(2));
 		tessellator.draw();
 		tessellator.startDrawingQuads();
 		tessellator.setNormal(0.0F, 0.0F, 1.0F);
-		renderBlocks.renderFaceZPos(block, 0.0D, 0.0D, 0.0D, BlockHandler.blockCarpentersBarrier.getBlockTextureFromSide(3));
+		renderBlocks.renderFaceZPos(block, 0.0D, 0.0D, 0.0D, BlockRegistry.blockCarpentersBarrier.getBlockTextureFromSide(3));
 		tessellator.draw();
 		tessellator.startDrawingQuads();
 		tessellator.setNormal(-1.0F, 0.0F, 0.0F);
-		renderBlocks.renderFaceXNeg(block, 0.0D, 0.0D, 0.0D, BlockHandler.blockCarpentersBarrier.getBlockTextureFromSide(4));
+		renderBlocks.renderFaceXNeg(block, 0.0D, 0.0D, 0.0D, BlockRegistry.blockCarpentersBarrier.getBlockTextureFromSide(4));
 		tessellator.draw();
 		tessellator.startDrawingQuads();
 		tessellator.setNormal(1.0F, 0.0F, 0.0F);
-		renderBlocks.renderFaceXPos(block, 0.0D, 0.0D, 0.0D, BlockHandler.blockCarpentersBarrier.getBlockTextureFromSide(5));
+		renderBlocks.renderFaceXPos(block, 0.0D, 0.0D, 0.0D, BlockRegistry.blockCarpentersBarrier.getBlockTextureFromSide(5));
 		tessellator.draw();
 
 		GL11.glTranslatef(0.5F, 0.5F, 0.5F);
 	}
-
+	
 }

@@ -15,8 +15,8 @@ import carpentersblocks.data.DaylightSensor;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.tileentity.TECarpentersDaylightSensor;
 import carpentersblocks.util.BlockProperties;
-import carpentersblocks.util.handler.BlockHandler;
-import carpentersblocks.util.handler.IconHandler;
+import carpentersblocks.util.registry.BlockRegistry;
+import carpentersblocks.util.registry.IconRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -33,16 +33,17 @@ public class BlockCarpentersDaylightSensor extends BlockBase
 		setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.375F, 1.0F);
 	}
 	
-    @Override
     @SideOnly(Side.CLIENT)
+    @Override
     /**
      * When this method is called, your block should register all the icons it needs with the given IconRegister. This
      * is the only chance you get to register icons.
      */
-    public void registerIcons(IconRegister iconRegister)
-    {
-		this.blockIcon = IconHandler.icon_generic;
-    }
+	public void registerIcons(IconRegister iconRegister)
+	{
+		this.blockIcon = IconRegistry.icon_generic;
+		super.registerIcons(iconRegister);
+	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
@@ -152,7 +153,7 @@ public class BlockCarpentersDaylightSensor extends BlockBase
 	 */
 	public int getRenderType()
 	{
-		return BlockHandler.carpentersDaylightSensorRenderID;
+		return BlockRegistry.carpentersDaylightSensorRenderID;
 	}
 
 }

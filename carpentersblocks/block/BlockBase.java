@@ -6,6 +6,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.BlockDirectional;
 import net.minecraft.block.BlockFlower;
+import net.minecraft.block.StepSound;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.client.particle.EntityDiggingFX;
@@ -25,50 +26,71 @@ import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.common.EnumPlantType;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.IPlantable;
+import carpentersblocks.renderer.helper.RenderHelper;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
-import carpentersblocks.util.handler.BlockEventHandler;
-import carpentersblocks.util.handler.FeatureHandler;
-import carpentersblocks.util.handler.ItemHandler;
+import carpentersblocks.util.handler.EventHandler;
 import carpentersblocks.util.handler.OverlayHandler;
 import carpentersblocks.util.handler.PatternHandler;
 import carpentersblocks.util.handler.PlantHandler;
+import carpentersblocks.util.registry.FeatureRegistry;
+import carpentersblocks.util.registry.IconRegistry;
+import carpentersblocks.util.registry.ItemRegistry;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockBase extends BlockContainer {
 	
+	@SideOnly(Side.CLIENT)
 	private Icon iconOverride;
 
 	public BlockBase(int blockID, Material material)
 	{
 		super(blockID, material);
-	}
-	
-	public void setBlockIcon(Icon icon)
-	{
-		this.iconOverride = icon;
+		
+		this.setStepSound(new StepSound("carpentermod", 1.0F, 1.0F) {
+			@Override
+			public String getPlaceSound()
+			{
+				return "place." + this.stepSoundName;
+			}
+		});
 	}
 
-	@Override
+    @SideOnly(Side.CLIENT)
+    @Override
+    /**
+     * When this method is called, your block should register all the icons it needs with the given IconRegister. This
+     * is the only chance you get to register icons.
+     */
 	public void registerIcons(IconRegister iconRegister)
 	{
-		super.registerIcons(iconRegister);
-		this.iconOverride = this.blockIcon;
+		//super.registerIcons(iconRegister);
+		this.iconOverride = iconRegister.registerIcon(IconRegistry.icon_blank.getIconName());
 	}
 
-	@Override
-	public Icon getIcon(int side, int metadata)
-	{
-		StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
-		
-		if (stackTraceElements[2].getClassName().equals(EntityDiggingFX.class.getName())) {
-			return this.iconOverride;
-		} else {
-			return this.blockIcon;
-		}
-	}
+    @SideOnly(Side.CLIENT)
+    @Override
+    /**
+     * This will override the base getIcon and allow us to check
+     * whether or not we are retrieving the Icon from the particle effects
+     * 
+     * When metadata is set to 1000 this states that our block is in the world without a cover
+     * thus we require the default icon otherwise we should display a facade transparent texture
+     */
+    public Icon getIcon(int side, int metadata)
+    {
+        StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
+        
+        if (stackTraceElements[2].getClassName().equals(EntityDiggingFX.class.getName()))
+        {
+            if (metadata == 1000) return this.blockIcon;
+            else return this.iconOverride;
+        }
+        return this.blockIcon;
+    }
+
 	
 	@Override
 	@SideOnly(Side.CLIENT)
@@ -93,7 +115,7 @@ public class BlockBase extends BlockContainer {
 
 		return BlockProperties.getCoverBlock(TE, 6).blockID == this.blockID;
 	}
-	
+
 	/**
 	 * Returns whether the block at given coordinates is an instance of
 	 * a Carpenter's block.
@@ -115,14 +137,14 @@ public class BlockBase extends BlockContainer {
 
 		ItemStack itemStack = entityPlayer.getCurrentEquippedItem();
 
-		int side = BlockEventHandler.eventFace;
+		int side = EventHandler.eventFace;
 		
 		if (itemStack != null && entityPlayer.canPlayerEdit(x, y, z, side, itemStack))
 		{
 			int effectiveSide = BlockProperties.hasCover(TE, side) ? side : 6;
 			Item item = itemStack.getItem();
 
-			if (item.equals(ItemHandler.itemCarpentersHammer)) {
+			if (item.equals(ItemRegistry.itemCarpentersHammer)) {
 				
 				boolean dataAltered = false;
 
@@ -158,7 +180,7 @@ public class BlockBase extends BlockContainer {
 
 				}
 
-			} else if (!world.isRemote && item.equals(ItemHandler.itemCarpentersChisel)) {
+			} else if (!world.isRemote && item.equals(ItemRegistry.itemCarpentersChisel)) {
 
 				if (entityPlayer.isSneaking()) {
 
@@ -197,11 +219,11 @@ public class BlockBase extends BlockContainer {
 			 */
 			int effectiveSide = BlockProperties.hasCover(TE, side) ? side : 6;
 			
-			if (itemStack.getItem() == ItemHandler.itemCarpentersHammer) {
+			if (itemStack.getItem() == ItemRegistry.itemCarpentersHammer) {
 
 				actionPerformed = onHammerRightClick(TE, entityPlayer, side, hitX, hitZ);
 
-			} else if (ItemHandler.enableChisel && itemStack.getItem() == ItemHandler.itemCarpentersChisel) {
+			} else if (ItemRegistry.enableChisel && itemStack.getItem() == ItemRegistry.itemCarpentersChisel) {
 
 				/* Skip clientside otherwise it will desynchronize server data. */
 				if (world.isRemote)
@@ -210,47 +232,36 @@ public class BlockBase extends BlockContainer {
 				if (BlockProperties.hasCover(TE, effectiveSide) && BlockProperties.getCoverBlock(TE, effectiveSide).isOpaqueCube())
 					actionPerformed = onChiselClick(TE, effectiveSide, false);
 
-			} else if (FeatureHandler.enableCovers && BlockProperties.isCover(itemStack)) {
+			} else if (FeatureRegistry.enableCovers && BlockProperties.isCover(itemStack)) {
 
 				Block block = Block.blocksList[itemStack.itemID];
-				int metadata = block instanceof BlockDirectional ? MathHelper.floor_double(entityPlayer.rotationYaw * 4.0F / 360.0F + 2.5D) & 3 : itemStack.getItemDamage();		
+				
+				/* Will handle blocks that save directions using only x and y axes (pumpkin) */
+				int metadata = block instanceof BlockDirectional ? MathHelper.floor_double(entityPlayer.rotationYaw * 4.0F / 360.0F + 2.5D) & 3 : itemStack.getItemDamage();
+				
+				/* Will handle blocks that save directions using all axes (logs, quartz) */
+				if (BlockProperties.blockRotates(world, block, x, y, z))
+				{
+					int facing = BlockProperties.getEntityFacing(EventHandler.eventEntity);
+					int side_interpolated =	entityPlayer.rotationPitch < -45.0F ? 0 : entityPlayer.rotationPitch > 45 ? 1 : facing == 0 ? 3 : facing == 1 ? 4 : facing == 2 ? 2 : 5;
+					metadata = block.onBlockPlaced(world, x, y, z, side_interpolated, hitX, hitY, hitZ, metadata);
+				}
 				
 				if (!BlockProperties.hasCover(TE, 6)) {
 
-					if (BlockProperties.blockRotates(world, block, x, y, z)) {
-						metadata = block.onBlockPlaced(world, x, y, z, side, hitX, hitY, hitZ, metadata);
-					}
-
 					actionPerformed = decrementInventory = BlockProperties.setCover(TE, 6, metadata, itemStack);
 
-				} else if (FeatureHandler.enableSideCovers) {
+				} else if (FeatureRegistry.enableSideCovers) {
 
 					if (!BlockProperties.hasCover(TE, side) && this.canCoverSide(TE, world, x, y, z, side)) {
-						
-						if (BlockProperties.blockRotates(world, block, x, y, z))
-						{
-							/*
-							 * Blocks that determine direction based on side clicked
-							 * have an obvious limitation in regards to being used as
-							 * side covers: it's always the side clicked.
-							 * 
-							 * Therefore, we'll instead utilize the player's pitch
-							 * and yaw for rotation when the block is used as a side
-							 * cover.
-							 */
 
-							int facing = BlockProperties.getEntityFacing(BlockEventHandler.eventEntity);
-							int side_interpolated =	entityPlayer.rotationPitch < -45.0F ? 0 : entityPlayer.rotationPitch > 45 ? 1 : facing == 0 ? 3 : facing == 1 ? 4 : facing == 2 ? 2 : 5;
-							metadata = block.onBlockPlaced(world, x, y, z, side_interpolated, hitX, hitY, hitZ, metadata);
-						}
-						
 						actionPerformed = decrementInventory = BlockProperties.setCover(TE, side, metadata, itemStack);
 						
 					}
 						
 				}
 
-			} else if (FeatureHandler.enableOverlays && BlockProperties.isOverlay(itemStack)) {
+			} else if (FeatureRegistry.enableOverlays && BlockProperties.isOverlay(itemStack)) {
 
 				/* Skip clientside otherwise it will desynchronize server data. */
 				if (world.isRemote)
@@ -259,7 +270,7 @@ public class BlockBase extends BlockContainer {
 				if (!BlockProperties.hasOverlay(TE, effectiveSide) && (effectiveSide < 6 && BlockProperties.hasCover(TE, effectiveSide) || effectiveSide == 6))
 					actionPerformed = decrementInventory = BlockProperties.setOverlay(TE, effectiveSide, itemStack);
 
-			} else if (FeatureHandler.enableDyeColors && itemStack.getItem() == Item.dyePowder && itemStack.getItemDamage() != 15) {
+			} else if (FeatureRegistry.enableDyeColors && itemStack.getItem() == Item.dyePowder && itemStack.getItemDamage() != 15) {
 
 				/* Skip clientside otherwise it will desynchronize server data. */
 				if (world.isRemote)
@@ -272,11 +283,11 @@ public class BlockBase extends BlockContainer {
 		}
 
 		if (!actionPerformed) {
-		
+
 			actionPerformed = auxiliaryOnBlockActivated(TE, world, x, y, z, entityPlayer, side, hitX, hitY, hitZ);
-		
+
 		} else {
-			
+
 			this.damageItemWithChance(world, entityPlayer);
 
 			if (!entityPlayer.capabilities.isCreativeMode)
@@ -301,7 +312,9 @@ public class BlockBase extends BlockContainer {
 	{
 		int pattern = BlockProperties.getPattern(TE, side);
 
-		/* Try to match neighboring chisel pattern. */
+		/*
+		 * Try to match neighboring chisel pattern.
+		 */
 		int neighbor_pattern = 0;
 		if (pattern == 0)
 		{
@@ -448,8 +461,8 @@ public class BlockBase extends BlockContainer {
 		return	entityPlayer.capabilities.isCreativeMode &&
 				heldItem != null &&
 				(
-					heldItem.getItem() == ItemHandler.itemCarpentersHammer ||
-					heldItem.getItem() == ItemHandler.itemCarpentersChisel
+					heldItem.getItem() == ItemRegistry.itemCarpentersHammer ||
+					heldItem.getItem() == ItemRegistry.itemCarpentersChisel
 				);
 	}
 
@@ -481,47 +494,47 @@ public class BlockBase extends BlockContainer {
      * @param effectRenderer A reference to the current effect renderer.
      * @return True to prevent vanilla digging particles form spawning.
      */
+	
     public boolean addBlockHitEffects(World world, MovingObjectPosition target, EffectRenderer effectRenderer)
 	{
 		TEBase TE = (TEBase) world.getBlockTileEntity(target.blockX, target.blockY, target.blockZ);
-
+		Block block = this;
+		int metadata =  1000;
 		if (BlockProperties.hasCover(TE, 6))
 		{
-			Block block = BlockProperties.getCoverBlock(TE, 6);
-			int metadata = world.getBlockMetadata(target.blockX, target.blockY, target.blockZ);
-
-			double xOffset = target.blockX + world.rand.nextDouble() * (block.getBlockBoundsMaxX() - block.getBlockBoundsMinX() - 0.1F * 2.0F) + 0.1F + block.getBlockBoundsMinX();
-			double yOffset = target.blockY + world.rand.nextDouble() * (block.getBlockBoundsMaxY() - block.getBlockBoundsMinY() - 0.1F * 2.0F) + 0.1F + block.getBlockBoundsMinY();
-			double zOffset = target.blockZ + world.rand.nextDouble() * (block.getBlockBoundsMaxZ() - block.getBlockBoundsMinZ() - 0.1F * 2.0F) + 0.1F + block.getBlockBoundsMinZ();
-
-			switch (target.sideHit) {
-			case 0:
-				yOffset = target.blockY + block.getBlockBoundsMinY() - 0.1D;
-				break;
-			case 1:
-				yOffset = target.blockY + block.getBlockBoundsMaxY() + 0.1D;
-				break;
-			case 2:
-				zOffset = target.blockZ + block.getBlockBoundsMinZ() - 0.1D;
-				break;
-			case 3:
-				zOffset = target.blockZ + block.getBlockBoundsMaxZ() + 0.1D;
-				break;
-			case 4:
-				xOffset = target.blockX + block.getBlockBoundsMinX() - 0.1D;
-				break;
-			case 5:
-				xOffset = target.blockX + block.getBlockBoundsMaxX() + 0.1D;
-				break;
-			}
-
-			EntityDiggingFX particle = new EntityDiggingFX(world, xOffset, yOffset, zOffset, 0.0D, 0.0D, 0.0D, block, target.sideHit, metadata, FMLClientHandler.instance().getClient().renderEngine);
-			effectRenderer.addEffect(particle.func_70596_a(target.blockX, target.blockY, target.blockZ).multiplyVelocity(0.2F).multipleParticleScaleBy(0.6F));
-		
-			return true;
+			block = BlockProperties.getCoverBlock(TE, 6);
+			metadata = world.getBlockMetadata(target.blockX, target.blockY, target.blockZ);
 		}
 
-		return false;
+		double xOffset = target.blockX + world.rand.nextDouble() * (block.getBlockBoundsMaxX() - block.getBlockBoundsMinX() - 0.1F * 2.0F) + 0.1F + block.getBlockBoundsMinX();
+		double yOffset = target.blockY + world.rand.nextDouble() * (block.getBlockBoundsMaxY() - block.getBlockBoundsMinY() - 0.1F * 2.0F) + 0.1F + block.getBlockBoundsMinY();
+		double zOffset = target.blockZ + world.rand.nextDouble() * (block.getBlockBoundsMaxZ() - block.getBlockBoundsMinZ() - 0.1F * 2.0F) + 0.1F + block.getBlockBoundsMinZ();
+
+		switch (target.sideHit) {
+		case 0:
+			yOffset = target.blockY + block.getBlockBoundsMinY() - 0.1D;
+			break;
+		case 1:
+			yOffset = target.blockY + block.getBlockBoundsMaxY() + 0.1D;
+			break;
+		case 2:
+			zOffset = target.blockZ + block.getBlockBoundsMinZ() - 0.1D;
+			break;
+		case 3:
+			zOffset = target.blockZ + block.getBlockBoundsMaxZ() + 0.1D;
+			break;
+		case 4:
+			xOffset = target.blockX + block.getBlockBoundsMinX() - 0.1D;
+			break;
+		case 5:
+			xOffset = target.blockX + block.getBlockBoundsMaxX() + 0.1D;
+			break;
+		}
+
+		EntityDiggingFX particle = new EntityDiggingFX(world, xOffset, yOffset, zOffset, 0.0D, 0.0D, 0.0D, block, target.sideHit, metadata, FMLClientHandler.instance().getClient().renderEngine);
+		effectRenderer.addEffect(particle.func_70596_a(target.blockX, target.blockY, target.blockZ).multiplyVelocity(0.2F).multipleParticleScaleBy(0.6F));
+		
+		return true;
 	}
 
 	@Override
@@ -535,18 +548,44 @@ public class BlockBase extends BlockContainer {
 	public boolean addBlockDestroyEffects(World world, int x, int y, int z, int metadata, EffectRenderer effectRenderer)
 	{
 		/*
-		 * We don't have the ability to accurately determine
-		 * the entity that is hitting the block.  So, instead
-		 * we're guessing based on who is closest.  This should
-		 * be adequate most of the time.
+		 * We don't have the ability to accurately determine the entity that is
+		 * hitting the block. So, instead we're guessing based on who is
+		 * closest. This should be adequate most of the time.
 		 */
 
-		if (world.getBlockId(x, y, z) == blockID)
-		{
+		int blockID = world.getBlockId(x, y, z);
+		metadata = 1000;
+		
+		if (blockID == this.blockID) {
+			
 			EntityPlayer entityPlayer = world.getClosestPlayer(x, y, z, 6.5F);
 
-			if (entityPlayer != null)
-				return suppressDestroyBlock(entityPlayer, entityPlayer.getHeldItem());
+			if (entityPlayer != null) {
+				
+				if (!suppressDestroyBlock(entityPlayer, entityPlayer.getHeldItem())) {
+					
+					TileEntity TE_normal = world.getBlockTileEntity(x, y, z);
+					
+					if (TE_normal instanceof TEBase)
+					{
+						TEBase TE = (TEBase) TE_normal;
+
+						if (BlockProperties.hasCover(TE, 6))
+						{
+							blockID = BlockProperties.getCoverID(TE, 6);
+							metadata = BlockProperties.getCoverMetadata(TE, 6);
+						}
+					}
+					
+					RenderHelper.addDestroyEffect(world, x, y, z, blockID, metadata, effectRenderer);
+					
+				} else {
+					
+					return true;
+					
+				}
+				
+			}
 		}
 
 		return false;
@@ -751,7 +790,7 @@ public class BlockBase extends BlockContainer {
 	 */
 	protected boolean canSustainPlantWithBlockIdOverride(TEBase TE, World world, int x, int y, int z, int blockID, ForgeDirection dir, IPlantable plant)
 	{
-		if (FeatureHandler.enablePlantSupport)
+		if (FeatureRegistry.enablePlantSupport)
 		{
 			int plantID = plant.getPlantID(world, x, y + 1, z);
 			EnumPlantType plantType = plant.getPlantType(world, x, y + 1, z);

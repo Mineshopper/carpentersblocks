@@ -14,13 +14,14 @@ import net.minecraftforge.common.ForgeDirection;
 import carpentersblocks.CarpentersBlocks;
 import carpentersblocks.data.Button;
 import carpentersblocks.tileentity.TEBase;
-import carpentersblocks.util.handler.BlockHandler;
-import carpentersblocks.util.handler.IconHandler;
+import carpentersblocks.util.registry.BlockRegistry;
+import carpentersblocks.util.registry.IconRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class BlockCarpentersButton extends BlockBase {
+public class BlockCarpentersButton extends BlockBase
+{
 
 	public BlockCarpentersButton(int blockID)
 	{
@@ -30,18 +31,19 @@ public class BlockCarpentersButton extends BlockBase {
 		setCreativeTab(CarpentersBlocks.tabCarpentersBlocks);
 		setTickRandomly(true);
 	}
-	
-    @Override
+
     @SideOnly(Side.CLIENT)
+    @Override
     /**
      * When this method is called, your block should register all the icons it needs with the given IconRegister. This
      * is the only chance you get to register icons.
      */
-    public void registerIcons(IconRegister iconRegister)
-    {
-		this.blockIcon = IconHandler.icon_generic;
-    }
-
+	public void registerIcons(IconRegister iconRegister)
+	{
+		this.blockIcon = IconRegistry.icon_generic;
+		super.registerIcons(iconRegister);
+	}
+	
 	@Override
 	/**
 	 * Alters polarity.
@@ -283,7 +285,7 @@ public class BlockCarpentersButton extends BlockBase {
 	 */
 	public int getRenderType()
 	{
-		return BlockHandler.carpentersButtonRenderID;
+		return BlockRegistry.carpentersButtonRenderID;
 	}
 
 }

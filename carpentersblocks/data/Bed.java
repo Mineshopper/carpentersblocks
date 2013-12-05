@@ -3,7 +3,7 @@ package carpentersblocks.data;
 import net.minecraftforge.common.ForgeDirection;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
-import carpentersblocks.util.handler.BlockHandler;
+import carpentersblocks.util.registry.BlockRegistry;
 
 public class Bed
 {
@@ -100,7 +100,7 @@ public class Bed
 			z = TE.zCoord - dir.offsetZ;
 		}
 
-		if (TE.worldObj.getBlockId(x, TE.yCoord, z) == BlockHandler.blockCarpentersBedID)
+		if (TE.worldObj.getBlockId(x, TE.yCoord, z) == BlockRegistry.blockCarpentersBedID)
 			return (TEBase) TE.worldObj.getBlockTileEntity(x, TE.yCoord, z);
 		else
 			return null;

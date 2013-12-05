@@ -45,5 +45,5 @@ public class BlockHandlerCarpentersDaylightSensor extends BlockHandlerBase
 
 		GL11.glTranslatef(0.5F, 0.5F, 0.5F);
 	}
-
+	
 }

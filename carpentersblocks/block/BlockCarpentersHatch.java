@@ -21,8 +21,8 @@ import carpentersblocks.CarpentersBlocks;
 import carpentersblocks.data.Hatch;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
-import carpentersblocks.util.handler.BlockHandler;
-import carpentersblocks.util.handler.IconHandler;
+import carpentersblocks.util.registry.BlockRegistry;
+import carpentersblocks.util.registry.IconRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -37,18 +37,19 @@ public class BlockCarpentersHatch extends BlockBase
 		setUnlocalizedName("blockCarpentersHatch");
 		setCreativeTab(CarpentersBlocks.tabCarpentersBlocks);
 	}
-
-    @Override
+	
     @SideOnly(Side.CLIENT)
+    @Override
     /**
      * When this method is called, your block should register all the icons it needs with the given IconRegister. This
      * is the only chance you get to register icons.
      */
-    public void registerIcons(IconRegister iconRegister)
-    {
-		this.blockIcon = IconHandler.icon_generic;
-    }
-	
+	public void registerIcons(IconRegister iconRegister)
+	{
+		this.blockIcon = IconRegistry.icon_generic;
+		super.registerIcons(iconRegister);
+	}
+
 	@Override
 	/**
 	 * Alters direction based on valid sides detected.
@@ -69,13 +70,11 @@ public class BlockCarpentersHatch extends BlockBase
 	 */
 	protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer, int side, float hitX, float hitZ)
 	{
-		int data = BlockProperties.getData(TE);
-
 		if (!entityPlayer.isSneaking())
 		{
 			if (!TE.worldObj.isRemote)
 			{
-				int type = Hatch.getType(data);
+				int type = Hatch.getType(TE);
 
 				if (++type > 4)
 					type = 0;
@@ -84,7 +83,7 @@ public class BlockCarpentersHatch extends BlockBase
 			}
 		} else {
 
-			int rigidity = Hatch.getRigidity(data) == Hatch.HINGED_NONRIGID ? Hatch.HINGED_RIGID : Hatch.HINGED_NONRIGID;
+			int rigidity = Hatch.getRigidity(TE) == Hatch.HINGED_NONRIGID ? Hatch.HINGED_RIGID : Hatch.HINGED_NONRIGID;
 
 			if (!TE.worldObj.isRemote) {
 				Hatch.setRigidity(TE, rigidity);
@@ -109,10 +108,8 @@ public class BlockCarpentersHatch extends BlockBase
 	 */
 	public boolean auxiliaryOnBlockActivated(TEBase TE, World world, int x, int y, int z, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ)
 	{
-		int data = BlockProperties.getData(TE);
-
-		if (!activationRequiresRedstone(TE, data))
-			Hatch.setState(TE, Hatch.getState(data) == Hatch.STATE_CLOSED ? Hatch.STATE_OPEN : Hatch.STATE_CLOSED);
+		if (!activationRequiresRedstone(TE))
+			Hatch.setState(TE, Hatch.getState(TE) == Hatch.STATE_CLOSED ? Hatch.STATE_OPEN : Hatch.STATE_CLOSED);
 
 		return true;
 	}
@@ -120,9 +117,9 @@ public class BlockCarpentersHatch extends BlockBase
 	/**
 	 * Returns whether hatch requires redstone activation.
 	 */
-	private boolean activationRequiresRedstone(TEBase TE, int data)
+	private boolean activationRequiresRedstone(TEBase TE)
 	{
-		return Hatch.getRigidity(data) == Hatch.HINGED_RIGID;
+		return Hatch.getRigidity(TE) == Hatch.HINGED_RIGID;
 	}
 
 	@Override
@@ -133,31 +130,37 @@ public class BlockCarpentersHatch extends BlockBase
 	{
 		TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
 
-		int data = BlockProperties.getData(TE);
-		boolean isHigh = Hatch.getPos(data) == Hatch.POSITION_HIGH;
-		boolean isOpen = Hatch.getState(data) == Hatch.STATE_OPEN;
-		int dir = Hatch.getDir(data);
+		boolean isHigh = Hatch.getPos(TE) == Hatch.POSITION_HIGH;
+		boolean isOpen = Hatch.getState(TE) == Hatch.STATE_OPEN;
+		int dir = Hatch.getDir(TE);
+		
+		float thickness = 0.1875F;
+		
+		/* Hidden type has reduced dimensions to assist in climbing */
+		if (Hatch.getType(TE) == Hatch.TYPE_HIDDEN) {
+			thickness = 0.125F;
+		}
 
 		if (isHigh) {
-			setBlockBounds(0.0F, 1.0F - 0.1875F, 0.0F, 1.0F, 1.0F, 1.0F);
+			setBlockBounds(0.0F, 1.0F - thickness, 0.0F, 1.0F, 1.0F, 1.0F);
 		} else {
-			setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.1875F, 1.0F);
+			setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, thickness, 1.0F);
 		}
 
 		if (isOpen)
 		{
 			switch (dir) {
 			case 0:
-				setBlockBounds(0.0F, 0.0F, 1.0F - 0.1875F, 1.0F, 1.0F, 1.0F);
+				setBlockBounds(0.0F, 0.0F, 1.0F - thickness, 1.0F, 1.0F, 1.0F);
 				break;
 			case 1:
-				setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 0.1875F);
+				setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, thickness);
 				break;
 			case 2:
-				setBlockBounds(1.0F - 0.1875F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
+				setBlockBounds(1.0F - thickness, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
 				break;
 			case 3:
-				setBlockBounds(0.0F, 0.0F, 0.0F, 0.1875F, 1.0F, 1.0F);
+				setBlockBounds(0.0F, 0.0F, 0.0F, thickness, 1.0F, 1.0F);
 				break;
 			}
 		}
@@ -181,9 +184,8 @@ public class BlockCarpentersHatch extends BlockBase
 	 */
 	protected void auxiliaryOnNeighborBlockChange(TEBase TE, World world, int x, int y, int z, int blockID)
 	{
-		int data = BlockProperties.getData(TE);
-		int dir = Hatch.getDir(data);
-		int state = Hatch.getState(data);
+		int dir = Hatch.getDir(TE);
+		int state = Hatch.getState(TE);
 
 		int xOffset = x;
 		int zOffset = z;
@@ -285,8 +287,7 @@ public class BlockCarpentersHatch extends BlockBase
 	 */
 	private void findNextSideSupportBlock(TEBase TE, World world, int x, int y, int z)
 	{
-		int data = BlockProperties.getData(TE);
-		int dir = Hatch.getDir(data);
+		int dir = Hatch.getDir(TE);
 
 		if (++dir > 3)
 			dir = 0;
@@ -311,6 +312,16 @@ public class BlockCarpentersHatch extends BlockBase
 			Hatch.setDir(TE, dir);
 		}
 	}
+	
+	@Override
+	public boolean isLadder(World world, int x, int y, int z, EntityLiving entityLiving)
+	{
+		TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
+
+		return	Hatch.getType(TE) == Hatch.TYPE_HIDDEN &&
+				Hatch.getPos(TE) == Hatch.POSITION_HIGH &&
+				Hatch.getState(TE) == Hatch.STATE_OPEN;
+	}
 
 	/**
 	 * Checks if the block ID is a valid support block for the hatch to connect with. If it is not the hatch is
@@ -333,7 +344,7 @@ public class BlockCarpentersHatch extends BlockBase
 	 */
 	public int getRenderType()
 	{
-		return BlockHandler.carpentersHatchRenderID;
+		return BlockRegistry.carpentersHatchRenderID;
 	}
 
 }

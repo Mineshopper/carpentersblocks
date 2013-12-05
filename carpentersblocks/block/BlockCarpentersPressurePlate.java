@@ -15,8 +15,8 @@ import carpentersblocks.CarpentersBlocks;
 import carpentersblocks.data.PressurePlate;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
-import carpentersblocks.util.handler.BlockHandler;
-import carpentersblocks.util.handler.IconHandler;
+import carpentersblocks.util.registry.BlockRegistry;
+import carpentersblocks.util.registry.IconRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -33,16 +33,17 @@ public class BlockCarpentersPressurePlate extends BlockBase
 		setTickRandomly(true);
 	}
 	
-    @Override
     @SideOnly(Side.CLIENT)
+    @Override
     /**
      * When this method is called, your block should register all the icons it needs with the given IconRegister. This
      * is the only chance you get to register icons.
      */
-    public void registerIcons(IconRegister iconRegister)
-    {
-        this.blockIcon = IconHandler.icon_slope;
-    }
+	public void registerIcons(IconRegister iconRegister)
+	{
+		this.blockIcon = IconRegistry.icon_slope;
+		super.registerIcons(iconRegister);
+	}
 
 	@Override
 	/**
@@ -151,7 +152,7 @@ public class BlockCarpentersPressurePlate extends BlockBase
 	 */
 	public boolean canPlaceBlockAt(World world, int x, int y, int z)
 	{
-		return world.doesBlockHaveSolidTopSurface(x, y - 1, z) || world.getBlockId(x, y - 1, z) == BlockHandler.blockCarpentersBarrierID;
+		return world.doesBlockHaveSolidTopSurface(x, y - 1, z) || world.getBlockId(x, y - 1, z) == BlockRegistry.blockCarpentersBarrierID;
 	}
 
 	@Override
@@ -161,7 +162,7 @@ public class BlockCarpentersPressurePlate extends BlockBase
 	 */
 	protected void auxiliaryOnNeighborBlockChange(TEBase TE, World world, int x, int y, int z, int blockID)
 	{
-		if (!world.doesBlockHaveSolidTopSurface(x, y - 1, z) && world.getBlockId(x, y - 1, z) != BlockHandler.blockCarpentersBarrierID) {
+		if (!world.doesBlockHaveSolidTopSurface(x, y - 1, z) && world.getBlockId(x, y - 1, z) != BlockRegistry.blockCarpentersBarrierID) {
 			dropBlockAsItem(world, x, y, z, 0, 0);
 			world.setBlockToAir(x, y, z);
 		}
@@ -347,7 +348,7 @@ public class BlockCarpentersPressurePlate extends BlockBase
 	 */
 	public int getRenderType()
 	{
-		return BlockHandler.carpentersPressurePlateRenderID;
+		return BlockRegistry.carpentersPressurePlateRenderID;
 	}
 
 }

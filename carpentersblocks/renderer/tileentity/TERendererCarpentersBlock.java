@@ -15,7 +15,7 @@ import carpentersblocks.renderer.helper.BedDesignHelper;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.handler.BedDesignHandler;
-import carpentersblocks.util.handler.BlockHandler;
+import carpentersblocks.util.registry.BlockRegistry;
 
 public class TERendererCarpentersBlock extends TileEntitySpecialRenderer
 {
@@ -31,7 +31,7 @@ public class TERendererCarpentersBlock extends TileEntitySpecialRenderer
 		 * bed pieces, but it just seemed a bit extreme.  This method
 		 * renders every frame.
 		 */
-		if (TE.getBlockType() == BlockHandler.blockCarpentersBed)
+		if (TE.getBlockType() == BlockRegistry.blockCarpentersBed)
 			renderBedDesignAt((TEBase)TE, x, y, z, f);
 	}
 	
