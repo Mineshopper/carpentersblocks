@@ -18,7 +18,7 @@ import carpentersblocks.data.Stairs;
 import carpentersblocks.data.Stairs.StairsType;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
-import carpentersblocks.util.handler.BlockHandler;
+import carpentersblocks.util.registry.BlockRegistry;
 
 public class BlockCarpentersStairs extends BlockBase
 {
@@ -793,7 +793,7 @@ public class BlockCarpentersStairs extends BlockBase
 	 */
 	public int getRenderType()
 	{
-		return BlockHandler.carpentersStairsRenderID;
+		return BlockRegistry.carpentersStairsRenderID;
 	}
 
 }

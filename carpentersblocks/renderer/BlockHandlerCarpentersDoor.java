@@ -10,8 +10,8 @@ import carpentersblocks.renderer.helper.RenderHelper;
 import carpentersblocks.renderer.helper.VertexHelper;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
-import carpentersblocks.util.handler.BlockHandler;
-import carpentersblocks.util.handler.IconHandler;
+import carpentersblocks.util.registry.BlockRegistry;
+import carpentersblocks.util.registry.IconRegistry;
 
 public class BlockHandlerCarpentersDoor extends HingedBase
 {
@@ -58,6 +58,19 @@ public class BlockHandlerCarpentersDoor extends HingedBase
 
 		renderBlocks.renderAllFaces = false;
 
+		return true;
+	}
+	
+	/**
+	 * Returns whether srcBlock controls rendering per pass.
+	 * 
+	 * This is required for torches, doors and hatches, for example,
+	 * because block components don't all necessarily share the same
+	 * render pass.
+	 */
+	@Override
+	protected boolean hasBlockDeterminantRendering(Block srcBlock)
+	{
 		return true;
 	}
 
@@ -326,9 +339,9 @@ public class BlockHandlerCarpentersDoor extends HingedBase
 			Icon icon;
 
 			if (isBottom)
-				icon = IconHandler.icon_door_french_glass_bottom;
+				icon = IconRegistry.icon_door_french_glass_bottom;
 			else
-				icon = IconHandler.icon_door_french_glass_top;
+				icon = IconRegistry.icon_door_french_glass_top;
 
 			VertexHelper.setOffset(-(1 - path_offset));
 			Tessellator.instance.setBrightness(Block.glass.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y, z));
@@ -604,15 +617,15 @@ public class BlockHandlerCarpentersDoor extends HingedBase
 				if (path_on_x) {
 					Tessellator.instance.setColorOpaque_F(0.6F, 0.6F, 0.6F);
 					renderBlocks.setRenderBounds(0.0F, 0.1875F, 0.1875F, 1.0F, 0.8125F, 0.8125F);
-					RenderHelper.renderFaceXNeg(renderBlocks, x, y, z, IconHandler.icon_door_glass_top);
+					RenderHelper.renderFaceXNeg(renderBlocks, x, y, z, IconRegistry.icon_door_glass_top);
 					VertexHelper.setOffset(-path_offset);
-					RenderHelper.renderFaceXPos(renderBlocks, x, y, z, IconHandler.icon_door_glass_top);
+					RenderHelper.renderFaceXPos(renderBlocks, x, y, z, IconRegistry.icon_door_glass_top);
 				} else {
 					Tessellator.instance.setColorOpaque_F(0.8F, 0.8F, 0.8F);
 					renderBlocks.setRenderBounds(0.1875F, 0.1875F, 0.0F, 0.8125F, 0.8125F, 1.0F);
-					RenderHelper.renderFaceZNeg(renderBlocks, x, y, z, IconHandler.icon_door_glass_top);
+					RenderHelper.renderFaceZNeg(renderBlocks, x, y, z, IconRegistry.icon_door_glass_top);
 					VertexHelper.setOffset(-path_offset);
-					RenderHelper.renderFaceZPos(renderBlocks, x, y, z, IconHandler.icon_door_glass_top);
+					RenderHelper.renderFaceZPos(renderBlocks, x, y, z, IconRegistry.icon_door_glass_top);
 				}
 
 				VertexHelper.clearOffset();
@@ -1040,9 +1053,9 @@ public class BlockHandlerCarpentersDoor extends HingedBase
 			Icon icon;
 
 			if (isBottom)
-				icon = type == Door.TYPE_SCREEN_TALL ? IconHandler.icon_door_screen_tall : IconHandler.icon_door_glass_tall_bottom;
+				icon = type == Door.TYPE_SCREEN_TALL ? IconRegistry.icon_door_screen_tall : IconRegistry.icon_door_glass_tall_bottom;
 			else
-				icon = type == Door.TYPE_SCREEN_TALL ? IconHandler.icon_door_screen_tall : IconHandler.icon_door_glass_tall_top;
+				icon = type == Door.TYPE_SCREEN_TALL ? IconRegistry.icon_door_screen_tall : IconRegistry.icon_door_glass_tall_top;
 
 			VertexHelper.setOffset(-(1 - path_offset));
 			Tessellator.instance.setBrightness(Block.glass.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y, z));
@@ -1076,7 +1089,7 @@ public class BlockHandlerCarpentersDoor extends HingedBase
 	{
 		if (shouldRenderFrame(TE, renderBlocks, coverBlock, renderPass))
 		{
-			BlockCarpentersDoor blockRef = (BlockCarpentersDoor) BlockHandler.blockCarpentersDoor;
+			BlockCarpentersDoor blockRef = (BlockCarpentersDoor) BlockRegistry.blockCarpentersDoor;
 			blockRef.setBlockBoundsBasedOnState(renderBlocks.blockAccess, x, y, z);
 			renderStandardBlock(TE, renderBlocks, coverBlock, srcBlock, x, y, z);
 		}

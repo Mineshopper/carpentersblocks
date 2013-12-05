@@ -15,7 +15,7 @@ import carpentersblocks.data.Lever;
 import carpentersblocks.data.Lever.Axis;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
-import carpentersblocks.util.handler.BlockHandler;
+import carpentersblocks.util.registry.BlockRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 
 public class BlockCarpentersLever extends BlockBase
@@ -289,7 +289,7 @@ public class BlockCarpentersLever extends BlockBase
 	 */
 	public int getRenderType()
 	{
-		return BlockHandler.carpentersLeverRenderID;
+		return BlockRegistry.carpentersLeverRenderID;
 	}
 	
 }

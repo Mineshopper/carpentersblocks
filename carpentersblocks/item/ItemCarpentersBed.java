@@ -10,7 +10,7 @@ import carpentersblocks.CarpentersBlocks;
 import carpentersblocks.data.Bed;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
-import carpentersblocks.util.handler.BlockHandler;
+import carpentersblocks.util.registry.BlockRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -62,17 +62,17 @@ public class ItemCarpentersBed extends Item
 				)
 			{
 				/* Set foot of bed. */
-				world.setBlock(x, y, z, BlockHandler.blockCarpentersBed.blockID);
+				world.setBlock(x, y, z, BlockRegistry.blockCarpentersBed.blockID);
 				TEBase TE_foot = (TEBase) world.getBlockTileEntity(x, y, z);
 				Bed.setDirection(TE_foot, facing);
 
 				/* Set head of bed. */
-				world.setBlock(x_offset, y, z_offset, BlockHandler.blockCarpentersBed.blockID);
+				world.setBlock(x_offset, y, z_offset, BlockRegistry.blockCarpentersBed.blockID);
 				TEBase TE_head = (TEBase) world.getBlockTileEntity(x_offset, y, z_offset);
 				Bed.setHeadOfBed(TE_head);
 				Bed.setDirection(TE_head, facing);
 
-				BlockProperties.playBlockPlacementSound(world, x, y, z, BlockHandler.blockCarpentersBed.blockID);
+				BlockProperties.playBlockPlacementSound(world, x, y, z, BlockRegistry.blockCarpentersBed.blockID);
 
 				--itemStack.stackSize;
 				return true;

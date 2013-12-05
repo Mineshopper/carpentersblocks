@@ -34,7 +34,8 @@ public class LanguageHandler
         }
         catch (Exception exception)
         {
-			ModLogger.log(Level.WARNING, "Encountered a problem while loading language files.");
+			ModLogger.log(Level.WARNING, "Encountered a problem while loading language files.  See trace below.");
+			exception.printStackTrace();
         }
 	}
 	

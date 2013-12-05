@@ -4,10 +4,10 @@ import net.minecraft.creativetab.CreativeTabs;
 import carpentersblocks.proxy.CommonProxy;
 import carpentersblocks.util.CarpentersBlocksTab;
 import carpentersblocks.util.ModLogger;
-import carpentersblocks.util.handler.BlockHandler;
-import carpentersblocks.util.handler.FeatureHandler;
-import carpentersblocks.util.handler.ItemHandler;
 import carpentersblocks.util.handler.TileEntityHandler;
+import carpentersblocks.util.registry.BlockRegistry;
+import carpentersblocks.util.registry.FeatureRegistry;
+import carpentersblocks.util.registry.ItemRegistry;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -39,9 +39,9 @@ public class CarpentersBlocks
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event)
 	{
-		FeatureHandler.initFeatures(event);
-		BlockHandler.initBlocks(event);
-		ItemHandler.initItems(event);
+		FeatureRegistry.initFeatures(event);
+		BlockRegistry.initBlocks(event);
+		ItemRegistry.initItems(event);
 
 		ModLogger.init();
 
@@ -53,8 +53,8 @@ public class CarpentersBlocks
 	public void init(FMLInitializationEvent event)
 	{
 		TileEntityHandler.registerTileEntities();
-		BlockHandler.registerBlocks();
-		ItemHandler.registerItems();
+		BlockRegistry.registerBlocks();
+		ItemRegistry.registerItems();
 	}
 
 }

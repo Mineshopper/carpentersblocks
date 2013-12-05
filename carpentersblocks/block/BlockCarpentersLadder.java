@@ -16,7 +16,7 @@ import carpentersblocks.CarpentersBlocks;
 import carpentersblocks.data.Ladder;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
-import carpentersblocks.util.handler.BlockHandler;
+import carpentersblocks.util.registry.BlockRegistry;
 
 public class BlockCarpentersLadder extends BlockBase
 {
@@ -177,7 +177,7 @@ public class BlockCarpentersLadder extends BlockBase
 	 */
 	public int getRenderType()
 	{
-		return BlockHandler.carpentersLadderRenderID;
+		return BlockRegistry.carpentersLadderRenderID;
 	}
 
 }

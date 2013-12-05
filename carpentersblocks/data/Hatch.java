@@ -52,9 +52,9 @@ public class Hatch
 	/**
 	 * Returns type.
 	 */
-	public final static int getType(int data)
+	public final static int getType(TEBase TE)
 	{
-		return data & 0x7;
+		return BlockProperties.getData(TE) & 0x7;
 	}
 
 	/**
@@ -71,9 +71,9 @@ public class Hatch
 	/**
 	 * Returns position (high or low).
 	 */
-	public final static int getPos(int data)
+	public final static int getPos(TEBase TE)
 	{
-		int temp = data & 0x8;
+		int temp = BlockProperties.getData(TE) & 0x8;
 		return temp >> 3;
 	}
 
@@ -91,9 +91,9 @@ public class Hatch
 	/**
 	 * Returns state (open or closed).
 	 */
-	public final static int getState(int data)
+	public final static int getState(TEBase TE)
 	{
-		int temp = data & 0x10;
+		int temp = BlockProperties.getData(TE) & 0x10;
 		return temp >> 4;
 	}
 
@@ -114,9 +114,9 @@ public class Hatch
 	/**
 	 * Returns direction.
 	 */
-	public final static int getDir(int data)
+	public final static int getDir(TEBase TE)
 	{
-		int temp = data & 0x60;
+		int temp = BlockProperties.getData(TE) & 0x60;
 		return temp >> 5;
 	}
 
@@ -134,9 +134,9 @@ public class Hatch
 	/**
 	 * Returns hatch rigidity (requires redstone for activation).
 	 */
-	public final static int getRigidity(int data)
+	public final static int getRigidity(TEBase TE)
 	{
-		int temp = data & 0x80;
+		int temp = BlockProperties.getData(TE) & 0x80;
 		return temp >> 7;
 	}
 

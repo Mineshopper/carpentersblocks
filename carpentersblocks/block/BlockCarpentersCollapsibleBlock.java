@@ -17,7 +17,7 @@ import carpentersblocks.CarpentersBlocks;
 import carpentersblocks.data.Collapsible;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
-import carpentersblocks.util.handler.BlockHandler;
+import carpentersblocks.util.registry.BlockRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -334,7 +334,7 @@ public class BlockCarpentersCollapsibleBlock extends BlockBase
 	 */
 	public int getRenderType()
 	{
-		return BlockHandler.carpentersCollapsibleBlockRenderID;
+		return BlockRegistry.carpentersCollapsibleBlockRenderID;
 	}
 
 }

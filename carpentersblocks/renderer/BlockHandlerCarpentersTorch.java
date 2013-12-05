@@ -10,7 +10,7 @@ import carpentersblocks.block.BlockBase;
 import carpentersblocks.data.Torch;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
-import carpentersblocks.util.handler.IconHandler;
+import carpentersblocks.util.registry.IconRegistry;
 
 public class BlockHandlerCarpentersTorch extends BlockHandlerBase
 {
@@ -20,6 +20,19 @@ public class BlockHandlerCarpentersTorch extends BlockHandlerBase
 	@Override
 	public boolean shouldRender3DInInventory() {
 		return false;
+	}
+	
+	/**
+	 * Returns whether srcBlock controls rendering per pass.
+	 * 
+	 * This is required for torches, doors and hatches, for example,
+	 * because block components don't all necessarily share the same
+	 * render pass.
+	 */
+	@Override
+	protected boolean hasBlockDeterminantRendering(Block srcBlock)
+	{
+		return true;
 	}
 
 	/**
@@ -78,13 +91,13 @@ public class BlockHandlerCarpentersTorch extends BlockHandlerBase
 		Icon icon = null;
 		switch (Torch.getState(TE)) {
 			case LIT:
-				icon = IconHandler.icon_torch_lit;
+				icon = IconRegistry.icon_torch_lit;
 				break;
 			case SMOLDERING:
-				icon = IconHandler.icon_torch_head_smoldering;
+				icon = IconRegistry.icon_torch_head_smoldering;
 				break;
 			case UNLIT:
-				icon = IconHandler.icon_torch_head_unlit;
+				icon = IconRegistry.icon_torch_head_unlit;
 				break;
 			default: {}
 		}
@@ -145,16 +158,16 @@ public class BlockHandlerCarpentersTorch extends BlockHandlerBase
 		prepareRender(TE, renderBlocks, coverBlock, srcBlock, 1, x, y, z, 1.0F);
 
 		setLightnessZNeg(renderBlocks, coverBlock, x, y, z);
-		prepareRender(TE, renderBlocks, coverBlock, srcBlock, 2, x, y, z, 0.6F);
+		prepareRender(TE, renderBlocks, coverBlock, srcBlock, 2, x, y, z, 0.8F);
 
 		setLightnessZPos(renderBlocks, coverBlock, x, y, z);
-		prepareRender(TE, renderBlocks, coverBlock, srcBlock, 3, x, y, z, 0.8F);
+		prepareRender(TE, renderBlocks, coverBlock, srcBlock, 3, x, y, z, 0.6F);
 
 		setLightnessXNeg(renderBlocks, coverBlock, x, y, z);
-		prepareRender(TE, renderBlocks, coverBlock, srcBlock, 4, x, y, z, 0.6F);
+		prepareRender(TE, renderBlocks, coverBlock, srcBlock, 4, x, y, z, 0.8F);
 
 		setLightnessXPos(renderBlocks, coverBlock, x, y, z);
-		prepareRender(TE, renderBlocks, coverBlock, srcBlock, 5, x, y, z, 0.8F);
+		prepareRender(TE, renderBlocks, coverBlock, srcBlock, 5, x, y, z, 0.6F);
 		
 		return true;
     }

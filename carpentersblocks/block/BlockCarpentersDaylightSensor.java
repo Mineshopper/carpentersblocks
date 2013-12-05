@@ -14,7 +14,7 @@ import carpentersblocks.data.DaylightSensor;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.tileentity.TECarpentersDaylightSensor;
 import carpentersblocks.util.BlockProperties;
-import carpentersblocks.util.handler.BlockHandler;
+import carpentersblocks.util.registry.BlockRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -140,7 +140,7 @@ public class BlockCarpentersDaylightSensor extends BlockBase
 	 */
 	public int getRenderType()
 	{
-		return BlockHandler.carpentersDaylightSensorRenderID;
+		return BlockRegistry.carpentersDaylightSensorRenderID;
 	}
 
 }

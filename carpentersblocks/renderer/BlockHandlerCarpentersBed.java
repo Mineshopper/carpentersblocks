@@ -8,7 +8,7 @@ import carpentersblocks.data.Bed;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.handler.BedDesignHandler;
-import carpentersblocks.util.handler.IconHandler;
+import carpentersblocks.util.registry.IconRegistry;
 
 public class BlockHandlerCarpentersBed extends BlockHandlerBase
 {
@@ -64,7 +64,7 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase
 
 		boolean hasCustomBlanket = design > 0 && BedDesignHandler.hasBlanket[design];
 
-		Icon icon_pillow = hasCustomBlanket && BedDesignHandler.hasPillow[design] ? IconHandler.icon_bed_pillow_custom[design] : IconHandler.icon_bed_pillow;
+		Icon icon_pillow = hasCustomBlanket && BedDesignHandler.hasPillow[design] ? IconRegistry.icon_bed_pillow_custom[design] : IconRegistry.icon_bed_pillow;
 
 		/*
 		 * Check for adjacent bed pieces that can connect.

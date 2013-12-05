@@ -13,8 +13,8 @@ import net.minecraft.world.World;
 import carpentersblocks.data.Door;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
-import carpentersblocks.util.handler.BlockHandler;
-import carpentersblocks.util.handler.ItemHandler;
+import carpentersblocks.util.registry.BlockRegistry;
+import carpentersblocks.util.registry.ItemRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -112,7 +112,7 @@ public class BlockCarpentersDoor extends BlockBase
 	 */
 	private List<TEBase> getDoorPieces(TEBase TE)
 	{
-		ArrayList arrayList = new ArrayList();
+		List<TEBase> list = new ArrayList<TEBase>();
 
 		int data = BlockProperties.getData(TE);
 		int facing = Door.getFacing(data);
@@ -124,8 +124,8 @@ public class BlockCarpentersDoor extends BlockBase
 		/*
 		 * Add calling TE and its matching piece
 		 */
-		arrayList.add(TE);
-		arrayList.add(TE.worldObj.getBlockTileEntity(TE.xCoord, TE.yCoord - (isTop ? 1 : -1), TE.zCoord));
+		list.add(TE);
+		list.add((TEBase) TE.worldObj.getBlockTileEntity(TE.xCoord, TE.yCoord - (isTop ? 1 : -1), TE.zCoord));
 
 		/*
 		 * Begin searching for and adding other neighboring pieces
@@ -143,16 +143,16 @@ public class BlockCarpentersDoor extends BlockBase
 				int data_ZN = BlockProperties.getData(TE_ZN);
 				if (piece == Door.getPiece(data_ZN) && facing == Door.getFacing(data_ZN) && hinge == Door.HINGE_LEFT && Door.getHinge(data_ZN) == Door.HINGE_RIGHT)
 				{
-					arrayList.add(TE_ZN);
-					arrayList.add(TE.worldObj.getBlockTileEntity(TE.xCoord, TE.yCoord - (isTop ? 1 : -1), TE.zCoord - 1));
+					list.add(TE_ZN);
+					list.add((TEBase) TE.worldObj.getBlockTileEntity(TE.xCoord, TE.yCoord - (isTop ? 1 : -1), TE.zCoord - 1));
 				}
 			}
 			if (TE_ZP != null) {
 				int data_ZP = BlockProperties.getData(TE_ZP);
 				if (piece == Door.getPiece(data_ZP) && facing == Door.getFacing(data_ZP) && hinge == Door.HINGE_RIGHT && Door.getHinge(data_ZP) == Door.HINGE_LEFT)
 				{
-					arrayList.add(TE_ZP);
-					arrayList.add(TE.worldObj.getBlockTileEntity(TE.xCoord, TE.yCoord - (isTop ? 1 : -1), TE.zCoord + 1));
+					list.add(TE_ZP);
+					list.add((TEBase) TE.worldObj.getBlockTileEntity(TE.xCoord, TE.yCoord - (isTop ? 1 : -1), TE.zCoord + 1));
 				}
 			}
 			break;
@@ -163,16 +163,16 @@ public class BlockCarpentersDoor extends BlockBase
 				int data_ZN = BlockProperties.getData(TE_ZN);
 				if (piece == Door.getPiece(data_ZN) && facing == Door.getFacing(data_ZN) && hinge == Door.HINGE_RIGHT && Door.getHinge(data_ZN) == Door.HINGE_LEFT)
 				{
-					arrayList.add(TE_ZN);
-					arrayList.add(TE.worldObj.getBlockTileEntity(TE.xCoord, TE.yCoord - (isTop ? 1 : -1), TE.zCoord - 1));
+					list.add(TE_ZN);
+					list.add((TEBase) TE.worldObj.getBlockTileEntity(TE.xCoord, TE.yCoord - (isTop ? 1 : -1), TE.zCoord - 1));
 				}
 			}
 			if (TE_ZP != null) {
 				int data_ZP = BlockProperties.getData(TE_ZP);
 				if (piece == Door.getPiece(data_ZP) && facing == Door.getFacing(data_ZP) && hinge == Door.HINGE_LEFT && Door.getHinge(data_ZP) == Door.HINGE_RIGHT)
 				{
-					arrayList.add(TE_ZP);
-					arrayList.add(TE.worldObj.getBlockTileEntity(TE.xCoord, TE.yCoord - (isTop ? 1 : -1), TE.zCoord + 1));
+					list.add(TE_ZP);
+					list.add((TEBase) TE.worldObj.getBlockTileEntity(TE.xCoord, TE.yCoord - (isTop ? 1 : -1), TE.zCoord + 1));
 				}
 			}
 			break;
@@ -184,16 +184,16 @@ public class BlockCarpentersDoor extends BlockBase
 				int data_XN = BlockProperties.getData(TE_XN);
 				if (piece == Door.getPiece(data_XN) && facing == Door.getFacing(data_XN) && hinge == Door.HINGE_RIGHT && Door.getHinge(data_XN) == Door.HINGE_LEFT)
 				{
-					arrayList.add(TE_XN);
-					arrayList.add(TE.worldObj.getBlockTileEntity(TE.xCoord - 1, TE.yCoord - (isTop ? 1 : -1), TE.zCoord));
+					list.add(TE_XN);
+					list.add((TEBase) TE.worldObj.getBlockTileEntity(TE.xCoord - 1, TE.yCoord - (isTop ? 1 : -1), TE.zCoord));
 				}
 			}
 			if (TE_XP != null) {
 				int data_XP = BlockProperties.getData(TE_XP);
 				if (piece == Door.getPiece(data_XP) && facing == Door.getFacing(data_XP) && hinge == Door.HINGE_LEFT && Door.getHinge(data_XP) == Door.HINGE_RIGHT)
 				{
-					arrayList.add(TE_XP);
-					arrayList.add(TE.worldObj.getBlockTileEntity(TE.xCoord + 1, TE.yCoord - (isTop ? 1 : -1), TE.zCoord));
+					list.add(TE_XP);
+					list.add((TEBase) TE.worldObj.getBlockTileEntity(TE.xCoord + 1, TE.yCoord - (isTop ? 1 : -1), TE.zCoord));
 				}
 			}
 			break;
@@ -204,23 +204,23 @@ public class BlockCarpentersDoor extends BlockBase
 				int data_XN = BlockProperties.getData(TE_XN);
 				if (piece == Door.getPiece(data_XN) && facing == Door.getFacing(data_XN) && hinge == Door.HINGE_LEFT && Door.getHinge(data_XN) == Door.HINGE_RIGHT)
 				{
-					arrayList.add(TE_XN);
-					arrayList.add(TE.worldObj.getBlockTileEntity(TE.xCoord - 1, TE.yCoord - (isTop ? 1 : -1), TE.zCoord));
+					list.add(TE_XN);
+					list.add((TEBase) TE.worldObj.getBlockTileEntity(TE.xCoord - 1, TE.yCoord - (isTop ? 1 : -1), TE.zCoord));
 				}
 			}
 			if (TE_XP != null) {
 				int data_XP = BlockProperties.getData(TE_XP);
 				if (piece == Door.getPiece(data_XP) && facing == Door.getFacing(data_XP) && hinge == Door.HINGE_RIGHT && Door.getHinge(data_XP) == Door.HINGE_LEFT)
 				{
-					arrayList.add(TE_XP);
-					arrayList.add(TE.worldObj.getBlockTileEntity(TE.xCoord + 1, TE.yCoord - (isTop ? 1 : -1), TE.zCoord));
+					list.add(TE_XP);
+					list.add((TEBase) TE.worldObj.getBlockTileEntity(TE.xCoord + 1, TE.yCoord - (isTop ? 1 : -1), TE.zCoord));
 				}
 			}
 			break;
 
 		}
 
-		return arrayList;
+		return list;
 	}
 
 	@Override
@@ -382,9 +382,12 @@ public class BlockCarpentersDoor extends BlockBase
 		 * door piece receives this event.
 		 */
 		boolean isPowered = false;
-		for (TEBase piece : getDoorPieces(TE))
-			if (world.isBlockIndirectlyGettingPowered(piece.xCoord, piece.yCoord, piece.zCoord))
+		List<TEBase> doorPieces = getDoorPieces(TE);
+		for (TEBase piece : doorPieces) {
+			if (world.isBlockIndirectlyGettingPowered(piece.xCoord, piece.yCoord, piece.zCoord)) {
 				isPowered = true;
+			}
+		}
 
 		/*
 		 * Set block open or closed
@@ -399,7 +402,7 @@ public class BlockCarpentersDoor extends BlockBase
 	 */
 	public int idDropped(int metadata, Random random, int par3)
 	{
-		return ItemHandler.itemCarpentersDoor.itemID;
+		return ItemRegistry.itemCarpentersDoor.itemID;
 	}
 
 	@Override
@@ -409,7 +412,7 @@ public class BlockCarpentersDoor extends BlockBase
 	 */
 	public int idPicked(World world, int x, int y, int z)
 	{
-		return ItemHandler.itemCarpentersDoor.itemID;
+		return ItemRegistry.itemCarpentersDoor.itemID;
 	}
 
 	/**
@@ -454,6 +457,6 @@ public class BlockCarpentersDoor extends BlockBase
 	 */
 	public int getRenderType()
 	{
-		return BlockHandler.carpentersDoorRenderID;
+		return BlockRegistry.carpentersDoorRenderID;
 	}
 }

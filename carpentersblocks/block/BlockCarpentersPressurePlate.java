@@ -14,7 +14,7 @@ import carpentersblocks.CarpentersBlocks;
 import carpentersblocks.data.PressurePlate;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
-import carpentersblocks.util.handler.BlockHandler;
+import carpentersblocks.util.registry.BlockRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -139,7 +139,7 @@ public class BlockCarpentersPressurePlate extends BlockBase
 	 */
 	public boolean canPlaceBlockAt(World world, int x, int y, int z)
 	{
-		return world.doesBlockHaveSolidTopSurface(x, y - 1, z) || world.getBlockId(x, y - 1, z) == BlockHandler.blockCarpentersBarrierID;
+		return world.doesBlockHaveSolidTopSurface(x, y - 1, z) || world.getBlockId(x, y - 1, z) == BlockRegistry.blockCarpentersBarrierID;
 	}
 
 	@Override
@@ -149,7 +149,7 @@ public class BlockCarpentersPressurePlate extends BlockBase
 	 */
 	protected void auxiliaryOnNeighborBlockChange(TEBase TE, World world, int x, int y, int z, int blockID)
 	{
-		if (!world.doesBlockHaveSolidTopSurface(x, y - 1, z) && world.getBlockId(x, y - 1, z) != BlockHandler.blockCarpentersBarrierID) {
+		if (!world.doesBlockHaveSolidTopSurface(x, y - 1, z) && world.getBlockId(x, y - 1, z) != BlockRegistry.blockCarpentersBarrierID) {
 			dropBlockAsItem(world, x, y, z, 0, 0);
 			world.setBlockToAir(x, y, z);
 		}
@@ -335,7 +335,7 @@ public class BlockCarpentersPressurePlate extends BlockBase
 	 */
 	public int getRenderType()
 	{
-		return BlockHandler.carpentersPressurePlateRenderID;
+		return BlockRegistry.carpentersPressurePlateRenderID;
 	}
 
 }

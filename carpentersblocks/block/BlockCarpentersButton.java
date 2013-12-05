@@ -13,7 +13,7 @@ import net.minecraftforge.common.ForgeDirection;
 import carpentersblocks.CarpentersBlocks;
 import carpentersblocks.data.Button;
 import carpentersblocks.tileentity.TEBase;
-import carpentersblocks.util.handler.BlockHandler;
+import carpentersblocks.util.registry.BlockRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 
 public class BlockCarpentersButton extends BlockBase
@@ -270,7 +270,7 @@ public class BlockCarpentersButton extends BlockBase
 	 */
 	public int getRenderType()
 	{
-		return BlockHandler.carpentersButtonRenderID;
+		return BlockRegistry.carpentersButtonRenderID;
 	}
 
 }

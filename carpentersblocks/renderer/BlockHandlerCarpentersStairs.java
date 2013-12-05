@@ -10,7 +10,7 @@ import carpentersblocks.block.BlockCarpentersStairs;
 import carpentersblocks.data.Stairs;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
-import carpentersblocks.util.handler.BlockHandler;
+import carpentersblocks.util.registry.BlockRegistry;
 
 public class BlockHandlerCarpentersStairs extends BlockHandlerBase
 {
@@ -75,7 +75,7 @@ public class BlockHandlerCarpentersStairs extends BlockHandlerBase
 		int stairsID = BlockProperties.getData(TE);
 		Stairs stairs = Stairs.stairsList[stairsID];
 
-		BlockCarpentersStairs blockRef = (BlockCarpentersStairs) BlockHandler.blockCarpentersStairs;
+		BlockCarpentersStairs blockRef = (BlockCarpentersStairs) BlockRegistry.blockCarpentersStairs;
 
 		for (int box = 0; box < 3; ++box)
 		{
@@ -104,7 +104,7 @@ public class BlockHandlerCarpentersStairs extends BlockHandlerBase
 		int stairsID = BlockProperties.getData(TE);
 		Stairs stairs = Stairs.stairsList[stairsID];
 
-		BlockCarpentersStairs blockRef = (BlockCarpentersStairs) BlockHandler.blockCarpentersStairs;
+		BlockCarpentersStairs blockRef = (BlockCarpentersStairs) BlockRegistry.blockCarpentersStairs;
 
 		for (int box = 0; box < 3; ++box)
 		{

@@ -16,8 +16,8 @@ import carpentersblocks.data.Bed;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.handler.BedDesignHandler;
-import carpentersblocks.util.handler.BlockHandler;
-import carpentersblocks.util.handler.ItemHandler;
+import carpentersblocks.util.registry.BlockRegistry;
+import carpentersblocks.util.registry.ItemRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -166,8 +166,11 @@ public class BlockCarpentersBed extends BlockBase
 	@Override
 	protected void auxiliaryOnNeighborBlockChange(TEBase TE, World world, int x, int y, int z, int blockID)
 	{
-		if (Bed.getOppositeTE(TE) == null) {
-			world.setBlockToAir(x, y, z);
+		if (TE != null)
+		{
+			if (Bed.getOppositeTE(TE) == null) {
+				world.setBlockToAir(x, y, z);
+			}
 		}
 	}
 
@@ -177,7 +180,7 @@ public class BlockCarpentersBed extends BlockBase
 	@Override
 	public int idDropped(int par1, Random random, int par3)
 	{
-		return ItemHandler.itemCarpentersBedID;
+		return ItemRegistry.itemCarpentersBedID;
 	}
 
 	@Override
@@ -231,7 +234,7 @@ public class BlockCarpentersBed extends BlockBase
 	 */
 	public int idPicked(World world, int x, int y, int z)
 	{
-		return ItemHandler.itemCarpentersBedID;
+		return ItemRegistry.itemCarpentersBedID;
 	}
 
 	@Override
@@ -240,7 +243,7 @@ public class BlockCarpentersBed extends BlockBase
 	 */
 	public int getRenderType()
 	{
-		return BlockHandler.carpentersBedRenderID;
+		return BlockRegistry.carpentersBedRenderID;
 	}
 
 }

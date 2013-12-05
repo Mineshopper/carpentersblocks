@@ -12,7 +12,7 @@ import carpentersblocks.block.BlockCarpentersBarrier;
 import carpentersblocks.data.Barrier;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
-import carpentersblocks.util.handler.BlockHandler;
+import carpentersblocks.util.registry.BlockRegistry;
 
 public class BlockHandlerCarpentersBarrier extends BlockHandlerBase
 {
@@ -103,11 +103,11 @@ public class BlockHandlerCarpentersBarrier extends BlockHandlerBase
 	 */
 	private boolean isPostAt(IBlockAccess blockAccess, int x, int y, int z)
 	{
-		if (blockAccess.getBlockId(x, y, z) == BlockHandler.blockCarpentersBarrierID)
+		if (blockAccess.getBlockId(x, y, z) == BlockRegistry.blockCarpentersBarrierID)
 		{
 			TEBase TE = (TEBase) blockAccess.getBlockTileEntity(x, y, z);
 
-			BlockCarpentersBarrier blockRef = (BlockCarpentersBarrier) BlockHandler.blockCarpentersBarrier;
+			BlockCarpentersBarrier blockRef = (BlockCarpentersBarrier) BlockRegistry.blockCarpentersBarrier;
 
 			boolean connect_XN = blockRef.canConnectBarrierTo(TE, blockAccess, x - 1, y, z, ForgeDirection.EAST);
 			boolean connect_XP = blockRef.canConnectBarrierTo(TE, blockAccess, x + 1, y, z, ForgeDirection.WEST);
@@ -133,7 +133,7 @@ public class BlockHandlerCarpentersBarrier extends BlockHandlerBase
 	public boolean renderFence(TEBase TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int x, int y, int z)
 	{
 		int data = BlockProperties.getData(TE);
-		BlockCarpentersBarrier blockRef = (BlockCarpentersBarrier) BlockHandler.blockCarpentersBarrier;
+		BlockCarpentersBarrier blockRef = (BlockCarpentersBarrier) BlockRegistry.blockCarpentersBarrier;
 
 		boolean connect_XN = blockRef.canConnectBarrierTo(TE, renderBlocks.blockAccess, x - 1, y, z, ForgeDirection.EAST);
 		boolean connect_XP = blockRef.canConnectBarrierTo(TE, renderBlocks.blockAccess, x + 1, y, z, ForgeDirection.WEST);
@@ -216,7 +216,7 @@ public class BlockHandlerCarpentersBarrier extends BlockHandlerBase
 	public boolean renderPicketFence(TEBase TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int x, int y, int z)
 	{
 		int data = BlockProperties.getData(TE);
-		BlockCarpentersBarrier blockRef = (BlockCarpentersBarrier) BlockHandler.blockCarpentersBarrier;
+		BlockCarpentersBarrier blockRef = (BlockCarpentersBarrier) BlockRegistry.blockCarpentersBarrier;
 		float x_Low = 0.0F;
 		float x_High = 0.0F;
 		float y_Low = 0.0F;
@@ -231,8 +231,8 @@ public class BlockHandlerCarpentersBarrier extends BlockHandlerBase
 		boolean connect_ZN = blockRef.canConnectBarrierTo(TE, renderBlocks.blockAccess, x, y, z - 1, ForgeDirection.SOUTH);
 		boolean connect_ZP = blockRef.canConnectBarrierTo(TE, renderBlocks.blockAccess, x, y, z + 1, ForgeDirection.NORTH);
 
-		boolean isBarrierAbove = renderBlocks.blockAccess.getBlockId(x, y + 1, z) == BlockHandler.blockCarpentersBarrierID;
-		boolean isBarrierBelow = renderBlocks.blockAccess.getBlockId(x, y - 1, z) == BlockHandler.blockCarpentersBarrierID;
+		boolean isBarrierAbove = renderBlocks.blockAccess.getBlockId(x, y + 1, z) == BlockRegistry.blockCarpentersBarrierID;
+		boolean isBarrierBelow = renderBlocks.blockAccess.getBlockId(x, y - 1, z) == BlockRegistry.blockCarpentersBarrierID;
 
 		z_Low = 0.4375F;
 		z_High = 0.5625F;
@@ -456,7 +456,7 @@ public class BlockHandlerCarpentersBarrier extends BlockHandlerBase
 	public boolean renderWall(TEBase TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int x, int y, int z)
 	{
 		BlockProperties.getData(TE);
-		BlockCarpentersBarrier blockRef = (BlockCarpentersBarrier) BlockHandler.blockCarpentersBarrier;
+		BlockCarpentersBarrier blockRef = (BlockCarpentersBarrier) BlockRegistry.blockCarpentersBarrier;
 
 		boolean connect_XN = blockRef.canConnectBarrierTo(TE, renderBlocks.blockAccess, x - 1, y, z, ForgeDirection.EAST);
 		boolean connect_XP = blockRef.canConnectBarrierTo(TE, renderBlocks.blockAccess, x + 1, y, z, ForgeDirection.WEST);
@@ -513,7 +513,7 @@ public class BlockHandlerCarpentersBarrier extends BlockHandlerBase
 	public boolean renderVerticalPlankFence(TEBase TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int x, int y, int z)
 	{
 		BlockProperties.getData(TE);
-		BlockCarpentersBarrier blockRef = (BlockCarpentersBarrier) BlockHandler.blockCarpentersBarrier;
+		BlockCarpentersBarrier blockRef = (BlockCarpentersBarrier) BlockRegistry.blockCarpentersBarrier;
 
 		float x_Low = 0.0F;
 		float x_High = 0.0F;
@@ -529,8 +529,8 @@ public class BlockHandlerCarpentersBarrier extends BlockHandlerBase
 		boolean connect_ZN = blockRef.canConnectBarrierTo(TE, renderBlocks.blockAccess, x, y, z - 1, ForgeDirection.SOUTH);
 		boolean connect_ZP = blockRef.canConnectBarrierTo(TE, renderBlocks.blockAccess, x, y, z + 1, ForgeDirection.NORTH);
 
-		boolean isBarrierAbove = renderBlocks.blockAccess.getBlockId(x, y + 1, z) == BlockHandler.blockCarpentersBarrierID;
-		boolean isBarrierBelow = renderBlocks.blockAccess.getBlockId(x, y - 1, z) == BlockHandler.blockCarpentersBarrierID;
+		boolean isBarrierAbove = renderBlocks.blockAccess.getBlockId(x, y + 1, z) == BlockRegistry.blockCarpentersBarrierID;
+		boolean isBarrierBelow = renderBlocks.blockAccess.getBlockId(x, y - 1, z) == BlockRegistry.blockCarpentersBarrierID;
 
 		/*
 		 * Center post

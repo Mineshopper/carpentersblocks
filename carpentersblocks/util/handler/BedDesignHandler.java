@@ -74,7 +74,8 @@ public class BedDesignHandler
         }
         catch (Exception exception)
         {
-			ModLogger.log(Level.WARNING, "Encountered a problem while initializing bed designs.");
+			ModLogger.log(Level.WARNING, "Encountered a problem while initializing bed designs.  See trace below.");
+			exception.printStackTrace();
         }
         
         return true;

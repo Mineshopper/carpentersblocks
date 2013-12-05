@@ -30,12 +30,12 @@ import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.IPlantable;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
-import carpentersblocks.util.handler.BlockEventHandler;
-import carpentersblocks.util.handler.FeatureHandler;
-import carpentersblocks.util.handler.ItemHandler;
+import carpentersblocks.util.handler.EventHandler;
 import carpentersblocks.util.handler.OverlayHandler;
 import carpentersblocks.util.handler.PatternHandler;
 import carpentersblocks.util.handler.PlantHandler;
+import carpentersblocks.util.registry.FeatureRegistry;
+import carpentersblocks.util.registry.ItemRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -46,12 +46,14 @@ public class BlockBase extends BlockContainer {
 	public BlockBase(int blockID, Material material)
 	{
 		super(blockID, material);
-		this.setStepSound(new StepSound("carpentermod", 1.0f, 1.0f){
-			         public String getPlaceSound()
-			         {
-			             return "place." + this.stepSoundName;
-			         }
-			     });
+		
+		this.setStepSound(new StepSound("carpentermod", 1.0f, 1.0f) {
+			@Override
+			public String getPlaceSound()
+			{
+				return "place." + this.stepSoundName;
+			}
+		});
 	}
 	
 	public void setBlockIcon(Icon icon)
@@ -123,14 +125,14 @@ public class BlockBase extends BlockContainer {
 
 		ItemStack itemStack = entityPlayer.getCurrentEquippedItem();
 
-		int side = BlockEventHandler.eventFace;
+		int side = EventHandler.eventFace;
 		
 		if (itemStack != null && entityPlayer.canPlayerEdit(x, y, z, side, itemStack))
 		{
 			int effectiveSide = BlockProperties.hasCover(TE, side) ? side : 6;
 			Item item = itemStack.getItem();
 
-			if (item.equals(ItemHandler.itemCarpentersHammer)) {
+			if (item.equals(ItemRegistry.itemCarpentersHammer)) {
 				
 				boolean dataAltered = false;
 
@@ -166,7 +168,7 @@ public class BlockBase extends BlockContainer {
 
 				}
 
-			} else if (!world.isRemote && item.equals(ItemHandler.itemCarpentersChisel)) {
+			} else if (!world.isRemote && item.equals(ItemRegistry.itemCarpentersChisel)) {
 
 				if (entityPlayer.isSneaking()) {
 
@@ -205,11 +207,11 @@ public class BlockBase extends BlockContainer {
 			 */
 			int effectiveSide = BlockProperties.hasCover(TE, side) ? side : 6;
 			
-			if (itemStack.getItem() == ItemHandler.itemCarpentersHammer) {
+			if (itemStack.getItem() == ItemRegistry.itemCarpentersHammer) {
 
 				actionPerformed = onHammerRightClick(TE, entityPlayer, side, hitX, hitZ);
 
-			} else if (ItemHandler.enableChisel && itemStack.getItem() == ItemHandler.itemCarpentersChisel) {
+			} else if (ItemRegistry.enableChisel && itemStack.getItem() == ItemRegistry.itemCarpentersChisel) {
 
 				/* Skip clientside otherwise it will desynchronize server data. */
 				if (world.isRemote)
@@ -218,47 +220,36 @@ public class BlockBase extends BlockContainer {
 				if (BlockProperties.hasCover(TE, effectiveSide) && BlockProperties.getCoverBlock(TE, effectiveSide).isOpaqueCube())
 					actionPerformed = onChiselClick(TE, effectiveSide, false);
 
-			} else if (FeatureHandler.enableCovers && BlockProperties.isCover(itemStack)) {
+			} else if (FeatureRegistry.enableCovers && BlockProperties.isCover(itemStack)) {
 
 				Block block = Block.blocksList[itemStack.itemID];
-				int metadata = block instanceof BlockDirectional ? MathHelper.floor_double(entityPlayer.rotationYaw * 4.0F / 360.0F + 2.5D) & 3 : itemStack.getItemDamage();		
+				
+				/* Will handle blocks that save directions using only x and y axes (pumpkin) */
+				int metadata = block instanceof BlockDirectional ? MathHelper.floor_double(entityPlayer.rotationYaw * 4.0F / 360.0F + 2.5D) & 3 : itemStack.getItemDamage();
+				
+				/* Will handle blocks that save directions using all axes (logs, quartz) */
+				if (BlockProperties.blockRotates(world, block, x, y, z))
+				{
+					int facing = BlockProperties.getEntityFacing(EventHandler.eventEntity);
+					int side_interpolated =	entityPlayer.rotationPitch < -45.0F ? 0 : entityPlayer.rotationPitch > 45 ? 1 : facing == 0 ? 3 : facing == 1 ? 4 : facing == 2 ? 2 : 5;
+					metadata = block.onBlockPlaced(world, x, y, z, side_interpolated, hitX, hitY, hitZ, metadata);
+				}
 				
 				if (!BlockProperties.hasCover(TE, 6)) {
 
-					if (BlockProperties.blockRotates(world, block, x, y, z)) {
-						metadata = block.onBlockPlaced(world, x, y, z, side, hitX, hitY, hitZ, metadata);
-					}
-
 					actionPerformed = decrementInventory = BlockProperties.setCover(TE, 6, metadata, itemStack);
 
-				} else if (FeatureHandler.enableSideCovers) {
+				} else if (FeatureRegistry.enableSideCovers) {
 
 					if (!BlockProperties.hasCover(TE, side) && this.canCoverSide(TE, world, x, y, z, side)) {
-						
-						if (BlockProperties.blockRotates(world, block, x, y, z))
-						{
-							/*
-							 * Blocks that determine direction based on side clicked
-							 * have an obvious limitation in regards to being used as
-							 * side covers: it's always the side clicked.
-							 * 
-							 * Therefore, we'll instead utilize the player's pitch
-							 * and yaw for rotation when the block is used as a side
-							 * cover.
-							 */
 
-							int facing = BlockProperties.getEntityFacing(BlockEventHandler.eventEntity);
-							int side_interpolated =	entityPlayer.rotationPitch < -45.0F ? 0 : entityPlayer.rotationPitch > 45 ? 1 : facing == 0 ? 3 : facing == 1 ? 4 : facing == 2 ? 2 : 5;
-							metadata = block.onBlockPlaced(world, x, y, z, side_interpolated, hitX, hitY, hitZ, metadata);
-						}
-						
 						actionPerformed = decrementInventory = BlockProperties.setCover(TE, side, metadata, itemStack);
 						
 					}
 						
 				}
 
-			} else if (FeatureHandler.enableOverlays && BlockProperties.isOverlay(itemStack)) {
+			} else if (FeatureRegistry.enableOverlays && BlockProperties.isOverlay(itemStack)) {
 
 				/* Skip clientside otherwise it will desynchronize server data. */
 				if (world.isRemote)
@@ -267,7 +258,7 @@ public class BlockBase extends BlockContainer {
 				if (!BlockProperties.hasOverlay(TE, effectiveSide) && (effectiveSide < 6 && BlockProperties.hasCover(TE, effectiveSide) || effectiveSide == 6))
 					actionPerformed = decrementInventory = BlockProperties.setOverlay(TE, effectiveSide, itemStack);
 
-			} else if (FeatureHandler.enableDyeColors && itemStack.getItem() == Item.dyePowder && itemStack.getItemDamage() != 15) {
+			} else if (FeatureRegistry.enableDyeColors && itemStack.getItem() == Item.dyePowder && itemStack.getItemDamage() != 15) {
 
 				/* Skip clientside otherwise it will desynchronize server data. */
 				if (world.isRemote)
@@ -458,8 +449,8 @@ public class BlockBase extends BlockContainer {
 		return	entityPlayer.capabilities.isCreativeMode &&
 				heldItem != null &&
 				(
-					heldItem.getItem() == ItemHandler.itemCarpentersHammer ||
-					heldItem.getItem() == ItemHandler.itemCarpentersChisel
+					heldItem.getItem() == ItemRegistry.itemCarpentersHammer ||
+					heldItem.getItem() == ItemRegistry.itemCarpentersChisel
 				);
 	}
 
@@ -524,7 +515,11 @@ public class BlockBase extends BlockContainer {
 				xOffset = target.blockX + block.getBlockBoundsMaxX() + 0.1D;
 				break;
 			}
-
+			
+			if (block instanceof BlockBase) {
+				this.iconOverride = this.blockIcon;
+			}
+			
 			EntityDiggingFX particle = new EntityDiggingFX(world, xOffset, yOffset, zOffset, 0.0D, 0.0D, 0.0D, block, metadata);
 			effectRenderer.addEffect(particle.applyColourMultiplier(target.blockX, target.blockY, target.blockZ).multiplyVelocity(0.2F).multipleParticleScaleBy(0.6F));
 
@@ -781,7 +776,7 @@ public class BlockBase extends BlockContainer {
 	 */
 	protected boolean canSustainPlantWithBlockIdOverride(TEBase TE, World world, int x, int y, int z, int blockID, ForgeDirection dir, IPlantable plant)
 	{
-		if (FeatureHandler.enablePlantSupport)
+		if (FeatureRegistry.enablePlantSupport)
 		{
 			int plantID = plant.getPlantID(world, x, y + 1, z);
 			EnumPlantType plantType = plant.getPlantType(world, x, y + 1, z);
