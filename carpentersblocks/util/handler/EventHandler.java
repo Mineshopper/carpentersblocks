@@ -93,22 +93,23 @@ public class EventHandler
 			 */
 			int blockId = world.getBlockId(x, y, z);
 			int metadata = 1000;
+			
 			if (blockId > 0 && Block.blocksList[blockId] instanceof BlockBase)
 			{
-				TileEntity tileentity = world.getBlockTileEntity(x, y, z);
-				if (tileentity instanceof TEBase)
+				TileEntity TE_normal = world.getBlockTileEntity(x, y, z);
+				
+				if (TE_normal instanceof TEBase)
 				{
-					TEBase tec = (TEBase) tileentity;
+					TEBase TE = (TEBase) TE_normal;
 					
-					if (BlockProperties.hasCover(tec, 6))
+					if (BlockProperties.hasCover(TE, 6))
 					{
-						blockId = BlockProperties.getCoverID(tec, 6);
-						metadata = BlockProperties.getCoverMetadata(tec, 6);
+						blockId = BlockProperties.getCoverID(TE, 6);
+						metadata = BlockProperties.getCoverMetadata(TE, 6);
 					}
 				}
-				/*
-				 * Spawn sprint particles at the foot of the entity
-				 */
+				
+				/* Spawn sprint particles at the foot of the entity */
 				RenderHelper.spawnTileParticleAt(entity.worldObj, entity, blockId, metadata);
 			}
 		}

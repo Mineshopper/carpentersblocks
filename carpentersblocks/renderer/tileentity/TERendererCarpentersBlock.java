@@ -53,7 +53,8 @@ public class TERendererCarpentersBlock extends TileEntitySpecialRenderer
 		 * Setup rendering environment.
 		 */
 		RenderBlocks renderBlocks = new RenderBlocks();
-		this.bindTexture(BedDesignHandler.resource_blanket[design]);Tessellator tessellator = Tessellator.instance;
+		this.bindTexture(BedDesignHandler.resource_blanket[design]);
+		Tessellator tessellator = Tessellator.instance;
 		tessellator.setBrightness(Block.dirt.getMixedBrightnessForBlock(TE.worldObj, TE.xCoord, TE.yCoord, TE.zCoord));
 		tessellator.startDrawingQuads();
 		GL11.glDisable(GL11.GL_LIGHTING);

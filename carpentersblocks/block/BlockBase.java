@@ -43,6 +43,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockBase extends BlockContainer {
 	
+	@SideOnly(Side.CLIENT)
 	private Icon iconOverride;
 
 	public BlockBase(int blockID, Material material)
@@ -58,13 +59,19 @@ public class BlockBase extends BlockContainer {
 		});
 	}
 
-	@Override
+    @SideOnly(Side.CLIENT)
+    @Override
+    /**
+     * When this method is called, your block should register all the icons it needs with the given IconRegister. This
+     * is the only chance you get to register icons.
+     */
 	public void registerIcons(IconRegister iconRegister)
 	{
 		super.registerIcons(iconRegister);
 		this.iconOverride = iconRegister.registerIcon(IconRegistry.icon_blank.getIconName());
 	}
 
+    @SideOnly(Side.CLIENT)
     @Override
     /**
      * This will override the base getIcon and allow us to check

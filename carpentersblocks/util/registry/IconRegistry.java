@@ -12,30 +12,30 @@ public class IconRegistry
 {
 	
 	@SideOnly(Side.CLIENT)
-    public static Icon icon_blank;
-	public static Icon icon_generic;
-	public static Icon icon_slope_oblique_pt_high;
-	public static Icon icon_slope_oblique_pt_low;
-	public static Icon icon_overlay_fast_grass_side;
-	public static Icon icon_overlay_hay_side;
-	public static Icon icon_overlay_snow_side;
-	public static Icon icon_overlay_mycelium_side;
-	public static Icon icon_slope;
-	public static Icon icon_stairs;
-	public static Icon icon_lever;
-	public static Icon icon_torch_lit;
-	public static Icon icon_torch_head_smoldering;
-	public static Icon icon_torch_head_unlit;
-	public static Icon icon_door_screen_tall;
-	public static Icon icon_door_glass_tall_top;
-	public static Icon icon_door_glass_tall_bottom;
-	public static Icon icon_door_glass_top;
-	public static Icon icon_door_french_glass_top;
-	public static Icon icon_door_french_glass_bottom;
-	public static Icon icon_hatch_french_glass;
-	public static Icon icon_hatch_glass;
-	public static Icon icon_hatch_screen;
-	public static Icon icon_bed_pillow;
+    public static Icon	icon_blank,
+						icon_generic,
+						icon_slope_oblique_pt_high,
+						icon_slope_oblique_pt_low,
+						icon_overlay_fast_grass_side,
+						icon_overlay_hay_side,
+						icon_overlay_snow_side,
+						icon_overlay_mycelium_side,
+						icon_slope,
+						icon_stairs,
+						icon_lever,
+						icon_torch_lit,
+						icon_torch_head_smoldering,
+						icon_torch_head_unlit,
+						icon_door_screen_tall,
+						icon_door_glass_tall_top,
+						icon_door_glass_tall_bottom,
+						icon_door_glass_top,
+						icon_door_french_glass_top,
+						icon_door_french_glass_bottom,
+						icon_hatch_french_glass,
+						icon_hatch_glass,
+						icon_hatch_screen,
+						icon_bed_pillow;
 	
 	@SideOnly(Side.CLIENT)
 	public static Icon[] icon_pattern = new Icon[PatternHandler.maxNum];
