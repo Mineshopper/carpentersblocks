@@ -402,28 +402,24 @@ public class RenderHelper extends VertexHelper
 	 * 
 	 * @param world the world to spawn the particle
 	 * @param entity the entity at which feet the particles will spawn
-	 * @param blockId the ID of the block to reference for the particle
+	 * @param blockID the ID of the block to reference for the particle
 	 * @param metadata the metadata of the block for the particle
 	 */
-	public static void spawnTileParticleAt(World world, Entity entity, int blockId, int metadata)
+	public static void spawnTileParticleAt(World world, Entity entity, int blockID, int metadata)
 	{
-		Block block = Block.blocksList[blockId];
+		Block block = Block.blocksList[blockID];
+		
 		if (block != null)
 		{
-			entity.worldObj
-					.spawnParticle(
-							"tilecrack_" + blockId + "_" + metadata,
-							entity.posX
-									+ ((double) entity.worldObj.rand
-											.nextFloat() - 0.5D)
-									* (double) entity.width,
-							entity.boundingBox.minY + 0.1D,
-							entity.posZ
-									+ ((double) entity.worldObj.rand
-											.nextFloat() - 0.5D)
-									* (double) entity.width,
-							-entity.motionX * 4.0D, 1.5D,
-							-entity.motionZ * 4.0D);
+			entity.worldObj.spawnParticle(
+					"tilecrack_" + blockID + "_" + metadata,
+					entity.posX + ((double) entity.worldObj.rand.nextFloat() - 0.5D) * (double) entity.width,
+					entity.boundingBox.minY + 0.1D,
+					entity.posZ + ((double) entity.worldObj.rand.nextFloat() - 0.5D) * (double) entity.width,
+					-entity.motionX * 4.0D,
+					1.5D,
+					-entity.motionZ * 4.0D
+			);
 		}
 	}
 	
@@ -435,31 +431,30 @@ public class RenderHelper extends VertexHelper
 	 * @param x blockX
 	 * @param y blockY
 	 * @param z blockZ
-	 * @param blockId the ID of the block to reference into the Renderer
+	 * @param blockID the ID of the block to reference into the Renderer
 	 * @param metadata the metadata of the block
 	 * @param effectRenderer the renderer to add the effect with
 	 */
-	public static void addDestroyEffect(World world, int x, int y, int z, int blockId, int metadata, EffectRenderer effectRenderer)
+	public static void addDestroyEffect(World world, int x, int y, int z, int blockID, int metadata, EffectRenderer effectRenderer)
 	{
-		Block block = Block.blocksList[blockId];
+		Block block = Block.blocksList[blockID];
+		
 		if (block != null)
 		{
-			byte b0 = 4;
+			byte factor = 4;
 
-			for (int posX = 0; posX < b0; ++posX)
+			for (int posX = 0; posX < factor; ++posX)
 			{
-				for (int posY = 0; posY < b0; ++posY)
+				for (int posY = 0; posY < factor; ++posY)
 				{
-					for (int posZ = 0; posZ < b0; ++posZ)
+					for (int posZ = 0; posZ < factor; ++posZ)
 					{
-						double dirX = (double) x + ((double) posX + 0.5D) / (double) b0;
-						double dirY = (double) y + ((double) posY + 0.5D) / (double) b0;
-						double dirZ = (double) z + ((double) posZ + 0.5D) / (double) b0;
-						effectRenderer.addEffect((new EntityDiggingFX(world,
-								dirX, dirY, dirZ, dirX - (double) x - 0.5D,
-								dirY - (double) y - 0.5D, dirZ - (double) z
-										- 0.5D, block, metadata))
-								.applyColourMultiplier(x, y, z));
+						double dirX = (double) x + ((double) posX + 0.5D) / (double) factor;
+						double dirY = (double) y + ((double) posY + 0.5D) / (double) factor;
+						double dirZ = (double) z + ((double) posZ + 0.5D) / (double) factor;
+						
+						EntityDiggingFX particle = new EntityDiggingFX(world, dirX, dirY, dirZ, dirX - (double) x - 0.5D, dirY - (double) y - 0.5D, dirZ - (double) z - 0.5D, block, metadata);
+						effectRenderer.addEffect(particle.applyColourMultiplier(x, y, z));
 					}
 				}
 			}
