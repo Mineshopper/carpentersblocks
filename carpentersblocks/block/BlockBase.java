@@ -1,12 +1,20 @@
 package carpentersblocks.block;
 
-import java.util.Random;
-
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockContainer;
-import net.minecraft.block.BlockDirectional;
-import net.minecraft.block.BlockFlower;
-import net.minecraft.block.StepSound;
+import carpentersblocks.api.ICarpentersChisel;
+import carpentersblocks.api.ICarpentersHammer;
+import carpentersblocks.renderer.helper.RenderHelper;
+import carpentersblocks.tileentity.TEBase;
+import carpentersblocks.util.BlockProperties;
+import carpentersblocks.util.handler.EventHandler;
+import carpentersblocks.util.handler.OverlayHandler;
+import carpentersblocks.util.handler.PatternHandler;
+import carpentersblocks.util.handler.PlantHandler;
+import carpentersblocks.util.registry.FeatureRegistry;
+import carpentersblocks.util.registry.IconRegistry;
+import carpentersblocks.util.registry.ItemRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.client.particle.EntityDiggingFX;
@@ -28,18 +36,8 @@ import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.common.EnumPlantType;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.IPlantable;
-import carpentersblocks.renderer.helper.RenderHelper;
-import carpentersblocks.tileentity.TEBase;
-import carpentersblocks.util.BlockProperties;
-import carpentersblocks.util.handler.EventHandler;
-import carpentersblocks.util.handler.OverlayHandler;
-import carpentersblocks.util.handler.PatternHandler;
-import carpentersblocks.util.handler.PlantHandler;
-import carpentersblocks.util.registry.FeatureRegistry;
-import carpentersblocks.util.registry.IconRegistry;
-import carpentersblocks.util.registry.ItemRegistry;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+
+import java.util.Random;
 
 public class BlockBase extends BlockContainer {
 	
@@ -145,7 +143,7 @@ public class BlockBase extends BlockContainer {
 			int effectiveSide = BlockProperties.hasCover(TE, side) ? side : 6;
 			Item item = itemStack.getItem();
 
-			if (item.equals(ItemRegistry.itemCarpentersHammer)) {
+			if (item instanceof ICarpentersHammer && ((ICarpentersHammer)item).canUseHammer(world, entityPlayer)) {
 				
 				boolean dataAltered = false;
 
@@ -181,7 +179,7 @@ public class BlockBase extends BlockContainer {
 
 				}
 
-			} else if (!world.isRemote && item.equals(ItemRegistry.itemCarpentersChisel)) {
+			} else if (!world.isRemote && item instanceof ICarpentersChisel && ((ICarpentersChisel)item).canUseChisel(world, entityPlayer)) {
 
 				if (entityPlayer.isSneaking()) {
 
@@ -220,11 +218,11 @@ public class BlockBase extends BlockContainer {
 			 */
 			int effectiveSide = BlockProperties.hasCover(TE, side) ? side : 6;
 			
-			if (itemStack.getItem() == ItemRegistry.itemCarpentersHammer) {
+			if (itemStack.getItem() instanceof ICarpentersHammer && ((ICarpentersHammer)itemStack.getItem()).canUseHammer(world, entityPlayer)) {
 
 				actionPerformed = onHammerRightClick(TE, entityPlayer, side, hitX, hitZ);
 
-			} else if (ItemRegistry.enableChisel && itemStack.getItem() == ItemRegistry.itemCarpentersChisel) {
+			} else if (ItemRegistry.enableChisel && itemStack.getItem() instanceof ICarpentersChisel && ((ICarpentersChisel)itemStack.getItem()).canUseChisel(world, entityPlayer)) {
 
 				/* Skip clientside otherwise it will desynchronize server data. */
 				if (world.isRemote)
@@ -984,7 +982,11 @@ public class BlockBase extends BlockContainer {
 	
 	protected void damageItemWithChance(World world, EntityPlayer entityPlayer)
 	{
-		entityPlayer.getCurrentEquippedItem().damageItem(1, entityPlayer);
+        Item equippedItem = entityPlayer.getCurrentEquippedItem().getItem();
+        if(equippedItem instanceof ICarpentersHammer)
+            ((ICarpentersHammer) equippedItem).onHammerUse(world, entityPlayer);
+        else if(equippedItem instanceof ICarpentersChisel)
+            ((ICarpentersChisel) equippedItem).onChiselUse(world, entityPlayer);
 	}
 
 	protected boolean canCoverSide(TEBase TE, World world, int x, int y, int z, int side)
