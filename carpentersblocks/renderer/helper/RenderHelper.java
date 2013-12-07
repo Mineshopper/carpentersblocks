@@ -6,6 +6,7 @@ import static net.minecraftforge.common.ForgeDirection.NORTH;
 import static net.minecraftforge.common.ForgeDirection.SOUTH;
 import static net.minecraftforge.common.ForgeDirection.UP;
 import static net.minecraftforge.common.ForgeDirection.WEST;
+import cpw.mods.fml.client.FMLClientHandler;
 import net.minecraft.block.Block;
 import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.client.particle.EntityDiggingFX;
@@ -19,8 +20,7 @@ import net.minecraftforge.common.ForgeDirection;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 
-public class RenderHelper extends VertexHelper
-{
+public class RenderHelper extends VertexHelper {
 		
 	protected static double uMin;
 	protected static double uMax;
@@ -452,7 +452,7 @@ public class RenderHelper extends VertexHelper
 						double dirX = (double) x + ((double) posX + 0.5D) / (double) factor;
 						double dirY = (double) y + ((double) posY + 0.5D) / (double) factor;
 						double dirZ = (double) z + ((double) posZ + 0.5D) / (double) factor;
-						
+
 						EntityDiggingFX particle = new EntityDiggingFX(world, dirX, dirY, dirZ, dirX - (double) x - 0.5D, dirY - (double) y - 0.5D, dirZ - (double) z - 0.5D, block, metadata);
 						effectRenderer.addEffect(particle.applyColourMultiplier(x, y, z));
 					}

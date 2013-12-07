@@ -4,8 +4,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 
-public class Gate
-{
+public class Gate {
 
 	/**
 	 * 16-bit data components:
@@ -46,15 +45,15 @@ public class Gate
 	/**
 	 * Returns type (vanilla, picket, etc).
 	 */
-	public final static int getType(int data)
+	public static int getType(TEBase TE)
 	{
-		return data & 0xf;
+		return BlockProperties.getData(TE) & 0xf;
 	}
 
 	/**
 	 * Sets type (vanilla, picket, etc).
 	 */
-	public final static void setType(TEBase TE, int type)
+	public static void setType(TEBase TE, int type)
 	{
 		int temp = BlockProperties.getData(TE) & 0xfff0;
 		temp |= type;
@@ -65,16 +64,16 @@ public class Gate
 	/**
 	 * Returns facing (path on x, or path on z).
 	 */
-	public final static int getFacing(int data)
+	public static int getFacing(TEBase TE)
 	{
-		int temp = data & 0x20;
+		int temp = BlockProperties.getData(TE) & 0x20;
 		return temp >> 5;
 	}
 
 	/**
 	 * Sets facing (path on x, or path on z).
 	 */
-	public final static void setFacing(TEBase TE, int facing)
+	public static void setFacing(TEBase TE, int facing)
 	{
 		int temp = BlockProperties.getData(TE) & 0xffdf;
 		temp |= facing << 5;
@@ -85,22 +84,23 @@ public class Gate
 	/**
 	 * Returns open/closed state.
 	 */
-	public final static int getState(int data)
+	public static int getState(TEBase TE)
 	{
-		int temp = data & 0x40;
+		int temp = BlockProperties.getData(TE) & 0x40;
 		return temp >> 6;
 	}
 
 	/**
 	 * Sets state (open or closed).
 	 */
-	public final static void setState(TEBase TE, int state, boolean playSound)
+	public static void setState(TEBase TE, int state, boolean playSound)
 	{
 		int temp = BlockProperties.getData(TE) & 0xffbf;
 		temp |= state << 6;
 
-		if (!TE.worldObj.isRemote && playSound)
+		if (!TE.worldObj.isRemote && playSound) {
 			TE.worldObj.playAuxSFXAtEntity((EntityPlayer)null, 1003, TE.xCoord, TE.yCoord, TE.zCoord, 0);
+		}
 
 		BlockProperties.setData(TE, temp);
 	}
@@ -108,16 +108,16 @@ public class Gate
 	/**
 	 * Returns opening direction (positive or negative on axis opposite of facing).
 	 */
-	public final static int getDirOpen(int data)
+	public static int getDirOpen(TEBase TE)
 	{
-		int temp = data & 0x10;
+		int temp = BlockProperties.getData(TE) & 0x10;
 		return temp >> 4;
 	}
 
 	/**
 	 * Sets opening direction (positive or negative on axis opposite of facing).
 	 */
-	public final static void setDirOpen(TEBase TE, int dirOpen)
+	public static void setDirOpen(TEBase TE, int dirOpen)
 	{
 		int temp = BlockProperties.getData(TE) & 0xffef;
 		temp |= dirOpen << 4;

@@ -12,8 +12,7 @@ import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.util.Icon;
 import net.minecraftforge.common.ForgeDirection;
 
-public class RenderHelperCollapsible extends RenderHelper
-{
+public class RenderHelperCollapsible extends RenderHelper {
 
 	private static double offset_XZNN;
 	private static double offset_XZNP;

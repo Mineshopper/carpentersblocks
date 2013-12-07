@@ -9,8 +9,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 
-public class OverlayHandler
-{
+public class OverlayHandler {
 
 	/*
 	 * Overlay definitions

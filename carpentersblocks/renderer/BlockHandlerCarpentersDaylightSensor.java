@@ -3,11 +3,11 @@ package carpentersblocks.renderer;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.util.Icon;
 
 import org.lwjgl.opengl.GL11;
 
-public class BlockHandlerCarpentersDaylightSensor extends BlockHandlerBase
-{
+public class BlockHandlerCarpentersDaylightSensor extends BlockHandlerBase {
 
 	@Override
 	public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderBlocks)
@@ -45,5 +45,18 @@ public class BlockHandlerCarpentersDaylightSensor extends BlockHandlerBase
 
 		GL11.glTranslatef(0.5F, 0.5F, 0.5F);
 	}
-	
+
+	/**
+	 * Override to provide custom icons.
+	 */
+	@Override
+	protected Icon getUniqueIcon(int side, Icon icon)
+	{
+		if (side == UP) {
+			return srcBlock.getBlockTexture(renderBlocks.blockAccess, TE.xCoord, TE.yCoord, TE.zCoord, side);
+		} else {
+			return icon;
+		}
+	}
+
 }

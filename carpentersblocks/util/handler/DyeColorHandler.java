@@ -3,9 +3,7 @@ package carpentersblocks.util.handler;
 import java.util.HashMap;
 import java.util.Map;
 
-
-public class DyeColorHandler
-{
+public class DyeColorHandler {
 
 	/*
 	 * Color definitions

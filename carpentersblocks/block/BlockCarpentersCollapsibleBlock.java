@@ -21,8 +21,7 @@ import carpentersblocks.util.registry.BlockRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class BlockCarpentersCollapsibleBlock extends BlockBase
-{
+public class BlockCarpentersCollapsibleBlock extends BlockBase {
 
 	public BlockCarpentersCollapsibleBlock(int blockID)
 	{
@@ -47,7 +46,7 @@ public class BlockCarpentersCollapsibleBlock extends BlockBase
 
 		return true;
 	}
-	
+
 	@Override
 	/**
 	 * Damages hammer with a chance to not damage.
@@ -55,10 +54,10 @@ public class BlockCarpentersCollapsibleBlock extends BlockBase
 	protected void damageItemWithChance(World world, EntityPlayer entityPlayer)
 	{
 		if (world.rand.nextFloat() <= 0.2F) {
-			entityPlayer.getCurrentEquippedItem().damageItem(1, entityPlayer);
+			super.damageItemWithChance(world, entityPlayer);
 		}
 	}
-	
+
 	/**
 	 * Will attempt to smooth transitions to any adjacent collapsible blocks
 	 * given a TE and source quadrant.
@@ -73,9 +72,9 @@ public class BlockCarpentersCollapsibleBlock extends BlockBase
 		TEBase TE_XZNP = TE.worldObj.getBlockId(TE.xCoord - 1, TE.yCoord, TE.zCoord + 1) == blockID ? (TEBase)TE.worldObj.getBlockTileEntity(TE.xCoord - 1, TE.yCoord, TE.zCoord + 1) : null;
 		TEBase TE_XZPN = TE.worldObj.getBlockId(TE.xCoord + 1, TE.yCoord, TE.zCoord - 1) == blockID ? (TEBase)TE.worldObj.getBlockTileEntity(TE.xCoord + 1, TE.yCoord, TE.zCoord - 1) : null;
 		TEBase TE_XZPP = TE.worldObj.getBlockId(TE.xCoord + 1, TE.yCoord, TE.zCoord + 1) == blockID ? (TEBase)TE.worldObj.getBlockTileEntity(TE.xCoord + 1, TE.yCoord, TE.zCoord + 1) : null;
-		
+
 		int height = Collapsible.getQuadHeight(TE, src_quadrant);
-		
+
 		switch (src_quadrant)
 		{
 		case Collapsible.QUAD_XZNN:
@@ -124,7 +123,7 @@ public class BlockCarpentersCollapsibleBlock extends BlockBase
 			break;
 		}
 	}
-	
+
 	@Override
 	/**
 	 * Updates the blocks bounds based on its current state. Args: world, x, y, z
@@ -135,10 +134,11 @@ public class BlockCarpentersCollapsibleBlock extends BlockBase
 
 		float maxHeight = getMaxHeight(TE);
 
-		if (maxHeight != 1.0F)
+		if (maxHeight != 1.0F) {
 			setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, maxHeight, 1.0F);
+		}
 	}
-	
+
 	@Override
 	/**
 	 * Checks if the block is a solid face on the given side, used by placement logic.
@@ -153,13 +153,13 @@ public class BlockCarpentersCollapsibleBlock extends BlockBase
 			case UP:
 				return BlockProperties.getData(TE) == 0xffff;
 			case NORTH:
-				return (Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZNN) + Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZPN)) == 32;
+				return Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZNN) + Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZPN) == 32;
 			case SOUTH:
-				return (Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZNP) + Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZPP)) == 32;
+				return Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZNP) + Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZPP) == 32;
 			case WEST:
-				return (Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZNP) + Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZNN)) == 32;
+				return Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZNP) + Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZNN) == 32;
 			case EAST:
-				return (Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZPN) + Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZPP)) == 32;
+				return Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZPN) + Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZPP) == 32;
 			default:
 				return true;
 			}
@@ -167,7 +167,7 @@ public class BlockCarpentersCollapsibleBlock extends BlockBase
 
 		return false;
 	}
-	
+
 	@Override
 	/**
 	 * Called when the block is placed in the world.
@@ -178,7 +178,7 @@ public class BlockCarpentersCollapsibleBlock extends BlockBase
 		if (!entityLiving.isSneaking())
 		{
 			/* Match adjacent collapsible quadrant heights. */
-			
+
 			TEBase TE_XN = world.getBlockId(x - 1, y, z) == blockID ? (TEBase)world.getBlockTileEntity(x - 1, y, z) : null;
 			TEBase TE_XP = world.getBlockId(x + 1, y, z) == blockID ? (TEBase)world.getBlockTileEntity(x + 1, y, z) : null;
 			TEBase TE_ZN = world.getBlockId(x, y, z - 1) == blockID ? (TEBase)world.getBlockTileEntity(x, y, z - 1) : null;
@@ -202,23 +202,24 @@ public class BlockCarpentersCollapsibleBlock extends BlockBase
 			}
 		}
 	}
-	
+
 	/**
 	 * Returns block height determined by the highest quadrant.
 	 */
 	private float getMaxHeight(TEBase TE)
 	{
 		float maxHeight = 1.0F / 16.0F;
-		
+
 		for (int quadrant = 0; quadrant < 4; ++quadrant) {
 			float quadHeight = Collapsible.getQuadHeight(TE, quadrant) / 16.0F;
-			if (quadHeight > maxHeight)
+			if (quadHeight > maxHeight) {
 				maxHeight = quadHeight;
-		}		
+			}
+		}
 
 		return maxHeight;
 	}
-	
+
 	/**
 	 * Will generate four boxes with max height represented by quadrant height.
 	 */
@@ -227,8 +228,8 @@ public class BlockCarpentersCollapsibleBlock extends BlockBase
 		float xMin = 0.0F;
 		float zMin = 0.0F;
 		float xMax = 1.0F;
-		float zMax = 1.0F;		
-		
+		float zMax = 1.0F;
+
 		switch (quad)
 		{
 		case Collapsible.QUAD_XZNN:
@@ -248,15 +249,16 @@ public class BlockCarpentersCollapsibleBlock extends BlockBase
 			zMin = 0.5F;
 			break;
 		}
-		
+
 		float maxHeight = getMaxHeight(TE);
 		float height = Collapsible.getQuadHeight(TE, quad) / 16.0F;
-		
+
 		/* Make quads stagger no more than 0.5F so player can always walk across them. */
-		if ((maxHeight - height) > 0.5F)
+		if (maxHeight - height > 0.5F) {
 			height = maxHeight - 0.5F;
-		
-		return new float[] { xMin, 0.0F, zMin, xMax, height, zMax };		
+		}
+
+		return new float[] { xMin, 0.0F, zMin, xMax, height, zMax };
 	}
 
 	@Override
@@ -280,7 +282,7 @@ public class BlockCarpentersCollapsibleBlock extends BlockBase
 			}
 		}
 	}
-	
+
 	@Override
 	/**
 	 * Ray traces through the blocks collision from start vector to end vector returning a ray trace hit. Args: world,
@@ -313,10 +315,10 @@ public class BlockCarpentersCollapsibleBlock extends BlockBase
 			}
 		}
 
-		this.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
+		setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
 		return finalTrace;
 	}
-	
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	/**

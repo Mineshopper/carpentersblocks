@@ -4,8 +4,7 @@ import net.minecraft.block.material.Material;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 
-public class PressurePlate
-{
+public class PressurePlate {
 
 	/**
 	 * 16-bit data components:
@@ -37,15 +36,15 @@ public class PressurePlate
 	/**
 	 * Returns type.
 	 */
-	public final static int getType(int data)
+	public static int getType(TEBase TE)
 	{
-		return data & 0x7;
+		return BlockProperties.getData(TE) & 0x7;
 	}
 
 	/**
 	 * Sets type.
 	 */
-	public final static void setType(TEBase TE, int type)
+	public static void setType(TEBase TE, int type)
 	{
 		int temp = BlockProperties.getData(TE) & 0xfff8;
 		temp |= type;
@@ -56,30 +55,28 @@ public class PressurePlate
 	/**
 	 * Returns state.
 	 */
-	public final static int getState(int data)
+	public static int getState(TEBase TE)
 	{
-		int temp = data & 0x8;
+		int temp = BlockProperties.getData(TE) & 0x8;
 		return temp >> 3;
 	}
 
 	/**
 	 * Sets state.
 	 */
-	public final static void setState(TEBase TE, int state, boolean playSound)
+	public static void setState(TEBase TE, int state, boolean playSound)
 	{
 		int temp = BlockProperties.getData(TE) & 0xfff7;
 		temp |= state << 3;
-
-		int data = BlockProperties.getData(TE);
-		getPolarity(data);
 
 		if (
 				!TE.worldObj.isRemote &&
 				BlockProperties.getCoverBlock(TE, 6).blockMaterial != Material.cloth &&
 				playSound &&
-				getState(data) != state
-				)
-			TE.worldObj.playSoundEffect(TE.xCoord + 0.5D, TE.yCoord + 0.1D, TE.zCoord + 0.5D, "random.click", 0.3F, getState(data) == STATE_ON ? 0.5F : 0.6F);
+				getState(TE) != state
+				) {
+			TE.worldObj.playSoundEffect(TE.xCoord + 0.5D, TE.yCoord + 0.1D, TE.zCoord + 0.5D, "random.click", 0.3F, getState(TE) == STATE_ON ? 0.5F : 0.6F);
+		}
 
 		BlockProperties.setData(TE, temp);
 	}
@@ -87,16 +84,16 @@ public class PressurePlate
 	/**
 	 * Returns polarity.
 	 */
-	public final static int getPolarity(int data)
+	public static int getPolarity(TEBase TE)
 	{
-		int temp = data & 0x10;
+		int temp = BlockProperties.getData(TE) & 0x10;
 		return temp >> 4;
 	}
 
 	/**
 	 * Sets polarity.
 	 */
-	public final static void setPolarity(TEBase TE, int polarity)
+	public static void setPolarity(TEBase TE, int polarity)
 	{
 		int temp = BlockProperties.getData(TE) & 0xffef;
 		temp |= polarity << 4;
@@ -107,16 +104,16 @@ public class PressurePlate
 	/**
 	 * Returns trigger entity.
 	 */
-	public final static int getTriggerEntity(int data)
+	public static int getTriggerEntity(TEBase TE)
 	{
-		int temp = data & 0x60;
+		int temp = BlockProperties.getData(TE) & 0x60;
 		return temp >> 5;
 	}
 
 	/**
 	 * Sets trigger entity.
 	 */
-	public final static void setTriggerEntity(TEBase TE, int trigger)
+	public static void setTriggerEntity(TEBase TE, int trigger)
 	{
 		int temp = BlockProperties.getData(TE) & 0xff9f;
 		temp |= trigger << 5;

@@ -4,8 +4,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 
-public class Hatch
-{
+public class Hatch {
 
 	/**
 	 * 16-bit data components:
@@ -52,7 +51,7 @@ public class Hatch
 	/**
 	 * Returns type.
 	 */
-	public final static int getType(TEBase TE)
+	public static int getType(TEBase TE)
 	{
 		return BlockProperties.getData(TE) & 0x7;
 	}
@@ -60,7 +59,7 @@ public class Hatch
 	/**
 	 * Sets type.
 	 */
-	public final static void setType(TEBase TE, int type)
+	public static void setType(TEBase TE, int type)
 	{
 		int temp = BlockProperties.getData(TE) & 0xfff8;
 		temp |= type;
@@ -71,7 +70,7 @@ public class Hatch
 	/**
 	 * Returns position (high or low).
 	 */
-	public final static int getPos(TEBase TE)
+	public static int getPos(TEBase TE)
 	{
 		int temp = BlockProperties.getData(TE) & 0x8;
 		return temp >> 3;
@@ -80,7 +79,7 @@ public class Hatch
 	/**
 	 * Sets position (high or low).
 	 */
-	public final static void setPos(TEBase TE, int position)
+	public static void setPos(TEBase TE, int position)
 	{
 		int temp = BlockProperties.getData(TE) & 0xfff7;
 		temp |= position << 3;
@@ -91,7 +90,7 @@ public class Hatch
 	/**
 	 * Returns state (open or closed).
 	 */
-	public final static int getState(TEBase TE)
+	public static int getState(TEBase TE)
 	{
 		int temp = BlockProperties.getData(TE) & 0x10;
 		return temp >> 4;
@@ -100,21 +99,22 @@ public class Hatch
 	/**
 	 * Sets state (open or closed).
 	 */
-	public final static void setState(TEBase TE, int state)
+	public static void setState(TEBase TE, int state)
 	{
 		int temp = BlockProperties.getData(TE) & 0xffef;
 		temp |= state << 4;
 
-		BlockProperties.setData(TE, temp);
-
-		if (!TE.worldObj.isRemote)
+		if (!TE.worldObj.isRemote) {
 			TE.worldObj.playAuxSFXAtEntity((EntityPlayer)null, 1003, TE.xCoord, TE.yCoord, TE.zCoord, 0);
+		}
+
+		BlockProperties.setData(TE, temp);
 	}
 
 	/**
 	 * Returns direction.
 	 */
-	public final static int getDir(TEBase TE)
+	public static int getDir(TEBase TE)
 	{
 		int temp = BlockProperties.getData(TE) & 0x60;
 		return temp >> 5;
@@ -123,7 +123,7 @@ public class Hatch
 	/**
 	 * Sets direction.
 	 */
-	public final static void setDir(TEBase TE, int dir)
+	public static void setDir(TEBase TE, int dir)
 	{
 		int temp = BlockProperties.getData(TE) & 0xff9f;
 		temp |= dir << 5;
@@ -134,7 +134,7 @@ public class Hatch
 	/**
 	 * Returns hatch rigidity (requires redstone for activation).
 	 */
-	public final static int getRigidity(TEBase TE)
+	public static int getRigidity(TEBase TE)
 	{
 		int temp = BlockProperties.getData(TE) & 0x80;
 		return temp >> 7;
@@ -143,7 +143,7 @@ public class Hatch
 	/**
 	 * Sets hatch rigidity (requires redstone for activation).
 	 */
-	public final static void setRigidity(TEBase TE, int rigid)
+	public static void setRigidity(TEBase TE, int rigid)
 	{
 		int temp = BlockProperties.getData(TE) & 0xff7f;
 		temp |= rigid << 7;

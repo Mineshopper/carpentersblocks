@@ -28,9 +28,8 @@ import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 
-public class ClientProxy extends CommonProxy
-{
-	
+public class ClientProxy extends CommonProxy {
+
 	@Override
 	public void registerRenderInformation(FMLPreInitializationEvent event)
 	{
@@ -96,12 +95,12 @@ public class ClientProxy extends CommonProxy
 			BlockRegistry.carpentersLadderRenderID = RenderingRegistry.getNextAvailableRenderId();
 			RenderingRegistry.registerBlockHandler(BlockRegistry.carpentersLadderRenderID, new BlockHandlerCarpentersLadder());
 		}
-		
+
 		if (BlockRegistry.enableCollapsibleBlock) {
 			BlockRegistry.carpentersCollapsibleBlockRenderID = RenderingRegistry.getNextAvailableRenderId();
 			RenderingRegistry.registerBlockHandler(BlockRegistry.carpentersCollapsibleBlockRenderID, new BlockHandlerCarpentersCollapsibleBlock());
 		}
-		
+
 		if (BlockRegistry.enableTorch) {
 			BlockRegistry.carpentersTorchRenderID = RenderingRegistry.getNextAvailableRenderId();
 			RenderingRegistry.registerBlockHandler(BlockRegistry.carpentersTorchRenderID, new BlockHandlerCarpentersTorch());
@@ -110,8 +109,9 @@ public class ClientProxy extends CommonProxy
 		BlockRegistry.carpentersBlockRenderID = RenderingRegistry.getNextAvailableRenderId();
 		RenderingRegistry.registerBlockHandler(BlockRegistry.carpentersBlockRenderID, new BlockHandlerCarpentersBlock());
 
-		if (FeatureRegistry.enableOptifineIntegration && FMLClientHandler.instance().hasOptifine())
+		if (FeatureRegistry.enableOptifineIntegration && FMLClientHandler.instance().hasOptifine()) {
 			FeatureRegistry.enableOptifineIntegration = OptifineHandler.init();
+		}
 
 		ClientRegistry.bindTileEntitySpecialRenderer(TEBase.class, new TERendererCarpentersBlock());
 	}

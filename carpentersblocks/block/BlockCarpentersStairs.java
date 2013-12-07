@@ -20,8 +20,7 @@ import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.registry.BlockRegistry;
 
-public class BlockCarpentersStairs extends BlockBase
-{
+public class BlockCarpentersStairs extends BlockBase {
 
 	public BlockCarpentersStairs(int blockID)
 	{
@@ -48,34 +47,41 @@ public class BlockCarpentersStairs extends BlockBase
 		switch (stairs.stairsType)
 		{
 		case NORMAL_XZ:
-			if (++stairsID > 3)
+			if (++stairsID > 3) {
 				stairsID = 0;
+			}
 			break;
 		case NORMAL_Y:
 			if (stairs.arePositive) {
-				if (++stairsID > 11)
+				if (++stairsID > 11) {
 					stairsID = 8;
+				}
 			} else {
-				if (++stairsID > 7)
+				if (++stairsID > 7) {
 					stairsID = 4;
+				}
 			}
 			break;
 		case NORMAL_INT:
 			if (stairs.arePositive) {
-				if ((stairsID += 2) > 18)
+				if ((stairsID += 2) > 18) {
 					stairsID = 12;
+				}
 			} else {
-				if ((stairsID += 2) > 19)
+				if ((stairsID += 2) > 19) {
 					stairsID = 13;
+				}
 			}
 			break;
 		case NORMAL_EXT:
 			if (stairs.arePositive) {
-				if ((stairsID += 2) > 26)
+				if ((stairsID += 2) > 26) {
 					stairsID = 20;
+				}
 			}  else {
-				if ((stairsID += 2) > 27)
+				if ((stairsID += 2) > 27) {
 					stairsID = 21;
+				}
 			}
 			break;
 		}
@@ -482,8 +488,9 @@ public class BlockCarpentersStairs extends BlockBase
 	{
 		TEBase TE = (TEBase)world.getBlockTileEntity(x, y, z);
 
-		if (isBlockSolid(world, x, y, z))
+		if (isBlockSolid(world, x, y, z)) {
 			return Stairs.stairsList[BlockProperties.getData(TE)].isFaceFull(side);
+		}
 
 		return false;
 	}
@@ -514,9 +521,9 @@ public class BlockCarpentersStairs extends BlockBase
 		}
 
 		if (side > 1) {
-			if ((hitY > 0.5F) && (hitX > (1.0F - hitY)) && (hitX < hitY)) {
+			if (hitY > 0.5F && hitX > 1.0F - hitY && hitX < hitY) {
 				return side + 2;
-			} else if (hitY < 0.5F && hitX < (1.0F - hitY) && hitX > hitY) {
+			} else if (hitY < 0.5F && hitX < 1.0F - hitY && hitX > hitY) {
 				return side + 6;
 			} else if (hitX < 0.2F) {
 				return side == 2 ? 1 : side == 3 ? 0 : side == 4 ? 3 : 2;
@@ -598,58 +605,74 @@ public class BlockCarpentersStairs extends BlockBase
 			{
 				if (TE_XN != null) {
 					if (stairs.facings.contains(ForgeDirection.WEST)) {
-						if (stairs_XN.facings.contains(ForgeDirection.SOUTH) && !stairs_XN.facings.contains(ForgeDirection.EAST))
+						if (stairs_XN.facings.contains(ForgeDirection.SOUTH) && !stairs_XN.facings.contains(ForgeDirection.EAST)) {
 							stairsID = stairs_XN.arePositive ? Stairs.ID_NORMAL_INT_POS_SW : Stairs.ID_NORMAL_INT_NEG_SW;
-						if (stairs_XN.facings.contains(ForgeDirection.NORTH) && !stairs_XN.facings.contains(ForgeDirection.EAST))
+						}
+						if (stairs_XN.facings.contains(ForgeDirection.NORTH) && !stairs_XN.facings.contains(ForgeDirection.EAST)) {
 							stairsID = stairs_XN.arePositive ? Stairs.ID_NORMAL_INT_POS_NW : Stairs.ID_NORMAL_INT_NEG_NW;
+						}
 					}
 					if (stairs.facings.contains(ForgeDirection.EAST)) {
-						if (stairs_XN.facings.contains(ForgeDirection.SOUTH) && !stairs_XN.facings.contains(ForgeDirection.EAST))
+						if (stairs_XN.facings.contains(ForgeDirection.SOUTH) && !stairs_XN.facings.contains(ForgeDirection.EAST)) {
 							stairsID = stairs_XN.arePositive ? Stairs.ID_NORMAL_EXT_POS_SE : Stairs.ID_NORMAL_EXT_NEG_SE;
-						if (stairs_XN.facings.contains(ForgeDirection.NORTH) && !stairs_XN.facings.contains(ForgeDirection.EAST))
+						}
+						if (stairs_XN.facings.contains(ForgeDirection.NORTH) && !stairs_XN.facings.contains(ForgeDirection.EAST)) {
 							stairsID = stairs_XN.arePositive ? Stairs.ID_NORMAL_EXT_POS_NE : Stairs.ID_NORMAL_EXT_NEG_NE;
+						}
 					}
 				}
 				if (TE_XP != null) {
 					if (stairs.facings.contains(ForgeDirection.WEST)) {
-						if (stairs_XP.facings.contains(ForgeDirection.SOUTH) && !stairs_XP.facings.contains(ForgeDirection.WEST))
+						if (stairs_XP.facings.contains(ForgeDirection.SOUTH) && !stairs_XP.facings.contains(ForgeDirection.WEST)) {
 							stairsID = stairs_XP.arePositive ? Stairs.ID_NORMAL_EXT_POS_SW : Stairs.ID_NORMAL_EXT_NEG_SW;
-						if (stairs_XP.facings.contains(ForgeDirection.NORTH) && !stairs_XP.facings.contains(ForgeDirection.WEST))
+						}
+						if (stairs_XP.facings.contains(ForgeDirection.NORTH) && !stairs_XP.facings.contains(ForgeDirection.WEST)) {
 							stairsID = stairs_XP.arePositive ? Stairs.ID_NORMAL_EXT_POS_NW : Stairs.ID_NORMAL_EXT_NEG_NW;
+						}
 					}
 					if (stairs.facings.contains(ForgeDirection.EAST)) {
-						if (stairs_XP.facings.contains(ForgeDirection.SOUTH) && !stairs_XP.facings.contains(ForgeDirection.WEST))
+						if (stairs_XP.facings.contains(ForgeDirection.SOUTH) && !stairs_XP.facings.contains(ForgeDirection.WEST)) {
 							stairsID = stairs_XP.arePositive ? Stairs.ID_NORMAL_INT_POS_SE : Stairs.ID_NORMAL_INT_NEG_SE;
-						if (stairs_XP.facings.contains(ForgeDirection.NORTH) && !stairs_XP.facings.contains(ForgeDirection.WEST))
+						}
+						if (stairs_XP.facings.contains(ForgeDirection.NORTH) && !stairs_XP.facings.contains(ForgeDirection.WEST)) {
 							stairsID = stairs_XP.arePositive ? Stairs.ID_NORMAL_INT_POS_NE : Stairs.ID_NORMAL_INT_NEG_NE;
+						}
 					}
 				}
 				if (TE_ZN != null) {
 					if (stairs.facings.contains(ForgeDirection.NORTH)) {
-						if (stairs_ZN.facings.contains(ForgeDirection.EAST) && !stairs_ZN.facings.contains(ForgeDirection.SOUTH))
+						if (stairs_ZN.facings.contains(ForgeDirection.EAST) && !stairs_ZN.facings.contains(ForgeDirection.SOUTH)) {
 							stairsID = stairs_ZN.arePositive ? Stairs.ID_NORMAL_INT_POS_NE : Stairs.ID_NORMAL_INT_NEG_NE;
-						if (stairs_ZN.facings.contains(ForgeDirection.WEST) && !stairs_ZN.facings.contains(ForgeDirection.SOUTH))
+						}
+						if (stairs_ZN.facings.contains(ForgeDirection.WEST) && !stairs_ZN.facings.contains(ForgeDirection.SOUTH)) {
 							stairsID = stairs_ZN.arePositive ? Stairs.ID_NORMAL_INT_POS_NW : Stairs.ID_NORMAL_INT_NEG_NW;
+						}
 					}
 					if (stairs.facings.contains(ForgeDirection.SOUTH)) {
-						if (stairs_ZN.facings.contains(ForgeDirection.EAST) && !stairs_ZN.facings.contains(ForgeDirection.SOUTH))
+						if (stairs_ZN.facings.contains(ForgeDirection.EAST) && !stairs_ZN.facings.contains(ForgeDirection.SOUTH)) {
 							stairsID = stairs_ZN.arePositive ? Stairs.ID_NORMAL_EXT_POS_SE : Stairs.ID_NORMAL_EXT_NEG_SE;
-						if (stairs_ZN.facings.contains(ForgeDirection.WEST) && !stairs_ZN.facings.contains(ForgeDirection.SOUTH))
+						}
+						if (stairs_ZN.facings.contains(ForgeDirection.WEST) && !stairs_ZN.facings.contains(ForgeDirection.SOUTH)) {
 							stairsID = stairs_ZN.arePositive ? Stairs.ID_NORMAL_EXT_POS_SW : Stairs.ID_NORMAL_EXT_NEG_SW;
+						}
 					}
 				}
 				if (TE_ZP != null) {
 					if (stairs.facings.contains(ForgeDirection.NORTH)) {
-						if (stairs_ZP.facings.contains(ForgeDirection.EAST) && !stairs_ZP.facings.contains(ForgeDirection.NORTH))
+						if (stairs_ZP.facings.contains(ForgeDirection.EAST) && !stairs_ZP.facings.contains(ForgeDirection.NORTH)) {
 							stairsID = stairs_ZP.arePositive ? Stairs.ID_NORMAL_EXT_POS_NE : Stairs.ID_NORMAL_EXT_NEG_NE;
-						if (stairs_ZP.facings.contains(ForgeDirection.WEST) && !stairs_ZP.facings.contains(ForgeDirection.NORTH))
+						}
+						if (stairs_ZP.facings.contains(ForgeDirection.WEST) && !stairs_ZP.facings.contains(ForgeDirection.NORTH)) {
 							stairsID = stairs_ZP.arePositive ? Stairs.ID_NORMAL_EXT_POS_NW : Stairs.ID_NORMAL_EXT_NEG_NW;
+						}
 					}
 					if (stairs.facings.contains(ForgeDirection.SOUTH)) {
-						if (stairs_ZP.facings.contains(ForgeDirection.EAST) && !stairs_ZP.facings.contains(ForgeDirection.NORTH))
+						if (stairs_ZP.facings.contains(ForgeDirection.EAST) && !stairs_ZP.facings.contains(ForgeDirection.NORTH)) {
 							stairsID = stairs_ZP.arePositive ? Stairs.ID_NORMAL_INT_POS_SE : Stairs.ID_NORMAL_INT_NEG_SE;
-						if (stairs_ZP.facings.contains(ForgeDirection.WEST) && !stairs_ZP.facings.contains(ForgeDirection.NORTH))
+						}
+						if (stairs_ZP.facings.contains(ForgeDirection.WEST) && !stairs_ZP.facings.contains(ForgeDirection.NORTH)) {
 							stairsID = stairs_ZP.arePositive ? Stairs.ID_NORMAL_INT_POS_SW : Stairs.ID_NORMAL_INT_NEG_SW;
+						}
 					}
 				}
 			}
@@ -658,30 +681,38 @@ public class BlockCarpentersStairs extends BlockBase
 
 			if (TE_ZN != null) {
 				if (TE_XP != null) {
-					if (stairs_ZN.facings.contains(ForgeDirection.EAST) && stairs_XP.facings.contains(ForgeDirection.NORTH))
+					if (stairs_ZN.facings.contains(ForgeDirection.EAST) && stairs_XP.facings.contains(ForgeDirection.NORTH)) {
 						stairsID = stairs_XP.arePositive && stairs_ZN.arePositive ? Stairs.ID_NORMAL_INT_POS_NE : Stairs.ID_NORMAL_INT_NEG_NE;
-					if (stairs_ZN.facings.contains(ForgeDirection.WEST) && stairs_XP.facings.contains(ForgeDirection.SOUTH))
+					}
+					if (stairs_ZN.facings.contains(ForgeDirection.WEST) && stairs_XP.facings.contains(ForgeDirection.SOUTH)) {
 						stairsID = stairs_XP.arePositive && stairs_ZN.arePositive ? Stairs.ID_NORMAL_EXT_POS_SW : Stairs.ID_NORMAL_EXT_NEG_SW;
+					}
 				}
 				if (TE_XN != null) {
-					if (stairs_ZN.facings.contains(ForgeDirection.WEST) && stairs_XN.facings.contains(ForgeDirection.NORTH))
+					if (stairs_ZN.facings.contains(ForgeDirection.WEST) && stairs_XN.facings.contains(ForgeDirection.NORTH)) {
 						stairsID = stairs_XN.arePositive && stairs_ZN.arePositive ? Stairs.ID_NORMAL_INT_POS_NW : Stairs.ID_NORMAL_INT_NEG_NW;
-					if (stairs_ZN.facings.contains(ForgeDirection.EAST) && stairs_XN.facings.contains(ForgeDirection.SOUTH))
+					}
+					if (stairs_ZN.facings.contains(ForgeDirection.EAST) && stairs_XN.facings.contains(ForgeDirection.SOUTH)) {
 						stairsID = stairs_XN.arePositive && stairs_ZN.arePositive ? Stairs.ID_NORMAL_EXT_POS_SE : Stairs.ID_NORMAL_EXT_NEG_SE;
+					}
 				}
 			}
 			if (TE_ZP != null) {
 				if (TE_XN != null) {
-					if (stairs_ZP.facings.contains(ForgeDirection.WEST) && stairs_XN.facings.contains(ForgeDirection.SOUTH))
+					if (stairs_ZP.facings.contains(ForgeDirection.WEST) && stairs_XN.facings.contains(ForgeDirection.SOUTH)) {
 						stairsID = stairs_XN.arePositive && stairs_ZP.arePositive ? Stairs.ID_NORMAL_INT_POS_SW : Stairs.ID_NORMAL_INT_NEG_SW;
-					if (stairs_ZP.facings.contains(ForgeDirection.EAST) && stairs_XN.facings.contains(ForgeDirection.NORTH))
+					}
+					if (stairs_ZP.facings.contains(ForgeDirection.EAST) && stairs_XN.facings.contains(ForgeDirection.NORTH)) {
 						stairsID = stairs_XN.arePositive && stairs_ZP.arePositive ? Stairs.ID_NORMAL_EXT_POS_NE : Stairs.ID_NORMAL_EXT_NEG_NE;
+					}
 				}
 				if (TE_XP != null) {
-					if (stairs_ZP.facings.contains(ForgeDirection.EAST) && stairs_XP.facings.contains(ForgeDirection.SOUTH))
+					if (stairs_ZP.facings.contains(ForgeDirection.EAST) && stairs_XP.facings.contains(ForgeDirection.SOUTH)) {
 						stairsID = stairs_XP.arePositive && stairs_ZP.arePositive ? Stairs.ID_NORMAL_INT_POS_SE : Stairs.ID_NORMAL_INT_NEG_SE;
-					if (stairs_ZP.facings.contains(ForgeDirection.WEST) && stairs_XP.facings.contains(ForgeDirection.NORTH))
+					}
+					if (stairs_ZP.facings.contains(ForgeDirection.WEST) && stairs_XP.facings.contains(ForgeDirection.NORTH)) {
 						stairsID = stairs_XP.arePositive && stairs_ZP.arePositive ? Stairs.ID_NORMAL_EXT_POS_NW : Stairs.ID_NORMAL_EXT_NEG_NW;
+					}
 				}
 			}
 
@@ -689,58 +720,74 @@ public class BlockCarpentersStairs extends BlockBase
 
 			if (stairs.facings.contains(ForgeDirection.WEST)) {
 				if (TE_ZN != null && stairs.arePositive == stairs_ZN.arePositive) {
-					if (stairs_ZN.facings.contains(ForgeDirection.NORTH))
+					if (stairs_ZN.facings.contains(ForgeDirection.NORTH)) {
 						BlockProperties.setData(TE_ZN, stairs.arePositive ? Stairs.ID_NORMAL_EXT_POS_NW : Stairs.ID_NORMAL_EXT_NEG_NW);
-					if (stairs_ZN.facings.contains(ForgeDirection.SOUTH))
+					}
+					if (stairs_ZN.facings.contains(ForgeDirection.SOUTH)) {
 						BlockProperties.setData(TE_ZN, stairs.arePositive ? Stairs.ID_NORMAL_INT_POS_SW : Stairs.ID_NORMAL_INT_NEG_SW);
+					}
 				}
 				if (TE_ZP != null && stairs.arePositive == stairs_ZP.arePositive) {
-					if (stairs_ZP.facings.contains(ForgeDirection.SOUTH))
+					if (stairs_ZP.facings.contains(ForgeDirection.SOUTH)) {
 						BlockProperties.setData(TE_ZP, stairs.arePositive ? Stairs.ID_NORMAL_EXT_POS_SW : Stairs.ID_NORMAL_EXT_NEG_SW);
-					if (stairs_ZP.facings.contains(ForgeDirection.NORTH))
+					}
+					if (stairs_ZP.facings.contains(ForgeDirection.NORTH)) {
 						BlockProperties.setData(TE_ZP, stairs.arePositive ? Stairs.ID_NORMAL_INT_POS_NW : Stairs.ID_NORMAL_INT_NEG_NW);
+					}
 				}
 			}
 			if (stairs.facings.contains(ForgeDirection.EAST)) {
-				if (TE_ZN != null && stairs.arePositive && stairs_ZN.arePositive) {
-					if (stairs_ZN.facings.contains(ForgeDirection.NORTH))
+				if (TE_ZN != null && stairs.arePositive == stairs_ZN.arePositive) {
+					if (stairs_ZN.facings.contains(ForgeDirection.NORTH)) {
 						BlockProperties.setData(TE_ZN, stairs.arePositive ? Stairs.ID_NORMAL_EXT_POS_NE : Stairs.ID_NORMAL_EXT_NEG_NE);
-					if (stairs_ZN.facings.contains(ForgeDirection.SOUTH))
+					}
+					if (stairs_ZN.facings.contains(ForgeDirection.SOUTH)) {
 						BlockProperties.setData(TE_ZN, stairs.arePositive ? Stairs.ID_NORMAL_INT_POS_SE : Stairs.ID_NORMAL_INT_NEG_SE);
+					}
 				}
-				if (TE_ZP != null && stairs.arePositive && stairs_ZP.arePositive) {
-					if (stairs_ZP.facings.contains(ForgeDirection.SOUTH))
+				if (TE_ZP != null && stairs.arePositive == stairs_ZP.arePositive) {
+					if (stairs_ZP.facings.contains(ForgeDirection.SOUTH)) {
 						BlockProperties.setData(TE_ZP, stairs.arePositive ? Stairs.ID_NORMAL_EXT_POS_SE : Stairs.ID_NORMAL_EXT_NEG_SE);
-					if (stairs_ZP.facings.contains(ForgeDirection.NORTH))
+					}
+					if (stairs_ZP.facings.contains(ForgeDirection.NORTH)) {
 						BlockProperties.setData(TE_ZP, stairs.arePositive ? Stairs.ID_NORMAL_INT_POS_NE : Stairs.ID_NORMAL_INT_NEG_NE);
+					}
 				}
 			}
 			if (stairs.facings.contains(ForgeDirection.NORTH)) {
-				if (TE_XN != null && stairs.arePositive && stairs_XN.arePositive) {
-					if (stairs_XN.facings.contains(ForgeDirection.WEST))
+				if (TE_XN != null && stairs.arePositive == stairs_XN.arePositive) {
+					if (stairs_XN.facings.contains(ForgeDirection.WEST)) {
 						BlockProperties.setData(TE_XN, stairs.arePositive ? Stairs.ID_NORMAL_EXT_POS_NW : Stairs.ID_NORMAL_EXT_NEG_NW);
-					if (stairs_XN.facings.contains(ForgeDirection.EAST))
+					}
+					if (stairs_XN.facings.contains(ForgeDirection.EAST)) {
 						BlockProperties.setData(TE_XN, stairs.arePositive ? Stairs.ID_NORMAL_INT_POS_NE : Stairs.ID_NORMAL_INT_NEG_NE);
+					}
 				}
-				if (TE_XP != null && stairs.arePositive && stairs_XP.arePositive) {
-					if (stairs_XP.facings.contains(ForgeDirection.EAST))
+				if (TE_XP != null && stairs.arePositive == stairs_XP.arePositive) {
+					if (stairs_XP.facings.contains(ForgeDirection.EAST)) {
 						BlockProperties.setData(TE_XP, stairs.arePositive ? Stairs.ID_NORMAL_EXT_POS_NE : Stairs.ID_NORMAL_EXT_NEG_NE);
-					if (stairs_XP.facings.contains(ForgeDirection.WEST))
+					}
+					if (stairs_XP.facings.contains(ForgeDirection.WEST)) {
 						BlockProperties.setData(TE_XP, stairs.arePositive ? Stairs.ID_NORMAL_INT_POS_NW : Stairs.ID_NORMAL_INT_NEG_NW);
+					}
 				}
 			}
 			if (stairs.facings.contains(ForgeDirection.SOUTH)) {
-				if (TE_XN != null && stairs.arePositive && stairs_XN.arePositive) {
-					if (stairs_XN.facings.contains(ForgeDirection.WEST))
+				if (TE_XN != null && stairs.arePositive == stairs_XN.arePositive) {
+					if (stairs_XN.facings.contains(ForgeDirection.WEST)) {
 						BlockProperties.setData(TE_XN, stairs.arePositive ? Stairs.ID_NORMAL_EXT_POS_SW : Stairs.ID_NORMAL_EXT_NEG_SW);
-					if (stairs_XN.facings.contains(ForgeDirection.EAST))
+					}
+					if (stairs_XN.facings.contains(ForgeDirection.EAST)) {
 						BlockProperties.setData(TE_XN, stairs.arePositive ? Stairs.ID_NORMAL_INT_POS_SE : Stairs.ID_NORMAL_INT_NEG_SE);
+					}
 				}
-				if (TE_XP != null && stairs.arePositive && stairs_XP.arePositive) {
-					if (stairs_XP.facings.contains(ForgeDirection.EAST))
+				if (TE_XP != null && stairs.arePositive == stairs_XP.arePositive) {
+					if (stairs_XP.facings.contains(ForgeDirection.EAST)) {
 						BlockProperties.setData(TE_XP, stairs.arePositive ? Stairs.ID_NORMAL_EXT_POS_SE : Stairs.ID_NORMAL_EXT_NEG_SE);
-					if (stairs_XP.facings.contains(ForgeDirection.WEST))
+					}
+					if (stairs_XP.facings.contains(ForgeDirection.WEST)) {
 						BlockProperties.setData(TE_XP, stairs.arePositive ? Stairs.ID_NORMAL_INT_POS_SW : Stairs.ID_NORMAL_INT_NEG_SW);
+					}
 				}
 			}
 
@@ -760,18 +807,24 @@ public class BlockCarpentersStairs extends BlockBase
 			/* Server should update clients when adjacent stairs are altered. */
 			if (!world.isRemote)
 			{
-				if (TE_XN != null && stairs_XN != temp_stairs_XN)
+				if (TE_XN != null && stairs_XN != temp_stairs_XN) {
 					BlockProperties.setData(TE_XN, stairs_XN.stairsID);
-				if (TE_XP != null && stairs_XP != temp_stairs_XP)
+				}
+				if (TE_XP != null && stairs_XP != temp_stairs_XP) {
 					BlockProperties.setData(TE_XP, stairs_XP.stairsID);
-				if (TE_ZN != null && stairs_ZN != temp_stairs_ZN)
+				}
+				if (TE_ZN != null && stairs_ZN != temp_stairs_ZN) {
 					BlockProperties.setData(TE_ZN, stairs_ZN.stairsID);
-				if (TE_ZP != null && stairs_ZP != temp_stairs_ZP)
+				}
+				if (TE_ZP != null && stairs_ZP != temp_stairs_ZP) {
 					BlockProperties.setData(TE_ZP, stairs_ZP.stairsID);
-				if (TE_YN != null && stairs_YN != temp_stairs_YN)
+				}
+				if (TE_YN != null && stairs_YN != temp_stairs_YN) {
 					BlockProperties.setData(TE_YN, stairs_YN.stairsID);
-				if (TE_YP != null && stairs_YP != temp_stairs_YP)
+				}
+				if (TE_YP != null && stairs_YP != temp_stairs_YP) {
 					BlockProperties.setData(TE_YP, stairs_YP.stairsID);
+				}
 			}
 		}
 

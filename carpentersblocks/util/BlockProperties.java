@@ -18,8 +18,7 @@ import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.handler.DyeColorHandler;
 import carpentersblocks.util.handler.OverlayHandler;
 
-public class BlockProperties
-{
+public class BlockProperties {
 
 	/**
 	 * Returns entity facing.
@@ -28,7 +27,7 @@ public class BlockProperties
 	{
 		return MathHelper.floor_double(entity.rotationYaw * 4.0F / 360.0F + 0.5D) & 3;
 	}
-	
+
 	/**
 	 * Will return direction from entity facing.
 	 */
@@ -46,7 +45,7 @@ public class BlockProperties
 			return ForgeDirection.WEST;
 		}
 	}
-	
+
 	/**
 	 * Will suppress block updates.
 	 */
@@ -70,7 +69,7 @@ public class BlockProperties
 			TE.worldObj.spawnEntityInWorld(entityEjectedItem);
 		}
 	}
-	
+
 	/**
 	 * Returns whether block rotates based on placement conditions.
 	 * The blocks that utilize this property are mostly atypical, and
@@ -200,11 +199,11 @@ public class BlockProperties
 
 			return	!block.hasTileEntity(itemStack.getItemDamage()) &&
 					(
-						block.renderAsNormalBlock() ||
-						block instanceof BlockHalfSlab ||
-						block instanceof BlockPane ||
-						block instanceof BlockBreakable
-					);
+							block.renderAsNormalBlock() ||
+							block instanceof BlockHalfSlab ||
+							block instanceof BlockPane ||
+							block instanceof BlockBreakable
+							);
 		}
 
 		return false;
@@ -214,20 +213,23 @@ public class BlockProperties
 	 * Sets cover block.
 	 */
 	public static boolean setCover(TEBase TE, int side, int metadata, ItemStack itemStack)
-	{		
-		if (hasCover(TE, side))
+	{
+		if (hasCover(TE, side)) {
 			ejectEntity(TE, new ItemStack(getCoverID(TE, side), 1, getCoverMetadata(TE, side)));
+		}
 
 		int blockID = itemStack == null ? 0 : itemStack.itemID;
 
-		if (itemStack != null)
+		if (itemStack != null) {
 			playBlockPlacementSound(TE, blockID);
+		}
 
 		TE.cover[side] = (short) (blockID + (metadata << 12));
-		
-		if (side == 6)
+
+		if (side == 6) {
 			TE.worldObj.setBlockMetadataWithNotify(TE.xCoord, TE.yCoord, TE.zCoord, metadata, 0);
-		
+		}
+
 		TE.worldObj.notifyBlocksOfNeighborChange(TE.xCoord, TE.yCoord, TE.zCoord, blockID);
 		TE.worldObj.markBlockForUpdate(TE.xCoord, TE.yCoord, TE.zCoord);
 
@@ -274,7 +276,7 @@ public class BlockProperties
 	public static boolean setDyeColor(TEBase TE, int side, int metadata)
 	{
 		if (TE.color[side] > 0) {
-			ejectEntity(TE, new ItemStack(Item.dyePowder, 1, (15 - TE.color[side])));
+			ejectEntity(TE, new ItemStack(Item.dyePowder, 1, 15 - TE.color[side]));
 		}
 
 		TE.color[side] = (byte) metadata;

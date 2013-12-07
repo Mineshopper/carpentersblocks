@@ -23,8 +23,7 @@ import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.registry.ItemRegistry;
 
-public class EventHandler
-{
+public class EventHandler {
 
 	/**
 	 * Stores face for onBlockClicked().

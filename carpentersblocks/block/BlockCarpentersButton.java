@@ -3,6 +3,7 @@ package carpentersblocks.block;
 import java.util.Random;
 
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -14,10 +15,12 @@ import carpentersblocks.CarpentersBlocks;
 import carpentersblocks.data.Button;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.registry.BlockRegistry;
+import carpentersblocks.util.registry.IconRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
-public class BlockCarpentersButton extends BlockBase
-{
+public class BlockCarpentersButton extends BlockBase {
 
 	public BlockCarpentersButton(int blockID)
 	{
@@ -27,6 +30,18 @@ public class BlockCarpentersButton extends BlockBase
 		setCreativeTab(CarpentersBlocks.tabCarpentersBlocks);
 		setTickRandomly(true);
 		setTextureName("carpentersblocks:general/generic");
+	}
+
+	@SideOnly(Side.CLIENT)
+	@Override
+	/**
+	 * When this method is called, your block should register all the icons it needs with the given IconRegister. This
+	 * is the only chance you get to register icons.
+	 */
+	public void registerIcons(IconRegister iconRegister)
+	{
+		blockIcon = IconRegistry.icon_generic;
+		super.registerIcons(iconRegister);
 	}
 
 	@Override
@@ -82,7 +97,7 @@ public class BlockCarpentersButton extends BlockBase
 
 		return world.isBlockSolidOnSide(x - dir.offsetX, y, z - dir.offsetZ, dir);
 	}
-	
+
 	@Override
 	/**
 	 * Called when a block is placed using its ItemBlock. Args: World, X, Y, Z, side, hitX, hitY, hitZ, block metadata
@@ -91,7 +106,7 @@ public class BlockCarpentersButton extends BlockBase
 	{
 		return side;
 	}
-	
+
 	@Override
 	/**
 	 * Called when the block is placed in the world.
@@ -101,7 +116,7 @@ public class BlockCarpentersButton extends BlockBase
 		Button.setFacing(TE, world.getBlockMetadata(x, y, z));
 		Button.setReady(TE);
 	}
-	
+
 	@Override
 	/**
 	 * Lets the block know when one of its neighbor changes. Doesn't know which neighbor changed (coordinates passed are
@@ -258,7 +273,7 @@ public class BlockCarpentersButton extends BlockBase
 	private void notifySideNeighbor(World world, int x, int y, int z, int side)
 	{
 		world.notifyBlocksOfNeighborChange(x, y, z, blockID);
-		
+
 		ForgeDirection dir = ForgeDirection.getOrientation(side);
 
 		world.notifyBlocksOfNeighborChange(x - dir.offsetX, y, z - dir.offsetZ, blockID);

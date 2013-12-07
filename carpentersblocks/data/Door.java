@@ -4,8 +4,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 
-public class Door
-{
+public class Door {
 
 	/**
 	 * 16-bit data components:
@@ -59,15 +58,15 @@ public class Door
 	/**
 	 * Returns type.
 	 */
-	public final static int getType(int data)
+	public static int getType(TEBase TE)
 	{
-		return data & 0x7;
+		return BlockProperties.getData(TE) & 0x7;
 	}
 
 	/**
 	 * Sets type.
 	 */
-	public final static void setType(TEBase TE, int type)
+	public static void setType(TEBase TE, int type)
 	{
 		int temp = BlockProperties.getData(TE) & 0xfff8;
 		temp |= type;
@@ -78,16 +77,16 @@ public class Door
 	/**
 	 * Returns hinge side (relative to facing).
 	 */
-	public final static int getHinge(int data)
+	public static int getHinge(TEBase TE)
 	{
-		int temp = data & 0x8;
+		int temp = BlockProperties.getData(TE) & 0x8;
 		return temp >> 3;
 	}
 
 	/**
 	 * Sets hinge side (relative to facing).
 	 */
-	public final static void setHingeSide(TEBase TE, int hingeSide)
+	public static void setHingeSide(TEBase TE, int hingeSide)
 	{
 		int temp = BlockProperties.getData(TE) & 0xfff7;
 		temp |= hingeSide << 3;
@@ -98,16 +97,16 @@ public class Door
 	/**
 	 * Returns facing (faces opening direction).
 	 */
-	public final static int getFacing(int data)
+	public static int getFacing(TEBase TE)
 	{
-		int temp = data & 0x30;
+		int temp = BlockProperties.getData(TE) & 0x30;
 		return temp >> 4;
 	}
 
 	/**
 	 * Sets facing (faces opening direction).
 	 */
-	public final static void setFacing(TEBase TE, int facing)
+	public static void setFacing(TEBase TE, int facing)
 	{
 		int temp = BlockProperties.getData(TE) & 0xffcf;
 		temp |= facing << 4;
@@ -118,22 +117,23 @@ public class Door
 	/**
 	 * Returns open/closed state.
 	 */
-	public final static int getState(int data)
+	public static int getState(TEBase TE)
 	{
-		int temp = data & 0x40;
+		int temp = BlockProperties.getData(TE) & 0x40;
 		return temp >> 6;
 	}
 
 	/**
 	 * Sets state (open or closed).
 	 */
-	public final static void setState(TEBase TE, int state, boolean playSound)
+	public static void setState(TEBase TE, int state, boolean playSound)
 	{
 		int temp = BlockProperties.getData(TE) & 0xffbf;
 		temp |= state << 6;
 
-		if (!TE.worldObj.isRemote && playSound)
+		if (!TE.worldObj.isRemote && playSound) {
 			TE.worldObj.playAuxSFXAtEntity((EntityPlayer)null, 1003, TE.xCoord, TE.yCoord, TE.zCoord, 0);
+		}
 
 		BlockProperties.setData(TE, temp);
 	}
@@ -141,16 +141,16 @@ public class Door
 	/**
 	 * Returns door piece (top or bottom).
 	 */
-	public final static int getPiece(int data)
+	public static int getPiece(TEBase TE)
 	{
-		int temp = data & 0x80;
+		int temp = BlockProperties.getData(TE) & 0x80;
 		return temp >> 7;
 	}
 
 	/**
 	 * Sets door piece (top or bottom).
 	 */
-	public final static void setPiece(TEBase TE, int piece)
+	public static void setPiece(TEBase TE, int piece)
 	{
 		int temp = BlockProperties.getData(TE) & 0xff7f;
 		temp |= piece << 7;
@@ -161,16 +161,16 @@ public class Door
 	/**
 	 * Returns door rigidity (requires redstone for activation).
 	 */
-	public final static int getRigidity(int data)
+	public static int getRigidity(TEBase TE)
 	{
-		int temp = data & 0x100;
+		int temp = BlockProperties.getData(TE) & 0x100;
 		return temp >> 8;
 	}
 
 	/**
 	 * Sets door rigidity (requires redstone for activation).
 	 */
-	public final static void setRigidity(TEBase TE, int rigid)
+	public static void setRigidity(TEBase TE, int rigid)
 	{
 		int temp = BlockProperties.getData(TE) & 0xfeff;
 		temp |= rigid << 8;

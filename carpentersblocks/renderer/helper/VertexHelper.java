@@ -5,8 +5,7 @@ import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.Icon;
 
-public class VertexHelper
-{
+public class VertexHelper {
 	
 	/**
 	 * Offset used for faces.

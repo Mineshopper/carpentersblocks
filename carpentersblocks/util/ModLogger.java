@@ -5,8 +5,7 @@ import java.util.logging.Logger;
 
 import cpw.mods.fml.common.FMLLog;
 
-public class ModLogger
-{
+public class ModLogger {
 
 	private static Logger logger = Logger.getLogger("CarpentersBlocks");
 

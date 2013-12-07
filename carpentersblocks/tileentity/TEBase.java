@@ -7,8 +7,7 @@ import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.Packet132TileEntityData;
 import net.minecraft.tileentity.TileEntity;
 
-public class TEBase extends TileEntity
-{
+public class TEBase extends TileEntity {
 
 	public short[] cover = new short[7];
 	public byte[] pattern = new byte[7];
@@ -25,17 +24,14 @@ public class TEBase extends TileEntity
 	{
 		super.readFromNBT(nbt);
 
-		if (!nbt.hasKey("color")) {
-			CompatibilityHelper.convertData(this, nbt);
-		} else {
-			for (int count = 0; count < 7; ++count)
-				cover[count] = nbt.getShort("cover_" + count);
-
-			pattern = nbt.getByteArray("pattern");
-			color = nbt.getByteArray("color");
-			overlay = nbt.getByteArray("overlay");
-			data = nbt.getShort("data");
+		for (int count = 0; count < 7; ++count) {
+			cover[count] = nbt.getShort("cover_" + count);
 		}
+
+		pattern = nbt.getByteArray("pattern");
+		color = nbt.getByteArray("color");
+		overlay = nbt.getByteArray("overlay");
+		data = nbt.getShort("data");
 	}
 
 	@Override
@@ -43,8 +39,9 @@ public class TEBase extends TileEntity
 	{
 		super.writeToNBT(nbt);
 
-		for (int count = 0; count < 7; ++count)
+		for (int count = 0; count < 7; ++count) {
 			nbt.setShort("cover_" + count, cover[count]);
+		}
 
 		nbt.setByteArray("pattern", pattern);
 		nbt.setByteArray("color", color);

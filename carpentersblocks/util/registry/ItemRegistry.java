@@ -11,8 +11,7 @@ import carpentersblocks.item.ItemCarpentersHammer;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
 
-public class ItemRegistry
-{
+public class ItemRegistry {
 
     public static Item itemCarpentersHammer;
     public static Item itemCarpentersChisel;

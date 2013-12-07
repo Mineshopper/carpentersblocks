@@ -9,10 +9,8 @@ import org.lwjgl.opengl.GL11;
 
 import carpentersblocks.renderer.helper.RenderHelper;
 import carpentersblocks.renderer.helper.RenderHelperCollapsible;
-import carpentersblocks.tileentity.TEBase;
 
-public class BlockHandlerCarpentersCollapsibleBlock extends BlockHandlerBase
-{
+public class BlockHandlerCarpentersCollapsibleBlock extends BlockHandlerBase {
 
 	@Override
 	public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderBlocks)
@@ -50,31 +48,40 @@ public class BlockHandlerCarpentersCollapsibleBlock extends BlockHandlerBase
 
 		GL11.glTranslatef(0.5F, 0.5F, 0.5F);
 	}
-	
+
+	/**
+	 * Override for specific block rendering applications.
+	 */
+	@Override
+	protected void setRenderBounds()
+	{
+		renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
+	}
+
 	@Override
 	/**
 	 * Renders side.
 	 */
-	protected void renderSide(TEBase TE, RenderBlocks renderBlocks, int side, double offset, int x, int y, int z, Icon icon)
+	protected void renderSide(int x, int y, int z, int side, double offset, Icon icon)
 	{
 		switch (side)
 		{
-		case 0:
+		case DOWN:
 			RenderHelper.renderFaceYNeg(renderBlocks, x, y, z, icon);
 			break;
-		case 1:
+		case UP:
 			RenderHelperCollapsible.renderFaceYPos(TE, renderBlocks, x, y, z, icon);
 			break;
-		case 2:
+		case NORTH:
 			RenderHelperCollapsible.renderFaceZNeg(TE, renderBlocks, x, y, z, icon);
 			break;
-		case 3:
+		case SOUTH:
 			RenderHelperCollapsible.renderFaceZPos(TE, renderBlocks, x, y, z, icon);
 			break;
-		case 4:
+		case WEST:
 			RenderHelperCollapsible.renderFaceXNeg(TE, renderBlocks, x, y, z, icon);
 			break;
-		case 5:
+		case EAST:
 			RenderHelperCollapsible.renderFaceXPos(TE, renderBlocks, x, y, z, icon);
 			break;
 		}

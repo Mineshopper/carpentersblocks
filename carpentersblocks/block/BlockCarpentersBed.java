@@ -14,15 +14,13 @@ import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
 import carpentersblocks.data.Bed;
 import carpentersblocks.tileentity.TEBase;
-import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.handler.BedDesignHandler;
 import carpentersblocks.util.registry.BlockRegistry;
 import carpentersblocks.util.registry.ItemRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class BlockCarpentersBed extends BlockBase
-{
+public class BlockCarpentersBed extends BlockBase {
 
 	public BlockCarpentersBed(int blockID)
 	{
@@ -50,15 +48,15 @@ public class BlockCarpentersBed extends BlockBase
 	 */
 	protected boolean onHammerLeftClick(TEBase TE, EntityPlayer entityPlayer)
 	{
-		int data = BlockProperties.getData(TE);
-		int design = BedDesignHandler.getPrev(Bed.getDesign(data));
+		int design = BedDesignHandler.getPrev(Bed.getDesign(TE));
 
 		Bed.setDesign(TE, design);
 
 		TEBase TE_opp = Bed.getOppositeTE(TE);
 
-		if (TE_opp != null)
+		if (TE_opp != null) {
 			Bed.setDesign(TE_opp, design);
+		}
 
 		return true;
 	}
@@ -69,15 +67,15 @@ public class BlockCarpentersBed extends BlockBase
 	 */
 	protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer, int side, float hitX, float hitZ)
 	{
-		int data = BlockProperties.getData(TE);
-		int design = BedDesignHandler.getNext(Bed.getDesign(data));
+		int design = BedDesignHandler.getNext(Bed.getDesign(TE));
 
 		Bed.setDesign(TE, design);
 
 		TEBase TE_opp = Bed.getOppositeTE(TE);
 
-		if (TE_opp != null)
+		if (TE_opp != null) {
 			Bed.setDesign(TE_opp, design);
+		}
 
 		return true;
 	}
@@ -90,15 +88,17 @@ public class BlockCarpentersBed extends BlockBase
 	{
 		if (!world.isRemote)
 		{
-			
-            if (!Bed.isHeadOfBed(TE)) {
-            	TEBase TE_opp = Bed.getOppositeTE(TE);
-            	if (TE_opp != null) {
+
+			if (!Bed.isHeadOfBed(TE))
+			{
+				TEBase TE_opp = Bed.getOppositeTE(TE);
+
+				if (TE_opp != null) {
 					x = TE_opp.xCoord;
 					z = TE_opp.zCoord;
-            	} else {
-            		return true;
-            	}
+				} else {
+					return true;
+				}
 			}
 
 			if (world.provider.canRespawnHere() && world.getBiomeGenForCoords(x, z) != BiomeGenBase.hell)
@@ -116,8 +116,9 @@ public class BlockCarpentersBed extends BlockBase
 						{
 							ChunkCoordinates chunkCoordinates = entityPlayer2.playerLocation;
 
-							if (chunkCoordinates.posX == x && chunkCoordinates.posY == y && chunkCoordinates.posZ == z)
+							if (chunkCoordinates.posX == x && chunkCoordinates.posY == y && chunkCoordinates.posZ == z) {
 								entityPlayer1 = entityPlayer2;
+							}
 						}
 					}
 
@@ -131,7 +132,7 @@ public class BlockCarpentersBed extends BlockBase
 				}
 
 				EnumStatus enumstatus = entityPlayer.sleepInBedAt(x, y, z);
-								
+
 				if (enumstatus == EnumStatus.OK)
 				{
 					setBedOccupied(world, x, y, z, entityPlayer, true);
@@ -189,8 +190,8 @@ public class BlockCarpentersBed extends BlockBase
 	 */
 	public void setBedOccupied(World world, int x, int y, int z, EntityPlayer entityPlayer, boolean isOccupied)
 	{
-    	TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
-    	Bed.setOccupied(TE, isOccupied);
+		TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
+		Bed.setOccupied(TE, isOccupied);
 
 		TEBase TE_opp = Bed.getOppositeTE(TE);
 
@@ -198,22 +199,22 @@ public class BlockCarpentersBed extends BlockBase
 			Bed.setOccupied(TE_opp, isOccupied);
 		}
 	}
-	
+
 	@Override
-    /**
-     * Returns the direction of the block. Same values that
-     * are returned by BlockDirectional
-     *
-     * @param world The current world
-     * @param x X Position
-     * @param y Y Position
-     * @param z Z Position
-     * @return Bed direction
-     */
-    public int getBedDirection(IBlockAccess world, int x, int y, int z)
-    {
+	/**
+	 * Returns the direction of the block. Same values that
+	 * are returned by BlockDirectional
+	 *
+	 * @param world The current world
+	 * @param x X Position
+	 * @param y Y Position
+	 * @param z Z Position
+	 * @return Bed direction
+	 */
+	public int getBedDirection(IBlockAccess world, int x, int y, int z)
+	{
 		TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
-		
+
 		switch (Bed.getDirection(TE))
 		{
 		case NORTH:
@@ -225,8 +226,8 @@ public class BlockCarpentersBed extends BlockBase
 		default:
 			return 1;
 		}
-    }
-	
+	}
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	/**

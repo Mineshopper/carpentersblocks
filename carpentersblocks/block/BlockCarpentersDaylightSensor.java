@@ -13,14 +13,12 @@ import carpentersblocks.CarpentersBlocks;
 import carpentersblocks.data.DaylightSensor;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.tileentity.TECarpentersDaylightSensor;
-import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.registry.BlockRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class BlockCarpentersDaylightSensor extends BlockBase
-{
+public class BlockCarpentersDaylightSensor extends BlockBase {
 
 	public BlockCarpentersDaylightSensor(int blockID)
 	{
@@ -48,8 +46,7 @@ public class BlockCarpentersDaylightSensor extends BlockBase
 	 */
 	protected boolean onHammerLeftClick(TEBase TE, EntityPlayer entityPlayer)
 	{
-		int data = BlockProperties.getData(TE);
-		int polarity = DaylightSensor.getPolarity(data) == DaylightSensor.POLARITY_POSITIVE ? DaylightSensor.POLARITY_NEGATIVE : DaylightSensor.POLARITY_POSITIVE;
+		int polarity = DaylightSensor.getPolarity(TE) == DaylightSensor.POLARITY_POSITIVE ? DaylightSensor.POLARITY_NEGATIVE : DaylightSensor.POLARITY_POSITIVE;
 
 		if (!TE.worldObj.isRemote) {
 			DaylightSensor.setPolarity(TE, polarity);
@@ -76,13 +73,12 @@ public class BlockCarpentersDaylightSensor extends BlockBase
 	{
 		TEBase TE = (TEBase)world.getBlockTileEntity(x, y, z);
 
-		int data = BlockProperties.getData(TE);
-		int type = DaylightSensor.getType(data);
+		int type = DaylightSensor.getType(TE);
 
 		boolean isDay = type > 2;
-		boolean outputDay = DaylightSensor.getPolarity(data) == DaylightSensor.POLARITY_POSITIVE;
+		boolean outputDay = DaylightSensor.getPolarity(TE) == DaylightSensor.POLARITY_POSITIVE;
 
-		return isDay ? (outputDay ? type : 0) : (!outputDay ? 15 : 0);
+		return isDay ? outputDay ? type : 0 : !outputDay ? 15 : 0;
 	}
 
 	public void updateLightLevel(World world, int x, int y, int z)
@@ -91,8 +87,7 @@ public class BlockCarpentersDaylightSensor extends BlockBase
 		{
 			TEBase TE = (TEBase)world.getBlockTileEntity(x, y, z);
 
-			int data = BlockProperties.getData(TE);
-			int old_lightValue = DaylightSensor.getType(data);
+			int old_lightValue = DaylightSensor.getType(TE);
 
 			int lightValue = world.getSavedLightValue(EnumSkyBlock.Sky, x, y, z) - world.skylightSubtracted;
 			float lightAngle = world.getCelestialAngleRadians(1.0F);
@@ -100,7 +95,7 @@ public class BlockCarpentersDaylightSensor extends BlockBase
 			if (lightAngle < (float)Math.PI) {
 				lightAngle += (0.0F - lightAngle) * 0.2F;
 			} else {
-				lightAngle += (((float)Math.PI * 2F) - lightAngle) * 0.2F;
+				lightAngle += ((float)Math.PI * 2F - lightAngle) * 0.2F;
 			}
 
 			lightValue = Math.round(lightValue * MathHelper.cos(lightAngle));
@@ -123,7 +118,7 @@ public class BlockCarpentersDaylightSensor extends BlockBase
 	/**
 	 * Can this block provide power. Only wire currently seems to have this change based on its state.
 	 */
-	 public boolean canProvidePower()
+	public boolean canProvidePower()
 	{
 		return true;
 	}

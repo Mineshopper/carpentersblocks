@@ -19,8 +19,7 @@ import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class BlockCarpentersPressurePlate extends BlockBase
-{
+public class BlockCarpentersPressurePlate extends BlockBase {
 
 	public BlockCarpentersPressurePlate(int blockID)
 	{
@@ -38,8 +37,7 @@ public class BlockCarpentersPressurePlate extends BlockBase
 	 */
 	protected boolean onHammerLeftClick(TEBase TE, EntityPlayer entityPlayer)
 	{
-		int data = BlockProperties.getData(TE);
-		int polarity = PressurePlate.getPolarity(data) == PressurePlate.POLARITY_POSITIVE ? PressurePlate.POLARITY_NEGATIVE : PressurePlate.POLARITY_POSITIVE;
+		int polarity = PressurePlate.getPolarity(TE) == PressurePlate.POLARITY_POSITIVE ? PressurePlate.POLARITY_NEGATIVE : PressurePlate.POLARITY_POSITIVE;
 
 		if (!TE.worldObj.isRemote) {
 			PressurePlate.setPolarity(TE, polarity);
@@ -63,11 +61,9 @@ public class BlockCarpentersPressurePlate extends BlockBase
 	 */
 	protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer, int side, float hitX, float hitZ)
 	{
-		int data = BlockProperties.getData(TE);
-
 		int trigger;
 
-		switch (PressurePlate.getTriggerEntity(data))
+		switch (PressurePlate.getTriggerEntity(TE))
 		{
 		case PressurePlate.TRIGGER_PLAYER:
 			trigger = PressurePlate.TRIGGER_MONSTER;
@@ -175,7 +171,7 @@ public class BlockCarpentersPressurePlate extends BlockBase
 					}
 				}
 			}
-			
+
 			if (!shouldActivate && isDepressed(TE)) {
 				toggleOff(TE, world, x, y, z);
 			} else {
@@ -209,7 +205,7 @@ public class BlockCarpentersPressurePlate extends BlockBase
 		notifyNeighborsOfUpdate(world, x, y, z);
 		world.scheduleBlockUpdate(x, y, z, blockID, tickRate(world));
 	}
-	
+
 	/**
 	 * Deactivates pressure plate.
 	 */
@@ -235,7 +231,7 @@ public class BlockCarpentersPressurePlate extends BlockBase
 	 */
 	private boolean isDepressed(TEBase TE)
 	{
-		return PressurePlate.getState(BlockProperties.getData(TE)) == PressurePlate.STATE_ON;
+		return PressurePlate.getState(TE) == PressurePlate.STATE_ON;
 	}
 
 	@Override
@@ -277,7 +273,7 @@ public class BlockCarpentersPressurePlate extends BlockBase
 	 */
 	private int getPowerSupply(TEBase TE, int data)
 	{
-		int polarity = PressurePlate.getPolarity(data);
+		int polarity = PressurePlate.getPolarity(TE);
 
 		if (isDepressed(TE)) {
 			return polarity == PressurePlate.POLARITY_POSITIVE ? 15 : 0;
@@ -291,10 +287,11 @@ public class BlockCarpentersPressurePlate extends BlockBase
 	 */
 	private boolean shouldTrigger(TEBase TE, Entity entity, World world, int x, int y, int z)
 	{
-		if (entity == null)
+		if (entity == null) {
 			return false;
+		}
 
-		int trigger = PressurePlate.getTriggerEntity(BlockProperties.getData(TE));
+		int trigger = PressurePlate.getTriggerEntity(TE);
 
 		switch (trigger) {
 		case PressurePlate.TRIGGER_PLAYER:
@@ -314,8 +311,9 @@ public class BlockCarpentersPressurePlate extends BlockBase
 	 */
 	public void auxiliaryBreakBlock(TEBase TE, World world, int x, int y, int z, int par5, int metadata)
 	{
-		if (isDepressed(TE))
+		if (isDepressed(TE)) {
 			notifyNeighborsOfUpdate(world, x, y, z);
+		}
 	}
 
 	@Override

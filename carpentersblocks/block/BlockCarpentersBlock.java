@@ -18,8 +18,7 @@ import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.registry.BlockRegistry;
 
-public class BlockCarpentersBlock extends BlockBase
-{
+public class BlockCarpentersBlock extends BlockBase {
 
 	public BlockCarpentersBlock(int blockID)
 	{
@@ -38,8 +37,9 @@ public class BlockCarpentersBlock extends BlockBase
 	{
 		int data = BlockProperties.getData(TE);
 
-		if (++data > Slab.SLAB_Z_POS)
+		if (++data > Slab.SLAB_Z_POS) {
 			data = Slab.BLOCK_FULL;
+		}
 
 		BlockProperties.setData(TE, data);
 
@@ -153,18 +153,19 @@ public class BlockCarpentersBlock extends BlockBase
 			TEBase TE_ZN = world.getBlockId(x, y, z - 1) == blockID ? (TEBase)world.getBlockTileEntity(x, y, z - 1) : null;
 			TEBase TE_ZP = world.getBlockId(x, y, z + 1) == blockID ? (TEBase)world.getBlockTileEntity(x, y, z + 1) : null;
 
-			if (TE_YN != null)
+			if (TE_YN != null) {
 				data = BlockProperties.getData(TE_YN);
-			else if (TE_YP != null)
+			} else if (TE_YP != null) {
 				data = BlockProperties.getData(TE_YP);
-			else if (TE_XN != null)
+			} else if (TE_XN != null) {
 				data = BlockProperties.getData(TE_XN);
-			else if (TE_XP != null)
+			} else if (TE_XP != null) {
 				data = BlockProperties.getData(TE_XP);
-			else if (TE_ZN != null)
+			} else if (TE_ZN != null) {
 				data = BlockProperties.getData(TE_ZN);
-			else if (TE_ZP != null)
+			} else if (TE_ZP != null) {
 				data = BlockProperties.getData(TE_ZP);
+			}
 		}
 
 		BlockProperties.setData(TE, data);
@@ -194,20 +195,21 @@ public class BlockCarpentersBlock extends BlockBase
 		{
 			int data = BlockProperties.getData(TE);
 
-			if (data == Slab.BLOCK_FULL)
+			if (data == Slab.BLOCK_FULL) {
 				return true;
-			else if (data == Slab.SLAB_Y_NEG && side == ForgeDirection.DOWN)
+			} else if (data == Slab.SLAB_Y_NEG && side == ForgeDirection.DOWN) {
 				return true;
-			else if (data == Slab.SLAB_Y_POS && side == ForgeDirection.UP)
+			} else if (data == Slab.SLAB_Y_POS && side == ForgeDirection.UP) {
 				return true;
-			else if (data == Slab.SLAB_Z_NEG && side == ForgeDirection.NORTH)
+			} else if (data == Slab.SLAB_Z_NEG && side == ForgeDirection.NORTH) {
 				return true;
-			else if (data == Slab.SLAB_Z_POS && side == ForgeDirection.SOUTH)
+			} else if (data == Slab.SLAB_Z_POS && side == ForgeDirection.SOUTH) {
 				return true;
-			else if (data == Slab.SLAB_X_NEG && side == ForgeDirection.WEST)
+			} else if (data == Slab.SLAB_X_NEG && side == ForgeDirection.WEST) {
 				return true;
-			else if (data == Slab.SLAB_X_POS && side == ForgeDirection.EAST)
+			} else if (data == Slab.SLAB_X_POS && side == ForgeDirection.EAST) {
 				return true;
+			}
 		}
 
 		return false;
@@ -296,7 +298,7 @@ public class BlockCarpentersBlock extends BlockBase
 			}
 		}
 
-    	return super.shareFaces(TE_adj, TE_src, side_adj, side_src);
+		return super.shareFaces(TE_adj, TE_src, side_adj, side_src);
 	}
 
 	@Override

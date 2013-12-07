@@ -8,8 +8,7 @@ import java.util.zip.ZipFile;
 import carpentersblocks.util.ModLogger;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 
-public class PatternHandler
-{
+public class PatternHandler {
 	
 	public static int maxNum = 256;
 	public static boolean[] hasPattern = new boolean[maxNum];

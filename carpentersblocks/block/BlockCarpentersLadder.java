@@ -18,8 +18,7 @@ import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.registry.BlockRegistry;
 
-public class BlockCarpentersLadder extends BlockBase
-{
+public class BlockCarpentersLadder extends BlockBase {
 
 	public BlockCarpentersLadder(int blockID)
 	{
@@ -27,8 +26,8 @@ public class BlockCarpentersLadder extends BlockBase
 		setHardness(Block.ladder.blockHardness);
 		setUnlocalizedName("blockCarpentersLadder");
 		setCreativeTab(CarpentersBlocks.tabCarpentersBlocks);
-		setStepSound(soundLadderFootstep);
 		setTextureName("carpentersblocks:general/generic");
+		setStepSound(soundLadderFootstep);
 	}
 
 	@Override
@@ -114,23 +113,24 @@ public class BlockCarpentersLadder extends BlockBase
 
 		if (metadata < 2) {
 			int facing = MathHelper.floor_double(entityLiving.rotationYaw * 4.0F / 360.0F + 0.5D) & 3;
-			BlockProperties.setData(TE, ((facing % 2) == 0 ? Ladder.FACING_ON_X : Ladder.FACING_ON_Z));
+			BlockProperties.setData(TE, facing % 2 == 0 ? Ladder.FACING_ON_X : Ladder.FACING_ON_Z);
 		} else {
 			BlockProperties.setData(TE, metadata);
 		}
-		
+
 		if (!entityLiving.isSneaking())
 		{
 			TEBase TE_adj = null;
-		
+
 			if (world.getBlockId(x, y - 1, z) == blockID) {
 				TE_adj = (TEBase) world.getBlockTileEntity(x, y - 1, z);
 			} else if (world.getBlockId(x, y + 1, z) == blockID) {
 				TE_adj = (TEBase) world.getBlockTileEntity(x, y + 1, z);
 			}
-			
-			if (TE_adj != null)
+
+			if (TE_adj != null) {
 				BlockProperties.setData(TE, BlockProperties.getData(TE_adj));
+			}
 		}
 
 		/*
@@ -157,7 +157,7 @@ public class BlockCarpentersLadder extends BlockBase
 					data == 3 && !world.isBlockSolidOnSide(x, y, z - 1, ForgeDirection.SOUTH) ||
 					data == 4 && !world.isBlockSolidOnSide(x + 1, y, z, ForgeDirection.WEST) ||
 					data == 5 && !world.isBlockSolidOnSide(x - 1, y, z, ForgeDirection.EAST)
-				)
+					)
 			{
 				dropBlockAsItem(world, x, y, z, data, 0);
 				world.setBlockToAir(x, y, z);

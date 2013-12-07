@@ -1,8 +1,6 @@
 package carpentersblocks.data;
 
-
-public class Slab
-{
+public class Slab {
 
 	/*
 	 * Type definitions

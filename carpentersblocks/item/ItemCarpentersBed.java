@@ -14,8 +14,7 @@ import carpentersblocks.util.registry.BlockRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class ItemCarpentersBed extends Item
-{
+public class ItemCarpentersBed extends Item {
 
 	public ItemCarpentersBed(int itemID)
 	{
@@ -25,8 +24,8 @@ public class ItemCarpentersBed extends Item
 		setCreativeTab(CarpentersBlocks.tabCarpentersBlocks);
 	}
 
-	@Override
 	@SideOnly(Side.CLIENT)
+	@Override
 	/**
 	 * When this method is called, your block should register all the icons it needs with the given IconRegister. This
 	 * is the only chance you get to register icons.
@@ -59,7 +58,7 @@ public class ItemCarpentersBed extends Item
 					world.isAirBlock(x_offset, y, z_offset)								&&
 					world.doesBlockHaveSolidTopSurface(x, y - 1, z)						&&
 					world.doesBlockHaveSolidTopSurface(x_offset, y - 1, z_offset)
-				)
+					)
 			{
 				/* Set foot of bed. */
 				world.setBlock(x, y, z, BlockRegistry.blockCarpentersBed.blockID);

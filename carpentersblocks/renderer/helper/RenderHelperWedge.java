@@ -11,8 +11,7 @@ import net.minecraft.util.Icon;
 import net.minecraftforge.common.ForgeDirection;
 import carpentersblocks.data.Slope;
 
-public class RenderHelperWedge extends RenderHelper
-{
+public class RenderHelperWedge extends RenderHelper {
 
 	/**
 	 * Renders the given texture to the bottom face of the block. Args: slope, x, y, z, texture

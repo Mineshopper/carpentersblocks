@@ -3,8 +3,7 @@ package carpentersblocks.data;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 
-public class Barrier
-{
+public class Barrier {
 
 	/**
 	 * 16-bit data components:
@@ -33,15 +32,15 @@ public class Barrier
 	/**
 	 * Returns data.
 	 */
-	public final static int getType(int data)
+	public static int getType(TEBase TE)
 	{
-		return data & 0xf;
+		return BlockProperties.getData(TE) & 0xf;
 	}
 
 	/**
 	 * Sets data (vanilla, picket, etc).
 	 */
-	public final static void setType(TEBase TE, int type)
+	public static void setType(TEBase TE, int type)
 	{
 		int temp = BlockProperties.getData(TE) & 0xfff0;
 		temp |= type;
@@ -52,15 +51,15 @@ public class Barrier
 	/**
 	 * Returns post bit from data.
 	 */
-	public final static int getPost(int data)
+	public static int getPost(TEBase TE)
 	{
-		return data >> 4;
+		return BlockProperties.getData(TE) >> 4;
 	}
 
 	/**
 	 * Sets post bit.
 	 */
-	public final static void setPost(TEBase TE, int post)
+	public static void setPost(TEBase TE, int post)
 	{
 		int temp = BlockProperties.getData(TE) & 0xffef;
 		temp |= post << 4;

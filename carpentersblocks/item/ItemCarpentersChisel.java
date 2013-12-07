@@ -1,24 +1,24 @@
 package carpentersblocks.item;
 
-import carpentersblocks.api.ICarpentersChisel;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
+import net.minecraft.world.World;
 import carpentersblocks.CarpentersBlocks;
+import carpentersblocks.api.ICarpentersChisel;
 import carpentersblocks.util.registry.ItemRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.world.World;
 
-public class ItemCarpentersChisel extends Item implements ICarpentersChisel
-{
+public class ItemCarpentersChisel extends Item implements ICarpentersChisel {
 
 	public ItemCarpentersChisel(int itemID)
 	{
 		super(itemID);
 		setUnlocalizedName("itemCarpentersChisel");
 
-		if (ItemRegistry.itemCarpentersToolsDamageable) {
+		if (ItemRegistry.itemCarpentersToolsDamageable)
+		{
 			setMaxDamage(300);
 			canRepair = true;
 		}
@@ -26,20 +26,23 @@ public class ItemCarpentersChisel extends Item implements ICarpentersChisel
 		setCreativeTab(CarpentersBlocks.tabCarpentersBlocks);
 	}
 
-	@Override
 	@SideOnly(Side.CLIENT)
+	@Override
 	public void registerIcons(IconRegister iconRegister)
 	{
 		itemIcon = iconRegister.registerIcon("carpentersblocks:chisel");
 	}
 
-    @Override
-    public void onChiselUse(World world, EntityPlayer player) {
-        player.getCurrentEquippedItem().damageItem(1, player);
-    }
+	@Override
+	public void onChiselUse(World world, EntityPlayer entityPlayer)
+	{
+		entityPlayer.getCurrentEquippedItem().damageItem(1, entityPlayer);
+	}
 
-    @Override
-    public boolean canUseChisel(World world, EntityPlayer player) {
-        return true;
-    }
+	@Override
+	public boolean canUseChisel(World world, EntityPlayer entityPlayer)
+	{
+		return true;
+	}
+
 }

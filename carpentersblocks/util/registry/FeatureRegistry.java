@@ -7,8 +7,7 @@ import carpentersblocks.tileentity.TECarpentersDaylightSensor;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
 
-public class FeatureRegistry
-{
+public class FeatureRegistry {
 
     public static boolean enableCovers = true;
     public static boolean enableOverlays = true;

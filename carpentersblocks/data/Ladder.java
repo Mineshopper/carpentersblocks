@@ -1,8 +1,6 @@
 package carpentersblocks.data;
 
-
-public class Ladder
-{
+public class Ladder {
 
 	/*
 	 * Ladder facing.

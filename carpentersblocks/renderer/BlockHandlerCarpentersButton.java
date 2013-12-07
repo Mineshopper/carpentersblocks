@@ -6,11 +6,7 @@ import net.minecraft.client.renderer.Tessellator;
 
 import org.lwjgl.opengl.GL11;
 
-import carpentersblocks.tileentity.TEBase;
-import carpentersblocks.util.BlockProperties;
-
-public class BlockHandlerCarpentersButton extends BlockHandlerBase
-{
+public class BlockHandlerCarpentersButton extends BlockHandlerBase {
 
 	@Override
 	public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderBlocks)
@@ -53,12 +49,10 @@ public class BlockHandlerCarpentersButton extends BlockHandlerBase
 	/**
 	 * Renders block
 	 */
-	 public boolean renderCarpentersBlock(TEBase TE, RenderBlocks renderBlocks, Block srcBlock, int renderPass, int x, int y, int z)
+	protected boolean renderCarpentersBlock(int x, int y, int z)
 	{
-		Block coverBlock = isSideCover ? BlockProperties.getCoverBlock(TE, coverRendering) : BlockProperties.getCoverBlock(TE, 6);
-
 		renderBlocks.renderAllFaces = true;
-		renderStandardBlock(TE, renderBlocks, coverBlock, srcBlock, x, y, z);
+		renderBlock(block, x, y, z);
 		renderBlocks.renderAllFaces = false;
 
 		return true;

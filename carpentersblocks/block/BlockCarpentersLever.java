@@ -18,8 +18,7 @@ import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.registry.BlockRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 
-public class BlockCarpentersLever extends BlockBase
-{
+public class BlockCarpentersLever extends BlockBase {
 
 	public BlockCarpentersLever(int blockID)
 	{
@@ -37,7 +36,7 @@ public class BlockCarpentersLever extends BlockBase
 	 */
 	protected boolean onHammerLeftClick(TEBase TE, EntityPlayer entityPlayer)
 	{
-		int data = BlockProperties.getData(TE);
+		BlockProperties.getData(TE);
 		int polarity = Lever.getPolarity(TE) == Lever.POLARITY_POSITIVE ? Lever.POLARITY_NEGATIVE : Lever.POLARITY_POSITIVE;
 
 		if (!TE.worldObj.isRemote) {
@@ -85,7 +84,7 @@ public class BlockCarpentersLever extends BlockBase
 	{
 		return side;
 	}
-	
+
 	@Override
 	/**
 	 * Called when the block is placed in the world.
@@ -93,13 +92,13 @@ public class BlockCarpentersLever extends BlockBase
 	public void auxiliaryOnBlockPlacedBy(TEBase TE, World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack itemStack)
 	{
 		int facing = world.getBlockMetadata(x, y, z);
-		
+
 		Lever.setFacing(TE, facing);
 		Lever.setReady(TE);
 
 		/* For vertical facings, set axis rotation. */
 		if (facing < 2)
-		{			
+		{
 			ForgeDirection dir = BlockProperties.getDirectionFromFacing(BlockProperties.getEntityFacing(entityLiving));
 
 			if (dir.equals(NORTH) || dir.equals(SOUTH)) {
@@ -122,7 +121,7 @@ public class BlockCarpentersLever extends BlockBase
 		if (Lever.isReady(TE))
 		{
 			ForgeDirection facing = Lever.getFacing(TE);
-			
+
 			if (!canPlaceBlockOnSide(world, x, y, z, facing.ordinal())) {
 				dropBlockAsItem(world, x, y, z, 0, 0);
 				world.setBlockToAir(x, y, z);
@@ -291,5 +290,5 @@ public class BlockCarpentersLever extends BlockBase
 	{
 		return BlockRegistry.carpentersLeverRenderID;
 	}
-	
+
 }

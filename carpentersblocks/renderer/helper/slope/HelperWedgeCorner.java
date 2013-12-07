@@ -10,8 +10,7 @@ import net.minecraftforge.common.ForgeDirection;
 import carpentersblocks.data.Slope;
 import carpentersblocks.renderer.helper.RenderHelper;
 
-public class HelperWedgeCorner extends RenderHelper
-{
+public class HelperWedgeCorner extends RenderHelper {
 
 	/**
 	 * Renders the given texture to the North sloped face of the block.  Args: slope, x, y, z, texture

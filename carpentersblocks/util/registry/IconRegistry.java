@@ -8,8 +8,7 @@ import net.minecraftforge.event.ForgeSubscribe;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class IconRegistry
-{
+public class IconRegistry {
 	
 	@SideOnly(Side.CLIENT)
     public static Icon	icon_blank,

@@ -9,8 +9,7 @@ import net.minecraft.util.ResourceLocation;
 import carpentersblocks.util.ModLogger;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 
-public class BedDesignHandler
-{
+public class BedDesignHandler {
 	
 	public static int maxNum = 256;
 	public static boolean[]	hasDesign = new boolean[maxNum];

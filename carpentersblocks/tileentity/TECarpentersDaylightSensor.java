@@ -2,8 +2,7 @@ package carpentersblocks.tileentity;
 
 import carpentersblocks.block.BlockCarpentersDaylightSensor;
 
-public class TECarpentersDaylightSensor extends TEBase
-{
+public class TECarpentersDaylightSensor extends TEBase {
 
 	/**
 	 * Allows the entity to update its state. Overridden in most subclasses, e.g. the mob spawner uses this to count
@@ -21,8 +20,9 @@ public class TECarpentersDaylightSensor extends TEBase
 				/*
 				 * Update daylight sensor light level once per second.
 				 */
-				if (blockType instanceof BlockCarpentersDaylightSensor)
+				if (blockType instanceof BlockCarpentersDaylightSensor) {
 					((BlockCarpentersDaylightSensor) getBlockType()).updateLightLevel(worldObj, xCoord, yCoord, zCoord);
+				}
 			}
 		}
 	}

@@ -1,31 +1,28 @@
 package carpentersblocks.renderer;
 
-import net.minecraft.block.Block;
-import net.minecraft.client.renderer.RenderBlocks;
 import carpentersblocks.block.BlockBase;
-import carpentersblocks.tileentity.TEBase;
 
-public class HingedBase extends BlockHandlerBase
-{
+public class HingedBase extends BlockHandlerBase {
+
 	/**
 	 * Returns whether hinged frame should render.
 	 */
-	protected boolean shouldRenderFrame(TEBase TE, RenderBlocks renderBlocks, Block coverBlock, int renderPass)
+	protected boolean shouldRenderFrame()
 	{
 		if (renderAlphaOverride) {
 			return renderPass == 1;
 		} else {
 			return	renderBlocks.hasOverrideBlockTexture() ||
-					coverBlock.getRenderBlockPass() == renderPass ||
-					coverBlock instanceof BlockBase && renderPass == 0 ||
-					shouldRenderPattern(TE, renderPass);
+					block.getRenderBlockPass() == renderPass ||
+					block instanceof BlockBase && renderPass == 0 ||
+					shouldRenderPattern();
 		}
 	}
 
 	/**
 	 * Returns whether hinged screen, glass or handles should render.
 	 */
-	protected boolean shouldRenderPieces(TEBase TE, RenderBlocks renderBlocks, Block coverBlock, int renderPass)
+	protected boolean shouldRenderPieces()
 	{
 		/*
 		 * Door pieces like the screen and glass will automatically

@@ -17,8 +17,7 @@ import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.handler.BedDesignHandler;
 import carpentersblocks.util.registry.BlockRegistry;
 
-public class TERendererCarpentersBlock extends TileEntitySpecialRenderer
-{
+public class TERendererCarpentersBlock extends TileEntitySpecialRenderer {
 
 	@Override
 	public void renderTileEntityAt(TileEntity TE, double x, double y, double z, float f)
@@ -41,7 +40,7 @@ public class TERendererCarpentersBlock extends TileEntitySpecialRenderer
 		boolean isHead = Bed.isHeadOfBed(TE);
 		boolean isOccupied = Bed.isOccupied(TE);
 
-		int design = Bed.getDesign(data);
+		int design = Bed.getDesign(TE);
 		
 		/*
 		 * If bed has no design blanket, don't render anything.

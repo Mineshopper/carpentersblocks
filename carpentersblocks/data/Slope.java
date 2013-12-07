@@ -12,8 +12,7 @@ import java.util.List;
 
 import net.minecraftforge.common.ForgeDirection;
 
-public class Slope
-{
+public class Slope {
 
 	/**
 	 * 16-bit data components:
@@ -148,8 +147,9 @@ public class Slope
 
 		this.facings = new ArrayList<ForgeDirection>();
 
-		for (ForgeDirection face : facings)
+		for (ForgeDirection face : facings) {
 			this.facings.add(face);
+		}
 
 		isPositive = this.facings.contains(UP);
 	}
