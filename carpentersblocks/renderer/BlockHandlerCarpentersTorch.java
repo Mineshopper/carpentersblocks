@@ -1,27 +1,56 @@
 package carpentersblocks.renderer;
 
-import net.minecraft.block.Block;
-import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.Icon;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.common.ForgeDirection;
 import carpentersblocks.block.BlockBase;
 import carpentersblocks.data.Torch;
-import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.registry.IconRegistry;
 
-public class BlockHandlerCarpentersTorch extends BlockHandlerBase
-{
+public class BlockHandlerCarpentersTorch extends BlockHandlerBase {
 
 	private Vec3[] vector = new Vec3[8];
-	
+
 	@Override
-	public boolean shouldRender3DInInventory() {
+	public boolean shouldRender3DInInventory()
+	{
 		return false;
 	}
-	
+
+	@Override
+	/**
+	 * Renders block
+	 */
+	protected boolean renderCarpentersBlock(int x, int y, int z)
+	{
+		renderTorch(x, y, z);
+		return true;
+	}
+
+	@Override
+	/**
+	 * Renders side.
+	 */
+	protected void renderSide(int x, int y, int z, int side, double offset, Icon icon)
+	{
+		renderFace(Tessellator.instance, side, icon, true);
+	}
+
+	/**
+	 * Override to provide custom icons.
+	 */
+	@Override
+	protected Icon getUniqueIcon(int side, Icon icon)
+	{
+		if (BlockProperties.hasCover(TE, 6)) {
+			return block.getIcon(2, renderBlocks.blockAccess.getBlockMetadata(TE.xCoord, TE.yCoord, TE.zCoord));
+		} else {
+			return IconRegistry.icon_generic;
+		}
+	}
+
 	/**
 	 * Returns whether srcBlock controls rendering per pass.
 	 * 
@@ -30,7 +59,7 @@ public class BlockHandlerCarpentersTorch extends BlockHandlerBase
 	 * render pass.
 	 */
 	@Override
-	protected boolean hasBlockDeterminantRendering(Block srcBlock)
+	protected boolean hasBlockDeterminantRendering()
 	{
 		return true;
 	}
@@ -38,51 +67,36 @@ public class BlockHandlerCarpentersTorch extends BlockHandlerBase
 	/**
 	 * Returns whether torch handle should render.
 	 */
-	protected boolean shouldRenderTorchHandle(TEBase TE, RenderBlocks renderBlocks, Block coverBlock, int renderPass)
+	private boolean shouldRenderTorchHandle()
 	{
 		if (renderAlphaOverride) {
 			return renderPass == 1;
 		} else {
 			return	renderBlocks.hasOverrideBlockTexture() ||
-					coverBlock.getRenderBlockPass() == renderPass ||
-					coverBlock instanceof BlockBase && renderPass == 0 ||
-					shouldRenderPattern(TE, renderPass);
+					block.getRenderBlockPass() == renderPass ||
+					block instanceof BlockBase && renderPass == 0 ||
+					shouldRenderPattern();
 		}
 	}
-	
-	@Override
+
 	/**
-	 * Renders block
+	 * Renders a torch at the given coordinates
 	 */
-	public boolean renderCarpentersBlock(TEBase TE, RenderBlocks renderBlocks, Block srcBlock, int renderPass, int x, int y, int z)
+	private void renderTorch(int x, int y, int z)
 	{
-		Block coverBlock = isSideCover ? BlockProperties.getCoverBlock(TE, coverRendering) : BlockProperties.getCoverBlock(TE, 6);
+		if (renderPass == 0) {
+			renderTorchHead(x, y, z);
+		}
 
-		renderTorch(TE, renderBlocks, coverBlock, srcBlock, renderPass, x, y, z);
-
-		return true;
+		if (shouldRenderTorchHandle()) {
+			renderTorchHandle(x, y, z);
+		}
 	}
 
-    /**
-     * Renders a torch at the given coordinates
-     */
-    public boolean renderTorch(TEBase TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int renderPass, int x, int y, int z)
-    {
-    	if (renderPass == 0) {
-    		renderTorchHead(TE, renderBlocks, coverBlock, srcBlock, x, y, z);
-    	}
-    	
-    	if (shouldRenderTorchHandle(TE, renderBlocks, coverBlock, renderPass)) {
-      		renderTorchHandle(TE, renderBlocks, coverBlock, srcBlock, x, y, z);
-    	}
-
-        return true;
-    }
-
-    /**
-     * Renders a torch head at the given coordinates.
-     */
-	private boolean renderTorchHead(TEBase TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int x, int y, int z)
+	/**
+	 * Renders a torch head at the given coordinates.
+	 */
+	private void renderTorchHead(int x, int y, int z)
 	{
 		Tessellator tessellator = Tessellator.instance;
 		tessellator.setBrightness(srcBlock.getMixedBrightnessForBlock(renderBlocks.blockAccess, TE.xCoord, TE.yCoord, TE.zCoord));
@@ -90,43 +104,41 @@ public class BlockHandlerCarpentersTorch extends BlockHandlerBase
 
 		Icon icon = null;
 		switch (Torch.getState(TE)) {
-			case LIT:
-				icon = IconRegistry.icon_torch_lit;
-				break;
-			case SMOLDERING:
-				icon = IconRegistry.icon_torch_head_smoldering;
-				break;
-			case UNLIT:
-				icon = IconRegistry.icon_torch_head_unlit;
-				break;
-			default: {}
+		case LIT:
+			icon = IconRegistry.icon_torch_lit;
+			break;
+		case SMOLDERING:
+			icon = IconRegistry.icon_torch_head_smoldering;
+			break;
+		case UNLIT:
+			icon = IconRegistry.icon_torch_head_unlit;
+			break;
+		default: {}
 		}
 
 		float vecX = 0.0625F;
 		float vecY = 10.0F / 16.0F;
 		float vecZ = 0.0625F;
-		vector[0] = renderBlocks.blockAccess.getWorldVec3Pool().getVecFromPool((-vecX), 0.5D, (-vecZ));
-		vector[1] = renderBlocks.blockAccess.getWorldVec3Pool().getVecFromPool(vecX, 0.5D, (-vecZ));
+		vector[0] = renderBlocks.blockAccess.getWorldVec3Pool().getVecFromPool(-vecX, 0.5D, -vecZ);
+		vector[1] = renderBlocks.blockAccess.getWorldVec3Pool().getVecFromPool(vecX, 0.5D, -vecZ);
 		vector[2] = renderBlocks.blockAccess.getWorldVec3Pool().getVecFromPool(vecX, 0.5D, vecZ);
-		vector[3] = renderBlocks.blockAccess.getWorldVec3Pool().getVecFromPool((-vecX), 0.5D, vecZ);
-		vector[4] = renderBlocks.blockAccess.getWorldVec3Pool().getVecFromPool((-vecX), vecY, (-vecZ));
-		vector[5] = renderBlocks.blockAccess.getWorldVec3Pool().getVecFromPool(vecX, vecY, (-vecZ));
+		vector[3] = renderBlocks.blockAccess.getWorldVec3Pool().getVecFromPool(-vecX, 0.5D, vecZ);
+		vector[4] = renderBlocks.blockAccess.getWorldVec3Pool().getVecFromPool(-vecX, vecY, -vecZ);
+		vector[5] = renderBlocks.blockAccess.getWorldVec3Pool().getVecFromPool(vecX, vecY, -vecZ);
 		vector[6] = renderBlocks.blockAccess.getWorldVec3Pool().getVecFromPool(vecX, vecY, vecZ);
-		vector[7] = renderBlocks.blockAccess.getWorldVec3Pool().getVecFromPool((-vecX), vecY, vecZ);
+		vector[7] = renderBlocks.blockAccess.getWorldVec3Pool().getVecFromPool(-vecX, vecY, vecZ);
 
 		setRotations(Torch.getFacing(TE), x, y, z);
 
 		for (int side = 0; side < 6; ++side) {
 			renderFace(tessellator, side, icon, false);
 		}
-		
-		return true;
-    }
-    
-    /**
-     * Renders a torch handle at the given coordinates.
-     */
-	private boolean renderTorchHandle(TEBase TE, RenderBlocks renderBlocks, Block coverBlock, Block srcBlock, int x, int y, int z)
+	}
+
+	/**
+	 * Renders a torch handle at the given coordinates.
+	 */
+	private void renderTorchHandle(int x, int y, int z)
 	{
 		Tessellator tessellator = Tessellator.instance;
 		tessellator.setBrightness(srcBlock.getMixedBrightnessForBlock(renderBlocks.blockAccess, TE.xCoord, TE.yCoord, TE.zCoord));
@@ -135,14 +147,14 @@ public class BlockHandlerCarpentersTorch extends BlockHandlerBase
 		float vecX = 0.0625F;
 		float vecY = 0.5F;
 		float vecZ = 0.0625F;
-		vector[0] = renderBlocks.blockAccess.getWorldVec3Pool().getVecFromPool((-vecX), 0.0D, (-vecZ));
-		vector[1] = renderBlocks.blockAccess.getWorldVec3Pool().getVecFromPool(vecX, 0.0D, (-vecZ));
+		vector[0] = renderBlocks.blockAccess.getWorldVec3Pool().getVecFromPool(-vecX, 0.0D, -vecZ);
+		vector[1] = renderBlocks.blockAccess.getWorldVec3Pool().getVecFromPool(vecX, 0.0D, -vecZ);
 		vector[2] = renderBlocks.blockAccess.getWorldVec3Pool().getVecFromPool(vecX, 0.0D, vecZ);
-		vector[3] = renderBlocks.blockAccess.getWorldVec3Pool().getVecFromPool((-vecX), 0.0D, vecZ);
-		vector[4] = renderBlocks.blockAccess.getWorldVec3Pool().getVecFromPool((-vecX), vecY, (-vecZ));
-		vector[5] = renderBlocks.blockAccess.getWorldVec3Pool().getVecFromPool(vecX, vecY, (-vecZ));
+		vector[3] = renderBlocks.blockAccess.getWorldVec3Pool().getVecFromPool(-vecX, 0.0D, vecZ);
+		vector[4] = renderBlocks.blockAccess.getWorldVec3Pool().getVecFromPool(-vecX, vecY, -vecZ);
+		vector[5] = renderBlocks.blockAccess.getWorldVec3Pool().getVecFromPool(vecX, vecY, -vecZ);
 		vector[6] = renderBlocks.blockAccess.getWorldVec3Pool().getVecFromPool(vecX, vecY, vecZ);
-		vector[7] = renderBlocks.blockAccess.getWorldVec3Pool().getVecFromPool((-vecX), vecY, vecZ);
+		vector[7] = renderBlocks.blockAccess.getWorldVec3Pool().getVecFromPool(-vecX, vecY, vecZ);
 
 		setRotations(Torch.getFacing(TE), x, y, z);
 
@@ -151,27 +163,25 @@ public class BlockHandlerCarpentersTorch extends BlockHandlerBase
 		 * of the vectors may be to blame.
 		 */
 
-		setLightnessYNeg(renderBlocks, coverBlock, x, y, z);
-		prepareRender(TE, renderBlocks, coverBlock, srcBlock, 0, x, y, z, 0.5F);
+		lightingHelper.setLightness(0.5F).setLightingYNeg(block, x, y, z);
+		delegateSideRender(x, y, z, DOWN);
 
-		setLightnessYPos(renderBlocks, coverBlock, x, y, z);
-		prepareRender(TE, renderBlocks, coverBlock, srcBlock, 1, x, y, z, 1.0F);
+		lightingHelper.setLightness(1.0F).setLightingYPos(block, x, y, z);
+		delegateSideRender(x, y, z, UP);
 
-		setLightnessZNeg(renderBlocks, coverBlock, x, y, z);
-		prepareRender(TE, renderBlocks, coverBlock, srcBlock, 2, x, y, z, 0.8F);
+		lightingHelper.setLightness(0.8F).setLightingZNeg(block, x, y, z);
+		delegateSideRender(x, y, z, NORTH);
 
-		setLightnessZPos(renderBlocks, coverBlock, x, y, z);
-		prepareRender(TE, renderBlocks, coverBlock, srcBlock, 3, x, y, z, 0.6F);
+		lightingHelper.setLightness(0.6F).setLightingZPos(block, x, y, z);
+		delegateSideRender(x, y, z, SOUTH);
 
-		setLightnessXNeg(renderBlocks, coverBlock, x, y, z);
-		prepareRender(TE, renderBlocks, coverBlock, srcBlock, 4, x, y, z, 0.8F);
+		lightingHelper.setLightness(0.8F).setLightingXNeg(block, x, y, z);
+		delegateSideRender(x, y, z, WEST);
 
-		setLightnessXPos(renderBlocks, coverBlock, x, y, z);
-		prepareRender(TE, renderBlocks, coverBlock, srcBlock, 5, x, y, z, 0.6F);
-		
-		return true;
-    }
-	
+		lightingHelper.setLightness(0.6F).setLightingXPos(block, x, y, z);
+		delegateSideRender(x, y, z, EAST);
+	}
+
 	private void setRotations(ForgeDirection facing, int x, int y, int z)
 	{
 		for (int vecCount = 0; vecCount < 8; ++vecCount)
@@ -181,29 +191,29 @@ public class BlockHandlerCarpentersTorch extends BlockHandlerBase
 				vector[vecCount].xCoord += x + 0.5D;
 				vector[vecCount].yCoord += y;
 				vector[vecCount].zCoord += z + 0.5D;
-				
+
 			} else {
 
 				vector[vecCount].zCoord += 0.0625D;
 				vector[vecCount].rotateAroundX(-((float)Math.PI * 3.4F / 9F));
-				
+
 				vector[vecCount].yCoord -= 0.4375D;
-				vector[vecCount].rotateAroundX(((float)Math.PI / 2F));
+				vector[vecCount].rotateAroundX((float)Math.PI / 2F);
 
 				switch (facing) {
-					case NORTH:
-						vector[vecCount].rotateAroundY(0.0F);
-						break;
-					case SOUTH:
-						vector[vecCount].rotateAroundY((float)Math.PI);
-						break;
-					case WEST:
-						vector[vecCount].rotateAroundY(((float)Math.PI / 2F));
-						break;
-					case EAST:
-						vector[vecCount].rotateAroundY(-((float)Math.PI / 2F));
-						break;
-					default: {}
+				case NORTH:
+					vector[vecCount].rotateAroundY(0.0F);
+					break;
+				case SOUTH:
+					vector[vecCount].rotateAroundY((float)Math.PI);
+					break;
+				case WEST:
+					vector[vecCount].rotateAroundY((float)Math.PI / 2F);
+					break;
+				case EAST:
+					vector[vecCount].rotateAroundY(-((float)Math.PI / 2F));
+					break;
+				default: {}
 				}
 
 				vector[vecCount].xCoord += x + 0.5D;
@@ -212,26 +222,17 @@ public class BlockHandlerCarpentersTorch extends BlockHandlerBase
 			}
 		}
 	}
-	
-	@Override
-	/**
-	 * Renders side.
-	 */
-	protected void renderSide(TEBase TE, RenderBlocks renderBlocks, int side, double offset, int x, int y, int z, Icon icon)
-	{
-		renderFace(Tessellator.instance, side, icon, true);
-	}
-	
+
 	/**
 	 * Performs final rendering of face.
 	 */
 	private void renderFace(Tessellator tessellator, int side, Icon icon, boolean isHandle)
 	{
 		double uMin, uMax, vMin, vMax;
-		
+
 		if (isHandle) {
 			uMin = icon.getInterpolatedU(7.0D);
-			uMax = icon.getInterpolatedU(9.0D);			
+			uMax = icon.getInterpolatedU(9.0D);
 			vMin = icon.getMinV();
 			vMax = icon.getInterpolatedV(8.0D);
 		} else {
@@ -240,7 +241,7 @@ public class BlockHandlerCarpentersTorch extends BlockHandlerBase
 			vMin = icon.getInterpolatedV(6.0D);
 			vMax = icon.getInterpolatedV(8.0D);
 		}
-		
+
 		Vec3 vertex1 = null;
 		Vec3 vertex2 = null;
 		Vec3 vertex3 = null;

@@ -27,8 +27,7 @@ import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class BlockCarpentersHatch extends BlockBase
-{
+public class BlockCarpentersHatch extends BlockBase {
 
 	public BlockCarpentersHatch(int blockID)
 	{
@@ -37,16 +36,16 @@ public class BlockCarpentersHatch extends BlockBase
 		setUnlocalizedName("blockCarpentersHatch");
 		setCreativeTab(CarpentersBlocks.tabCarpentersBlocks);
 	}
-	
-    @SideOnly(Side.CLIENT)
-    @Override
-    /**
-     * When this method is called, your block should register all the icons it needs with the given IconRegister. This
-     * is the only chance you get to register icons.
-     */
+
+	@SideOnly(Side.CLIENT)
+	@Override
+	/**
+	 * When this method is called, your block should register all the icons it needs with the given IconRegister. This
+	 * is the only chance you get to register icons.
+	 */
 	public void registerIcons(IconRegister iconRegister)
 	{
-		this.blockIcon = IconRegistry.icon_generic;
+		blockIcon = IconRegistry.icon_generic;
 		super.registerIcons(iconRegister);
 	}
 
@@ -58,8 +57,9 @@ public class BlockCarpentersHatch extends BlockBase
 	{
 		BlockProperties.getData(TE);
 
-		if (!TE.worldObj.isRemote)
+		if (!TE.worldObj.isRemote) {
 			findNextSideSupportBlock(TE, TE.worldObj, TE.xCoord, TE.yCoord, TE.zCoord);
+		}
 
 		return true;
 	}
@@ -76,8 +76,9 @@ public class BlockCarpentersHatch extends BlockBase
 			{
 				int type = Hatch.getType(TE);
 
-				if (++type > 4)
+				if (++type > 4) {
 					type = 0;
+				}
 
 				Hatch.setType(TE, type);
 			}
@@ -108,8 +109,9 @@ public class BlockCarpentersHatch extends BlockBase
 	 */
 	public boolean auxiliaryOnBlockActivated(TEBase TE, World world, int x, int y, int z, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ)
 	{
-		if (!activationRequiresRedstone(TE))
+		if (!activationRequiresRedstone(TE)) {
 			Hatch.setState(TE, Hatch.getState(TE) == Hatch.STATE_CLOSED ? Hatch.STATE_OPEN : Hatch.STATE_CLOSED);
+		}
 
 		return true;
 	}
@@ -133,9 +135,9 @@ public class BlockCarpentersHatch extends BlockBase
 		boolean isHigh = Hatch.getPos(TE) == Hatch.POSITION_HIGH;
 		boolean isOpen = Hatch.getState(TE) == Hatch.STATE_OPEN;
 		int dir = Hatch.getDir(TE);
-		
+
 		float thickness = 0.1875F;
-		
+
 		/* Hidden type has reduced dimensions to assist in climbing */
 		if (Hatch.getType(TE) == Hatch.TYPE_HIDDEN) {
 			thickness = 0.125F;
@@ -205,14 +207,16 @@ public class BlockCarpentersHatch extends BlockBase
 			break;
 		}
 
-		if (!(isValidSupportBlock(world, x, y, z, world.getBlockId(xOffset, y, zOffset), dir + 2) || world.isBlockSolidOnSide(xOffset, y, zOffset, ForgeDirection.getOrientation(dir + 2))))
+		if (!(isValidSupportBlock(world, x, y, z, world.getBlockId(xOffset, y, zOffset), dir + 2) || world.isBlockSolidOnSide(xOffset, y, zOffset, ForgeDirection.getOrientation(dir + 2)))) {
 			findNextSideSupportBlock(TE, world, x, y, z);
+		}
 
 		boolean isPowered = world.isBlockIndirectlyGettingPowered(x, y, z);
 		boolean isOpen = state == Hatch.STATE_OPEN;
 
-		if ((blockID > 0 && Block.blocksList[blockID].canProvidePower()) && isPowered != isOpen)
+		if (blockID > 0 && Block.blocksList[blockID].canProvidePower() && isPowered != isOpen) {
 			Hatch.setState(TE, state == Hatch.STATE_OPEN ? Hatch.STATE_CLOSED : Hatch.STATE_OPEN);
+		}
 	}
 
 	@Override
@@ -234,12 +238,14 @@ public class BlockCarpentersHatch extends BlockBase
 	{
 		int initData = 0;
 
-		if (side > 1)
+		if (side > 1) {
 			initData = side - 2;
+		}
 
 		// Hatch on upper half of block
-		if (side != 1 && side != 0 && hitY > 0.5F)
+		if (side != 1 && side != 0 && hitY > 0.5F) {
 			initData |= 8;
+		}
 
 		return initData;
 	}
@@ -253,12 +259,13 @@ public class BlockCarpentersHatch extends BlockBase
 	{
 		int metadata = world.getBlockMetadata(x, y, z);
 
-		Hatch.setDir(TE, (metadata & 0x3));
+		Hatch.setDir(TE, metadata & 0x3);
 
 		boolean isPositive = (metadata & 0x8) > 0 ? true : false;
 
-		if (isPositive)
+		if (isPositive) {
 			Hatch.setPos(TE, Hatch.POSITION_HIGH);
+		}
 	}
 
 	@Override
@@ -289,8 +296,9 @@ public class BlockCarpentersHatch extends BlockBase
 	{
 		int dir = Hatch.getDir(TE);
 
-		if (++dir > 3)
+		if (++dir > 3) {
 			dir = 0;
+		}
 
 		/*
 		 * This block will rotate until it finds a suitable
@@ -299,8 +307,9 @@ public class BlockCarpentersHatch extends BlockBase
 		int count = 0;
 		while (!this.canPlaceBlockOnSide(world, x, y, z, dir + 2) && count < 4)
 		{
-			if (++dir > 3)
+			if (++dir > 3) {
 				dir = 0;
+			}
 
 			++count;
 		}
@@ -312,7 +321,7 @@ public class BlockCarpentersHatch extends BlockBase
 			Hatch.setDir(TE, dir);
 		}
 	}
-	
+
 	@Override
 	public boolean isLadder(World world, int x, int y, int z, EntityLiving entityLiving)
 	{

@@ -6,8 +6,7 @@ import net.minecraft.client.renderer.Tessellator;
 
 import org.lwjgl.opengl.GL11;
 
-public class BlockHandlerCarpentersBlock extends BlockHandlerBase
-{
+public class BlockHandlerCarpentersBlock extends BlockHandlerBase {
 
 	@Override
 	public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderBlocks)

@@ -20,8 +20,7 @@ import net.minecraftforge.common.ForgeDirection;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 
-public class RenderHelper extends VertexHelper
-{
+public class RenderHelper extends VertexHelper {
 		
 	protected static double uMin;
 	protected static double uMax;

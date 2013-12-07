@@ -3,8 +3,7 @@ package carpentersblocks.renderer.helper;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 
-public class BedDesignHelper
-{
+public class BedDesignHelper {
 	
 	public static final byte	SIDE1 = 0;
 	public static final byte	SIDE2 = 1;

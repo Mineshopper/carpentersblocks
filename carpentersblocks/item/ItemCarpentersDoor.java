@@ -16,8 +16,7 @@ import carpentersblocks.util.registry.BlockRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class ItemCarpentersDoor extends Item
-{
+public class ItemCarpentersDoor extends Item {
 
 	public ItemCarpentersDoor(int itemID)
 	{
@@ -27,8 +26,8 @@ public class ItemCarpentersDoor extends Item
 		setCreativeTab(CarpentersBlocks.tabCarpentersBlocks);
 	}
 
-	@Override
 	@SideOnly(Side.CLIENT)
+	@Override
 	public void registerIcons(IconRegister iconRegister)
 	{
 		itemIcon = iconRegister.registerIcon("carpentersblocks:door");
@@ -58,7 +57,7 @@ public class ItemCarpentersDoor extends Item
 				}
 			}
 		}
-		
+
 		return false;
 	}
 
@@ -86,37 +85,33 @@ public class ItemCarpentersDoor extends Item
 
 		int type = 0;
 		if (TE_XN != null) {
-			int temp_data = BlockProperties.getData(TE_XN);
-			Door.setType(TE, Door.getType(temp_data));
-			Door.setRigidity(TE, Door.getRigidity(temp_data));
-			type = Door.getType(temp_data);
+			Door.setType(TE, Door.getType(TE_XN));
+			Door.setRigidity(TE, Door.getRigidity(TE_XN));
+			type = Door.getType(TE_XN);
 		} else if (TE_XP != null) {
-			int temp_data = BlockProperties.getData(TE_XP);
-			Door.setType(TE, Door.getType(temp_data));
-			Door.setRigidity(TE, Door.getRigidity(temp_data));
-			type = Door.getType(temp_data);
+			Door.setType(TE, Door.getType(TE_XP));
+			Door.setRigidity(TE, Door.getRigidity(TE_XP));
+			type = Door.getType(TE_XP);
 		} else if (TE_ZN != null) {
-			int temp_data = BlockProperties.getData(TE_ZN);
-			Door.setType(TE, Door.getType(temp_data));
-			Door.setRigidity(TE, Door.getRigidity(temp_data));
-			type = Door.getType(temp_data);
+			Door.setType(TE, Door.getType(TE_ZN));
+			Door.setRigidity(TE, Door.getRigidity(TE_ZN));
+			type = Door.getType(TE_ZN);
 		} else if (TE_ZP != null) {
-			int temp_data = BlockProperties.getData(TE_ZP);
-			Door.setType(TE, Door.getType(temp_data));
-			Door.setRigidity(TE, Door.getRigidity(temp_data));
-			type = Door.getType(temp_data);
+			Door.setType(TE, Door.getType(TE_ZP));
+			Door.setRigidity(TE, Door.getRigidity(TE_ZP));
+			type = Door.getType(TE_ZP);
 		}
 
 		/*
 		 * Create top door piece.
 		 */
-		 world.setBlock(x, y + 1, z, block.blockID);
-		 TEBase TE_YP = (TEBase) world.getBlockTileEntity(x, y + 1, z);
-		 Door.setFacing(TE_YP, facing);
-		 Door.setType(TE_YP, type);
-		 Door.setHingeSide(TE_YP, Door.getHinge(BlockProperties.getData(TE)));
-		 Door.setPiece(TE_YP, Door.PIECE_TOP);
-		 Door.setRigidity(TE_YP, Door.getRigidity(BlockProperties.getData(TE)));
+		world.setBlock(x, y + 1, z, block.blockID);
+		TEBase TE_YP = (TEBase) world.getBlockTileEntity(x, y + 1, z);
+		Door.setFacing(TE_YP, facing);
+		Door.setType(TE_YP, type);
+		Door.setHingeSide(TE_YP, Door.getHinge(TE));
+		Door.setPiece(TE_YP, Door.PIECE_TOP);
+		Door.setRigidity(TE_YP, Door.getRigidity(TE));
 	}
 
 	/**
@@ -125,11 +120,10 @@ public class ItemCarpentersDoor extends Item
 	 */
 	private int getHingePoint(TEBase TE, int blockID)
 	{
-		int data = BlockProperties.getData(TE);
-		int facing = Door.getFacing(data);
-		Door.getHinge(data);
-		Door.getState(data);
-		int piece = Door.getPiece(data);
+		int facing = Door.getFacing(TE);
+		Door.getHinge(TE);
+		Door.getState(TE);
+		int piece = Door.getPiece(TE);
 
 		TEBase TE_ZN = TE.worldObj.getBlockId(TE.xCoord, TE.yCoord, TE.zCoord - 1) == blockID ? (TEBase) TE.worldObj.getBlockTileEntity(TE.xCoord, TE.yCoord, TE.zCoord - 1) : null;
 		TEBase TE_ZP = TE.worldObj.getBlockId(TE.xCoord, TE.yCoord, TE.zCoord + 1) == blockID ? (TEBase) TE.worldObj.getBlockTileEntity(TE.xCoord, TE.yCoord, TE.zCoord + 1) : null;
@@ -141,40 +135,36 @@ public class ItemCarpentersDoor extends Item
 		case Door.FACING_XN:
 
 			if (TE_ZP != null) {
-
-				int data_ZP = BlockProperties.getData(TE_ZP);
-				if (piece == Door.getPiece(data_ZP) && facing == Door.getFacing(data_ZP) && Door.getHinge(data_ZP) == Door.HINGE_LEFT)
+				if (piece == Door.getPiece(TE_ZP) && facing == Door.getFacing(TE_ZP) && Door.getHinge(TE_ZP) == Door.HINGE_LEFT) {
 					return Door.HINGE_RIGHT;
-
+				}
 			}
 
 			break;
 		case Door.FACING_XP:
 
 			if (TE_ZN != null) {
-
-				int data_ZN = BlockProperties.getData(TE_ZN);
-				if (piece == Door.getPiece(data_ZN) && facing == Door.getFacing(data_ZN) && Door.getHinge(data_ZN) == Door.HINGE_LEFT)
+				if (piece == Door.getPiece(TE_ZN) && facing == Door.getFacing(TE_ZN) && Door.getHinge(TE_ZN) == Door.HINGE_LEFT) {
 					return Door.HINGE_RIGHT;
-
+				}
 			}
 
 			break;
 		case Door.FACING_ZN:
 
 			if (TE_XN != null) {
-				int data_XN = BlockProperties.getData(TE_XN);
-				if (piece == Door.getPiece(data_XN) && facing == Door.getFacing(data_XN) && Door.getHinge(data_XN) == Door.HINGE_LEFT)
+				if (piece == Door.getPiece(TE_XN) && facing == Door.getFacing(TE_XN) && Door.getHinge(TE_XN) == Door.HINGE_LEFT) {
 					return Door.HINGE_RIGHT;
+				}
 			}
 
 			break;
 		case Door.FACING_ZP:
 
 			if (TE_XP != null) {
-				int data_XP = BlockProperties.getData(TE_XP);
-				if (piece == Door.getPiece(data_XP) && facing == Door.getFacing(data_XP) && Door.getHinge(data_XP) == Door.HINGE_LEFT)
+				if (piece == Door.getPiece(TE_XP) && facing == Door.getFacing(TE_XP) && Door.getHinge(TE_XP) == Door.HINGE_LEFT) {
 					return Door.HINGE_RIGHT;
+				}
 			}
 
 			break;

@@ -9,8 +9,7 @@ import carpentersblocks.util.ModLogger;
 import carpentersblocks.util.registry.FeatureRegistry;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 
-public class PlantHandler
-{
+public class PlantHandler {
 
 	private static Method canThisPlantGrowOnThisBlockID;
 

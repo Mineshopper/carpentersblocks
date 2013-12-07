@@ -15,19 +15,19 @@ public class TECarpentersTorch extends TEBase {
 	public void onDataPacket(INetworkManager net, Packet132TileEntityData pkt)
 	{
 		if (worldObj != null && worldObj.isRemote)
-		{			
+		{
 			State existing_state = Torch.getState(this);
-			
+
 			super.onDataPacket(net, pkt);
-			
+
 			State new_state = Torch.getState(this);
-			
+
 			if (new_state.ordinal() > existing_state.ordinal())
 			{
 				double[] headCoords = Torch.getHeadCoordinates(this);
-				this.worldObj.spawnParticle("largesmoke", headCoords[0], headCoords[1], headCoords[2], 0.0D, 0.0D, 0.0D);
+				worldObj.spawnParticle("largesmoke", headCoords[0], headCoords[1], headCoords[2], 0.0D, 0.0D, 0.0D);
 			}
 		}
 	}
-	
+
 }

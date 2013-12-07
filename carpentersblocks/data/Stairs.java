@@ -12,8 +12,7 @@ import java.util.List;
 
 import net.minecraftforge.common.ForgeDirection;
 
-public class Stairs
-{
+public class Stairs {
 
 	/**
 	 * 16-bit data components:
@@ -127,8 +126,9 @@ public class Stairs
 
 		this.facings = new ArrayList<ForgeDirection>();
 
-		for (ForgeDirection face : facings)
+		for (ForgeDirection face : facings) {
 			this.facings.add(face);
+		}
 
 		arePositive = this.facings.contains(UP);
 	}

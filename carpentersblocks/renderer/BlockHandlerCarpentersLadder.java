@@ -10,8 +10,7 @@ import carpentersblocks.data.Ladder;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 
-public class BlockHandlerCarpentersLadder extends BlockHandlerBase
-{
+public class BlockHandlerCarpentersLadder extends BlockHandlerBase {
 
 	@Override
 	public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderBlocks)
@@ -76,12 +75,12 @@ public class BlockHandlerCarpentersLadder extends BlockHandlerBase
 	/**
 	 * Renders ladder.
 	 */
-	public boolean renderCarpentersBlock(TEBase TE, RenderBlocks renderBlocks, Block srcBlock, int renderPass, int x, int y, int z)
+	protected boolean renderCarpentersBlock(int x, int y, int z)
 	{
 		disableAO = true;
 
 		int data = BlockProperties.getData(TE);
-		Block coverBlock = BlockProperties.getCoverBlock(TE, 6);
+		BlockProperties.getCoverBlock(TE, 6);
 
 		double xLow = 0.0D;
 		double xHigh = 1.0D;
@@ -102,11 +101,11 @@ public class BlockHandlerCarpentersLadder extends BlockHandlerBase
 			// Side supports
 			if (!connects_XN) {
 				renderBlocks.setRenderBounds(0.0D, 0.0D, 0.375D, 0.125D, 1.0D, 0.625D);
-				renderStandardBlock(TE, renderBlocks, coverBlock, srcBlock, x, y, z);
+				renderBlock(block, x, y, z);
 			}
 			if (!connects_XP) {
 				renderBlocks.setRenderBounds(0.875D, 0.0D, 0.375D, 1.0D, 1.0D, 0.625D);
-				renderStandardBlock(TE, renderBlocks, coverBlock, srcBlock, x, y, z);
+				renderBlock(block, x, y, z);
 			}
 
 			xLow  = connects_XN ? 0.0D : 0.125D;
@@ -114,13 +113,13 @@ public class BlockHandlerCarpentersLadder extends BlockHandlerBase
 
 			// Slats
 			renderBlocks.setRenderBounds(xLow, 0.125D, 0.4375D, xHigh, 0.1875D, 0.5625D);
-			renderStandardBlock(TE, renderBlocks, coverBlock, srcBlock, x, y, z);
+			renderBlock(block, x, y, z);
 			renderBlocks.setRenderBounds(xLow, 0.375D, 0.4375D, xHigh, 0.4375D, 0.5625D);
-			renderStandardBlock(TE, renderBlocks, coverBlock, srcBlock, x, y, z);
+			renderBlock(block, x, y, z);
 			renderBlocks.setRenderBounds(xLow, 0.625D, 0.4375D, xHigh, 0.6875D, 0.5625D);
-			renderStandardBlock(TE, renderBlocks, coverBlock, srcBlock, x, y, z);
+			renderBlock(block, x, y, z);
 			renderBlocks.setRenderBounds(xLow, 0.875D, 0.4375D, xHigh, 0.9375D, 0.5625D);
-			renderStandardBlock(TE, renderBlocks, coverBlock, srcBlock, x, y, z);
+			renderBlock(block, x, y, z);
 
 			break;
 		case Ladder.FACING_ON_Z:
@@ -128,11 +127,11 @@ public class BlockHandlerCarpentersLadder extends BlockHandlerBase
 			// Side supports
 			if (!connects_ZN) {
 				renderBlocks.setRenderBounds(0.375D, 0.0D, 0.0D, 0.625D, 1.0D, 0.125D);
-				renderStandardBlock(TE, renderBlocks, coverBlock, srcBlock, x, y, z);
+				renderBlock(block, x, y, z);
 			}
 			if (!connects_ZP) {
 				renderBlocks.setRenderBounds(0.375D, 0.0D, 0.875D, 0.625D, 1.0D, 1.0D);
-				renderStandardBlock(TE, renderBlocks, coverBlock, srcBlock, x, y, z);
+				renderBlock(block, x, y, z);
 			}
 
 			zLow  = connects_ZN ? 0.0D : 0.125D;
@@ -140,13 +139,13 @@ public class BlockHandlerCarpentersLadder extends BlockHandlerBase
 
 			// Slats
 			renderBlocks.setRenderBounds(0.4375D, 0.125D, zLow, 0.5625D, 0.1875D, zHigh);
-			renderStandardBlock(TE, renderBlocks, coverBlock, srcBlock, x, y, z);
+			renderBlock(block, x, y, z);
 			renderBlocks.setRenderBounds(0.4375D, 0.375D, zLow, 0.5625D, 0.4375D, zHigh);
-			renderStandardBlock(TE, renderBlocks, coverBlock, srcBlock, x, y, z);
+			renderBlock(block, x, y, z);
 			renderBlocks.setRenderBounds(0.4375D, 0.625D, zLow, 0.5625D, 0.6875D, zHigh);
-			renderStandardBlock(TE, renderBlocks, coverBlock, srcBlock, x, y, z);
+			renderBlock(block, x, y, z);
 			renderBlocks.setRenderBounds(0.4375D, 0.875D, zLow, 0.5625D, 0.9375D, zHigh);
-			renderStandardBlock(TE, renderBlocks, coverBlock, srcBlock, x, y, z);
+			renderBlock(block, x, y, z);
 
 			break;
 		case Ladder.FACING_NORTH: // Ladder on +Z
@@ -154,11 +153,11 @@ public class BlockHandlerCarpentersLadder extends BlockHandlerBase
 			// Side supports
 			if (!connects_XN) {
 				renderBlocks.setRenderBounds(0.0D, 0.0D, 0.8125D, 0.125D, 1.0D, 1.0D);
-				renderStandardBlock(TE, renderBlocks, coverBlock, srcBlock, x, y, z);
+				renderBlock(block, x, y, z);
 			}
 			if (!connects_XP) {
 				renderBlocks.setRenderBounds(0.875D, 0.0D, 0.8125D, 1.0D, 1.0D, 1.0D);
-				renderStandardBlock(TE, renderBlocks, coverBlock, srcBlock, x, y, z);
+				renderBlock(block, x, y, z);
 			}
 
 			xLow  = connects_XN ? 0.0D : 0.125D;
@@ -166,13 +165,13 @@ public class BlockHandlerCarpentersLadder extends BlockHandlerBase
 
 			// Slats
 			renderBlocks.setRenderBounds(xLow, 0.125D, 0.875D, xHigh, 0.1875D, 1.0D);
-			renderStandardBlock(TE, renderBlocks, coverBlock, srcBlock, x, y, z);
+			renderBlock(block, x, y, z);
 			renderBlocks.setRenderBounds(xLow, 0.375D, 0.875D, xHigh, 0.4375D, 1.0D);
-			renderStandardBlock(TE, renderBlocks, coverBlock, srcBlock, x, y, z);
+			renderBlock(block, x, y, z);
 			renderBlocks.setRenderBounds(xLow, 0.625D, 0.875D, xHigh, 0.6875D, 1.0D);
-			renderStandardBlock(TE, renderBlocks, coverBlock, srcBlock, x, y, z);
+			renderBlock(block, x, y, z);
 			renderBlocks.setRenderBounds(xLow, 0.875D, 0.875D, xHigh, 0.9375D, 1.0D);
-			renderStandardBlock(TE, renderBlocks, coverBlock, srcBlock, x, y, z);
+			renderBlock(block, x, y, z);
 
 			break;
 		case Ladder.FACING_SOUTH: // Ladder on -Z
@@ -180,11 +179,11 @@ public class BlockHandlerCarpentersLadder extends BlockHandlerBase
 			// Side supports
 			if (!connects_XN) {
 				renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 0.125D, 1.0D, 0.1875D);
-				renderStandardBlock(TE, renderBlocks, coverBlock, srcBlock, x, y, z);
+				renderBlock(block, x, y, z);
 			}
 			if (!connects_XP) {
 				renderBlocks.setRenderBounds(0.875D, 0.0D, 0.0D, 1.0D, 1.0D, 0.1875D);
-				renderStandardBlock(TE, renderBlocks, coverBlock, srcBlock, x, y, z);
+				renderBlock(block, x, y, z);
 			}
 
 			xLow  = connects_XN ? 0.0D : 0.125D;
@@ -192,13 +191,13 @@ public class BlockHandlerCarpentersLadder extends BlockHandlerBase
 
 			// Slats
 			renderBlocks.setRenderBounds(xLow, 0.125D, 0.0D, xHigh, 0.1875D, 0.1875D);
-			renderStandardBlock(TE, renderBlocks, coverBlock, srcBlock, x, y, z);
+			renderBlock(block, x, y, z);
 			renderBlocks.setRenderBounds(xLow, 0.375D, 0.0D, xHigh, 0.4375D, 0.1875D);
-			renderStandardBlock(TE, renderBlocks, coverBlock, srcBlock, x, y, z);
+			renderBlock(block, x, y, z);
 			renderBlocks.setRenderBounds(xLow, 0.625D, 0.0D, xHigh, 0.6875D, 0.1875D);
-			renderStandardBlock(TE, renderBlocks, coverBlock, srcBlock, x, y, z);
+			renderBlock(block, x, y, z);
 			renderBlocks.setRenderBounds(xLow, 0.875D, 0.0D, xHigh, 0.9375D, 0.1875D);
-			renderStandardBlock(TE, renderBlocks, coverBlock, srcBlock, x, y, z);
+			renderBlock(block, x, y, z);
 
 			break;
 		case Ladder.FACING_WEST: // Ladder on +X
@@ -206,11 +205,11 @@ public class BlockHandlerCarpentersLadder extends BlockHandlerBase
 			// Side supports
 			if (!connects_ZN) {
 				renderBlocks.setRenderBounds(0.8125D, 0.0D, 0.0D, 1.0D, 1.0D, 0.125D);
-				renderStandardBlock(TE, renderBlocks, coverBlock, srcBlock, x, y, z);
+				renderBlock(block, x, y, z);
 			}
 			if (!connects_ZP) {
 				renderBlocks.setRenderBounds(0.8125D, 0.0D, 0.875D, 1.0D, 1.0D, 1.0D);
-				renderStandardBlock(TE, renderBlocks, coverBlock, srcBlock, x, y, z);
+				renderBlock(block, x, y, z);
 			}
 
 			zLow  = connects_ZN ? 0.0D : 0.125D;
@@ -218,13 +217,13 @@ public class BlockHandlerCarpentersLadder extends BlockHandlerBase
 
 			// Slats
 			renderBlocks.setRenderBounds(0.875D, 0.125D, zLow, 1.0D, 0.1875D, zHigh);
-			renderStandardBlock(TE, renderBlocks, coverBlock, srcBlock, x, y, z);
+			renderBlock(block, x, y, z);
 			renderBlocks.setRenderBounds(0.875D, 0.375D, zLow, 1.0D, 0.4375D, zHigh);
-			renderStandardBlock(TE, renderBlocks, coverBlock, srcBlock, x, y, z);
+			renderBlock(block, x, y, z);
 			renderBlocks.setRenderBounds(0.875D, 0.625D, zLow, 1.0D, 0.6875D, zHigh);
-			renderStandardBlock(TE, renderBlocks, coverBlock, srcBlock, x, y, z);
+			renderBlock(block, x, y, z);
 			renderBlocks.setRenderBounds(0.875D, 0.875D, zLow, 1.0D, 0.9375D, zHigh);
-			renderStandardBlock(TE, renderBlocks, coverBlock, srcBlock, x, y, z);
+			renderBlock(block, x, y, z);
 
 			break;
 		case Ladder.FACING_EAST: // Ladder on -X
@@ -232,11 +231,11 @@ public class BlockHandlerCarpentersLadder extends BlockHandlerBase
 			// Side supports
 			if (!connects_ZN) {
 				renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 0.1875D, 1.0D, 0.125D);
-				renderStandardBlock(TE, renderBlocks, coverBlock, srcBlock, x, y, z);
+				renderBlock(block, x, y, z);
 			}
 			if (!connects_ZP) {
 				renderBlocks.setRenderBounds(0.0D, 0.0D, 0.875D, 0.1875D, 1.0D, 1.0D);
-				renderStandardBlock(TE, renderBlocks, coverBlock, srcBlock, x, y, z);
+				renderBlock(block, x, y, z);
 			}
 
 			zLow  = connects_ZN ? 0.0D : 0.125D;
@@ -244,13 +243,13 @@ public class BlockHandlerCarpentersLadder extends BlockHandlerBase
 
 			// Slats
 			renderBlocks.setRenderBounds(0.0D, 0.125D, zLow, 0.1875D, 0.1875D, zHigh);
-			renderStandardBlock(TE, renderBlocks, coverBlock, srcBlock, x, y, z);
+			renderBlock(block, x, y, z);
 			renderBlocks.setRenderBounds(0.0D, 0.375D, zLow, 0.1875D, 0.4375D, zHigh);
-			renderStandardBlock(TE, renderBlocks, coverBlock, srcBlock, x, y, z);
+			renderBlock(block, x, y, z);
 			renderBlocks.setRenderBounds(0.0D, 0.625D, zLow, 0.1875D, 0.6875D, zHigh);
-			renderStandardBlock(TE, renderBlocks, coverBlock, srcBlock, x, y, z);
+			renderBlock(block, x, y, z);
 			renderBlocks.setRenderBounds(0.0D, 0.875D, zLow, 0.1875D, 0.9375D, zHigh);
-			renderStandardBlock(TE, renderBlocks, coverBlock, srcBlock, x, y, z);
+			renderBlock(block, x, y, z);
 
 			break;
 		}

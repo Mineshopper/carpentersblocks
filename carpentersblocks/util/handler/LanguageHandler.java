@@ -9,8 +9,7 @@ import carpentersblocks.util.ModLogger;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 
-public class LanguageHandler
-{
+public class LanguageHandler {
 
 	public static void init(FMLPreInitializationEvent event)
 	{

@@ -22,8 +22,7 @@ import carpentersblocks.util.registry.IconRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class BlockCarpentersLadder extends BlockBase
-{
+public class BlockCarpentersLadder extends BlockBase {
 
 	public BlockCarpentersLadder(int blockID)
 	{
@@ -33,16 +32,16 @@ public class BlockCarpentersLadder extends BlockBase
 		setCreativeTab(CarpentersBlocks.tabCarpentersBlocks);
 		setStepSound(soundLadderFootstep);
 	}
-	
-    @SideOnly(Side.CLIENT)
-    @Override
-    /**
-     * When this method is called, your block should register all the icons it needs with the given IconRegister. This
-     * is the only chance you get to register icons.
-     */
+
+	@SideOnly(Side.CLIENT)
+	@Override
+	/**
+	 * When this method is called, your block should register all the icons it needs with the given IconRegister. This
+	 * is the only chance you get to register icons.
+	 */
 	public void registerIcons(IconRegister iconRegister)
 	{
-		this.blockIcon = IconRegistry.icon_generic;
+		blockIcon = IconRegistry.icon_generic;
 		super.registerIcons(iconRegister);
 	}
 
@@ -129,23 +128,24 @@ public class BlockCarpentersLadder extends BlockBase
 
 		if (metadata < 2) {
 			int facing = MathHelper.floor_double(entityLiving.rotationYaw * 4.0F / 360.0F + 0.5D) & 3;
-			BlockProperties.setData(TE, ((facing % 2) == 0 ? Ladder.FACING_ON_X : Ladder.FACING_ON_Z));
+			BlockProperties.setData(TE, facing % 2 == 0 ? Ladder.FACING_ON_X : Ladder.FACING_ON_Z);
 		} else {
 			BlockProperties.setData(TE, metadata);
 		}
-		
+
 		if (!entityLiving.isSneaking())
 		{
 			TEBase TE_adj = null;
-		
+
 			if (world.getBlockId(x, y - 1, z) == blockID) {
 				TE_adj = (TEBase) world.getBlockTileEntity(x, y - 1, z);
 			} else if (world.getBlockId(x, y + 1, z) == blockID) {
 				TE_adj = (TEBase) world.getBlockTileEntity(x, y + 1, z);
 			}
-			
-			if (TE_adj != null)
+
+			if (TE_adj != null) {
 				BlockProperties.setData(TE, BlockProperties.getData(TE_adj));
+			}
 		}
 
 		/*
@@ -172,7 +172,7 @@ public class BlockCarpentersLadder extends BlockBase
 					data == 3 && !world.isBlockSolidOnSide(x, y, z - 1, ForgeDirection.SOUTH) ||
 					data == 4 && !world.isBlockSolidOnSide(x + 1, y, z, ForgeDirection.WEST) ||
 					data == 5 && !world.isBlockSolidOnSide(x - 1, y, z, ForgeDirection.EAST)
-				)
+					)
 			{
 				dropBlockAsItem(world, x, y, z, data, 0);
 				world.setBlockToAir(x, y, z);

@@ -23,8 +23,7 @@ import carpentersblocks.block.BlockCarpentersTorch;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
 
-public class BlockRegistry
-{
+public class BlockRegistry {
 	
 	// References
     public static Block	blockCarpentersSlope;

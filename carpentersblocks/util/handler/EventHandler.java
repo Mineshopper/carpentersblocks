@@ -23,8 +23,7 @@ import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.registry.ItemRegistry;
 
-public class EventHandler
-{
+public class EventHandler {
 
 	/**
 	 * Stores face for onBlockClicked().
@@ -87,14 +86,14 @@ public class EventHandler
 			 * this is so the EntityDiggingFX parses the values that we want
 			 * it to
 			 * 
-			 * Setting default metadata to 1000 states that this is
+			 * Setting default metadata to BlockBase.BLOCKICON_META_ID states that this is
 			 * BlockBase, if the Block is covered the necessary adjustments
 			 * are made
 			 */
-			int blockId = world.getBlockId(x, y, z);
-			int metadata = 1000;
+			int blockID = world.getBlockId(x, y, z);
+			int metadata = BlockBase.BLOCKICON_META_ID;
 			
-			if (blockId > 0 && Block.blocksList[blockId] instanceof BlockBase)
+			if (blockID > 0 && Block.blocksList[blockID] instanceof BlockBase)
 			{
 				TileEntity TE_normal = world.getBlockTileEntity(x, y, z);
 				
@@ -104,13 +103,13 @@ public class EventHandler
 					
 					if (BlockProperties.hasCover(TE, 6))
 					{
-						blockId = BlockProperties.getCoverID(TE, 6);
+						blockID = BlockProperties.getCoverID(TE, 6);
 						metadata = BlockProperties.getCoverMetadata(TE, 6);
 					}
 				}
 				
 				/* Spawn sprint particles at the foot of the entity */
-				RenderHelper.spawnTileParticleAt(entity.worldObj, entity, blockId, metadata);
+				RenderHelper.spawnTileParticleAt(entity.worldObj, entity, blockID, metadata);
 			}
 		}
 	}

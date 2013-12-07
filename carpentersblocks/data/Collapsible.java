@@ -3,8 +3,7 @@ package carpentersblocks.data;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 
-public class Collapsible
-{
+public class Collapsible {
 
 	/**
 	 * 16-bit data components:
@@ -17,15 +16,15 @@ public class Collapsible
 	public final static int QUAD_XZNP = 1;
 	public final static int QUAD_XZPN = 2;
 	public final static int QUAD_XZPP = 3;
-			
+
 	/**
 	 * Returns corner number.
 	 */
-	public final static int getQuad(double hitX, double hitZ)
+	public static int getQuad(double hitX, double hitZ)
 	{
 		int xOffset = (int) Math.round(hitX);
 		int zOffset = (int) Math.round(hitZ);
-		
+
 		if (xOffset == 0) {
 			if (zOffset == 0) {
 				return QUAD_XZNN;
@@ -45,33 +44,33 @@ public class Collapsible
 	 * Sets height of corner as value from 1 to 16.
 	 * Will correct out-of-range values automatically, and won't cause block update if height doesn't change.
 	 */
-	public final static void setQuadHeight(TEBase TE, int corner, int height)
+	public static void setQuadHeight(TEBase TE, int corner, int height)
 	{
 		int data = BlockProperties.getData(TE);
-		
+
 		/* Correct out-of-range values. */
 		if (height < 1) {
 			height = 16;
 		}
-		
+
 		--height;
-		
+
 		switch (corner) {
 		case QUAD_XZNN:
 			data &= 0xfff;
-			data |= (15 - height) << 12;
+			data |= 15 - height << 12;
 			break;
 		case QUAD_XZNP:
 			data &= 0xf0ff;
-			data |= (15 - height) << 8;
+			data |= 15 - height << 8;
 			break;
 		case QUAD_XZPN:
 			data &= 0xff0f;
-			data |= (15 - height) << 4;
+			data |= 15 - height << 4;
 			break;
 		case QUAD_XZPP:
 			data &= 0xfff0;
-			data |= (15 - height);
+			data |= 15 - height;
 			break;
 		}
 
@@ -83,10 +82,10 @@ public class Collapsible
 	/**
 	 * Returns height of corner as value from 1 to 16.
 	 */
-	public final static int getQuadHeight(final TEBase TE, int corner)
+	public static int getQuadHeight(final TEBase TE, int corner)
 	{
 		int data = BlockProperties.getData(TE);
-		
+
 		switch (corner) {
 		case QUAD_XZNN:
 			data &= 0xf000;

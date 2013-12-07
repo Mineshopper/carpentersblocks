@@ -10,9 +10,7 @@ import carpentersblocks.util.handler.PlantHandler;
 import carpentersblocks.util.registry.FeatureRegistry;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 
-
-public class CommonProxy
-{
+public class CommonProxy {
 
 	public void registerHandlers(FMLPreInitializationEvent event)
 	{
@@ -24,8 +22,6 @@ public class CommonProxy
 		MinecraftForge.EVENT_BUS.register(new EventHandler());
 	}
 
-	public void registerRenderInformation(FMLPreInitializationEvent event)
-	{
+	public void registerRenderInformation(FMLPreInitializationEvent event) { }
 
-	}
 }

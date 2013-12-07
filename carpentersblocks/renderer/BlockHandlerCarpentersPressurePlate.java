@@ -8,8 +8,7 @@ import org.lwjgl.opengl.GL11;
 
 import carpentersblocks.util.registry.BlockRegistry;
 
-public class BlockHandlerCarpentersPressurePlate extends BlockHandlerBase
-{
+public class BlockHandlerCarpentersPressurePlate extends BlockHandlerBase {
 
 	@Override
 	public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderBlocks)
@@ -47,5 +46,5 @@ public class BlockHandlerCarpentersPressurePlate extends BlockHandlerBase
 
 		GL11.glTranslatef(0.5F, 0.5F, 0.5F);
 	}
-	
+
 }
