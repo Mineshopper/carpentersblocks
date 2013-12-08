@@ -1,14 +1,20 @@
 package carpentersblocks.block;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockContainer;
-import net.minecraft.block.BlockDirectional;
-import net.minecraft.block.BlockFlower;
-import net.minecraft.block.StepSound;
+import carpentersblocks.api.ICarpentersChisel;
+import carpentersblocks.api.ICarpentersHammer;
+import carpentersblocks.renderer.helper.RenderHelper;
+import carpentersblocks.tileentity.TEBase;
+import carpentersblocks.util.BlockProperties;
+import carpentersblocks.util.handler.EventHandler;
+import carpentersblocks.util.handler.OverlayHandler;
+import carpentersblocks.util.handler.PatternHandler;
+import carpentersblocks.util.handler.PlantHandler;
+import carpentersblocks.util.registry.FeatureRegistry;
+import carpentersblocks.util.registry.IconRegistry;
+import carpentersblocks.util.registry.ItemRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.client.particle.EntityDiggingFX;
@@ -30,20 +36,10 @@ import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.common.EnumPlantType;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.IPlantable;
-import carpentersblocks.api.ICarpentersChisel;
-import carpentersblocks.api.ICarpentersHammer;
-import carpentersblocks.renderer.helper.RenderHelper;
-import carpentersblocks.tileentity.TEBase;
-import carpentersblocks.util.BlockProperties;
-import carpentersblocks.util.handler.EventHandler;
-import carpentersblocks.util.handler.OverlayHandler;
-import carpentersblocks.util.handler.PatternHandler;
-import carpentersblocks.util.handler.PlantHandler;
-import carpentersblocks.util.registry.FeatureRegistry;
-import carpentersblocks.util.registry.IconRegistry;
-import carpentersblocks.util.registry.ItemRegistry;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 public class BlockBase extends BlockContainer {
 
@@ -173,6 +169,7 @@ public class BlockBase extends BlockContainer {
 				} else {
 
 					altered.add(onHammerLeftClick(TE, entityPlayer));
+                    damageItemWithChance(world, entityPlayer);
 
 				}
 
@@ -196,6 +193,7 @@ public class BlockBase extends BlockContainer {
 				} else if (BlockProperties.hasCover(TE, effectiveSide) && BlockProperties.getCoverBlock(TE, effectiveSide).isOpaqueCube()) {
 
 					altered.add(onChiselClick(TE, effectiveSide, true));
+                    damageItemWithChance(world, entityPlayer);
 
 				}
 
@@ -234,7 +232,8 @@ public class BlockBase extends BlockContainer {
 		{
 			if (itemStack.getItem() instanceof ICarpentersHammer && ((ICarpentersHammer)itemStack.getItem()).canUseHammer(world, entityPlayer)) {
 
-				altered.add(onHammerRightClick(TE, entityPlayer, side, hitX, hitZ));
+                altered.add(onHammerRightClick(TE, entityPlayer, side, hitX, hitY));
+                damageItemWithChance(world, entityPlayer);
 
 			} else if (ItemRegistry.enableChisel && itemStack.getItem() instanceof ICarpentersChisel && ((ICarpentersChisel)itemStack.getItem()).canUseChisel(world, entityPlayer)) {
 
@@ -245,6 +244,7 @@ public class BlockBase extends BlockContainer {
 
 				if (BlockProperties.hasCover(TE, effectiveSide) && BlockProperties.getCoverBlock(TE, effectiveSide).isOpaqueCube()) {
 					altered.add(onChiselClick(TE, effectiveSide, false));
+                    damageItemWithChance(world, entityPlayer);
 				}
 
 			} else if (FeatureRegistry.enableCovers && BlockProperties.isCover(itemStack)) {
@@ -315,8 +315,6 @@ public class BlockBase extends BlockContainer {
 				world.playSoundEffect(x + 0.5D, y + 0.5D, z + 0.5D, "dig.wood", 4.0F, 1.0F);
 			}
 
-			damageItemWithChance(world, entityPlayer);
-
 			onNeighborBlockChange(world, x, y, z, blockID);
 			world.notifyBlocksOfNeighborChange(x, y, z, blockID);
 
@@ -378,7 +376,7 @@ public class BlockBase extends BlockContainer {
 
 		BlockProperties.setPattern(TE, side, pattern);
 
-		return true;
+        return true;
 	}
 
 	@Override
@@ -488,8 +486,8 @@ public class BlockBase extends BlockContainer {
 		return	entityPlayer.capabilities.isCreativeMode &&
 				heldItem != null &&
 				(
-						heldItem.getItem() == ItemRegistry.itemCarpentersHammer ||
-						heldItem.getItem() == ItemRegistry.itemCarpentersChisel
+						heldItem.getItem() instanceof ICarpentersHammer ||
+						heldItem.getItem() instanceof ICarpentersChisel
 						);
 	}
 
@@ -1012,17 +1010,18 @@ public class BlockBase extends BlockContainer {
 
 	protected boolean onHammerLeftClick(TEBase TE, EntityPlayer entityPlayer)
 	{
-		return false;
+        return false;
 	}
 
-	protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer, int side, float hitX, float hitZ)
+	protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer, int side, float hitX, float hitY)
 	{
-		return false;
+        return false;
 	}
 
 	protected void damageItemWithChance(World world, EntityPlayer entityPlayer)
 	{
-		Item item = entityPlayer.getCurrentEquippedItem().getItem();
+        System.out.println("Test?=");
+        Item item = entityPlayer.getCurrentEquippedItem().getItem();
 
 		if (item instanceof ICarpentersHammer) {
 			((ICarpentersHammer) item).onHammerUse(world, entityPlayer);
