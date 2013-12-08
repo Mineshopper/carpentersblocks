@@ -1020,7 +1020,6 @@ public class BlockBase extends BlockContainer {
 
 	protected void damageItemWithChance(World world, EntityPlayer entityPlayer)
 	{
-        System.out.println("Test?=");
         Item item = entityPlayer.getCurrentEquippedItem().getItem();
 
 		if (item instanceof ICarpentersHammer) {
