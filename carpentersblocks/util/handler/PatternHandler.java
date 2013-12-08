@@ -1,12 +1,12 @@
 package carpentersblocks.util.handler;
 
+import carpentersblocks.util.ModLogger;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+
 import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-
-import carpentersblocks.util.ModLogger;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 
 public class PatternHandler {
 	
@@ -20,7 +20,7 @@ public class PatternHandler {
     {
         try
         {
-        	ZipFile mod = new ZipFile(event.getSourceFile());
+            ZipFile mod = new ZipFile(event.getSourceFile());
             Enumeration enumeration = mod.entries();
             
             int numPatterns = 0;
