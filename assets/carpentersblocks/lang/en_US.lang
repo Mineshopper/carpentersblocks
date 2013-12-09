@@ -25,6 +25,7 @@ tile.blockCarpentersPressurePlate.name=Carpenter's Pressure Plate
 tile.blockCarpentersSlope.name=Carpenter's Slope
 tile.blockCarpentersStairs.name=Carpenter's Stairs
 tile.blockCarpentersTorch.name=Carpenter's Torch
+tile.blockCarpentersSafe.name=Carpenter's Safe
 
 # MESSAGES
 message.polarity_pos.name=\u00a76POLARITY: \u00a7fNormal redstone output.
@@ -37,5 +38,12 @@ message.trigger_player.name=\u00a76TRIGGER: \u00a7fOnly activate for players.
 message.trigger_monster.name=\u00a76TRIGGER: \u00a7fOnly activate for monsters.
 message.trigger_animal.name=\u00a76TRIGGER: \u00a7fOnly activate for animals.
 message.trigger_all.name=\u00a76TRIGGER: \u00a7fActivate for all entities.
+message.safe_lock.name=\u00a76CONTROL: \u00a7fSafe locked.
+message.safe_unlock.name=\u00a76CONTROL: \u00a7fSafe unlocked.
+message.automation_all.name=\u00a76AUTOMATION: \u00a7fItems can be inserted and extracted.
+message.automation_disabled.name=\u00a76AUTOMATION: \u00a7fDisabled.
+message.automation_insert.name=\u00a76AUTOMATION: \u00a7fItems can be inserted only.
+message.automation_extract.name=\u00a76AUTOMATION: \u00a7fItems can be extracted only.
+message.block_lock.name=\u00a76CONTROL: \u00a7fThis block is locked.
 
 # </file>
