@@ -13,6 +13,7 @@ import carpentersblocks.renderer.BlockHandlerCarpentersHatch;
 import carpentersblocks.renderer.BlockHandlerCarpentersLadder;
 import carpentersblocks.renderer.BlockHandlerCarpentersLever;
 import carpentersblocks.renderer.BlockHandlerCarpentersPressurePlate;
+import carpentersblocks.renderer.BlockHandlerCarpentersSafe;
 import carpentersblocks.renderer.BlockHandlerCarpentersSlope;
 import carpentersblocks.renderer.BlockHandlerCarpentersStairs;
 import carpentersblocks.renderer.BlockHandlerCarpentersTorch;
@@ -104,6 +105,11 @@ public class ClientProxy extends CommonProxy {
 		if (BlockRegistry.enableTorch) {
 			BlockRegistry.carpentersTorchRenderID = RenderingRegistry.getNextAvailableRenderId();
 			RenderingRegistry.registerBlockHandler(BlockRegistry.carpentersTorchRenderID, new BlockHandlerCarpentersTorch());
+		}
+
+		if (BlockRegistry.enableSafe) {
+			BlockRegistry.carpentersSafeRenderID = RenderingRegistry.getNextAvailableRenderId();
+			RenderingRegistry.registerBlockHandler(BlockRegistry.carpentersSafeRenderID, new BlockHandlerCarpentersSafe());
 		}
 
 		BlockRegistry.carpentersBlockRenderID = RenderingRegistry.getNextAvailableRenderId();

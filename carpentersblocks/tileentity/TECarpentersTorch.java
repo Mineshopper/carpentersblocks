@@ -11,6 +11,8 @@ public class TECarpentersTorch extends TEBase {
 	/**
 	 * Torch events are handled server-side.  The client won't receive
 	 * particle spawn events, and so must be handled by the client here.
+	 * This simply handles spawning the big smoke particle when rain or snow
+	 * lowers the torch state.
 	 */
 	public void onDataPacket(INetworkManager net, Packet132TileEntityData pkt)
 	{

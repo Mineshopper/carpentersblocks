@@ -23,28 +23,25 @@ public class ItemRegistry {
     public static int itemCarpentersDoorID;
     public static int itemCarpentersBedID;
     
+    public static boolean enableHammer = true;
     public static boolean enableChisel = true;
     public static boolean itemCarpentersToolsDamageable = true;
-    
+        
     /**
      * Registers item IDs.
      */
-    public static void initItems(FMLPreInitializationEvent event)
+    public static void initItems(FMLPreInitializationEvent event, Configuration config)
     {
-        Configuration config = new Configuration(event.getSuggestedConfigurationFile());
-        config.load();
+    	int baseItemID = 5401;
     	
-        int baseItemID = 5401;
-        
+        enableHammer = config.get("tools", "Enable Hammer", enableHammer).getBoolean(enableHammer);
         enableChisel = config.get("tools", "Enable Chisel", enableChisel).getBoolean(enableChisel);
-        itemCarpentersToolsDamageable = config.get("tools", "Tools Damageable", itemCarpentersToolsDamageable).getBoolean(itemCarpentersToolsDamageable);
+        itemCarpentersToolsDamageable = config.get("tools", "Vanilla Tools Damageable", itemCarpentersToolsDamageable).getBoolean(itemCarpentersToolsDamageable);
                 
         itemCarpentersHammerID = config.getItem("Hammer", baseItemID++).getInt(baseItemID);
         itemCarpentersChiselID = config.getItem("Chisel", baseItemID++).getInt(baseItemID);
         itemCarpentersDoorID = config.getItem("Door", baseItemID++).getInt(baseItemID);
         itemCarpentersBedID = config.getItem("Bed", baseItemID++).getInt(baseItemID);
-        
-        config.save();
     }
     
     /**
@@ -52,10 +49,12 @@ public class ItemRegistry {
      */
     public static void registerItems()
     {
-    	itemCarpentersHammer = new ItemCarpentersHammer(itemCarpentersHammerID - 256);
-		GameRegistry.registerItem(itemCarpentersHammer, "itemCarpentersHammer");
-    	GameRegistry.addRecipe(new ItemStack(itemCarpentersHammer, 1), new Object[] { "XX ", " YX", " Y ", 'X', Item.ingotIron, 'Y', BlockRegistry.blockCarpentersBlock });
-    
+    	if (enableHammer) {
+    		itemCarpentersHammer = new ItemCarpentersHammer(itemCarpentersHammerID - 256);
+    		GameRegistry.registerItem(itemCarpentersHammer, "itemCarpentersHammer");
+    		GameRegistry.addRecipe(new ItemStack(itemCarpentersHammer, 1), new Object[] { "XX ", " YX", " Y ", 'X', Item.ingotIron, 'Y', BlockRegistry.blockCarpentersBlock });
+    	}
+    	
     	if (enableChisel) {
         	itemCarpentersChisel = new ItemCarpentersChisel(itemCarpentersChiselID - 256);
     		GameRegistry.registerItem(itemCarpentersChisel, "itemCarpentersChisel");

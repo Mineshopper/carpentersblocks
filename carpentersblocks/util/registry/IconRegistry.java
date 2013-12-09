@@ -34,7 +34,9 @@ public class IconRegistry {
 						icon_hatch_french_glass,
 						icon_hatch_glass,
 						icon_hatch_screen,
-						icon_bed_pillow;
+						icon_bed_pillow,
+						icon_daylight_sensor_glass_top,
+						icon_safe_light;
 	
 	@SideOnly(Side.CLIENT)
 	public static Icon[] icon_pattern = new Icon[PatternHandler.maxNum];
@@ -91,6 +93,12 @@ public class IconRegistry {
 			
 			// Bed icons
 			icon_bed_pillow = event.map.registerIcon("carpentersblocks:bed/bed_pillow");
+			
+			// Daylight Sensor icons
+			icon_daylight_sensor_glass_top = event.map.registerIcon("carpentersblocks:daylightsensor/daylight_sensor_glass_top");
+		
+			// Safe icons
+			icon_safe_light = event.map.registerIcon("carpentersblocks:safe/safe_light");
 		}
 	}
 

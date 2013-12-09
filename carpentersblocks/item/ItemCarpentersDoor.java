@@ -65,7 +65,7 @@ public class ItemCarpentersDoor extends Item {
 	{
 		world.setBlock(x, y, z, block.blockID);
 
-		BlockProperties.playBlockPlacementSound(world, x, y, z, BlockRegistry.blockCarpentersDoorID);
+		BlockProperties.playBlockSound(world, BlockRegistry.blockCarpentersDoor, x, y, z);
 
 		/*
 		 * Create bottom door piece.

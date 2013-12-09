@@ -8,6 +8,7 @@ import net.minecraftforge.common.ForgeDirection;
 import org.lwjgl.opengl.GL11;
 
 import carpentersblocks.data.Gate;
+import carpentersblocks.util.BlockProperties;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 
 public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISimpleBlockRenderingHandler {
@@ -68,22 +69,27 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
 	 */
 	protected boolean renderCarpentersBlock(int x, int y, int z)
 	{
+		renderBlocks.renderAllFaces = true;
+
+		Block block = BlockProperties.getCoverBlock(TE, 6);
 		int type = Gate.getType(TE);
 
 		switch (type) {
 		case Gate.TYPE_PICKET:
-			renderPicketGate(x, y, z);
+			renderPicketGate(block, x, y, z);
 			break;
 		case Gate.TYPE_PLANK_VERTICAL:
-			renderVerticalPlankGate(x, y, z);
+			renderVerticalPlankGate(block, x, y, z);
 			break;
 		case Gate.TYPE_WALL:
-			renderWallGate(x, y, z);
+			renderWallGate(block, x, y, z);
 			break;
 		default: // Gate.VANILLA
-			renderVanillaGate(x, y, z);
+			renderVanillaGate(block, x, y, z);
 			break;
 		}
+
+		renderBlocks.renderAllFaces = false;
 
 		return true;
 	}
@@ -91,7 +97,7 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
 	/**
 	 * Renders gate at given coordinates
 	 */
-	private void renderVanillaGate(int x, int y, int z)
+	private void renderVanillaGate(Block block, int x, int y, int z)
 	{
 		boolean isGateOpen = Gate.getState(TE) == Gate.STATE_OPEN;
 		int dir = Gate.getDirOpen(TE);
@@ -110,8 +116,6 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
 		boolean isGateBelow = renderBlocks.blockAccess.getBlockId(x, y - 1, z) == srcBlock.blockID;
 
 		boolean joinPlanks = Gate.getType(TE) == Gate.TYPE_VANILLA_X3;
-
-		renderBlocks.renderAllFaces = true;
 
 		/*
 		 * Render supports on sides of gate
@@ -302,14 +306,13 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
 			}
 		}
 
-		renderBlocks.renderAllFaces = false;
 		renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
 	}
 
 	/**
 	 * Renders gate at given coordinates
 	 */
-	private void renderPicketGate(int x, int y, int z)
+	private void renderPicketGate(Block block, int x, int y, int z)
 	{
 		boolean isGateOpen = Gate.getState(TE) == Gate.STATE_OPEN;
 		int dir = Gate.getDirOpen(TE);
@@ -324,8 +327,6 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
 
 		boolean isGateAbove = renderBlocks.blockAccess.getBlockId(x, y + 1, z) == srcBlock.blockID;
 		boolean isGateBelow = renderBlocks.blockAccess.getBlockId(x, y - 1, z) == srcBlock.blockID;
-
-		renderBlocks.renderAllFaces = true;
 
 		if (isGateOpen)
 		{
@@ -804,14 +805,13 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
 			}
 		}
 
-		renderBlocks.renderAllFaces = false;
 		renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
 	}
 
 	/**
 	 * Renders gate at given coordinates
 	 */
-	private void renderVerticalPlankGate(int x, int y, int z)
+	private void renderVerticalPlankGate(Block block, int x, int y, int z)
 	{
 		boolean isGateOpen = Gate.getState(TE) == Gate.STATE_OPEN;
 		int dir = Gate.getDirOpen(TE);
@@ -826,8 +826,6 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
 
 		boolean isGateAbove = renderBlocks.blockAccess.getBlockId(x, y + 1, z) == srcBlock.blockID;
 		boolean isGateBelow = renderBlocks.blockAccess.getBlockId(x, y - 1, z) == srcBlock.blockID;
-
-		renderBlocks.renderAllFaces = true;
 
 		if (isGateOpen)
 		{
@@ -1266,14 +1264,13 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
 			}
 		}
 
-		renderBlocks.renderAllFaces = false;
 		renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
 	}
 
 	/**
 	 * Renders gate at given coordinates
 	 */
-	private void renderWallGate(int x, int y, int z)
+	private void renderWallGate(Block block, int x, int y, int z)
 	{
 		boolean isGateOpen = Gate.getState(TE) == Gate.STATE_OPEN;
 		int dir = Gate.getDirOpen(TE);
@@ -1288,8 +1285,6 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
 
 		boolean isGateAbove = renderBlocks.blockAccess.getBlockId(x, y + 1, z) == srcBlock.blockID;
 		y_High = isGateAbove || renderBlocks.blockAccess.isBlockSolidOnSide(x, y + 1, z, ForgeDirection.DOWN, true) ? 1.0F : 0.8125F;
-
-		renderBlocks.renderAllFaces = true;
 
 		if (isGateOpen)
 		{
@@ -1362,7 +1357,6 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
 			}
 		}
 
-		renderBlocks.renderAllFaces = false;
 		renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
 	}
 

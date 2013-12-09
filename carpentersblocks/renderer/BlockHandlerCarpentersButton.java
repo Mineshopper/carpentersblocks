@@ -6,6 +6,8 @@ import net.minecraft.client.renderer.Tessellator;
 
 import org.lwjgl.opengl.GL11;
 
+import carpentersblocks.util.BlockProperties;
+
 public class BlockHandlerCarpentersButton extends BlockHandlerBase {
 
 	@Override
@@ -52,7 +54,7 @@ public class BlockHandlerCarpentersButton extends BlockHandlerBase {
 	protected boolean renderCarpentersBlock(int x, int y, int z)
 	{
 		renderBlocks.renderAllFaces = true;
-		renderBlock(block, x, y, z);
+		renderBlock(BlockProperties.getCoverBlock(TE, 6), x, y, z);
 		renderBlocks.renderAllFaces = false;
 
 		return true;

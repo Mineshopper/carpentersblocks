@@ -21,14 +21,12 @@ public class BlockHandlerCarpentersLever extends BlockHandlerBase {
 		return false;
 	}
 
+	@Override
 	/**
 	 * Override to provide custom icons.
 	 */
-	@Override
-	protected Icon getUniqueIcon(int side, Icon icon)
+	protected Icon getUniqueIcon(Block block, int side, Icon icon)
 	{
-		Block block = BlockProperties.getCoverBlock(TE, 6);
-
 		if (block instanceof BlockBase) {
 			return IconRegistry.icon_generic;
 		} else {
@@ -42,24 +40,29 @@ public class BlockHandlerCarpentersLever extends BlockHandlerBase {
 	 */
 	protected boolean renderCarpentersBlock(int x, int y, int z)
 	{
-		renderLever(x, y, z);
+		renderBlocks.renderAllFaces = true;
+
+		Block block = BlockProperties.getCoverBlock(TE, 6);
+
+		renderLever(block, x, y, z);
+
+		renderBlocks.renderAllFaces = false;
+
 		return true;
 	}
 
 	/**
 	 * Renders lever.
 	 */
-	private boolean renderLever(int x, int y, int z)
+	private boolean renderLever(Block block, int x, int y, int z)
 	{
 		/* Set block bounds and render lever base. */
 
 		BlockCarpentersLever blockRef = (BlockCarpentersLever) BlockRegistry.blockCarpentersLever;
 		blockRef.setBlockBoundsBasedOnState(renderBlocks.blockAccess, x, y, z);
-		renderBlocks.setRenderBoundsFromBlock(blockRef);
 
-		renderBlocks.renderAllFaces = true;
+		renderBlocks.setRenderBoundsFromBlock(blockRef);
 		renderBlock(block, x, y, z);
-		renderBlocks.renderAllFaces = false;
 
 		/* Render lever handle. */
 

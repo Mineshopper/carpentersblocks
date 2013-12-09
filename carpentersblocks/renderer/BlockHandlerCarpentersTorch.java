@@ -1,15 +1,15 @@
 package carpentersblocks.renderer;
 
+import net.minecraft.block.Block;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.Icon;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.common.ForgeDirection;
-import carpentersblocks.block.BlockBase;
 import carpentersblocks.data.Torch;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.registry.IconRegistry;
 
-public class BlockHandlerCarpentersTorch extends BlockHandlerBase {
+public class BlockHandlerCarpentersTorch extends BlockDeterminantRender {
 
 	private Vec3[] vector = new Vec3[8];
 
@@ -25,7 +25,13 @@ public class BlockHandlerCarpentersTorch extends BlockHandlerBase {
 	 */
 	protected boolean renderCarpentersBlock(int x, int y, int z)
 	{
-		renderTorch(x, y, z);
+		renderBlocks.renderAllFaces = true;
+
+		Block block = BlockProperties.getCoverBlock(TE, 6);
+		renderTorch(block, x, y, z);
+
+		renderBlocks.renderAllFaces = false;
+
 		return true;
 	}
 
@@ -38,11 +44,11 @@ public class BlockHandlerCarpentersTorch extends BlockHandlerBase {
 		renderFace(Tessellator.instance, side, icon, true);
 	}
 
+	@Override
 	/**
 	 * Override to provide custom icons.
 	 */
-	@Override
-	protected Icon getUniqueIcon(int side, Icon icon)
+	protected Icon getUniqueIcon(Block block, int side, Icon icon)
 	{
 		if (BlockProperties.hasCover(TE, 6)) {
 			return block.getIcon(2, renderBlocks.blockAccess.getBlockMetadata(TE.xCoord, TE.yCoord, TE.zCoord));
@@ -52,44 +58,16 @@ public class BlockHandlerCarpentersTorch extends BlockHandlerBase {
 	}
 
 	/**
-	 * Returns whether srcBlock controls rendering per pass.
-	 * 
-	 * This is required for torches, doors and hatches, for example,
-	 * because block components don't all necessarily share the same
-	 * render pass.
-	 */
-	@Override
-	protected boolean hasBlockDeterminantRendering()
-	{
-		return true;
-	}
-
-	/**
-	 * Returns whether torch handle should render.
-	 */
-	private boolean shouldRenderTorchHandle()
-	{
-		if (renderAlphaOverride) {
-			return renderPass == 1;
-		} else {
-			return	renderBlocks.hasOverrideBlockTexture() ||
-					block.getRenderBlockPass() == renderPass ||
-					block instanceof BlockBase && renderPass == 0 ||
-					shouldRenderPattern();
-		}
-	}
-
-	/**
 	 * Renders a torch at the given coordinates
 	 */
-	private void renderTorch(int x, int y, int z)
+	private void renderTorch(Block block, int x, int y, int z)
 	{
-		if (renderPass == 0) {
+		if (shouldRenderOpaque()) {
 			renderTorchHead(x, y, z);
 		}
 
-		if (shouldRenderTorchHandle()) {
-			renderTorchHandle(x, y, z);
+		if (shouldRenderCover(block)) {
+			renderTorchHandle(block, x, y, z);
 		}
 	}
 
@@ -138,7 +116,7 @@ public class BlockHandlerCarpentersTorch extends BlockHandlerBase {
 	/**
 	 * Renders a torch handle at the given coordinates.
 	 */
-	private void renderTorchHandle(int x, int y, int z)
+	private void renderTorchHandle(Block block, int x, int y, int z)
 	{
 		Tessellator tessellator = Tessellator.instance;
 		tessellator.setBrightness(srcBlock.getMixedBrightnessForBlock(renderBlocks.blockAccess, TE.xCoord, TE.yCoord, TE.zCoord));
@@ -164,22 +142,22 @@ public class BlockHandlerCarpentersTorch extends BlockHandlerBase {
 		 */
 
 		lightingHelper.setLightness(0.5F).setLightingYNeg(block, x, y, z);
-		delegateSideRender(x, y, z, DOWN);
+		delegateSideRender(block, x, y, z, DOWN);
 
 		lightingHelper.setLightness(1.0F).setLightingYPos(block, x, y, z);
-		delegateSideRender(x, y, z, UP);
+		delegateSideRender(block, x, y, z, UP);
 
 		lightingHelper.setLightness(0.8F).setLightingZNeg(block, x, y, z);
-		delegateSideRender(x, y, z, NORTH);
+		delegateSideRender(block, x, y, z, NORTH);
 
 		lightingHelper.setLightness(0.6F).setLightingZPos(block, x, y, z);
-		delegateSideRender(x, y, z, SOUTH);
+		delegateSideRender(block, x, y, z, SOUTH);
 
 		lightingHelper.setLightness(0.8F).setLightingXNeg(block, x, y, z);
-		delegateSideRender(x, y, z, WEST);
+		delegateSideRender(block, x, y, z, WEST);
 
 		lightingHelper.setLightness(0.6F).setLightingXPos(block, x, y, z);
-		delegateSideRender(x, y, z, EAST);
+		delegateSideRender(block, x, y, z, EAST);
 	}
 
 	private void setRotations(ForgeDirection facing, int x, int y, int z)

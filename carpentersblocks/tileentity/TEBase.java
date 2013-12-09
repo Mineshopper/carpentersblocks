@@ -1,6 +1,7 @@
 package carpentersblocks.tileentity;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet;
@@ -14,10 +15,11 @@ public class TEBase extends TileEntity {
 	public byte[] color = new byte[7];
 	public byte[] overlay = new byte[7];
 
-	/**
-	 * Holds information like direction, block type, etc.
-	 */
+	/** Holds information like direction, block type, etc. */
 	public short data = 0;
+
+	/** Holds name of player that created tile entity. */
+	private String owner = "";
 
 	@Override
 	public void readFromNBT(NBTTagCompound nbt)
@@ -32,6 +34,11 @@ public class TEBase extends TileEntity {
 		color = nbt.getByteArray("color");
 		overlay = nbt.getByteArray("overlay");
 		data = nbt.getShort("data");
+
+		/* For compatibility with versions prior to 1.9.7 */
+		if (nbt.hasKey("owner")) {
+			owner = nbt.getString("owner");
+		}
 	}
 
 	@Override
@@ -47,6 +54,7 @@ public class TEBase extends TileEntity {
 		nbt.setByteArray("color", color);
 		nbt.setByteArray("overlay", overlay);
 		nbt.setShort("data", data);
+		nbt.setString("owner", owner);
 	}
 
 	@Override
@@ -79,6 +87,30 @@ public class TEBase extends TileEntity {
 			Minecraft.getMinecraft().renderGlobal.markBlockForRenderUpdate(xCoord, yCoord, zCoord);
 			worldObj.updateAllLightTypes(xCoord, yCoord, zCoord);
 		}
+	}
+
+	/**
+	 * Returns true if entityPlayer is owner of tile entity.
+	 */
+	public boolean isOwner(EntityLivingBase entityLiving)
+	{
+		return owner.equals(entityLiving.getEntityName());
+	}
+
+	/**
+	 * Sets owner of tile entity.
+	 */
+	public void setOwner(String owner)
+	{
+		this.owner = owner;
+	}
+
+	/**
+	 * Returns owner of tile entity.
+	 */
+	public String getOwner()
+	{
+		return owner;
 	}
 
 }

@@ -71,7 +71,7 @@ public class ItemCarpentersBed extends Item {
 				Bed.setHeadOfBed(TE_head);
 				Bed.setDirection(TE_head, facing);
 
-				BlockProperties.playBlockPlacementSound(world, x, y, z, BlockRegistry.blockCarpentersBed.blockID);
+				BlockProperties.playBlockSound(world, BlockRegistry.blockCarpentersBed, x, y, z);
 
 				--itemStack.stackSize;
 				return true;

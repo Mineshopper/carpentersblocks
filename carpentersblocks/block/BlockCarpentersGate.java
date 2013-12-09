@@ -69,7 +69,7 @@ public class BlockCarpentersGate extends BlockBase {
 	/**
 	 * Opens or closes gate on right click.
 	 */
-	public boolean auxiliaryOnBlockActivated(TEBase TE, World world, int x, int y, int z, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ)
+	public boolean[] auxiliaryOnBlockActivated(TEBase TE, World world, int x, int y, int z, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ)
 	{
 		if (Gate.getState(TE) == Gate.STATE_OPEN) {
 			Gate.setState(TE, Gate.STATE_CLOSED, true);
@@ -89,7 +89,7 @@ public class BlockCarpentersGate extends BlockBase {
 			cycleNeighborGate(TE, world, x, y, z);
 		}
 
-		return true;
+		return new boolean[] { true, false };
 	}
 
 	@Override

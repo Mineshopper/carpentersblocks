@@ -21,7 +21,6 @@ import carpentersblocks.data.Hatch;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.registry.BlockRegistry;
-import cpw.mods.fml.common.registry.LanguageRegistry;
 
 public class BlockCarpentersHatch extends BlockBase {
 
@@ -55,32 +54,28 @@ public class BlockCarpentersHatch extends BlockBase {
 	 */
 	protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer, int side, float hitX, float hitZ)
 	{
-		if (!entityPlayer.isSneaking())
-		{
-			if (!TE.worldObj.isRemote)
-			{
-				int type = Hatch.getType(TE);
+		if (!entityPlayer.isSneaking()) {
 
-				if (++type > 4) {
-					type = 0;
-				}
+			int type = Hatch.getType(TE);
 
-				Hatch.setType(TE, type);
+			if (++type > 4) {
+				type = 0;
 			}
+
+			Hatch.setType(TE, type);
+
 		} else {
 
 			int rigidity = Hatch.getRigidity(TE) == Hatch.HINGED_NONRIGID ? Hatch.HINGED_RIGID : Hatch.HINGED_NONRIGID;
 
-			if (!TE.worldObj.isRemote) {
-				Hatch.setRigidity(TE, rigidity);
-			} else {
-				switch (rigidity) {
-				case Hatch.HINGED_NONRIGID:
-					entityPlayer.addChatMessage(LanguageRegistry.instance().getStringLocalization("message.activation_wood.name"));
-					break;
-				case Hatch.HINGED_RIGID:
-					entityPlayer.addChatMessage(LanguageRegistry.instance().getStringLocalization("message.activation_iron.name"));
-				}
+			Hatch.setRigidity(TE, rigidity);
+
+			switch (rigidity) {
+			case Hatch.HINGED_NONRIGID:
+				entityPlayer.addChatMessage("message.activation_wood.name");
+				break;
+			case Hatch.HINGED_RIGID:
+				entityPlayer.addChatMessage("message.activation_iron.name");
 			}
 
 		}
@@ -92,13 +87,13 @@ public class BlockCarpentersHatch extends BlockBase {
 	/**
 	 * Called upon block activation (right click on the block.)
 	 */
-	public boolean auxiliaryOnBlockActivated(TEBase TE, World world, int x, int y, int z, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ)
+	public boolean[] auxiliaryOnBlockActivated(TEBase TE, World world, int x, int y, int z, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ)
 	{
 		if (!activationRequiresRedstone(TE)) {
 			Hatch.setState(TE, Hatch.getState(TE) == Hatch.STATE_CLOSED ? Hatch.STATE_OPEN : Hatch.STATE_CLOSED);
 		}
 
-		return true;
+		return new boolean[] { true, false };
 	}
 
 	/**
