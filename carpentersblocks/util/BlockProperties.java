@@ -260,10 +260,6 @@ public class BlockProperties {
 
 		int blockID = itemStack == null ? 0 : itemStack.itemID;
 
-		//if (itemStack != null) {
-		//	playBlockSound(TE, Block.blocksList[blockID]);
-		//}
-
 		TE.cover[side] = (short) (blockID + (metadata << 12));
 
 		if (side == 6) {
