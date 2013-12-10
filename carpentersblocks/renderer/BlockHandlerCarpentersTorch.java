@@ -139,6 +139,9 @@ public class BlockHandlerCarpentersTorch extends BlockDeterminantRender {
 		 * of the vectors may be to blame.
 		 */
 
+		/* Have to enforce partial render bounds on all sides to get correct lighting. */
+		renderBlocks.setRenderBounds(0.1D, 0.1D, 0.1D, 0.9D, 0.9D, 0.9D);
+
 		lightingHelper.setLightness(0.5F).setLightingYNeg(block, x, y, z);
 		delegateSideRender(block, x, y, z, DOWN);
 
