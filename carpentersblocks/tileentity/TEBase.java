@@ -94,7 +94,7 @@ public class TEBase extends TileEntity {
 	 */
 	public boolean isOwner(EntityLivingBase entityLiving)
 	{
-		return owner.equals(entityLiving.getEntityName());
+		return owner.equals(entityLiving.getEntityName()) || owner.equals("");
 	}
 
 	/**
