@@ -26,10 +26,12 @@ public class BlockHandlerCarpentersTorch extends BlockDeterminantRender {
 	protected boolean renderCarpentersBlock(int x, int y, int z)
 	{
 		renderBlocks.renderAllFaces = true;
+		disableAO = true;
 
 		Block block = BlockProperties.getCoverBlock(TE, 6);
 		renderTorch(block, x, y, z);
 
+		disableAO = false;
 		renderBlocks.renderAllFaces = false;
 
 		return true;
@@ -118,10 +120,6 @@ public class BlockHandlerCarpentersTorch extends BlockDeterminantRender {
 	 */
 	private void renderTorchHandle(Block block, int x, int y, int z)
 	{
-		Tessellator tessellator = Tessellator.instance;
-		tessellator.setBrightness(srcBlock.getMixedBrightnessForBlock(renderBlocks.blockAccess, TE.xCoord, TE.yCoord, TE.zCoord));
-		tessellator.setColorOpaque_F(1.0F, 1.0F, 1.0F);
-
 		float vecX = 0.0625F;
 		float vecY = 0.5F;
 		float vecZ = 0.0625F;
