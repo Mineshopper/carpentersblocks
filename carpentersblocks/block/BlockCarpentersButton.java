@@ -31,18 +31,6 @@ public class BlockCarpentersButton extends BlockBase {
 		setTextureName("carpentersblocks:general/generic");
 	}
 
-	@SideOnly(Side.CLIENT)
-	@Override
-	/**
-	 * When this method is called, your block should register all the icons it needs with the given IconRegister. This
-	 * is the only chance you get to register icons.
-	 */
-	public void registerIcons(IconRegister iconRegister)
-	{
-		blockIcon = IconRegistry.icon_generic;
-		super.registerIcons(iconRegister);
-	}
-
 	@Override
 	/**
 	 * Alters polarity.
