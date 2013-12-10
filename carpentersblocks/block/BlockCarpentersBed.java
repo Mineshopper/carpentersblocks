@@ -8,12 +8,14 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EnumStatus;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
 import carpentersblocks.data.Bed;
 import carpentersblocks.tileentity.TEBase;
+import carpentersblocks.tileentity.TECarpentersBed;
 import carpentersblocks.util.handler.BedDesignHandler;
 import carpentersblocks.util.registry.BlockRegistry;
 import carpentersblocks.util.registry.ItemRegistry;
@@ -236,6 +238,12 @@ public class BlockCarpentersBed extends BlockBase {
 	public int idPicked(World world, int x, int y, int z)
 	{
 		return ItemRegistry.itemCarpentersBedID;
+	}
+
+	@Override
+	public TileEntity createNewTileEntity(World world)
+	{
+		return new TECarpentersBed();
 	}
 
 	@Override

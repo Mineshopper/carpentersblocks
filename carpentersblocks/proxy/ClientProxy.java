@@ -17,15 +17,13 @@ import carpentersblocks.renderer.BlockHandlerCarpentersSafe;
 import carpentersblocks.renderer.BlockHandlerCarpentersSlope;
 import carpentersblocks.renderer.BlockHandlerCarpentersStairs;
 import carpentersblocks.renderer.BlockHandlerCarpentersTorch;
-import carpentersblocks.renderer.tileentity.TERendererCarpentersBlock;
-import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.handler.LanguageHandler;
 import carpentersblocks.util.handler.OptifineHandler;
+import carpentersblocks.util.handler.TileEntityHandler;
 import carpentersblocks.util.registry.BlockRegistry;
 import carpentersblocks.util.registry.FeatureRegistry;
 import carpentersblocks.util.registry.IconRegistry;
 import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 
@@ -36,6 +34,7 @@ public class ClientProxy extends CommonProxy {
 	{
 		MinecraftForge.EVENT_BUS.register(new IconRegistry());
 		LanguageHandler.init(event);
+		TileEntityHandler.registerTileEntityRenderers();
 
 		if (BlockRegistry.enableBarrier) {
 			BlockRegistry.carpentersBarrierRenderID = RenderingRegistry.getNextAvailableRenderId();
@@ -112,14 +111,14 @@ public class ClientProxy extends CommonProxy {
 			RenderingRegistry.registerBlockHandler(BlockRegistry.carpentersSafeRenderID, new BlockHandlerCarpentersSafe());
 		}
 
-		BlockRegistry.carpentersBlockRenderID = RenderingRegistry.getNextAvailableRenderId();
-		RenderingRegistry.registerBlockHandler(BlockRegistry.carpentersBlockRenderID, new BlockHandlerCarpentersBlock());
+		if (BlockRegistry.enableBlock) {
+			BlockRegistry.carpentersBlockRenderID = RenderingRegistry.getNextAvailableRenderId();
+			RenderingRegistry.registerBlockHandler(BlockRegistry.carpentersBlockRenderID, new BlockHandlerCarpentersBlock());
+		}
 
 		if (FeatureRegistry.enableOptifineIntegration && FMLClientHandler.instance().hasOptifine()) {
 			FeatureRegistry.enableOptifineIntegration = OptifineHandler.init();
 		}
-
-		ClientRegistry.bindTileEntitySpecialRenderer(TEBase.class, new TERendererCarpentersBlock());
 	}
 
 }
