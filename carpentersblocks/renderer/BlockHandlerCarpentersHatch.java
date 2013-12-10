@@ -11,10 +11,11 @@ import carpentersblocks.block.BlockCarpentersHatch;
 import carpentersblocks.data.Hatch;
 import carpentersblocks.renderer.helper.RenderHelper;
 import carpentersblocks.renderer.helper.VertexHelper;
+import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.registry.BlockRegistry;
 import carpentersblocks.util.registry.IconRegistry;
 
-public class BlockHandlerCarpentersHatch extends HingedBase {
+public class BlockHandlerCarpentersHatch extends BlockDeterminantRender {
 
 	@Override
 	public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderBlocks)
@@ -27,17 +28,17 @@ public class BlockHandlerCarpentersHatch extends HingedBase {
 		{
 			switch (box) {
 			case 0:
-				renderBlocks.setRenderBounds(0.0D, 0.2D, 0.0D, 1.0D, 0.3875D, 1.0D);
+				renderBlocks.setRenderBounds(0.0D, 0.4375D, 0.0D, 1.0D, 0.5625D, 1.0D);
 				break;
 			case 1:
-				block = Block.stone;
-				renderBlocks.setRenderBounds(0.125D, 0.3875D, 0.375D, 0.1875D, 0.45D, 0.4375D);
+				block = Block.blockIron;
+				renderBlocks.setRenderBounds(0.0625D, 0.5625D, 0.375D, 0.125D, 0.625D, 0.4375D);
 				break;
 			case 2:
-				renderBlocks.setRenderBounds(0.5625D, 0.3875D, 0.125D, 0.625D, 0.45D, 0.1875D);
+				renderBlocks.setRenderBounds(0.0625, 0.5625D, 0.5625D, 0.125D, 0.625D, 0.625D);
 				break;
 			case 3:
-				renderBlocks.setRenderBounds(0.375D, 0.45D, 0.125D, 0.625D, 0.5125D, 0.1875D);
+				renderBlocks.setRenderBounds(0.0625D, 0.625D, 0.375D, 0.125D, 0.6875D, 0.625D);
 				break;
 			}
 
@@ -70,44 +71,36 @@ public class BlockHandlerCarpentersHatch extends HingedBase {
 		GL11.glTranslatef(0.5F, 0.5F, 0.5F);
 	}
 
-	/**
-	 * Returns whether srcBlock controls rendering per pass.
-	 * 
-	 * This is required for torches, doors and hatches, for example,
-	 * because block components don't all necessarily share the same
-	 * render pass.
-	 */
-	@Override
-	protected boolean hasBlockDeterminantRendering()
-	{
-		return true;
-	}
-
 	@Override
 	/**
 	 * Renders block
 	 */
 	protected boolean renderCarpentersBlock(int x, int y, int z)
 	{
+		renderBlocks.renderAllFaces = true;
+
+		Block block = BlockProperties.getCoverBlock(TE, 6);
 		int type = Hatch.getType(TE);
 
 		switch (type) {
 		case Hatch.TYPE_WINDOW:
-			renderHollowHatch(x, y, z);
+			renderHollowHatch(block, x, y, z);
 			break;
 		case Hatch.TYPE_SCREEN:
-			renderHollowHatch(x, y, z);
+			renderHollowHatch(block, x, y, z);
 			break;
 		case Hatch.TYPE_FRENCH_WINDOW:
-			renderFrenchWindowHatch(x, y, z);
+			renderFrenchWindowHatch(block, x, y, z);
 			break;
 		case Hatch.TYPE_PANEL:
-			renderPanelHatch(x, y, z);
+			renderPanelHatch(block, x, y, z);
 			break;
 		case Hatch.TYPE_HIDDEN:
-			renderHiddenHatch(x, y, z);
+			renderHiddenHatch(block, x, y, z);
 			break;
 		}
+
+		renderBlocks.renderAllFaces = false;
 
 		return true;
 	}
@@ -115,16 +108,16 @@ public class BlockHandlerCarpentersHatch extends HingedBase {
 	/**
 	 * Renders hidden hatch at given coordinates
 	 */
-	private void renderHiddenHatch(int x, int y, int z)
+	private void renderHiddenHatch(Block block, int x, int y, int z)
 	{
-		if (shouldRenderFrame())
+		if (shouldRenderCover(block))
 		{
 			BlockCarpentersHatch blockRef = (BlockCarpentersHatch) BlockRegistry.blockCarpentersHatch;
 			blockRef.setBlockBoundsBasedOnState(renderBlocks.blockAccess, x, y, z);
 			renderBlock(block, x, y, z);
 		}
 
-		if (shouldRenderPieces()) {
+		if (shouldRenderOpaque()) {
 			renderHandle(Block.blockIron, x, y, z, true, false);
 		}
 	}
@@ -132,10 +125,8 @@ public class BlockHandlerCarpentersHatch extends HingedBase {
 	/**
 	 * Renders a window or screen hatch at given coordinates
 	 */
-	private void renderHollowHatch(int x, int y, int z)
+	private void renderHollowHatch(Block block, int x, int y, int z)
 	{
-		renderBlocks.renderAllFaces = true;
-
 		int dir = Hatch.getDir(TE);
 		int pos = Hatch.getPos(TE);
 		int state = Hatch.getState(TE);
@@ -187,7 +178,7 @@ public class BlockHandlerCarpentersHatch extends HingedBase {
 			}
 		}
 
-		if (shouldRenderFrame())
+		if (shouldRenderCover(block))
 		{
 			/*
 			 * Draw sides
@@ -228,7 +219,7 @@ public class BlockHandlerCarpentersHatch extends HingedBase {
 			}
 		}
 
-		if (shouldRenderPieces())
+		if (shouldRenderOpaque())
 		{
 			Icon icon;
 
@@ -273,10 +264,8 @@ public class BlockHandlerCarpentersHatch extends HingedBase {
 	/**
 	 * Renders a French window hatch at given coordinates
 	 */
-	private void renderFrenchWindowHatch(int x, int y, int z)
+	private void renderFrenchWindowHatch(Block block, int x, int y, int z)
 	{
-		renderBlocks.renderAllFaces = true;
-
 		int dir = Hatch.getDir(TE);
 		int pos = Hatch.getPos(TE);
 		int state = Hatch.getState(TE);
@@ -328,7 +317,7 @@ public class BlockHandlerCarpentersHatch extends HingedBase {
 			}
 		}
 
-		if (shouldRenderFrame())
+		if (shouldRenderCover(block))
 		{
 			/*
 			 * Draw sides
@@ -375,7 +364,7 @@ public class BlockHandlerCarpentersHatch extends HingedBase {
 			float temp_z_low = z_low;
 			float temp_z_high = z_high;
 
-			lightingHelper.setLightnessOffset(-0.05F);
+			lightingHelper.setLightnessOffset(REDUCED_OFFSET);
 
 			if (path_on_x) {
 
@@ -415,7 +404,7 @@ public class BlockHandlerCarpentersHatch extends HingedBase {
 			lightingHelper.clearLightnessOffset();
 		}
 
-		if (shouldRenderPieces())
+		if (shouldRenderOpaque())
 		{
 			Tessellator.instance.setBrightness(Block.glass.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y, z));
 
@@ -452,10 +441,8 @@ public class BlockHandlerCarpentersHatch extends HingedBase {
 	/**
 	 * Renders a panel hatch at given coordinates
 	 */
-	private void renderPanelHatch(int x, int y, int z)
+	private void renderPanelHatch(Block block, int x, int y, int z)
 	{
-		renderBlocks.renderAllFaces = true;
-
 		int dir = Hatch.getDir(TE);
 		int pos = Hatch.getPos(TE);
 		int state = Hatch.getState(TE);
@@ -499,7 +486,7 @@ public class BlockHandlerCarpentersHatch extends HingedBase {
 			}
 		}
 
-		if (shouldRenderFrame())
+		if (shouldRenderCover(block))
 		{
 			/*
 			 * Draw sides
@@ -572,7 +559,7 @@ public class BlockHandlerCarpentersHatch extends HingedBase {
 				temp_z_high = 0.8125F;
 			}
 
-			lightingHelper.setLightnessOffset(-0.05F);
+			lightingHelper.setLightnessOffset(REDUCED_OFFSET);
 
 			renderBlocks.setRenderBounds(temp_x_low, temp_y_low, temp_z_low, temp_x_high, temp_y_high, temp_z_high);
 			renderBlock(block, x, y, z);
@@ -611,7 +598,7 @@ public class BlockHandlerCarpentersHatch extends HingedBase {
 			renderBlock(block, x, y, z);
 		}
 
-		if (shouldRenderPieces()) {
+		if (shouldRenderOpaque()) {
 			renderHandle(Block.blockIron, x, y, z, true, true);
 		}
 	}
@@ -624,8 +611,6 @@ public class BlockHandlerCarpentersHatch extends HingedBase {
 		if (!render_inside_handle && !render_outside_handle) {
 			return;
 		}
-
-		renderBlocks.renderAllFaces = true;
 
 		int dir = Hatch.getDir(TE);
 		int pos = Hatch.getPos(TE);

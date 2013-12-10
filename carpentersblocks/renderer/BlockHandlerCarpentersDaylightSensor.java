@@ -3,11 +3,17 @@ package carpentersblocks.renderer;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.util.Icon;
 
 import org.lwjgl.opengl.GL11;
 
-public class BlockHandlerCarpentersDaylightSensor extends BlockHandlerBase {
+import carpentersblocks.block.BlockCarpentersDaylightSensor;
+import carpentersblocks.renderer.helper.RenderHelper;
+import carpentersblocks.renderer.helper.VertexHelper;
+import carpentersblocks.util.BlockProperties;
+import carpentersblocks.util.registry.BlockRegistry;
+import carpentersblocks.util.registry.IconRegistry;
+
+public class BlockHandlerCarpentersDaylightSensor extends BlockDeterminantRender {
 
 	@Override
 	public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderBlocks)
@@ -16,47 +22,169 @@ public class BlockHandlerCarpentersDaylightSensor extends BlockHandlerBase {
 		GL11.glRotatef(90.0F, 0.0F, 1.0F, 0.0F);
 		GL11.glTranslatef(-0.5F, -0.5F, -0.5F);
 
-		renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 0.375D, 1.0D);
+		Block temp_block = block;
+		double yOffset = 0.375D;
 
-		tessellator.startDrawingQuads();
-		tessellator.setNormal(0.0F, -1.0F, 0.0F);
-		renderBlocks.renderFaceYNeg(block, 0.0D, 0.0D, 0.0D, block.getBlockTextureFromSide(0));
-		tessellator.draw();
-		tessellator.startDrawingQuads();
-		tessellator.setNormal(0.0F, 1.0F, 0.0F);
-		renderBlocks.renderFaceYPos(block, 0.0D, 0.0D, 0.0D, Block.daylightSensor.getBlockTextureFromSide(1));
-		tessellator.draw();
-		tessellator.startDrawingQuads();
-		tessellator.setNormal(0.0F, 0.0F, -1.0F);
-		renderBlocks.renderFaceZNeg(block, 0.0D, 0.0D, 0.0D, block.getBlockTextureFromSide(2));
-		tessellator.draw();
-		tessellator.startDrawingQuads();
-		tessellator.setNormal(0.0F, 0.0F, 1.0F);
-		renderBlocks.renderFaceZPos(block, 0.0D, 0.0D, 0.0D, block.getBlockTextureFromSide(3));
-		tessellator.draw();
-		tessellator.startDrawingQuads();
-		tessellator.setNormal(-1.0F, 0.0F, 0.0F);
-		renderBlocks.renderFaceXNeg(block, 0.0D, 0.0D, 0.0D, block.getBlockTextureFromSide(4));
-		tessellator.draw();
-		tessellator.startDrawingQuads();
-		tessellator.setNormal(1.0F, 0.0F, 0.0F);
-		renderBlocks.renderFaceXPos(block, 0.0D, 0.0D, 0.0D, block.getBlockTextureFromSide(5));
-		tessellator.draw();
+		for (int box = 0; box < 11; ++box)
+		{
+			switch (box) {
+			case 0: // Glass top
+				temp_block = Block.glass;
+				renderBlocks.setRenderBounds(0.0625D, 0.1875D + yOffset, 0.0625D, 0.9375D, 0.25D + yOffset, 0.9375D);
+				renderBlocks.setOverrideBlockTexture(IconRegistry.icon_daylight_sensor_glass_top);
+				break;
+			case 1: // Lapis middle
+				temp_block = Block.blockLapis;
+				renderBlocks.setRenderBounds(0.125D, 0.0625D + yOffset, 0.125D, 0.875D, 0.1875D + yOffset, 0.875D);
+				break;
+			case 2: // Redstone X-low wall
+				temp_block = Block.blockRedstone;
+				renderBlocks.setRenderBounds(0.0625D, 0.0625D + yOffset, 0.0625D, 0.125D, 0.1875D + yOffset, 0.9375D);
+				break;
+			case 3: // Redstone X-high wall
+				temp_block = Block.blockRedstone;
+				renderBlocks.setRenderBounds(0.875D, 0.0625D + yOffset, 0.0625D, 0.9375D, 0.1875D + yOffset, 0.9375D);
+				break;
+			case 4: // Redstone Z-low wall
+				temp_block = Block.blockRedstone;
+				renderBlocks.setRenderBounds(0.0625D, 0.0625D + yOffset, 0.0625D, 0.9375D, 0.1875D + yOffset, 0.125D);
+				break;
+			case 5: // Redstone Z-high wall
+				temp_block = Block.blockRedstone;
+				renderBlocks.setRenderBounds(0.0625D, 0.0625D + yOffset, 0.875D, 0.9375D, 0.1875D + yOffset, 0.9375D);
+				break;
+			case 6: // Generic bottom
+				temp_block = BlockRegistry.blockCarpentersDaylightSensor;
+				renderBlocks.setRenderBounds(0.0625D, 0.0D + yOffset, 0.0625D, 0.9375D, 0.0625D + yOffset, 0.9375D);
+				break;
+			case 7: // X-low wall
+				temp_block = BlockRegistry.blockCarpentersDaylightSensor;
+				renderBlocks.setRenderBounds(0.0D, 0.0D + yOffset, 0.0D, 0.0625D, 0.25D + yOffset, 1.0D);
+				break;
+			case 8: // X-high wall
+				temp_block = BlockRegistry.blockCarpentersDaylightSensor;
+				renderBlocks.setRenderBounds(0.9375D, 0.0D + yOffset, 0.0D, 1.0D, 0.25D + yOffset, 1.0D);
+				break;
+			case 9: // Z-low wall
+				temp_block = BlockRegistry.blockCarpentersDaylightSensor;
+				renderBlocks.setRenderBounds(0.0625D, 0.0D + yOffset, 0.0D, 0.9375D, 0.25D + yOffset, 0.0625D);
+				break;
+			case 10: // Z-high wall
+				temp_block = BlockRegistry.blockCarpentersDaylightSensor;
+				renderBlocks.setRenderBounds(0.0625D, 0.0D + yOffset, 0.9375D, 0.9375D, 0.25D + yOffset, 1.0D);
+				break;
+			}
+
+			tessellator.startDrawingQuads();
+			tessellator.setNormal(0.0F, -1.0F, 0.0F);
+			renderBlocks.renderFaceYNeg(temp_block, 0.0D, 0.0D, 0.0D, temp_block.getBlockTextureFromSide(0));
+			tessellator.draw();
+			tessellator.startDrawingQuads();
+			tessellator.setNormal(0.0F, 1.0F, 0.0F);
+			renderBlocks.renderFaceYPos(temp_block, 0.0D, 0.0D, 0.0D, temp_block.getBlockTextureFromSide(1));
+			tessellator.draw();
+			tessellator.startDrawingQuads();
+			tessellator.setNormal(0.0F, 0.0F, -1.0F);
+			renderBlocks.renderFaceZNeg(temp_block, 0.0D, 0.0D, 0.0D, temp_block.getBlockTextureFromSide(2));
+			tessellator.draw();
+			tessellator.startDrawingQuads();
+			tessellator.setNormal(0.0F, 0.0F, 1.0F);
+			renderBlocks.renderFaceZPos(temp_block, 0.0D, 0.0D, 0.0D, temp_block.getBlockTextureFromSide(3));
+			tessellator.draw();
+			tessellator.startDrawingQuads();
+			tessellator.setNormal(-1.0F, 0.0F, 0.0F);
+			renderBlocks.renderFaceXNeg(temp_block, 0.0D, 0.0D, 0.0D, temp_block.getBlockTextureFromSide(4));
+			tessellator.draw();
+			tessellator.startDrawingQuads();
+			tessellator.setNormal(1.0F, 0.0F, 0.0F);
+			renderBlocks.renderFaceXPos(temp_block, 0.0D, 0.0D, 0.0D, temp_block.getBlockTextureFromSide(5));
+			tessellator.draw();
+
+			renderBlocks.clearOverrideBlockTexture();
+		}
 
 		GL11.glTranslatef(0.5F, 0.5F, 0.5F);
 	}
 
-	/**
-	 * Override to provide custom icons.
-	 */
 	@Override
-	protected Icon getUniqueIcon(int side, Icon icon)
+	/**
+	 * Renders block
+	 */
+	protected boolean renderCarpentersBlock(int x, int y, int z)
 	{
-		if (side == UP) {
-			return srcBlock.getBlockTexture(renderBlocks.blockAccess, TE.xCoord, TE.yCoord, TE.zCoord, side);
-		} else {
-			return icon;
+		Block block = BlockProperties.getCoverBlock(TE, 6);
+
+		renderBlocks.renderAllFaces = true;
+
+		if (shouldRenderOpaque())
+		{
+			suppressDyeColor = true;
+			suppressOverlay = true;
+			suppressPattern = true;
+
+			/* Render glass inlay */
+
+			VertexHelper.setOffset(-0.75D);
+			Tessellator.instance.setBrightness(Block.glass.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y, z));
+			Tessellator.instance.setColorOpaque_F(1.0F, 1.0F, 1.0F);
+			renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
+			RenderHelper.renderFaceYPos(renderBlocks, x, y, z, IconRegistry.icon_daylight_sensor_glass_top);
+			VertexHelper.clearOffset();
+
+			/* Render lapis inlay */
+
+			renderBlocks.setRenderBounds(0.125D, 0.0625D, 0.125D, 0.875D, 0.1875D, 0.875D);
+			renderBlock(Block.blockLapis, x, y, z);
+
+			/* Render bordering redstone inlay */
+
+			BlockCarpentersDaylightSensor blockRef = (BlockCarpentersDaylightSensor) BlockRegistry.blockCarpentersDaylightSensor;
+			boolean isPowered = blockRef.isProvidingWeakPower(renderBlocks.blockAccess, x, y, z, 0) == 0;
+
+			disableAO = isPowered;
+
+			if (isPowered) {
+				lightingHelper.setBrightnessOverride(lightingHelper.NORMAL_BRIGHTNESS);
+			}
+
+			renderBlocks.setRenderBounds(0.0625D, 0.0625D, 0.0625D, 0.125D, 0.1875D, 0.9375D);
+			renderBlock(Block.blockRedstone, x, y, z);
+			renderBlocks.setRenderBounds(0.875D, 0.0625D, 0.0625D, 0.9375D, 0.1875D, 0.9375D);
+			renderBlock(Block.blockRedstone, x, y, z);
+			renderBlocks.setRenderBounds(0.0625D, 0.0625D, 0.0625D, 0.9375D, 0.1875D, 0.125D);
+			renderBlock(Block.blockRedstone, x, y, z);
+			renderBlocks.setRenderBounds(0.0625D, 0.0625D, 0.875D, 0.9375D, 0.1875D, 0.9375D);
+			renderBlock(Block.blockRedstone, x, y, z);
+
+			if (isPowered) {
+				lightingHelper.clearBrightnessOverride();
+			}
+
+			disableAO = false;
+
+			suppressDyeColor = false;
+			suppressOverlay = false;
+			suppressPattern = false;
 		}
+
+		/* Render coverBlock walls and bottom */
+
+		if (shouldRenderCover(block))
+		{
+			renderBlocks.setRenderBounds(0.0625D, 0.0D, 0.0625D, 0.9375D, 0.0625D, 0.9375D);
+			renderBlock(block, x, y, z);
+			renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 0.0625D, 0.25D, 1.0D);
+			renderBlock(block, x, y, z);
+			renderBlocks.setRenderBounds(0.9375D, 0.0D, 0.0D, 1.0D, 0.25D, 1.0D);
+			renderBlock(block, x, y, z);
+			renderBlocks.setRenderBounds(0.0625D, 0.0D, 0.0D, 0.9375D, 0.25D, 0.0625D);
+			renderBlock(block, x, y, z);
+			renderBlocks.setRenderBounds(0.0625D, 0.0D, 0.9375D, 0.9375D, 0.25D, 1.0D);
+			renderBlock(block, x, y, z);
+		}
+
+		renderBlocks.renderAllFaces = false;
+		return true;
 	}
 
 }

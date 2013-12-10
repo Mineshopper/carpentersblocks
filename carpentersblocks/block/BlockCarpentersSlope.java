@@ -447,9 +447,9 @@ public class BlockCarpentersSlope extends BlockBase {
 		switch (slope.slopeType)
 		{
 		case PYRAMID:
-			return FeatureRegistry.hitboxPrecision / 2;
+			return FeatureRegistry.slopeSmoothness / 2;
 		default:
-			return FeatureRegistry.hitboxPrecision;
+			return FeatureRegistry.slopeSmoothness;
 		}
 	}
 

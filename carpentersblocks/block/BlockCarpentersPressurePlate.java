@@ -17,7 +17,6 @@ import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.registry.BlockRegistry;
 import carpentersblocks.util.registry.IconRegistry;
-import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -52,17 +51,15 @@ public class BlockCarpentersPressurePlate extends BlockBase {
 	{
 		int polarity = PressurePlate.getPolarity(TE) == PressurePlate.POLARITY_POSITIVE ? PressurePlate.POLARITY_NEGATIVE : PressurePlate.POLARITY_POSITIVE;
 
-		if (!TE.worldObj.isRemote) {
-			PressurePlate.setPolarity(TE, polarity);
-			TE.worldObj.notifyBlocksOfNeighborChange(TE.xCoord, TE.yCoord - 1, TE.zCoord, blockID);
-		} else {
-			switch (polarity) {
-			case PressurePlate.POLARITY_POSITIVE:
-				entityPlayer.addChatMessage(LanguageRegistry.instance().getStringLocalization("message.polarity_pos.name"));
-				break;
-			case PressurePlate.POLARITY_NEGATIVE:
-				entityPlayer.addChatMessage(LanguageRegistry.instance().getStringLocalization("message.polarity_neg.name"));
-			}
+		PressurePlate.setPolarity(TE, polarity);
+		TE.worldObj.notifyBlocksOfNeighborChange(TE.xCoord, TE.yCoord - 1, TE.zCoord, blockID);
+
+		switch (polarity) {
+		case PressurePlate.POLARITY_POSITIVE:
+			entityPlayer.addChatMessage("message.polarity_pos.name");
+			break;
+		case PressurePlate.POLARITY_NEGATIVE:
+			entityPlayer.addChatMessage("message.polarity_neg.name");
 		}
 
 		return true;
@@ -91,22 +88,20 @@ public class BlockCarpentersPressurePlate extends BlockBase {
 			trigger = PressurePlate.TRIGGER_PLAYER;
 		}
 
-		if (!TE.worldObj.isRemote) {
-			PressurePlate.setTriggerEntity(TE, trigger);
-		} else {
-			switch (trigger) {
-			case PressurePlate.TRIGGER_PLAYER:
-				entityPlayer.addChatMessage(LanguageRegistry.instance().getStringLocalization("message.trigger_player.name"));
-				break;
-			case PressurePlate.TRIGGER_MONSTER:
-				entityPlayer.addChatMessage(LanguageRegistry.instance().getStringLocalization("message.trigger_monster.name"));
-				break;
-			case PressurePlate.TRIGGER_ANIMAL:
-				entityPlayer.addChatMessage(LanguageRegistry.instance().getStringLocalization("message.trigger_animal.name"));
-				break;
-			case PressurePlate.TRIGGER_ALL:
-				entityPlayer.addChatMessage(LanguageRegistry.instance().getStringLocalization("message.trigger_all.name"));
-			}
+		PressurePlate.setTriggerEntity(TE, trigger);
+
+		switch (trigger) {
+		case PressurePlate.TRIGGER_PLAYER:
+			entityPlayer.addChatMessage("message.trigger_player.name");
+			break;
+		case PressurePlate.TRIGGER_MONSTER:
+			entityPlayer.addChatMessage("message.trigger_monster.name");
+			break;
+		case PressurePlate.TRIGGER_ANIMAL:
+			entityPlayer.addChatMessage("message.trigger_animal.name");
+			break;
+		case PressurePlate.TRIGGER_ALL:
+			entityPlayer.addChatMessage("message.trigger_all.name");
 		}
 
 		return true;

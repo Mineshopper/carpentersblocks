@@ -18,7 +18,6 @@ import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.registry.BlockRegistry;
 import carpentersblocks.util.registry.IconRegistry;
-import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -54,17 +53,15 @@ public class BlockCarpentersLever extends BlockBase {
 		BlockProperties.getData(TE);
 		int polarity = Lever.getPolarity(TE) == Lever.POLARITY_POSITIVE ? Lever.POLARITY_NEGATIVE : Lever.POLARITY_POSITIVE;
 
-		if (!TE.worldObj.isRemote) {
-			Lever.setPolarity(TE, polarity);
-			notifySideNeighbor(TE.worldObj, TE.xCoord, TE.yCoord, TE.zCoord, ForgeDirection.OPPOSITES[Lever.getFacing(TE).ordinal()]);
-		} else {
-			switch (polarity) {
-			case Lever.POLARITY_POSITIVE:
-				entityPlayer.addChatMessage(LanguageRegistry.instance().getStringLocalization("message.polarity_pos.name"));
-				break;
-			case Lever.POLARITY_NEGATIVE:
-				entityPlayer.addChatMessage(LanguageRegistry.instance().getStringLocalization("message.polarity_neg.name"));
-			}
+		Lever.setPolarity(TE, polarity);
+		notifySideNeighbor(TE.worldObj, TE.xCoord, TE.yCoord, TE.zCoord, ForgeDirection.OPPOSITES[Lever.getFacing(TE).ordinal()]);
+
+		switch (polarity) {
+		case Lever.POLARITY_POSITIVE:
+			entityPlayer.addChatMessage("message.polarity_pos.name");
+			break;
+		case Lever.POLARITY_NEGATIVE:
+			entityPlayer.addChatMessage("message.polarity_neg.name");
 		}
 
 		return true;
@@ -193,7 +190,7 @@ public class BlockCarpentersLever extends BlockBase {
 	/**
 	 * Called upon block activation.
 	 */
-	public boolean auxiliaryOnBlockActivated(TEBase TE, World world, int x, int y, int z, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ)
+	public boolean[] auxiliaryOnBlockActivated(TEBase TE, World world, int x, int y, int z, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ)
 	{
 		ForgeDirection facing = Lever.getFacing(TE);
 
@@ -202,7 +199,7 @@ public class BlockCarpentersLever extends BlockBase {
 		world.notifyBlocksOfNeighborChange(x, y, z, blockID);
 		notifySideNeighbor(world, x, y, z, facing.ordinal());
 
-		return true;
+		return new boolean[] { true, false };
 	}
 
 	/**

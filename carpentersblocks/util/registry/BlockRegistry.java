@@ -17,6 +17,7 @@ import carpentersblocks.block.BlockCarpentersHatch;
 import carpentersblocks.block.BlockCarpentersLadder;
 import carpentersblocks.block.BlockCarpentersLever;
 import carpentersblocks.block.BlockCarpentersPressurePlate;
+import carpentersblocks.block.BlockCarpentersSafe;
 import carpentersblocks.block.BlockCarpentersSlope;
 import carpentersblocks.block.BlockCarpentersStairs;
 import carpentersblocks.block.BlockCarpentersTorch;
@@ -41,6 +42,7 @@ public class BlockRegistry {
     public static Block	blockCarpentersLadder;
     public static Block blockCarpentersCollapsibleBlock;
     public static Block blockCarpentersTorch;
+    public static Block blockCarpentersSafe;
     
     // Render IDs
     public static int carpentersSlopeRenderID;
@@ -58,6 +60,7 @@ public class BlockRegistry {
     public static int carpentersLadderRenderID;
     public static int carpentersCollapsibleBlockRenderID;
     public static int carpentersTorchRenderID;
+    public static int carpentersSafeRenderID;
     
     // Block IDs
     public static int blockCarpentersSlopeID;
@@ -75,6 +78,7 @@ public class BlockRegistry {
     public static int blockCarpentersLadderID;
     public static int blockCarpentersCollapsibleBlockID;
     public static int blockCarpentersTorchID;
+    public static int blockCarpentersSafeID;
     
     // Blocks enabled state
     public static boolean enableSlope = true;
@@ -92,6 +96,7 @@ public class BlockRegistry {
     public static boolean enableLadder = true;
     public static boolean enableCollapsibleBlock = true;
     public static boolean enableTorch = true;
+    public static boolean enableSafe = true;
     
     // Recipe quantities
     public static int recipeQuantitySlope = 4;
@@ -109,15 +114,13 @@ public class BlockRegistry {
     public static int recipeQuantityLadder = 4;
     public static int recipeQuantityCollapsibleBlock = 9;
     public static int recipeQuantityTorch = 4;
+    public static int recipeQuantitySafe = 1;
     
     /**
      * Registers block IDs.
      */
-    public static void initBlocks(FMLPreInitializationEvent event)
+    public static void initBlocks(FMLPreInitializationEvent event, Configuration config)
     {
-        Configuration config = new Configuration(event.getSuggestedConfigurationFile());
-        config.load();
-    	
         int baseBlockID = 2401;
 
         enableSlope = config.get("control", "Enable Slope", enableSlope).getBoolean(enableSlope);
@@ -135,6 +138,7 @@ public class BlockRegistry {
         enableLadder = config.get("control", "Enable Ladder", enableLadder).getBoolean(enableLadder);
         enableCollapsibleBlock = config.get("control", "Enable Collapsible Block", enableCollapsibleBlock).getBoolean(enableCollapsibleBlock);
         enableTorch = config.get("control", "Enable Torch", enableTorch).getBoolean(enableTorch);
+        enableSafe = config.get("control", "Enable Safe", enableSafe).getBoolean(enableSafe);
         
 	    blockCarpentersSlopeID = config.getBlock("Slope", baseBlockID++).getInt(baseBlockID);
 	    blockCarpentersStairsID = config.getBlock("Stairs", baseBlockID++).getInt(baseBlockID);
@@ -151,6 +155,7 @@ public class BlockRegistry {
 	    blockCarpentersLadderID = config.getBlock("Ladder", baseBlockID++).getInt(baseBlockID);
 	    blockCarpentersCollapsibleBlockID = config.getBlock("Collapsible Block", baseBlockID++).getInt(baseBlockID);
 	    blockCarpentersTorchID = config.getBlock("Torch", baseBlockID++).getInt(baseBlockID);
+	    blockCarpentersSafeID = config.getBlock("Safe", baseBlockID++).getInt(baseBlockID);
 	    
 	    recipeQuantitySlope = config.get("recipe quantities", "Slope", recipeQuantitySlope).getInt(recipeQuantitySlope);
         recipeQuantityStairs = config.get("recipe quantities", "Stairs", recipeQuantityStairs).getInt(recipeQuantityStairs);
@@ -167,8 +172,7 @@ public class BlockRegistry {
         recipeQuantityLadder = config.get("recipe quantities", "Ladder", recipeQuantityLadder).getInt(recipeQuantityLadder);
         recipeQuantityCollapsibleBlock = config.get("recipe quantities", "Collapsible Block", recipeQuantityCollapsibleBlock).getInt(recipeQuantityCollapsibleBlock);
         recipeQuantityTorch = config.get("recipe quantities", "Torch", recipeQuantityTorch).getInt(recipeQuantityTorch);
-        
-        config.save();
+        recipeQuantitySafe = config.get("recipe quantities", "Safe", recipeQuantitySafe).getInt(recipeQuantitySafe);
     }
     
     /**
@@ -201,7 +205,7 @@ public class BlockRegistry {
     	if (enableDaylightSensor) {
     		blockCarpentersDaylightSensor = (new BlockCarpentersDaylightSensor(blockCarpentersDaylightSensorID));
     		GameRegistry.registerBlock(blockCarpentersDaylightSensor, "blockCarpentersDaylightSensor");
-    		GameRegistry.addRecipe(new ItemStack(blockCarpentersDaylightSensor, recipeQuantityDaylightSensor), new Object[] {"XXX", "YYY", "ZZZ", 'X', Block.glass, 'Y', Item.netherQuartz, 'Z', blockCarpentersBlock});
+    		GameRegistry.addRecipe(new ItemStack(blockCarpentersDaylightSensor, recipeQuantityDaylightSensor), new Object[] {"WWW", "XYX", "ZZZ", 'W', Block.glass, 'X', Item.redstone, 'Y', new ItemStack(Item.dyePowder, 1, 4), 'Z', blockCarpentersBlock});
     	}
     	
     	if (enableDoor) {
@@ -260,6 +264,12 @@ public class BlockRegistry {
     		blockCarpentersTorch = (new BlockCarpentersTorch(blockCarpentersTorchID));
     		GameRegistry.registerBlock(blockCarpentersTorch, "blockCarpentersTorch");
     		GameRegistry.addRecipe(new ItemStack(blockCarpentersTorch, recipeQuantityTorch), new Object[] {"X", "Y", 'X', Item.coal, 'Y', blockCarpentersBlock});
+    	}
+    	
+    	if (enableSafe) {
+    		blockCarpentersSafe = (new BlockCarpentersSafe(blockCarpentersSafeID));
+    		GameRegistry.registerBlock(blockCarpentersSafe, "blockCarpentersSafe");
+    		GameRegistry.addRecipe(new ItemStack(blockCarpentersSafe, recipeQuantitySafe), new Object[] {"XXX", "XYX", "XZX", 'X', blockCarpentersBlock, 'Y', Block.blockIron, 'Z', Item.redstone});
     	}
     }
 	

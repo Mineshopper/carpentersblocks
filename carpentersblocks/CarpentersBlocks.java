@@ -1,6 +1,7 @@
 package carpentersblocks;
 
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraftforge.common.Configuration;
 import carpentersblocks.proxy.CommonProxy;
 import carpentersblocks.util.CarpentersBlocksTab;
 import carpentersblocks.util.ModLogger;
@@ -20,7 +21,7 @@ import cpw.mods.fml.common.network.NetworkMod;
 @Mod(
 		modid = "CarpentersBlocks",
 		name = "Carpenter's Blocks",
-		version = "v1.9.6"
+		version = "v1.9.7"
 		)
 @NetworkMod(
 		clientSideRequired = true,
@@ -40,9 +41,13 @@ public class CarpentersBlocks
 	@PreInit
 	public void preInit(FMLPreInitializationEvent event)
 	{
-		FeatureRegistry.initFeatures(event);
-		BlockRegistry.initBlocks(event);
-		ItemRegistry.initItems(event);
+		Configuration config = new Configuration(event.getSuggestedConfigurationFile());
+
+		config.load();
+		FeatureRegistry.initFeatures(event, config);
+		BlockRegistry.initBlocks(event, config);
+		ItemRegistry.initItems(event, config);
+		config.save();
 
 		ModLogger.init();
 

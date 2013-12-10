@@ -7,10 +7,11 @@ import carpentersblocks.block.BlockCarpentersDoor;
 import carpentersblocks.data.Door;
 import carpentersblocks.renderer.helper.RenderHelper;
 import carpentersblocks.renderer.helper.VertexHelper;
+import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.registry.BlockRegistry;
 import carpentersblocks.util.registry.IconRegistry;
 
-public class BlockHandlerCarpentersDoor extends HingedBase {
+public class BlockHandlerCarpentersDoor extends BlockDeterminantRender {
 
 	@Override
 	public boolean shouldRender3DInInventory()
@@ -26,26 +27,27 @@ public class BlockHandlerCarpentersDoor extends HingedBase {
 	{
 		renderBlocks.renderAllFaces = true;
 
+		Block block = BlockProperties.getCoverBlock(TE, 6);
 		int type = Door.getType(TE);
 
 		switch (type) {
 		case Door.TYPE_GLASS_TOP:
-			renderGlassTopDoor(x, y, z);
+			renderGlassTopDoor(block, x, y, z);
 			break;
 		case Door.TYPE_GLASS_TALL:
-			renderTallDoor(x, y, z);
+			renderTallDoor(block, x, y, z);
 			break;
 		case Door.TYPE_PANELS:
-			renderPanelsDoor(x, y, z);
+			renderPanelsDoor(block, x, y, z);
 			break;
 		case Door.TYPE_SCREEN_TALL:
-			renderTallDoor(x, y, z);
+			renderTallDoor(block, x, y, z);
 			break;
 		case Door.TYPE_FRENCH_GLASS:
-			renderFrenchGlassDoor(x, y, z);
+			renderFrenchGlassDoor(block, x, y, z);
 			break;
 		case Door.TYPE_HIDDEN:
-			renderHiddenDoor(x, y, z);
+			renderHiddenDoor(block, x, y, z);
 			break;
 		}
 
@@ -55,22 +57,9 @@ public class BlockHandlerCarpentersDoor extends HingedBase {
 	}
 
 	/**
-	 * Returns whether srcBlock controls rendering per pass.
-	 * 
-	 * This is required for torches, doors and hatches, for example,
-	 * because block components don't all necessarily share the same
-	 * render pass.
-	 */
-	@Override
-	protected boolean hasBlockDeterminantRendering()
-	{
-		return true;
-	}
-
-	/**
 	 * Renders a French glass door at the given coordinates
 	 */
-	private void renderFrenchGlassDoor(int x, int y, int z)
+	private void renderFrenchGlassDoor(Block block, int x, int y, int z)
 	{
 		int hinge = Door.getHinge(TE);
 		int facing = Door.getFacing(TE);
@@ -219,7 +208,7 @@ public class BlockHandlerCarpentersDoor extends HingedBase {
 			break;
 		}
 
-		if (shouldRenderFrame())
+		if (shouldRenderCover(block))
 		{
 			/*
 			 * Draw vertical pieces.
@@ -246,7 +235,7 @@ public class BlockHandlerCarpentersDoor extends HingedBase {
 				temp_x_high = 0.5625F;
 			}
 
-			lightingHelper.setLightnessOffset(-0.05F);
+			lightingHelper.setLightnessOffset(REDUCED_OFFSET);
 
 			// Two center pieces
 			if (isBottom) {
@@ -292,7 +281,7 @@ public class BlockHandlerCarpentersDoor extends HingedBase {
 					temp_z_high -= 0.0625F;
 				}
 
-				lightingHelper.setLightnessOffset(-0.05F);
+				lightingHelper.setLightnessOffset(REDUCED_OFFSET);
 
 				renderBlocks.setRenderBounds(temp_x_low, 0.5F, temp_z_low, temp_x_high, 0.625F, temp_z_high);
 				renderBlock(block, x, y, z);
@@ -314,7 +303,7 @@ public class BlockHandlerCarpentersDoor extends HingedBase {
 					temp_z_high -= 0.0625F;
 				}
 
-				lightingHelper.setLightnessOffset(-0.05F);
+				lightingHelper.setLightnessOffset(REDUCED_OFFSET);
 
 				renderBlocks.setRenderBounds(temp_x_low, 0.0F, temp_z_low, temp_x_high, 0.0625F, temp_z_high);
 				renderBlock(block, x, y, z);
@@ -326,7 +315,7 @@ public class BlockHandlerCarpentersDoor extends HingedBase {
 			}
 		}
 
-		if (shouldRenderPieces())
+		if (shouldRenderOpaque())
 		{
 			Icon icon;
 
@@ -362,7 +351,7 @@ public class BlockHandlerCarpentersDoor extends HingedBase {
 	/**
 	 * Renders a glass top door at the given coordinates
 	 */
-	private void renderGlassTopDoor(int x, int y, int z)
+	private void renderGlassTopDoor(Block block, int x, int y, int z)
 	{
 		int hinge = Door.getHinge(TE);
 		boolean isOpen = Door.getState(TE) == Door.STATE_OPEN;
@@ -510,7 +499,7 @@ public class BlockHandlerCarpentersDoor extends HingedBase {
 			break;
 		}
 
-		if (shouldRenderFrame())
+		if (shouldRenderCover(block))
 		{
 			renderBlocks.setRenderBounds(x_low, y_low, z_low, x_high_offset, y_high, z_high_offset);
 			renderBlock(block, x, y, z);
@@ -540,7 +529,7 @@ public class BlockHandlerCarpentersDoor extends HingedBase {
 					temp_x_high = 0.8125F;
 				}
 
-				lightingHelper.setLightnessOffset(-0.05F);
+				lightingHelper.setLightnessOffset(REDUCED_OFFSET);
 
 				renderBlocks.setRenderBounds(temp_x_low, 0.1875F, temp_z_low, temp_x_high, 1.0F, temp_z_high);
 				renderBlock(block, x, y, z);
@@ -597,7 +586,7 @@ public class BlockHandlerCarpentersDoor extends HingedBase {
 			}
 		}
 
-		if (shouldRenderPieces())
+		if (shouldRenderOpaque())
 		{
 			if (!isBottom)
 			{
@@ -628,7 +617,7 @@ public class BlockHandlerCarpentersDoor extends HingedBase {
 	/**
 	 * Renders a panels door at the given coordinates
 	 */
-	private void renderPanelsDoor(int x, int y, int z)
+	private void renderPanelsDoor(Block block, int x, int y, int z)
 	{
 		int hinge = Door.getHinge(TE);
 		boolean isOpen = Door.getState(TE) == Door.STATE_OPEN;
@@ -762,7 +751,7 @@ public class BlockHandlerCarpentersDoor extends HingedBase {
 			break;
 		}
 
-		if (shouldRenderFrame())
+		if (shouldRenderCover(block))
 		{
 			renderBlocks.setRenderBounds(x_low, y_low, z_low, x_high_offset, y_high, z_high_offset);
 			renderBlock(block, x, y, z);
@@ -789,7 +778,7 @@ public class BlockHandlerCarpentersDoor extends HingedBase {
 				temp_x_high = 0.8125F;
 			}
 
-			lightingHelper.setLightnessOffset(-0.05F);
+			lightingHelper.setLightnessOffset(REDUCED_OFFSET);
 
 			if (isBottom) {
 				renderBlocks.setRenderBounds(temp_x_low, 0.1875F, temp_z_low, temp_x_high, 1.0F, temp_z_high);
@@ -852,7 +841,7 @@ public class BlockHandlerCarpentersDoor extends HingedBase {
 			}
 		}
 
-		if (shouldRenderPieces()) {
+		if (shouldRenderOpaque()) {
 			renderHandle(Block.blockIron, x, y, z, true, true);
 		}
 	}
@@ -860,7 +849,7 @@ public class BlockHandlerCarpentersDoor extends HingedBase {
 	/**
 	 * Renders a tall glass or screen door at the given coordinates
 	 */
-	private void renderTallDoor(int x, int y, int z)
+	private void renderTallDoor(Block block, int x, int y, int z)
 	{
 		int hinge = Door.getHinge(TE);
 		boolean isOpen = Door.getState(TE) == Door.STATE_OPEN;
@@ -1008,7 +997,7 @@ public class BlockHandlerCarpentersDoor extends HingedBase {
 			break;
 		}
 
-		if (shouldRenderFrame())
+		if (shouldRenderCover(block))
 		{
 			renderBlocks.setRenderBounds(x_low, y_low, z_low, x_high_offset, y_high, z_high_offset);
 			renderBlock(block, x, y, z);
@@ -1032,7 +1021,7 @@ public class BlockHandlerCarpentersDoor extends HingedBase {
 			}
 		}
 
-		if (shouldRenderPieces())
+		if (shouldRenderOpaque())
 		{
 			int type = Door.getType(TE);
 			Icon icon;
@@ -1069,16 +1058,16 @@ public class BlockHandlerCarpentersDoor extends HingedBase {
 	/**
 	 * Renders a hidden door at the given coordinates
 	 */
-	private void renderHiddenDoor(int x, int y, int z)
+	private void renderHiddenDoor(Block block, int x, int y, int z)
 	{
-		if (shouldRenderFrame())
+		if (shouldRenderCover(block))
 		{
 			BlockCarpentersDoor blockRef = (BlockCarpentersDoor) BlockRegistry.blockCarpentersDoor;
 			blockRef.setBlockBoundsBasedOnState(renderBlocks.blockAccess, x, y, z);
 			renderBlock(block, x, y, z);
 		}
 
-		if (shouldRenderPieces()) {
+		if (shouldRenderOpaque()) {
 			renderHandle(Block.blockIron, x, y, z, true, false);
 		}
 	}

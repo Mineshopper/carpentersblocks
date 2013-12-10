@@ -75,19 +75,20 @@ public class BlockHandlerCarpentersBarrier extends BlockHandlerBase {
 	protected boolean renderCarpentersBlock(int x, int y, int z)
 	{
 		int type = Barrier.getType(TE);
+		Block block = BlockProperties.getCoverBlock(TE, 6);
 
 		switch (type) {
 		case Barrier.TYPE_PICKET:
-			renderPicketFence(x, y, z);
+			renderPicketFence(block, x, y, z);
 			break;
 		case Barrier.TYPE_PLANK_VERTICAL:
-			renderVerticalPlankFence(x, y, z);
+			renderVerticalPlankFence(block, x, y, z);
 			break;
 		case Barrier.TYPE_WALL:
-			renderWall(x, y, z);
+			renderWall(block, x, y, z);
 			break;
 		default:
-			renderFence(x, y, z);
+			renderFence(block, x, y, z);
 		}
 
 		return true;
@@ -125,7 +126,7 @@ public class BlockHandlerCarpentersBarrier extends BlockHandlerBase {
 	/**
 	 * Renders vanilla fence at given coordinates
 	 */
-	private void renderFence(int x, int y, int z)
+	private void renderFence(Block block, int x, int y, int z)
 	{
 		BlockCarpentersBarrier blockRef = (BlockCarpentersBarrier) BlockRegistry.blockCarpentersBarrier;
 
@@ -206,7 +207,7 @@ public class BlockHandlerCarpentersBarrier extends BlockHandlerBase {
 	/**
 	 * Renders picket fence block at given coordinates
 	 */
-	private void renderPicketFence(int x, int y, int z)
+	private void renderPicketFence(Block block, int x, int y, int z)
 	{
 		BlockProperties.getData(TE);
 		BlockCarpentersBarrier blockRef = (BlockCarpentersBarrier) BlockRegistry.blockCarpentersBarrier;
@@ -445,7 +446,7 @@ public class BlockHandlerCarpentersBarrier extends BlockHandlerBase {
 	/**
 	 * Renders wall block at given coordinates
 	 */
-	private void renderWall(int x, int y, int z)
+	private void renderWall(Block block, int x, int y, int z)
 	{
 		BlockProperties.getData(TE);
 		BlockCarpentersBarrier blockRef = (BlockCarpentersBarrier) BlockRegistry.blockCarpentersBarrier;
@@ -500,7 +501,7 @@ public class BlockHandlerCarpentersBarrier extends BlockHandlerBase {
 	/**
 	 * Renders wall block at given coordinates
 	 */
-	private void renderVerticalPlankFence(int x, int y, int z)
+	private void renderVerticalPlankFence(Block block, int x, int y, int z)
 	{
 		BlockProperties.getData(TE);
 		BlockCarpentersBarrier blockRef = (BlockCarpentersBarrier) BlockRegistry.blockCarpentersBarrier;

@@ -16,7 +16,6 @@ import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.registry.BlockRegistry;
 import carpentersblocks.util.registry.IconRegistry;
 import carpentersblocks.util.registry.ItemRegistry;
-import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -60,33 +59,28 @@ public class BlockCarpentersDoor extends BlockBase {
 	 */
 	protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer, int side, float hitX, float hitZ)
 	{
-		if (!entityPlayer.isSneaking())
-		{
-			if (!TE.worldObj.isRemote)
-			{
-				int type = Door.getType(TE);
+		if (!entityPlayer.isSneaking()) {
 
-				if (++type > 5) {
-					type = 0;
-				}
+			int type = Door.getType(TE);
 
-				setDoorType(TE, type);
+			if (++type > 5) {
+				type = 0;
 			}
+
+			setDoorType(TE, type);
 
 		} else {
 
 			int rigidity = Door.getRigidity(TE) == Door.HINGED_NONRIGID ? Door.HINGED_RIGID : Door.HINGED_NONRIGID;
 
-			if (!TE.worldObj.isRemote) {
-				setDoorRigidity(TE, rigidity);
-			} else {
-				switch (rigidity) {
-				case Door.HINGED_NONRIGID:
-					entityPlayer.addChatMessage(LanguageRegistry.instance().getStringLocalization("message.activation_wood.name"));
-					break;
-				case Door.HINGED_RIGID:
-					entityPlayer.addChatMessage(LanguageRegistry.instance().getStringLocalization("message.activation_iron.name"));
-				}
+			setDoorRigidity(TE, rigidity);
+
+			switch (rigidity) {
+			case Door.HINGED_NONRIGID:
+				entityPlayer.addChatMessage("message.activation_wood.name");
+				break;
+			case Door.HINGED_RIGID:
+				entityPlayer.addChatMessage("message.activation_iron.name");
 			}
 
 		}
@@ -98,13 +92,13 @@ public class BlockCarpentersDoor extends BlockBase {
 	/**
 	 * Opens or closes door on right click.
 	 */
-	public boolean auxiliaryOnBlockActivated(TEBase TE, World world, int x, int y, int z, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ)
+	public boolean[] auxiliaryOnBlockActivated(TEBase TE, World world, int x, int y, int z, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ)
 	{
 		if (!activationRequiresRedstone(TE)) {
 			setDoorState(TE, Door.getState(TE) == Door.STATE_OPEN ? Door.STATE_CLOSED : Door.STATE_OPEN);
 		}
 
-		return true;
+		return new boolean[] { true, false };
 	}
 
 	/**

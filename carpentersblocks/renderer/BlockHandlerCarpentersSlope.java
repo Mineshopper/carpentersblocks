@@ -48,6 +48,9 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerBase {
 	private static final int PYR_YXPN = 22;
 	private static final int PYR_YXPP = 23;
 
+	/** Identifies which render helper to use. */
+	protected int slopeRenderID	= 0;
+
 	/**
 	 * Holds AO values for all six faces.
 	 */
@@ -141,10 +144,11 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerBase {
 		GL11.glTranslatef(0.5F, 0.5F, 0.5F);
 	}
 
+	@Override
 	/**
 	 * Override to provide custom icons.
 	 */
-	protected Icon getUniqueIcon(Icon icon)
+	protected Icon getUniqueIcon(Block block, int side, Icon icon)
 	{
 		if (isSideSloped)
 		{
@@ -189,10 +193,10 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerBase {
 	 * Sets slope-specific renderID to identify which RenderHelper to use
 	 * and passes control to side renderer.
 	 */
-	private void setIDAndRender(int renderID, int x, int y, int z, int side)
+	private void setIDAndRender(Block block, int renderID, int x, int y, int z, int side)
 	{
 		slopeRenderID = renderID;
-		delegateSideRender(x, y, z, side);
+		delegateSideRender(block, x, y, z, side);
 	}
 
 	@Override
@@ -388,25 +392,25 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerBase {
 			switch (slope.slopeType)
 			{
 			case WEDGE_XZ:
-				prepareHorizontalWedge(slope, x, y, z);
+				prepareHorizontalWedge(block, slope, x, y, z);
 				break;
 			case WEDGE_Y:
-				prepareVerticalWedge(slope, x, y, z);
+				prepareVerticalWedge(block, slope, x, y, z);
 				break;
 			case WEDGE_INT:
-				prepareWedgeIntCorner(slope, x, y, z);
+				prepareWedgeIntCorner(block, slope, x, y, z);
 				break;
 			case WEDGE_EXT:
-				prepareWedgeExtCorner(slope, x, y, z);
+				prepareWedgeExtCorner(block, slope, x, y, z);
 				break;
 			case OBLIQUE_INT:
-				prepareObliqueIntCorner(slope, x, y, z);
+				prepareObliqueIntCorner(block, slope, x, y, z);
 				break;
 			case OBLIQUE_EXT:
-				prepareObliqueExtCorner(slope, x, y, z);
+				prepareObliqueExtCorner(block, slope, x, y, z);
 				break;
 			case PYRAMID:
-				preparePyramid(slope, x, y, z);
+				preparePyramid(block, slope, x, y, z);
 				break;
 			}
 
@@ -418,32 +422,32 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerBase {
 
 			/* BOTTOM FACE */
 			if (slope.hasSide(ForgeDirection.DOWN) && srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x, y - 1, z, 0)) {
-				prepareFaceYNeg(slope, x, y, z);
+				prepareFaceYNeg(block, slope, x, y, z);
 			}
 
 			/* TOP FACE */
 			if (slope.hasSide(ForgeDirection.UP) && srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x, y + 1, z, 1)) {
-				prepareFaceYPos(slope, x, y, z);
+				prepareFaceYPos(block, slope, x, y, z);
 			}
 
 			/* NORTH FACE */
 			if (slope.hasSide(ForgeDirection.NORTH) && srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x, y, z - 1, 2)) {
-				prepareFaceZNeg(slope, x, y, z);
+				prepareFaceZNeg(block, slope, x, y, z);
 			}
 
 			/* SOUTH FACE */
 			if (slope.hasSide(ForgeDirection.SOUTH) && srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x, y, z + 1, 3)) {
-				prepareFaceZPos(slope, x, y, z);
+				prepareFaceZPos(block, slope, x, y, z);
 			}
 
 			/* WEST FACE */
 			if (slope.hasSide(ForgeDirection.WEST) && srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x - 1, y, z, 4)) {
-				prepareFaceXNeg(slope, x, y, z);
+				prepareFaceXNeg(block, slope, x, y, z);
 			}
 
 			/* EAST FACE */
 			if (slope.hasSide(ForgeDirection.EAST) && srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x + 1, y, z, 5)) {
-				prepareFaceXPos(slope, x, y, z);
+				prepareFaceXPos(block, slope, x, y, z);
 			}
 
 		}
@@ -659,38 +663,38 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerBase {
 		}
 	}
 
-	private void prepareHorizontalWedge(Slope slope, int x, int y, int z)
+	private void prepareHorizontalWedge(Block block, Slope slope, int x, int y, int z)
 	{
 		lightingHelper.setLightness(0.7F);
 		setWedgeSlopeLighting(slope);
 
 		if (slope.facings.contains(ForgeDirection.NORTH)) {
-			setIDAndRender(WEDGE_SLOPED_ZN, x, y, z, EAST);
+			setIDAndRender(block, WEDGE_SLOPED_ZN, x, y, z, EAST);
 		} else {
-			setIDAndRender(WEDGE_SLOPED_ZP, x, y, z, WEST);
+			setIDAndRender(block, WEDGE_SLOPED_ZP, x, y, z, WEST);
 		}
 	}
 
-	private void prepareVerticalWedge(Slope slope, int x, int y, int z)
+	private void prepareVerticalWedge(Block block, Slope slope, int x, int y, int z)
 	{
 		setWedgeSlopeLighting(slope);
 
 		if (slope.facings.contains(ForgeDirection.NORTH)) {
 			lightingHelper.setLightness(slope.isPositive ? 0.9F : 0.65F);
-			setIDAndRender(WEDGE_SLOPED_ZN, x, y, z, NORTH);
+			setIDAndRender(block, WEDGE_SLOPED_ZN, x, y, z, NORTH);
 		} else if (slope.facings.contains(ForgeDirection.SOUTH)) {
 			lightingHelper.setLightness(slope.isPositive ? 0.9F : 0.65F);
-			setIDAndRender(WEDGE_SLOPED_ZP, x, y, z, SOUTH);
+			setIDAndRender(block, WEDGE_SLOPED_ZP, x, y, z, SOUTH);
 		} else if (slope.facings.contains(ForgeDirection.WEST)) {
 			lightingHelper.setLightness(slope.isPositive ? 0.8F : 0.55F);
-			setIDAndRender(WEDGE_SLOPED_XN, x, y, z, WEST);
+			setIDAndRender(block, WEDGE_SLOPED_XN, x, y, z, WEST);
 		} else { // ForgeDirection.EAST
 			lightingHelper.setLightness(slope.isPositive ? 0.8F : 0.55F);
-			setIDAndRender(WEDGE_SLOPED_XP, x, y, z, EAST);
+			setIDAndRender(block, WEDGE_SLOPED_XP, x, y, z, EAST);
 		}
 	}
 
-	private void prepareWedgeIntCorner(Slope slope, int x, int y, int z)
+	private void prepareWedgeIntCorner(Block block, Slope slope, int x, int y, int z)
 	{
 		/* X Slope */
 
@@ -700,9 +704,9 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerBase {
 		lightingHelper.setLightness(slope.isPositive ? 0.8F : 0.55F);
 
 		if (slope1.facings.contains(ForgeDirection.WEST)) {
-			setIDAndRender(WEDGE_CORNER_SLOPED_XN, x, y, z, WEST);
+			setIDAndRender(block, WEDGE_CORNER_SLOPED_XN, x, y, z, WEST);
 		} else { // ForgeDirection.EAST
-			setIDAndRender(WEDGE_CORNER_SLOPED_XP, x, y, z, EAST);
+			setIDAndRender(block, WEDGE_CORNER_SLOPED_XP, x, y, z, EAST);
 		}
 
 		/* Z Slope */
@@ -713,13 +717,13 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerBase {
 		lightingHelper.setLightness(slope.isPositive ? 0.9F : 0.65F);
 
 		if (slope.facings.contains(ForgeDirection.NORTH)) {
-			setIDAndRender(WEDGE_CORNER_SLOPED_ZN, x, y, z, NORTH);
+			setIDAndRender(block, WEDGE_CORNER_SLOPED_ZN, x, y, z, NORTH);
 		} else {
-			setIDAndRender(WEDGE_CORNER_SLOPED_ZP, x, y, z, SOUTH);
+			setIDAndRender(block, WEDGE_CORNER_SLOPED_ZP, x, y, z, SOUTH);
 		}
 	}
 
-	private void prepareWedgeExtCorner(Slope slope, int x, int y, int z)
+	private void prepareWedgeExtCorner(Block block, Slope slope, int x, int y, int z)
 	{
 		/* X Slope */
 
@@ -729,9 +733,9 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerBase {
 		lightingHelper.setLightness(slope.isPositive ? 0.8F : 0.55F);
 
 		if (slope1.facings.contains(ForgeDirection.WEST)) {
-			setIDAndRender(WEDGE_CORNER_SLOPED_XN, x, y, z, WEST);
+			setIDAndRender(block, WEDGE_CORNER_SLOPED_XN, x, y, z, WEST);
 		} else { // ForgeDirection.EAST
-			setIDAndRender(WEDGE_CORNER_SLOPED_XP, x, y, z, EAST);
+			setIDAndRender(block, WEDGE_CORNER_SLOPED_XP, x, y, z, EAST);
 		}
 
 		/* Z Slope */
@@ -742,9 +746,9 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerBase {
 		lightingHelper.setLightness(slope.isPositive ? 0.9F : 0.65F);
 
 		if (slope.facings.contains(ForgeDirection.NORTH)) {
-			setIDAndRender(WEDGE_CORNER_SLOPED_ZN, x, y, z, NORTH);
+			setIDAndRender(block, WEDGE_CORNER_SLOPED_ZN, x, y, z, NORTH);
 		} else {
-			setIDAndRender(WEDGE_CORNER_SLOPED_ZP, x, y, z, SOUTH);
+			setIDAndRender(block, WEDGE_CORNER_SLOPED_ZP, x, y, z, SOUTH);
 		}
 	}
 
@@ -865,16 +869,16 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerBase {
 		}
 	}
 
-	private void prepareObliqueIntCorner(Slope slope, int x, int y, int z)
+	private void prepareObliqueIntCorner(Block block, Slope slope, int x, int y, int z)
 	{
 		setObliqueIntSlopeLighting(slope);
 
 		if (slope.isPositive) {
 			lightingHelper.setLightness(0.85F);
-			setIDAndRender(OBL_CORNER_SLOPED_YP, x, y, z, UP);
+			setIDAndRender(block, OBL_CORNER_SLOPED_YP, x, y, z, UP);
 		} else {
 			lightingHelper.setLightness(0.6F);
-			setIDAndRender(OBL_CORNER_SLOPED_YN, x, y, z, DOWN);
+			setIDAndRender(block, OBL_CORNER_SLOPED_YN, x, y, z, DOWN);
 		}
 	}
 
@@ -995,20 +999,20 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerBase {
 		}
 	}
 
-	private void prepareObliqueExtCorner(Slope slope, int x, int y, int z)
+	private void prepareObliqueExtCorner(Block block, Slope slope, int x, int y, int z)
 	{
 		setObliqueExtSlopeLighting(slope);
 
 		if (slope.isPositive) {
 			lightingHelper.setLightness(0.85F);
-			setIDAndRender(OBL_CORNER_SLOPED_YP, x, y, z, UP);
+			setIDAndRender(block, OBL_CORNER_SLOPED_YP, x, y, z, UP);
 		} else {
 			lightingHelper.setLightness(0.6F);
-			setIDAndRender(OBL_CORNER_SLOPED_YN, x, y, z, DOWN);
+			setIDAndRender(block, OBL_CORNER_SLOPED_YN, x, y, z, DOWN);
 		}
 	}
 
-	private void preparePyramid(Slope slope, int x, int y, int z)
+	private void preparePyramid(Block block, Slope slope, int x, int y, int z)
 	{
 		float aoLightValue = block.getAmbientOcclusionLightValue(renderBlocks.blockAccess, x, y, z);
 		int mixedBrightness = block.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y, z);
@@ -1031,7 +1035,7 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerBase {
 			}
 
 			lightingHelper.setLightness(0.55F);
-			setIDAndRender(PYR_YXNN, x, y, z, DOWN);
+			setIDAndRender(block, PYR_YXNN, x, y, z, DOWN);
 
 			if (renderBlocks.enableAO)
 			{
@@ -1047,7 +1051,7 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerBase {
 			}
 
 			lightingHelper.setLightness(0.55F);
-			setIDAndRender(PYR_YXNP, x, y, z, DOWN);
+			setIDAndRender(block, PYR_YXNP, x, y, z, DOWN);
 
 			if (renderBlocks.enableAO)
 			{
@@ -1063,7 +1067,7 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerBase {
 			}
 
 			lightingHelper.setLightness(0.65F);
-			setIDAndRender(PYR_YZNN, x, y, z, DOWN);
+			setIDAndRender(block, PYR_YZNN, x, y, z, DOWN);
 
 			if (renderBlocks.enableAO)
 			{
@@ -1079,7 +1083,7 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerBase {
 			}
 
 			lightingHelper.setLightness(0.65F);
-			setIDAndRender(PYR_YZNP, x, y, z, DOWN);
+			setIDAndRender(block, PYR_YZNP, x, y, z, DOWN);
 
 			break;
 		case Slope.ID_PYR_HALF_POS:
@@ -1098,7 +1102,7 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerBase {
 			}
 
 			lightingHelper.setLightness(0.8F);
-			setIDAndRender(PYR_YXPN, x, y, z, UP);
+			setIDAndRender(block, PYR_YXPN, x, y, z, UP);
 
 			if (renderBlocks.enableAO)
 			{
@@ -1114,7 +1118,7 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerBase {
 			}
 
 			lightingHelper.setLightness(0.8F);
-			setIDAndRender(PYR_YXPP, x, y, z, UP);
+			setIDAndRender(block, PYR_YXPP, x, y, z, UP);
 
 			if (renderBlocks.enableAO)
 			{
@@ -1130,7 +1134,7 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerBase {
 			}
 
 			lightingHelper.setLightness(0.9F);
-			setIDAndRender(PYR_YZPN, x, y, z, UP);
+			setIDAndRender(block, PYR_YZPN, x, y, z, UP);
 
 			if (renderBlocks.enableAO)
 			{
@@ -1146,7 +1150,7 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerBase {
 			}
 
 			lightingHelper.setLightness(0.9F);
-			setIDAndRender(PYR_YZPP, x, y, z, UP);
+			setIDAndRender(block, PYR_YZPP, x, y, z, UP);
 
 			break;
 		}
@@ -1155,7 +1159,7 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerBase {
 	/**
 	 * Prepare bottom face.
 	 */
-	private void prepareFaceYNeg(Slope slope, int x, int y, int z)
+	private void prepareFaceYNeg(Block block, Slope slope, int x, int y, int z)
 	{
 		if (renderBlocks.enableAO)
 		{
@@ -1174,13 +1178,13 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerBase {
 		}
 
 		lightingHelper.setLightness(0.5F);
-		setIDAndRender(WEDGE_YN, x, y, z, DOWN);
+		setIDAndRender(block, WEDGE_YN, x, y, z, DOWN);
 	}
 
 	/**
 	 * Prepare top face.
 	 */
-	private void prepareFaceYPos(Slope slope, int x, int y, int z)
+	private void prepareFaceYPos(Block block, Slope slope, int x, int y, int z)
 	{
 		if (renderBlocks.enableAO)
 		{
@@ -1199,13 +1203,13 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerBase {
 		}
 
 		lightingHelper.setLightness(1.0F);
-		setIDAndRender(WEDGE_YP, x, y, z, UP);
+		setIDAndRender(block, WEDGE_YP, x, y, z, UP);
 	}
 
 	/**
 	 * Prepare North face.
 	 */
-	private void prepareFaceZNeg(Slope slope, int x, int y, int z)
+	private void prepareFaceZNeg(Block block, Slope slope, int x, int y, int z)
 	{
 		if (renderBlocks.enableAO)
 		{
@@ -1224,13 +1228,13 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerBase {
 		}
 
 		lightingHelper.setLightness(0.8F);
-		setIDAndRender(WEDGE_ZN, x, y, z, NORTH);
+		setIDAndRender(block, WEDGE_ZN, x, y, z, NORTH);
 	}
 
 	/**
 	 * Prepare South face.
 	 */
-	private void prepareFaceZPos(Slope slope, int x, int y, int z)
+	private void prepareFaceZPos(Block block, Slope slope, int x, int y, int z)
 	{
 		if (renderBlocks.enableAO)
 		{
@@ -1249,13 +1253,13 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerBase {
 		}
 
 		lightingHelper.setLightness(0.8F);
-		setIDAndRender(WEDGE_ZP, x, y, z, SOUTH);
+		setIDAndRender(block, WEDGE_ZP, x, y, z, SOUTH);
 	}
 
 	/**
 	 * Prepare West face.
 	 */
-	private void prepareFaceXNeg(Slope slope, int x, int y, int z)
+	private void prepareFaceXNeg(Block block, Slope slope, int x, int y, int z)
 	{
 		if (renderBlocks.enableAO)
 		{
@@ -1274,13 +1278,13 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerBase {
 		}
 
 		lightingHelper.setLightness(0.6F);
-		setIDAndRender(WEDGE_XN, x, y, z, WEST);
+		setIDAndRender(block, WEDGE_XN, x, y, z, WEST);
 	}
 
 	/**
 	 * Prepare East face.
 	 */
-	private void prepareFaceXPos(Slope slope, int x, int y, int z)
+	private void prepareFaceXPos(Block block, Slope slope, int x, int y, int z)
 	{
 		if (renderBlocks.enableAO)
 		{
@@ -1299,7 +1303,7 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerBase {
 		}
 
 		lightingHelper.setLightness(0.6F);
-		setIDAndRender(WEDGE_XP, x, y, z, EAST);
+		setIDAndRender(block, WEDGE_XP, x, y, z, EAST);
 	}
 
 }

@@ -25,15 +25,14 @@ import carpentersblocks.util.registry.ItemRegistry;
 
 public class EventHandler {
 
-	/**
-	 * Stores face for onBlockClicked().
-	 */
+	/** Stores face for onBlockClicked(). */
 	public static int eventFace;
 	
-	/**
-	 * Stores entity that hit block.
-	 */
+	/** Stores entity that hit block. */
 	public static Entity eventEntity;
+	
+	/** Stores metadata representing blockIcon in BlockBase. */
+	public final static int BLOCKICON_META_ID = 1000;
 	
 	@ForgeSubscribe
 	/**
@@ -81,19 +80,20 @@ public class EventHandler {
 			int x = MathHelper.floor_double(entity.posX);
 			int y = MathHelper.floor_double(entity.posY - 0.20000000298023224D - (double) entity.yOffset);
 			int z = MathHelper.floor_double(entity.posZ);
+			
 			/*
 			 * Here we setup the details to be used to create the particles
 			 * this is so the EntityDiggingFX parses the values that we want
 			 * it to
 			 * 
-			 * Setting default metadata to BlockBase.BLOCKICON_META_ID states that this is
+			 * Setting default metadata to BLOCKICON_META_ID states that this is
 			 * BlockBase, if the Block is covered the necessary adjustments
 			 * are made
 			 */
-			int blockID = world.getBlockId(x, y, z);
-			int metadata = BlockBase.BLOCKICON_META_ID;
-			
-			if (blockID > 0 && Block.blocksList[blockID] instanceof BlockBase)
+			int blockId = world.getBlockId(x, y, z);
+			int metadata = BLOCKICON_META_ID;
+		
+			if (blockId > 0 && Block.blocksList[blockId] instanceof BlockBase)
 			{
 				TileEntity TE_normal = world.getBlockTileEntity(x, y, z);
 				
@@ -103,13 +103,13 @@ public class EventHandler {
 					
 					if (BlockProperties.hasCover(TE, 6))
 					{
-						blockID = BlockProperties.getCoverID(TE, 6);
+						blockId = BlockProperties.getCoverID(TE, 6);
 						metadata = BlockProperties.getCoverMetadata(TE, 6);
 					}
 				}
 				
 				/* Spawn sprint particles at the foot of the entity */
-				RenderHelper.spawnTileParticleAt(entity.worldObj, entity, blockID, metadata);
+				RenderHelper.spawnTileParticleAt(entity.worldObj, entity, blockId, metadata);
 			}
 		}
 	}
@@ -118,7 +118,7 @@ public class EventHandler {
 	@ForgeSubscribe
 	public void SoundEvent(PlaySoundEvent event)
 	{
-		if (event.name.contains("carpentermod"))
+		if (event.name.contains("carpentersblock"))
 		{
 			if (FMLCommonHandler.instance().getSide() == Side.CLIENT)
 			{
@@ -128,20 +128,20 @@ public class EventHandler {
 				int z = MathHelper.floor_float(event.z);
 				int blockID = world.getBlockId(x, y, z);
 
-				if (blockID > 0 && Block.blocksList[blockID] instanceof BlockBase)
-				{
-					TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
+				if (blockID > 0 && Block.blocksList[blockID] instanceof BlockBase) {
 
-					Block block = BlockProperties.getCoverBlock(TE, 6);
-					SoundPoolEntry sound;
-
+					Block block = BlockProperties.getCoverBlock((TEBase)world.getBlockTileEntity(x, y, z), 6);
+					
 					if (block instanceof BlockBase) {
-						sound = event.manager.soundPoolSounds.getRandomSoundFromSoundPool(event.name.startsWith("dig.") ? Block.soundWoodFootstep.getBreakSound() : event.name.startsWith("place.") ? Block.soundWoodFootstep.getPlaceSound() : Block.soundWoodFootstep.getStepSound());
+						event.result = event.manager.soundPoolSounds.getRandomSoundFromSoundPool(event.name.startsWith("dig.") ? Block.soundWoodFootstep.getBreakSound() : event.name.startsWith("place.") ? Block.soundWoodFootstep.getPlaceSound() : Block.soundWoodFootstep.getStepSound());
 					} else {
-						sound = event.manager.soundPoolSounds.getRandomSoundFromSoundPool(event.name.startsWith("dig.") ? block.stepSound.getBreakSound() : event.name.startsWith("place.") ? block.stepSound.getPlaceSound() : block.stepSound.getStepSound());
+						event.result = event.manager.soundPoolSounds.getRandomSoundFromSoundPool(event.name.startsWith("dig.") ? block.stepSound.getBreakSound() : event.name.startsWith("place.") ? block.stepSound.getPlaceSound() : block.stepSound.getStepSound());
 					}
-
-					event.result = sound;
+					
+				} else {
+					
+					event.result = event.manager.soundPoolSounds.getRandomSoundFromSoundPool(Block.soundWoodFootstep.getBreakSound());
+				
 				}
 			}
 		}
@@ -151,22 +151,25 @@ public class EventHandler {
 	@ForgeSubscribe
 	public void StepSoundInterrupt(PlaySoundAtEntityEvent event)
 	{
-		if (event != null && event.name != null && event.name.startsWith("step.carpentermod"))
+		if (event != null && event.name != null)
 		{
-			int x = MathHelper.floor_double(event.entity.posX);
-			int y = MathHelper.floor_double(event.entity.posY - 0.20000000298023224D - (double) event.entity.yOffset);
-			int z = MathHelper.floor_double(event.entity.posZ);
-			
-			TileEntity TE = event.entity.worldObj.getBlockTileEntity(x, y, z);
-			
-			if (TE != null && TE instanceof TEBase)
+			if (event.name.startsWith("step.carpentersblock"))
 			{
-				Block block = BlockProperties.getCoverBlock(((TEBase) TE), 6);
+				int x = MathHelper.floor_double(event.entity.posX);
+				int y = MathHelper.floor_double(event.entity.posY - 0.20000000298023224D - (double) event.entity.yOffset);
+				int z = MathHelper.floor_double(event.entity.posZ);
 				
-				if (block instanceof BlockBase) {
-					event.name = Block.soundWoodFootstep.getStepSound();
-				} else if (block.stepSound != null) {
-					event.name = block.stepSound.getStepSound();
+				TileEntity TE = event.entity.worldObj.getBlockTileEntity(x, y, z);
+				
+				if (TE != null && TE instanceof TEBase)
+				{
+					Block block = BlockProperties.getCoverBlock(((TEBase) TE), 6);
+					
+					if (block instanceof BlockBase) {
+						event.name = Block.soundWoodFootstep.getStepSound();
+					} else if (block.stepSound != null) {
+						event.name = block.stepSound.getStepSound();
+					}
 				}
 			}
 		}

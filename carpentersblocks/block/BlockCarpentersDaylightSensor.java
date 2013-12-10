@@ -1,11 +1,9 @@
 package carpentersblocks.block;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Icon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.IBlockAccess;
@@ -16,7 +14,6 @@ import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.tileentity.TECarpentersDaylightSensor;
 import carpentersblocks.util.registry.BlockRegistry;
 import carpentersblocks.util.registry.IconRegistry;
-import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -28,7 +25,7 @@ public class BlockCarpentersDaylightSensor extends BlockBase {
 		setHardness(0.2F);
 		setUnlocalizedName("blockCarpentersDaylightSensor");
 		setCreativeTab(CarpentersBlocks.tabCarpentersBlocks);
-		setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.375F, 1.0F);
+		setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.25F, 1.0F);
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -44,16 +41,6 @@ public class BlockCarpentersDaylightSensor extends BlockBase {
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
-	/**
-	 * Retrieves the block texture to use based on the display side. Args: iBlockAccess, x, y, z, side
-	 */
-	public Icon getBlockTexture(IBlockAccess world, int x, int y, int z, int side)
-	{
-		return side == 1 ? Block.daylightSensor.getBlockTextureFromSide(1) : super.getBlockTexture(world, x, y, z, side);
-	}
-
-	@Override
 	/**
 	 * Alters polarity.
 	 */
@@ -61,16 +48,14 @@ public class BlockCarpentersDaylightSensor extends BlockBase {
 	{
 		int polarity = DaylightSensor.getPolarity(TE) == DaylightSensor.POLARITY_POSITIVE ? DaylightSensor.POLARITY_NEGATIVE : DaylightSensor.POLARITY_POSITIVE;
 
-		if (!TE.worldObj.isRemote) {
-			DaylightSensor.setPolarity(TE, polarity);
-		} else {
-			switch (polarity) {
-			case DaylightSensor.POLARITY_POSITIVE:
-				entityPlayer.addChatMessage(LanguageRegistry.instance().getStringLocalization("message.activation_day.name"));
-				break;
-			case DaylightSensor.POLARITY_NEGATIVE:
-				entityPlayer.addChatMessage(LanguageRegistry.instance().getStringLocalization("message.activation_night.name"));
-			}
+		DaylightSensor.setPolarity(TE, polarity);
+
+		switch (polarity) {
+		case DaylightSensor.POLARITY_POSITIVE:
+			entityPlayer.addChatMessage("message.activation_day.name");
+			break;
+		case DaylightSensor.POLARITY_NEGATIVE:
+			entityPlayer.addChatMessage("message.activation_night.name");
 		}
 
 		return true;

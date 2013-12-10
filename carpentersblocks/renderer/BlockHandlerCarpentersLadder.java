@@ -77,10 +77,11 @@ public class BlockHandlerCarpentersLadder extends BlockHandlerBase {
 	 */
 	protected boolean renderCarpentersBlock(int x, int y, int z)
 	{
+		renderBlocks.renderAllFaces = true;
 		disableAO = true;
 
+		Block block = BlockProperties.getCoverBlock(TE, 6);
 		int data = BlockProperties.getData(TE);
-		BlockProperties.getCoverBlock(TE, 6);
 
 		double xLow = 0.0D;
 		double xHigh = 1.0D;
@@ -255,6 +256,7 @@ public class BlockHandlerCarpentersLadder extends BlockHandlerBase {
 		}
 
 		disableAO = false;
+		renderBlocks.renderAllFaces = false;
 
 		return true;
 	}

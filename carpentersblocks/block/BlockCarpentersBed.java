@@ -9,12 +9,14 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EnumStatus;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
 import carpentersblocks.data.Bed;
 import carpentersblocks.tileentity.TEBase;
+import carpentersblocks.tileentity.TECarpentersBed;
 import carpentersblocks.util.handler.BedDesignHandler;
 import carpentersblocks.util.registry.BlockRegistry;
 import carpentersblocks.util.registry.IconRegistry;
@@ -97,7 +99,7 @@ public class BlockCarpentersBed extends BlockBase {
 	/**
 	 * Called upon block activation (right click on the block.)
 	 */
-	public boolean auxiliaryOnBlockActivated(TEBase TE, World world, int x, int y, int z, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ)
+	public boolean[] auxiliaryOnBlockActivated(TEBase TE, World world, int x, int y, int z, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ)
 	{
 		if (!world.isRemote)
 		{
@@ -110,7 +112,7 @@ public class BlockCarpentersBed extends BlockBase {
 					x = TE_opp.xCoord;
 					z = TE_opp.zCoord;
 				} else {
-					return true;
+					return new boolean[] { true, false };
 				}
 			}
 
@@ -138,7 +140,7 @@ public class BlockCarpentersBed extends BlockBase {
 					if (entityPlayer1 != null)
 					{
 						entityPlayer.addChatMessage("tile.bed.occupied");
-						return true;
+						return new boolean[] { true, false };
 					}
 
 					setBedOccupied(world, x, y, z, entityPlayer, false);
@@ -149,7 +151,7 @@ public class BlockCarpentersBed extends BlockBase {
 				if (enumstatus == EnumStatus.OK)
 				{
 					setBedOccupied(world, x, y, z, entityPlayer, true);
-					return true;
+					return new boolean[] { true, false };
 				}
 				else
 				{
@@ -159,18 +161,18 @@ public class BlockCarpentersBed extends BlockBase {
 						entityPlayer.addChatMessage("tile.bed.notSafe");
 					}
 
-					return true;
+					return new boolean[] { true, false };
 				}
 			}
 			else
 			{
 				world.setBlockToAir(x, y, z);
 				world.newExplosion((Entity)null, x + 0.5F, y + 0.5F, z + 0.5F, 5.0F, true, true);
-				return true;
+				return new boolean[] { true, false };
 			}
 		}
 
-		return true;
+		return new boolean[] { true, false };
 	}
 
 	/**
@@ -249,6 +251,12 @@ public class BlockCarpentersBed extends BlockBase {
 	public int idPicked(World world, int x, int y, int z)
 	{
 		return ItemRegistry.itemCarpentersBedID;
+	}
+
+	@Override
+	public TileEntity createNewTileEntity(World world)
+	{
+		return new TECarpentersBed();
 	}
 
 	@Override

@@ -6,6 +6,7 @@ import net.minecraft.block.BlockHalfSlab;
 import net.minecraft.block.BlockPane;
 import net.minecraft.block.BlockQuartz;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
@@ -26,6 +27,23 @@ public class BlockProperties {
 	public static int getEntityFacing(Entity entity)
 	{
 		return MathHelper.floor_double(entity.rotationYaw * 4.0F / 360.0F + 0.5D) & 3;
+	}
+
+	/**
+	 * Similar to ForgeDirection.OPPOSITES[], except for entity facing.
+	 */
+	public static int getOppositeFacing(int facing)
+	{
+		switch (facing) {
+		case 0:
+			return 2;
+		case 1:
+			return 3;
+		case 2:
+			return 0;
+		default:
+			return 1;
+		}
 	}
 
 	/**
@@ -54,7 +72,7 @@ public class BlockProperties {
 	/**
 	 * Ejects an item at given coordinates.
 	 */
-	private static void ejectEntity(TEBase TE, ItemStack itemStack)
+	public static void ejectEntity(TEBase TE, ItemStack itemStack)
 	{
 		if (!TE.worldObj.isRemote)
 		{
@@ -71,6 +89,32 @@ public class BlockProperties {
 	}
 
 	/**
+	 * Returns whether block has an owner.
+	 * This is mainly for older blocks before ownership was implemented.
+	 */
+	public static boolean hasOwner(TEBase TE)
+	{
+		return !TE.getOwner().equals("");
+	}
+
+	/**
+	 * Returns owner of block.
+	 */
+	public static String getOwner(TEBase TE)
+	{
+		return TE.getOwner();
+	}
+
+	/**
+	 * Sets owner of block.
+	 */
+	public static void setOwner(TEBase TE, EntityLiving entityPlayer)
+	{
+		TE.setOwner(entityPlayer.getEntityName());
+		TE.worldObj.markBlockForUpdate(TE.xCoord, TE.yCoord, TE.zCoord);
+	}
+
+	/**
 	 * Returns whether block rotates based on placement conditions.
 	 * The blocks that utilize this property are mostly atypical, and
 	 * must be added manually.
@@ -82,23 +126,19 @@ public class BlockProperties {
 	}
 
 	/**
-	 * Plays block placement sound.
+	 * Plays block sound.
 	 */
-	public static void playBlockPlacementSound(TEBase TE, int blockID)
+	public static void playBlockSound(TEBase TE, Block block)
 	{
-		playBlockPlacementSound(TE.worldObj, TE.xCoord, TE.yCoord, TE.zCoord, blockID);
+		playBlockSound(TE.worldObj, block, TE.xCoord, TE.yCoord, TE.zCoord);
 	}
 
 	/**
-	 * Plays block placement sound.
+	 * Plays block sound.
 	 */
-	public static void playBlockPlacementSound(World world, int x, int y, int z, int blockID)
+	public static void playBlockSound(World world, Block block, int x, int y, int z)
 	{
-		if (!world.isRemote && blockID > 0)
-		{
-			Block block = Block.blocksList[blockID];
-			world.playSoundEffect(x + 0.5F, y + 0.5F, z + 0.5F, block.stepSound.getPlaceSound(), block.stepSound.getVolume() + 1.0F / 2.0F, block.stepSound.getPitch() * 0.8F);
-		}
+		world.playSoundEffect(x + 0.5F, y + 0.5F, z + 0.5F, block.stepSound.getPlaceSound(), block.stepSound.getVolume() + 1.0F / 2.0F, block.stepSound.getPitch() * 0.8F);
 	}
 
 	/**
@@ -220,10 +260,6 @@ public class BlockProperties {
 
 		int blockID = itemStack == null ? 0 : itemStack.itemID;
 
-		if (itemStack != null) {
-			playBlockPlacementSound(TE, blockID);
-		}
-
 		TE.cover[side] = (short) (blockID + (metadata << 12));
 
 		if (side == 6) {
@@ -250,10 +286,9 @@ public class BlockProperties {
 	 */
 	public static void setData(TEBase TE, int data)
 	{
-		/*
-		 * No need to update if data hasn't changed.
-		 */
-		if (data != getData(TE)) {
+		/* No need to update if data hasn't changed. */
+		if (data != getData(TE))
+		{
 			TE.data = (short) data;
 
 			if (!suppressUpdate) {

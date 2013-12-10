@@ -16,7 +16,6 @@ import carpentersblocks.data.Button;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.registry.BlockRegistry;
 import carpentersblocks.util.registry.IconRegistry;
-import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -51,17 +50,15 @@ public class BlockCarpentersButton extends BlockBase {
 	{
 		int polarity = Button.getPolarity(TE) == Button.POLARITY_POSITIVE ? Button.POLARITY_NEGATIVE : Button.POLARITY_POSITIVE;
 
-		if (!TE.worldObj.isRemote) {
-			Button.setPolarity(TE, polarity);
-			notifySideNeighbor(TE.worldObj, TE.xCoord, TE.yCoord, TE.zCoord, ForgeDirection.OPPOSITES[Button.getFacing(TE).ordinal()]);
-		} else {
-			switch (polarity) {
-			case Button.POLARITY_POSITIVE:
-				entityPlayer.addChatMessage(LanguageRegistry.instance().getStringLocalization("message.polarity_pos.name"));
-				break;
-			case Button.POLARITY_NEGATIVE:
-				entityPlayer.addChatMessage(LanguageRegistry.instance().getStringLocalization("message.polarity_neg.name"));
-			}
+		Button.setPolarity(TE, polarity);
+		notifySideNeighbor(TE.worldObj, TE.xCoord, TE.yCoord, TE.zCoord, ForgeDirection.OPPOSITES[Button.getFacing(TE).ordinal()]);
+
+		switch (polarity) {
+		case Button.POLARITY_POSITIVE:
+			entityPlayer.addChatMessage("message.polarity_pos.name");
+			break;
+		case Button.POLARITY_NEGATIVE:
+			entityPlayer.addChatMessage("message.polarity_neg.name");
 		}
 
 		return true;
@@ -167,7 +164,7 @@ public class BlockCarpentersButton extends BlockBase {
 	/**
 	 * Called upon block activation (right click on the block.)
 	 */
-	public boolean auxiliaryOnBlockActivated(TEBase TE, World world, int x, int y, int z, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ)
+	public boolean[] auxiliaryOnBlockActivated(TEBase TE, World world, int x, int y, int z, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ)
 	{
 		if (!isDepressed(TE))
 		{
@@ -175,10 +172,10 @@ public class BlockCarpentersButton extends BlockBase {
 			Button.setState(TE, Button.STATE_ON, true);
 			notifySideNeighbor(world, x, y, z, facing.ordinal());
 			world.scheduleBlockUpdate(x, y, z, blockID, tickRate(world));
-			return true;
+			return new boolean[] { true, false };
 		}
 
-		return false;
+		return new boolean[] { false, false };
 	}
 
 	@Override

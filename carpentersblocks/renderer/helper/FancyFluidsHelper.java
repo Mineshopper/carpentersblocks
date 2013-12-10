@@ -6,7 +6,6 @@ import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.liquids.ILiquid;
 import carpentersblocks.tileentity.TEBase;
-import carpentersblocks.util.registry.FeatureRegistry;
 
 public class FancyFluidsHelper {
 
