@@ -3,7 +3,6 @@ package carpentersblocks.block;
 import java.util.Random;
 
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -15,9 +14,6 @@ import carpentersblocks.CarpentersBlocks;
 import carpentersblocks.data.Button;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.registry.BlockRegistry;
-import carpentersblocks.util.registry.IconRegistry;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockCarpentersButton extends BlockBase {
 

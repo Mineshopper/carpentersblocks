@@ -7,7 +7,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeDirection;
 import carpentersblocks.CarpentersBlocks;
 import carpentersblocks.data.Safe;
 import carpentersblocks.tileentity.TEBase;
@@ -174,18 +173,7 @@ public class BlockCarpentersSafe extends BlockBase {
 			}
 
 			if (!Safe.isOpen(TE)) {
-
-				ForgeDirection dir = Safe.getFacing(TE);
-				ForgeDirection dir_opp = ForgeDirection.getOrientation(ForgeDirection.OPPOSITES[dir.ordinal()]);
-
-				int x_adj = x - dir.offsetX;
-				int z_adj = z - dir.offsetZ;
-
-				if (world.isBlockSolidOnSide(x_adj, y, z_adj, dir_opp)) {
-					return new boolean[] { false, false };
-				} else {
-					entityPlayer.displayGUIChest((TECarpentersSafe)TE);
-				}
+				entityPlayer.displayGUIChest((TECarpentersSafe)TE);
 			}
 
 		} else {
