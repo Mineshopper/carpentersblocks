@@ -494,8 +494,8 @@ public class BlockBase extends BlockContainer {
 		return	entityPlayer.capabilities.isCreativeMode &&
 				heldItem != null &&
 				(
-						heldItem.getItem() == ItemRegistry.itemCarpentersHammer ||
-						heldItem.getItem() == ItemRegistry.itemCarpentersChisel
+						heldItem.getItem() instanceof ICarpentersHammer ||
+						heldItem.getItem() instanceof ICarpentersChisel
 						);
 	}
 
