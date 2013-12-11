@@ -114,34 +114,35 @@ public class EventHandler {
 		}
 	}
 	
-	@SideOnly(Side.CLIENT)
-	@ForgeSubscribe
 	public void SoundEvent(PlaySoundEvent event)
 	{
-		if (event.name.contains("carpentersblock"))
+		if (event != null && event.name != null)
 		{
-			if (FMLCommonHandler.instance().getSide() == Side.CLIENT)
+			if (event.name.contains("carpentersblock"))
 			{
-				World world = FMLClientHandler.instance().getClient().theWorld;
-				int x = MathHelper.floor_float(event.x);
-				int y = MathHelper.floor_float(event.y);
-				int z = MathHelper.floor_float(event.z);
-				int blockID = world.getBlockId(x, y, z);
+				if (FMLCommonHandler.instance().getSide() == Side.CLIENT)
+				{
+					World world = FMLClientHandler.instance().getClient().theWorld;
+					int x = MathHelper.floor_float(event.x);
+					int y = MathHelper.floor_float(event.y);
+					int z = MathHelper.floor_float(event.z);
+					int blockID = world.getBlockId(x, y, z);
 
-				if (blockID > 0 && Block.blocksList[blockID] instanceof BlockBase) {
+					if (blockID > 0 && Block.blocksList[blockID] instanceof BlockBase) {
 
-					Block block = BlockProperties.getCoverBlock((TEBase)world.getBlockTileEntity(x, y, z), 6);
-					
-					if (block instanceof BlockBase) {
-						event.result = event.manager.soundPoolSounds.getRandomSoundFromSoundPool(event.name.startsWith("dig.") ? Block.soundWoodFootstep.getBreakSound() : event.name.startsWith("place.") ? Block.soundWoodFootstep.getPlaceSound() : Block.soundWoodFootstep.getStepSound());
+						Block block = BlockProperties.getCoverBlock((TEBase)world.getBlockTileEntity(x, y, z), 6);
+
+						if (block instanceof BlockBase) {
+							event.result = event.manager.soundPoolSounds.getRandomSoundFromSoundPool(event.name.startsWith("dig.") ? Block.soundWoodFootstep.getBreakSound() : event.name.startsWith("place.") ? Block.soundWoodFootstep.getPlaceSound() : Block.soundWoodFootstep.getStepSound());
+						} else {
+							event.result = event.manager.soundPoolSounds.getRandomSoundFromSoundPool(event.name.startsWith("dig.") ? block.stepSound.getBreakSound() : event.name.startsWith("place.") ? block.stepSound.getPlaceSound() : block.stepSound.getStepSound());
+						}
+
 					} else {
-						event.result = event.manager.soundPoolSounds.getRandomSoundFromSoundPool(event.name.startsWith("dig.") ? block.stepSound.getBreakSound() : event.name.startsWith("place.") ? block.stepSound.getPlaceSound() : block.stepSound.getStepSound());
+
+						event.result = event.manager.soundPoolSounds.getRandomSoundFromSoundPool(Block.soundWoodFootstep.getBreakSound());
+
 					}
-					
-				} else {
-					
-					event.result = event.manager.soundPoolSounds.getRandomSoundFromSoundPool(Block.soundWoodFootstep.getBreakSound());
-				
 				}
 			}
 		}
