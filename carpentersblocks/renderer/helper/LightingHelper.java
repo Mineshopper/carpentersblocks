@@ -23,7 +23,6 @@ public class LightingHelper {
 	public final int				NORMAL_BRIGHTNESS = 983055;
 	public final int				MAX_BRIGHTNESS = 15728880;
 
-	private boolean					hasLightnessOffset;
 	private float 					lightnessOffset;
 	private boolean					hasBrightnessOverride;
 	private int						brightnessOverride;
@@ -87,7 +86,6 @@ public class LightingHelper {
 	 */
 	public void setLightnessOffset(float lightness)
 	{
-		hasLightnessOffset = true;
 		lightnessOffset = lightness;
 	}
 
@@ -96,7 +94,7 @@ public class LightingHelper {
 	 */
 	public void clearLightnessOffset()
 	{
-		hasLightnessOffset = false;
+		lightnessOffset = 0.0F;
 	}
 
 	/**
