@@ -1,65 +1,50 @@
 package carpentersblocks.renderer.helper;
 
-import carpentersblocks.data.Slope;
-import carpentersblocks.renderer.BlockHandlerBase;
-import carpentersblocks.tileentity.TEBase;
-import carpentersblocks.util.BlockProperties;
-import carpentersblocks.util.handler.DyeColorHandler;
-import carpentersblocks.util.handler.OptifineHandler;
-import carpentersblocks.util.handler.OverlayHandler;
-import carpentersblocks.util.registry.BlockRegistry;
-import carpentersblocks.util.registry.FeatureRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockGrass;
 import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.Icon;
-import net.minecraft.world.IBlockAccess;
+import carpentersblocks.data.Slope;
+import carpentersblocks.renderer.BlockHandlerBase;
+import carpentersblocks.tileentity.TEBase;
+import carpentersblocks.util.BlockProperties;
+import carpentersblocks.util.handler.DyeColorHandler;
+import carpentersblocks.util.handler.OptifineHandler;
+import carpentersblocks.util.registry.FeatureRegistry;
 
 public class LightingHelper {
 
 	private final BlockHandlerBase	BH;
 	private final TEBase 			TE;
 	private final RenderBlocks 		renderBlocks;
-	private final Block 			srcBlock;
-	
 	private float					lightness;
 	public final int				NORMAL_BRIGHTNESS = 983055;
 	public final int				MAX_BRIGHTNESS = 15728880;
-	
-	private boolean 				hasLightnessOffset;
+
 	private float 					lightnessOffset;
 	private boolean					hasBrightnessOverride;
 	private int						brightnessOverride;
 	private boolean					hasColorOverride;
 	private float[]					colorOverride = new float[3];
-	
+
 	public LightingHelper(BlockHandlerBase BH, TEBase TE, RenderBlocks renderBlocks)
 	{
 		this.BH = BH;
 		this.TE = TE;
 		this.renderBlocks = renderBlocks;
-		this.srcBlock = BH.srcBlock;
 	}
-	
+
 	/**
 	 * Sets lightness.
 	 */
 	public LightingHelper setLightness(float lightness)
 	{
 		this.lightness = lightness;
-
-		if (!renderBlocks.enableAO)
-		{
-			base_RGB[0] = lightness;
-			base_RGB[1] = lightness;
-			base_RGB[2] = lightness;
-		}
-		
 		return this;
 	}
-	
+
 	/**
 	 * Sets color override.
 	 */
@@ -78,7 +63,7 @@ public class LightingHelper {
 	{
 		hasColorOverride = false;
 	}
-	
+
 	/**
 	 * Sets brightness offset.
 	 */
@@ -95,13 +80,12 @@ public class LightingHelper {
 	{
 		hasBrightnessOverride = false;
 	}
-	
+
 	/**
 	 * Sets lightness offset.
 	 */
 	public void setLightnessOffset(float lightness)
 	{
-		hasLightnessOffset = true;
 		lightnessOffset = lightness;
 	}
 
@@ -110,37 +94,13 @@ public class LightingHelper {
 	 */
 	public void clearLightnessOffset()
 	{
-		hasLightnessOffset = false;
+		lightnessOffset = 0.0F;
 	}
 
 	/**
 	 * Stores uncolored, ambient occlusion values for each corner of face.
 	 */
 	public float[] base_ao = { 0.0F, 0.0F, 0.0F, 0.0F };
-
-	/**
-	 * Stores uncolored light value for face.
-	 */
-	public float[] base_RGB = { 0.0F, 0.0F, 0.0F };
-	
-	/**
-	 * Multiplies AO by a color.
-	 */
-	private void aoMultiplyByColor(float red, float green, float blue)
-	{
-		renderBlocks.colorRedTopLeft *= red;
-		renderBlocks.colorGreenTopLeft *= green;
-		renderBlocks.colorBlueTopLeft *= blue;
-		renderBlocks.colorRedTopRight *= red;
-		renderBlocks.colorGreenTopRight *= green;
-		renderBlocks.colorBlueTopRight *= blue;
-		renderBlocks.colorRedBottomRight *= red;
-		renderBlocks.colorGreenBottomRight *= green;
-		renderBlocks.colorBlueBottomRight *= blue;
-		renderBlocks.colorRedBottomLeft *= red;
-		renderBlocks.colorGreenBottomLeft *= green;
-		renderBlocks.colorBlueBottomLeft *= blue;
-	}
 
 	/**
 	 * Sets AO color.
@@ -192,14 +152,14 @@ public class LightingHelper {
 		renderBlocks.colorGreenBottomLeft = base_ao[3];
 		renderBlocks.colorBlueBottomLeft = base_ao[3];
 	}
-	
+
 	/**
 	 * Returns float array with RGB values for block.
 	 */
 	public float[] getRGB(Block block, int x, int y, int z)
 	{
 		float[] rgb = { 0, 0, 0 };
-		
+
 		int color = FeatureRegistry.enableOptifineIntegration ? OptifineHandler.getColorMultiplier(block, renderBlocks.blockAccess, x, y, z) : block.colorMultiplier(renderBlocks.blockAccess, x, y, z);
 
 		rgb[0] = (color >> 16 & 255) / 255.0F;
@@ -215,75 +175,50 @@ public class LightingHelper {
 
 		return rgb;
 	}
-	
+
 	/**
-	 * Apply color to AO or tessellator.
+	 * Apply lightness and color to AO or tessellator.
 	 */
 	public void colorSide(Block block, int x, int y, int z, int side, Icon icon)
 	{
-		Tessellator tessellator = Tessellator.instance;
-		float baseRGB[] = getRGB(block, x, y, z);
-		float dyeRGB[] = { 1.0F, 1.0F, 1.0F };
+		float[] blockRGB = getRGB(block, x, y, z);
+		float[] dyeRGB = BH.suppressDyeColor ? new float[] { 1.0F, 1.0F, 1.0F } : DyeColorHandler.getDyeColorRGB(BH.hasDyeColorOverride ? BH.dyeColorOverride : BlockProperties.getDyeColor(TE, BH.coverRendering));
 
-		if (hasColorOverride) {
-			baseRGB[0] = colorOverride[0];
-			baseRGB[1] = colorOverride[1];
-			baseRGB[2] = colorOverride[2];
-		}
-		
-		if (!BH.suppressDyeColor) {
-			dyeRGB = DyeColorHandler.getDyeColorRGB(BH.hasDyeColorOverride ? BH.dyeColorOverride : BlockProperties.getDyeColor(TE, BH.coverRendering));
-		}
+		/* Calculate color for side. */
 
-		if (hasLightnessOffset)
+		float[] finalRGB = { (blockRGB[0] += lightnessOffset) * dyeRGB[0], (blockRGB[1] += lightnessOffset) * dyeRGB[1], (blockRGB[2] += lightnessOffset) * dyeRGB[2] };
+
+		if (block.equals(Block.grass))
 		{
-			if (renderBlocks.enableAO) {
-				lightness += lightnessOffset;
-			} else {
-				base_RGB[0] += lightnessOffset;
-				base_RGB[1] += lightnessOffset;
-				base_RGB[2] += lightnessOffset;
+			boolean posSlopedSide = BH.isSideSloped ? Slope.slopesList[BlockProperties.getData(TE)].isPositive : false;
+
+			if (!(side == 1 || icon == BlockGrass.getIconSideOverlay() || posSlopedSide)) {
+				finalRGB = dyeRGB;
 			}
 		}
+
+		/* Apply color to side. */
 
 		if (renderBlocks.enableAO) {
 
 			aoResetColor();
 			if (hasColorOverride) {
-				aoSetColor(colorOverride[0], colorOverride[1], colorOverride[2], 1.0F);
-			} else if (useColorComponent(block, side, icon)) {
-				aoSetColor(baseRGB[0] * dyeRGB[0], baseRGB[1] * dyeRGB[1], baseRGB[2] * dyeRGB[2], lightness);
+				aoSetColor(colorOverride[0], colorOverride[1], colorOverride[2], lightness);
 			} else {
-				aoSetColor(dyeRGB[0], dyeRGB[1], dyeRGB[2], lightness);
+				aoSetColor(finalRGB[0], finalRGB[1], finalRGB[2], lightness);
 			}
 
 		} else {
 
 			if (hasColorOverride) {
-				tessellator.setColorOpaque_F(colorOverride[0], colorOverride[1], colorOverride[2]);
-			} else if (useColorComponent(block, side, icon)) {
-				tessellator.setColorOpaque_F(base_RGB[0] * baseRGB[0] * dyeRGB[0], base_RGB[1] * baseRGB[1] * dyeRGB[1], base_RGB[2] * baseRGB[2] * dyeRGB[2]);
+				Tessellator.instance.setColorOpaque_F(colorOverride[0] * lightness, colorOverride[1] * lightness, colorOverride[2] * lightness);
 			} else {
-				tessellator.setColorOpaque_F(base_RGB[0] * dyeRGB[0], base_RGB[1] * dyeRGB[1], base_RGB[2] * dyeRGB[2]);
+				Tessellator.instance.setColorOpaque_F(finalRGB[0] * lightness, finalRGB[1] * lightness, finalRGB[2] * lightness);
 			}
 
 		}
 	}
 
-	/**
-	 * Returns whether block side color component should be used.
-	 */
-	protected boolean useColorComponent(Block block, int side, Icon icon)
-	{
-		if (block == Block.grass || BlockProperties.getOverlay(TE, side) == OverlayHandler.OVERLAY_GRASS)
-		{
-			boolean posSlopedSide = BH.isSideSloped ? Slope.slopesList[BlockProperties.getData(TE)].isPositive : false;
-			return side == 1 || icon == BlockGrass.getIconSideOverlay() || posSlopedSide;
-		}
-
-		return false;
-	}
-	
 	/**
 	 * Fills AO variables with lightness for bottom face.
 	 */
@@ -292,13 +227,13 @@ public class LightingHelper {
 		int mixedBrightness = block.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y, z);
 
 		if (!renderBlocks.enableAO) {
-			
-			int brightness = hasBrightnessOverride ? brightnessOverride : (renderBlocks.renderMinY > 0.0D ? mixedBrightness : block.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y - 1, z));
+
+			int brightness = hasBrightnessOverride ? brightnessOverride : renderBlocks.renderMinY > 0.0D ? mixedBrightness : block.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y - 1, z);
 			Tessellator.instance.setBrightness(brightness);
-			
+
 		} else {
-			
-			Tessellator.instance.setBrightness(983055);	
+
+			Tessellator.instance.setBrightness(983055);
 			boolean useOffsetLightness = renderBlocks.renderMinY >= 0.0D && renderBlocks.renderMinY <= 0.5D;
 			boolean maxSmoothLighting = renderBlocks.partialRenderBounds;
 
@@ -386,7 +321,7 @@ public class LightingHelper {
 				renderBlocks.brightnessBottomRight = renderBlocks.getAoBrightness(renderBlocks.aoBrightnessYZNN, renderBlocks.aoBrightnessXYPN, renderBlocks.aoBrightnessXYZPNN, offsetBrightness);
 				renderBlocks.brightnessBottomLeft = renderBlocks.getAoBrightness(renderBlocks.aoBrightnessXYNN, renderBlocks.aoBrightnessXYZNNN, renderBlocks.aoBrightnessYZNN, offsetBrightness);
 			}
-			
+
 		}
 	}
 
@@ -396,15 +331,15 @@ public class LightingHelper {
 	public void setLightingYPos(Block block, int x, int y, int z)
 	{
 		int mixedBrightness = block.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y, z);
-		
+
 		if (!renderBlocks.enableAO) {
 
-			int brightness = hasBrightnessOverride ? brightnessOverride : (renderBlocks.renderMaxY < 1.0D ? mixedBrightness : block.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y + 1, z));
+			int brightness = hasBrightnessOverride ? brightnessOverride : renderBlocks.renderMaxY < 1.0D ? mixedBrightness : block.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y + 1, z);
 			Tessellator.instance.setBrightness(brightness);
-			
+
 		} else {
 
-			Tessellator.instance.setBrightness(983055);	
+			Tessellator.instance.setBrightness(983055);
 			boolean useOffsetLightness = renderBlocks.renderMaxY <= 1.0D && renderBlocks.renderMaxY > 0.5D;
 			boolean maxSmoothLighting = renderBlocks.partialRenderBounds;
 
@@ -505,12 +440,12 @@ public class LightingHelper {
 
 		if (!renderBlocks.enableAO) {
 
-			int brightness = hasBrightnessOverride ? brightnessOverride : (renderBlocks.renderMinZ > 0.0D ? mixedBrightness : block.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y, z - 1));
+			int brightness = hasBrightnessOverride ? brightnessOverride : renderBlocks.renderMinZ > 0.0D ? mixedBrightness : block.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y, z - 1);
 			Tessellator.instance.setBrightness(brightness);
-			
+
 		} else {
 
-			Tessellator.instance.setBrightness(983055);	
+			Tessellator.instance.setBrightness(983055);
 			boolean useOffsetLightness = renderBlocks.renderMinZ >= 0.0D && renderBlocks.renderMinZ <= 0.5D;
 			boolean maxSmoothLighting = renderBlocks.partialRenderBounds;
 
@@ -611,12 +546,12 @@ public class LightingHelper {
 
 		if (!renderBlocks.enableAO) {
 
-			int brightness = hasBrightnessOverride ? brightnessOverride : (renderBlocks.renderMaxZ < 1.0D ? mixedBrightness : block.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y, z + 1));
+			int brightness = hasBrightnessOverride ? brightnessOverride : renderBlocks.renderMaxZ < 1.0D ? mixedBrightness : block.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y, z + 1);
 			Tessellator.instance.setBrightness(brightness);
-			
+
 		} else {
 
-			Tessellator.instance.setBrightness(983055);	
+			Tessellator.instance.setBrightness(983055);
 			boolean useOffsetLightness = renderBlocks.renderMaxZ <= 1.0D && renderBlocks.renderMaxZ > 0.5D;
 			boolean maxSmoothLighting = renderBlocks.partialRenderBounds;
 
@@ -717,12 +652,12 @@ public class LightingHelper {
 
 		if (!renderBlocks.enableAO) {
 
-			int brightness = hasBrightnessOverride ? brightnessOverride : (renderBlocks.renderMinX > 0.0D ? mixedBrightness : block.getMixedBrightnessForBlock(renderBlocks.blockAccess, x - 1, y, z));
+			int brightness = hasBrightnessOverride ? brightnessOverride : renderBlocks.renderMinX > 0.0D ? mixedBrightness : block.getMixedBrightnessForBlock(renderBlocks.blockAccess, x - 1, y, z);
 			Tessellator.instance.setBrightness(brightness);
-			
+
 		} else {
 
-			Tessellator.instance.setBrightness(983055);	
+			Tessellator.instance.setBrightness(983055);
 			boolean useOffsetLightness = renderBlocks.renderMinX >= 0.0D && renderBlocks.renderMinX <= 0.5D;
 			boolean maxSmoothLighting = renderBlocks.partialRenderBounds;
 
@@ -823,12 +758,12 @@ public class LightingHelper {
 
 		if (!renderBlocks.enableAO) {
 
-			int brightness = hasBrightnessOverride ? brightnessOverride : (renderBlocks.renderMaxX < 1.0D ? mixedBrightness : block.getMixedBrightnessForBlock(renderBlocks.blockAccess, x + 1, y, z));
+			int brightness = hasBrightnessOverride ? brightnessOverride : renderBlocks.renderMaxX < 1.0D ? mixedBrightness : block.getMixedBrightnessForBlock(renderBlocks.blockAccess, x + 1, y, z);
 			Tessellator.instance.setBrightness(brightness);
-			
+
 		} else {
 
-			Tessellator.instance.setBrightness(983055);	
+			Tessellator.instance.setBrightness(983055);
 			boolean useOffsetLightness = renderBlocks.renderMaxX <= 1.0D && renderBlocks.renderMaxX > 0.5D;
 			boolean maxSmoothLighting = renderBlocks.partialRenderBounds;
 
@@ -919,5 +854,5 @@ public class LightingHelper {
 
 		}
 	}
-	
+
 }
