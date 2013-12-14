@@ -25,6 +25,7 @@ tile.blockCarpentersPressurePlate.name=Druckplatte des Zimmermanns
 tile.blockCarpentersSlope.name=Rampe des Zimmermanns
 tile.blockCarpentersStairs.name=Treppe des Zimmermanns
 tile.blockCarpentersTorch.name=Fackel des Zimmermanns
+tile.blockCarpentersSafe.name=Tresor des Zimmermanns
 
 # MESSAGES
 message.polarity_pos.name=\u00a76POLARITÄT: \u00a7fNormaler Redstone-Output.
@@ -37,5 +38,12 @@ message.trigger_player.name=\u00a76TRIGGER: \u00a7fNur bei Spielern aktiv.
 message.trigger_monster.name=\u00a76TRIGGER: \u00a7fNur bei Monstern aktiv.
 message.trigger_animal.name=\u00a76TRIGGER: \u00a7fNur bei Tieren aktiv.
 message.trigger_all.name=\u00a76TRIGGER: \u00a7fBei allem aktiv.
+message.safe_lock.name=\u00a76KONTROLLE: \u00a7fTresor verschlossen.
+message.safe_unlock.name=\u00a76KONTROLLE: \u00a7fTresor entriegelt.
+message.automation_all.name=\u00a76AUTOMATISIERUNG: \u00a7fItems können hineingefügt und herausgenommen werden.
+message.automation_disabled.name=\u00a76AAUTOMATISIERUNG: \u00a7fDeaktiviert.
+message.automation_insert.name=\u00a76AUTOMATISIERUNG: \u00a7fItems können nur hineingefügt werden.
+message.automation_extract.name=\u00a76AUTOMATISIERUNG: \u00a7fItems können nur herausgenommen werden.
+message.block_lock.name=\u00a76KONTROLLE: \u00a7fDieser Block ist verschlossen.
 
 # </file>
