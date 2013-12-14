@@ -17,14 +17,15 @@ tile.blockCarpentersButton.name=木匠按钮
 tile.blockCarpentersDaylightSensor.name=木匠阳光传感器
 tile.blockCarpentersCollapsibleBlock.name=木匠折叠方块
 tile.blockCarpentersDoor.name=木匠门
-tile.blockCarpentersGate.name=木匠活板门
-tile.blockCarpentersHatch.name=木匠舱门
+tile.blockCarpentersGate.name=木匠栅栏门
+tile.blockCarpentersHatch.name=木匠活版门
 tile.blockCarpentersLadder.name=木匠梯子
 tile.blockCarpentersLever.name=木匠拉杆
 tile.blockCarpentersPressurePlate.name=木匠压力盘
 tile.blockCarpentersSlope.name=木匠斜坡
 tile.blockCarpentersStairs.name=木匠楼梯
 tile.blockCarpentersTorch.name=木匠火把
+tile.blockCarpentersSafe.name=木匠保险箱
 
 # MESSAGES
 message.polarity_pos.name=\u00a76输出相: \u00a7f标准红石信号输出.
