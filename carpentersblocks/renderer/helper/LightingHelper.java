@@ -186,22 +186,10 @@ public class LightingHelper {
 		float[] blockRGB = getRGB(block, x, y, z);
 		float[] dyeRGB = BH.suppressDyeColor ? new float[] { 1.0F, 1.0F, 1.0F } : DyeColorHandler.getDyeColorRGB(BH.hasDyeColorOverride ? BH.dyeColorOverride : BlockProperties.getDyeColor(TE, BH.coverRendering));
 
-		if (hasLightnessOffset)
-		{
-			if (renderBlocks.enableAO) {
-				lightness += lightnessOffset;
-			} else {
-				blockRGB[0] += lightnessOffset;
-				blockRGB[1] += lightnessOffset;
-				blockRGB[2] += lightnessOffset;
-			}
-		}
-
 		/* Calculate color for side. */
 
-		float[] finalRGB = { blockRGB[0] * dyeRGB[0], blockRGB[1] * dyeRGB[1], blockRGB[2] * dyeRGB[2] };
+		float[] finalRGB = { (blockRGB[0] += lightnessOffset) * dyeRGB[0], (blockRGB[1] += lightnessOffset) * dyeRGB[1], (blockRGB[2] += lightnessOffset) * dyeRGB[2] };
 
-		/* Grass blocks use blockRGB uniquely. */
 		if (block.equals(Block.grass))
 		{
 			boolean posSlopedSide = BH.isSideSloped ? Slope.slopesList[BlockProperties.getData(TE)].isPositive : false;
@@ -224,12 +212,10 @@ public class LightingHelper {
 
 		} else {
 
-			Tessellator tessellator = Tessellator.instance;
-
 			if (hasColorOverride) {
-				tessellator.setColorOpaque_F(colorOverride[0], colorOverride[1], colorOverride[2]);
+				Tessellator.instance.setColorOpaque_F(colorOverride[0] * lightness, colorOverride[1] * lightness, colorOverride[2] * lightness);
 			} else {
-				tessellator.setColorOpaque_F(finalRGB[0], finalRGB[1], finalRGB[2]);
+				Tessellator.instance.setColorOpaque_F(finalRGB[0] * lightness, finalRGB[1] * lightness, finalRGB[2] * lightness);
 			}
 
 		}
