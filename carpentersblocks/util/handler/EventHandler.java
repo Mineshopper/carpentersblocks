@@ -31,8 +31,11 @@ public class EventHandler {
 	/** Stores entity that hit block. */
 	public static Entity eventEntity;
 	
-	/** Stores metadata representing blockIcon in BlockBase. */
-	public final static int BLOCKICON_META_ID = 1000;
+	/** This is an offset used for blockIcon. */
+	public final static int BLOCKICON_BASE_ID = 1000;
+	
+	/** This is an offset used for iconOverride. */
+	public final static int BLOCKICON_OVERRIDE_ID = 1001;
 	
 	@ForgeSubscribe
 	/**

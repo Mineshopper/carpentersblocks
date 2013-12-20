@@ -72,25 +72,23 @@ public class BlockBase extends BlockContainer {
 	@SideOnly(Side.CLIENT)
 	@Override
 	/**
-	 * This will override the base getIcon and allow us to check
-	 * whether or not we are retrieving the Icon from the particle effects
+	 * Returns the icon on the side given the block metadata.
 	 * 
-	 * When metadata is set to ICON_OVERRIDE_ID this states that our block is in the world without a cover
-	 * thus we require the default icon otherwise we should display a facade transparent texture
+	 * Due to the amount of control needed over this, vanilla calls will always return icon_blank.
+	 * 
+	 * BLOCKICON_OVERRIDE_ID is used to return the iconOverride.
+	 * BLOCKICON_BASE_ID is used to return blockIcon.
 	 */
 	public Icon getIcon(int side, int metadata)
 	{
-		StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
-
-		if (stackTraceElements[2].getClassName().equals(EntityDiggingFX.class.getName()))
-		{
-			if (metadata == EventHandler.BLOCKICON_META_ID) {
-				return blockIcon;
-			} else {
-				return iconOverride;
-			}
+		switch (metadata) {
+		case EventHandler.BLOCKICON_OVERRIDE_ID:
+			return iconOverride;
+		case EventHandler.BLOCKICON_BASE_ID:
+			return blockIcon;
+		default:
+			return IconRegistry.icon_blank;
 		}
-		return blockIcon;
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -102,7 +100,9 @@ public class BlockBase extends BlockContainer {
 	{
 		TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
 
-		return BlockProperties.getCoverBlock(TE, 6).getIcon(side, BlockProperties.getCoverMetadata(TE, 6));
+		int metadata = BlockProperties.hasCover(TE, 6) ? BlockProperties.getCoverMetadata(TE, 6) : EventHandler.BLOCKICON_BASE_ID;
+		
+		return BlockProperties.getCoverBlock(TE, 6).getIcon(side, metadata);
 	}
 
 	/**

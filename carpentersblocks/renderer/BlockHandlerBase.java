@@ -450,9 +450,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
 	 */
 	protected Icon getIcon(Block block, int side)
 	{
-		BlockProperties.getData(TE);
-		int metadata = hasMetadataOverride ? metadataOverride : BlockProperties.getCoverMetadata(TE, coverRendering);
-
+		int metadata = hasMetadataOverride ? metadataOverride : BlockProperties.hasCover(TE, coverRendering) ? BlockProperties.getCoverMetadata(TE, coverRendering) : EventHandler.BLOCKICON_BASE_ID;
 		Icon icon = getUniqueIcon(block, side, block.getIcon(side, metadata));
 
 		/* If icon has global override, apply it. */
