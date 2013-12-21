@@ -26,13 +26,13 @@ public class PlantHandler {
 		} catch (Exception e) {
 			ModLogger.log(Level.WARNING, "Plant support integration failed.");
 			return false;
-		}    	
+		}
 	}
-	
+
 	public static boolean canThisPlantGrowOnThisBlockID(int blockID)
 	{
 		boolean canSupportPlant = false;
-		
+
 		try {
 			boolean tempCanSupportPlant = (Boolean) canThisPlantGrowOnThisBlockID.invoke(null, blockID);
 			canSupportPlant = tempCanSupportPlant;

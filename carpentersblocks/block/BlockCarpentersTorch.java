@@ -9,6 +9,7 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.Icon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.IBlockAccess;
@@ -43,8 +44,21 @@ public class BlockCarpentersTorch extends BlockBase {
 	 */
 	public void registerIcons(IconRegister iconRegister)
 	{
-		blockIcon = IconRegistry.icon_torch_lit;
-		super.registerIcons(iconRegister);
+		IconRegistry.icon_torch_lit = iconRegister.registerIcon("carpentersblocks:torch/torch_lit");
+		IconRegistry.icon_torch_head_smoldering = iconRegister.registerIcon("carpentersblocks:torch/torch_head_smoldering");
+		IconRegistry.icon_torch_head_unlit = iconRegister.registerIcon("carpentersblocks:torch/torch_head_unlit");
+
+		blockIcon = IconRegistry.icon_solid;
+	}
+
+	@SideOnly(Side.CLIENT)
+	@Override
+	/**
+	 * Returns the icon on the side given the block metadata.
+	 */
+	public Icon getIcon(int side, int metadata)
+	{
+		return IconRegistry.icon_torch_lit;
 	}
 
 	@Override

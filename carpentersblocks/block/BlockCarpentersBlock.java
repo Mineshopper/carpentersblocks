@@ -40,8 +40,7 @@ public class BlockCarpentersBlock extends BlockBase {
 	 */
 	public void registerIcons(IconRegister iconRegister)
 	{
-		blockIcon = IconRegistry.icon_stairs;
-		super.registerIcons(iconRegister);
+		blockIcon = IconRegistry.icon_quartered_frame;
 	}
 
 	@Override

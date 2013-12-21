@@ -40,8 +40,7 @@ public class BlockCarpentersBarrier extends BlockBase {
 	 */
 	public void registerIcons(IconRegister iconRegister)
 	{
-		blockIcon = IconRegistry.icon_generic;
-		super.registerIcons(iconRegister);
+		blockIcon = IconRegistry.icon_solid;
 	}
 
 	@Override

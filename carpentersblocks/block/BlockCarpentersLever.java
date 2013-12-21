@@ -8,6 +8,7 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.Icon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
@@ -39,8 +40,19 @@ public class BlockCarpentersLever extends BlockBase {
 	 */
 	public void registerIcons(IconRegister iconRegister)
 	{
-		blockIcon = IconRegistry.icon_lever;
-		super.registerIcons(iconRegister);
+		IconRegistry.icon_lever = iconRegister.registerIcon("carpentersblocks:lever/lever");
+
+		blockIcon = IconRegistry.icon_solid;
+	}
+
+	@SideOnly(Side.CLIENT)
+	@Override
+	/**
+	 * Returns the icon on the side given the block metadata.
+	 */
+	public Icon getIcon(int side, int metadata)
+	{
+		return IconRegistry.icon_lever;
 	}
 
 	@Override

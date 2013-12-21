@@ -44,8 +44,11 @@ public class BlockCarpentersHatch extends BlockBase {
 	 */
 	public void registerIcons(IconRegister iconRegister)
 	{
-		blockIcon = IconRegistry.icon_generic;
-		super.registerIcons(iconRegister);
+		IconRegistry.icon_hatch_glass = iconRegister.registerIcon("carpentersblocks:hatch/hatch_glass");
+		IconRegistry.icon_hatch_french_glass = iconRegister.registerIcon("carpentersblocks:hatch/hatch_french_glass");
+		IconRegistry.icon_hatch_screen = iconRegister.registerIcon("carpentersblocks:hatch/hatch_screen");
+
+		blockIcon = IconRegistry.icon_solid;
 	}
 
 	@Override

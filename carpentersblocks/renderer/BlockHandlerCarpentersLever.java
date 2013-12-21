@@ -28,9 +28,9 @@ public class BlockHandlerCarpentersLever extends BlockHandlerBase {
 	protected Icon getUniqueIcon(Block block, int side, Icon icon)
 	{
 		if (block instanceof BlockBase) {
-			return IconRegistry.icon_generic;
+			return IconRegistry.icon_solid;
 		} else {
-			return block.getIcon(side, BlockProperties.getCoverMetadata(TE, 6));
+			return icon;
 		}
 	}
 

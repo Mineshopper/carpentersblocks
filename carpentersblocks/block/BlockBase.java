@@ -11,7 +11,6 @@ import net.minecraft.block.BlockFlower;
 import net.minecraft.block.StepSound;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.particle.EffectRenderer;
-import net.minecraft.client.particle.EntityDiggingFX;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -31,7 +30,7 @@ import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.IPlantable;
 import carpentersblocks.api.ICarpentersChisel;
 import carpentersblocks.api.ICarpentersHammer;
-import carpentersblocks.renderer.helper.RenderHelper;
+import carpentersblocks.renderer.helper.ParticleHelper;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.handler.EventHandler;
@@ -41,14 +40,10 @@ import carpentersblocks.util.handler.PlantHandler;
 import carpentersblocks.util.registry.FeatureRegistry;
 import carpentersblocks.util.registry.IconRegistry;
 import carpentersblocks.util.registry.ItemRegistry;
-import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockBase extends BlockContainer {
-
-	@SideOnly(Side.CLIENT)
-	private Icon iconOverride;
 
 	public BlockBase(int blockID, Material material)
 	{
@@ -64,31 +59,27 @@ public class BlockBase extends BlockContainer {
 	 */
 	public void registerIcons(IconRegister iconRegister)
 	{
-		iconOverride = iconRegister.registerIcon(IconRegistry.icon_blank.getIconName());
+		if (FeatureRegistry.enableMCPatcherCompatibility) {
+			IconRegistry.registerIcons(iconRegister);
+		}
+
+		super.registerIcons(iconRegister);
 	}
 
 	@SideOnly(Side.CLIENT)
 	@Override
 	/**
-	 * This will override the base getIcon and allow us to check
-	 * whether or not we are retrieving the Icon from the particle effects
-	 * 
-	 * When metadata is set to ICON_OVERRIDE_ID this states that our block is in the world without a cover
-	 * thus we require the default icon otherwise we should display a facade transparent texture
+	 * Returns the icon on the side given the block metadata.
+	 * Due to the amount of control needed over this, vanilla calls will always return icon_blank.
 	 */
 	public Icon getIcon(int side, int metadata)
 	{
-		StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
-
-		if (stackTraceElements[2].getClassName().equals(EntityDiggingFX.class.getName()))
-		{
-			if (metadata == EventHandler.BLOCKICON_META_ID) {
-				return blockIcon;
-			} else {
-				return iconOverride;
-			}
+		switch (metadata) {
+		case EventHandler.BLOCKICON_BASE_ID:
+			return blockIcon;
+		default:
+			return IconRegistry.icon_blank;
 		}
-		return blockIcon;
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -100,7 +91,9 @@ public class BlockBase extends BlockContainer {
 	{
 		TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
 
-		return BlockProperties.getCoverBlock(TE, 6).getIcon(side, BlockProperties.getCoverMetadata(TE, 6));
+		int metadata = BlockProperties.hasCover(TE, 6) ? BlockProperties.getCoverMetadata(TE, 6) : EventHandler.BLOCKICON_BASE_ID;
+
+		return BlockProperties.getCoverBlock(TE, 6).getIcon(side, metadata);
 	}
 
 	/**
@@ -234,8 +227,12 @@ public class BlockBase extends BlockContainer {
 	 */
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ)
 	{
-		if (!world.isRemote)
-		{
+		if (world.isRemote) {
+
+			return true;
+
+		} else {
+
 			TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
 
 			ItemStack itemStack = entityPlayer.getCurrentEquippedItem();
@@ -327,10 +324,6 @@ public class BlockBase extends BlockContainer {
 			}
 
 			return altered.contains(true);
-
-		} else {
-
-			return true;
 
 		}
 	}
@@ -487,14 +480,16 @@ public class BlockBase extends BlockContainer {
 	 * Indicates whether block destruction should be suppressed when block is clicked.
 	 * Will return true if player is holding a Carpenter's tool in creative mode.
 	 */
-	private boolean suppressDestroyBlock(EntityPlayer entityPlayer, ItemStack heldItem)
+	private boolean suppressDestroyBlock(EntityPlayer entityPlayer)
 	{
-		return	entityPlayer.capabilities.isCreativeMode &&
-				heldItem != null &&
-				(
-						heldItem.getItem() instanceof ICarpentersHammer ||
-						heldItem.getItem() instanceof ICarpentersChisel
-						);
+		ItemStack itemStack = entityPlayer.getHeldItem();
+
+		if (itemStack != null) {
+			Item item = entityPlayer.getHeldItem().getItem();
+			return	entityPlayer.capabilities.isCreativeMode && item != null && (item instanceof ICarpentersHammer || item instanceof ICarpentersChisel);
+		}
+
+		return false;
 	}
 
 	@Override
@@ -504,11 +499,9 @@ public class BlockBase extends BlockContainer {
 	 */
 	public boolean removeBlockByPlayer(World world, EntityPlayer entityPlayer, int x, int y, int z)
 	{
-		if (!suppressDestroyBlock(entityPlayer, entityPlayer.getHeldItem())) {
+		if (!suppressDestroyBlock(entityPlayer)) {
 			return world.setBlockToAir(x, y, z);
 		}
-
-		onBlockClicked(world, x, y, z, entityPlayer);
 
 		return false;
 	}
@@ -526,21 +519,24 @@ public class BlockBase extends BlockContainer {
 	 * @param effectRenderer A reference to the current effect renderer.
 	 * @return True to prevent vanilla digging particles form spawning.
 	 */
-
 	public boolean addBlockHitEffects(World world, MovingObjectPosition target, EffectRenderer effectRenderer)
 	{
 		TEBase TE = (TEBase) world.getBlockTileEntity(target.blockX, target.blockY, target.blockZ);
-		Block block = this;
-		int metadata = EventHandler.BLOCKICON_META_ID;
-		if (BlockProperties.hasCover(TE, 6))
-		{
-			block = BlockProperties.getCoverBlock(TE, 6);
-			metadata = world.getBlockMetadata(target.blockX, target.blockY, target.blockZ);
+
+		int effectiveSide = BlockProperties.hasCover(TE, EventHandler.eventFace) ? EventHandler.eventFace : 6;
+
+		Block block = BlockProperties.getCoverBlock(TE, effectiveSide);
+
+		/* Check for overlays that influence particles */
+		if (EventHandler.eventFace == 1) {
+			block = ParticleHelper.getParticleBlockFromOverlay(TE, effectiveSide, block);
 		}
 
-		double xOffset = target.blockX + world.rand.nextDouble() * (block.getBlockBoundsMaxX() - block.getBlockBoundsMinX() - 0.1F * 2.0F) + 0.1F + block.getBlockBoundsMinX();
-		double yOffset = target.blockY + world.rand.nextDouble() * (block.getBlockBoundsMaxY() - block.getBlockBoundsMinY() - 0.1F * 2.0F) + 0.1F + block.getBlockBoundsMinY();
-		double zOffset = target.blockZ + world.rand.nextDouble() * (block.getBlockBoundsMaxZ() - block.getBlockBoundsMinZ() - 0.1F * 2.0F) + 0.1F + block.getBlockBoundsMinZ();
+		int metadata = block instanceof BlockBase ? EventHandler.BLOCKICON_BASE_ID : BlockProperties.getCoverMetadata(TE, effectiveSide);
+
+		double xOffset = target.blockX + TE.worldObj.rand.nextDouble() * (block.getBlockBoundsMaxX() - block.getBlockBoundsMinX() - 0.1F * 2.0F) + 0.1F + block.getBlockBoundsMinX();
+		double yOffset = target.blockY + TE.worldObj.rand.nextDouble() * (block.getBlockBoundsMaxY() - block.getBlockBoundsMinY() - 0.1F * 2.0F) + 0.1F + block.getBlockBoundsMinY();
+		double zOffset = target.blockZ + TE.worldObj.rand.nextDouble() * (block.getBlockBoundsMaxZ() - block.getBlockBoundsMinZ() - 0.1F * 2.0F) + 0.1F + block.getBlockBoundsMinZ();
 
 		switch (target.sideHit) {
 		case 0:
@@ -563,8 +559,7 @@ public class BlockBase extends BlockContainer {
 			break;
 		}
 
-		EntityDiggingFX particle = new EntityDiggingFX(world, xOffset, yOffset, zOffset, 0.0D, 0.0D, 0.0D, block, target.sideHit, metadata, FMLClientHandler.instance().getClient().renderEngine);
-		effectRenderer.addEffect(particle.func_70596_a(target.blockX, target.blockY, target.blockZ).multiplyVelocity(0.2F).multipleParticleScaleBy(0.6F));
+		ParticleHelper.addBlockHitEffect(TE, target, xOffset, yOffset, zOffset, block, metadata, effectRenderer);
 
 		return true;
 	}
@@ -585,31 +580,17 @@ public class BlockBase extends BlockContainer {
 		 * closest. This should be adequate most of the time.
 		 */
 
-		int blockID = world.getBlockId(x, y, z);
-		metadata = EventHandler.BLOCKICON_META_ID;
-
-		if (blockID == this.blockID) {
+		if (extendsBlockBase(world, x, y, z)) {
 
 			EntityPlayer entityPlayer = world.getClosestPlayer(x, y, z, 6.5F);
 
 			if (entityPlayer != null) {
 
-				if (!suppressDestroyBlock(entityPlayer, entityPlayer.getHeldItem())) {
+				if (!suppressDestroyBlock(entityPlayer)) {
 
-					TileEntity TE_normal = world.getBlockTileEntity(x, y, z);
-
-					if (TE_normal instanceof TEBase)
-					{
-						TEBase TE = (TEBase) TE_normal;
-
-						if (BlockProperties.hasCover(TE, 6))
-						{
-							blockID = BlockProperties.getCoverID(TE, 6);
-							metadata = BlockProperties.getCoverMetadata(TE, 6);
-						}
-					}
-
-					RenderHelper.addDestroyEffect(world, x, y, z, blockID, metadata, effectRenderer);
+					TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
+					metadata = BlockProperties.hasCover(TE, 6) ? BlockProperties.getCoverMetadata(TE, 6) : EventHandler.BLOCKICON_BASE_ID;
+					ParticleHelper.addDestroyEffect(world, x, y, z, BlockProperties.getCoverBlock(TE, 6), metadata, effectRenderer);
 
 				} else {
 

@@ -2,64 +2,22 @@ package carpentersblocks.renderer;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
-import net.minecraft.client.renderer.Tessellator;
-
-import org.lwjgl.opengl.GL11;
-
 import carpentersblocks.block.BlockCarpentersStairs;
 import carpentersblocks.data.Stairs;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.registry.BlockRegistry;
+import carpentersblocks.util.stairs.StairsUtil;
 
 public class BlockHandlerCarpentersStairs extends BlockHandlerBase {
 
 	@Override
 	public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderBlocks)
 	{
-		Tessellator tessellator = Tessellator.instance;
-		GL11.glRotatef(90.0F, 0.0F, 1.0F, 0.0F);
-		GL11.glTranslatef(-0.5F, -0.5F, -0.5F);
+		renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 0.5D, 1.0D);
+		super.renderInventoryBlock(block, metadata, modelID, renderBlocks);
 
-		renderBlocks.setRenderBounds(0, 0, 0, 1.0D, 1.0D, 1.0D);
-
-		for (int box = 0; box < 2; ++box)
-		{
-			switch (box) {
-			case 0:
-				renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 0.5D, 1.0D);
-				break;
-			case 1:
-				renderBlocks.setRenderBounds(0.5D, 0.5D, 0.0D, 1.0D, 1.0D, 1.0D);
-				break;
-			}
-
-			tessellator.startDrawingQuads();
-			tessellator.setNormal(0.0F, -1.0F, 0.0F);
-			renderBlocks.renderFaceYNeg(block, 0.0D, 0.0D, 0.0D, block.getBlockTextureFromSide(0));
-			tessellator.draw();
-			tessellator.startDrawingQuads();
-			tessellator.setNormal(0.0F, 1.0F, 0.0F);
-			renderBlocks.renderFaceYPos(block, 0.0D, 0.0D, 0.0D, block.getBlockTextureFromSide(1));
-			tessellator.draw();
-			tessellator.startDrawingQuads();
-			tessellator.setNormal(0.0F, 0.0F, -1.0F);
-			renderBlocks.renderFaceZNeg(block, 0.0D, 0.0D, 0.0D, block.getBlockTextureFromSide(2));
-			tessellator.draw();
-			tessellator.startDrawingQuads();
-			tessellator.setNormal(0.0F, 0.0F, 1.0F);
-			renderBlocks.renderFaceZPos(block, 0.0D, 0.0D, 0.0D, block.getBlockTextureFromSide(3));
-			tessellator.draw();
-			tessellator.startDrawingQuads();
-			tessellator.setNormal(-1.0F, 0.0F, 0.0F);
-			renderBlocks.renderFaceXNeg(block, 0.0D, 0.0D, 0.0D, block.getBlockTextureFromSide(4));
-			tessellator.draw();
-			tessellator.startDrawingQuads();
-			tessellator.setNormal(1.0F, 0.0F, 0.0F);
-			renderBlocks.renderFaceXPos(block, 0.0D, 0.0D, 0.0D, block.getBlockTextureFromSide(5));
-			tessellator.draw();
-		}
-
-		GL11.glTranslatef(0.5F, 0.5F, 0.5F);
+		renderBlocks.setRenderBounds(0.5D, 0.5D, 0.0D, 1.0D, 1.0D, 1.0D);
+		super.renderInventoryBlock(block, metadata, modelID, renderBlocks);
 	}
 
 	@Override
@@ -69,14 +27,15 @@ public class BlockHandlerCarpentersStairs extends BlockHandlerBase {
 	protected boolean renderCarpentersBlock(int x, int y, int z)
 	{
 		Block block = BlockProperties.getCoverBlock(TE, 6);
-		int stairsID = BlockProperties.getData(TE);
-		Stairs stairs = Stairs.stairsList[stairsID];
+
+		Stairs stairs = Stairs.stairsList[BlockProperties.getData(TE)];
+		StairsUtil stairsUtil = new StairsUtil();
 
 		BlockCarpentersStairs blockRef = (BlockCarpentersStairs) BlockRegistry.blockCarpentersStairs;
 
 		for (int box = 0; box < 3; ++box)
 		{
-			float[] bounds = blockRef.genBounds(box, stairs);
+			float[] bounds = stairsUtil.genBounds(box, stairs);
 
 			if (bounds != null)
 			{
@@ -97,14 +56,12 @@ public class BlockHandlerCarpentersStairs extends BlockHandlerBase {
 	{
 		renderBlocks.renderAllFaces = true;
 
-		int stairsID = BlockProperties.getData(TE);
-		Stairs stairs = Stairs.stairsList[stairsID];
-
-		BlockCarpentersStairs blockRef = (BlockCarpentersStairs) BlockRegistry.blockCarpentersStairs;
+		Stairs stairs = Stairs.stairsList[BlockProperties.getData(TE)];
+		StairsUtil stairsUtil = new StairsUtil();
 
 		for (int box = 0; box < 3; ++box)
 		{
-			float[] bounds = blockRef.genBounds(box, stairs);
+			float[] bounds = stairsUtil.genBounds(box, stairs);
 
 			if (bounds != null)
 			{
@@ -119,7 +76,7 @@ public class BlockHandlerCarpentersStairs extends BlockHandlerBase {
 						renderBlocks.setRenderBounds(bounds[0], bounds[1], bounds[2], bounds[3], bounds[4], bounds[5]);
 						int[] renderOffset = setSideCoverRenderBounds(x, y, z, side);
 
-						if (clipSideCoverBoundsBasedOnState(stairsID, box, side)) {
+						if (clipSideCoverBoundsBasedOnState(stairs.stairsID, box, side)) {
 							renderBlock(block, renderOffset[0], renderOffset[1], renderOffset[2]);
 						}
 					}

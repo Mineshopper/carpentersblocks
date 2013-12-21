@@ -7,18 +7,23 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockGrass;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.Icon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.MinecraftForgeClient;
+
+import org.lwjgl.opengl.GL11;
+
 import carpentersblocks.block.BlockBase;
 import carpentersblocks.data.Slope;
-import carpentersblocks.data.Slope.SlopeType;
+import carpentersblocks.data.Slope.Type;
 import carpentersblocks.renderer.helper.FancyFluidsHelper;
 import carpentersblocks.renderer.helper.LightingHelper;
 import carpentersblocks.renderer.helper.RenderHelper;
 import carpentersblocks.renderer.helper.VertexHelper;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
+import carpentersblocks.util.handler.EventHandler;
 import carpentersblocks.util.handler.OverlayHandler;
 import carpentersblocks.util.registry.FeatureRegistry;
 import carpentersblocks.util.registry.IconRegistry;
@@ -33,11 +38,11 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
 	protected static final int WEST 		= 4;
 	protected static final int EAST 		= 5;
 
-	protected RenderBlocks		renderBlocks;
-	protected LightingHelper	lightingHelper;
+	public RenderBlocks			renderBlocks;
+	protected LightingHelper	lightingHelper = LightingHelper.instance;
 	protected int				renderPass;
 	public Block				srcBlock;
-	protected TEBase			TE;
+	public TEBase				TE;
 
 	protected boolean		renderAlphaOverride = FeatureRegistry.enableZFightingFix;
 	protected boolean		hasMetadataOverride = false;
@@ -58,7 +63,30 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
 	public boolean isSideSloped = false;
 
 	@Override
-	public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderBlocks) { }
+	public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderBlocks)
+	{
+		Tessellator tessellator = Tessellator.instance;
+		GL11.glRotatef(90.0F, 0.0F, 1.0F, 0.0F);
+		GL11.glTranslatef(-0.5F, -0.5F, -0.5F);
+
+		tessellator.startDrawingQuads();
+		tessellator.setNormal(0.0F, -1.0F, 0.0F);
+		renderBlocks.renderFaceYNeg(block, 0.0D, 0.0D, 0.0D, block.getIcon(0, EventHandler.BLOCKICON_BASE_ID));
+		tessellator.setNormal(0.0F, 1.0F, 0.0F);
+		renderBlocks.renderFaceYPos(block, 0.0D, 0.0D, 0.0D, block.getIcon(1, EventHandler.BLOCKICON_BASE_ID));
+		tessellator.setNormal(0.0F, 0.0F, -1.0F);
+		renderBlocks.renderFaceZNeg(block, 0.0D, 0.0D, 0.0D, block.getIcon(2, EventHandler.BLOCKICON_BASE_ID));
+		tessellator.setNormal(0.0F, 0.0F, 1.0F);
+		renderBlocks.renderFaceZPos(block, 0.0D, 0.0D, 0.0D, block.getIcon(3, EventHandler.BLOCKICON_BASE_ID));
+		tessellator.setNormal(-1.0F, 0.0F, 0.0F);
+		renderBlocks.renderFaceXNeg(block, 0.0D, 0.0D, 0.0D, block.getIcon(4, EventHandler.BLOCKICON_BASE_ID));
+		tessellator.setNormal(1.0F, 0.0F, 0.0F);
+		renderBlocks.renderFaceXPos(block, 0.0D, 0.0D, 0.0D, block.getIcon(5, EventHandler.BLOCKICON_BASE_ID));
+		tessellator.draw();
+
+		GL11.glTranslatef(0.5F, 0.5F, 0.5F);
+		GL11.glRotatef(90.0F, 0.0F, -1.0F, 0.0F);
+	}
 
 	@Override
 	public boolean renderWorldBlock(IBlockAccess blockAccess, int x, int y, int z, Block srcBlock, int modelID, RenderBlocks renderBlocks)
@@ -75,19 +103,17 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
 		if (TE != null)
 		{
 			this.renderBlocks = renderBlocks;
-			lightingHelper = new LightingHelper(this, TE, renderBlocks);
 			renderPass = MinecraftForgeClient.getRenderPass();
 			this.srcBlock = srcBlock;
 
+			lightingHelper.bind(this);
 			setRenderBounds();
 
 			result.add(renderCarpentersBlock(x, y, z));
 			result.add(renderSideBlocks(x, y, z));
 
-			/*
-			 * Render fancy fluids.
-			 * Will render a fluid block in this space if valid.
-			 */
+			/* Will render a fluid block in this space if valid. */
+
 			if (FeatureRegistry.enableFancyFluids) {
 				if (renderPass >= 0 && Minecraft.isFancyGraphicsEnabled() && BlockProperties.hasCover(TE, 6)) {
 					FancyFluidsHelper fancyFluids = new FancyFluidsHelper();
@@ -133,22 +159,22 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
 			break;
 		case NORTH:
 			if (metadata == 3 || dir == 4) {
-				renderBlocks.uvRotateEast = 1; // NORTH
+				renderBlocks.uvRotateNorth = 1;
 			}
 			break;
 		case SOUTH:
 			if (metadata == 3 || dir == 4) {
-				renderBlocks.uvRotateWest = 1; // SOUTH
+				renderBlocks.uvRotateSouth = 1;
 			}
 			break;
 		case WEST:
 			if (metadata == 4 || dir == 8) {
-				renderBlocks.uvRotateNorth = 1; // WEST
+				renderBlocks.uvRotateWest = 1;
 			}
 			break;
 		case EAST:
 			if (metadata == 4 || dir == 8) {
-				renderBlocks.uvRotateSouth = 1; // EAST
+				renderBlocks.uvRotateEast = 1;
 			}
 			break;
 		}
@@ -168,16 +194,16 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
 			renderBlocks.uvRotateTop = 0;
 			break;
 		case NORTH:
-			renderBlocks.uvRotateEast = 0;
-			break;
-		case SOUTH:
-			renderBlocks.uvRotateWest = 0;
-			break;
-		case WEST:
 			renderBlocks.uvRotateNorth = 0;
 			break;
-		case EAST:
+		case SOUTH:
 			renderBlocks.uvRotateSouth = 0;
+			break;
+		case WEST:
+			renderBlocks.uvRotateWest = 0;
+			break;
+		case EAST:
+			renderBlocks.uvRotateEast = 0;
 			break;
 		}
 	}
@@ -450,14 +476,16 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
 	 */
 	protected Icon getIcon(Block block, int side)
 	{
-		BlockProperties.getData(TE);
-		int metadata = hasMetadataOverride ? metadataOverride : BlockProperties.getCoverMetadata(TE, coverRendering);
+		int metadata = hasMetadataOverride ? metadataOverride : BlockProperties.hasCover(TE, coverRendering) ? BlockProperties.getCoverMetadata(TE, coverRendering) : EventHandler.BLOCKICON_BASE_ID;
 
 		Icon icon = getUniqueIcon(block, side, block.getIcon(side, metadata));
 
-		/* If icon has global override, apply it. */
 		if (hasIconOverride[side] && iconOverride[side] != null) {
 			icon = iconOverride[side];
+		}
+
+		if (icon == null) {
+			icon = IconRegistry.icon_missing;
 		}
 
 		return icon;
@@ -527,7 +555,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
 			Slope slope = Slope.slopesList[BlockProperties.getData(TE)];
 			if (slope.isPositive) {
 				side = 1;
-			} else if (slope.slopeType.equals(SlopeType.OBLIQUE_INT) || slope.slopeType.equals(SlopeType.OBLIQUE_EXT) || slope.slopeType.equals(SlopeType.PYRAMID)) {
+			} else if (slope.type.equals(Type.OBLIQUE_INT) || slope.type.equals(Type.OBLIQUE_EXT) || slope.type.equals(Type.PYRAMID)) {
 				side = 2;
 			}
 		}

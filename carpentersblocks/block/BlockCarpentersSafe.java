@@ -37,8 +37,9 @@ public class BlockCarpentersSafe extends BlockBase {
 	 */
 	public void registerIcons(IconRegister iconRegister)
 	{
-		blockIcon = IconRegistry.icon_generic;
-		super.registerIcons(iconRegister);
+		IconRegistry.icon_safe_light = iconRegister.registerIcon("carpentersblocks:safe/safe_light");
+
+		blockIcon = IconRegistry.icon_solid;
 	}
 
 	/**

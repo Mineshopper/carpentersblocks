@@ -36,8 +36,9 @@ public class BlockCarpentersDaylightSensor extends BlockBase {
 	 */
 	public void registerIcons(IconRegister iconRegister)
 	{
-		blockIcon = IconRegistry.icon_generic;
-		super.registerIcons(iconRegister);
+		IconRegistry.icon_daylight_sensor_glass_top = iconRegister.registerIcon("carpentersblocks:daylightsensor/daylight_sensor_glass_top");
+
+		blockIcon = IconRegistry.icon_solid;
 	}
 
 	@Override

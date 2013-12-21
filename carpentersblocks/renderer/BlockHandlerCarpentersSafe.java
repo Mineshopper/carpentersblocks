@@ -2,15 +2,10 @@ package carpentersblocks.renderer;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraftforge.common.ForgeDirection;
-
-import org.lwjgl.opengl.GL11;
-
 import carpentersblocks.data.Safe;
 import carpentersblocks.tileentity.TECarpentersSafe;
 import carpentersblocks.util.BlockProperties;
-import carpentersblocks.util.registry.BlockRegistry;
 import carpentersblocks.util.registry.IconRegistry;
 
 public class BlockHandlerCarpentersSafe extends BlockDeterminantRender {
@@ -60,10 +55,6 @@ public class BlockHandlerCarpentersSafe extends BlockDeterminantRender {
 	@Override
 	public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderBlocks)
 	{
-		Tessellator tessellator = Tessellator.instance;
-		GL11.glRotatef(90.0F, 0.0F, 1.0F, 0.0F);
-		GL11.glTranslatef(-0.5F, -0.5F, -0.5F);
-
 		for (int box = 0; box < numBoxes; ++box)
 		{
 			/* Render the door closed. */
@@ -75,51 +66,20 @@ public class BlockHandlerCarpentersSafe extends BlockDeterminantRender {
 
 			rotateBounds(renderBlocks, ForgeDirection.EAST);
 			int type = getBlockType(box);
-			Block boxBlock;
-
 			switch (type) {
 			case BLOCKTYPE_COVER:
 			case BLOCKTYPE_DOOR:
-				boxBlock = BlockRegistry.blockCarpentersSafe;
 				break;
 			case BLOCKTYPE_PANEL:
 			case BLOCKTYPE_HANDLE:
-				boxBlock = Block.blockIron;
 				break;
 			default:
-				boxBlock = Block.ice;
 				renderBlocks.setOverrideBlockTexture(IconRegistry.icon_safe_light);
 			}
 
-			tessellator.startDrawingQuads();
-			tessellator.setNormal(0.0F, -1.0F, 0.0F);
-			renderBlocks.renderFaceYNeg(block, 0.0D, 0.0D, 0.0D, boxBlock.getBlockTextureFromSide(0));
-			tessellator.draw();
-			tessellator.startDrawingQuads();
-			tessellator.setNormal(0.0F, 1.0F, 0.0F);
-			renderBlocks.renderFaceYPos(block, 0.0D, 0.0D, 0.0D, boxBlock.getBlockTextureFromSide(1));
-			tessellator.draw();
-			tessellator.startDrawingQuads();
-			tessellator.setNormal(0.0F, 0.0F, -1.0F);
-			renderBlocks.renderFaceZNeg(block, 0.0D, 0.0D, 0.0D, boxBlock.getBlockTextureFromSide(2));
-			tessellator.draw();
-			tessellator.startDrawingQuads();
-			tessellator.setNormal(0.0F, 0.0F, 1.0F);
-			renderBlocks.renderFaceZPos(block, 0.0D, 0.0D, 0.0D, boxBlock.getBlockTextureFromSide(3));
-			tessellator.draw();
-			tessellator.startDrawingQuads();
-			tessellator.setNormal(-1.0F, 0.0F, 0.0F);
-			renderBlocks.renderFaceXNeg(block, 0.0D, 0.0D, 0.0D, boxBlock.getBlockTextureFromSide(4));
-			tessellator.draw();
-			tessellator.startDrawingQuads();
-			tessellator.setNormal(1.0F, 0.0F, 0.0F);
-			renderBlocks.renderFaceXPos(block, 0.0D, 0.0D, 0.0D, boxBlock.getBlockTextureFromSide(5));
-			tessellator.draw();
-
+			super.renderInventoryBlock(block, metadata, modelID, renderBlocks);
 			renderBlocks.clearOverrideBlockTexture();
 		}
-
-		GL11.glTranslatef(0.5F, 0.5F, 0.5F);
 	}
 
 	/**

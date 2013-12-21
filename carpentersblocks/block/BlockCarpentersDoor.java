@@ -36,8 +36,14 @@ public class BlockCarpentersDoor extends BlockBase {
 	 */
 	public void registerIcons(IconRegister iconRegister)
 	{
-		blockIcon = IconRegistry.icon_generic;
-		super.registerIcons(iconRegister);
+		IconRegistry.icon_door_screen_tall = iconRegister.registerIcon("carpentersblocks:door/door_screen_tall");
+		IconRegistry.icon_door_glass_tall_top = iconRegister.registerIcon("carpentersblocks:door/door_glass_tall_top");
+		IconRegistry.icon_door_glass_tall_bottom = iconRegister.registerIcon("carpentersblocks:door/door_glass_tall_bottom");
+		IconRegistry.icon_door_glass_top = iconRegister.registerIcon("carpentersblocks:door/door_glass_top");
+		IconRegistry.icon_door_french_glass_top = iconRegister.registerIcon("carpentersblocks:door/door_french_glass_top");
+		IconRegistry.icon_door_french_glass_bottom = iconRegister.registerIcon("carpentersblocks:door/door_french_glass_bottom");
+
+		blockIcon = IconRegistry.icon_solid;
 	}
 
 	@Override

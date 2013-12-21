@@ -39,8 +39,7 @@ public class BlockCarpentersPressurePlate extends BlockBase {
 	 */
 	public void registerIcons(IconRegister iconRegister)
 	{
-		blockIcon = IconRegistry.icon_slope;
-		super.registerIcons(iconRegister);
+		blockIcon = IconRegistry.icon_full_frame;
 	}
 
 	@Override

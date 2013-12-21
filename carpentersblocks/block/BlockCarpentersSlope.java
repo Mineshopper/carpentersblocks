@@ -17,16 +17,19 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import carpentersblocks.CarpentersBlocks;
 import carpentersblocks.data.Slope;
-import carpentersblocks.data.Slope.SlopeType;
+import carpentersblocks.data.Slope.Type;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.registry.BlockRegistry;
-import carpentersblocks.util.registry.FeatureRegistry;
 import carpentersblocks.util.registry.IconRegistry;
+import carpentersblocks.util.slope.SlopeTransform;
+import carpentersblocks.util.slope.SlopeUtil;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockCarpentersSlope extends BlockBase {
+
+	private boolean rayTracing;
 
 	public BlockCarpentersSlope(int blockID)
 	{
@@ -44,8 +47,10 @@ public class BlockCarpentersSlope extends BlockBase {
 	 */
 	public void registerIcons(IconRegister iconRegister)
 	{
-		blockIcon = IconRegistry.icon_slope;
-		super.registerIcons(iconRegister);
+		IconRegistry.icon_slope_oblique_pt_low = iconRegister.registerIcon("carpentersblocks:slope/oblique_pt_low");
+		IconRegistry.icon_slope_oblique_pt_high = iconRegister.registerIcon("carpentersblocks:slope/oblique_pt_high");
+
+		blockIcon = IconRegistry.icon_full_frame;
 	}
 
 	@Override
@@ -57,74 +62,100 @@ public class BlockCarpentersSlope extends BlockBase {
 		int slopeID = BlockProperties.getData(TE);
 		Slope slope = Slope.slopesList[slopeID];
 
-		/*
-		 * Cycle between slope types based on current slope
-		 */
-		switch (slope.slopeType)
+		/* Cycle between slope types based on current slope. */
+
+		switch (slope.type)
 		{
 		case WEDGE_XZ:
-			if (++slopeID > 3) {
-				slopeID = 0;
+			if (++slopeID > Slope.ID_WEDGE_SW) {
+				slopeID = Slope.ID_WEDGE_SE;
 			}
 			break;
 		case WEDGE_Y:
 			if (slope.isPositive) {
-				if (++slopeID > 11) {
-					slopeID = 8;
+				if (++slopeID > Slope.ID_WEDGE_POS_E) {
+					slopeID = Slope.ID_WEDGE_POS_N;
 				}
 			} else {
-				if (++slopeID > 7) {
-					slopeID = 4;
+				if (++slopeID > Slope.ID_WEDGE_NEG_E) {
+					slopeID = Slope.ID_WEDGE_NEG_N;
 				}
 			}
 			break;
 		case WEDGE_INT:
 			if (slope.isPositive) {
-				if ((slopeID += 2) > 18) {
-					slopeID = 12;
+				if ((slopeID += 2) > Slope.ID_WEDGE_INT_POS_SE) {
+					slopeID = Slope.ID_WEDGE_INT_POS_NE;
 				}
 			} else {
-				if ((slopeID += 2) > 19) {
-					slopeID = 13;
+				if ((slopeID += 2) > Slope.ID_WEDGE_INT_NEG_SE) {
+					slopeID = Slope.ID_WEDGE_INT_NEG_NE;
 				}
 			}
 			break;
 		case WEDGE_EXT:
 			if (slope.isPositive) {
-				if ((slopeID += 2) > 26) {
-					slopeID = 20;
+				if ((slopeID += 2) > Slope.ID_WEDGE_EXT_POS_NW) {
+					slopeID = Slope.ID_WEDGE_EXT_POS_SW;
 				}
 			} else {
-				if ((slopeID += 2) > 27) {
-					slopeID = 21;
+				if ((slopeID += 2) > Slope.ID_WEDGE_EXT_NEG_NW) {
+					slopeID = Slope.ID_WEDGE_EXT_NEG_SW;
 				}
 			}
 			break;
 		case OBLIQUE_INT:
 			if (slope.isPositive) {
-				if ((slopeID += 2) > 34) {
-					slopeID = 28;
+				if ((slopeID += 2) > Slope.ID_OBL_INT_POS_SE) {
+					slopeID = Slope.ID_OBL_INT_POS_NE;
 				}
 			} else {
-				if ((slopeID += 2) > 35) {
-					slopeID = 29;
+				if ((slopeID += 2) > Slope.ID_OBL_INT_NEG_SE) {
+					slopeID = Slope.ID_OBL_INT_NEG_NE;
 				}
 			}
 			break;
 		case OBLIQUE_EXT:
 			if (slope.isPositive) {
-				if ((slopeID += 2) > 42) {
-					slopeID = 36;
+				if ((slopeID += 2) > Slope.ID_OBL_EXT_POS_NW) {
+					slopeID = Slope.ID_OBL_EXT_POS_SW;
 				}
 			} else {
-				if ((slopeID += 2) > 43) {
-					slopeID = 37;
+				if ((slopeID += 2) > Slope.ID_OBL_EXT_NEG_NW) {
+					slopeID = Slope.ID_OBL_EXT_NEG_SW;
 				}
 			}
 			break;
 		case PYRAMID:
 			slopeID = slope.equals(Slope.PYR_HALF_POS) ? Slope.PYR_HALF_NEG.slopeID : Slope.PYR_HALF_POS.slopeID;
 			break;
+		case PRISM_1P:
+			if ((slopeID += 1) > Slope.ID_PRISM_1P_E) {
+				slopeID = Slope.ID_PRISM_1P_N;
+			}
+			break;
+		case PRISM_2P:
+			if (slope.equals(Slope.PRISM_2P_NS)) {
+				slopeID = Slope.ID_PRISM_2P_WE;
+			} else if (slope.equals(Slope.PRISM_2P_WE)) {
+				slopeID = Slope.ID_PRISM_2P_NS;
+			} else if ((slopeID += 1) > Slope.ID_PRISM_2P_SW) {
+				slopeID = Slope.ID_PRISM_2P_SE;
+			}
+			break;
+		case PRISM_3P:
+			if ((slopeID += 1) > Slope.ID_PRISM_3P_NSE) {
+				slopeID = Slope.ID_PRISM_3P_WEN;
+			}
+			break;
+		case PRISM_4P:
+			break;
+		case PRISM_SLOPE:
+			if ((slopeID += 1) > Slope.ID_PRISM_SLOPE_E) {
+				slopeID = Slope.ID_PRISM_SLOPE_N;
+			}
+			break;
+		default: {}
 		}
 
 		BlockProperties.setData(TE, slopeID);
@@ -141,26 +172,25 @@ public class BlockCarpentersSlope extends BlockBase {
 		int slopeID = BlockProperties.getData(TE);
 		Slope slope = Slope.slopesList[slopeID];
 
-		/*
-		 * Transform slope to next type
-		 */
-		switch (slope.slopeType)
+		/* Transform slope to next type. */
+
+		switch (slope.type)
 		{
 		case WEDGE_XZ:
-			slopeID = 8;
+			slopeID = Slope.ID_WEDGE_POS_N;
 			break;
 		case WEDGE_Y:
 			if (slope.isPositive) {
 				slopeID -= 4;
 			} else {
-				slopeID = 12;
+				slopeID = Slope.ID_WEDGE_INT_POS_NE;
 			}
 			break;
 		case WEDGE_INT:
 			if (slope.isPositive) {
 				slopeID += 1;
 			} else {
-				if (slopeID == 13 || slopeID == 15) {
+				if (slopeID == Slope.ID_WEDGE_INT_NEG_NE || slopeID == Slope.ID_WEDGE_INT_NEG_NW) {
 					slopeID += 11;
 				} else {
 					slopeID +=3;
@@ -171,7 +201,7 @@ public class BlockCarpentersSlope extends BlockBase {
 			if (slope.isPositive) {
 				slopeID += 1;
 			} else {
-				if (slopeID == 21 || slopeID == 23) {
+				if (slopeID == Slope.ID_WEDGE_EXT_NEG_SW || slopeID == Slope.ID_WEDGE_EXT_NEG_SE) {
 					slopeID += 11;
 				} else {
 					slopeID += 3;
@@ -182,7 +212,7 @@ public class BlockCarpentersSlope extends BlockBase {
 			if (slope.isPositive) {
 				slopeID += 1;
 			} else {
-				if (slopeID == 29 || slopeID == 31) {
+				if (slopeID == Slope.ID_OBL_INT_NEG_NE || slopeID == Slope.ID_OBL_INT_NEG_NW) {
 					slopeID += 11;
 				} else {
 					slopeID += 3;
@@ -193,12 +223,32 @@ public class BlockCarpentersSlope extends BlockBase {
 			if (slope.isPositive) {
 				slopeID += 1;
 			} else {
-				slopeID = 44;
+				slopeID = Slope.ID_PYR_HALF_POS;
 			}
 			break;
 		case PYRAMID:
-			slopeID = 0;
+			slopeID = Slope.ID_PRISM_1P_N;
 			break;
+		case PRISM_1P:
+			slopeID = Slope.ID_PRISM_2P_NS;
+			break;
+		case PRISM_2P:
+			if (slope.equals(Slope.PRISM_2P_NS) || slope.equals(Slope.PRISM_2P_WE)) {
+				slopeID = Slope.ID_PRISM_2P_SE;
+			} else {
+				slopeID = Slope.ID_PRISM_3P_WEN;
+			}
+			break;
+		case PRISM_3P:
+			slopeID = Slope.ID_PRISM_4P;
+			break;
+		case PRISM_4P:
+			slopeID = Slope.ID_PRISM_SLOPE_N;
+			break;
+		case PRISM_SLOPE:
+			slopeID = Slope.ID_WEDGE_SE;
+			break;
+		default: {}
 		}
 
 		BlockProperties.setData(TE, slopeID);
@@ -212,262 +262,32 @@ public class BlockCarpentersSlope extends BlockBase {
 	 */
 	public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
 	{
-		TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
+		if (!rayTracing) {
 
-		int slopeID = BlockProperties.getData(TE);
-		Slope slope = Slope.slopesList[slopeID];
+			TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
 
-		switch (slope.slopeID)
-		{
-		case Slope.ID_PYR_HALF_NEG:
-			setBlockBounds(0.0F, 0.5F, 0.0F, 1.0F, 1.0F, 1.0F);
-			break;
-		case Slope.ID_PYR_HALF_POS:
-			setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.5F, 1.0F);
-			break;
-		}
-	}
+			int slopeID = BlockProperties.getData(TE);
+			Slope slope = Slope.slopesList[slopeID];
 
+			switch (slope.type) {
+			case PYRAMID:
+				if (slope.isPositive) {
+					setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.5F, 1.0F);
+				} else {
+					setBlockBounds(0.0F, 0.5F, 0.0F, 1.0F, 1.0F, 1.0F);
+				}
+				break;
+			case PRISM_1P:
+			case PRISM_2P:
+			case PRISM_3P:
+			case PRISM_4P:
+				setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.5F, 1.0F);
+				break;
+			default:
+				setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
+				break;
+			}
 
-	/**
-	 * Will return slope boundaries for all slopes
-	 */
-	private float[] genBounds(Slope slope, int slice, int precision, int pass)
-	{
-		++pass;
-
-		// For oblique exterior corners
-		float zeroPassOffset = (float) (pass - 1) / getNumPasses(slope);
-		float onePassOffset = (float) pass / getNumPasses(slope);
-
-		// Includes 0.0F -> 0.99_F
-		float zeroOffset = (float) slice / (float) precision;
-
-		// Includes 0.01_F -> 1.0F
-		float oneOffset = (float) (slice + 1) / (float) precision;
-
-		switch (slope.slopeID)
-		{
-		case Slope.ID_WEDGE_NW:
-			return new float[] { zeroOffset, 0.0F, 1.0F - oneOffset, 1.0F, 1.0F, 1.0F };
-		case Slope.ID_WEDGE_SW:
-			return new float[] { zeroOffset, 0.0F, 0.0F, 1.0F, 1.0F, oneOffset };
-		case Slope.ID_WEDGE_NE:
-			return new float[] { 0.0F, 0.0F, zeroOffset, oneOffset, 1.0F, 1.0F };
-		case Slope.ID_WEDGE_SE:
-			return new float[] { 0.0F, 0.0F, 0.0F, oneOffset, 1.0F, 1.0F - zeroOffset };
-		case Slope.ID_WEDGE_POS_N:
-			return new float[] { 0.0F, 0.0F, zeroOffset, 1.0F, oneOffset, 1.0F };
-		case Slope.ID_WEDGE_POS_W:
-			return new float[] { zeroOffset, 0.0F, 0.0F, 1.0F, oneOffset, 1.0F };
-		case Slope.ID_WEDGE_POS_E:
-			return new float[] { 0.0F, 0.0F, 0.0F, oneOffset, 1.0F - zeroOffset, 1.0F };
-		case Slope.ID_WEDGE_POS_S:
-			return new float[] { 0.0F, 0.0F, 0.0F, 1.0F, 1.0F - zeroOffset, oneOffset };
-		case Slope.ID_WEDGE_NEG_N:
-			return new float[] { 0.0F, 1.0F - oneOffset, zeroOffset, 1.0F, 1.0F, 1.0F };
-		case Slope.ID_WEDGE_NEG_W:
-			return new float[] { zeroOffset, 1.0F - oneOffset, 0.0F, 1.0F, 1.0F, 1.0F };
-		case Slope.ID_WEDGE_NEG_E:
-			return new float[] { 0.0F, zeroOffset, 0.0F, oneOffset, 1.0F, 1.0F };
-		case Slope.ID_WEDGE_NEG_S:
-			return new float[] { 0.0F, zeroOffset, 0.0F, 1.0F, 1.0F, oneOffset };
-		case Slope.ID_WEDGE_INT_POS_NW:
-			switch (pass) {
-			case 1:
-				return new float[] { zeroOffset, 0.0F, 0.0F, 1.0F, oneOffset, 1.0F };
-			case 2:
-				return new float[] { 0.0F, 0.0F, zeroOffset, 1.0F, oneOffset, 1.0F };
-			}
-		case Slope.ID_WEDGE_INT_POS_SW:
-			switch (pass) {
-			case 1:
-				return new float[] { zeroOffset, 0.0F, 0.0F, 1.0F, oneOffset, 1.0F };
-			case 2:
-				return new float[] { 0.0F, 0.0F, 0.0F, 1.0F, 1.0F - zeroOffset, oneOffset };
-			}
-		case Slope.ID_WEDGE_INT_POS_NE:
-			switch (pass) {
-			case 1:
-				return new float[] { 0.0F, 0.0F, 0.0F, oneOffset, 1.0F - zeroOffset, 1.0F };
-			case 2:
-				return new float[] { 0.0F, 0.0F, zeroOffset, 1.0F, oneOffset, 1.0F };
-			}
-		case Slope.ID_WEDGE_INT_POS_SE:
-			switch (pass) {
-			case 1:
-				return new float[] { 0.0F, 0.0F, 0.0F, oneOffset, 1.0F - zeroOffset, 1.0F };
-			case 2:
-				return new float[] { 0.0F, 0.0F, 0.0F, 1.0F, 1.0F - zeroOffset, oneOffset };
-			}
-		case Slope.ID_WEDGE_INT_NEG_NW:
-			switch (pass) {
-			case 1:
-				return new float[] { zeroOffset, 1.0F - oneOffset, 0.0F, 1.0F, 1.0F, 1.0F };
-			case 2:
-				return new float[] { 0.0F, 1.0F - oneOffset, zeroOffset, 1.0F, 1.0F, 1.0F };
-			}
-		case Slope.ID_WEDGE_INT_NEG_SW:
-			switch (pass) {
-			case 1:
-				return new float[] { zeroOffset, 1.0F - oneOffset, 0.0F, 1.0F, 1.0F, 1.0F };
-			case 2:
-				return new float[] { 0.0F, zeroOffset, 0.0F, 1.0F, 1.0F, oneOffset };
-			}
-		case Slope.ID_WEDGE_INT_NEG_NE:
-			switch (pass) {
-			case 1:
-				return new float[] { 0.0F, zeroOffset, 0.0F, oneOffset, 1.0F, 1.0F };
-			case 2:
-				return new float[] { 0.0F, 1.0F - oneOffset, zeroOffset, 1.0F, 1.0F, 1.0F };
-			}
-		case Slope.ID_WEDGE_INT_NEG_SE:
-			switch (pass) {
-			case 1:
-				return new float[] { 0.0F, zeroOffset, 0.0F, oneOffset, 1.0F, 1.0F };
-			case 2:
-				return new float[] { 0.0F, zeroOffset, 0.0F, 1.0F, 1.0F, oneOffset };
-			}
-		case Slope.ID_WEDGE_EXT_POS_NW:
-			return new float[] { zeroOffset, 0.0F, zeroOffset, 1.0F, oneOffset, 1.0F };
-		case Slope.ID_WEDGE_EXT_POS_SW:
-			return new float[] { zeroOffset, 0.0F, 0.0F, 1.0F, oneOffset, 1.0F - zeroOffset };
-		case Slope.ID_WEDGE_EXT_POS_NE:
-			return new float[] { 0.0F, 0.0F, zeroOffset, 1.0F - zeroOffset, oneOffset, 1.0F };
-		case Slope.ID_WEDGE_EXT_POS_SE:
-			return new float[] { 0.0F, 0.0F, 0.0F, 1.0F - zeroOffset, oneOffset, 1.0F - zeroOffset };
-		case Slope.ID_WEDGE_EXT_NEG_NW:
-			return new float[] { zeroOffset, 1.0F - oneOffset, zeroOffset, 1.0F, 1.0F, 1.0F };
-		case Slope.ID_WEDGE_EXT_NEG_SW:
-			return new float[] { zeroOffset, 1.0F - oneOffset, 0.0F, 1.0F, 1.0F, 1.0F - zeroOffset };
-		case Slope.ID_WEDGE_EXT_NEG_NE:
-			return new float[] { 0.0F, 1.0F - oneOffset, zeroOffset, 1.0F - zeroOffset, 1.0F, 1.0F };
-		case Slope.ID_WEDGE_EXT_NEG_SE:
-			return new float[] { 0.0F, 1.0F - oneOffset, 0.0F, 1.0F - zeroOffset, 1.0F, 1.0F - zeroOffset };
-		case Slope.ID_OBL_EXT_POS_NW:
-			return new float[] { zeroPassOffset + zeroOffset * (1.0F - zeroPassOffset), 0.0F, 1.0F - oneOffset * (1.0F - zeroPassOffset), 1.0F, onePassOffset, 1.0F };
-		case Slope.ID_OBL_EXT_POS_SW:
-			return new float[] { zeroPassOffset + zeroOffset * (1.0F - zeroPassOffset), 0.0F, 0.0F, 1.0F, onePassOffset, oneOffset * (1.0F - zeroPassOffset) };
-		case Slope.ID_OBL_EXT_POS_NE:
-			return new float[] { 0.0F, 0.0F, zeroPassOffset + zeroOffset * (1.0F - zeroPassOffset), oneOffset * (1.0F - zeroPassOffset), onePassOffset, 1.0F };
-		case Slope.ID_OBL_EXT_POS_SE:
-			return new float[] { 0.0F, 0.0F, 0.0F, oneOffset * (1.0F - zeroPassOffset), onePassOffset, 1.0F - zeroPassOffset - zeroOffset * (1.0F - zeroPassOffset), };
-		case Slope.ID_OBL_INT_POS_NW:
-			switch (pass) {
-			case 1:
-				return new float[] { zeroOffset, 0.0F, 1.0F - oneOffset, 1.0F, 1.0F, 1.0F };
-			case 2:
-				return new float[] { zeroOffset, 0.0F, 0.0F, 1.0F, oneOffset, 1.0F };
-			case 3:
-				return new float[] { 0.0F, 0.0F, zeroOffset, 1.0F, oneOffset, 1.0F };
-			}
-		case Slope.ID_OBL_INT_POS_SW:
-			switch (pass) {
-			case 1:
-				return new float[] { zeroOffset, 0.0F, 0.0F, 1.0F, 1.0F, oneOffset };
-			case 2:
-				return new float[] { zeroOffset, 0.0F, 0.0F, 1.0F, oneOffset, 1.0F };
-			case 3:
-				return new float[] { 0.0F, 0.0F, 0.0F, 1.0F, 1.0F - zeroOffset, oneOffset };
-			}
-		case Slope.ID_OBL_INT_POS_NE:
-			switch (pass) {
-			case 1:
-				return new float[] { 0.0F, 0.0F, zeroOffset, oneOffset, 1.0F, 1.0F };
-			case 2:
-				return new float[] { 0.0F, 0.0F, 0.0F, oneOffset, 1.0F - zeroOffset, 1.0F };
-			case 3:
-				return new float[] { 0.0F, 0.0F, zeroOffset, 1.0F, oneOffset, 1.0F };
-			}
-		case Slope.ID_OBL_INT_POS_SE:
-			switch (pass) {
-			case 1:
-				return new float[] { 0.0F, 0.0F, 0.0F, oneOffset, 1.0F, 1.0F - zeroOffset };
-			case 2:
-				return new float[] { 0.0F, 0.0F, 0.0F, oneOffset, 1.0F - zeroOffset, 1.0F };
-			case 3:
-				return new float[] { 0.0F, 0.0F, 0.0F, 1.0F, 1.0F - zeroOffset, oneOffset };
-			}
-		case Slope.ID_OBL_EXT_NEG_NW:
-			return new float[] { zeroPassOffset + zeroOffset * (1.0F - zeroPassOffset), 1.0F - onePassOffset, 1.0F - oneOffset * (1.0F - zeroPassOffset), 1.0F, 1.0F, 1.0F };
-		case Slope.ID_OBL_EXT_NEG_SW:
-			return new float[] { zeroPassOffset + zeroOffset * (1.0F - zeroPassOffset), 1.0F - onePassOffset, 0.0F, 1.0F, 1.0F, oneOffset * (1.0F - zeroPassOffset) };
-		case Slope.ID_OBL_EXT_NEG_NE:
-			return new float[] { 0.0F, 1.0F - onePassOffset, zeroPassOffset + zeroOffset * (1.0F - zeroPassOffset), oneOffset * (1.0F - zeroPassOffset), 1.0F, 1.0F };
-		case Slope.ID_OBL_EXT_NEG_SE:
-			return new float[] { 0.0F, 1.0F - onePassOffset, 0.0F, oneOffset * (1.0F - zeroPassOffset), 1.0F, 1.0F - zeroPassOffset - zeroOffset * (1.0F - zeroPassOffset) };
-		case Slope.ID_OBL_INT_NEG_NW:
-			switch (pass) {
-			case 1:
-				return new float[] { zeroOffset, 0.0F, 1.0F - oneOffset, 1.0F, 1.0F, 1.0F };
-			case 2:
-				return new float[] { zeroOffset, 1.0F - oneOffset, 0.0F, 1.0F, 1.0F, 1.0F };
-			case 3:
-				return new float[] { 0.0F, 1.0F - oneOffset, zeroOffset, 1.0F, 1.0F, 1.0F };
-			}
-		case Slope.ID_OBL_INT_NEG_SW:
-			switch (pass) {
-			case 1:
-				return new float[] { zeroOffset, 0.0F, 0.0F, 1.0F, 1.0F, oneOffset };
-			case 2:
-				return new float[] { zeroOffset, 1.0F - oneOffset, 0.0F, 1.0F, 1.0F, 1.0F };
-			case 3:
-				return new float[] { 0.0F, zeroOffset, 0.0F, 1.0F, 1.0F, oneOffset };
-			}
-		case Slope.ID_OBL_INT_NEG_NE:
-			switch (pass) {
-			case 1:
-				return new float[] { 0.0F, 0.0F, zeroOffset, oneOffset, 1.0F, 1.0F };
-			case 2:
-				return new float[] { 0.0F, zeroOffset, 0.0F, oneOffset, 1.0F, 1.0F };
-			case 3:
-				return new float[] { 0.0F, 1.0F - oneOffset, zeroOffset, 1.0F, 1.0F, 1.0F };
-			}
-		case Slope.ID_OBL_INT_NEG_SE:
-			switch (pass) {
-			case 1:
-				return new float[] { 0.0F, 0.0F, 0.0F, oneOffset, 1.0F, 1.0F - zeroOffset };
-			case 2:
-				return new float[] { 0.0F, zeroOffset, 0.0F, oneOffset, 1.0F, 1.0F };
-			case 3:
-				return new float[] { 0.0F, zeroOffset, 0.0F, 1.0F, 1.0F, oneOffset };
-			}
-		case Slope.ID_PYR_HALF_POS:
-			return new float[] { 0.5F * zeroOffset, 0.0F, 0.5F * zeroOffset, 1.0F - 0.5F * zeroOffset, oneOffset * 0.5F, 1.0F - 0.5F * zeroOffset };
-		default: //Slope.ID_NEG_PYR:
-			return new float[] { 0.5F * zeroOffset, 1.0F - oneOffset * 0.5F, 0.5F * zeroOffset, 1.0F - 0.5F * zeroOffset, 1.0F, 1.0F - 0.5F * zeroOffset };
-		}
-	}
-
-	/**
-	 * Return number of boxes that need to be constructed for slope per pass.
-	 */
-	private int getNumBoxesPerPass(Slope slope)
-	{
-		switch (slope.slopeType)
-		{
-		case PYRAMID:
-			return FeatureRegistry.slopeSmoothness / 2;
-		default:
-			return FeatureRegistry.slopeSmoothness;
-		}
-	}
-
-	/**
-	 * Return number of passes required for slope box generation.
-	 */
-	private int getNumPasses(Slope slope)
-	{
-		switch (slope.slopeType)
-		{
-		case OBLIQUE_EXT:
-			return getNumBoxesPerPass(slope);
-		case OBLIQUE_INT:
-			return 3;
-		case WEDGE_INT:
-			return 2;
-		default:
-			return 1;
 		}
 	}
 
@@ -482,42 +302,37 @@ public class BlockCarpentersSlope extends BlockBase {
 
 		MovingObjectPosition finalTrace = null;
 
-		int slopeID = BlockProperties.getData(TE);
-		Slope slope = Slope.slopesList[slopeID];
+		Slope slope = Slope.slopesList[BlockProperties.getData(TE)];
+		SlopeUtil slopeUtil = new SlopeUtil();
 
-		int numBoxesPerPass = getNumBoxesPerPass(slope);
-		int numPasses = getNumPasses(slope);
+		int numPasses = slopeUtil.getNumPasses(slope);
+		int precision = slopeUtil.getNumBoxesPerPass(slope);
 
-		double currDist = 0.0D;
-		double maxDist = 0.0D;
+		rayTracing = true;
 
 		/* Determine if ray trace is a hit on slope. */
-		for (int pass = 0; pass < numPasses && finalTrace == null; ++pass)
+		for (int pass = 0; pass < numPasses; ++pass)
 		{
-			for (int slice = 0; slice < numBoxesPerPass && finalTrace == null; ++slice)
+			for (int slice = 0; slice < precision && finalTrace == null; ++slice)
 			{
-				float[] box = genBounds(slope, slice, numBoxesPerPass, pass);
-				setBlockBounds(box[0], box[1], box[2], box[3], box[4], box[5]);
-				MovingObjectPosition traceResult = super.collisionRayTrace(world, x, y, z, startVec, endVec);
+				float[] box = slopeUtil.genBounds(slope, slice, precision, pass);
 
-				if (traceResult != null)
-				{
-					currDist = traceResult.hitVec.squareDistanceTo(endVec);
-					if (currDist > maxDist) {
-						finalTrace = traceResult;
-						maxDist = currDist;
-					}
+				if (box != null) {
+					setBlockBounds(box[0], box[1], box[2], box[3], box[4], box[5]);
+					finalTrace = super.collisionRayTrace(world, x, y, z, startVec, endVec);
 				}
 			}
-			if (slope.slopeType.equals(SlopeType.OBLIQUE_EXT)) {
-				--numBoxesPerPass;
+			if (slope.type.equals(Type.OBLIQUE_EXT)) {
+				--precision;
 			}
 		}
 
-		setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
+		rayTracing = false;
 
 		/* Determine true face hit since sloped faces are two or more shared faces. */
+
 		if (finalTrace != null) {
+			setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
 			finalTrace = super.collisionRayTrace(world, x, y, z, startVec, endVec);
 		}
 
@@ -535,28 +350,28 @@ public class BlockCarpentersSlope extends BlockBase {
 
 		TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
 
-		int slopeID = BlockProperties.getData(TE);
-		Slope slope = Slope.slopesList[slopeID];
+		Slope slope = Slope.slopesList[BlockProperties.getData(TE)];
+		SlopeUtil slopeUtil = new SlopeUtil();
 
-		int precision = getNumBoxesPerPass(slope);
-		int numPasses = getNumPasses(slope);
+		int precision = slopeUtil.getNumBoxesPerPass(slope);
+		int numPasses = slopeUtil.getNumPasses(slope);
 
-		// Construct bounding area for entity collision
-		for (int pass = 0; pass < numPasses; ++pass) {
-			for (int slice = 0; slice < precision; ++slice) {
-				float[] dim = genBounds(slope, slice, precision, pass);
+		for (int pass = 0; pass < numPasses; ++pass)
+		{
+			for (int slice = 0; slice < precision; ++slice)
+			{
+				float[] dim = slopeUtil.genBounds(slope, slice, precision, pass);
 
 				if (dim != null) {
 					box = AxisAlignedBB.getAABBPool().getAABB(x + dim[0], y + dim[1], z + dim[2], x + dim[3], y + dim[4], z + dim[5]);
 				}
 
 				if (box != null && axisAlignedBB.intersectsWith(box)) {
-					box.contract(0.11D, 0.11D, 0.11D);
 					list.add(box);
 				}
 			}
 
-			if (slope.slopeType.equals(SlopeType.OBLIQUE_EXT)) {
+			if (slope.type.equals(Type.OBLIQUE_EXT)) {
 				--precision;
 			}
 		}
@@ -590,7 +405,7 @@ public class BlockCarpentersSlope extends BlockBase {
 
 			if (!slope_adj.hasSide(side_adj)) {
 				return false;
-			} else if (slope_src.wedgeOrientation(side_src) == slope_adj.wedgeOrientation(side_adj)) {
+			} else if (slope_src.faceBias(side_src) == slope_adj.faceBias(side_adj)) {
 				return true;
 			} else {
 				return false;
@@ -674,402 +489,14 @@ public class BlockCarpentersSlope extends BlockBase {
 			}
 		}
 
+		BlockProperties.setData(TE, slopeID);
+
 		/* If shift key is down, skip auto-orientation. */
-		if (!entityLiving.isSneaking())
-		{
-			Slope slope = Slope.slopesList[slopeID];
-
-			TEBase TE_XN = world.getBlockId(x - 1, y, z) == blockID ? (TEBase)world.getBlockTileEntity(x - 1, y, z) : null;
-			TEBase TE_XP = world.getBlockId(x + 1, y, z) == blockID ? (TEBase)world.getBlockTileEntity(x + 1, y, z) : null;
-			TEBase TE_YP = world.getBlockId(x, y + 1, z) == blockID ? (TEBase)world.getBlockTileEntity(x, y + 1, z) : null;
-			TEBase TE_YN = world.getBlockId(x, y - 1, z) == blockID ? (TEBase)world.getBlockTileEntity(x, y - 1, z) : null;
-			TEBase TE_ZN = world.getBlockId(x, y, z - 1) == blockID ? (TEBase)world.getBlockTileEntity(x, y, z - 1) : null;
-			TEBase TE_ZP = world.getBlockId(x, y, z + 1) == blockID ? (TEBase)world.getBlockTileEntity(x, y, z + 1) : null;
-			TEBase TE_XYNN = world.getBlockId(x - 1, y - 1, z) == blockID ? (TEBase)world.getBlockTileEntity(x - 1, y - 1, z) : null;
-			TEBase TE_XYPN = world.getBlockId(x + 1, y - 1, z) == blockID ? (TEBase)world.getBlockTileEntity(x + 1, y - 1, z) : null;
-			TEBase TE_YZNN = world.getBlockId(x, y - 1, z - 1) == blockID ? (TEBase)world.getBlockTileEntity(x, y - 1, z - 1) : null;
-			TEBase TE_YZNP = world.getBlockId(x, y - 1, z + 1) == blockID ? (TEBase)world.getBlockTileEntity(x, y - 1, z + 1) : null;
-			TEBase TE_XYNP = world.getBlockId(x - 1, y + 1, z) == blockID ? (TEBase)world.getBlockTileEntity(x - 1, y + 1, z) : null;
-			TEBase TE_XYPP = world.getBlockId(x + 1, y + 1, z) == blockID ? (TEBase)world.getBlockTileEntity(x + 1, y + 1, z) : null;
-			TEBase TE_YZPN = world.getBlockId(x, y + 1, z - 1) == blockID ? (TEBase)world.getBlockTileEntity(x, y + 1, z - 1) : null;
-			TEBase TE_YZPP = world.getBlockId(x, y + 1, z + 1) == blockID ? (TEBase)world.getBlockTileEntity(x, y + 1, z + 1) : null;
-
-			/* Gather neighboring slopes */
-
-			Slope slope_XN = TE_XN != null ? Slope.slopesList[BlockProperties.getData(TE_XN)] : (Slope)null;
-			Slope slope_XP = TE_XP != null ? Slope.slopesList[BlockProperties.getData(TE_XP)] : (Slope)null;
-			Slope slope_ZN = TE_ZN != null ? Slope.slopesList[BlockProperties.getData(TE_ZN)] : (Slope)null;
-			Slope slope_ZP = TE_ZP != null ? Slope.slopesList[BlockProperties.getData(TE_ZP)] : (Slope)null;
-			Slope slope_YP = TE_YP != null ? Slope.slopesList[BlockProperties.getData(TE_YP)] : (Slope)null;
-			Slope slope_YN = TE_YN != null ? Slope.slopesList[BlockProperties.getData(TE_YN)] : (Slope)null;
-
-			/* Store old slopes (to check against new ones at end of function) */
-
-			Slope temp_slope_XN = TE_XN != null ? slope_XN : (Slope)null;
-			Slope temp_slope_XP = TE_XP != null ? slope_XP : (Slope)null;
-			Slope temp_slope_YP = TE_YP != null ? slope_YP : (Slope)null;
-			Slope temp_slope_YN = TE_YN != null ? slope_YN : (Slope)null;
-			Slope temp_slope_ZN = TE_ZN != null ? slope_ZN : (Slope)null;
-			Slope temp_slope_ZP = TE_ZP != null ? slope_ZP : (Slope)null;
-
-			/* Check if slope should transform to corner to match slope behind it. */
-
-			if (slope.slopeType.equals(SlopeType.WEDGE_Y))
-			{
-				if (TE_XN != null) {
-					if (slope.facings.contains(ForgeDirection.WEST)) {
-						if (slope_XN.facings.contains(ForgeDirection.SOUTH) && !slope_XN.facings.contains(ForgeDirection.EAST)) {
-							slopeID = slope_XN.isPositive ? Slope.ID_WEDGE_INT_POS_SW : Slope.ID_WEDGE_INT_NEG_SW;
-						}
-						if (slope_XN.facings.contains(ForgeDirection.NORTH) && !slope_XN.facings.contains(ForgeDirection.EAST)) {
-							slopeID = slope_XN.isPositive ? Slope.ID_WEDGE_INT_POS_NW : Slope.ID_WEDGE_INT_NEG_NW;
-						}
-					}
-					if (slope.facings.contains(ForgeDirection.EAST)) {
-						if (slope_XN.facings.contains(ForgeDirection.SOUTH) && !slope_XN.facings.contains(ForgeDirection.EAST)) {
-							slopeID = slope_XN.isPositive ? Slope.ID_WEDGE_EXT_POS_SE : Slope.ID_WEDGE_EXT_NEG_SE;
-						}
-						if (slope_XN.facings.contains(ForgeDirection.NORTH) && !slope_XN.facings.contains(ForgeDirection.EAST)) {
-							slopeID = slope_XN.isPositive ? Slope.ID_WEDGE_EXT_POS_NE : Slope.ID_WEDGE_EXT_NEG_NE;
-						}
-					}
-				}
-				if (TE_XP != null) {
-					if (slope.facings.contains(ForgeDirection.WEST)) {
-						if (slope_XP.facings.contains(ForgeDirection.SOUTH) && !slope_XP.facings.contains(ForgeDirection.WEST)) {
-							slopeID = slope_XP.isPositive ? Slope.ID_WEDGE_EXT_POS_SW : Slope.ID_WEDGE_EXT_NEG_SW;
-						}
-						if (slope_XP.facings.contains(ForgeDirection.NORTH) && !slope_XP.facings.contains(ForgeDirection.WEST)) {
-							slopeID = slope_XP.isPositive ? Slope.ID_WEDGE_EXT_POS_NW : Slope.ID_WEDGE_EXT_NEG_NW;
-						}
-					}
-					if (slope.facings.contains(ForgeDirection.EAST)) {
-						if (slope_XP.facings.contains(ForgeDirection.SOUTH) && !slope_XP.facings.contains(ForgeDirection.WEST)) {
-							slopeID = slope_XP.isPositive ? Slope.ID_WEDGE_INT_POS_SE : Slope.ID_WEDGE_INT_NEG_SE;
-						}
-						if (slope_XP.facings.contains(ForgeDirection.NORTH) && !slope_XP.facings.contains(ForgeDirection.WEST)) {
-							slopeID = slope_XP.isPositive ? Slope.ID_WEDGE_INT_POS_NE : Slope.ID_WEDGE_INT_NEG_NE;
-						}
-					}
-				}
-				if (TE_ZN != null) {
-					if (slope.facings.contains(ForgeDirection.NORTH)) {
-						if (slope_ZN.facings.contains(ForgeDirection.EAST) && !slope_ZN.facings.contains(ForgeDirection.SOUTH)) {
-							slopeID = slope_ZN.isPositive ? Slope.ID_WEDGE_INT_POS_NE : Slope.ID_WEDGE_INT_NEG_NE;
-						}
-						if (slope_ZN.facings.contains(ForgeDirection.WEST) && !slope_ZN.facings.contains(ForgeDirection.SOUTH)) {
-							slopeID = slope_ZN.isPositive ? Slope.ID_WEDGE_INT_POS_NW : Slope.ID_WEDGE_INT_NEG_NW;
-						}
-					}
-					if (slope.facings.contains(ForgeDirection.SOUTH)) {
-						if (slope_ZN.facings.contains(ForgeDirection.EAST) && !slope_ZN.facings.contains(ForgeDirection.SOUTH)) {
-							slopeID = slope_ZN.isPositive ? Slope.ID_WEDGE_EXT_POS_SE : Slope.ID_WEDGE_EXT_NEG_SE;
-						}
-						if (slope_ZN.facings.contains(ForgeDirection.WEST) && !slope_ZN.facings.contains(ForgeDirection.SOUTH)) {
-							slopeID = slope_ZN.isPositive ? Slope.ID_WEDGE_EXT_POS_SW : Slope.ID_WEDGE_EXT_NEG_SW;
-						}
-					}
-				}
-				if (TE_ZP != null) {
-					if (slope.facings.contains(ForgeDirection.NORTH)) {
-						if (slope_ZP.facings.contains(ForgeDirection.EAST) && !slope_ZP.facings.contains(ForgeDirection.NORTH)) {
-							slopeID = slope_ZP.isPositive ? Slope.ID_WEDGE_EXT_POS_NE : Slope.ID_WEDGE_EXT_NEG_NE;
-						}
-						if (slope_ZP.facings.contains(ForgeDirection.WEST) && !slope_ZP.facings.contains(ForgeDirection.NORTH)) {
-							slopeID = slope_ZP.isPositive ? Slope.ID_WEDGE_EXT_POS_NW : Slope.ID_WEDGE_EXT_NEG_NW;
-						}
-					}
-					if (slope.facings.contains(ForgeDirection.SOUTH)) {
-						if (slope_ZP.facings.contains(ForgeDirection.EAST) && !slope_ZP.facings.contains(ForgeDirection.NORTH)) {
-							slopeID = slope_ZP.isPositive ? Slope.ID_WEDGE_INT_POS_SE : Slope.ID_WEDGE_INT_NEG_SE;
-						}
-						if (slope_ZP.facings.contains(ForgeDirection.WEST) && !slope_ZP.facings.contains(ForgeDirection.NORTH)) {
-							slopeID = slope_ZP.isPositive ? Slope.ID_WEDGE_INT_POS_SW : Slope.ID_WEDGE_INT_NEG_SW;
-						}
-					}
-				}
-			}
-
-			/* Check if slope should transform to corner. */
-
-			if (TE_ZN != null) {
-				if (TE_XN != null) {
-					if (slope_ZN.facings.contains(ForgeDirection.WEST) && slope_XN.facings.contains(ForgeDirection.NORTH)) {
-						slopeID = slope_XN.isPositive && slope_ZN.isPositive ? Slope.ID_WEDGE_INT_POS_NW : Slope.ID_WEDGE_INT_NEG_NW;
-					}
-					if (slope_ZN.facings.contains(ForgeDirection.EAST) && slope_XN.facings.contains(ForgeDirection.SOUTH)) {
-						slopeID = slope_XN.isPositive && slope_ZN.isPositive ? Slope.ID_WEDGE_EXT_POS_SE : Slope.ID_WEDGE_EXT_NEG_SE;
-					}
-				}
-				if (TE_XP != null) {
-					if (slope_ZN.facings.contains(ForgeDirection.EAST) && slope_XP.facings.contains(ForgeDirection.NORTH)) {
-						slopeID = slope_XP.isPositive && slope_ZN.isPositive ? Slope.ID_WEDGE_INT_POS_NE : Slope.ID_WEDGE_INT_NEG_NE;
-					}
-					if (slope_ZN.facings.contains(ForgeDirection.WEST) && slope_XP.facings.contains(ForgeDirection.SOUTH)) {
-						slopeID = slope_XP.isPositive && slope_ZN.isPositive ? Slope.ID_WEDGE_EXT_POS_SW : Slope.ID_WEDGE_EXT_NEG_SW;
-					}
-				}
-			}
-			if (TE_ZP != null) {
-				if (TE_XN != null) {
-					if (slope_ZP.facings.contains(ForgeDirection.WEST) && slope_XN.facings.contains(ForgeDirection.SOUTH)) {
-						slopeID = slope_XN.isPositive && slope_ZP.isPositive ? Slope.ID_WEDGE_INT_POS_SW : Slope.ID_WEDGE_INT_NEG_SW;
-					}
-					if (slope_ZP.facings.contains(ForgeDirection.EAST) && slope_XN.facings.contains(ForgeDirection.NORTH)) {
-						slopeID = slope_XN.isPositive && slope_ZP.isPositive ? Slope.ID_WEDGE_EXT_POS_NE : Slope.ID_WEDGE_EXT_NEG_NE;
-					}
-				}
-				if (TE_XP != null) {
-					if (slope_ZP.facings.contains(ForgeDirection.EAST) && slope_XP.facings.contains(ForgeDirection.SOUTH)) {
-						slopeID = slope_XP.isPositive && slope_ZP.isPositive ? Slope.ID_WEDGE_INT_POS_SE : Slope.ID_WEDGE_INT_NEG_SE;
-					}
-					if (slope_ZP.facings.contains(ForgeDirection.WEST) && slope_XP.facings.contains(ForgeDirection.NORTH)) {
-						slopeID = slope_XP.isPositive && slope_ZP.isPositive ? Slope.ID_WEDGE_EXT_POS_NW : Slope.ID_WEDGE_EXT_NEG_NW;
-					}
-				}
-			}
-
-			/* Change neighboring slopes to matching corners where applicable. */
-
-			if (slope.facings.contains(ForgeDirection.WEST)) {
-				if (TE_ZN != null && slope.isPositive == slope_ZN.isPositive) {
-					if (slope_ZN.facings.contains(ForgeDirection.NORTH)) {
-						BlockProperties.setData(TE_ZN, slope.isPositive ? Slope.ID_WEDGE_EXT_POS_NW : Slope.ID_WEDGE_EXT_NEG_NW);
-					}
-					if (slope_ZN.facings.contains(ForgeDirection.SOUTH)) {
-						BlockProperties.setData(TE_ZN, slope.isPositive ? Slope.ID_WEDGE_INT_POS_SW : Slope.ID_WEDGE_INT_NEG_SW);
-					}
-				}
-				if (TE_ZP != null && slope.isPositive == slope_ZP.isPositive) {
-					if (slope_ZP.facings.contains(ForgeDirection.SOUTH)) {
-						BlockProperties.setData(TE_ZP, slope.isPositive ? Slope.ID_WEDGE_EXT_POS_SW : Slope.ID_WEDGE_EXT_NEG_SW);
-					}
-					if (slope_ZP.facings.contains(ForgeDirection.NORTH)) {
-						BlockProperties.setData(TE_ZP, slope.isPositive ? Slope.ID_WEDGE_INT_POS_NW : Slope.ID_WEDGE_INT_NEG_NW);
-					}
-				}
-			}
-			if (slope.facings.contains(ForgeDirection.EAST)) {
-				if (TE_ZN != null && slope.isPositive == slope_ZN.isPositive) {
-					if (slope_ZN.facings.contains(ForgeDirection.NORTH)) {
-						BlockProperties.setData(TE_ZN, slope.isPositive ? Slope.ID_WEDGE_EXT_POS_NE : Slope.ID_WEDGE_EXT_NEG_NE);
-					}
-					if (slope_ZN.facings.contains(ForgeDirection.SOUTH)) {
-						BlockProperties.setData(TE_ZN, slope.isPositive ? Slope.ID_WEDGE_INT_POS_SE : Slope.ID_WEDGE_INT_NEG_SE);
-					}
-				}
-				if (TE_ZP != null && slope.isPositive == slope_ZP.isPositive) {
-					if (slope_ZP.facings.contains(ForgeDirection.SOUTH)) {
-						BlockProperties.setData(TE_ZP, slope.isPositive ? Slope.ID_WEDGE_EXT_POS_SE : Slope.ID_WEDGE_EXT_NEG_SE);
-					}
-					if (slope_ZP.facings.contains(ForgeDirection.NORTH)) {
-						BlockProperties.setData(TE_ZP, slope.isPositive ? Slope.ID_WEDGE_INT_POS_NE : Slope.ID_WEDGE_INT_NEG_NE);
-					}
-				}
-			}
-			if (slope.facings.contains(ForgeDirection.NORTH)) {
-				if (TE_XN != null && slope.isPositive == slope_XN.isPositive) {
-					if (slope_XN.facings.contains(ForgeDirection.WEST)) {
-						BlockProperties.setData(TE_XN, slope.isPositive ? Slope.ID_WEDGE_EXT_POS_NW : Slope.ID_WEDGE_EXT_NEG_NW);
-					}
-					if (slope_XN.facings.contains(ForgeDirection.EAST)) {
-						BlockProperties.setData(TE_XN, slope.isPositive ? Slope.ID_WEDGE_INT_POS_NE : Slope.ID_WEDGE_INT_NEG_NE);
-					}
-				}
-				if (TE_XP != null && slope.isPositive == slope_XP.isPositive) {
-					if (slope_XP.facings.contains(ForgeDirection.EAST)) {
-						BlockProperties.setData(TE_XP, slope.isPositive ? Slope.ID_WEDGE_EXT_POS_NE : Slope.ID_WEDGE_EXT_NEG_NE);
-					}
-					if (slope_XP.facings.contains(ForgeDirection.WEST)) {
-						BlockProperties.setData(TE_XP, slope.isPositive ? Slope.ID_WEDGE_INT_POS_NW : Slope.ID_WEDGE_INT_NEG_NW);
-					}
-				}
-			}
-			if (slope.facings.contains(ForgeDirection.SOUTH)) {
-				if (TE_XN != null && slope.isPositive == slope_XN.isPositive) {
-					if (slope_XN.facings.contains(ForgeDirection.WEST)) {
-						BlockProperties.setData(TE_XN, slope.isPositive ? Slope.ID_WEDGE_EXT_POS_SW : Slope.ID_WEDGE_EXT_NEG_SW);
-					}
-					if (slope_XN.facings.contains(ForgeDirection.EAST)) {
-						BlockProperties.setData(TE_XN, slope.isPositive ? Slope.ID_WEDGE_INT_POS_SE : Slope.ID_WEDGE_INT_NEG_SE);
-					}
-				}
-				if (TE_XP != null && slope.isPositive == slope_XP.isPositive) {
-					if (slope_XP.facings.contains(ForgeDirection.EAST)) {
-						BlockProperties.setData(TE_XP, slope.isPositive ? Slope.ID_WEDGE_EXT_POS_SE : Slope.ID_WEDGE_EXT_NEG_SE);
-					}
-					if (slope_XP.facings.contains(ForgeDirection.WEST)) {
-						BlockProperties.setData(TE_XP, slope.isPositive ? Slope.ID_WEDGE_INT_POS_SW : Slope.ID_WEDGE_INT_NEG_SW);
-					}
-				}
-			}
-
-			/* Check if slope should form into a pyramid. */
-
-			if (TE_XYNN != null && TE_XYPN != null && TE_YZNN != null && TE_YZNP != null) {
-				if (
-						Slope.slopesList[BlockProperties.getData(TE_XYNN)] == Slope.WEDGE_POS_W &&
-						Slope.slopesList[BlockProperties.getData(TE_XYPN)] == Slope.WEDGE_POS_E &&
-						Slope.slopesList[BlockProperties.getData(TE_YZNN)] == Slope.WEDGE_POS_N &&
-						Slope.slopesList[BlockProperties.getData(TE_YZNP)] == Slope.WEDGE_POS_S
-						) {
-					slopeID = Slope.ID_PYR_HALF_POS;
-				}
-			}
-			if (TE_XYNP != null && TE_XYPP != null && TE_YZPN != null && TE_YZPP != null) {
-				if (
-						Slope.slopesList[BlockProperties.getData(TE_XYNP)] == Slope.WEDGE_NEG_W &&
-						Slope.slopesList[BlockProperties.getData(TE_XYPP)] == Slope.WEDGE_NEG_E &&
-						Slope.slopesList[BlockProperties.getData(TE_YZPN)] == Slope.WEDGE_NEG_N &&
-						Slope.slopesList[BlockProperties.getData(TE_YZPP)] == Slope.WEDGE_NEG_S
-						) {
-					slopeID = Slope.ID_PYR_HALF_NEG;
-				}
-			}
-
-			/* Check if slope below is interior corner, change to oblique if it is, and change this to side slope. */
-
-			if (TE_YP != null) {
-				if (slope_YP == Slope.WEDGE_INT_NEG_NW) {
-					slopeID = Slope.ID_WEDGE_NW;
-					BlockProperties.setData(TE_YP, Slope.ID_OBL_INT_NEG_NW);
-				} else if (slope_YP == Slope.WEDGE_INT_NEG_SW) {
-					slopeID = Slope.ID_WEDGE_SW;
-					BlockProperties.setData(TE_YP, Slope.ID_OBL_INT_NEG_SW);
-				} else if (slope_YP == Slope.WEDGE_INT_NEG_NE) {
-					slopeID = Slope.ID_WEDGE_NE;
-					BlockProperties.setData(TE_YP, Slope.ID_OBL_INT_NEG_NE);
-				} else if (slope_YP == Slope.WEDGE_INT_NEG_SE) {
-					slopeID = Slope.ID_WEDGE_SE;
-					BlockProperties.setData(TE_YP, Slope.ID_OBL_INT_NEG_SE);
-				}
-			}
-			if (TE_YN != null) {
-				if (slope_YN == Slope.WEDGE_INT_POS_NW) {
-					slopeID = Slope.ID_WEDGE_NW;
-					BlockProperties.setData(TE_YN, Slope.ID_OBL_INT_POS_NW);
-				} else if (slope_YN == Slope.WEDGE_INT_POS_SW) {
-					slopeID = Slope.ID_WEDGE_SW;
-					BlockProperties.setData(TE_YN, Slope.ID_OBL_INT_POS_SW);
-				} else if (slope_YN == Slope.WEDGE_INT_POS_NE) {
-					slopeID = Slope.ID_WEDGE_NE;
-					BlockProperties.setData(TE_YN, Slope.ID_OBL_INT_POS_NE);
-				} else if (slope_YN == Slope.WEDGE_INT_POS_SE) {
-					slopeID = Slope.ID_WEDGE_SE;
-					BlockProperties.setData(TE_YN, Slope.ID_OBL_INT_POS_SE);
-				}
-			}
-
-			/* Check if slope above or below is side slope or oblique interior slope, and, if so, make this a continuation. */
-
-			if (TE_YP != null) {
-				if (slope_YP.slopeType.equals(SlopeType.WEDGE_XZ)) {
-					slopeID = slope_YP.slopeID;
-				} else if (slope_YP.slopeType.equals(SlopeType.OBLIQUE_INT)) {
-					switch (slope_YP.slopeID) {
-					case Slope.ID_OBL_INT_NEG_NW:
-						slopeID = Slope.ID_WEDGE_NW;
-						break;
-					case Slope.ID_OBL_INT_NEG_SW:
-						slopeID = Slope.ID_WEDGE_SW;
-						break;
-					case Slope.ID_OBL_INT_NEG_NE:
-						slopeID = Slope.ID_WEDGE_NE;
-						break;
-					default: // Slope.INT_NEG_OBL_SE
-						slopeID = Slope.ID_WEDGE_SE;
-						break;
-					}
-				}
-			}
-			if (TE_YN != null) {
-				if (slope_YN.slopeType.equals(SlopeType.WEDGE_XZ)) {
-					slopeID = slope_YN.slopeID;
-				} else if (slope_YN.slopeType.equals(SlopeType.OBLIQUE_INT)) {
-					switch (slope_YN.slopeID) {
-					case Slope.ID_OBL_INT_POS_NW:
-						slopeID = Slope.ID_WEDGE_NW;
-						break;
-					case Slope.ID_OBL_INT_POS_SW:
-						slopeID = Slope.ID_WEDGE_SW;
-						break;
-					case Slope.ID_OBL_INT_POS_NE:
-						slopeID = Slope.ID_WEDGE_NE;
-						break;
-					default: // Slope.INT_POS_OBL_SE
-						slopeID = Slope.ID_WEDGE_SE;
-						break;
-					}
-				}
-			}
-
-			/* Check if slope should form into exterior oblique corner. */
-
-			if (
-					TE_YP != null && (slope_YP.slopeType.equals(SlopeType.OBLIQUE_EXT) || slope_YP.slopeType.equals(SlopeType.WEDGE_XZ)) ||
-					TE_YN != null && (slope_YN.slopeType.equals(SlopeType.OBLIQUE_EXT) || slope_YN.slopeType.equals(SlopeType.WEDGE_XZ))
-					)
-			{
-				if (TE_XP != null && TE_ZN != null) {
-
-					if (slope_XP.slopeType.equals(SlopeType.WEDGE_XZ) && slope_ZN.slopeType.equals(SlopeType.WEDGE_XZ) && slope_XP.isPositive == slope_ZN.isPositive) {
-						if (slope_XP.facings.contains(ForgeDirection.SOUTH) && slope_ZN.facings.contains(ForgeDirection.WEST)) {
-							slopeID = slope_XP.isPositive ? Slope.ID_OBL_EXT_POS_SW : Slope.ID_OBL_EXT_NEG_SW;
-						}
-					}
-
-				} else if (TE_ZN != null && TE_XN != null) {
-
-					if (slope_ZN.slopeType.equals(SlopeType.WEDGE_XZ) && slope_XN.slopeType.equals(SlopeType.WEDGE_XZ) && slope_ZN.isPositive == slope_XN.isPositive) {
-						if (slope_ZN.facings.contains(ForgeDirection.EAST) && slope_XN.facings.contains(ForgeDirection.SOUTH)) {
-							slopeID = slope_ZN.isPositive ? Slope.ID_OBL_EXT_POS_SE : Slope.ID_OBL_EXT_NEG_SE;
-						}
-					}
-
-				} else if (TE_XN != null && TE_ZP != null) {
-
-					if (slope_XN.slopeType.equals(SlopeType.WEDGE_XZ) && slope_ZP.slopeType.equals(SlopeType.WEDGE_XZ) && slope_XN.isPositive == slope_ZP.isPositive) {
-						if (slope_XN.facings.contains(ForgeDirection.NORTH) && slope_ZP.facings.contains(ForgeDirection.EAST)) {
-							slopeID = slope_XN.isPositive ? Slope.ID_OBL_EXT_POS_NE : Slope.ID_OBL_EXT_NEG_NE;
-						}
-					}
-
-				} else if (TE_ZP != null && TE_XP != null) {
-
-					if (slope_ZP.slopeType.equals(SlopeType.WEDGE_XZ) && slope_XP.slopeType.equals(SlopeType.WEDGE_XZ) && slope_ZP.isPositive == slope_XP.isPositive) {
-						if (slope_ZP.facings.contains(ForgeDirection.WEST) && slope_XP.facings.contains(ForgeDirection.NORTH)) {
-							slopeID = slope_ZP.isPositive ? Slope.ID_OBL_EXT_POS_NW : Slope.ID_OBL_EXT_NEG_NW;
-						}
-					}
-
-				}
-			}
-
-			/* Server should update clients when adjacent slopes are altered. */
-			if (!world.isRemote)
-			{
-				if (TE_XN != null && slope_XN != temp_slope_XN) {
-					BlockProperties.setData(TE_XN, slope_XN.slopeID);
-				}
-				if (TE_XP != null && slope_XP != temp_slope_XP) {
-					BlockProperties.setData(TE_XP, slope_XP.slopeID);
-				}
-				if (TE_ZN != null && slope_ZN != temp_slope_ZN) {
-					BlockProperties.setData(TE_ZN, slope_ZN.slopeID);
-				}
-				if (TE_ZP != null && slope_ZP != temp_slope_ZP) {
-					BlockProperties.setData(TE_ZP, slope_ZP.slopeID);
-				}
-				if (TE_YN != null && slope_YN != temp_slope_YN) {
-					BlockProperties.setData(TE_YN, slope_YN.slopeID);
-				}
-				if (TE_YP != null && slope_YP != temp_slope_YP) {
-					BlockProperties.setData(TE_YP, slope_YP.slopeID);
-				}
-			}
+		if (!entityLiving.isSneaking()) {
+			SlopeTransform slopeTransform = new SlopeTransform(TE);
+			slopeTransform.begin();
 		}
 
-		BlockProperties.setData(TE, slopeID);
 	}
 
 	@Override

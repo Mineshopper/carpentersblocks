@@ -10,9 +10,9 @@ import carpentersblocks.util.ModLogger;
 import carpentersblocks.util.registry.FeatureRegistry;
 
 public class OptifineHandler {
-	
+
 	private static Method getColorMultiplier;
-	
+
 	/**
 	 * Initializes Optifine integration.
 	 * If reflection fails, will return false.
@@ -29,7 +29,7 @@ public class OptifineHandler {
 			return false;
 		}
 	}
-	
+
 	public static int getColorMultiplier(Block block, IBlockAccess blockAccess, int x, int y, int z)
 	{
 		int colorMultiplier = block.colorMultiplier(blockAccess, x, y, z);

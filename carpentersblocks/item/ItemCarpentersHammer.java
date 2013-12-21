@@ -16,13 +16,12 @@ public class ItemCarpentersHammer extends Item implements ICarpentersHammer {
 	{
 		super(itemID);
 		setUnlocalizedName("itemCarpentersHammer");
+		setMaxStackSize(1);
+		setCreativeTab(CarpentersBlocks.tabCarpentersBlocks);
 
 		if (ItemRegistry.itemCarpentersToolsDamageable) {
 			setMaxDamage(300);
 		}
-
-		canRepair = true;
-		setCreativeTab(CarpentersBlocks.tabCarpentersBlocks);
 	}
 
 	@SideOnly(Side.CLIENT)

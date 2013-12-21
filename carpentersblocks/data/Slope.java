@@ -77,8 +77,27 @@ public class Slope {
 	public final static byte ID_OBL_EXT_POS_SW = 36;
 	public final static byte ID_PYR_HALF_NEG = 45;
 	public final static byte ID_PYR_HALF_POS = 44;
+	public final static byte ID_PRISM_1P_N = 46;
+	public final static byte ID_PRISM_1P_S = 47;
+	public final static byte ID_PRISM_1P_W = 48;
+	public final static byte ID_PRISM_1P_E = 49;
+	public final static byte ID_PRISM_2P_NS = 50;
+	public final static byte ID_PRISM_2P_WE = 51;
+	public final static byte ID_PRISM_2P_SE = 52;
+	public final static byte ID_PRISM_2P_NW = 53;
+	public final static byte ID_PRISM_2P_NE = 54;
+	public final static byte ID_PRISM_2P_SW = 55;
+	public final static byte ID_PRISM_3P_WEN = 56;
+	public final static byte ID_PRISM_3P_WES = 57;
+	public final static byte ID_PRISM_3P_NSW = 58;
+	public final static byte ID_PRISM_3P_NSE = 59;
+	public final static byte ID_PRISM_4P = 60;
+	public final static byte ID_PRISM_SLOPE_N = 61;
+	public final static byte ID_PRISM_SLOPE_S = 62;
+	public final static byte ID_PRISM_SLOPE_W = 63;
+	public final static byte ID_PRISM_SLOPE_E = 64;
 
-	public enum SlopeType
+	public enum Type
 	{
 		WEDGE_XZ,
 		WEDGE_Y,
@@ -86,24 +105,46 @@ public class Slope {
 		WEDGE_EXT,
 		OBLIQUE_INT,
 		OBLIQUE_EXT,
-		PYRAMID
+		PYRAMID,
+		PRISM_1P,
+		PRISM_2P,
+		PRISM_3P,
+		PRISM_4P,
+		PRISM_SLOPE
 	}
 
+	public enum Face
+	{
+		NONE,
+		FULL,
+		WEDGE,
+		TRIANGLE
+	}
+
+	/*
+	 * These represent the primary corner of the face shape.
+	 */
+
+	public final static byte XYNN = 4;
+	public final static byte XYNP = 5;
+	public final static byte XYPN = 6;
+	public final static byte XYPP = 7;
+
 	/** Array containing registered slopes. */
-	public static final Slope[] slopesList = new Slope[46];
+	public static final Slope[] slopesList = new Slope[65];
 
 	/** ID of the slope. */
 	public final int slopeID;
 
 	/** Slope type. */
-	public final SlopeType slopeType;
+	public final Type type;
 
 	/**
 	 * Holds slope face shape.
 	 * 
 	 * [DOWN, UP, NORTH, SOUTH, WEST, EAST]
 	 */
-	private final int[] faceShape;
+	private final Face[] face;
 
 	/**
 	 * If faceShape indicates side is WEDGE,
@@ -117,7 +158,7 @@ public class Slope {
 	 * 
 	 * [DOWN, UP, NORTH, SOUTH, WEST, EAST]
 	 */
-	private final int[] wedgeCorner;
+	private final int[] faceBias;
 
 	/**
 	 * Is the slope facing up.
@@ -125,25 +166,19 @@ public class Slope {
 	 */
 	public final boolean isPositive;
 
-	/** Slope directions. */
+	/**
+	 * For most slopes, this aids in auto-transformation code.
+	 * For prism slopes, this aids in rendering the slopes.
+	 */
 	public final List<ForgeDirection> facings;
 
-	public static final byte NO_FACE = 0;
-	public static final byte FULL = 1;
-	public static final byte WEDGE = 2;
-
-	public static final byte MIN_MIN = 1;
-	public static final byte MIN_MAX = 2;
-	public static final byte MAX_MIN = 3;
-	public static final byte MAX_MAX = 4;
-
-	public Slope(int slopeID, SlopeType slopeType, ForgeDirection[] facings, int[] faceShape, int[] wedgeCorner)
+	public Slope(int slopeID, Type slopeType, ForgeDirection[] facings, Face[] faceShape, int[] faceBias)
 	{
 		this.slopeID = slopeID;
 		slopesList[slopeID] = this;
-		this.slopeType = slopeType;
-		this.faceShape = faceShape;
-		this.wedgeCorner = wedgeCorner;
+		type = slopeType;
+		face = faceShape;
+		this.faceBias = faceBias;
 
 		this.facings = new ArrayList<ForgeDirection>();
 
@@ -154,66 +189,113 @@ public class Slope {
 		isPositive = this.facings.contains(UP);
 	}
 
-	public static final Slope WEDGE_NW = new Slope(ID_WEDGE_NW, SlopeType.WEDGE_XZ, new ForgeDirection[] { NORTH, WEST }, new int[] { WEDGE, WEDGE, NO_FACE, FULL, NO_FACE, FULL }, new int[] { MAX_MAX, MAX_MAX, 0, 0, 0, 0 });
-	public static final Slope WEDGE_NE = new Slope(ID_WEDGE_NE, SlopeType.WEDGE_XZ, new ForgeDirection[] { NORTH, EAST }, new int[] { WEDGE, WEDGE, NO_FACE, FULL, FULL, NO_FACE }, new int[] { MIN_MAX, MIN_MAX, 0, 0, 0, 0 });
-	public static final Slope WEDGE_SW = new Slope(ID_WEDGE_SW, SlopeType.WEDGE_XZ, new ForgeDirection[] { SOUTH, WEST }, new int[] { WEDGE, WEDGE, FULL, NO_FACE, NO_FACE, FULL }, new int[] { MAX_MIN, MAX_MIN, 0, 0, 0, 0 });
-	public static final Slope WEDGE_SE = new Slope(ID_WEDGE_SE, SlopeType.WEDGE_XZ, new ForgeDirection[] { SOUTH, EAST }, new int[] { WEDGE, WEDGE, FULL, NO_FACE, FULL, NO_FACE }, new int[] { MIN_MIN, MIN_MIN, 0, 0, 0, 0 });
-	public static final Slope WEDGE_NEG_N = new Slope(ID_WEDGE_NEG_N, SlopeType.WEDGE_Y, new ForgeDirection[] { DOWN, NORTH }, new int[] { NO_FACE, FULL, NO_FACE, FULL, WEDGE, WEDGE }, new int[] { 0, 0, 0, 0, MAX_MAX, MAX_MAX });
-	public static final Slope WEDGE_NEG_S = new Slope(ID_WEDGE_NEG_S, SlopeType.WEDGE_Y, new ForgeDirection[] { DOWN, SOUTH }, new int[] { NO_FACE, FULL, FULL, NO_FACE, WEDGE, WEDGE }, new int[] { 0, 0, 0, 0, MIN_MAX, MIN_MAX });
-	public static final Slope WEDGE_NEG_W = new Slope(ID_WEDGE_NEG_W, SlopeType.WEDGE_Y, new ForgeDirection[] { DOWN, WEST }, new int[] { NO_FACE, FULL, WEDGE, WEDGE, NO_FACE, FULL }, new int[] { 0, 0, MAX_MAX, MAX_MAX, 0, 0 });
-	public static final Slope WEDGE_NEG_E = new Slope(ID_WEDGE_NEG_E, SlopeType.WEDGE_Y, new ForgeDirection[] { DOWN, EAST }, new int[] { NO_FACE, FULL, WEDGE, WEDGE, FULL, NO_FACE }, new int[] { 0, 0, MIN_MAX, MIN_MAX, 0, 0 });
-	public static final Slope WEDGE_POS_N = new Slope(ID_WEDGE_POS_N, SlopeType.WEDGE_Y, new ForgeDirection[] { UP, NORTH }, new int[] { FULL, NO_FACE, NO_FACE, FULL, WEDGE, WEDGE }, new int[] { 0, 0, 0, 0, MAX_MIN, MAX_MIN });
-	public static final Slope WEDGE_POS_S = new Slope(ID_WEDGE_POS_S, SlopeType.WEDGE_Y, new ForgeDirection[] { UP, SOUTH }, new int[] { FULL, NO_FACE, FULL, NO_FACE, WEDGE, WEDGE }, new int[] { 0, 0, 0, 0, MIN_MIN, MIN_MIN });
-	public static final Slope WEDGE_POS_W = new Slope(ID_WEDGE_POS_W, SlopeType.WEDGE_Y, new ForgeDirection[] { UP, WEST }, new int[] { FULL, NO_FACE, WEDGE, WEDGE, NO_FACE, FULL }, new int[] { 0, 0, MAX_MIN, MAX_MIN, 0, 0 });
-	public static final Slope WEDGE_POS_E = new Slope(ID_WEDGE_POS_E, SlopeType.WEDGE_Y, new ForgeDirection[] { UP, EAST }, new int[] { FULL, NO_FACE, WEDGE, WEDGE, FULL, NO_FACE }, new int[] { 0, 0, MIN_MIN, MIN_MIN, 0, 0 });
-	public static final Slope WEDGE_INT_NEG_NW = new Slope(ID_WEDGE_INT_NEG_NW, SlopeType.WEDGE_INT, new ForgeDirection[] { DOWN, NORTH, WEST }, new int[] { NO_FACE, FULL, WEDGE, FULL, WEDGE, FULL }, new int[] { 0, 0, MAX_MAX, 0, MAX_MAX, 0 });
-	public static final Slope WEDGE_INT_NEG_NE = new Slope(ID_WEDGE_INT_NEG_NE, SlopeType.WEDGE_INT, new ForgeDirection[] { DOWN, NORTH, EAST }, new int[] { NO_FACE, FULL, WEDGE, FULL, FULL, WEDGE }, new int[] { 0, 0, MIN_MAX, 0, 0, MAX_MAX });
-	public static final Slope WEDGE_INT_NEG_SW = new Slope(ID_WEDGE_INT_NEG_SW, SlopeType.WEDGE_INT, new ForgeDirection[] { DOWN, SOUTH, WEST }, new int[] { NO_FACE, FULL, FULL, WEDGE, WEDGE, FULL }, new int[] { 0, 0, 0, MAX_MAX, MIN_MAX, 0 });
-	public static final Slope WEDGE_INT_NEG_SE = new Slope(ID_WEDGE_INT_NEG_SE, SlopeType.WEDGE_INT, new ForgeDirection[] { DOWN, SOUTH, EAST }, new int[] { NO_FACE, FULL, FULL, WEDGE, FULL, WEDGE }, new int[] { 0, 0, 0, MIN_MAX, 0, MIN_MAX });
-	public static final Slope WEDGE_INT_POS_NW = new Slope(ID_WEDGE_INT_POS_NW, SlopeType.WEDGE_INT, new ForgeDirection[] { UP, NORTH, WEST }, new int[] { FULL, NO_FACE, WEDGE, FULL, WEDGE, FULL }, new int[] { 0, 0, MAX_MIN, 0, MAX_MIN, 0 });
-	public static final Slope WEDGE_INT_POS_NE = new Slope(ID_WEDGE_INT_POS_NE, SlopeType.WEDGE_INT, new ForgeDirection[] { UP, NORTH, EAST }, new int[] { FULL, NO_FACE, WEDGE, FULL, FULL, WEDGE }, new int[] { 0, 0, MIN_MIN, 0, 0, MAX_MIN });
-	public static final Slope WEDGE_INT_POS_SW = new Slope(ID_WEDGE_INT_POS_SW, SlopeType.WEDGE_INT, new ForgeDirection[] { UP, SOUTH, WEST }, new int[] { FULL, NO_FACE, FULL, WEDGE, WEDGE, FULL }, new int[] { 0, 0, 0, MAX_MIN, MIN_MIN, 0 });
-	public static final Slope WEDGE_INT_POS_SE = new Slope(ID_WEDGE_INT_POS_SE, SlopeType.WEDGE_INT, new ForgeDirection[] { UP, SOUTH, EAST }, new int[] { FULL, NO_FACE, FULL, WEDGE, FULL, WEDGE }, new int[] { 0, 0, 0, MIN_MIN, 0, MIN_MIN });
-	public static final Slope WEDGE_EXT_NEG_NW = new Slope(ID_WEDGE_EXT_NEG_NW, SlopeType.WEDGE_EXT, new ForgeDirection[] { DOWN, NORTH, WEST }, new int[] { NO_FACE, FULL, NO_FACE, WEDGE, NO_FACE, WEDGE }, new int[] { 0, 0, 0, MAX_MAX, 0, MAX_MAX });
-	public static final Slope WEDGE_EXT_NEG_NE = new Slope(ID_WEDGE_EXT_NEG_NE, SlopeType.WEDGE_EXT, new ForgeDirection[] { DOWN, NORTH, EAST }, new int[] { NO_FACE, FULL, NO_FACE, WEDGE, WEDGE, NO_FACE }, new int[] { 0, 0, 0, MIN_MAX, MAX_MAX, 0 });
-	public static final Slope WEDGE_EXT_NEG_SW = new Slope(ID_WEDGE_EXT_NEG_SW, SlopeType.WEDGE_EXT, new ForgeDirection[] { DOWN, SOUTH, WEST }, new int[] { NO_FACE, FULL, WEDGE, NO_FACE, NO_FACE, WEDGE }, new int[] { 0, 0, MAX_MAX, 0, 0, MIN_MAX });
-	public static final Slope WEDGE_EXT_NEG_SE = new Slope(ID_WEDGE_EXT_NEG_SE, SlopeType.WEDGE_EXT, new ForgeDirection[] { DOWN, SOUTH, EAST }, new int[] { NO_FACE, FULL, WEDGE, NO_FACE, WEDGE, NO_FACE }, new int[] { 0, 0, MIN_MAX, 0, MIN_MAX, 0 });
-	public static final Slope WEDGE_EXT_POS_NW = new Slope(ID_WEDGE_EXT_POS_NW, SlopeType.WEDGE_EXT, new ForgeDirection[] { UP, NORTH, WEST }, new int[] { FULL, NO_FACE, NO_FACE, WEDGE, NO_FACE, WEDGE }, new int[] { 0, 0, 0, MAX_MIN, 0, MAX_MIN });
-	public static final Slope WEDGE_EXT_POS_NE = new Slope(ID_WEDGE_EXT_POS_NE, SlopeType.WEDGE_EXT, new ForgeDirection[] { UP, NORTH, EAST }, new int[] { FULL, NO_FACE, NO_FACE, WEDGE, WEDGE, NO_FACE }, new int[] { 0, 0, 0, MIN_MIN, MAX_MIN, 0 });
-	public static final Slope WEDGE_EXT_POS_SW = new Slope(ID_WEDGE_EXT_POS_SW, SlopeType.WEDGE_EXT, new ForgeDirection[] { UP, SOUTH, WEST }, new int[] { FULL, NO_FACE, WEDGE, NO_FACE, NO_FACE, WEDGE }, new int[] { 0, 0, MAX_MIN, 0, 0, MIN_MIN });
-	public static final Slope WEDGE_EXT_POS_SE = new Slope(ID_WEDGE_EXT_POS_SE, SlopeType.WEDGE_EXT, new ForgeDirection[] { UP, SOUTH, EAST }, new int[] { FULL, NO_FACE, WEDGE, NO_FACE, WEDGE, NO_FACE }, new int[] { 0, 0, MIN_MIN, 0, MIN_MIN, 0 });
-	public static final Slope OBL_INT_NEG_NW = new Slope(ID_OBL_INT_NEG_NW, SlopeType.OBLIQUE_INT, new ForgeDirection[] { DOWN, NORTH, WEST }, new int[] { WEDGE, FULL, WEDGE, FULL, WEDGE, FULL }, new int[] { MAX_MAX, 0, MAX_MAX, 0, MAX_MAX, 0 });
-	public static final Slope OBL_INT_NEG_NE = new Slope(ID_OBL_INT_NEG_NE, SlopeType.OBLIQUE_INT, new ForgeDirection[] { DOWN, NORTH, EAST }, new int[] { WEDGE, FULL, WEDGE, FULL, FULL, WEDGE }, new int[] { MIN_MAX, 0, MIN_MAX, 0, 0, MAX_MAX });
-	public static final Slope OBL_INT_NEG_SW = new Slope(ID_OBL_INT_NEG_SW, SlopeType.OBLIQUE_INT, new ForgeDirection[] { DOWN, SOUTH, WEST }, new int[] { WEDGE, FULL, FULL, WEDGE, WEDGE, FULL }, new int[] { MAX_MIN, 0, 0, MAX_MAX, MIN_MAX, 0 });
-	public static final Slope OBL_INT_NEG_SE = new Slope(ID_OBL_INT_NEG_SE, SlopeType.OBLIQUE_INT, new ForgeDirection[] { DOWN, SOUTH, EAST }, new int[] { WEDGE, FULL, FULL, WEDGE, FULL, WEDGE }, new int[] { MIN_MIN, 0, 0, MIN_MAX, 0, MIN_MAX });
-	public static final Slope OBL_INT_POS_NW = new Slope(ID_OBL_INT_POS_NW, SlopeType.OBLIQUE_INT, new ForgeDirection[] { UP, NORTH, WEST }, new int[] { FULL, WEDGE, WEDGE, FULL, WEDGE, FULL }, new int[] { 0, MAX_MAX, MAX_MIN, 0, MAX_MIN, 0 });
-	public static final Slope OBL_INT_POS_NE = new Slope(ID_OBL_INT_POS_NE, SlopeType.OBLIQUE_INT, new ForgeDirection[] { UP, NORTH, EAST }, new int[] { FULL, WEDGE, WEDGE, FULL, FULL, WEDGE }, new int[] { 0, MIN_MAX, MIN_MIN, 0, 0, MAX_MIN });
-	public static final Slope OBL_INT_POS_SW = new Slope(ID_OBL_INT_POS_SW, SlopeType.OBLIQUE_INT, new ForgeDirection[] { UP, SOUTH, WEST }, new int[] { FULL, WEDGE, FULL, WEDGE, WEDGE, FULL }, new int[] { 0, MAX_MIN, 0, MAX_MIN, MIN_MIN, 0 });
-	public static final Slope OBL_INT_POS_SE = new Slope(ID_OBL_INT_POS_SE, SlopeType.OBLIQUE_INT, new ForgeDirection[] { UP, SOUTH, EAST }, new int[] { FULL, WEDGE, FULL, WEDGE, FULL, WEDGE }, new int[] { 0, MIN_MIN, 0, MIN_MIN, 0, MIN_MIN });
-	public static final Slope OBL_EXT_NEG_NW = new Slope(ID_OBL_EXT_NEG_NW, SlopeType.OBLIQUE_EXT, new ForgeDirection[] { DOWN, NORTH, WEST }, new int[] { NO_FACE, WEDGE, NO_FACE, WEDGE, NO_FACE, WEDGE }, new int[] { 0, MAX_MAX, 0, MAX_MAX, 0, MAX_MAX });
-	public static final Slope OBL_EXT_NEG_NE = new Slope(ID_OBL_EXT_NEG_NE, SlopeType.OBLIQUE_EXT, new ForgeDirection[] { DOWN, NORTH, EAST }, new int[] { NO_FACE, WEDGE, NO_FACE, WEDGE, WEDGE, NO_FACE }, new int[] { 0, MIN_MAX, 0, MIN_MAX, MAX_MAX, 0 });
-	public static final Slope OBL_EXT_NEG_SW = new Slope(ID_OBL_EXT_NEG_SW, SlopeType.OBLIQUE_EXT, new ForgeDirection[] { DOWN, SOUTH, WEST }, new int[] { NO_FACE, WEDGE, WEDGE, NO_FACE, NO_FACE, WEDGE }, new int[] { 0, MAX_MIN, MAX_MAX, 0, 0, MIN_MAX });
-	public static final Slope OBL_EXT_NEG_SE = new Slope(ID_OBL_EXT_NEG_SE, SlopeType.OBLIQUE_EXT, new ForgeDirection[] { DOWN, SOUTH, EAST }, new int[] { NO_FACE, WEDGE, WEDGE, NO_FACE, WEDGE, NO_FACE }, new int[] { 0, MIN_MIN, MIN_MAX, 0, MIN_MAX, 0 });
-	public static final Slope OBL_EXT_POS_NW = new Slope(ID_OBL_EXT_POS_NW, SlopeType.OBLIQUE_EXT, new ForgeDirection[] { UP, NORTH, WEST }, new int[] { WEDGE, NO_FACE, NO_FACE, WEDGE, NO_FACE, WEDGE }, new int[] { MAX_MAX, 0, 0, MAX_MIN, 0, MAX_MIN });
-	public static final Slope OBL_EXT_POS_NE = new Slope(ID_OBL_EXT_POS_NE, SlopeType.OBLIQUE_EXT, new ForgeDirection[] { UP, NORTH, EAST }, new int[] { WEDGE, NO_FACE, NO_FACE, WEDGE, WEDGE, NO_FACE }, new int[] { MIN_MAX, 0, 0, MIN_MIN, MAX_MIN, 0 });
-	public static final Slope OBL_EXT_POS_SW = new Slope(ID_OBL_EXT_POS_SW, SlopeType.OBLIQUE_EXT, new ForgeDirection[] { UP, SOUTH, WEST }, new int[] { WEDGE, NO_FACE, WEDGE, NO_FACE, NO_FACE, WEDGE }, new int[] { MAX_MIN, 0, MAX_MIN, 0, 0, MIN_MIN });
-	public static final Slope OBL_EXT_POS_SE = new Slope(ID_OBL_EXT_POS_SE, SlopeType.OBLIQUE_EXT, new ForgeDirection[] { UP, SOUTH, EAST }, new int[] { WEDGE, NO_FACE, WEDGE, NO_FACE, WEDGE, NO_FACE }, new int[] { MIN_MIN, 0, MIN_MIN, 0, MIN_MIN, 0 });
-	public static final Slope PYR_HALF_NEG = new Slope(ID_PYR_HALF_NEG, SlopeType.PYRAMID, new ForgeDirection[] { DOWN, NORTH, SOUTH, WEST, EAST }, new int[] { NO_FACE, FULL, NO_FACE, NO_FACE, NO_FACE, NO_FACE }, new int[] { 0, 0, 0, 0, 0, 0 });
-	public static final Slope PYR_HALF_POS = new Slope(ID_PYR_HALF_POS, SlopeType.PYRAMID, new ForgeDirection[] { UP, NORTH, SOUTH, WEST, EAST }, new int[] { FULL, NO_FACE, NO_FACE, NO_FACE, NO_FACE, NO_FACE }, new int[] { 0, 0, 0, 0, 0, 0 });
+	public static final Slope WEDGE_NW = new Slope(ID_WEDGE_NW, Type.WEDGE_XZ, new ForgeDirection[] { NORTH, WEST }, new Face[] { Face.WEDGE, Face.WEDGE, Face.NONE, Face.FULL, Face.NONE, Face.FULL }, new int[] { XYPP, XYPP, 0, 0, 0, 0 });
+	public static final Slope WEDGE_NE = new Slope(ID_WEDGE_NE, Type.WEDGE_XZ, new ForgeDirection[] { NORTH, EAST }, new Face[] { Face.WEDGE, Face.WEDGE, Face.NONE, Face.FULL, Face.FULL, Face.NONE }, new int[] { XYNP, XYNP, 0, 0, 0, 0 });
+	public static final Slope WEDGE_SW = new Slope(ID_WEDGE_SW, Type.WEDGE_XZ, new ForgeDirection[] { SOUTH, WEST }, new Face[] { Face.WEDGE, Face.WEDGE, Face.FULL, Face.NONE, Face.NONE, Face.FULL }, new int[] { XYPN, XYPN, 0, 0, 0, 0 });
+	public static final Slope WEDGE_SE = new Slope(ID_WEDGE_SE, Type.WEDGE_XZ, new ForgeDirection[] { SOUTH, EAST }, new Face[] { Face.WEDGE, Face.WEDGE, Face.FULL, Face.NONE, Face.FULL, Face.NONE }, new int[] { XYNN, XYNN, 0, 0, 0, 0 });
+	public static final Slope WEDGE_NEG_N = new Slope(ID_WEDGE_NEG_N, Type.WEDGE_Y, new ForgeDirection[] { DOWN, NORTH }, new Face[] { Face.NONE, Face.FULL, Face.NONE, Face.FULL, Face.WEDGE, Face.WEDGE }, new int[] { 0, 0, 0, 0, XYPP, XYPP });
+	public static final Slope WEDGE_NEG_S = new Slope(ID_WEDGE_NEG_S, Type.WEDGE_Y, new ForgeDirection[] { DOWN, SOUTH }, new Face[] { Face.NONE, Face.FULL, Face.FULL, Face.NONE, Face.WEDGE, Face.WEDGE }, new int[] { 0, 0, 0, 0, XYNP, XYNP });
+	public static final Slope WEDGE_NEG_W = new Slope(ID_WEDGE_NEG_W, Type.WEDGE_Y, new ForgeDirection[] { DOWN, WEST }, new Face[] { Face.NONE, Face.FULL, Face.WEDGE, Face.WEDGE, Face.NONE, Face.FULL }, new int[] { 0, 0, XYPP, XYPP, 0, 0 });
+	public static final Slope WEDGE_NEG_E = new Slope(ID_WEDGE_NEG_E, Type.WEDGE_Y, new ForgeDirection[] { DOWN, EAST }, new Face[] { Face.NONE, Face.FULL, Face.WEDGE, Face.WEDGE, Face.FULL, Face.NONE }, new int[] { 0, 0, XYNP, XYNP, 0, 0 });
+	public static final Slope WEDGE_POS_N = new Slope(ID_WEDGE_POS_N, Type.WEDGE_Y, new ForgeDirection[] { UP, NORTH }, new Face[] { Face.FULL, Face.NONE, Face.NONE, Face.FULL, Face.WEDGE, Face.WEDGE }, new int[] { 0, 0, 0, 0, XYPN, XYPN });
+	public static final Slope WEDGE_POS_S = new Slope(ID_WEDGE_POS_S, Type.WEDGE_Y, new ForgeDirection[] { UP, SOUTH }, new Face[] { Face.FULL, Face.NONE, Face.FULL, Face.NONE, Face.WEDGE, Face.WEDGE }, new int[] { 0, 0, 0, 0, XYNN, XYNN });
+	public static final Slope WEDGE_POS_W = new Slope(ID_WEDGE_POS_W, Type.WEDGE_Y, new ForgeDirection[] { UP, WEST }, new Face[] { Face.FULL, Face.NONE, Face.WEDGE, Face.WEDGE, Face.NONE, Face.FULL }, new int[] { 0, 0, XYPN, XYPN, 0, 0 });
+	public static final Slope WEDGE_POS_E = new Slope(ID_WEDGE_POS_E, Type.WEDGE_Y, new ForgeDirection[] { UP, EAST }, new Face[] { Face.FULL, Face.NONE, Face.WEDGE, Face.WEDGE, Face.FULL, Face.NONE }, new int[] { 0, 0, XYNN, XYNN, 0, 0 });
+	public static final Slope WEDGE_INT_NEG_NW = new Slope(ID_WEDGE_INT_NEG_NW, Type.WEDGE_INT, new ForgeDirection[] { DOWN, NORTH, WEST }, new Face[] { Face.NONE, Face.FULL, Face.WEDGE, Face.FULL, Face.WEDGE, Face.FULL }, new int[] { 0, 0, XYPP, 0, XYPP, 0 });
+	public static final Slope WEDGE_INT_NEG_NE = new Slope(ID_WEDGE_INT_NEG_NE, Type.WEDGE_INT, new ForgeDirection[] { DOWN, NORTH, EAST }, new Face[] { Face.NONE, Face.FULL, Face.WEDGE, Face.FULL, Face.FULL, Face.WEDGE }, new int[] { 0, 0, XYNP, 0, 0, XYPP });
+	public static final Slope WEDGE_INT_NEG_SW = new Slope(ID_WEDGE_INT_NEG_SW, Type.WEDGE_INT, new ForgeDirection[] { DOWN, SOUTH, WEST }, new Face[] { Face.NONE, Face.FULL, Face.FULL, Face.WEDGE, Face.WEDGE, Face.FULL }, new int[] { 0, 0, 0, XYPP, XYNP, 0 });
+	public static final Slope WEDGE_INT_NEG_SE = new Slope(ID_WEDGE_INT_NEG_SE, Type.WEDGE_INT, new ForgeDirection[] { DOWN, SOUTH, EAST }, new Face[] { Face.NONE, Face.FULL, Face.FULL, Face.WEDGE, Face.FULL, Face.WEDGE }, new int[] { 0, 0, 0, XYNP, 0, XYNP });
+	public static final Slope WEDGE_INT_POS_NW = new Slope(ID_WEDGE_INT_POS_NW, Type.WEDGE_INT, new ForgeDirection[] { UP, NORTH, WEST }, new Face[] { Face.FULL, Face.NONE, Face.WEDGE, Face.FULL, Face.WEDGE, Face.FULL }, new int[] { 0, 0, XYPN, 0, XYPN, 0 });
+	public static final Slope WEDGE_INT_POS_NE = new Slope(ID_WEDGE_INT_POS_NE, Type.WEDGE_INT, new ForgeDirection[] { UP, NORTH, EAST }, new Face[] { Face.FULL, Face.NONE, Face.WEDGE, Face.FULL, Face.FULL, Face.WEDGE }, new int[] { 0, 0, XYNN, 0, 0, XYPN });
+	public static final Slope WEDGE_INT_POS_SW = new Slope(ID_WEDGE_INT_POS_SW, Type.WEDGE_INT, new ForgeDirection[] { UP, SOUTH, WEST }, new Face[] { Face.FULL, Face.NONE, Face.FULL, Face.WEDGE, Face.WEDGE, Face.FULL }, new int[] { 0, 0, 0, XYPN, XYNN, 0 });
+	public static final Slope WEDGE_INT_POS_SE = new Slope(ID_WEDGE_INT_POS_SE, Type.WEDGE_INT, new ForgeDirection[] { UP, SOUTH, EAST }, new Face[] { Face.FULL, Face.NONE, Face.FULL, Face.WEDGE, Face.FULL, Face.WEDGE }, new int[] { 0, 0, 0, XYNN, 0, XYNN });
+	public static final Slope WEDGE_EXT_NEG_NW = new Slope(ID_WEDGE_EXT_NEG_NW, Type.WEDGE_EXT, new ForgeDirection[] { DOWN, NORTH, WEST }, new Face[] { Face.NONE, Face.FULL, Face.NONE, Face.WEDGE, Face.NONE, Face.WEDGE }, new int[] { 0, 0, 0, XYPP, 0, XYPP });
+	public static final Slope WEDGE_EXT_NEG_NE = new Slope(ID_WEDGE_EXT_NEG_NE, Type.WEDGE_EXT, new ForgeDirection[] { DOWN, NORTH, EAST }, new Face[] { Face.NONE, Face.FULL, Face.NONE, Face.WEDGE, Face.WEDGE, Face.NONE }, new int[] { 0, 0, 0, XYNP, XYPP, 0 });
+	public static final Slope WEDGE_EXT_NEG_SW = new Slope(ID_WEDGE_EXT_NEG_SW, Type.WEDGE_EXT, new ForgeDirection[] { DOWN, SOUTH, WEST }, new Face[] { Face.NONE, Face.FULL, Face.WEDGE, Face.NONE, Face.NONE, Face.WEDGE }, new int[] { 0, 0, XYPP, 0, 0, XYNP });
+	public static final Slope WEDGE_EXT_NEG_SE = new Slope(ID_WEDGE_EXT_NEG_SE, Type.WEDGE_EXT, new ForgeDirection[] { DOWN, SOUTH, EAST }, new Face[] { Face.NONE, Face.FULL, Face.WEDGE, Face.NONE, Face.WEDGE, Face.NONE }, new int[] { 0, 0, XYNP, 0, XYNP, 0 });
+	public static final Slope WEDGE_EXT_POS_NW = new Slope(ID_WEDGE_EXT_POS_NW, Type.WEDGE_EXT, new ForgeDirection[] { UP, NORTH, WEST }, new Face[] { Face.FULL, Face.NONE, Face.NONE, Face.WEDGE, Face.NONE, Face.WEDGE }, new int[] { 0, 0, 0, XYPN, 0, XYPN });
+	public static final Slope WEDGE_EXT_POS_NE = new Slope(ID_WEDGE_EXT_POS_NE, Type.WEDGE_EXT, new ForgeDirection[] { UP, NORTH, EAST }, new Face[] { Face.FULL, Face.NONE, Face.NONE, Face.WEDGE, Face.WEDGE, Face.NONE }, new int[] { 0, 0, 0, XYNN, XYPN, 0 });
+	public static final Slope WEDGE_EXT_POS_SW = new Slope(ID_WEDGE_EXT_POS_SW, Type.WEDGE_EXT, new ForgeDirection[] { UP, SOUTH, WEST }, new Face[] { Face.FULL, Face.NONE, Face.WEDGE, Face.NONE, Face.NONE, Face.WEDGE }, new int[] { 0, 0, XYPN, 0, 0, XYNN });
+	public static final Slope WEDGE_EXT_POS_SE = new Slope(ID_WEDGE_EXT_POS_SE, Type.WEDGE_EXT, new ForgeDirection[] { UP, SOUTH, EAST }, new Face[] { Face.FULL, Face.NONE, Face.WEDGE, Face.NONE, Face.WEDGE, Face.NONE }, new int[] { 0, 0, XYNN, 0, XYNN, 0 });
+	public static final Slope OBL_INT_NEG_NW = new Slope(ID_OBL_INT_NEG_NW, Type.OBLIQUE_INT, new ForgeDirection[] { DOWN, NORTH, WEST }, new Face[] { Face.WEDGE, Face.FULL, Face.WEDGE, Face.FULL, Face.WEDGE, Face.FULL }, new int[] { XYPP, 0, XYPP, 0, XYPP, 0 });
+	public static final Slope OBL_INT_NEG_NE = new Slope(ID_OBL_INT_NEG_NE, Type.OBLIQUE_INT, new ForgeDirection[] { DOWN, NORTH, EAST }, new Face[] { Face.WEDGE, Face.FULL, Face.WEDGE, Face.FULL, Face.FULL, Face.WEDGE }, new int[] { XYNP, 0, XYNP, 0, 0, XYPP });
+	public static final Slope OBL_INT_NEG_SW = new Slope(ID_OBL_INT_NEG_SW, Type.OBLIQUE_INT, new ForgeDirection[] { DOWN, SOUTH, WEST }, new Face[] { Face.WEDGE, Face.FULL, Face.FULL, Face.WEDGE, Face.WEDGE, Face.FULL }, new int[] { XYPN, 0, 0, XYPP, XYNP, 0 });
+	public static final Slope OBL_INT_NEG_SE = new Slope(ID_OBL_INT_NEG_SE, Type.OBLIQUE_INT, new ForgeDirection[] { DOWN, SOUTH, EAST }, new Face[] { Face.WEDGE, Face.FULL, Face.FULL, Face.WEDGE, Face.FULL, Face.WEDGE }, new int[] { XYNN, 0, 0, XYNP, 0, XYNP });
+	public static final Slope OBL_INT_POS_NW = new Slope(ID_OBL_INT_POS_NW, Type.OBLIQUE_INT, new ForgeDirection[] { UP, NORTH, WEST }, new Face[] { Face.FULL, Face.WEDGE, Face.WEDGE, Face.FULL, Face.WEDGE, Face.FULL }, new int[] { 0, XYPP, XYPN, 0, XYPN, 0 });
+	public static final Slope OBL_INT_POS_NE = new Slope(ID_OBL_INT_POS_NE, Type.OBLIQUE_INT, new ForgeDirection[] { UP, NORTH, EAST }, new Face[] { Face.FULL, Face.WEDGE, Face.WEDGE, Face.FULL, Face.FULL, Face.WEDGE }, new int[] { 0, XYNP, XYNN, 0, 0, XYPN });
+	public static final Slope OBL_INT_POS_SW = new Slope(ID_OBL_INT_POS_SW, Type.OBLIQUE_INT, new ForgeDirection[] { UP, SOUTH, WEST }, new Face[] { Face.FULL, Face.WEDGE, Face.FULL, Face.WEDGE, Face.WEDGE, Face.FULL }, new int[] { 0, XYPN, 0, XYPN, XYNN, 0 });
+	public static final Slope OBL_INT_POS_SE = new Slope(ID_OBL_INT_POS_SE, Type.OBLIQUE_INT, new ForgeDirection[] { UP, SOUTH, EAST }, new Face[] { Face.FULL, Face.WEDGE, Face.FULL, Face.WEDGE, Face.FULL, Face.WEDGE }, new int[] { 0, XYNN, 0, XYNN, 0, XYNN });
+	public static final Slope OBL_EXT_NEG_NW = new Slope(ID_OBL_EXT_NEG_NW, Type.OBLIQUE_EXT, new ForgeDirection[] { DOWN, NORTH, WEST }, new Face[] { Face.NONE, Face.WEDGE, Face.NONE, Face.WEDGE, Face.NONE, Face.WEDGE }, new int[] { 0, XYPP, 0, XYPP, 0, XYPP });
+	public static final Slope OBL_EXT_NEG_NE = new Slope(ID_OBL_EXT_NEG_NE, Type.OBLIQUE_EXT, new ForgeDirection[] { DOWN, NORTH, EAST }, new Face[] { Face.NONE, Face.WEDGE, Face.NONE, Face.WEDGE, Face.WEDGE, Face.NONE }, new int[] { 0, XYNP, 0, XYNP, XYPP, 0 });
+	public static final Slope OBL_EXT_NEG_SW = new Slope(ID_OBL_EXT_NEG_SW, Type.OBLIQUE_EXT, new ForgeDirection[] { DOWN, SOUTH, WEST }, new Face[] { Face.NONE, Face.WEDGE, Face.WEDGE, Face.NONE, Face.NONE, Face.WEDGE }, new int[] { 0, XYPN, XYPP, 0, 0, XYNP });
+	public static final Slope OBL_EXT_NEG_SE = new Slope(ID_OBL_EXT_NEG_SE, Type.OBLIQUE_EXT, new ForgeDirection[] { DOWN, SOUTH, EAST }, new Face[] { Face.NONE, Face.WEDGE, Face.WEDGE, Face.NONE, Face.WEDGE, Face.NONE }, new int[] { 0, XYNN, XYNP, 0, XYNP, 0 });
+	public static final Slope OBL_EXT_POS_NW = new Slope(ID_OBL_EXT_POS_NW, Type.OBLIQUE_EXT, new ForgeDirection[] { UP, NORTH, WEST }, new Face[] { Face.WEDGE, Face.NONE, Face.NONE, Face.WEDGE, Face.NONE, Face.WEDGE }, new int[] { XYPP, 0, 0, XYPN, 0, XYPN });
+	public static final Slope OBL_EXT_POS_NE = new Slope(ID_OBL_EXT_POS_NE, Type.OBLIQUE_EXT, new ForgeDirection[] { UP, NORTH, EAST }, new Face[] { Face.WEDGE, Face.NONE, Face.NONE, Face.WEDGE, Face.WEDGE, Face.NONE }, new int[] { XYNP, 0, 0, XYNN, XYPN, 0 });
+	public static final Slope OBL_EXT_POS_SW = new Slope(ID_OBL_EXT_POS_SW, Type.OBLIQUE_EXT, new ForgeDirection[] { UP, SOUTH, WEST }, new Face[] { Face.WEDGE, Face.NONE, Face.WEDGE, Face.NONE, Face.NONE, Face.WEDGE }, new int[] { XYPN, 0, XYPN, 0, 0, XYNN });
+	public static final Slope OBL_EXT_POS_SE = new Slope(ID_OBL_EXT_POS_SE, Type.OBLIQUE_EXT, new ForgeDirection[] { UP, SOUTH, EAST }, new Face[] { Face.WEDGE, Face.NONE, Face.WEDGE, Face.NONE, Face.WEDGE, Face.NONE }, new int[] { XYNN, 0, XYNN, 0, XYNN, 0 });
+	public static final Slope PYR_HALF_NEG = new Slope(ID_PYR_HALF_NEG, Type.PYRAMID, new ForgeDirection[] { DOWN, NORTH, SOUTH, WEST, EAST }, new Face[] { Face.NONE, Face.FULL, Face.NONE, Face.NONE, Face.NONE, Face.NONE }, new int[] { 0, 0, 0, 0, 0, 0 });
+	public static final Slope PYR_HALF_POS = new Slope(ID_PYR_HALF_POS, Type.PYRAMID, new ForgeDirection[] { UP, NORTH, SOUTH, WEST, EAST }, new Face[] { Face.FULL, Face.NONE, Face.NONE, Face.NONE, Face.NONE, Face.NONE }, new int[] { 0, 0, 0, 0, 0, 0 });
+	public static final Slope PRISM_1P_N = new Slope(ID_PRISM_1P_N, Type.PRISM_1P, new ForgeDirection[] { UP, NORTH }, new Face[] { Face.FULL, Face.NONE, Face.TRIANGLE, Face.NONE, Face.NONE, Face.NONE }, new int[] { 0, 0, 0, 0, 0, 0 });
+	public static final Slope PRISM_1P_S = new Slope(ID_PRISM_1P_S, Type.PRISM_1P, new ForgeDirection[] { UP, SOUTH }, new Face[] { Face.FULL, Face.NONE, Face.NONE, Face.TRIANGLE, Face.NONE, Face.NONE }, new int[] { 0, 0, 0, 0, 0, 0 });
+	public static final Slope PRISM_1P_W = new Slope(ID_PRISM_1P_W, Type.PRISM_1P, new ForgeDirection[] { UP, WEST }, new Face[] { Face.FULL, Face.NONE, Face.NONE, Face.NONE, Face.TRIANGLE, Face.NONE }, new int[] { 0, 0, 0, 0, 0, 0 });
+	public static final Slope PRISM_1P_E = new Slope(ID_PRISM_1P_E, Type.PRISM_1P, new ForgeDirection[] { UP, EAST }, new Face[] { Face.FULL, Face.NONE, Face.NONE, Face.NONE, Face.NONE, Face.TRIANGLE }, new int[] { 0, 0, 0, 0, 0, 0 });
+	public static final Slope PRISM_2P_NS = new Slope(ID_PRISM_2P_NS, Type.PRISM_2P, new ForgeDirection[] { UP, NORTH, SOUTH }, new Face[] { Face.FULL, Face.NONE, Face.TRIANGLE, Face.TRIANGLE, Face.NONE, Face.NONE }, new int[] { 0, 0, 0, 0, 0, 0 });
+	public static final Slope PRISM_2P_WE = new Slope(ID_PRISM_2P_WE, Type.PRISM_2P, new ForgeDirection[] { UP, WEST, EAST }, new Face[] { Face.FULL, Face.NONE, Face.NONE, Face.NONE, Face.TRIANGLE, Face.TRIANGLE }, new int[] { 0, 0, 0, 0, 0, 0 });
+	public static final Slope PRISM_2P_SE = new Slope(ID_PRISM_2P_SE, Type.PRISM_2P, new ForgeDirection[] { UP, SOUTH, EAST }, new Face[] { Face.FULL, Face.NONE, Face.NONE, Face.TRIANGLE, Face.NONE, Face.TRIANGLE }, new int[] { 0, 0, 0, 0, 0, 0 });
+	public static final Slope PRISM_2P_NW = new Slope(ID_PRISM_2P_NW, Type.PRISM_2P, new ForgeDirection[] { UP, NORTH, WEST }, new Face[] { Face.FULL, Face.NONE, Face.TRIANGLE, Face.NONE, Face.TRIANGLE, Face.NONE }, new int[] { 0, 0, 0, 0, 0, 0 });
+	public static final Slope PRISM_2P_NE = new Slope(ID_PRISM_2P_NE, Type.PRISM_2P, new ForgeDirection[] { UP, NORTH, EAST }, new Face[] { Face.FULL, Face.NONE, Face.TRIANGLE, Face.NONE, Face.NONE, Face.TRIANGLE }, new int[] { 0, 0, 0, 0, 0, 0 });
+	public static final Slope PRISM_2P_SW = new Slope(ID_PRISM_2P_SW, Type.PRISM_2P, new ForgeDirection[] { UP, SOUTH, WEST }, new Face[] { Face.FULL, Face.NONE, Face.NONE, Face.TRIANGLE, Face.TRIANGLE, Face.NONE }, new int[] { 0, 0, 0, 0, 0, 0 });
+	public static final Slope PRISM_3P_WEN = new Slope(ID_PRISM_3P_WEN, Type.PRISM_3P, new ForgeDirection[] { UP, NORTH, WEST, EAST }, new Face[] { Face.FULL, Face.NONE, Face.TRIANGLE, Face.NONE, Face.TRIANGLE, Face.TRIANGLE }, new int[] { 0, 0, 0, 0, 0, 0 });
+	public static final Slope PRISM_3P_WES = new Slope(ID_PRISM_3P_WES, Type.PRISM_3P, new ForgeDirection[] { UP, SOUTH, WEST, EAST }, new Face[] { Face.FULL, Face.NONE, Face.NONE, Face.TRIANGLE, Face.TRIANGLE, Face.TRIANGLE }, new int[] { 0, 0, 0, 0, 0, 0 });
+	public static final Slope PRISM_3P_NSW = new Slope(ID_PRISM_3P_NSW, Type.PRISM_3P, new ForgeDirection[] { UP, NORTH, SOUTH, WEST }, new Face[] { Face.FULL, Face.NONE, Face.TRIANGLE, Face.TRIANGLE, Face.TRIANGLE, Face.NONE }, new int[] { 0, 0, 0, 0, 0, 0 });
+	public static final Slope PRISM_3P_NSE = new Slope(ID_PRISM_3P_NSE, Type.PRISM_3P, new ForgeDirection[] { UP, NORTH, SOUTH, EAST }, new Face[] { Face.FULL, Face.NONE, Face.TRIANGLE, Face.TRIANGLE, Face.NONE, Face.TRIANGLE }, new int[] { 0, 0, 0, 0, 0, 0 });
+	public static final Slope PRISM_4P = new Slope(ID_PRISM_4P, Type.PRISM_4P, new ForgeDirection[] { UP, NORTH, SOUTH, WEST, EAST }, new Face[] { Face.FULL, Face.NONE, Face.TRIANGLE, Face.TRIANGLE, Face.TRIANGLE, Face.TRIANGLE }, new int[] { 0, 0, 0, 0, 0, 0 });
+	public static final Slope PRISM_SLOPE_N = new Slope(ID_PRISM_SLOPE_N, Type.PRISM_SLOPE, new ForgeDirection[] { UP, NORTH }, new Face[] { Face.FULL, Face.NONE, Face.TRIANGLE, Face.FULL, Face.WEDGE, Face.WEDGE }, new int[] { 0, 0, 0, 0, XYPN, XYPN });
+	public static final Slope PRISM_SLOPE_S = new Slope(ID_PRISM_SLOPE_S, Type.PRISM_SLOPE, new ForgeDirection[] { UP, SOUTH }, new Face[] { Face.FULL, Face.NONE, Face.FULL, Face.TRIANGLE, Face.WEDGE, Face.WEDGE }, new int[] { 0, 0, 0, 0, XYNN, XYNN });
+	public static final Slope PRISM_SLOPE_W = new Slope(ID_PRISM_SLOPE_W, Type.PRISM_SLOPE, new ForgeDirection[] { UP, WEST }, new Face[] { Face.FULL, Face.NONE, Face.WEDGE, Face.WEDGE, Face.TRIANGLE, Face.FULL }, new int[] { 0, 0, XYPN, XYPN, 0, 0 });
+	public static final Slope PRISM_SLOPE_E = new Slope(ID_PRISM_SLOPE_E, Type.PRISM_SLOPE, new ForgeDirection[] { UP, EAST }, new Face[] { Face.FULL, Face.NONE, Face.WEDGE, Face.WEDGE, Face.FULL, Face.TRIANGLE }, new int[] { 0, 0, XYNN, XYNN, 0, 0 });
+
+	public Type getPrimaryType()
+	{
+		switch (type) {
+		case WEDGE_XZ:
+		case WEDGE_Y:
+		case WEDGE_INT:
+		case WEDGE_EXT:
+		case OBLIQUE_INT:
+		case OBLIQUE_EXT:
+			return Type.WEDGE_XZ;
+		case PYRAMID:
+			return Type.PYRAMID;
+		case PRISM_1P:
+		case PRISM_2P:
+		case PRISM_3P:
+		case PRISM_4P:
+		case PRISM_SLOPE:
+			return Type.PRISM_SLOPE;
+		default:
+			return Type.WEDGE_Y;
+		}
+	}
+
+	public Face getFace(ForgeDirection side)
+	{
+		return face[side.ordinal()];
+	}
 
 	public boolean isFaceFull(ForgeDirection side)
 	{
-		return faceShape[side.ordinal()] == FULL;
+		return face[side.ordinal()] == Face.FULL;
 	}
 
 	public boolean hasSide(ForgeDirection side)
 	{
-		return faceShape[side.ordinal()] != NO_FACE;
+		return face[side.ordinal()] != Face.NONE;
 	}
 
-	public int wedgeOrientation(ForgeDirection side)
+	public int faceBias(ForgeDirection side)
 	{
-		return wedgeCorner[side.ordinal()];
+		return faceBias[side.ordinal()];
 	}
 
 }

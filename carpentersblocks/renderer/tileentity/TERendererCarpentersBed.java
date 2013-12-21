@@ -126,7 +126,7 @@ public class TERendererCarpentersBed extends TileEntitySpecialRenderer {
 
 		}
 
-		Tessellator.instance.draw();
+		tessellator.draw();
 		GL11.glEnable(GL11.GL_LIGHTING);
 		this.bindTextureByName("/terrain.png");
 	}
