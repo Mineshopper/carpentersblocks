@@ -628,35 +628,38 @@ public class SlopeTransform {
 			
 			prism.add(ForgeDirection.UP);
 			
-			if (!isSlope[YZNN] && !isAir[YZNN]) {
+			if (isAir[YZNN] || !isSlope[YZNN]) {
 				prism.add(ForgeDirection.NORTH);
 			}
-			if (!isSlope[YZNP] && !isAir[YZNP]) {
+			if (isAir[YZNP] || !isSlope[YZNP]) {
 				prism.add(ForgeDirection.SOUTH);
 			}
-			if (!isSlope[XYNN] && !isAir[XYNN]) {
+			if (isAir[XYNN] || !isSlope[XYNN]) {
 				prism.add(ForgeDirection.WEST);
 			}
-			if (!isSlope[XYPN] && !isAir[XYPN]) {
+			if (isAir[XYPN] || !isSlope[XYPN]) {
 				prism.add(ForgeDirection.EAST);
 			}
 			
-			if (isAir[XYZNNN] && isAir[XYZNNP] && isAir[XYZPNN] && isAir[XYZPNP]) {
-				prism.add(ForgeDirection.NORTH);
-				prism.add(ForgeDirection.SOUTH);
-				prism.add(ForgeDirection.WEST);
-				prism.add(ForgeDirection.EAST);
+			if (prism.size() == 1) {
+				if ((isAir[XYZNNN] || isSlope[XYZNNN]) && (isAir[XYZNNP] || isSlope[XYZNNP]) && (isAir[XYZPNN] || isSlope[XYZPNN]) && (isAir[XYZPNP] || isSlope[XYZPNP]))
+				{
+					prism.add(ForgeDirection.NORTH);
+					prism.add(ForgeDirection.SOUTH);
+					prism.add(ForgeDirection.WEST);
+					prism.add(ForgeDirection.EAST);
+				}
 			}
-	
+
 			for (int slope = Slope.ID_PRISM_1P_N; slope <= Slope.ID_PRISM_4P; ++slope) {
 				if (prism.equals(Slope.slopesList[slope].facings)) {
 					temp_slopeID = slope;
 					break;
 				}
 			}
-			
+
 			BlockProperties.setData(TE[SRC], temp_slopeID);
-			
+
 			return slopeID != temp_slopeID;
 			
 		} else {
@@ -668,10 +671,16 @@ public class SlopeTransform {
 	
 	private boolean supportsPrism()
 	{
-		return	!world.isAirBlock(x, y - 1, z) &&
+		boolean solidAdjacent =	(!isAir[XN] && !isSlope[XN]) ||
+								(!isAir[XP] && !isSlope[XP]) ||
+								(!isAir[ZN] && !isSlope[ZN]) ||
+								(!isAir[ZP] && !isSlope[ZP]);
+		
+		return	!isAir[YN] &&
 				Block.blocksList[world.getBlockId(x, y - 1, z)].isBlockSolidOnSide(world, x, y - 1, z, ForgeDirection.UP) &&
-				(isAir[XYNN] || isAir[XYPN] || isAir[YZNN] || isAir[YZNP] || isAir[XYZNNN] || isAir[XYZNNP] || isAir[XYZPNN] || isAir[XYZPNP]) ||
-				(isSlope[XYNN] || isSlope[XYPN] || isSlope[YZNN] || isSlope[YZNP] || isSlope[XYZNNN] || isSlope[XYZNNP] || isSlope[XYZPNN] || isSlope[XYZPNP]);
+				(isSlope[XYNN] || isSlope[XYPN] || isSlope[YZNN] || isSlope[YZNP] || isSlope[XYZNNN] || isSlope[XYZNNP] || isSlope[XYZPNN] || isSlope[XYZPNP]) &&
+				!solidAdjacent &&
+				((isAir[XYNN] || isSlope[XYNN]) || (isAir[XYPN] || isSlope[XYPN]) || (isAir[YZNN] || isSlope[YZNN]) || (isAir[YZNP] || isSlope[YZNP]));
 	}
 
 }
