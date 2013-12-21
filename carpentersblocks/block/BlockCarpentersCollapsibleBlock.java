@@ -29,7 +29,7 @@ public class BlockCarpentersCollapsibleBlock extends BlockBase {
 		setHardness(0.2F);
 		setUnlocalizedName("blockCarpentersCollapsibleBlock");
 		setCreativeTab(CarpentersBlocks.tabCarpentersBlocks);
-		setTextureName("carpentersblocks:general/generic");
+		setTextureName("carpentersblocks:general/solid");
 	}
 
 	@Override

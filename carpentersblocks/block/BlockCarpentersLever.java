@@ -3,10 +3,12 @@ package carpentersblocks.block;
 import static net.minecraftforge.common.ForgeDirection.NORTH;
 import static net.minecraftforge.common.ForgeDirection.SOUTH;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.Icon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
@@ -16,6 +18,9 @@ import carpentersblocks.data.Lever.Axis;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.registry.BlockRegistry;
+import carpentersblocks.util.registry.IconRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockCarpentersLever extends BlockBase {
 
@@ -25,7 +30,30 @@ public class BlockCarpentersLever extends BlockBase {
 		setHardness(0.2F);
 		setUnlocalizedName("blockCarpentersLever");
 		setCreativeTab(CarpentersBlocks.tabCarpentersBlocks);
-		setTextureName("carpentersblocks:lever/lever");
+		setTextureName("carpentersblocks:general/solid");
+	}
+
+	@SideOnly(Side.CLIENT)
+	@Override
+	/**
+	 * When this method is called, your block should register all the icons it needs with the given IconRegister. This
+	 * is the only chance you get to register icons.
+	 */
+	public void registerIcons(IconRegister iconRegister)
+	{
+		IconRegistry.icon_lever = iconRegister.registerIcon("carpentersblocks:lever/lever");
+
+		super.registerIcons(iconRegister);
+	}
+
+	@SideOnly(Side.CLIENT)
+	@Override
+	/**
+	 * Returns the icon on the side given the block metadata.
+	 */
+	public Icon getIcon(int side, int metadata)
+	{
+		return IconRegistry.icon_lever;
 	}
 
 	@Override

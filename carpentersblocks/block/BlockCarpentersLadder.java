@@ -26,8 +26,8 @@ public class BlockCarpentersLadder extends BlockBase {
 		setHardness(Block.ladder.blockHardness);
 		setUnlocalizedName("blockCarpentersLadder");
 		setCreativeTab(CarpentersBlocks.tabCarpentersBlocks);
-		setTextureName("carpentersblocks:general/generic");
 		setStepSound(soundLadderFootstep);
+		setTextureName("carpentersblocks:general/solid");
 	}
 
 	@Override

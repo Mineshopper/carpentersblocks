@@ -6,6 +6,7 @@ import java.util.Random;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.IBlockAccess;
@@ -13,6 +14,7 @@ import net.minecraft.world.World;
 import carpentersblocks.data.Door;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.registry.BlockRegistry;
+import carpentersblocks.util.registry.IconRegistry;
 import carpentersblocks.util.registry.ItemRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -24,7 +26,25 @@ public class BlockCarpentersDoor extends BlockBase {
 		super(blockID, Material.wood);
 		setHardness(0.2F);
 		setUnlocalizedName("blockCarpentersDoor");
-		setTextureName("carpentersblocks:general/generic");
+		setTextureName("carpentersblocks:general/solid");
+	}
+
+	@SideOnly(Side.CLIENT)
+	@Override
+	/**
+	 * When this method is called, your block should register all the icons it needs with the given IconRegister. This
+	 * is the only chance you get to register icons.
+	 */
+	public void registerIcons(IconRegister iconRegister)
+	{
+		IconRegistry.icon_door_screen_tall = iconRegister.registerIcon("carpentersblocks:door/door_screen_tall");
+		IconRegistry.icon_door_glass_tall_top = iconRegister.registerIcon("carpentersblocks:door/door_glass_tall_top");
+		IconRegistry.icon_door_glass_tall_bottom = iconRegister.registerIcon("carpentersblocks:door/door_glass_tall_bottom");
+		IconRegistry.icon_door_glass_top = iconRegister.registerIcon("carpentersblocks:door/door_glass_top");
+		IconRegistry.icon_door_french_glass_top = iconRegister.registerIcon("carpentersblocks:door/door_french_glass_top");
+		IconRegistry.icon_door_french_glass_bottom = iconRegister.registerIcon("carpentersblocks:door/door_french_glass_bottom");
+
+		super.registerIcons(iconRegister);
 	}
 
 	@Override

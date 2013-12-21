@@ -6,6 +6,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockHalfSlab;
 import net.minecraft.block.BlockStairs;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -21,6 +22,9 @@ import carpentersblocks.data.Hatch;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.registry.BlockRegistry;
+import carpentersblocks.util.registry.IconRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockCarpentersHatch extends BlockBase {
 
@@ -30,7 +34,22 @@ public class BlockCarpentersHatch extends BlockBase {
 		setHardness(0.2F);
 		setUnlocalizedName("blockCarpentersHatch");
 		setCreativeTab(CarpentersBlocks.tabCarpentersBlocks);
-		setTextureName("carpentersblocks:general/generic");
+		setTextureName("carpentersblocks:general/solid");
+	}
+
+	@SideOnly(Side.CLIENT)
+	@Override
+	/**
+	 * When this method is called, your block should register all the icons it needs with the given IconRegister. This
+	 * is the only chance you get to register icons.
+	 */
+	public void registerIcons(IconRegister iconRegister)
+	{
+		IconRegistry.icon_hatch_glass = iconRegister.registerIcon("carpentersblocks:hatch/hatch_glass");
+		IconRegistry.icon_hatch_french_glass = iconRegister.registerIcon("carpentersblocks:hatch/hatch_french_glass");
+		IconRegistry.icon_hatch_screen = iconRegister.registerIcon("carpentersblocks:hatch/hatch_screen");
+
+		super.registerIcons(iconRegister);
 	}
 
 	@Override

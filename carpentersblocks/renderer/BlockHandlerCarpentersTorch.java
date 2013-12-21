@@ -21,6 +21,19 @@ public class BlockHandlerCarpentersTorch extends BlockDeterminantRender {
 
 	@Override
 	/**
+	 * Override to provide custom icons.
+	 */
+	protected Icon getUniqueIcon(Block block, int side, Icon icon)
+	{
+		if (BlockProperties.hasCover(TE, 6)) {
+			return block.getIcon(2, renderBlocks.blockAccess.getBlockMetadata(TE.xCoord, TE.yCoord, TE.zCoord));
+		} else {
+			return IconRegistry.icon_solid;
+		}
+	}
+
+	@Override
+	/**
 	 * Renders block
 	 */
 	protected boolean renderCarpentersBlock(int x, int y, int z)
@@ -44,19 +57,6 @@ public class BlockHandlerCarpentersTorch extends BlockDeterminantRender {
 	protected void renderSide(int x, int y, int z, int side, double offset, Icon icon)
 	{
 		renderFace(Tessellator.instance, side, icon, true);
-	}
-
-	@Override
-	/**
-	 * Override to provide custom icons.
-	 */
-	protected Icon getUniqueIcon(Block block, int side, Icon icon)
-	{
-		if (BlockProperties.hasCover(TE, 6)) {
-			return block.getIcon(2, renderBlocks.blockAccess.getBlockMetadata(TE.xCoord, TE.yCoord, TE.zCoord));
-		} else {
-			return IconRegistry.icon_generic;
-		}
 	}
 
 	/**

@@ -3,9 +3,6 @@ package carpentersblocks.renderer;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
-
-import org.lwjgl.opengl.GL11;
-
 import carpentersblocks.block.BlockCarpentersDaylightSensor;
 import carpentersblocks.renderer.helper.RenderHelper;
 import carpentersblocks.renderer.helper.VertexHelper;
@@ -18,10 +15,6 @@ public class BlockHandlerCarpentersDaylightSensor extends BlockDeterminantRender
 	@Override
 	public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderBlocks)
 	{
-		Tessellator tessellator = Tessellator.instance;
-		GL11.glRotatef(90.0F, 0.0F, 1.0F, 0.0F);
-		GL11.glTranslatef(-0.5F, -0.5F, -0.5F);
-
 		Block temp_block = block;
 		double yOffset = 0.375D;
 
@@ -75,35 +68,9 @@ public class BlockHandlerCarpentersDaylightSensor extends BlockDeterminantRender
 				break;
 			}
 
-			tessellator.startDrawingQuads();
-			tessellator.setNormal(0.0F, -1.0F, 0.0F);
-			renderBlocks.renderFaceYNeg(temp_block, 0.0D, 0.0D, 0.0D, temp_block.getBlockTextureFromSide(0));
-			tessellator.draw();
-			tessellator.startDrawingQuads();
-			tessellator.setNormal(0.0F, 1.0F, 0.0F);
-			renderBlocks.renderFaceYPos(temp_block, 0.0D, 0.0D, 0.0D, temp_block.getBlockTextureFromSide(1));
-			tessellator.draw();
-			tessellator.startDrawingQuads();
-			tessellator.setNormal(0.0F, 0.0F, -1.0F);
-			renderBlocks.renderFaceZNeg(temp_block, 0.0D, 0.0D, 0.0D, temp_block.getBlockTextureFromSide(2));
-			tessellator.draw();
-			tessellator.startDrawingQuads();
-			tessellator.setNormal(0.0F, 0.0F, 1.0F);
-			renderBlocks.renderFaceZPos(temp_block, 0.0D, 0.0D, 0.0D, temp_block.getBlockTextureFromSide(3));
-			tessellator.draw();
-			tessellator.startDrawingQuads();
-			tessellator.setNormal(-1.0F, 0.0F, 0.0F);
-			renderBlocks.renderFaceXNeg(temp_block, 0.0D, 0.0D, 0.0D, temp_block.getBlockTextureFromSide(4));
-			tessellator.draw();
-			tessellator.startDrawingQuads();
-			tessellator.setNormal(1.0F, 0.0F, 0.0F);
-			renderBlocks.renderFaceXPos(temp_block, 0.0D, 0.0D, 0.0D, temp_block.getBlockTextureFromSide(5));
-			tessellator.draw();
-
+			super.renderInventoryBlock(temp_block, metadata, modelID, renderBlocks);
 			renderBlocks.clearOverrideBlockTexture();
 		}
-
-		GL11.glTranslatef(0.5F, 0.5F, 0.5F);
 	}
 
 	@Override

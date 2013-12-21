@@ -9,9 +9,9 @@ public class DyeColorHandler {
 	 * Color definitions
 	 */
 	public static final byte NO_COLOR = 0;
-	
+
 	public static Map colorMap;
-	
+
 	/**
 	 * Initializes dye colors.
 	 */
@@ -35,7 +35,7 @@ public class DyeColorHandler {
 		colorMap.put(14, 	new float[] {  0.6796875F,  0.2421875F,    0.21875F } );
 		colorMap.put(15, 	new float[] {   0.140625F,      0.125F,      0.125F } );
 	}
-	
+
 	/**
 	 * Returns dye color array RGB.
 	 */
@@ -43,5 +43,5 @@ public class DyeColorHandler {
 	{
 		return (float[]) colorMap.get(dyeColor);
 	}
-		
+
 }

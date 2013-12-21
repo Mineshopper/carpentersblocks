@@ -26,7 +26,7 @@ public class BlockCarpentersBlock extends BlockBase {
 		setHardness(0.2F);
 		setUnlocalizedName("blockCarpentersBlock");
 		setCreativeTab(CarpentersBlocks.tabCarpentersBlocks);
-		setTextureName("carpentersblocks:stairs/stairs");
+		setTextureName("carpentersblocks:general/quartered_frame");
 	}
 
 	@Override

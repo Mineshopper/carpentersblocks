@@ -4,10 +4,12 @@ import java.util.Random;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.Icon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.IBlockAccess;
@@ -20,6 +22,7 @@ import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.tileentity.TECarpentersTorch;
 import carpentersblocks.util.registry.BlockRegistry;
 import carpentersblocks.util.registry.FeatureRegistry;
+import carpentersblocks.util.registry.IconRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -30,8 +33,33 @@ public class BlockCarpentersTorch extends BlockBase {
 		super(blockID, Material.circuits);
 		setUnlocalizedName("blockCarpentersTorch");
 		setCreativeTab(CarpentersBlocks.tabCarpentersBlocks);
-		setTextureName("carpentersblocks:torch/torch_lit");
 		setTickRandomly(true);
+		setTextureName("carpentersblocks:torch/torch_lit");
+	}
+
+	@SideOnly(Side.CLIENT)
+	@Override
+	/**
+	 * When this method is called, your block should register all the icons it needs with the given IconRegister. This
+	 * is the only chance you get to register icons.
+	 */
+	public void registerIcons(IconRegister iconRegister)
+	{
+		IconRegistry.icon_torch_lit = iconRegister.registerIcon("carpentersblocks:torch/torch_lit");
+		IconRegistry.icon_torch_head_smoldering = iconRegister.registerIcon("carpentersblocks:torch/torch_head_smoldering");
+		IconRegistry.icon_torch_head_unlit = iconRegister.registerIcon("carpentersblocks:torch/torch_head_unlit");
+
+		super.registerIcons(iconRegister);
+	}
+
+	@SideOnly(Side.CLIENT)
+	@Override
+	/**
+	 * Returns the icon on the side given the block metadata.
+	 */
+	public Icon getIcon(int side, int metadata)
+	{
+		return IconRegistry.icon_torch_lit;
 	}
 
 	@Override

@@ -12,6 +12,12 @@ import carpentersblocks.util.registry.IconRegistry;
 public class BlockHandlerCarpentersBed extends BlockDeterminantRender {
 
 	@Override
+	public boolean shouldRender3DInInventory()
+	{
+		return false;
+	}
+
+	@Override
 	/**
 	 * Renders bed
 	 */
@@ -99,8 +105,6 @@ public class BlockHandlerCarpentersBed extends BlockDeterminantRender {
 
 				if (shouldRenderCover(block))
 				{
-					setMetadataOverride(BlockProperties.getCoverMetadata(TE, 6));
-
 					// Render headboard
 					renderBlocks.setRenderBounds(0.125D, 0.1875D, 0.875D, 0.875D, 0.875D, 1.0D);
 					renderBlock(block, x, y, z);
@@ -114,8 +118,6 @@ public class BlockHandlerCarpentersBed extends BlockDeterminantRender {
 					// Render support board
 					renderBlocks.setRenderBounds(0.0D, 0.1875D, 0.0D, 1.0D, 0.3125D, 0.875D);
 					renderBlock(block, x, y, z);
-
-					clearMetadataOverride();
 				}
 
 				if (shouldRenderOpaque())
@@ -164,7 +166,6 @@ public class BlockHandlerCarpentersBed extends BlockDeterminantRender {
 				if (shouldRenderCover(block))
 				{
 					setDyeColorOverride(frameColor);
-					setMetadataOverride(BlockProperties.getCoverMetadata(TE, 6));
 
 					// Render legs
 					if (!bedParallelNeg) {
@@ -180,7 +181,6 @@ public class BlockHandlerCarpentersBed extends BlockDeterminantRender {
 					renderBlocks.setRenderBounds(0.0D, 0.1875D, 0.0D, 1.0D, 0.3125D, 1.0D);
 					renderBlock(block, x, y, z);
 
-					clearMetadataOverride();
 					clearDyeColorOverride();
 				}
 
@@ -228,8 +228,6 @@ public class BlockHandlerCarpentersBed extends BlockDeterminantRender {
 
 				if (shouldRenderCover(block))
 				{
-					setMetadataOverride(BlockProperties.getCoverMetadata(TE, 6));
-
 					// Render headboard
 					renderBlocks.setRenderBounds(0.125D, 0.1875D, 0.0D, 0.875D, 0.875D, 0.125D);
 					renderBlock(block, x, y, z);
@@ -243,8 +241,6 @@ public class BlockHandlerCarpentersBed extends BlockDeterminantRender {
 					// Render support board
 					renderBlocks.setRenderBounds(0.0D, 0.1875D, 0.125D, 1.0D, 0.3125D, 1.0D);
 					renderBlock(block, x, y, z);
-
-					clearMetadataOverride();
 				}
 
 				if (shouldRenderOpaque())
@@ -292,7 +288,6 @@ public class BlockHandlerCarpentersBed extends BlockDeterminantRender {
 				if (shouldRenderCover(block))
 				{
 					setDyeColorOverride(frameColor);
-					setMetadataOverride(BlockProperties.getCoverMetadata(TE, 6));
 
 					// Render legs
 					if (!bedParallelNeg) {
@@ -308,7 +303,6 @@ public class BlockHandlerCarpentersBed extends BlockDeterminantRender {
 					renderBlocks.setRenderBounds(0.0D, 0.1875D, 0.0D, 1.0D, 0.3125D, 1.0D);
 					renderBlock(block, x, y, z);
 
-					clearMetadataOverride();
 					clearDyeColorOverride();
 				}
 
@@ -356,8 +350,6 @@ public class BlockHandlerCarpentersBed extends BlockDeterminantRender {
 
 				if (shouldRenderCover(block))
 				{
-					setMetadataOverride(BlockProperties.getCoverMetadata(TE, 6));
-
 					// Render headboard
 					renderBlocks.setRenderBounds(0.875D, 0.1875D, 0.125D, 1.0D, 0.875D, 0.875D);
 					renderBlock(block, x, y, z);
@@ -371,8 +363,6 @@ public class BlockHandlerCarpentersBed extends BlockDeterminantRender {
 					// Render support board
 					renderBlocks.setRenderBounds(0.0D, 0.1875D, 0.0D, 0.875D, 0.3125D, 1.0D);
 					renderBlock(block, x, y, z);
-
-					clearMetadataOverride();
 				}
 
 				if (shouldRenderOpaque())
@@ -421,7 +411,6 @@ public class BlockHandlerCarpentersBed extends BlockDeterminantRender {
 				if (shouldRenderCover(block))
 				{
 					setDyeColorOverride(frameColor);
-					setMetadataOverride(BlockProperties.getCoverMetadata(TE, 6));
 
 					// Render legs
 					if (!bedParallelNeg) {
@@ -437,7 +426,6 @@ public class BlockHandlerCarpentersBed extends BlockDeterminantRender {
 					renderBlocks.setRenderBounds(0.0D, 0.1875D, 0.0D, 1.0D, 0.3125D, 1.0D);
 					renderBlock(block, x, y, z);
 
-					clearMetadataOverride();
 					clearDyeColorOverride();
 				}
 
@@ -485,8 +473,6 @@ public class BlockHandlerCarpentersBed extends BlockDeterminantRender {
 
 				if (shouldRenderCover(block))
 				{
-					setMetadataOverride(BlockProperties.getCoverMetadata(TE, 6));
-
 					// Render headboard
 					renderBlocks.setRenderBounds(0.0D, 0.1875D, 0.125D, 0.125D, 0.875D, 0.875D);
 					renderBlock(block, x, y, z);
@@ -500,8 +486,6 @@ public class BlockHandlerCarpentersBed extends BlockDeterminantRender {
 					// Render support board
 					renderBlocks.setRenderBounds(0.125D, 0.1875D, 0.0D, 1.0D, 0.3125D, 1.0D);
 					renderBlock(block, x, y, z);
-
-					clearMetadataOverride();
 				}
 
 				if (shouldRenderOpaque())
@@ -550,7 +534,6 @@ public class BlockHandlerCarpentersBed extends BlockDeterminantRender {
 				if (shouldRenderCover(block))
 				{
 					setDyeColorOverride(frameColor);
-					setMetadataOverride(BlockProperties.getCoverMetadata(TE, 6));
 
 					// Render legs
 					if (!bedParallelNeg) {
@@ -566,7 +549,6 @@ public class BlockHandlerCarpentersBed extends BlockDeterminantRender {
 					renderBlocks.setRenderBounds(0.0D, 0.1875D, 0.0D, 1.0D, 0.3125D, 1.0D);
 					renderBlock(block, x, y, z);
 
-					clearMetadataOverride();
 					clearDyeColorOverride();
 				}
 

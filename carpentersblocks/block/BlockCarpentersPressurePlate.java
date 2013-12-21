@@ -27,7 +27,7 @@ public class BlockCarpentersPressurePlate extends BlockBase {
 		setUnlocalizedName("blockCarpentersPressurePlate");
 		setCreativeTab(CarpentersBlocks.tabCarpentersBlocks);
 		setTickRandomly(true);
-		setTextureName("carpentersblocks:slope/slope");
+		setTextureName("carpentersblocks:general/full_frame");
 	}
 
 	@Override

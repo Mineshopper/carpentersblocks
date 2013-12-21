@@ -1,11 +1,26 @@
 package carpentersblocks.renderer.helper;
 
+import carpentersblocks.renderer.BlockHandlerBase;
 import net.minecraft.block.BlockGrass;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.Icon;
+import net.minecraftforge.common.ForgeDirection;
 
 public class VertexHelper {
+
+	public final static int TOP_LEFT 		= 0;
+	public final static int BOTTOM_LEFT 	= 1;
+	public final static int BOTTOM_RIGHT 	= 2;
+	public final static int TOP_RIGHT 		= 3;
+	
+	public final static int TOP_CENTER		= 4;
+	public final static int BOTTOM_CENTER	= 5;
+	
+	public final static int NORTHWEST 		= TOP_LEFT;
+	public final static int SOUTHWEST 		= BOTTOM_LEFT;
+	public final static int SOUTHEAST	 	= BOTTOM_RIGHT;
+	public final static int NORTHEAST 		= TOP_RIGHT;
 	
 	/**
 	 * Offset used for faces.
@@ -46,21 +61,30 @@ public class VertexHelper {
 	{
 		Tessellator tessellator = Tessellator.instance;
 
-		if (renderBlocks.enableAO) {
+		if (renderBlocks.enableAO)
+		{
 			switch(vertex) {
-			case 0:
+			case BOTTOM_CENTER:
+				tessellator.setColorOpaque_F((renderBlocks.colorRedBottomLeft + renderBlocks.colorRedBottomRight) / 2.0F, (renderBlocks.colorGreenBottomLeft + renderBlocks.colorGreenBottomRight) / 2.0F, (renderBlocks.colorBlueBottomLeft + renderBlocks.colorBlueBottomRight) / 2.0F);
+				tessellator.setBrightness((renderBlocks.brightnessBottomLeft + renderBlocks.brightnessBottomRight) / 2);
+				break;
+			case TOP_CENTER:
+				tessellator.setColorOpaque_F((renderBlocks.colorRedTopLeft + renderBlocks.colorRedTopRight) / 2.0F, (renderBlocks.colorGreenTopLeft + renderBlocks.colorGreenTopRight) / 2.0F, (renderBlocks.colorBlueTopLeft + renderBlocks.colorBlueTopRight) / 2);
+				tessellator.setBrightness((renderBlocks.brightnessTopRight + renderBlocks.brightnessTopLeft) / 2);
+				break;
+			case TOP_LEFT:
 				tessellator.setColorOpaque_F(renderBlocks.colorRedTopLeft, renderBlocks.colorGreenTopLeft, renderBlocks.colorBlueTopLeft);
 				tessellator.setBrightness(renderBlocks.brightnessTopLeft);
 				break;
-			case 1:
+			case BOTTOM_LEFT:
 				tessellator.setColorOpaque_F(renderBlocks.colorRedBottomLeft, renderBlocks.colorGreenBottomLeft, renderBlocks.colorBlueBottomLeft);
 				tessellator.setBrightness(renderBlocks.brightnessBottomLeft);
 				break;
-			case 2:
+			case BOTTOM_RIGHT:
 				tessellator.setColorOpaque_F(renderBlocks.colorRedBottomRight, renderBlocks.colorGreenBottomRight, renderBlocks.colorBlueBottomRight);
 				tessellator.setBrightness(renderBlocks.brightnessBottomRight);
 				break;
-			case 3:
+			case TOP_RIGHT:
 				tessellator.setColorOpaque_F(renderBlocks.colorRedTopRight, renderBlocks.colorGreenTopRight, renderBlocks.colorBlueTopRight);
 				tessellator.setBrightness(renderBlocks.brightnessTopRight);
 				break;

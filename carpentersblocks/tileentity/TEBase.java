@@ -16,7 +16,7 @@ public class TEBase extends TileEntity {
 	public byte[] overlay = new byte[7];
 
 	/** Holds information like direction, block type, etc. */
-	public short data = 0;
+	public short data;
 
 	/** Holds name of player that created tile entity. */
 	private String owner = "";
@@ -82,8 +82,7 @@ public class TEBase extends TileEntity {
 	{
 		readFromNBT(pkt.data);
 
-		if (worldObj.isRemote)
-		{
+		if (worldObj.isRemote) {
 			Minecraft.getMinecraft().renderGlobal.markBlockForRenderUpdate(xCoord, yCoord, zCoord);
 			worldObj.updateAllLightTypes(xCoord, yCoord, zCoord);
 		}

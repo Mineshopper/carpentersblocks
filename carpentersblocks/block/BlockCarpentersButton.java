@@ -24,7 +24,7 @@ public class BlockCarpentersButton extends BlockBase {
 		setUnlocalizedName("blockCarpentersButton");
 		setCreativeTab(CarpentersBlocks.tabCarpentersBlocks);
 		setTickRandomly(true);
-		setTextureName("carpentersblocks:general/generic");
+		setTextureName("carpentersblocks:general/solid");
 	}
 
 	@Override

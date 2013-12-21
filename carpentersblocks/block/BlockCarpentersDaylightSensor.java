@@ -1,6 +1,7 @@
 package carpentersblocks.block;
 
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
@@ -12,6 +13,9 @@ import carpentersblocks.data.DaylightSensor;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.tileentity.TECarpentersDaylightSensor;
 import carpentersblocks.util.registry.BlockRegistry;
+import carpentersblocks.util.registry.IconRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockCarpentersDaylightSensor extends BlockBase {
 
@@ -22,7 +26,20 @@ public class BlockCarpentersDaylightSensor extends BlockBase {
 		setUnlocalizedName("blockCarpentersDaylightSensor");
 		setCreativeTab(CarpentersBlocks.tabCarpentersBlocks);
 		setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.25F, 1.0F);
-		setTextureName("carpentersblocks:general/generic");
+		setTextureName("carpentersblocks:general/solid");
+	}
+
+	@SideOnly(Side.CLIENT)
+	@Override
+	/**
+	 * When this method is called, your block should register all the icons it needs with the given IconRegister. This
+	 * is the only chance you get to register icons.
+	 */
+	public void registerIcons(IconRegister iconRegister)
+	{
+		IconRegistry.icon_daylight_sensor_glass_top = iconRegister.registerIcon("carpentersblocks:daylightsensor/daylight_sensor_glass_top");
+
+		super.registerIcons(iconRegister);
 	}
 
 	@Override

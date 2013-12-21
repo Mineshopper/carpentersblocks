@@ -16,14 +16,12 @@ public class ItemCarpentersChisel extends Item implements ICarpentersChisel {
 	{
 		super(itemID);
 		setUnlocalizedName("itemCarpentersChisel");
-
-		if (ItemRegistry.itemCarpentersToolsDamageable)
-		{
-			setMaxDamage(300);
-			canRepair = true;
-		}
-
+		setMaxStackSize(1);
 		setCreativeTab(CarpentersBlocks.tabCarpentersBlocks);
+
+		if (ItemRegistry.itemCarpentersToolsDamageable) {
+			setMaxDamage(300);
+		}
 	}
 
 	@SideOnly(Side.CLIENT)

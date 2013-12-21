@@ -2,11 +2,7 @@ package carpentersblocks.renderer;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraftforge.common.ForgeDirection;
-
-import org.lwjgl.opengl.GL11;
-
 import carpentersblocks.block.BlockCarpentersBarrier;
 import carpentersblocks.data.Barrier;
 import carpentersblocks.tileentity.TEBase;
@@ -18,54 +14,17 @@ public class BlockHandlerCarpentersBarrier extends BlockHandlerBase {
 	@Override
 	public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderBlocks)
 	{
-		Tessellator tessellator = Tessellator.instance;
-		GL11.glRotatef(90.0F, 0.0F, 1.0F, 0.0F);
-		GL11.glTranslatef(-0.5F, -0.5F, -0.5F);
+		renderBlocks.setRenderBounds(0.125D, 0.0D, 0.375D, 0.375D, 1.0D, 0.625D);
+		super.renderInventoryBlock(block, metadata, modelID, renderBlocks);
 
-		for (int box = 0; box < 4; ++box)
-		{
-			switch (box) {
-			case 0:
-				renderBlocks.setRenderBounds(0.125D, 0.0D, 0.375D, 0.375D, 1.0D, 0.625D);
-				break;
-			case 1:
-				renderBlocks.setRenderBounds(0.625D, 0.0D, 0.375D, 0.875D, 1.0D, 0.625D);
-				break;
-			case 2:
-				renderBlocks.setRenderBounds(0.0D, 0.8125D, 0.4375D, 1.0D, 0.9375D, 0.5625D);
-				break;
-			case 3:
-				renderBlocks.setRenderBounds(0.0D, 0.4375D, 0.4375D, 1.0D, 0.5625D, 0.5625D);
-				break;
-			}
+		renderBlocks.setRenderBounds(0.625D, 0.0D, 0.375D, 0.875D, 1.0D, 0.625D);
+		super.renderInventoryBlock(block, metadata, modelID, renderBlocks);
 
-			tessellator.startDrawingQuads();
-			tessellator.setNormal(0.0F, -1.0F, 0.0F);
-			renderBlocks.renderFaceYNeg(block, 0.0D, 0.0D, 0.0D, block.getBlockTextureFromSide(0));
-			tessellator.draw();
-			tessellator.startDrawingQuads();
-			tessellator.setNormal(0.0F, 1.0F, 0.0F);
-			renderBlocks.renderFaceYPos(block, 0.0D, 0.0D, 0.0D, block.getBlockTextureFromSide(1));
-			tessellator.draw();
-			tessellator.startDrawingQuads();
-			tessellator.setNormal(0.0F, 0.0F, -1.0F);
-			renderBlocks.renderFaceZNeg(block, 0.0D, 0.0D, 0.0D, block.getBlockTextureFromSide(2));
-			tessellator.draw();
-			tessellator.startDrawingQuads();
-			tessellator.setNormal(0.0F, 0.0F, 1.0F);
-			renderBlocks.renderFaceZPos(block, 0.0D, 0.0D, 0.0D, block.getBlockTextureFromSide(3));
-			tessellator.draw();
-			tessellator.startDrawingQuads();
-			tessellator.setNormal(-1.0F, 0.0F, 0.0F);
-			renderBlocks.renderFaceXNeg(block, 0.0D, 0.0D, 0.0D, block.getBlockTextureFromSide(4));
-			tessellator.draw();
-			tessellator.startDrawingQuads();
-			tessellator.setNormal(1.0F, 0.0F, 0.0F);
-			renderBlocks.renderFaceXPos(block, 0.0D, 0.0D, 0.0D, block.getBlockTextureFromSide(5));
-			tessellator.draw();
-		}
+		renderBlocks.setRenderBounds(0.0D, 0.8125D, 0.4375D, 1.0D, 0.9375D, 0.5625D);
+		super.renderInventoryBlock(block, metadata, modelID, renderBlocks);
 
-		GL11.glTranslatef(0.5F, 0.5F, 0.5F);
+		renderBlocks.setRenderBounds(0.0D, 0.4375D, 0.4375D, 1.0D, 0.5625D, 0.5625D);
+		super.renderInventoryBlock(block, metadata, modelID, renderBlocks);
 	}
 
 	@Override
@@ -132,8 +91,6 @@ public class BlockHandlerCarpentersBarrier extends BlockHandlerBase {
 
 		boolean connect_XN = blockRef.canConnectBarrierTo(TE, renderBlocks.blockAccess, x - 1, y, z, ForgeDirection.EAST);
 		boolean connect_XP = blockRef.canConnectBarrierTo(TE, renderBlocks.blockAccess, x + 1, y, z, ForgeDirection.WEST);
-		blockRef.canConnectBarrierTo(TE, renderBlocks.blockAccess, x, y + 1, z, ForgeDirection.DOWN);
-		blockRef.canConnectBarrierTo(TE, renderBlocks.blockAccess, x, y - 1, z, ForgeDirection.UP);
 		boolean connect_ZN = blockRef.canConnectBarrierTo(TE, renderBlocks.blockAccess, x, y, z - 1, ForgeDirection.SOUTH);
 		boolean connect_ZP = blockRef.canConnectBarrierTo(TE, renderBlocks.blockAccess, x, y, z + 1, ForgeDirection.NORTH);
 

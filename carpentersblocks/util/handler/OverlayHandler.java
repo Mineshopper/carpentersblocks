@@ -21,9 +21,9 @@ public class OverlayHandler {
 	public final static byte     OVERLAY_VINE = 4;
 	public final static byte 	  OVERLAY_HAY =	5;
 	public final static byte OVERLAY_MYCELIUM = 6;
-	
+
 	public static Map overlayMap;
-	
+
 	/**
 	 * Initializes overlays.
 	 */
@@ -38,7 +38,7 @@ public class OverlayHandler {
 		overlayMap.put(5, 	Item.wheat.itemID			);
 		overlayMap.put(6, 	Block.mushroomBrown.blockID	);
 	}
-		
+
 	/**
 	 * Returns overlay key value of item or block in ItemStack.
 	 */
@@ -47,18 +47,19 @@ public class OverlayHandler {
 		if (itemStack != null)
 		{
 			Iterator iterator = overlayMap.entrySet().iterator();
-			 
+
 			while (iterator.hasNext())
 			{
 				Map.Entry mEntry = (Map.Entry) iterator.next();
-				if (mEntry.getValue().equals(itemStack.itemID))
+				if (mEntry.getValue().equals(itemStack.itemID)) {
 					return (Integer) mEntry.getKey();
+				}
 			}
 		}
 
 		return 0;
 	}
-	
+
 	/**
 	 * Returns item or block of overlay wrapped in an ItemStack.
 	 */
@@ -66,5 +67,5 @@ public class OverlayHandler {
 	{
 		return new ItemStack((Integer)overlayMap.get(overlay), 1, 0);
 	}
-			
+
 }

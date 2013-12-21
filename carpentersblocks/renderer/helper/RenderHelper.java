@@ -11,6 +11,7 @@ import net.minecraft.block.Block;
 import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.client.particle.EntityDiggingFX;
 import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
@@ -21,7 +22,13 @@ import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 
 public class RenderHelper extends VertexHelper {
-		
+	
+	protected static Tessellator tessellator = Tessellator.instance;
+	
+	/** Tessellator draw mode for triangles. */
+	public final static int TRIANGLES = 4;
+	public final static int QUADS = 7;
+	
 	protected static double uMin;
 	protected static double uMax;
 	protected static double vMin;
@@ -44,6 +51,15 @@ public class RenderHelper extends VertexHelper {
 	protected static double[][][] UV_SOUTH;
 	protected static double[][][] UV_WEST;
 	protected static double[][][] UV_EAST;
+	
+	/**
+	 * Sets draw mode in tessellator.
+	 */
+	public static void startDrawing(int drawMode)
+	{
+		Tessellator.instance.draw();
+		Tessellator.instance.startDrawing(drawMode);
+	}
 	
 	/**
 	 * Sets side icon UV with rotation.
@@ -321,10 +337,10 @@ public class RenderHelper extends VertexHelper {
 		setBounds(renderBlocks, DOWN, x, y, z);
 		setUV(renderBlocks, DOWN, renderBlocks.uvRotateBottom, icon);
 
-		setupVertex(renderBlocks, xMin, yMin, zMax, UV_DOWN[renderBlocks.uvRotateBottom][0][0], UV_DOWN[renderBlocks.uvRotateBottom][0][1], 0);
-		setupVertex(renderBlocks, xMin, yMin, zMin, UV_DOWN[renderBlocks.uvRotateBottom][1][0], UV_DOWN[renderBlocks.uvRotateBottom][1][1], 1);
-		setupVertex(renderBlocks, xMax, yMin, zMin, UV_DOWN[renderBlocks.uvRotateBottom][2][0], UV_DOWN[renderBlocks.uvRotateBottom][2][1], 2);
-		setupVertex(renderBlocks, xMax, yMin, zMax, UV_DOWN[renderBlocks.uvRotateBottom][3][0], UV_DOWN[renderBlocks.uvRotateBottom][3][1], 3);
+		setupVertex(renderBlocks, xMin, yMin, zMax, UV_DOWN[renderBlocks.uvRotateBottom][0][0], UV_DOWN[renderBlocks.uvRotateBottom][0][1], SOUTHWEST);
+		setupVertex(renderBlocks, xMin, yMin, zMin, UV_DOWN[renderBlocks.uvRotateBottom][1][0], UV_DOWN[renderBlocks.uvRotateBottom][1][1], NORTHWEST);
+		setupVertex(renderBlocks, xMax, yMin, zMin, UV_DOWN[renderBlocks.uvRotateBottom][2][0], UV_DOWN[renderBlocks.uvRotateBottom][2][1], NORTHEAST);
+		setupVertex(renderBlocks, xMax, yMin, zMax, UV_DOWN[renderBlocks.uvRotateBottom][3][0], UV_DOWN[renderBlocks.uvRotateBottom][3][1], SOUTHEAST);
 	}
 
 	/**
@@ -335,10 +351,10 @@ public class RenderHelper extends VertexHelper {
 		setBounds(renderBlocks, UP, x, y, z);
         setUV(renderBlocks, UP, renderBlocks.uvRotateTop, icon);
 
-        setupVertex(renderBlocks, xMax, yMax, zMax, UV_UP[renderBlocks.uvRotateTop][0][0], UV_UP[renderBlocks.uvRotateTop][0][1], 0);
-        setupVertex(renderBlocks, xMax, yMax, zMin, UV_UP[renderBlocks.uvRotateTop][1][0], UV_UP[renderBlocks.uvRotateTop][1][1], 1);
-        setupVertex(renderBlocks, xMin, yMax, zMin, UV_UP[renderBlocks.uvRotateTop][2][0], UV_UP[renderBlocks.uvRotateTop][2][1], 2);
-        setupVertex(renderBlocks, xMin, yMax, zMax, UV_UP[renderBlocks.uvRotateTop][3][0], UV_UP[renderBlocks.uvRotateTop][3][1], 3);
+        setupVertex(renderBlocks, xMax, yMax, zMax, UV_UP[renderBlocks.uvRotateTop][0][0], UV_UP[renderBlocks.uvRotateTop][0][1], SOUTHEAST);
+        setupVertex(renderBlocks, xMax, yMax, zMin, UV_UP[renderBlocks.uvRotateTop][1][0], UV_UP[renderBlocks.uvRotateTop][1][1], NORTHEAST);
+        setupVertex(renderBlocks, xMin, yMax, zMin, UV_UP[renderBlocks.uvRotateTop][2][0], UV_UP[renderBlocks.uvRotateTop][2][1], NORTHWEST);
+        setupVertex(renderBlocks, xMin, yMax, zMax, UV_UP[renderBlocks.uvRotateTop][3][0], UV_UP[renderBlocks.uvRotateTop][3][1], SOUTHWEST);
 	}
 
 	/**
@@ -347,12 +363,12 @@ public class RenderHelper extends VertexHelper {
 	public static void renderFaceZNeg(RenderBlocks renderBlocks, double x, double y, double z, Icon icon)
 	{        
 		setBounds(renderBlocks, NORTH, x, y, z);
-		setUV(renderBlocks, NORTH, renderBlocks.uvRotateEast, icon);
+		setUV(renderBlocks, NORTH, renderBlocks.uvRotateNorth, icon);
 
-		setupVertex(renderBlocks, xMin, yMax, zMin, UV_NORTH[renderBlocks.uvRotateEast][0][0], UV_NORTH[renderBlocks.uvRotateEast][0][1], 0);
-		setupVertex(renderBlocks, xMax, yMax, zMin, UV_NORTH[renderBlocks.uvRotateEast][1][0], UV_NORTH[renderBlocks.uvRotateEast][1][1], 1);
-		setupVertex(renderBlocks, xMax, yMin, zMin, UV_NORTH[renderBlocks.uvRotateEast][2][0], UV_NORTH[renderBlocks.uvRotateEast][2][1], 2);
-		setupVertex(renderBlocks, xMin, yMin, zMin, UV_NORTH[renderBlocks.uvRotateEast][3][0], UV_NORTH[renderBlocks.uvRotateEast][3][1], 3);
+		setupVertex(renderBlocks, xMin, yMax, zMin, UV_NORTH[renderBlocks.uvRotateNorth][0][0], UV_NORTH[renderBlocks.uvRotateNorth][0][1], TOP_RIGHT);
+		setupVertex(renderBlocks, xMax, yMax, zMin, UV_NORTH[renderBlocks.uvRotateNorth][1][0], UV_NORTH[renderBlocks.uvRotateNorth][1][1], TOP_LEFT);
+		setupVertex(renderBlocks, xMax, yMin, zMin, UV_NORTH[renderBlocks.uvRotateNorth][2][0], UV_NORTH[renderBlocks.uvRotateNorth][2][1], BOTTOM_LEFT);
+		setupVertex(renderBlocks, xMin, yMin, zMin, UV_NORTH[renderBlocks.uvRotateNorth][3][0], UV_NORTH[renderBlocks.uvRotateNorth][3][1], BOTTOM_RIGHT);
 	}
 
 	/**
@@ -361,12 +377,12 @@ public class RenderHelper extends VertexHelper {
 	public static void renderFaceZPos(RenderBlocks renderBlocks, double x, double y, double z, Icon icon)
 	{
 		setBounds(renderBlocks, SOUTH, x, y, z);
-		setUV(renderBlocks, SOUTH, renderBlocks.uvRotateWest, icon);
+		setUV(renderBlocks, SOUTH, renderBlocks.uvRotateSouth, icon);
 
-		setupVertex(renderBlocks, xMin, yMax, zMax, UV_SOUTH[renderBlocks.uvRotateWest][0][0], UV_SOUTH[renderBlocks.uvRotateWest][0][1], 0);
-		setupVertex(renderBlocks, xMin, yMin, zMax, UV_SOUTH[renderBlocks.uvRotateWest][1][0], UV_SOUTH[renderBlocks.uvRotateWest][1][1], 1);
-		setupVertex(renderBlocks, xMax, yMin, zMax, UV_SOUTH[renderBlocks.uvRotateWest][2][0], UV_SOUTH[renderBlocks.uvRotateWest][2][1], 2);
-		setupVertex(renderBlocks, xMax, yMax, zMax, UV_SOUTH[renderBlocks.uvRotateWest][3][0], UV_SOUTH[renderBlocks.uvRotateWest][3][1], 3);
+		setupVertex(renderBlocks, xMin, yMax, zMax, UV_SOUTH[renderBlocks.uvRotateSouth][0][0], UV_SOUTH[renderBlocks.uvRotateSouth][0][1], TOP_LEFT);
+		setupVertex(renderBlocks, xMin, yMin, zMax, UV_SOUTH[renderBlocks.uvRotateSouth][1][0], UV_SOUTH[renderBlocks.uvRotateSouth][1][1], BOTTOM_LEFT);
+		setupVertex(renderBlocks, xMax, yMin, zMax, UV_SOUTH[renderBlocks.uvRotateSouth][2][0], UV_SOUTH[renderBlocks.uvRotateSouth][2][1], BOTTOM_RIGHT);
+		setupVertex(renderBlocks, xMax, yMax, zMax, UV_SOUTH[renderBlocks.uvRotateSouth][3][0], UV_SOUTH[renderBlocks.uvRotateSouth][3][1], TOP_RIGHT);
 	}
 
 	/**
@@ -375,12 +391,12 @@ public class RenderHelper extends VertexHelper {
 	public static void renderFaceXNeg(RenderBlocks renderBlocks, double x, double y, double z, Icon icon)
 	{
 		setBounds(renderBlocks, WEST, x, y, z);
-		setUV(renderBlocks, WEST, renderBlocks.uvRotateNorth, icon);
+		setUV(renderBlocks, WEST, renderBlocks.uvRotateWest, icon);
 
-		setupVertex(renderBlocks, xMin, yMax, zMax, UV_WEST[renderBlocks.uvRotateNorth][0][0], UV_WEST[renderBlocks.uvRotateNorth][0][1], 0);
-		setupVertex(renderBlocks, xMin, yMax, zMin, UV_WEST[renderBlocks.uvRotateNorth][1][0], UV_WEST[renderBlocks.uvRotateNorth][1][1], 1);
-		setupVertex(renderBlocks, xMin, yMin, zMin, UV_WEST[renderBlocks.uvRotateNorth][2][0], UV_WEST[renderBlocks.uvRotateNorth][2][1], 2);
-		setupVertex(renderBlocks, xMin, yMin, zMax, UV_WEST[renderBlocks.uvRotateNorth][3][0], UV_WEST[renderBlocks.uvRotateNorth][3][1], 3);
+		setupVertex(renderBlocks, xMin, yMax, zMax, UV_WEST[renderBlocks.uvRotateWest][0][0], UV_WEST[renderBlocks.uvRotateWest][0][1], TOP_RIGHT);
+		setupVertex(renderBlocks, xMin, yMax, zMin, UV_WEST[renderBlocks.uvRotateWest][1][0], UV_WEST[renderBlocks.uvRotateWest][1][1], TOP_LEFT);
+		setupVertex(renderBlocks, xMin, yMin, zMin, UV_WEST[renderBlocks.uvRotateWest][2][0], UV_WEST[renderBlocks.uvRotateWest][2][1], BOTTOM_LEFT);
+		setupVertex(renderBlocks, xMin, yMin, zMax, UV_WEST[renderBlocks.uvRotateWest][3][0], UV_WEST[renderBlocks.uvRotateWest][3][1], BOTTOM_RIGHT);
 	}
 
 	/**
@@ -389,76 +405,12 @@ public class RenderHelper extends VertexHelper {
 	public static void renderFaceXPos(RenderBlocks renderBlocks, double x, double y, double z, Icon icon)
 	{
 		setBounds(renderBlocks, EAST, x, y, z);
-		setUV(renderBlocks, EAST, renderBlocks.uvRotateSouth, icon);
+		setUV(renderBlocks, EAST, renderBlocks.uvRotateEast, icon);
 
-		setupVertex(renderBlocks, xMax, yMin, zMax, UV_EAST[renderBlocks.uvRotateSouth][0][0], UV_EAST[renderBlocks.uvRotateSouth][0][1], 0);
-		setupVertex(renderBlocks, xMax, yMin, zMin, UV_EAST[renderBlocks.uvRotateSouth][1][0], UV_EAST[renderBlocks.uvRotateSouth][1][1], 1);
-		setupVertex(renderBlocks, xMax, yMax, zMin, UV_EAST[renderBlocks.uvRotateSouth][2][0], UV_EAST[renderBlocks.uvRotateSouth][2][1], 2);
-		setupVertex(renderBlocks, xMax, yMax, zMax, UV_EAST[renderBlocks.uvRotateSouth][3][0], UV_EAST[renderBlocks.uvRotateSouth][3][1], 3);
-	}
-	
-	/**
-	 * Spawns a particle at the base of an entity
-	 * 
-	 * @param world the world to spawn the particle
-	 * @param entity the entity at which feet the particles will spawn
-	 * @param blockID the ID of the block to reference for the particle
-	 * @param metadata the metadata of the block for the particle
-	 */
-	public static void spawnTileParticleAt(World world, Entity entity, int blockID, int metadata)
-	{
-		Block block = Block.blocksList[blockID];
-		
-		if (block != null)
-		{
-			entity.worldObj.spawnParticle(
-					"tilecrack_" + blockID + "_" + metadata,
-					entity.posX + ((double) entity.worldObj.rand.nextFloat() - 0.5D) * (double) entity.width,
-					entity.boundingBox.minY + 0.1D,
-					entity.posZ + ((double) entity.worldObj.rand.nextFloat() - 0.5D) * (double) entity.width,
-					-entity.motionX * 4.0D,
-					1.5D,
-					-entity.motionZ * 4.0D
-			);
-		}
-	}
-	
-	/**
-	 * This is to allow us to add the 'final' destroy effect on a Carpenter's
-	 * Block
-	 * 
-	 * @param world where to add the effect
-	 * @param x blockX
-	 * @param y blockY
-	 * @param z blockZ
-	 * @param blockID the ID of the block to reference into the Renderer
-	 * @param metadata the metadata of the block
-	 * @param effectRenderer the renderer to add the effect with
-	 */
-	public static void addDestroyEffect(World world, int x, int y, int z, int blockID, int metadata, EffectRenderer effectRenderer)
-	{
-		Block block = Block.blocksList[blockID];
-		
-		if (block != null)
-		{
-			byte factor = 4;
-
-			for (int posX = 0; posX < factor; ++posX)
-			{
-				for (int posY = 0; posY < factor; ++posY)
-				{
-					for (int posZ = 0; posZ < factor; ++posZ)
-					{
-						double dirX = (double) x + ((double) posX + 0.5D) / (double) factor;
-						double dirY = (double) y + ((double) posY + 0.5D) / (double) factor;
-						double dirZ = (double) z + ((double) posZ + 0.5D) / (double) factor;
-
-						EntityDiggingFX particle = new EntityDiggingFX(world, dirX, dirY, dirZ, dirX - (double) x - 0.5D, dirY - (double) y - 0.5D, dirZ - (double) z - 0.5D, block, metadata);
-						effectRenderer.addEffect(particle.applyColourMultiplier(x, y, z));
-					}
-				}
-			}
-		}
+		setupVertex(renderBlocks, xMax, yMin, zMax, UV_EAST[renderBlocks.uvRotateEast][0][0], UV_EAST[renderBlocks.uvRotateEast][0][1], BOTTOM_LEFT);
+		setupVertex(renderBlocks, xMax, yMin, zMin, UV_EAST[renderBlocks.uvRotateEast][1][0], UV_EAST[renderBlocks.uvRotateEast][1][1], BOTTOM_RIGHT);
+		setupVertex(renderBlocks, xMax, yMax, zMin, UV_EAST[renderBlocks.uvRotateEast][2][0], UV_EAST[renderBlocks.uvRotateEast][2][1], TOP_RIGHT);
+		setupVertex(renderBlocks, xMax, yMax, zMax, UV_EAST[renderBlocks.uvRotateEast][3][0], UV_EAST[renderBlocks.uvRotateEast][3][1], TOP_LEFT);
 	}
 	
 }

@@ -1,6 +1,7 @@
 package carpentersblocks.block;
 
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -14,6 +15,9 @@ import carpentersblocks.tileentity.TECarpentersSafe;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.handler.EventHandler;
 import carpentersblocks.util.registry.BlockRegistry;
+import carpentersblocks.util.registry.IconRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockCarpentersSafe extends BlockBase {
 
@@ -23,7 +27,20 @@ public class BlockCarpentersSafe extends BlockBase {
 		setUnlocalizedName("blockCarpentersSafe");
 		setCreativeTab(CarpentersBlocks.tabCarpentersBlocks);
 		setHardness(2.5F);
-		setTextureName("carpentersblocks:general/generic");
+		setTextureName("carpentersblocks:general/solid");
+	}
+
+	@SideOnly(Side.CLIENT)
+	@Override
+	/**
+	 * When this method is called, your block should register all the icons it needs with the given IconRegister. This
+	 * is the only chance you get to register icons.
+	 */
+	public void registerIcons(IconRegister iconRegister)
+	{
+		IconRegistry.icon_safe_light = iconRegister.registerIcon("carpentersblocks:safe/safe_light");
+
+		super.registerIcons(iconRegister);
 	}
 
 	/**

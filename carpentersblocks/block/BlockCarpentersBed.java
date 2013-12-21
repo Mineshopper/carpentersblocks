@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.Random;
 
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -13,11 +14,13 @@ import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraftforge.common.ForgeDirection;
 import carpentersblocks.data.Bed;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.tileentity.TECarpentersBed;
 import carpentersblocks.util.handler.BedDesignHandler;
 import carpentersblocks.util.registry.BlockRegistry;
+import carpentersblocks.util.registry.IconRegistry;
 import carpentersblocks.util.registry.ItemRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -30,7 +33,27 @@ public class BlockCarpentersBed extends BlockBase {
 		setHardness(0.4F);
 		setUnlocalizedName("blockCarpentersBed");
 		setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.625F, 1.0F);
-		setTextureName("carpentersblocks:general/generic");
+		setTextureName("carpentersblocks:general/solid");
+	}
+
+	@SideOnly(Side.CLIENT)
+	@Override
+	/**
+	 * When this method is called, your block should register all the icons it needs with the given IconRegister. This
+	 * is the only chance you get to register icons.
+	 */
+	public void registerIcons(IconRegister iconRegister)
+	{
+		// Bed design icons
+		for (int numIcon = 0; numIcon < BedDesignHandler.maxNum; ++numIcon) {
+			if (BedDesignHandler.hasPillow[numIcon]) {
+				IconRegistry.icon_bed_pillow_custom[numIcon] = iconRegister.registerIcon("carpentersblocks:bed/design_" + numIcon + "/pillow");
+			}
+		}
+
+		IconRegistry.icon_bed_pillow = iconRegister.registerIcon("carpentersblocks:bed/bed_pillow");
+
+		super.registerIcons(iconRegister);
 	}
 
 	/**
@@ -238,6 +261,21 @@ public class BlockCarpentersBed extends BlockBase {
 	public int idPicked(World world, int x, int y, int z)
 	{
 		return ItemRegistry.itemCarpentersBedID;
+	}
+
+	/**
+	 * Get the rotations that can apply to the block at the specified coordinates. Null means no rotations are possible.
+	 * Note, this is up to the block to decide. It may not be accurate or representative.
+	 * @param worldObj The world
+	 * @param x X position
+	 * @param y Y position
+	 * @param z Z position
+	 * @return An array of valid axes to rotate around, or null for none or unknown
+	 */
+	@Override
+	public ForgeDirection[] getValidRotations(World worldObj, int x, int y, int z)
+	{
+		return new ForgeDirection[] { ForgeDirection.NORTH, ForgeDirection.SOUTH, ForgeDirection.WEST, ForgeDirection.EAST };
 	}
 
 	@Override
