@@ -112,7 +112,7 @@ public class BlockCarpentersTorch extends BlockBase {
 		{
 			ForgeDirection dir = ForgeDirection.getOrientation(side);
 
-			int blockID = world.getBlockId(x, y, z);
+			int blockID = world.getBlockId(x, y - 1, z);
 			boolean canPlaceOnTop = blockID > 0 && Block.blocksList[blockID].canPlaceTorchOnTop(world, x, y, z);
 
 			return world.isBlockSolidOnSide(x - dir.offsetX, y - dir.offsetY, z - dir.offsetZ, dir) || side == 1 && canPlaceOnTop;

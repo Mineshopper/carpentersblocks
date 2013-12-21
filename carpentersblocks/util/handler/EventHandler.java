@@ -62,7 +62,7 @@ public class EventHandler {
 				 * Creative mode won't call onBlockClicked() because it will try to destroy the block.
 				 * We'll invoke it here if the hammer is equipped.
 				 */
-				if (event.entityPlayer.capabilities.isCreativeMode && isHammerEquipped && event.entityPlayer.isSneaking()) {
+				if (event.entityPlayer.capabilities.isCreativeMode && isHammerEquipped) {
 					block.onBlockClicked(event.entity.worldObj, event.x, event.y, event.z, event.entityPlayer);
 				}
 				
