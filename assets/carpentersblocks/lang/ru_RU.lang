@@ -25,6 +25,7 @@ tile.blockCarpentersPressurePlate.name=Нажимная пластина пло�
 tile.blockCarpentersSlope.name=Склон плотника
 tile.blockCarpentersStairs.name=Ступеньки плотника
 tile.blockCarpentersTorch.name=Факел плотника
+tile.blockCarpentersSafe.name=Сейф плотника
 
 # MESSAGES
 message.polarity_pos.name=\u00a76ПОЛЯРНОСТЬ: \u00a7fНормальный выходной сингнал красного камня.
@@ -37,5 +38,12 @@ message.trigger_player.name=\u00a76ТРИГГЕР: \u00a7fАктивируетс
 message.trigger_monster.name=\u00a76ТРИГГЕР: \u00a7fАктивируется только монстрами.
 message.trigger_animal.name=\u00a76ТРИГГЕР: \u00a7fАктивируется только животными.
 message.trigger_all.name=\u00a76ТРИГГЕР: \u00a7fАктивируется всеми сущностями.
+message.safe_lock.name=\u00a76КОНТРОЛЬ: \u00a7fСейф закрыт.
+message.safe_unlock.name=\u00a76КОНТРОЛЬ: \u00a7fСейф открыт.
+message.automation_all.name=\u00a76АВТОМАТИЗАЦИЯ: \u00a7fПредметы могут вставляться и извлекаться.
+message.automation_disabled.name=\u00a76АВТОМАТИЗАЦИЯ: \u00a7fОтключена.
+message.automation_insert.name=\u00a76АВТОМАТИЗАЦИЯ: \u00a7fПредметы могут только вставляться.
+message.automation_extract.name=\u00a76АВТОМАТИЗАЦИЯ: \u00a7fПредметы могут только извлекаться.
+message.block_lock.name=\u00a76КОНТРОЛЬ: \u00a7fЭтот блок закрыт.
 
 # </file>
