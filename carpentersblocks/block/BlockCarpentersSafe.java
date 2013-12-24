@@ -162,16 +162,20 @@ public class BlockCarpentersSafe extends BlockBase {
 	/**
 	 * Called when the block is placed in the world.
 	 */
-	protected void auxiliaryOnBlockPlacedBy(TEBase TE, World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack itemStack)
+	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack itemStack)
 	{
+		TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
+
 		Safe.setFacing(TE, BlockProperties.getOppositeFacing(BlockProperties.getEntityFacing(entityLiving)));
+
+		super.onBlockPlacedBy(world, x, y, z, entityLiving, itemStack);
 	}
 
 	@Override
 	/**
 	 * Called upon block activation (right click on the block.)
 	 */
-	protected boolean[] auxiliaryOnBlockActivated(TEBase TE, World world, int x, int y, int z, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ)
+	protected boolean[] postOnBlockActivated(TEBase TE, World world, int x, int y, int z, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ)
 	{
 		if (canPlayerActivate(TE, entityPlayer)) {
 
@@ -210,22 +214,29 @@ public class BlockCarpentersSafe extends BlockBase {
 	/**
 	 * ejects contained items into the world, and notifies neighbours of an update, as appropriate
 	 */
-	public void auxiliaryBreakBlock(TEBase TE, World world, int x, int y, int z, int par5, int par6)
+	public void breakBlock(World world, int x, int y, int z, int par5, int metadata)
 	{
-		TECarpentersSafe TE_safe = (TECarpentersSafe) TE;
+		TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
 
-		if (TE_safe.hasUpgrade()) {
-			BlockProperties.ejectEntity(TE, new ItemStack(Item.ingotGold));
-		}
-
-		for (int slot = 0; slot < TE_safe.getSizeInventory(); ++slot)
+		if (TE != null)
 		{
-			ItemStack itemStack = TE_safe.getStackInSlot(slot);
+			TECarpentersSafe TE_safe = (TECarpentersSafe) TE;
 
-			if (itemStack != null) {
-				BlockProperties.ejectEntity(TE, itemStack);
+			if (TE_safe.hasUpgrade()) {
+				BlockProperties.ejectEntity(TE, new ItemStack(Item.ingotGold));
+			}
+
+			for (int slot = 0; slot < TE_safe.getSizeInventory(); ++slot)
+			{
+				ItemStack itemStack = TE_safe.getStackInSlot(slot);
+
+				if (itemStack != null) {
+					BlockProperties.ejectEntity(TE, itemStack);
+				}
 			}
 		}
+
+		super.breakBlock(world, x, y, z, par5, metadata);
 	}
 
 	@Override

@@ -107,8 +107,9 @@ public class BlockCarpentersLadder extends BlockBase {
 	 * Called when the block is placed in the world.
 	 * Uses cardinal direction to adjust metadata if player clicks top or bottom face of block.
 	 */
-	public void auxiliaryOnBlockPlacedBy(TEBase TE, World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack itemStack)
+	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack itemStack)
 	{
+		TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
 		int metadata = world.getBlockMetadata(x, y, z);
 
 		if (metadata < 2) {
@@ -139,6 +140,8 @@ public class BlockCarpentersLadder extends BlockBase {
 		 * to ladder option to be free-standing.
 		 */
 		onNeighborBlockChange(world, x, y, z, blockID);
+
+		super.onBlockPlacedBy(world, x, y, z, entityLiving, itemStack);
 	}
 
 	@Override
@@ -146,23 +149,33 @@ public class BlockCarpentersLadder extends BlockBase {
 	 * Lets the block know when one of its neighbor changes. Doesn't know which neighbor changed (coordinates passed are
 	 * their own) Args: x, y, z, neighbor blockID
 	 */
-	public void auxiliaryOnNeighborBlockChange(TEBase TE, World world, int x, int y, int z, int blockID)
+	public void onNeighborBlockChange(World world, int x, int y, int z, int blockID)
 	{
-		int data = BlockProperties.getData(TE);
-
-		if (data > 1)
+		if (!world.isRemote)
 		{
-			if (
-					data == 2 && !world.isBlockSolidOnSide(x, y, z + 1, ForgeDirection.NORTH) ||
-					data == 3 && !world.isBlockSolidOnSide(x, y, z - 1, ForgeDirection.SOUTH) ||
-					data == 4 && !world.isBlockSolidOnSide(x + 1, y, z, ForgeDirection.WEST) ||
-					data == 5 && !world.isBlockSolidOnSide(x - 1, y, z, ForgeDirection.EAST)
-					)
+			TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
+
+			if (TE != null)
 			{
-				dropBlockAsItem(world, x, y, z, data, 0);
-				world.setBlockToAir(x, y, z);
+				int data = BlockProperties.getData(TE);
+
+				if (data > 1)
+				{
+					if (
+							data == 2 && !world.isBlockSolidOnSide(x, y, z + 1, ForgeDirection.NORTH) ||
+							data == 3 && !world.isBlockSolidOnSide(x, y, z - 1, ForgeDirection.SOUTH) ||
+							data == 4 && !world.isBlockSolidOnSide(x + 1, y, z, ForgeDirection.WEST) ||
+							data == 5 && !world.isBlockSolidOnSide(x - 1, y, z, ForgeDirection.EAST)
+							)
+					{
+						dropBlockAsItem(world, x, y, z, data, 0);
+						world.setBlockToAir(x, y, z);
+					}
+				}
 			}
 		}
+
+		super.onNeighborBlockChange(world, x, y, z, blockID);
 	}
 
 	@Override

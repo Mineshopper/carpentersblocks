@@ -36,9 +36,9 @@ import carpentersblocks.renderer.helper.ParticleHelper;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.handler.EventHandler;
+import carpentersblocks.util.handler.ExtendedPlantHandler;
 import carpentersblocks.util.handler.OverlayHandler;
 import carpentersblocks.util.handler.PatternHandler;
-import carpentersblocks.util.handler.PlantHandler;
 import carpentersblocks.util.registry.FeatureRegistry;
 import carpentersblocks.util.registry.IconRegistry;
 import carpentersblocks.util.registry.ItemRegistry;
@@ -172,27 +172,29 @@ public class BlockBase extends BlockContainer {
 
 			if (itemStack != null && canPlayerEdit(TE, entityPlayer))
 			{
-				List<Boolean> altered = new ArrayList<Boolean>();
 				int effectiveSide = BlockProperties.hasCover(TE, side) ? side : 6;
 				Item item = itemStack.getItem();
 
 				if (item instanceof ICarpentersHammer && ((ICarpentersHammer)item).canUseHammer(world, entityPlayer)) {
 
-					if (entityPlayer.isSneaking()) {
+					List<Boolean> altered = new ArrayList<Boolean>();
 
-						if (BlockProperties.hasOverlay(TE, effectiveSide)) {
-							altered.add(BlockProperties.setOverlay(TE, effectiveSide, (ItemStack)null));
-						} else if (BlockProperties.hasDyeColor(TE, effectiveSide)) {
-							altered.add(BlockProperties.setDyeColor(TE, effectiveSide, 0));
-						} else if (BlockProperties.hasCover(TE, effectiveSide)) {
-							altered.add(BlockProperties.setCover(TE, effectiveSide, 0, (ItemStack)null));
-							altered.add(BlockProperties.setPattern(TE, effectiveSide, 0));
+					altered.add(onHammerLeftClick(TE, entityPlayer));
+
+					if (!altered.contains(true))
+					{
+						if (entityPlayer.isSneaking()) {
+
+							if (BlockProperties.hasOverlay(TE, effectiveSide)) {
+								altered.add(BlockProperties.setOverlay(TE, effectiveSide, (ItemStack)null));
+							} else if (BlockProperties.hasDyeColor(TE, effectiveSide)) {
+								altered.add(BlockProperties.setDyeColor(TE, effectiveSide, 0));
+							} else if (BlockProperties.hasCover(TE, effectiveSide)) {
+								altered.add(BlockProperties.setCover(TE, effectiveSide, 0, (ItemStack)null));
+								altered.add(BlockProperties.setPattern(TE, effectiveSide, 0));
+							}
+
 						}
-
-					} else {
-
-						altered.add(onHammerLeftClick(TE, entityPlayer));
-
 					}
 
 					if (altered.contains(true)) {
@@ -210,11 +212,9 @@ public class BlockBase extends BlockContainer {
 							BlockProperties.setPattern(TE, effectiveSide, 0);
 						}
 
-						altered.add(true);
-
 					} else if (BlockProperties.hasCover(TE, effectiveSide) && BlockProperties.getCoverBlock(TE, effectiveSide).isOpaqueCube()) {
 
-						altered.add(onChiselClick(TE, effectiveSide, true));
+						onChiselClick(TE, effectiveSide, true);
 
 					}
 
@@ -247,65 +247,68 @@ public class BlockBase extends BlockContainer {
 				/* Sides 0-5 are side covers, and 6 is the base block. */
 				int effectiveSide = BlockProperties.hasCover(TE, side) ? side : 6;
 
-				if (itemStack.getItem() instanceof ICarpentersHammer && ((ICarpentersHammer)itemStack.getItem()).canUseHammer(world, entityPlayer)) {
+				altered.add(preOnBlockActivated(TE, world, x, y, z, entityPlayer, side, hitX, hitY, hitZ)[0]);
 
-					altered.add(onHammerRightClick(TE, entityPlayer, side, hitX, hitZ));
+				if (!altered.contains(true))
+				{
+					if (itemStack.getItem() instanceof ICarpentersHammer && ((ICarpentersHammer)itemStack.getItem()).canUseHammer(world, entityPlayer)) {
 
-				} else if (ItemRegistry.enableChisel && itemStack.getItem() instanceof ICarpentersChisel && ((ICarpentersChisel)itemStack.getItem()).canUseChisel(world, entityPlayer)) {
+						altered.add(onHammerRightClick(TE, entityPlayer, side, hitX, hitZ));
 
-					if (BlockProperties.hasCover(TE, effectiveSide) && BlockProperties.getCoverBlock(TE, effectiveSide).isOpaqueCube()) {
-						altered.add(onChiselClick(TE, effectiveSide, false));
-					}
+					} else if (ItemRegistry.enableChisel && itemStack.getItem() instanceof ICarpentersChisel && ((ICarpentersChisel)itemStack.getItem()).canUseChisel(world, entityPlayer)) {
 
-				} else if (FeatureRegistry.enableCovers && BlockProperties.isCover(itemStack)) {
+						if (BlockProperties.hasCover(TE, effectiveSide) && BlockProperties.getCoverBlock(TE, effectiveSide).isOpaqueCube()) {
+							altered.add(onChiselClick(TE, effectiveSide, false));
+						}
 
-					Block block = Block.blocksList[itemStack.itemID];
+					} else if (FeatureRegistry.enableCovers && BlockProperties.isCover(itemStack)) {
 
-					/* Will handle blocks that save directions using only x and y axes (pumpkin) */
-					int metadata = block instanceof BlockDirectional ? MathHelper.floor_double(entityPlayer.rotationYaw * 4.0F / 360.0F + 2.5D) & 3 : itemStack.getItemDamage();
+						Block block = Block.blocksList[itemStack.itemID];
 
-					/* Will handle blocks that save directions using all axes (logs, quartz) */
-					if (BlockProperties.blockRotates(world, block, x, y, z))
-					{
-						int facing = BlockProperties.getEntityFacing(EventHandler.eventEntity);
-						int side_interpolated =	entityPlayer.rotationPitch < -45.0F ? 0 : entityPlayer.rotationPitch > 45 ? 1 : facing == 0 ? 3 : facing == 1 ? 4 : facing == 2 ? 2 : 5;
-						metadata = block.onBlockPlaced(world, x, y, z, side_interpolated, hitX, hitY, hitZ, metadata);
-					}
+						/* Will handle blocks that save directions using only x and y axes (pumpkin) */
+						int metadata = block instanceof BlockDirectional ? MathHelper.floor_double(entityPlayer.rotationYaw * 4.0F / 360.0F + 2.5D) & 3 : itemStack.getItemDamage();
 
-					if (!BlockProperties.hasCover(TE, 6)) {
+						/* Will handle blocks that save directions using all axes (logs, quartz) */
+						if (BlockProperties.blockRotates(world, block, x, y, z))
+						{
+							int facing = BlockProperties.getEntityFacing(EventHandler.eventEntity);
+							int side_interpolated =	entityPlayer.rotationPitch < -45.0F ? 0 : entityPlayer.rotationPitch > 45 ? 1 : facing == 0 ? 3 : facing == 1 ? 4 : facing == 2 ? 2 : 5;
+							metadata = block.onBlockPlaced(world, x, y, z, side_interpolated, hitX, hitY, hitZ, metadata);
+						}
 
-						altered.add(decInv.add(BlockProperties.setCover(TE, 6, metadata, itemStack)));
+						if (!BlockProperties.hasCover(TE, 6)) {
 
-					} else if (FeatureRegistry.enableSideCovers) {
+							altered.add(decInv.add(BlockProperties.setCover(TE, 6, metadata, itemStack)));
 
-						if (!BlockProperties.hasCover(TE, side) && canCoverSide(TE, world, x, y, z, side)) {
+						} else if (FeatureRegistry.enableSideCovers) {
 
-							altered.add(decInv.add(BlockProperties.setCover(TE, side, metadata, itemStack)));
+							if (!BlockProperties.hasCover(TE, side) && canCoverSide(TE, world, x, y, z, side)) {
+								altered.add(decInv.add(BlockProperties.setCover(TE, side, metadata, itemStack)));
+							}
 
 						}
 
+					} else if (FeatureRegistry.enableOverlays && BlockProperties.isOverlay(itemStack)) {
+
+						if (!BlockProperties.hasOverlay(TE, effectiveSide) && (effectiveSide < 6 && BlockProperties.hasCover(TE, effectiveSide) || effectiveSide == 6)) {
+							altered.add(decInv.add(BlockProperties.setOverlay(TE, effectiveSide, itemStack)));
+						}
+
+					} else if (FeatureRegistry.enableDyeColors && itemStack.getItem().equals(Item.dyePowder) && itemStack.getItemDamage() != 15) {
+
+						if (!BlockProperties.hasDyeColor(TE, effectiveSide)) {
+							altered.add(decInv.add(BlockProperties.setDyeColor(TE, effectiveSide, 15 - itemStack.getItemDamage())));
+						}
+
 					}
-
-				} else if (FeatureRegistry.enableOverlays && BlockProperties.isOverlay(itemStack)) {
-
-					if (!BlockProperties.hasOverlay(TE, effectiveSide) && (effectiveSide < 6 && BlockProperties.hasCover(TE, effectiveSide) || effectiveSide == 6)) {
-						altered.add(decInv.add(BlockProperties.setOverlay(TE, effectiveSide, itemStack)));
-					}
-
-				} else if (FeatureRegistry.enableDyeColors && itemStack.getItem().equals(Item.dyePowder) && itemStack.getItemDamage() != 15) {
-
-					if (!BlockProperties.hasDyeColor(TE, effectiveSide)) {
-						altered.add(decInv.add(BlockProperties.setDyeColor(TE, effectiveSide, 15 - itemStack.getItemDamage())));
-					}
-
 				}
 			}
 
 			if (!altered.contains(true)) {
 
-				if (canPlayerActivate(TE, entityPlayer))
+				if (canPlayerEdit(TE, entityPlayer) && canPlayerActivate(TE, entityPlayer))
 				{
-					boolean[] result = auxiliaryOnBlockActivated(TE, world, x, y, z, entityPlayer, side, hitX, hitY, hitZ);
+					boolean[] result = postOnBlockActivated(TE, world, x, y, z, entityPlayer, side, hitX, hitY, hitZ);
 					altered.add(result[0]);
 					decInv.add(result[1]);
 				}
@@ -389,7 +392,7 @@ public class BlockBase extends BlockContainer {
 	{
 		TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
 
-		if (!world.isRemote)
+		if (!world.isRemote && TE != null)
 		{
 			/*
 			 * Check for and eject side covers that are blocked by a
@@ -431,8 +434,6 @@ public class BlockBase extends BlockContainer {
 				}
 			}
 		}
-
-		auxiliaryOnNeighborBlockChange(TE, world, x, y, z, blockID);
 	}
 
 	@Override
@@ -631,6 +632,12 @@ public class BlockBase extends BlockContainer {
 				}
 			}
 
+			int auxLightValue = auxiliaryGetLightValue(TE, world, x, y, z);
+
+			if (auxLightValue > lightOutput) {
+				lightOutput = auxLightValue;
+			}
+
 			return lightOutput;
 		}
 
@@ -734,6 +741,17 @@ public class BlockBase extends BlockContainer {
 
 	@Override
 	/**
+	 * Triggered whenever an entity collides with this block (enters into the block). Args: world, x, y, z, entity
+	 */
+	public void onEntityCollidedWithBlock(World world, int x, int y, int z, Entity entity)
+	{
+		if (!willCoverRecurse(world, x, y, z)) {
+			BlockProperties.getCoverBlock(world, 6, x, y, z).onEntityCollidedWithBlock(world, x, y, z, entity);
+		}
+	}
+
+	@Override
+	/**
 	 * Ejects contained items into the world, and notifies neighbors of an update, as appropriate
 	 */
 	public void breakBlock(World world, int x, int y, int z, int blockID, int metadata)
@@ -744,8 +762,6 @@ public class BlockBase extends BlockContainer {
 			for (int side = 0; side < 7; ++side) {
 				BlockProperties.clearAttributes(TE, side);
 			}
-
-			auxiliaryBreakBlock(TE, world, x, y, z, blockID, metadata);
 		}
 
 		super.breakBlock(world, x, y, z, blockID, metadata);
@@ -821,7 +837,7 @@ public class BlockBase extends BlockContainer {
 	 */
 	protected boolean canSustainPlantWithBlockIdOverride(TEBase TE, World world, int x, int y, int z, int blockID, ForgeDirection dir, IPlantable plant)
 	{
-		if (FeatureRegistry.enablePlantSupport)
+		if (FeatureRegistry.enableExtendedPlantSupport)
 		{
 			int plantID = plant.getPlantID(world, x, y + 1, z);
 			EnumPlantType plantType = plant.getPlantType(world, x, y + 1, z);
@@ -829,7 +845,7 @@ public class BlockBase extends BlockContainer {
 			if (
 					plantID == cactus.blockID && blockID == cactus.blockID ||
 					plantID == reed.blockID && blockID == reed.blockID ||
-					plant instanceof BlockFlower && PlantHandler.canThisPlantGrowOnThisBlockID(blockID)
+					plant instanceof BlockFlower && ExtendedPlantHandler.canThisPlantGrowOnThisBlockID(blockID)
 					) {
 				return true;
 			}
@@ -874,8 +890,6 @@ public class BlockBase extends BlockContainer {
 		TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
 
 		BlockProperties.setOwner(TE, entityLiving);
-
-		auxiliaryOnBlockPlacedBy(TE, world, x, y, z, entityLiving, itemStack);
 	}
 
 	@Override
@@ -974,18 +988,32 @@ public class BlockBase extends BlockContainer {
 		return true;
 	}
 
-	protected void auxiliaryOnBlockPlacedBy(TEBase TE, World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack itemStack) {}
+	/**
+	 * This method is configured on as as-needed basis.
+	 * It's calling order is not guaranteed.
+	 */
+	protected boolean preOnBlockClicked(TEBase TE, World world, int x, int y, int z, EntityPlayer entityPlayer)
+	{
+		return false;
+	}
 
 	/**
-	 * Runs after primary onBlockActivated() functions.
-	 * @return [ altered, decrementInventory ]
+	 * This method is configured on as as-needed basis.
+	 * It's calling order is not guaranteed.
 	 */
-	protected boolean[] auxiliaryOnBlockActivated(TEBase TE, World world, int x, int y, int z, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ)
+	protected boolean[] preOnBlockActivated(TEBase TE, World world, int x, int y, int z, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ)
 	{
 		return new boolean[] { false, false };
 	}
 
-	protected void auxiliaryBreakBlock(TEBase TE, World world, int x, int y, int z, int var5, int var6) {}
+	/**
+	 * This method is configured on as as-needed basis.
+	 * It's calling order is not guaranteed.
+	 */
+	protected boolean[] postOnBlockActivated(TEBase TE, World world, int x, int y, int z, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ)
+	{
+		return new boolean[] { false, false };
+	}
 
 	protected boolean onHammerLeftClick(TEBase TE, EntityPlayer entityPlayer)
 	{
@@ -1013,6 +1041,9 @@ public class BlockBase extends BlockContainer {
 		return false;
 	}
 
-	protected void auxiliaryOnNeighborBlockChange(TEBase TE, World world, int x, int y, int z, int blockID) {}
+	protected int auxiliaryGetLightValue(TEBase TE, IBlockAccess blockAccess, int x, int y, int z)
+	{
+		return 0;
+	}
 
 }

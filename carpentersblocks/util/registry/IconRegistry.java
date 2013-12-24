@@ -7,65 +7,62 @@ import net.minecraft.util.Icon;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.event.ForgeSubscribe;
 import carpentersblocks.util.ModLogger;
-import carpentersblocks.util.handler.BedDesignHandler;
+import carpentersblocks.util.bed.BedDesignHandler;
+import carpentersblocks.util.flowerpot.FlowerPotDesignHandler;
 import carpentersblocks.util.handler.PatternHandler;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class IconRegistry {
 
-	@SideOnly(Side.CLIENT)
-	public static Icon	icon_missing,
-						icon_blank,
-						icon_solid,
-						icon_slope_oblique_pt_high,
-						icon_slope_oblique_pt_low,
-						icon_overlay_fast_grass_side,
-						icon_overlay_hay_side,
-						icon_overlay_snow_side,
-						icon_overlay_mycelium_side,
-						icon_full_frame,
-						icon_quartered_frame,
-						icon_lever,
-						icon_torch_lit,
-						icon_torch_head_smoldering,
-						icon_torch_head_unlit,
-						icon_door_screen_tall,
-						icon_door_glass_tall_top,
-						icon_door_glass_tall_bottom,
-						icon_door_glass_top,
-						icon_door_french_glass_top,
-						icon_door_french_glass_bottom,
-						icon_hatch_french_glass,
-						icon_hatch_glass,
-						icon_hatch_screen,
-						icon_bed_pillow,
-						icon_daylight_sensor_glass_top,
-						icon_safe_light;
+	public static Icon icon_missing;
+	public static Icon icon_blank;
+	public static Icon icon_solid;
+	public static Icon icon_slope_oblique_pt_high;
+	public static Icon icon_slope_oblique_pt_low;
+	public static Icon icon_overlay_fast_grass_side;
+	public static Icon icon_overlay_hay_side;
+	public static Icon icon_overlay_snow_side;
+	public static Icon icon_overlay_mycelium_side;
+	public static Icon icon_full_frame;
+	public static Icon icon_quartered_frame;
+	public static Icon icon_lever;
+	public static Icon icon_torch_lit;
+	public static Icon icon_torch_head_smoldering;
+	public static Icon icon_torch_head_unlit;
+	public static Icon icon_door_screen_tall;
+	public static Icon icon_door_glass_tall_top;
+	public static Icon icon_door_glass_tall_bottom;
+	public static Icon icon_door_glass_top;
+	public static Icon icon_door_french_glass_top;
+	public static Icon icon_door_french_glass_bottom;
+	public static Icon icon_hatch_french_glass;
+	public static Icon icon_hatch_glass;
+	public static Icon icon_hatch_screen;
+	public static Icon icon_bed_pillow;
+	public static Icon icon_daylight_sensor_glass_top;
+	public static Icon icon_safe_light;
+	public static Icon icon_flower_pot;
+	public static Icon icon_flower_pot_glass;
 
-	@SideOnly(Side.CLIENT)
 	public static Icon[] icon_pattern = new Icon[PatternHandler.maxNum];
-
-	@SideOnly(Side.CLIENT)
 	public static Icon[] icon_bed_pillow_custom = new Icon[BedDesignHandler.maxNum];
+	public static Icon[] icon_flower_pot_design = new Icon[FlowerPotDesignHandler.maxNum];
 
 	@ForgeSubscribe
-	@SideOnly(Side.CLIENT)
 	/**
 	 * This will load all icons that are used universally for all blocks.
 	 */
 	public void loadTextures(TextureStitchEvent.Pre event)
-	{		
+	{
 		if (event.map.textureType == 0) {
-			icon_missing = event.map.getAtlasSprite(null);
+			icon_missing = event.map.getAtlasSprite("missingno");
 			if (!FeatureRegistry.enableMCPatcherCompatibility) {
 				registerIcons(event.map);
 			} else {
-				ModLogger.log(Level.INFO, "MCPatcher icon registration compatibility being used.");
+				ModLogger.log(Level.INFO, "MCPatcher icon registration compatibility enabled.");
 			}
 		}
 	}
-	
+
 	/**
 	 * Registers non-specific icons.
 	 */

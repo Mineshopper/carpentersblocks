@@ -92,10 +92,14 @@ public class BlockCarpentersButton extends BlockBase {
 	/**
 	 * Called when the block is placed in the world.
 	 */
-	public void auxiliaryOnBlockPlacedBy(TEBase TE, World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack itemStack)
+	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack itemStack)
 	{
+		TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
+
 		Button.setFacing(TE, world.getBlockMetadata(x, y, z));
 		Button.setReady(TE);
+
+		super.onBlockPlacedBy(world, x, y, z, entityLiving, itemStack);
 	}
 
 	@Override
@@ -103,17 +107,27 @@ public class BlockCarpentersButton extends BlockBase {
 	 * Lets the block know when one of its neighbor changes. Doesn't know which neighbor changed (coordinates passed are
 	 * their own) Args: x, y, z, neighbor blockID
 	 */
-	protected void auxiliaryOnNeighborBlockChange(TEBase TE, World world, int x, int y, int z, int blockID)
+	public void onNeighborBlockChange(World world, int x, int y, int z, int blockID)
 	{
-		if (Button.isReady(TE))
+		if (!world.isRemote)
 		{
-			ForgeDirection dir = Button.getFacing(TE);
+			TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
 
-			if (!canPlaceBlockOnSide(world, x, y, z, dir.ordinal())) {
-				dropBlockAsItem(world, x, y, z, 0, 0);
-				world.setBlockToAir(x, y, z);
+			if (TE != null)
+			{
+				if (Button.isReady(TE))
+				{
+					ForgeDirection dir = Button.getFacing(TE);
+
+					if (!canPlaceBlockOnSide(world, x, y, z, dir.ordinal())) {
+						dropBlockAsItem(world, x, y, z, 0, 0);
+						world.setBlockToAir(x, y, z);
+					}
+				}
 			}
 		}
+
+		super.onNeighborBlockChange(world, x, y, z, blockID);
 	}
 
 	@Override
@@ -149,7 +163,7 @@ public class BlockCarpentersButton extends BlockBase {
 	/**
 	 * Called upon block activation (right click on the block.)
 	 */
-	public boolean[] auxiliaryOnBlockActivated(TEBase TE, World world, int x, int y, int z, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ)
+	public boolean[] postOnBlockActivated(TEBase TE, World world, int x, int y, int z, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ)
 	{
 		if (!isDepressed(TE))
 		{
@@ -167,13 +181,17 @@ public class BlockCarpentersButton extends BlockBase {
 	/**
 	 * Ejects contained items into the world, and notifies neighbours of an update, as appropriate
 	 */
-	public void auxiliaryBreakBlock(TEBase TE, World world, int x, int y, int z, int par5, int metadata)
+	public void breakBlock(World world, int x, int y, int z, int par5, int metadata)
 	{
+		TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
+
 		ForgeDirection dir = Button.getFacing(TE);
 
 		if (isDepressed(TE)) {
 			notifySideNeighbor(world, x, y, z, dir.ordinal());
 		}
+
+		super.breakBlock(world, x, y, z, par5, metadata);
 	}
 
 	/**

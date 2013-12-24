@@ -68,7 +68,7 @@ public class BlockHandlerCarpentersTorch extends BlockDeterminantRender {
 			renderTorchHead(x, y, z);
 		}
 
-		if (shouldRenderCover(block)) {
+		if (shouldRenderBlock(block)) {
 			renderTorchHandle(block, x, y, z);
 		}
 	}

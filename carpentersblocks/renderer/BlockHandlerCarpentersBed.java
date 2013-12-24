@@ -6,7 +6,7 @@ import net.minecraftforge.common.ForgeDirection;
 import carpentersblocks.data.Bed;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
-import carpentersblocks.util.handler.BedDesignHandler;
+import carpentersblocks.util.bed.BedDesignHandler;
 import carpentersblocks.util.registry.IconRegistry;
 
 public class BlockHandlerCarpentersBed extends BlockDeterminantRender {
@@ -103,7 +103,7 @@ public class BlockHandlerCarpentersBed extends BlockDeterminantRender {
 		{
 			if (isHead) {
 
-				if (shouldRenderCover(block))
+				if (shouldRenderBlock(block))
 				{
 					// Render headboard
 					renderBlocks.setRenderBounds(0.125D, 0.1875D, 0.875D, 0.875D, 0.875D, 1.0D);
@@ -163,7 +163,7 @@ public class BlockHandlerCarpentersBed extends BlockDeterminantRender {
 
 			} else {
 
-				if (shouldRenderCover(block))
+				if (shouldRenderBlock(block))
 				{
 					setDyeColorOverride(frameColor);
 
@@ -226,7 +226,7 @@ public class BlockHandlerCarpentersBed extends BlockDeterminantRender {
 		{
 			if (isHead) {
 
-				if (shouldRenderCover(block))
+				if (shouldRenderBlock(block))
 				{
 					// Render headboard
 					renderBlocks.setRenderBounds(0.125D, 0.1875D, 0.0D, 0.875D, 0.875D, 0.125D);
@@ -285,7 +285,7 @@ public class BlockHandlerCarpentersBed extends BlockDeterminantRender {
 
 			} else {
 
-				if (shouldRenderCover(block))
+				if (shouldRenderBlock(block))
 				{
 					setDyeColorOverride(frameColor);
 
@@ -348,7 +348,7 @@ public class BlockHandlerCarpentersBed extends BlockDeterminantRender {
 		{
 			if (isHead) {
 
-				if (shouldRenderCover(block))
+				if (shouldRenderBlock(block))
 				{
 					// Render headboard
 					renderBlocks.setRenderBounds(0.875D, 0.1875D, 0.125D, 1.0D, 0.875D, 0.875D);
@@ -408,7 +408,7 @@ public class BlockHandlerCarpentersBed extends BlockDeterminantRender {
 
 			} else {
 
-				if (shouldRenderCover(block))
+				if (shouldRenderBlock(block))
 				{
 					setDyeColorOverride(frameColor);
 
@@ -471,7 +471,7 @@ public class BlockHandlerCarpentersBed extends BlockDeterminantRender {
 		{
 			if (isHead) {
 
-				if (shouldRenderCover(block))
+				if (shouldRenderBlock(block))
 				{
 					// Render headboard
 					renderBlocks.setRenderBounds(0.0D, 0.1875D, 0.125D, 0.125D, 0.875D, 0.875D);
@@ -531,7 +531,7 @@ public class BlockHandlerCarpentersBed extends BlockDeterminantRender {
 
 			} else {
 
-				if (shouldRenderCover(block))
+				if (shouldRenderBlock(block))
 				{
 					setDyeColorOverride(frameColor);
 

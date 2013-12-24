@@ -1,8 +1,6 @@
 package carpentersblocks.util.stairs;
 
-import carpentersblocks.data.Slope;
 import carpentersblocks.data.Stairs;
-import carpentersblocks.util.registry.FeatureRegistry;
 
 public class StairsUtil {
 
@@ -275,5 +273,5 @@ public class StairsUtil {
 
 		return null;
 	}
-	
+
 }

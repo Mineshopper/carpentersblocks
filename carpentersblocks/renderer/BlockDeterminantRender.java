@@ -10,7 +10,8 @@ public class BlockDeterminantRender extends BlockHandlerBase {
 	/**
 	 * Returns whether blocks using cover should render.
 	 */
-	protected boolean shouldRenderCover(Block block)
+	@Override
+	protected boolean shouldRenderBlock(Block block)
 	{
 		if (renderAlphaOverride) {
 			return renderPass == 1;

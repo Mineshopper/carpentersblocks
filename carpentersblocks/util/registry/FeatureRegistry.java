@@ -10,16 +10,18 @@ public class FeatureRegistry {
 	public static boolean enableOverlays = true;
 	public static boolean enableSideCovers = true;
 	public static boolean enableDyeColors = true;
+	public static boolean enablePatterns = true;
 	public static boolean enableFancyFluids = true;
 	public static boolean enableTorchWeatherEffects = true;
 	public static boolean enableBlockOwnership = true;
 	public static boolean enableMCPatcherCompatibility = false;
+	public static boolean enablePlantColorOverride = true;
 
 	public static int slopeSmoothness = 2;
 
 	public static boolean enableZFightingFix = false;
 	public static boolean enableOptifineIntegration = true;
-	public static boolean enablePlantSupport = true;
+	public static boolean enableExtendedPlantSupport = true;
 
 	/**
 	 * Initializes configuration properties.
@@ -30,7 +32,11 @@ public class FeatureRegistry {
 		enableOverlays = config.get("features", "Enable Overlays", enableOverlays).getBoolean(enableOverlays);
 		enableSideCovers = config.get("features", "Enable Side Covers", enableSideCovers).getBoolean(enableSideCovers);
 		enableDyeColors = config.get("features", "Enable Dye Colors", enableDyeColors).getBoolean(enableDyeColors);
-		enableFancyFluids = config.get("features", "Enable Fancy Fluids", enableFancyFluids).getBoolean(enableFancyFluids);
+		enablePatterns = config.get("features", "Enable Patterns", enablePatterns).getBoolean(enablePatterns);
+
+		Property fancyFluidsProp = config.get("features", "Enable Fancy Fluids", enableFancyFluids);
+		fancyFluidsProp.comment = "When enabled, unobstructed stationary fluid adjacent to block will render in the same space.\nNote: this only takes effect when Fancy Graphics are enabled.";
+		enableFancyFluids = fancyFluidsProp.getBoolean(enableFancyFluids);
 
 		Property blockOwnershipProp = config.get("features", "Enable Block Ownership", enableBlockOwnership);
 		blockOwnershipProp.comment = "This will prevent players besides you and server operators from editing your blocks.\nNote: this does not protect blocks against destruction (intentional), and may allow activation if appropriate. Also, the Carpenter's Safe is not affected by this.";
@@ -51,10 +57,18 @@ public class FeatureRegistry {
 		Property torchWeatherEffectsProp = config.get("torch", "Enable Torch Weather Effects", enableTorchWeatherEffects);
 		torchWeatherEffectsProp.comment = "This controls whether torches extinguish themselves when exposed to rain or snow.";
 		enableTorchWeatherEffects = torchWeatherEffectsProp.getBoolean(enableTorchWeatherEffects);
-		
+
 		Property MCPatcherProp = config.get("rendering", "Enable MCPatcher Compatibility", enableMCPatcherCompatibility);
 		MCPatcherProp.comment = "This will fix block texture issues caused by MCPatcher.";
 		enableMCPatcherCompatibility = MCPatcherProp.getBoolean(enableMCPatcherCompatibility);
+
+		Property extendedPlantSupportProp = config.get("features", "Extended Plant Support", enableExtendedPlantSupport);
+		extendedPlantSupportProp.comment = "This enables most plants to be planted on covered or overlaid Carpenter's blocks.";
+		enableExtendedPlantSupport = extendedPlantSupportProp.getBoolean(enableExtendedPlantSupport);
+
+		Property plantColorOverrideProp = config.get("flower pot", "Override Biome Coloring", enablePlantColorOverride);
+		plantColorOverrideProp.comment = "Set to true to override biome-colored plants to a lively green.";
+		enablePlantColorOverride = plantColorOverrideProp.getBoolean(enablePlantColorOverride);
 	}
 
 }

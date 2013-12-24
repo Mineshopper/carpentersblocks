@@ -136,7 +136,7 @@ public class BlockHandlerCarpentersDaylightSensor extends BlockDeterminantRender
 
 		/* Render coverBlock walls and bottom */
 
-		if (shouldRenderCover(block))
+		if (shouldRenderBlock(block))
 		{
 			renderBlocks.setRenderBounds(0.0625D, 0.0D, 0.0625D, 0.9375D, 0.0625D, 0.9375D);
 			renderBlock(block, x, y, z);

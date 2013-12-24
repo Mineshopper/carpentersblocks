@@ -26,6 +26,7 @@ tile.blockCarpentersSlope.name=Carpenter's Slope
 tile.blockCarpentersStairs.name=Carpenter's Stairs
 tile.blockCarpentersTorch.name=Carpenter's Torch
 tile.blockCarpentersSafe.name=Carpenter's Safe
+tile.blockCarpentersFlowerPot.name=Carpenter's Flower Pot
 
 # MESSAGES
 message.polarity_pos.name=\u00a76POLARITY: \u00a7fNormal redstone output.

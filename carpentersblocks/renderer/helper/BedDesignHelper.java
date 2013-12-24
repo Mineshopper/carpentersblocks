@@ -4,7 +4,7 @@ import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 
 public class BedDesignHelper {
-	
+
 	public static final byte	SIDE1 = 0;
 	public static final byte	SIDE2 = 1;
 	public static final byte	  END = 2;
@@ -12,13 +12,13 @@ public class BedDesignHelper {
 	public static final byte	SIDE5 = 4;
 	public static final byte	 HEAD = 5;
 	public static final byte	 FOOT = 6;
-	
+
 	private static double offset1 = (double) 1 / 3;
 	private static double offset2 = (double) 2 / 3;
 	private static double offset3 = (double) 1 / 6;
 	private static double offset4 = (double) 11 / 48;
 	private static double offset5 = (double) 37 / 48;
-	
+
 	/**
 	 * Stores UV corners for design components.
 	 * [piece][corner][UV]
@@ -31,7 +31,7 @@ public class BedDesignHelper {
 	 * 3 = [BL]
 	 */
 	private static double[][][] designUV =
-	{
+		{
 		{ { offset1, offset3 }, { offset1, offset1 }, { offset4, offset1 }, { offset4, offset3 } },	// Side 1
 		{ { offset1, offset1 }, { offset1, offset2 }, { offset4, offset2 }, { offset4, offset1 } },	// Side 2
 		{ { offset1, offset2 }, { offset2, offset2 }, { offset2, offset5 }, { offset1, offset5 } },	// End
@@ -39,22 +39,22 @@ public class BedDesignHelper {
 		{ { offset2, offset1 }, { offset2, offset3 }, { offset5, offset3 }, { offset5, offset1 } },	// Side 5
 		{ { offset1, offset3 }, { offset2, offset3 }, { offset2, offset1 }, { offset1, offset1 } },	// Head
 		{ { offset1, offset1 }, { offset2, offset1 }, { offset2, offset2 }, { offset1, offset2 } }	// Foot
-	};
+		};
 
 	public static void renderFaceYPos(RenderBlocks renderBlocks, int piece, double x, double y, double z)
 	{
 		Tessellator.instance.setColorOpaque_F(1.0F, 1.0F, 1.0F);
-		
+
 		double[] coord_TL = { designUV[piece][0][0], designUV[piece][0][1] };
 		double[] coord_BL = { designUV[piece][3][0], designUV[piece][3][1] };
 		double[] coord_BR = { designUV[piece][2][0], designUV[piece][2][1] };
 		double[] coord_TR = { designUV[piece][1][0], designUV[piece][1][1] };
-		
+
 		double[] temp_TL = coord_TL;
 		double[] temp_BL = coord_BL;
 		double[] temp_BR = coord_BR;
 		double[] temp_TR = coord_TR;
-		
+
 		/*
 		 * Rotate texture.
 		 */
@@ -79,7 +79,7 @@ public class BedDesignHelper {
 			temp_TR = coord_BR;
 			break;
 		}
-		
+
 		double xMin = x + renderBlocks.renderMinX;
 		double xMax = x + renderBlocks.renderMaxX;
 		double yMax = y + renderBlocks.renderMaxY;
@@ -95,7 +95,7 @@ public class BedDesignHelper {
 	public static void renderFaceZNeg(RenderBlocks renderBlocks, int piece, double x, double y, double z)
 	{
 		Tessellator.instance.setColorOpaque_F(0.8F, 0.8F, 0.8F);
-		
+
 		double xMin = x + renderBlocks.renderMinX;
 		double xMax = x + renderBlocks.renderMaxX;
 		double yMin = y + renderBlocks.renderMinY;
@@ -111,7 +111,7 @@ public class BedDesignHelper {
 	public static void renderFaceZPos(RenderBlocks renderBlocks, int piece, double x, double y, double z)
 	{
 		Tessellator.instance.setColorOpaque_F(0.8F, 0.8F, 0.8F);
-		
+
 		double xMin = x + renderBlocks.renderMinX;
 		double xMax = x + renderBlocks.renderMaxX;
 		double yMin = y + renderBlocks.renderMinY;
@@ -123,11 +123,11 @@ public class BedDesignHelper {
 		VertexHelper.setupVertex(renderBlocks, xMax, yMin, zMax, designUV[piece][2][0], designUV[piece][2][1], 2); // BR
 		VertexHelper.setupVertex(renderBlocks, xMax, yMax, zMax, designUV[piece][1][0], designUV[piece][1][1], 3); // TR
 	}
-	
+
 	public static void renderFaceXNeg(RenderBlocks renderBlocks, int piece, double x, double y, double z)
 	{
 		Tessellator.instance.setColorOpaque_F(0.6F, 0.6F, 0.6F);
-		
+
 		double xMin = x + renderBlocks.renderMinX;
 		double yMin = y + renderBlocks.renderMinY;
 		double yMax = y + renderBlocks.renderMaxY;
@@ -139,11 +139,11 @@ public class BedDesignHelper {
 		VertexHelper.setupVertex(renderBlocks, xMin, yMin, zMin, designUV[piece][3][0], designUV[piece][3][1], 2); // BL
 		VertexHelper.setupVertex(renderBlocks, xMin, yMin, zMax, designUV[piece][2][0], designUV[piece][2][1], 3); // BR
 	}
-	
+
 	public static void renderFaceXPos(RenderBlocks renderBlocks, int piece, double x, double y, double z)
 	{
 		Tessellator.instance.setColorOpaque_F(0.6F, 0.6F, 0.6F);
-		
+
 		double xMax = x + renderBlocks.renderMaxX;
 		double yMin = y + renderBlocks.renderMinY;
 		double yMax = y + renderBlocks.renderMaxY;
@@ -155,5 +155,5 @@ public class BedDesignHelper {
 		VertexHelper.setupVertex(renderBlocks, xMax, yMax, zMin, designUV[piece][1][0], designUV[piece][1][1], 2); // TR
 		VertexHelper.setupVertex(renderBlocks, xMax, yMax, zMax, designUV[piece][0][0], designUV[piece][0][1], 3); // TL
 	}
-	
+
 }

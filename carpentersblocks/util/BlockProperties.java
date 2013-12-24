@@ -142,6 +142,17 @@ public class BlockProperties {
 	}
 
 	/**
+	 * Returns whether block or side block has an attribute.
+	 * It checks for cover, dye color and overlay.
+	 */
+	public static boolean hasAttribute(TEBase TE, int side)
+	{
+		return	hasCover(TE, side) ||
+				hasDyeColor(TE, side) ||
+				hasOverlay(TE, side);
+	}
+
+	/**
 	 * Strips side of all properties.
 	 */
 	public static void clearAttributes(TEBase TE, int side)

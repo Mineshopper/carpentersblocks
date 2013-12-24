@@ -106,7 +106,7 @@ public class BlockCarpentersHatch extends BlockBase {
 	/**
 	 * Called upon block activation (right click on the block.)
 	 */
-	public boolean[] auxiliaryOnBlockActivated(TEBase TE, World world, int x, int y, int z, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ)
+	public boolean[] postOnBlockActivated(TEBase TE, World world, int x, int y, int z, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ)
 	{
 		if (!activationRequiresRedstone(TE)) {
 			Hatch.setState(TE, Hatch.getState(TE) == Hatch.STATE_CLOSED ? Hatch.STATE_OPEN : Hatch.STATE_CLOSED);
@@ -183,39 +183,50 @@ public class BlockCarpentersHatch extends BlockBase {
 	 * Lets the block know when one of its neighbor changes. Doesn't know which neighbor changed (coordinates passed are
 	 * their own) Args: x, y, z, neighbor blockID
 	 */
-	protected void auxiliaryOnNeighborBlockChange(TEBase TE, World world, int x, int y, int z, int blockID)
+	public void onNeighborBlockChange(World world, int x, int y, int z, int blockID)
 	{
-		int dir = Hatch.getDir(TE);
-		int state = Hatch.getState(TE);
+		if (!world.isRemote)
+		{
+			TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
 
-		int xOffset = x;
-		int zOffset = z;
+			if (TE != null)
+			{
 
-		switch (dir) {
-		case Hatch.DIR_Z_NEG:
-			zOffset = z + 1;
-			break;
-		case Hatch.DIR_Z_POS:
-			--zOffset;
-			break;
-		case Hatch.DIR_X_NEG:
-			xOffset = x + 1;
-			break;
-		case Hatch.DIR_X_POS:
-			--xOffset;
-			break;
+				int dir = Hatch.getDir(TE);
+				int state = Hatch.getState(TE);
+
+				int xOffset = x;
+				int zOffset = z;
+
+				switch (dir) {
+				case Hatch.DIR_Z_NEG:
+					zOffset = z + 1;
+					break;
+				case Hatch.DIR_Z_POS:
+					--zOffset;
+					break;
+				case Hatch.DIR_X_NEG:
+					xOffset = x + 1;
+					break;
+				case Hatch.DIR_X_POS:
+					--xOffset;
+					break;
+				}
+
+				if (!(isValidSupportBlock(world, x, y, z, world.getBlockId(xOffset, y, zOffset), dir + 2) || world.isBlockSolidOnSide(xOffset, y, zOffset, ForgeDirection.getOrientation(dir + 2)))) {
+					findNextSideSupportBlock(TE, world, x, y, z);
+				}
+
+				boolean isPowered = world.isBlockIndirectlyGettingPowered(x, y, z);
+				boolean isOpen = state == Hatch.STATE_OPEN;
+
+				if (blockID > 0 && Block.blocksList[blockID].canProvidePower() && isPowered != isOpen) {
+					Hatch.setState(TE, state == Hatch.STATE_OPEN ? Hatch.STATE_CLOSED : Hatch.STATE_OPEN);
+				}
+			}
 		}
 
-		if (!(isValidSupportBlock(world, x, y, z, world.getBlockId(xOffset, y, zOffset), dir + 2) || world.isBlockSolidOnSide(xOffset, y, zOffset, ForgeDirection.getOrientation(dir + 2)))) {
-			findNextSideSupportBlock(TE, world, x, y, z);
-		}
-
-		boolean isPowered = world.isBlockIndirectlyGettingPowered(x, y, z);
-		boolean isOpen = state == Hatch.STATE_OPEN;
-
-		if (blockID > 0 && Block.blocksList[blockID].canProvidePower() && isPowered != isOpen) {
-			Hatch.setState(TE, state == Hatch.STATE_OPEN ? Hatch.STATE_CLOSED : Hatch.STATE_OPEN);
-		}
+		super.onNeighborBlockChange(world, x, y, z, blockID);
 	}
 
 	@Override
@@ -254,8 +265,10 @@ public class BlockCarpentersHatch extends BlockBase {
 	 * Called when the block is placed in the world.
 	 * Uses cardinal direction to adjust metadata if player clicks top or bottom face of block.
 	 */
-	public void auxiliaryOnBlockPlacedBy(TEBase TE, World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack itemStack)
+	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack itemStack)
 	{
+		TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
+
 		int metadata = world.getBlockMetadata(x, y, z);
 
 		Hatch.setDir(TE, metadata & 0x3);
@@ -265,6 +278,8 @@ public class BlockCarpentersHatch extends BlockBase {
 		if (isPositive) {
 			Hatch.setPos(TE, Hatch.POSITION_HIGH);
 		}
+
+		super.onBlockPlacedBy(world, x, y, z, entityLiving, itemStack);
 	}
 
 	@Override

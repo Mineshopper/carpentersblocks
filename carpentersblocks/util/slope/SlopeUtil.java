@@ -48,7 +48,7 @@ public class SlopeUtil {
 			return 1;
 		}
 	}
-	
+
 	/**
 	 * Will return slope boundaries for all slopes
 	 */
@@ -257,9 +257,9 @@ public class SlopeUtil {
 		case Slope.ID_PYR_HALF_NEG:
 			return new float[] { zeroOffset * 0.5F, 1.0F - oneOffset * 0.5F, zeroOffset * 0.5F, 1.0F - zeroOffset * 0.5F, 1.0F, 1.0F - zeroOffset * 0.5F };
 		default: {
-			
-			boolean renderPrism = (getNumPasses(slope) / precision) < 2.0F;
-			
+
+			boolean renderPrism = getNumPasses(slope) / precision < 2.0F;
+
 			switch (slope.slopeID) {
 			case Slope.ID_PRISM_SLOPE_N:
 				switch (pass) {
@@ -269,7 +269,7 @@ public class SlopeUtil {
 					if (renderPrism) {
 						return new float[] { zeroOffset * 0.5F, 0.0F, 0.0F, 1.0F - zeroOffset * 0.5F, oneOffset * 0.5F, 0.5F };
 					}
-				}			
+				}
 			case Slope.ID_PRISM_SLOPE_S:
 				switch (pass) {
 				case 1:
@@ -278,7 +278,7 @@ public class SlopeUtil {
 					if (renderPrism) {
 						return new float[] { zeroOffset * 0.5F, 0.0F, 0.5F, 1.0F - zeroOffset * 0.5F, oneOffset * 0.5F, 1.0F };
 					}
-				}	
+				}
 			case Slope.ID_PRISM_SLOPE_W:
 				switch (pass) {
 				case 1:
@@ -325,11 +325,11 @@ public class SlopeUtil {
 				default:
 					return null;
 				}
-				
+
 			}
-			
+
 		}
 		}
 	}
-	
+
 }

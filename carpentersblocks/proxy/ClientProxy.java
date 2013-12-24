@@ -8,6 +8,7 @@ import carpentersblocks.renderer.BlockHandlerCarpentersButton;
 import carpentersblocks.renderer.BlockHandlerCarpentersCollapsibleBlock;
 import carpentersblocks.renderer.BlockHandlerCarpentersDaylightSensor;
 import carpentersblocks.renderer.BlockHandlerCarpentersDoor;
+import carpentersblocks.renderer.BlockHandlerCarpentersFlowerPot;
 import carpentersblocks.renderer.BlockHandlerCarpentersGate;
 import carpentersblocks.renderer.BlockHandlerCarpentersHatch;
 import carpentersblocks.renderer.BlockHandlerCarpentersLadder;
@@ -114,6 +115,11 @@ public class ClientProxy extends CommonProxy {
 		if (BlockRegistry.enableBlock) {
 			BlockRegistry.carpentersBlockRenderID = RenderingRegistry.getNextAvailableRenderId();
 			RenderingRegistry.registerBlockHandler(BlockRegistry.carpentersBlockRenderID, new BlockHandlerCarpentersBlock());
+		}
+
+		if (BlockRegistry.enableFlowerPot) {
+			BlockRegistry.carpentersFlowerPotRenderID = RenderingRegistry.getNextAvailableRenderId();
+			RenderingRegistry.registerBlockHandler(BlockRegistry.carpentersFlowerPotRenderID, new BlockHandlerCarpentersFlowerPot());
 		}
 
 		if (FeatureRegistry.enableOptifineIntegration && FMLClientHandler.instance().hasOptifine()) {

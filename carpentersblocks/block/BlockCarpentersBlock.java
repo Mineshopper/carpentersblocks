@@ -136,8 +136,10 @@ public class BlockCarpentersBlock extends BlockBase {
 	/**
 	 * Called when the block is placed in the world.
 	 */
-	public void auxiliaryOnBlockPlacedBy(TEBase TE, World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack itemStack)
+	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack itemStack)
 	{
+		TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
+
 		int data = Slab.BLOCK_FULL;
 
 		// If shift key is down, skip auto-orientation
@@ -169,6 +171,8 @@ public class BlockCarpentersBlock extends BlockBase {
 		}
 
 		BlockProperties.setData(TE, data);
+
+		super.onBlockPlacedBy(world, x, y, z, entityLiving, itemStack);
 	}
 
 	@Override

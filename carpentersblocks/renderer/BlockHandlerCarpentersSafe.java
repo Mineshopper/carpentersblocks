@@ -350,7 +350,7 @@ public class BlockHandlerCarpentersSafe extends BlockDeterminantRender {
 		case BLOCKTYPE_DOOR:
 			lightingHelper.setLightnessOffset(REDUCED_OFFSET);
 		default:
-			if (shouldRenderCover(block)) {
+			if (shouldRenderBlock(block)) {
 				renderBlock(block, x, y, z);
 			}
 		}

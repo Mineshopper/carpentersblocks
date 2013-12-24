@@ -71,7 +71,7 @@ public class BlockHandlerCarpentersHatch extends BlockDeterminantRender {
 	 */
 	private void renderHiddenHatch(Block block, int x, int y, int z)
 	{
-		if (shouldRenderCover(block))
+		if (shouldRenderBlock(block))
 		{
 			BlockCarpentersHatch blockRef = (BlockCarpentersHatch) BlockRegistry.blockCarpentersHatch;
 			blockRef.setBlockBoundsBasedOnState(renderBlocks.blockAccess, x, y, z);
@@ -139,7 +139,7 @@ public class BlockHandlerCarpentersHatch extends BlockDeterminantRender {
 			}
 		}
 
-		if (shouldRenderCover(block))
+		if (shouldRenderBlock(block))
 		{
 			/*
 			 * Draw sides
@@ -278,7 +278,7 @@ public class BlockHandlerCarpentersHatch extends BlockDeterminantRender {
 			}
 		}
 
-		if (shouldRenderCover(block))
+		if (shouldRenderBlock(block))
 		{
 			/*
 			 * Draw sides
@@ -447,7 +447,7 @@ public class BlockHandlerCarpentersHatch extends BlockDeterminantRender {
 			}
 		}
 
-		if (shouldRenderCover(block))
+		if (shouldRenderBlock(block))
 		{
 			/*
 			 * Draw sides

@@ -1,11 +1,9 @@
 package carpentersblocks.renderer.helper;
 
-import carpentersblocks.renderer.BlockHandlerBase;
 import net.minecraft.block.BlockGrass;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.Icon;
-import net.minecraftforge.common.ForgeDirection;
 
 public class VertexHelper {
 
@@ -13,20 +11,20 @@ public class VertexHelper {
 	public final static int BOTTOM_LEFT 	= 1;
 	public final static int BOTTOM_RIGHT 	= 2;
 	public final static int TOP_RIGHT 		= 3;
-	
+
 	public final static int TOP_CENTER		= 4;
 	public final static int BOTTOM_CENTER	= 5;
-	
+
 	public final static int NORTHWEST 		= TOP_LEFT;
 	public final static int SOUTHWEST 		= BOTTOM_LEFT;
 	public final static int SOUTHEAST	 	= BOTTOM_RIGHT;
 	public final static int NORTHEAST 		= TOP_RIGHT;
-	
+
 	/**
 	 * Offset used for faces.
 	 */
 	protected static double offset = 0.0D;
-	
+
 	/**
 	 * Sets offset for drawing face.
 	 */
@@ -34,7 +32,7 @@ public class VertexHelper {
 	{
 		offset = render_offset;
 	}
-	
+
 	/**
 	 * Clears offset.
 	 */
@@ -42,7 +40,7 @@ public class VertexHelper {
 	{
 		offset = 0.0D;
 	}
-	
+
 	/**
 	 * Returns whether icon top adjusts with render height.
 	 * This will set the render helpers to translate the icon
@@ -93,5 +91,5 @@ public class VertexHelper {
 
 		tessellator.addVertexWithUV(x, y, z, u, v);
 	}
-	
+
 }

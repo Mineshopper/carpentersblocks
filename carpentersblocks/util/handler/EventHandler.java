@@ -1,12 +1,13 @@
 package carpentersblocks.util.handler;
 
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
+import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
 import net.minecraftforge.event.ForgeSubscribe;
@@ -15,7 +16,6 @@ import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import carpentersblocks.block.BlockBase;
 import carpentersblocks.renderer.helper.ParticleHelper;
-import carpentersblocks.renderer.helper.RenderHelper;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.registry.ItemRegistry;
@@ -25,12 +25,16 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class EventHandler {
-	
+
 	/** Stores face for onBlockClicked(). */
 	public static int eventFace;
 
 	/** Stores entity that hit block. */
 	public static Entity eventEntity;
+
+	public static double hitX;
+	public static double hitY;
+	public static double hitZ;
 
 	/** This is an offset used for blockIcon. */
 	public final static int BLOCKICON_BASE_ID = 1000;
@@ -58,17 +62,23 @@ public class EventHandler {
 			if (event.action.equals(PlayerInteractEvent.Action.LEFT_CLICK_BLOCK)) {
 
 				eventFace = event.face;
-				
+
+				Vec3 vec = Minecraft.getMinecraft().objectMouseOver.hitVec;
+
+				hitX = (float)vec.xCoord - event.x;
+				hitY = (float)vec.yCoord - event.y;
+				hitZ = (float)vec.zCoord - event.z;
+
 				/*
 				 * Creative mode won't call onBlockClicked() because it will try to destroy the block.
-				 * We'll invoke it here if the hammer is equipped.
+				 * We'll invoke it here if the hammer is equipped while in creative mode.
 				 */
 				if (event.entityPlayer.capabilities.isCreativeMode && isHammerEquipped) {
 					block.onBlockClicked(event.entity.worldObj, event.x, event.y, event.z, event.entityPlayer);
 				}
-				
-			} else { 
-				
+
+			} else {
+
 				/*
 				 * onBlockActivated() isn't called if the player is sneaking.
 				 * We'll invoke it here if the hammer is equipped.
@@ -76,7 +86,7 @@ public class EventHandler {
 				if (isHammerEquipped && event.entityPlayer.isSneaking()) {
 					block.onBlockActivated(event.entity.worldObj, event.x, event.y, event.z, event.entityPlayer, event.face, 1.0F, 1.0F, 1.0F);
 				}
-				
+
 			}
 		}
 	}
@@ -98,12 +108,12 @@ public class EventHandler {
 			if (blockId > 0 && Block.blocksList[blockId] instanceof BlockBase)
 			{
 				TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
-				
+
 				int effectiveSide = BlockProperties.hasCover(TE, 1) ? 1 : 6;
 
 				Block block = BlockProperties.getCoverBlock(TE, effectiveSide);
 				int metadata = block instanceof BlockBase ? BLOCKICON_BASE_ID : BlockProperties.getCoverMetadata(TE, effectiveSide);
-								
+
 				/* Check for overlays that influence particles */
 				block = ParticleHelper.getParticleBlockFromOverlay(TE, effectiveSide, block);
 

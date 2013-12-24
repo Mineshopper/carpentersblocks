@@ -83,8 +83,10 @@ public class BlockCarpentersBarrier extends BlockBase {
 	/**
 	 * Called when the block is placed in the world.
 	 */
-	public void auxiliaryOnBlockPlacedBy(TEBase TE, World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack itemStack)
+	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack itemStack)
 	{
+		TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
+
 		/*
 		 * Match gate type with adjacent type or barrier type if possible
 		 */
@@ -108,6 +110,8 @@ public class BlockCarpentersBarrier extends BlockBase {
 		} else if (TE_ZP != null) {
 			Barrier.setType(TE, world.getBlockId(x, y, z + 1) == blockID ? Barrier.getType(TE_ZP) : Gate.getType(TE_ZP));
 		}
+
+		super.onBlockPlacedBy(world, x, y, z, entityLiving, itemStack);
 	}
 
 	@Override

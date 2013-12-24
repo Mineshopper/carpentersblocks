@@ -18,7 +18,7 @@ import net.minecraftforge.common.ForgeDirection;
 import carpentersblocks.data.Bed;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.tileentity.TECarpentersBed;
-import carpentersblocks.util.handler.BedDesignHandler;
+import carpentersblocks.util.bed.BedDesignHandler;
 import carpentersblocks.util.registry.BlockRegistry;
 import carpentersblocks.util.registry.IconRegistry;
 import carpentersblocks.util.registry.ItemRegistry;
@@ -56,12 +56,12 @@ public class BlockCarpentersBed extends BlockBase {
 		super.registerIcons(iconRegister);
 	}
 
+	@Override
 	/**
 	 * Determines if this block is classified as a Bed, Allowing
 	 * players to sleep in it, though the block has to specifically
 	 * perform the sleeping functionality in it's activated event.
 	 */
-	@Override
 	public boolean isBed(World world, int x, int y, int z, EntityLivingBase entityLiving)
 	{
 		return true;
@@ -109,7 +109,7 @@ public class BlockCarpentersBed extends BlockBase {
 	/**
 	 * Called upon block activation (right click on the block.)
 	 */
-	public boolean[] auxiliaryOnBlockActivated(TEBase TE, World world, int x, int y, int z, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ)
+	public boolean[] postOnBlockActivated(TEBase TE, World world, int x, int y, int z, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ)
 	{
 		if (!world.isRemote)
 		{
@@ -185,25 +185,31 @@ public class BlockCarpentersBed extends BlockBase {
 		return new boolean[] { true, false };
 	}
 
+	@Override
 	/**
 	 * Lets the block know when one of its neighbor changes. Doesn't know which neighbor changed (coordinates passed are
 	 * their own) Args: x, y, z, neighbor blockID
 	 */
-	@Override
-	protected void auxiliaryOnNeighborBlockChange(TEBase TE, World world, int x, int y, int z, int blockID)
+	public void onNeighborBlockChange(World world, int x, int y, int z, int blockID)
 	{
-		if (TE != null)
+		if (!world.isRemote)
 		{
-			if (Bed.getOppositeTE(TE) == null) {
-				world.setBlockToAir(x, y, z);
+			TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
+
+			if (TE != null) {
+				if (Bed.getOppositeTE(TE) == null) {
+					world.setBlockToAir(x, y, z);
+				}
 			}
 		}
+
+		super.onNeighborBlockChange(world, x, y, z, blockID);
 	}
 
+	@Override
 	/**
 	 * Returns the ID of the items to drop on destruction.
 	 */
-	@Override
 	public int idDropped(int par1, Random random, int par3)
 	{
 		return ItemRegistry.itemCarpentersBedID;

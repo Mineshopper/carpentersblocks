@@ -39,23 +39,23 @@ public class SlopeTransform {
 	private final byte XYZNNP = 16;
 	private final byte XYZPNN = 17;
 	private final byte XYZPNP = 18;
-	
+
 	private final TEBase[] 	TE 		= new TEBase[19];
 	private Slope[]			slope 	= new Slope[19];
 	private final boolean[] isSlope	= new boolean[19];
 	private final boolean[] isAir 	= new boolean[19];
-	
+
 	public SlopeTransform(TEBase TE)
 	{
 		this.TE[SRC] = TE;
-		this.world = TE.worldObj;
-		this.x = TE.xCoord;
-		this.y = TE.yCoord;
-		this.z = TE.zCoord;
+		world = TE.worldObj;
+		x = TE.xCoord;
+		y = TE.yCoord;
+		z = TE.zCoord;
 
 		buildBlockMap();
 	}
-	
+
 	private void buildBlockMap()
 	{
 		isAir[XN] = world.isAirBlock(x - 1, y, z);
@@ -76,25 +76,25 @@ public class SlopeTransform {
 		isAir[XYZNNP] = world.isAirBlock(x - 1, y - 1, z + 1);
 		isAir[XYZPNN] = world.isAirBlock(x + 1, y - 1, z - 1);
 		isAir[XYZPNP] = world.isAirBlock(x + 1, y - 1, z + 1);
-		
-		isSlope[XN] = !isAir[XN] && (Block.blocksList[world.getBlockId(x - 1, y, z)].equals(block));
-		isSlope[XP] = !isAir[XP] && (Block.blocksList[world.getBlockId(x + 1, y, z)].equals(block));
-		isSlope[YN] = !isAir[YN] && (Block.blocksList[world.getBlockId(x, y - 1, z)].equals(block));
-		isSlope[YP] = !isAir[YP] && (Block.blocksList[world.getBlockId(x, y + 1, z)].equals(block));
-		isSlope[ZN] = !isAir[ZN] && (Block.blocksList[world.getBlockId(x, y, z - 1)].equals(block));
-		isSlope[ZP] = !isAir[ZP] && (Block.blocksList[world.getBlockId(x, y, z + 1)].equals(block));
-		isSlope[XYNN] = !isAir[XYNN] && (Block.blocksList[world.getBlockId(x - 1, y - 1, z)].equals(block));
-		isSlope[XYPN] = !isAir[XYPN] && (Block.blocksList[world.getBlockId(x + 1, y - 1, z)].equals(block));
-		isSlope[XYNP] = !isAir[XYNP] && (Block.blocksList[world.getBlockId(x - 1, y + 1, z)].equals(block));
-		isSlope[XYPP] = !isAir[XYPP] && (Block.blocksList[world.getBlockId(x + 1, y + 1, z)].equals(block));
-		isSlope[YZNN] = !isAir[YZNN] && (Block.blocksList[world.getBlockId(x, y - 1, z - 1)].equals(block));
-		isSlope[YZNP] = !isAir[YZNP] && (Block.blocksList[world.getBlockId(x, y - 1, z + 1)].equals(block));
-		isSlope[YZPN] = !isAir[YZPN] && (Block.blocksList[world.getBlockId(x, y + 1, z - 1)].equals(block));
-		isSlope[YZPP] = !isAir[YZPP] && (Block.blocksList[world.getBlockId(x, y + 1, z + 1)].equals(block));
-		isSlope[XYZNNN] = !isAir[XYZNNN] && (Block.blocksList[world.getBlockId(x - 1, y - 1, z - 1)].equals(block));
-		isSlope[XYZNNP] = !isAir[XYZNNP] && (Block.blocksList[world.getBlockId(x - 1, y - 1, z + 1)].equals(block));
-		isSlope[XYZPNN] = !isAir[XYZPNN] && (Block.blocksList[world.getBlockId(x + 1, y - 1, z - 1)].equals(block));
-		isSlope[XYZPNP] = !isAir[XYZPNP] && (Block.blocksList[world.getBlockId(x + 1, y - 1, z + 1)].equals(block));
+
+		isSlope[XN] = !isAir[XN] && Block.blocksList[world.getBlockId(x - 1, y, z)].equals(block);
+		isSlope[XP] = !isAir[XP] && Block.blocksList[world.getBlockId(x + 1, y, z)].equals(block);
+		isSlope[YN] = !isAir[YN] && Block.blocksList[world.getBlockId(x, y - 1, z)].equals(block);
+		isSlope[YP] = !isAir[YP] && Block.blocksList[world.getBlockId(x, y + 1, z)].equals(block);
+		isSlope[ZN] = !isAir[ZN] && Block.blocksList[world.getBlockId(x, y, z - 1)].equals(block);
+		isSlope[ZP] = !isAir[ZP] && Block.blocksList[world.getBlockId(x, y, z + 1)].equals(block);
+		isSlope[XYNN] = !isAir[XYNN] && Block.blocksList[world.getBlockId(x - 1, y - 1, z)].equals(block);
+		isSlope[XYPN] = !isAir[XYPN] && Block.blocksList[world.getBlockId(x + 1, y - 1, z)].equals(block);
+		isSlope[XYNP] = !isAir[XYNP] && Block.blocksList[world.getBlockId(x - 1, y + 1, z)].equals(block);
+		isSlope[XYPP] = !isAir[XYPP] && Block.blocksList[world.getBlockId(x + 1, y + 1, z)].equals(block);
+		isSlope[YZNN] = !isAir[YZNN] && Block.blocksList[world.getBlockId(x, y - 1, z - 1)].equals(block);
+		isSlope[YZNP] = !isAir[YZNP] && Block.blocksList[world.getBlockId(x, y - 1, z + 1)].equals(block);
+		isSlope[YZPN] = !isAir[YZPN] && Block.blocksList[world.getBlockId(x, y + 1, z - 1)].equals(block);
+		isSlope[YZPP] = !isAir[YZPP] && Block.blocksList[world.getBlockId(x, y + 1, z + 1)].equals(block);
+		isSlope[XYZNNN] = !isAir[XYZNNN] && Block.blocksList[world.getBlockId(x - 1, y - 1, z - 1)].equals(block);
+		isSlope[XYZNNP] = !isAir[XYZNNP] && Block.blocksList[world.getBlockId(x - 1, y - 1, z + 1)].equals(block);
+		isSlope[XYZPNN] = !isAir[XYZPNN] && Block.blocksList[world.getBlockId(x + 1, y - 1, z - 1)].equals(block);
+		isSlope[XYZPNP] = !isAir[XYZPNP] && Block.blocksList[world.getBlockId(x + 1, y - 1, z + 1)].equals(block);
 
 		if (isSlope[XN]) {
 			TE[XN] = (TEBase) world.getBlockTileEntity(x - 1, y, z);
@@ -160,31 +160,31 @@ public class SlopeTransform {
 	public void begin()
 	{
 		int slopeID = BlockProperties.getData(TE[SRC]);
-		
+
 		if (genWedgeCorner(slopeID)) {
 			return;
 		}
 		genAdjWedgeCorners();
-		
+
 		if (genHorizWedge(slopeID)) {
 			genVerticalObliques();
 			return;
 		}
-		
+
 		if (genExtOblique(slopeID)) {
 			return;
 		}
-		
+
 		if (genPyramid(slopeID)) {
 			return;
 		}
-		
+
 		if (genPrism(slopeID)) {
 			genAdjPrismSlopes();
 			return;
 		}
 	}
-	
+
 	/**
 	 * Converts adjacent positive wedges to prism slopes if this slope is a connecting half roof piece.
 	 */
@@ -221,9 +221,9 @@ public class SlopeTransform {
 	private boolean genWedgeCorner(final int slopeID)
 	{
 		int temp_slopeID = slopeID;
-		
+
 		Slope slope = Slope.slopesList[slopeID];
-		
+
 		if (isSlope[ZN]) {
 			if (isSlope[XN]) {
 				if (this.slope[ZN].facings.contains(ForgeDirection.WEST) && this.slope[XN].facings.contains(ForgeDirection.NORTH)) {
@@ -260,7 +260,7 @@ public class SlopeTransform {
 				}
 			}
 		}
-		
+
 		if (slope.type.equals(Type.WEDGE_Y))
 		{
 			if (isSlope[XN]) {
@@ -338,10 +338,10 @@ public class SlopeTransform {
 		}
 
 		BlockProperties.setData(TE[SRC], temp_slopeID);
-		
+
 		return slopeID != temp_slopeID;
 	}
-	
+
 	/**
 	 * Converts adjacent blocks to match slopeID.
 	 */
@@ -429,7 +429,7 @@ public class SlopeTransform {
 	private boolean genHorizWedge(final int slopeID)
 	{
 		int temp_slopeID = slopeID;
-		
+
 		if (isSlope[YP]) {
 			if (slope[YP].type.equals(Type.WEDGE_XZ)) {
 				temp_slopeID = slope[YP].slopeID;
@@ -470,9 +470,9 @@ public class SlopeTransform {
 				}
 			}
 		}
-		
+
 		/* Check if slope below is interior corner, change to oblique if it is, and change this to side slope. */
-		
+
 		if (isSlope[YP]) {
 			if (slope[YP] == Slope.WEDGE_INT_NEG_NW) {
 				temp_slopeID = Slope.ID_WEDGE_NW;
@@ -495,12 +495,12 @@ public class SlopeTransform {
 				temp_slopeID = Slope.ID_WEDGE_SE;
 			}
 		}
-		
+
 		BlockProperties.setData(TE[SRC], temp_slopeID);
-		
+
 		return slopeID != temp_slopeID;
 	}
-	
+
 	/**
 	 * Converts blocks above or below to matching oblique slopes.
 	 */
@@ -529,14 +529,14 @@ public class SlopeTransform {
 			}
 		}
 	}
-	
+
 	/**
 	 * Check if slope should form into exterior oblique corner.
 	 */
 	private boolean genExtOblique(final int slopeID)
 	{
 		int temp_slopeID = slopeID;
-		
+
 		if (
 				isSlope[YP] && (slope[YP].type.equals(Type.OBLIQUE_EXT) || slope[YP].type.equals(Type.WEDGE_XZ)) ||
 				isSlope[YN] && (slope[YN].type.equals(Type.OBLIQUE_EXT) || slope[YN].type.equals(Type.WEDGE_XZ))
@@ -576,19 +576,19 @@ public class SlopeTransform {
 
 			}
 		}
-		
+
 		BlockProperties.setData(TE[SRC], temp_slopeID);
-		
+
 		return slopeID != temp_slopeID;
 	}
-	
+
 	/**
 	 * Check if slope should form into a pyramid.
 	 */
 	private boolean genPyramid(final int slopeID)
 	{
 		int temp_slopeID = slopeID;
-		
+
 		if (TE[XYNN] != null && TE[XYPN] != null && TE[YZNN] != null && TE[YZNP] != null) {
 			if (
 					Slope.slopesList[BlockProperties.getData(TE[XYNN])] == Slope.WEDGE_POS_W &&
@@ -609,25 +609,25 @@ public class SlopeTransform {
 				temp_slopeID = Slope.ID_PYR_HALF_NEG;
 			}
 		}
-		
+
 		BlockProperties.setData(TE[SRC], temp_slopeID);
-		
+
 		return slopeID != temp_slopeID;
 	}
-	
+
 	/**
 	 * Check if slope should form half-height roof piece based on adjacent low slopes.
 	 */
 	private boolean genPrism(final int slopeID)
 	{
 		if (supportsPrism()) {
-			
+
 			int temp_slopeID = slopeID;
 
 			List<ForgeDirection> prism = new ArrayList<ForgeDirection>();
-			
+
 			prism.add(ForgeDirection.UP);
-			
+
 			if (isAir[YZNN] || !isSlope[YZNN]) {
 				prism.add(ForgeDirection.NORTH);
 			}
@@ -640,7 +640,7 @@ public class SlopeTransform {
 			if (isAir[XYPN] || !isSlope[XYPN]) {
 				prism.add(ForgeDirection.EAST);
 			}
-			
+
 			if (prism.size() == 1) {
 				if ((isAir[XYZNNN] || isSlope[XYZNNN]) && (isAir[XYZNNP] || isSlope[XYZNNP]) && (isAir[XYZPNN] || isSlope[XYZPNN]) && (isAir[XYZPNP] || isSlope[XYZPNP]))
 				{
@@ -661,26 +661,26 @@ public class SlopeTransform {
 			BlockProperties.setData(TE[SRC], temp_slopeID);
 
 			return slopeID != temp_slopeID;
-			
+
 		} else {
-			
+
 			return false;
-			
+
 		}
 	}
-	
+
 	private boolean supportsPrism()
 	{
-		boolean solidAdjacent =	(!isAir[XN] && !isSlope[XN]) ||
-								(!isAir[XP] && !isSlope[XP]) ||
-								(!isAir[ZN] && !isSlope[ZN]) ||
-								(!isAir[ZP] && !isSlope[ZP]);
-		
+		boolean solidAdjacent =	!isAir[XN] && !isSlope[XN] ||
+				!isAir[XP] && !isSlope[XP] ||
+				!isAir[ZN] && !isSlope[ZN] ||
+				!isAir[ZP] && !isSlope[ZP];
+
 		return	!isAir[YN] &&
 				Block.blocksList[world.getBlockId(x, y - 1, z)].isBlockSolidOnSide(world, x, y - 1, z, ForgeDirection.UP) &&
 				(isSlope[XYNN] || isSlope[XYPN] || isSlope[YZNN] || isSlope[YZNP] || isSlope[XYZNNN] || isSlope[XYZNNP] || isSlope[XYZPNN] || isSlope[XYZPNP]) &&
 				!solidAdjacent &&
-				((isAir[XYNN] || isSlope[XYNN]) || (isAir[XYPN] || isSlope[XYPN]) || (isAir[YZNN] || isSlope[YZNN]) || (isAir[YZNP] || isSlope[YZNP]));
+				(isAir[XYNN] || isSlope[XYNN] || isAir[XYPN] || isSlope[XYPN] || isAir[YZNN] || isSlope[YZNN] || isAir[YZNP] || isSlope[YZNP]);
 	}
 
 }

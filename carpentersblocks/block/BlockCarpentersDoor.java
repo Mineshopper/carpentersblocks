@@ -99,7 +99,7 @@ public class BlockCarpentersDoor extends BlockBase {
 	/**
 	 * Opens or closes door on right click.
 	 */
-	public boolean[] auxiliaryOnBlockActivated(TEBase TE, World world, int x, int y, int z, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ)
+	public boolean[] postOnBlockActivated(TEBase TE, World world, int x, int y, int z, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ)
 	{
 		if (!activationRequiresRedstone(TE)) {
 			setDoorState(TE, Door.getState(TE) == Door.STATE_OPEN ? Door.STATE_CLOSED : Door.STATE_OPEN);
@@ -363,46 +363,56 @@ public class BlockCarpentersDoor extends BlockBase {
 	 * Lets the block know when one of its neighbor changes. Doesn't know which neighbor changed (coordinates passed are
 	 * their own) Args: x, y, z, neighbor blockID
 	 */
-	protected void auxiliaryOnNeighborBlockChange(TEBase TE, World world, int x, int y, int z, int blockID)
+	public void onNeighborBlockChange(World world, int x, int y, int z, int blockID)
 	{
-		boolean isOpen = Door.getState(TE) == Door.STATE_OPEN;
+		if (!world.isRemote)
+		{
+			TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
 
-		/*
-		 * Check if door piece is orphaned.
-		 */
-		if (Door.getPiece(TE) == Door.PIECE_BOTTOM) {
-			if (world.getBlockId(x, y + 1, z) != this.blockID) {
-				world.setBlockToAir(x, y, z);
-				return;
-			} else if (!world.doesBlockHaveSolidTopSurface(x, y - 1, z)) {
-				world.setBlockToAir(x, y + 1, z);
-				dropBlockAsItem(world, x, y, z, 0, 0);
-				return;
+			if (TE != null)
+			{
+				boolean isOpen = Door.getState(TE) == Door.STATE_OPEN;
+
+				/*
+				 * Check if door piece is orphaned.
+				 */
+				if (Door.getPiece(TE) == Door.PIECE_BOTTOM) {
+					if (world.getBlockId(x, y + 1, z) != this.blockID) {
+						world.setBlockToAir(x, y, z);
+						return;
+					} else if (!world.doesBlockHaveSolidTopSurface(x, y - 1, z)) {
+						world.setBlockToAir(x, y + 1, z);
+						dropBlockAsItem(world, x, y, z, 0, 0);
+						return;
+					}
+				} else if (world.getBlockId(x, y - 1, z) != this.blockID) {
+					world.setBlockToAir(x, y, z);
+					return;
+				}
+
+				/*
+				 * Create list of door pieces and check state of each so
+				 * that they act as a single entity regardless of which
+				 * door piece receives this event.
+				 */
+				boolean isPowered = false;
+				List<TEBase> doorPieces = getDoorPieces(TE);
+				for (TEBase piece : doorPieces) {
+					if (world.isBlockIndirectlyGettingPowered(piece.xCoord, piece.yCoord, piece.zCoord)) {
+						isPowered = true;
+					}
+				}
+
+				/*
+				 * Set block open or closed
+				 */
+				if (blockID > 0 && Block.blocksList[blockID].canProvidePower() && isPowered != isOpen) {
+					setDoorState(TE, isOpen ? Door.STATE_CLOSED : Door.STATE_OPEN);
+				}
 			}
-		} else if (world.getBlockId(x, y - 1, z) != this.blockID) {
-			world.setBlockToAir(x, y, z);
-			return;
 		}
 
-		/*
-		 * Create list of door pieces and check state of each so
-		 * that they act as a single entity regardless of which
-		 * door piece receives this event.
-		 */
-		boolean isPowered = false;
-		List<TEBase> doorPieces = getDoorPieces(TE);
-		for (TEBase piece : doorPieces) {
-			if (world.isBlockIndirectlyGettingPowered(piece.xCoord, piece.yCoord, piece.zCoord)) {
-				isPowered = true;
-			}
-		}
-
-		/*
-		 * Set block open or closed
-		 */
-		if (blockID > 0 && Block.blocksList[blockID].canProvidePower() && isPowered != isOpen) {
-			setDoorState(TE, isOpen ? Door.STATE_CLOSED : Door.STATE_OPEN);
-		}
+		super.onNeighborBlockChange(world, x, y, z, blockID);
 	}
 
 	@Override

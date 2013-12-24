@@ -4,6 +4,7 @@ import carpentersblocks.renderer.tileentity.TERendererCarpentersBed;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.tileentity.TECarpentersBed;
 import carpentersblocks.tileentity.TECarpentersDaylightSensor;
+import carpentersblocks.tileentity.TECarpentersFlowerPot;
 import carpentersblocks.tileentity.TECarpentersSafe;
 import carpentersblocks.tileentity.TECarpentersTorch;
 import cpw.mods.fml.client.registry.ClientRegistry;
@@ -23,6 +24,7 @@ public class TileEntityHandler {
 		GameRegistry.registerTileEntity(TECarpentersTorch.class, "TileEntityCarpentersTorch");
 		GameRegistry.registerTileEntity(TECarpentersSafe.class, "TileEntityCarpentersSafe");
 		GameRegistry.registerTileEntity(TECarpentersBed.class, "TileEntityCarpentersBed");
+		GameRegistry.registerTileEntity(TECarpentersFlowerPot.class, "TileEntityCarpentersFlowerPot");
 	}
 
 	@SideOnly(Side.CLIENT)

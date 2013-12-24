@@ -208,7 +208,7 @@ public class BlockHandlerCarpentersDoor extends BlockDeterminantRender {
 			break;
 		}
 
-		if (shouldRenderCover(block))
+		if (shouldRenderBlock(block))
 		{
 			/*
 			 * Draw vertical pieces.
@@ -499,7 +499,7 @@ public class BlockHandlerCarpentersDoor extends BlockDeterminantRender {
 			break;
 		}
 
-		if (shouldRenderCover(block))
+		if (shouldRenderBlock(block))
 		{
 			renderBlocks.setRenderBounds(x_low, y_low, z_low, x_high_offset, y_high, z_high_offset);
 			renderBlock(block, x, y, z);
@@ -751,7 +751,7 @@ public class BlockHandlerCarpentersDoor extends BlockDeterminantRender {
 			break;
 		}
 
-		if (shouldRenderCover(block))
+		if (shouldRenderBlock(block))
 		{
 			renderBlocks.setRenderBounds(x_low, y_low, z_low, x_high_offset, y_high, z_high_offset);
 			renderBlock(block, x, y, z);
@@ -997,7 +997,7 @@ public class BlockHandlerCarpentersDoor extends BlockDeterminantRender {
 			break;
 		}
 
-		if (shouldRenderCover(block))
+		if (shouldRenderBlock(block))
 		{
 			renderBlocks.setRenderBounds(x_low, y_low, z_low, x_high_offset, y_high, z_high_offset);
 			renderBlock(block, x, y, z);
@@ -1060,7 +1060,7 @@ public class BlockHandlerCarpentersDoor extends BlockDeterminantRender {
 	 */
 	private void renderHiddenDoor(Block block, int x, int y, int z)
 	{
-		if (shouldRenderCover(block))
+		if (shouldRenderBlock(block))
 		{
 			BlockCarpentersDoor blockRef = (BlockCarpentersDoor) BlockRegistry.blockCarpentersDoor;
 			blockRef.setBlockBoundsBasedOnState(renderBlocks.blockAccess, x, y, z);

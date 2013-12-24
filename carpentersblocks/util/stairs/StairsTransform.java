@@ -3,7 +3,6 @@ package carpentersblocks.util.stairs;
 import net.minecraft.block.Block;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
-import carpentersblocks.data.Slope;
 import carpentersblocks.data.Stairs;
 import carpentersblocks.data.Stairs.StairsType;
 import carpentersblocks.tileentity.TEBase;
@@ -25,31 +24,31 @@ public class StairsTransform {
 	private final byte YP = 4;
 	private final byte ZN = 5;
 	private final byte ZP = 6;
-	
+
 	private final TEBase[] 	TE 			= new TEBase[20];
 	private Stairs[]		stairs 		= new Stairs[20];
 	private final boolean[] areStairs	= new boolean[20];
-	
+
 	public StairsTransform(TEBase TE)
 	{
 		this.TE[SRC] = TE;
-		this.world = TE.worldObj;
-		this.x = TE.xCoord;
-		this.y = TE.yCoord;
-		this.z = TE.zCoord;
+		world = TE.worldObj;
+		x = TE.xCoord;
+		y = TE.yCoord;
+		z = TE.zCoord;
 
 		buildStairsMap();
 	}
-	
+
 	private void buildStairsMap()
 	{
-		areStairs[XN] = !world.isAirBlock(x - 1, y, z) && (Block.blocksList[world.getBlockId(x - 1, y, z)].equals(block));
-		areStairs[XP] = !world.isAirBlock(x + 1, y, z) && (Block.blocksList[world.getBlockId(x + 1, y, z)].equals(block));
-		areStairs[YN] = !world.isAirBlock(x, y - 1, z) && (Block.blocksList[world.getBlockId(x, y - 1, z)].equals(block));
-		areStairs[YP] = !world.isAirBlock(x, y + 1, z) && (Block.blocksList[world.getBlockId(x, y + 1, z)].equals(block));
-		areStairs[ZN] = !world.isAirBlock(x, y, z - 1) && (Block.blocksList[world.getBlockId(x, y, z - 1)].equals(block));
-		areStairs[ZP] = !world.isAirBlock(x, y, z + 1) && (Block.blocksList[world.getBlockId(x, y, z + 1)].equals(block));
-		
+		areStairs[XN] = !world.isAirBlock(x - 1, y, z) && Block.blocksList[world.getBlockId(x - 1, y, z)].equals(block);
+		areStairs[XP] = !world.isAirBlock(x + 1, y, z) && Block.blocksList[world.getBlockId(x + 1, y, z)].equals(block);
+		areStairs[YN] = !world.isAirBlock(x, y - 1, z) && Block.blocksList[world.getBlockId(x, y - 1, z)].equals(block);
+		areStairs[YP] = !world.isAirBlock(x, y + 1, z) && Block.blocksList[world.getBlockId(x, y + 1, z)].equals(block);
+		areStairs[ZN] = !world.isAirBlock(x, y, z - 1) && Block.blocksList[world.getBlockId(x, y, z - 1)].equals(block);
+		areStairs[ZP] = !world.isAirBlock(x, y, z + 1) && Block.blocksList[world.getBlockId(x, y, z + 1)].equals(block);
+
 		if (areStairs[YN]) {
 			TE[YN] = (TEBase) world.getBlockTileEntity(x, y - 1, z);
 			stairs[YN] = Stairs.stairsList[BlockProperties.getData(TE[YN])];
@@ -88,7 +87,7 @@ public class StairsTransform {
 		} else {
 			genAdjCorners(stairsID);
 		}
-		
+
 		if (genHorizStairs(stairsID)) {
 			return;
 		}
@@ -101,7 +100,7 @@ public class StairsTransform {
 	private boolean genCorners(final int stairsID)
 	{
 		int temp_stairsID = stairsID;
-		
+
 		Stairs stairs = Stairs.stairsList[stairsID];
 
 		/* Check if stairs should transform into corner to match stairs behind it. */
@@ -222,10 +221,10 @@ public class StairsTransform {
 		}
 
 		BlockProperties.setData(TE[SRC], temp_stairsID);
-		
+
 		return stairsID != temp_stairsID;
 	}
-	
+
 	/**
 	 * Converts adjacent blocks to match source block.
 	 */
@@ -306,14 +305,14 @@ public class StairsTransform {
 			}
 		}
 	}
-	
+
 	/**
 	 * Check if stairs above or below are horizontal and make this a continuation.
 	 */
 	private boolean genHorizStairs(final int stairsID)
 	{
 		int temp_stairsID = stairsID;
-		
+
 		if (areStairs[YP]) {
 			if (stairs[YP].stairsType.equals(StairsType.NORMAL_XZ)) {
 				temp_stairsID = stairs[YP].stairsID;
@@ -324,9 +323,9 @@ public class StairsTransform {
 				temp_stairsID = stairs[YN].stairsID;
 			}
 		}
-		
+
 		BlockProperties.setData(TE[SRC], temp_stairsID);
-		
+
 		return stairsID != temp_stairsID;
 	}
 

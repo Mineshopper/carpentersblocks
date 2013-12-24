@@ -135,12 +135,16 @@ public class BlockCarpentersTorch extends BlockBase {
 	/**
 	 * Called when the block is placed in the world.
 	 */
-	public void auxiliaryOnBlockPlacedBy(TEBase TE, World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack itemStack)
+	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack itemStack)
 	{
+		TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
+
 		int facing = world.getBlockMetadata(x, y, z);
 
 		Torch.setFacing(TE, facing);
 		Torch.setReady(TE);
+
+		super.onBlockPlacedBy(world, x, y, z, entityLiving, itemStack);
 	}
 
 	@Override
@@ -148,17 +152,27 @@ public class BlockCarpentersTorch extends BlockBase {
 	 * Lets the block know when one of its neighbor changes. Doesn't know which neighbor changed (coordinates passed are
 	 * their own) Args: x, y, z, neighbor blockID
 	 */
-	protected void auxiliaryOnNeighborBlockChange(TEBase TE, World world, int x, int y, int z, int blockID)
+	public void onNeighborBlockChange(World world, int x, int y, int z, int blockID)
 	{
-		if (Torch.isReady(TE))
+		if (!world.isRemote)
 		{
-			ForgeDirection facing = Torch.getFacing(TE);
+			TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
 
-			if (!canPlaceBlockOnSide(world, x, y, z, facing.ordinal())) {
-				dropBlockAsItem(world, x, y, z, 0, 0);
-				world.setBlockToAir(x, y, z);
+			if (TE != null)
+			{
+				if (Torch.isReady(TE))
+				{
+					ForgeDirection facing = Torch.getFacing(TE);
+
+					if (!canPlaceBlockOnSide(world, x, y, z, facing.ordinal())) {
+						dropBlockAsItem(world, x, y, z, 0, 0);
+						world.setBlockToAir(x, y, z);
+					}
+				}
 			}
 		}
+
+		super.onNeighborBlockChange(world, x, y, z, blockID);
 	}
 
 	/**

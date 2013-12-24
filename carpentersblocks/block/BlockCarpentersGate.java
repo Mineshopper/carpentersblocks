@@ -69,7 +69,7 @@ public class BlockCarpentersGate extends BlockBase {
 	/**
 	 * Opens or closes gate on right click.
 	 */
-	public boolean[] auxiliaryOnBlockActivated(TEBase TE, World world, int x, int y, int z, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ)
+	public boolean[] postOnBlockActivated(TEBase TE, World world, int x, int y, int z, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ)
 	{
 		if (Gate.getState(TE) == Gate.STATE_OPEN) {
 			Gate.setState(TE, Gate.STATE_CLOSED, true);
@@ -190,8 +190,10 @@ public class BlockCarpentersGate extends BlockBase {
 	/**
 	 * Called when the block is placed in the world.
 	 */
-	public void auxiliaryOnBlockPlacedBy(TEBase TE, World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack itemStack)
+	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack itemStack)
 	{
+		TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
+
 		int facing = (MathHelper.floor_double(entityLiving.rotationYaw * 4.0F / 360.0F + 0.5D) & 3) % 4;
 
 		Gate.setFacing(TE, facing == 3 || facing == 1 ? Gate.FACING_ON_Z : Gate.FACING_ON_X);
@@ -219,6 +221,8 @@ public class BlockCarpentersGate extends BlockBase {
 		} else if (TE_ZP != null) {
 			Gate.setType(TE, world.getBlockId(x, y, z + 1) == blockID ? Gate.getType(TE_ZP) : Barrier.getType(TE_ZP));
 		}
+
+		super.onBlockPlacedBy(world, x, y, z, entityLiving, itemStack);
 	}
 
 	@Override
@@ -226,22 +230,32 @@ public class BlockCarpentersGate extends BlockBase {
 	 * Lets the block know when one of its neighbor changes. Doesn't know which neighbor changed (coordinates passed are
 	 * their own) Args: x, y, z, neighbor blockID
 	 */
-	protected void auxiliaryOnNeighborBlockChange(TEBase TE, World world, int x, int y, int z, int neighborBlockID)
+	public void onNeighborBlockChange(World world, int x, int y, int z, int neighborBlockID)
 	{
-		boolean isPowered = world.isBlockIndirectlyGettingPowered(x, y, z);
-
-		if (isPowered || neighborBlockID > 0 && Block.blocksList[neighborBlockID].canProvidePower())
+		if (!world.isRemote)
 		{
-			int state = Gate.getState(TE);
+			TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
 
-			if (isPowered && state == Gate.STATE_CLOSED) {
-				Gate.setState(TE, Gate.STATE_OPEN, true);
-				cycleNeighborGate(TE, world, x, y, z);
-			} else if (!isPowered && state == Gate.STATE_OPEN) {
-				Gate.setState(TE, Gate.STATE_CLOSED, true);
-				cycleNeighborGate(TE, world, x, y, z);
+			if (TE != null)
+			{
+				boolean isPowered = world.isBlockIndirectlyGettingPowered(x, y, z);
+
+				if (isPowered || neighborBlockID > 0 && Block.blocksList[neighborBlockID].canProvidePower())
+				{
+					int state = Gate.getState(TE);
+
+					if (isPowered && state == Gate.STATE_CLOSED) {
+						Gate.setState(TE, Gate.STATE_OPEN, true);
+						cycleNeighborGate(TE, world, x, y, z);
+					} else if (!isPowered && state == Gate.STATE_OPEN) {
+						Gate.setState(TE, Gate.STATE_CLOSED, true);
+						cycleNeighborGate(TE, world, x, y, z);
+					}
+				}
 			}
 		}
+
+		super.onNeighborBlockChange(world, x, y, z, neighborBlockID);
 	}
 
 	@Override

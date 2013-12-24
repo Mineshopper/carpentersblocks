@@ -138,12 +138,22 @@ public class BlockCarpentersPressurePlate extends BlockBase {
 	 * Lets the block know when one of its neighbor changes. Doesn't know which neighbor changed (coordinates passed are
 	 * their own) Args: x, y, z, neighbor blockID
 	 */
-	protected void auxiliaryOnNeighborBlockChange(TEBase TE, World world, int x, int y, int z, int blockID)
+	public void onNeighborBlockChange(World world, int x, int y, int z, int blockID)
 	{
-		if (!world.doesBlockHaveSolidTopSurface(x, y - 1, z) && world.getBlockId(x, y - 1, z) != BlockRegistry.blockCarpentersBarrierID) {
-			dropBlockAsItem(world, x, y, z, 0, 0);
-			world.setBlockToAir(x, y, z);
+		if (!world.isRemote)
+		{
+			TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
+
+			if (TE != null)
+			{
+				if (!world.doesBlockHaveSolidTopSurface(x, y - 1, z) && world.getBlockId(x, y - 1, z) != BlockRegistry.blockCarpentersBarrierID) {
+					dropBlockAsItem(world, x, y, z, 0, 0);
+					world.setBlockToAir(x, y, z);
+				}
+			}
 		}
+
+		super.onNeighborBlockChange(world, x, y, z, blockID);
 	}
 
 	@Override
@@ -304,11 +314,17 @@ public class BlockCarpentersPressurePlate extends BlockBase {
 	/**
 	 * Ejects contained items into the world, and notifies neighbours of an update, as appropriate
 	 */
-	public void auxiliaryBreakBlock(TEBase TE, World world, int x, int y, int z, int par5, int metadata)
+	public void breakBlock(World world, int x, int y, int z, int par5, int metadata)
 	{
-		if (isDepressed(TE)) {
-			notifyNeighborsOfUpdate(world, x, y, z);
+		TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
+
+		if (TE != null) {
+			if (isDepressed(TE)) {
+				notifyNeighborsOfUpdate(world, x, y, z);
+			}
 		}
+
+		super.breakBlock(world, x, y, z, par5, metadata);
 	}
 
 	@Override

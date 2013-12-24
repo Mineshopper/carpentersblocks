@@ -172,11 +172,13 @@ public class BlockCarpentersCollapsibleBlock extends BlockBase {
 	/**
 	 * Called when the block is placed in the world.
 	 */
-	public void auxiliaryOnBlockPlacedBy(TEBase TE, World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack itemStack)
+	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack itemStack)
 	{
 		// If shift key is down, skip auto-setting quadrant heights
 		if (!entityLiving.isSneaking())
 		{
+			TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
+
 			/* Match adjacent collapsible quadrant heights. */
 
 			TEBase TE_XN = world.getBlockId(x - 1, y, z) == blockID ? (TEBase)world.getBlockTileEntity(x - 1, y, z) : null;
@@ -201,6 +203,8 @@ public class BlockCarpentersCollapsibleBlock extends BlockBase {
 				Collapsible.setQuadHeight(TE, Collapsible.QUAD_XZPP, Collapsible.getQuadHeight(TE_ZP, Collapsible.QUAD_XZPN));
 			}
 		}
+
+		super.onBlockPlacedBy(world, x, y, z, entityLiving, itemStack);
 	}
 
 	/**

@@ -114,8 +114,9 @@ public class BlockCarpentersLever extends BlockBase {
 	/**
 	 * Called when the block is placed in the world.
 	 */
-	public void auxiliaryOnBlockPlacedBy(TEBase TE, World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack itemStack)
+	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack itemStack)
 	{
+		TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
 		int facing = world.getBlockMetadata(x, y, z);
 
 		Lever.setFacing(TE, facing);
@@ -134,6 +135,8 @@ public class BlockCarpentersLever extends BlockBase {
 				Lever.setAxis(TE, Axis.Z);
 			}
 		}
+
+		super.onBlockPlacedBy(world, x, y, z, entityLiving, itemStack);
 	}
 
 	@Override
@@ -141,17 +144,27 @@ public class BlockCarpentersLever extends BlockBase {
 	 * Lets the block know when one of its neighbor changes. Doesn't know which neighbor changed (coordinates passed are
 	 * their own) Args: x, y, z, neighbor blockID
 	 */
-	protected void auxiliaryOnNeighborBlockChange(TEBase TE, World world, int x, int y, int z, int blockID)
+	public void onNeighborBlockChange(World world, int x, int y, int z, int blockID)
 	{
-		if (Lever.isReady(TE))
+		if (!world.isRemote)
 		{
-			ForgeDirection facing = Lever.getFacing(TE);
+			TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
 
-			if (!canPlaceBlockOnSide(world, x, y, z, facing.ordinal())) {
-				dropBlockAsItem(world, x, y, z, 0, 0);
-				world.setBlockToAir(x, y, z);
+			if (TE != null)
+			{
+				if (Lever.isReady(TE))
+				{
+					ForgeDirection facing = Lever.getFacing(TE);
+
+					if (!canPlaceBlockOnSide(world, x, y, z, facing.ordinal())) {
+						dropBlockAsItem(world, x, y, z, 0, 0);
+						world.setBlockToAir(x, y, z);
+					}
+				}
 			}
 		}
+
+		super.onNeighborBlockChange(world, x, y, z, blockID);
 	}
 
 	@Override
@@ -203,7 +216,7 @@ public class BlockCarpentersLever extends BlockBase {
 	/**
 	 * Called upon block activation.
 	 */
-	public boolean[] auxiliaryOnBlockActivated(TEBase TE, World world, int x, int y, int z, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ)
+	public boolean[] postOnBlockActivated(TEBase TE, World world, int x, int y, int z, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ)
 	{
 		ForgeDirection facing = Lever.getFacing(TE);
 
@@ -290,12 +303,19 @@ public class BlockCarpentersLever extends BlockBase {
 	/**
 	 * Ejects contained items into the world, and notifies neighbours of an update, as appropriate
 	 */
-	public void auxiliaryBreakBlock(TEBase TE, World world, int x, int y, int z, int par5, int metadata)
+	public void breakBlock(World world, int x, int y, int z, int par5, int metadata)
 	{
-		if (isActive(TE)) {
-			world.notifyBlocksOfNeighborChange(x, y, z, blockID);
-			notifySideNeighbor(world, x, y, z, Lever.getFacing(TE).ordinal());
+		TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
+
+		if (TE != null)
+		{
+			if (isActive(TE)) {
+				world.notifyBlocksOfNeighborChange(x, y, z, blockID);
+				notifySideNeighbor(world, x, y, z, Lever.getFacing(TE).ordinal());
+			}
 		}
+
+		super.breakBlock(world, x, y, z, par5, metadata);
 	}
 
 	@Override

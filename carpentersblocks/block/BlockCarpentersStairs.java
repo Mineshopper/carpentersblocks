@@ -271,8 +271,10 @@ public class BlockCarpentersStairs extends BlockBase {
 	 * Called when the block is placed in the world.
 	 * Uses cardinal direction to adjust metadata if player clicks top or bottom face of block.
 	 */
-	public void auxiliaryOnBlockPlacedBy(TEBase TE, World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack itemStack)
+	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack itemStack)
 	{
+		TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
+
 		int facing = MathHelper.floor_double(entityLiving.rotationYaw * 4.0F / 360.0F + 0.5D) & 3;
 
 		BlockProperties.setData(TE, world.getBlockMetadata(x, y, z));
@@ -303,6 +305,8 @@ public class BlockCarpentersStairs extends BlockBase {
 			StairsTransform stairsTransform = new StairsTransform(TE);
 			stairsTransform.begin();
 		}
+
+		super.onBlockPlacedBy(world, x, y, z, entityLiving, itemStack);
 	}
 
 	@Override
