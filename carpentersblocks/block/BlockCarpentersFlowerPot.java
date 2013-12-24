@@ -119,7 +119,7 @@ public class BlockCarpentersFlowerPot extends BlockBase {
 	/**
 	 * Cycle forward through bed designs.
 	 */
-	protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer, int side, float hitX, float hitZ)
+	protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer, int side)
 	{
 		if (entityPlayer.isSneaking()) {
 			FlowerPot.setDesign(TE, 0);

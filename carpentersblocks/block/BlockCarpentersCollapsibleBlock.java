@@ -17,6 +17,7 @@ import carpentersblocks.CarpentersBlocks;
 import carpentersblocks.data.Collapsible;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
+import carpentersblocks.util.handler.EventHandler;
 import carpentersblocks.util.registry.BlockRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -36,9 +37,9 @@ public class BlockCarpentersCollapsibleBlock extends BlockBase {
 	/**
 	 * Lower quadrant of block.
 	 */
-	protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer, int side, float hitX, float hitZ)
+	protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer, int side)
 	{
-		int quad = Collapsible.getQuad(hitX, hitZ);
+		int quad = Collapsible.getQuad(EventHandler.hitX, EventHandler.hitZ);
 		int quadHeight = Collapsible.getQuadHeight(TE, quad);
 
 		Collapsible.setQuadHeight(TE, quad, --quadHeight);

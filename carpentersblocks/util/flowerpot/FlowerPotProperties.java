@@ -69,7 +69,7 @@ public class FlowerPotProperties {
 	}
 
 	/**
-	 * Returns whether pot has cover.
+	 * Returns whether pot has soil.
 	 */
 	public final static boolean hasSoil(TEBase TE)
 	{

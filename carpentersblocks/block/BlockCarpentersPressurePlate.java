@@ -56,7 +56,7 @@ public class BlockCarpentersPressurePlate extends BlockBase {
 	/**
 	 * Alters trigger behavior.
 	 */
-	protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer, int side, float hitX, float hitZ)
+	protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer, int side)
 	{
 		int trigger;
 

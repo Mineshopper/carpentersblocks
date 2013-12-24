@@ -253,7 +253,7 @@ public class BlockBase extends BlockContainer {
 				{
 					if (itemStack.getItem() instanceof ICarpentersHammer && ((ICarpentersHammer)itemStack.getItem()).canUseHammer(world, entityPlayer)) {
 
-						altered.add(onHammerRightClick(TE, entityPlayer, side, hitX, hitZ));
+						altered.add(onHammerRightClick(TE, entityPlayer, side));
 
 					} else if (ItemRegistry.enableChisel && itemStack.getItem() instanceof ICarpentersChisel && ((ICarpentersChisel)itemStack.getItem()).canUseChisel(world, entityPlayer)) {
 
@@ -1020,7 +1020,7 @@ public class BlockBase extends BlockContainer {
 		return false;
 	}
 
-	protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer, int side, float hitX, float hitZ)
+	protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer, int side)
 	{
 		return false;
 	}

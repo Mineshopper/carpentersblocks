@@ -46,7 +46,7 @@ public class BlockCarpentersBarrier extends BlockBase {
 	/**
 	 * Alters barrier type or sub-type.
 	 */
-	protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer, int side, float hitX, float hitZ)
+	protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer, int side)
 	{
 		int type = Barrier.getType(TE);
 

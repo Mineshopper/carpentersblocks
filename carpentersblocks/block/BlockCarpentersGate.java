@@ -32,7 +32,7 @@ public class BlockCarpentersGate extends BlockBase {
 	/**
 	 * Alters gate type or sub-type and returns result.
 	 */
-	protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer, int side, float hitX, float hitZ)
+	protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer, int side)
 	{
 		int type = Gate.getType(TE);
 

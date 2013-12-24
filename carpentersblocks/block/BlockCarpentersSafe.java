@@ -67,7 +67,7 @@ public class BlockCarpentersSafe extends BlockBase {
 	/**
 	 * Cycles locked state.
 	 */
-	protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer, int side, float hitX, float hitZ)
+	protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer, int side)
 	{
 		if (entityPlayer.isSneaking()) {
 

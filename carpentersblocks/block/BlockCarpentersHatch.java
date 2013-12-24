@@ -71,7 +71,7 @@ public class BlockCarpentersHatch extends BlockBase {
 	/**
 	 * Alters hatch type and redstone behavior.
 	 */
-	protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer, int side, float hitX, float hitZ)
+	protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer, int side)
 	{
 		if (!entityPlayer.isSneaking()) {
 
