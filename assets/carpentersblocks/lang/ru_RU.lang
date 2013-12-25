@@ -26,6 +26,7 @@ tile.blockCarpentersSlope.name=Склон плотника
 tile.blockCarpentersStairs.name=Ступеньки плотника
 tile.blockCarpentersTorch.name=Факел плотника
 tile.blockCarpentersSafe.name=Сейф плотника
+tile.blockCarpentersFlowerPot.name=Цветочный горшок плотника
 
 # MESSAGES
 message.polarity_pos.name=\u00a76ПОЛЯРНОСТЬ: \u00a7fНормальный выходной сингнал красного камня.
