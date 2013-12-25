@@ -26,6 +26,7 @@ tile.blockCarpentersSlope.name=Rampe des Zimmermanns
 tile.blockCarpentersStairs.name=Treppe des Zimmermanns
 tile.blockCarpentersTorch.name=Fackel des Zimmermanns
 tile.blockCarpentersSafe.name=Tresor des Zimmermanns
+tile.blockCarpentersFlowerPot.name=Blumentopf des Zimmermanns
 
 # MESSAGES
 message.polarity_pos.name=\u00a76POLARITÄT: \u00a7fNormaler Redstone-Output.
