@@ -16,6 +16,7 @@ import carpentersblocks.CarpentersBlocks;
 import carpentersblocks.data.Slab;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
+import carpentersblocks.util.handler.EventHandler;
 import carpentersblocks.util.registry.BlockRegistry;
 
 public class BlockCarpentersBlock extends BlockBase {
@@ -50,12 +51,12 @@ public class BlockCarpentersBlock extends BlockBase {
 	/**
 	 * Alternate between full 1m cube and slab.
 	 */
-	protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer, int side)
+	protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer)
 	{
 		int data = BlockProperties.getData(TE);
 
 		if (data == Slab.BLOCK_FULL) {
-			switch (side)
+			switch (EventHandler.eventFace)
 			{
 			case 0:
 				data = Slab.SLAB_Y_POS;

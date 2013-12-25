@@ -1036,10 +1036,10 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerBase {
 
 		if (slope.isPositive) {
 			lightingHelper.setLightness(LIGHTNESS_POS_OBL);
-			setIDAndRender(block, OBL_CORNER_SLOPED_YP, x, y, z, UP);
+			setIDAndRender(block, OBL_CORNER_SLOPED_YP, x, y, z, NORTH);
 		} else {
 			lightingHelper.setLightness(LIGHTNESS_NEG_OBL);
-			setIDAndRender(block, OBL_CORNER_SLOPED_YN, x, y, z, DOWN);
+			setIDAndRender(block, OBL_CORNER_SLOPED_YN, x, y, z, SOUTH);
 		}
 	}
 
@@ -1112,10 +1112,10 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerBase {
 
 		if (slope.isPositive) {
 			lightingHelper.setLightness(LIGHTNESS_POS_OBL);
-			setIDAndRender(block, OBL_CORNER_SLOPED_YP, x, y, z, UP);
+			setIDAndRender(block, OBL_CORNER_SLOPED_YP, x, y, z, NORTH);
 		} else {
 			lightingHelper.setLightness(LIGHTNESS_NEG_OBL);
-			setIDAndRender(block, OBL_CORNER_SLOPED_YN, x, y, z, DOWN);
+			setIDAndRender(block, OBL_CORNER_SLOPED_YN, x, y, z, SOUTH);
 		}
 	}
 
@@ -1125,55 +1125,55 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerBase {
 
 		if (slope.isPositive) {
 
-			setRenderBoundsAndRelight(block, SIDE_ALL, 0.0D, 0.0D, 0.0D, 0.5D, 0.5D, 1.0D);
-
-			lightingHelper.setLightness(LIGHTNESS_XYNP);
-			setWedgeSlopeLighting(Slope.WEDGE_POS_W);
-			setIDAndRender(block, PYR_YXPN, x, y, z, UP);
-
-			setRenderBoundsAndRelight(block, SIDE_ALL, 0.5D, 0.0D, 0.0D, 1.0D, 0.5D, 1.0D);
-
-			lightingHelper.setLightness(LIGHTNESS_XYPP);
-			setWedgeSlopeLighting(Slope.WEDGE_POS_E);
-			setIDAndRender(block, PYR_YXPP, x, y, z, UP);
-
 			setRenderBoundsAndRelight(block, SIDE_ALL, 0.0D, 0.0D, 0.0D, 1.0D, 0.5D, 0.5D);
 
 			lightingHelper.setLightness(LIGHTNESS_ZYNP);
 			setWedgeSlopeLighting(Slope.WEDGE_POS_N);
-			setIDAndRender(block, PYR_YZPN, x, y, z, UP);
+			setIDAndRender(block, PYR_YZPN, x, y, z, NORTH);
 
 			setRenderBoundsAndRelight(block, SIDE_ALL, 0.0D, 0.0D, 0.5D, 1.0D, 0.5D, 1.0D);
 
 			lightingHelper.setLightness(LIGHTNESS_ZYPP);
 			setWedgeSlopeLighting(Slope.WEDGE_POS_S);
-			setIDAndRender(block, PYR_YZPP, x, y, z, UP);
+			setIDAndRender(block, PYR_YZPP, x, y, z, SOUTH);
+
+			setRenderBoundsAndRelight(block, SIDE_ALL, 0.0D, 0.0D, 0.0D, 0.5D, 0.5D, 1.0D);
+
+			lightingHelper.setLightness(LIGHTNESS_XYNP);
+			setWedgeSlopeLighting(Slope.WEDGE_POS_W);
+			setIDAndRender(block, PYR_YXPN, x, y, z, WEST);
+
+			setRenderBoundsAndRelight(block, SIDE_ALL, 0.5D, 0.0D, 0.0D, 1.0D, 0.5D, 1.0D);
+
+			lightingHelper.setLightness(LIGHTNESS_XYPP);
+			setWedgeSlopeLighting(Slope.WEDGE_POS_E);
+			setIDAndRender(block, PYR_YXPP, x, y, z, EAST);
 
 		} else {
-
-			setRenderBoundsAndRelight(block, SIDE_ALL, 0.0D, 0.5D, 0.0D, 0.5D, 1.0D, 1.0D);
-
-			lightingHelper.setLightness(LIGHTNESS_XYNN);
-			setWedgeSlopeLighting(Slope.WEDGE_NEG_W);
-			setIDAndRender(block, PYR_YXNN, x, y, z, DOWN);
-
-			setRenderBoundsAndRelight(block, SIDE_ALL, 0.5D, 0.5D, 0.0D, 1.0D, 1.0D, 1.0D);
-
-			lightingHelper.setLightness(LIGHTNESS_XYPN);
-			setWedgeSlopeLighting(Slope.WEDGE_NEG_E);
-			setIDAndRender(block, PYR_YXNP, x, y, z, DOWN);
 
 			setRenderBoundsAndRelight(block, SIDE_ALL, 0.0D, 0.5D, 0.0D, 1.0D, 1.0D, 0.5D);
 
 			lightingHelper.setLightness(LIGHTNESS_ZYNN);
 			setWedgeSlopeLighting(Slope.WEDGE_NEG_N);
-			setIDAndRender(block, PYR_YZNN, x, y, z, DOWN);
+			setIDAndRender(block, PYR_YZNN, x, y, z, NORTH);
 
 			setRenderBoundsAndRelight(block, SIDE_ALL, 0.0D, 0.5D, 0.5D, 1.0D, 1.0D, 1.0D);
 
 			lightingHelper.setLightness(LIGHTNESS_ZYPN);
 			setWedgeSlopeLighting(Slope.WEDGE_NEG_S);
-			setIDAndRender(block, PYR_YZNP, x, y, z, DOWN);
+			setIDAndRender(block, PYR_YZNP, x, y, z, SOUTH);
+
+			setRenderBoundsAndRelight(block, SIDE_ALL, 0.0D, 0.5D, 0.0D, 0.5D, 1.0D, 1.0D);
+
+			lightingHelper.setLightness(LIGHTNESS_XYNN);
+			setWedgeSlopeLighting(Slope.WEDGE_NEG_W);
+			setIDAndRender(block, PYR_YXNN, x, y, z, WEST);
+
+			setRenderBoundsAndRelight(block, SIDE_ALL, 0.5D, 0.5D, 0.0D, 1.0D, 1.0D, 1.0D);
+
+			lightingHelper.setLightness(LIGHTNESS_XYPN);
+			setWedgeSlopeLighting(Slope.WEDGE_NEG_E);
+			setIDAndRender(block, PYR_YXNP, x, y, z, EAST);
 
 		}
 	}

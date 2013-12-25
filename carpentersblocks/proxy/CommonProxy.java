@@ -4,7 +4,6 @@ import net.minecraftforge.common.MinecraftForge;
 import carpentersblocks.util.bed.BedDesignHandler;
 import carpentersblocks.util.flowerpot.FlowerPotDesignHandler;
 import carpentersblocks.util.flowerpot.FlowerPotHandler;
-import carpentersblocks.util.handler.DyeColorHandler;
 import carpentersblocks.util.handler.EventHandler;
 import carpentersblocks.util.handler.ExtendedPlantHandler;
 import carpentersblocks.util.handler.OverlayHandler;
@@ -28,10 +27,6 @@ public class CommonProxy {
 
 		if (FeatureRegistry.enableOverlays) {
 			OverlayHandler.init();
-		}
-
-		if (FeatureRegistry.enableDyeColors) {
-			DyeColorHandler.init();
 		}
 
 		if (FeatureRegistry.enablePatterns) {

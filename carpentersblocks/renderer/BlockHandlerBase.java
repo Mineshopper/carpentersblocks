@@ -16,7 +16,6 @@ import org.lwjgl.opengl.GL11;
 
 import carpentersblocks.block.BlockBase;
 import carpentersblocks.data.Slope;
-import carpentersblocks.data.Slope.Type;
 import carpentersblocks.renderer.helper.FancyFluidsHelper;
 import carpentersblocks.renderer.helper.LightingHelper;
 import carpentersblocks.renderer.helper.RenderHelper;
@@ -30,6 +29,9 @@ import carpentersblocks.util.registry.IconRegistry;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 
 public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
+
+	protected int PASS_SOLID = 0;
+	protected int PASS_ALPHA = 1;
 
 	protected static final int DOWN 		= 0;
 	protected static final int UP 			= 1;
@@ -286,11 +288,11 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
 	protected boolean shouldRenderBlock(Block block)
 	{
 		if (renderAlphaOverride) {
-			return renderPass == 1;
+			return renderPass == PASS_ALPHA;
 		} else {
 			return	renderBlocks.hasOverrideBlockTexture() ||
 					block.getRenderBlockPass() == renderPass ||
-					block instanceof BlockBase && renderPass == 0 ||
+					block instanceof BlockBase && renderPass == PASS_SOLID ||
 					this instanceof BlockDeterminantRender;
 		}
 	}
@@ -302,19 +304,19 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
 	{
 		if (!suppressOverlay)
 		{
-			if (BlockProperties.hasOverlay(TE, coverRendering) || block == Block.grass)
+			if (BlockProperties.hasOverlay(TE, coverRendering))
 			{
 				int coverPass = block.getRenderBlockPass();
 
 				if (renderAlphaOverride) {
-					return renderPass == 1;
+					return renderPass == PASS_ALPHA;
 				} else {
 					if (block instanceof BlockBase) {
 						return true;
-					} else if (coverPass == 1) {
+					} else if (coverPass == PASS_ALPHA) {
 						return true;
 					} else if (shouldRenderPattern()) {
-						return renderPass == 1;
+						return renderPass == PASS_ALPHA;
 					} else {
 						return coverPass == renderPass;
 					}
@@ -332,7 +334,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
 	{
 		if (!suppressPattern)
 		{
-			if (renderPass == 1) {
+			if (renderPass == PASS_ALPHA) {
 				if (BlockProperties.hasPattern(TE, coverRendering)) {
 					return true;
 				}
@@ -351,9 +353,9 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
 		double offset = 1.0D / 16.0D;
 
 		/*
-		 * Make snow match vanilla snow depth
+		 * Make snow match vanilla snow depth for continuity.
 		 */
-		if (side == 1)
+		if (side == UP)
 		{
 			int blockID = BlockProperties.getCoverID(TE, side);
 			if (blockID == Block.blockSnow.blockID || blockID == Block.snow.blockID) {
@@ -366,7 +368,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
 		 * partial rendered blocks (slabs, stair steps)
 		 */
 		switch (side) {
-		case 0:
+		case DOWN:
 			if (renderBlocks.renderMinY > 0.0D) {
 				renderBlocks.renderMaxY = renderBlocks.renderMinY;
 				renderBlocks.renderMinY -= offset;
@@ -376,7 +378,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
 				y -= 1;
 			}
 			break;
-		case 1:
+		case UP:
 			if (renderBlocks.renderMaxY < 1.0D) {
 				renderBlocks.renderMinY = renderBlocks.renderMaxY;
 				renderBlocks.renderMaxY += offset;
@@ -386,7 +388,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
 				y += 1;
 			}
 			break;
-		case 2:
+		case NORTH:
 			if (renderBlocks.renderMinZ > 0.0D) {
 				renderBlocks.renderMaxZ = renderBlocks.renderMinZ;
 				renderBlocks.renderMinZ -= offset;
@@ -396,7 +398,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
 				z -= 1;
 			}
 			break;
-		case 3:
+		case SOUTH:
 			if (renderBlocks.renderMaxZ < 1.0D) {
 				renderBlocks.renderMinZ = renderBlocks.renderMaxZ;
 				renderBlocks.renderMaxZ += offset;
@@ -406,7 +408,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
 				z += 1;
 			}
 			break;
-		case 4:
+		case WEST:
 			if (renderBlocks.renderMinX > 0.0D) {
 				renderBlocks.renderMaxX = renderBlocks.renderMinX;
 				renderBlocks.renderMinX -= offset;
@@ -416,7 +418,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
 				x -= 1;
 			}
 			break;
-		case 5:
+		case EAST:
 			if (renderBlocks.renderMaxX < 1.0D) {
 				renderBlocks.renderMinX = renderBlocks.renderMaxX;
 				renderBlocks.renderMaxX += offset;
@@ -511,6 +513,11 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
 		boolean temp_state = suppressDyeColor;
 		suppressDyeColor = true;
 
+		/* Grass sides are a special case. */
+		if (block.equals(Block.grass)) {
+			renderGrassSideOverlay(x, y, z, side);
+		}
+
 		/* Render pattern on side. */
 		if (shouldRenderPattern()) {
 			renderPattern(x, y, z, side);
@@ -525,7 +532,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
 	}
 
 	/**
-	 * Sets side icon and hands to appropriate render method.
+	 * Sets side icon, draws any attributes needed, and hands to appropriate render method.
 	 */
 	protected void delegateSideRender(Block block, int x, int y, int z, int side)
 	{
@@ -543,40 +550,30 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
 	}
 
 	/**
+	 * Renders forced grass overlay on side.
+	 */
+	protected void renderGrassSideOverlay(int x, int y, int z, int side)
+	{
+		if (side > UP)
+		{
+			if (renderAlphaOverride && renderPass == PASS_ALPHA || !renderAlphaOverride && renderPass == PASS_SOLID)
+			{
+				Icon icon = getGrassOverlayIcon(side);
+				lightingHelper.colorSide(Block.grass, x, y, z, side, icon);
+				renderSide(x, y, z, side, 0.0D, icon);
+			}
+		}
+	}
+
+	/**
 	 * Renders overlay on side.
 	 */
 	protected void renderOverlay(Block block, int x, int y, int z, int side, Icon icon)
 	{
-		BlockProperties.getData(TE);
 		int overlay = BlockProperties.getOverlay(TE, coverRendering);
 
-		if (isSideSloped)
-		{
-			Slope slope = Slope.slopesList[BlockProperties.getData(TE)];
-			if (slope.isPositive) {
-				side = 1;
-			} else if (slope.type.equals(Type.OBLIQUE_INT) || slope.type.equals(Type.OBLIQUE_EXT) || slope.type.equals(Type.PYRAMID)) {
-				side = 2;
-			}
-		}
-
-		/*
-		 * If coverBlock is grass, we need to prerender the grass
-		 * sides before drawing any overlays.
-		 */
-		if (block == Block.grass)
-		{
-			icon = getGrassOverlayIcon(side);
-
-			if (icon == null) {
-				return;
-			}
-
-			lightingHelper.colorSide(Block.grass, x, y, z, side, icon);
-
-			if (overlay != OverlayHandler.NO_OVERLAY) {
-				renderSide(x, y, z, side, 0.0D, icon);
-			}
+		if (isSideSloped && Slope.slopesList[BlockProperties.getData(TE)].isPositive) {
+			side = UP;
 		}
 
 		switch (overlay)
@@ -585,9 +582,9 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
 		{
 			switch (side)
 			{
-			case 0:
+			case DOWN:
 				return;
-			case 1:
+			case UP:
 				icon = Block.snow.getBlockTextureFromSide(1);
 				break;
 			default:
@@ -595,15 +592,16 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
 				break;
 			}
 			lightingHelper.colorSide(Block.blockSnow, x, y, z, side, icon);
+			renderSide(x, y, z, side, 0.0D, icon);
 			break;
 		}
 		case OverlayHandler.OVERLAY_HAY:
 		{
 			switch (side)
 			{
-			case 0:
+			case DOWN:
 				return;
-			case 1:
+			case UP:
 				icon = Block.hay.getBlockTextureFromSide(1);
 				break;
 			default:
@@ -611,27 +609,30 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
 				break;
 			}
 			lightingHelper.colorSide(Block.hay, x, y, z, side, icon);
+			renderSide(x, y, z, side, 0.0D, icon);
 			break;
 		}
 		case OverlayHandler.OVERLAY_WEB:
 		{
 			icon = Block.web.getBlockTextureFromSide(side);
 			lightingHelper.colorSide(Block.web, x, y, z, side, icon);
+			renderSide(x, y, z, side, 0.0D, icon);
 			break;
 		}
 		case OverlayHandler.OVERLAY_VINE:
 		{
 			icon = Block.vine.getBlockTextureFromSide(side);
 			lightingHelper.colorSide(Block.vine, x, y, z, side, icon);
+			renderSide(x, y, z, side, 0.0D, icon);
 			break;
 		}
 		case OverlayHandler.OVERLAY_MYCELIUM:
 		{
 			switch (side)
 			{
-			case 0:
+			case DOWN:
 				return;
-			case 1:
+			case UP:
 				icon = Block.mycelium.getBlockTextureFromSide(1);
 				break;
 			default:
@@ -639,27 +640,19 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
 				break;
 			}
 			lightingHelper.colorSide(Block.mycelium, x, y, z, side, icon);
+			renderSide(x, y, z, side, 0.0D, icon);
 			break;
 		}
 		case OverlayHandler.OVERLAY_GRASS:
-			/*
-			 * Grass blocks will prerender the grass overlay by
-			 * default, so we'll skip this part if it's not necessary.
-			 */
-			if (block != Block.grass)
-			{
+		{
+			if (block != Block.grass && side > DOWN) {
 				icon = getGrassOverlayIcon(side);
-
-				if (icon == null) {
-					return;
-				}
-
 				lightingHelper.colorSide(Block.grass, x, y, z, side, icon);
+				renderSide(x, y, z, side, 0.0D, icon);
 			}
 			break;
 		}
-
-		renderSide(x, y, z, side, 0.0D, icon);
+		}
 	}
 
 	/**
@@ -667,14 +660,16 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
 	 * Needed to reduce redundant code, and also because Block.grass
 	 * is the only real exception in the game due to biome-specific
 	 * coloring and side specificity.
+	 * 
+	 * Will return null if side is bottom.
 	 */
 	protected Icon getGrassOverlayIcon(int side)
 	{
 		boolean isPositiveSlope = isSideSloped ? Slope.slopesList[BlockProperties.getData(TE)].isPositive : false;
 
-		if (side == 1 || isPositiveSlope) {
+		if (side == UP || isPositiveSlope) {
 			return Block.grass.getBlockTextureFromSide(1);
-		} else if (side > 1) {
+		} else if (side > UP) {
 
 			/*
 			 * When FAST graphics are used, grass blocks use a single

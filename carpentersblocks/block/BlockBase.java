@@ -179,7 +179,7 @@ public class BlockBase extends BlockContainer {
 
 					List<Boolean> altered = new ArrayList<Boolean>();
 
-					altered.add(onHammerLeftClick(TE, entityPlayer));
+					altered.add(preOnBlockClicked(TE, world, x, y, z, entityPlayer));
 
 					if (!altered.contains(true))
 					{
@@ -193,6 +193,10 @@ public class BlockBase extends BlockContainer {
 								altered.add(BlockProperties.setCover(TE, effectiveSide, 0, (ItemStack)null));
 								altered.add(BlockProperties.setPattern(TE, effectiveSide, 0));
 							}
+
+						} else {
+
+							altered.add(onHammerLeftClick(TE, entityPlayer));
 
 						}
 					}
@@ -253,7 +257,7 @@ public class BlockBase extends BlockContainer {
 				{
 					if (itemStack.getItem() instanceof ICarpentersHammer && ((ICarpentersHammer)itemStack.getItem()).canUseHammer(world, entityPlayer)) {
 
-						altered.add(onHammerRightClick(TE, entityPlayer, side));
+						altered.add(onHammerRightClick(TE, entityPlayer));
 
 					} else if (ItemRegistry.enableChisel && itemStack.getItem() instanceof ICarpentersChisel && ((ICarpentersChisel)itemStack.getItem()).canUseChisel(world, entityPlayer)) {
 
@@ -1020,7 +1024,7 @@ public class BlockBase extends BlockContainer {
 		return false;
 	}
 
-	protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer, int side)
+	protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer)
 	{
 		return false;
 	}

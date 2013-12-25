@@ -35,14 +35,29 @@ public class BlockCarpentersCollapsibleBlock extends BlockBase {
 
 	@Override
 	/**
-	 * Lower quadrant of block.
+	 * Raise quadrant of block.
 	 */
-	protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer, int side)
+	protected boolean onHammerLeftClick(TEBase TE, EntityPlayer entityPlayer)
 	{
 		int quad = Collapsible.getQuad(EventHandler.hitX, EventHandler.hitZ);
 		int quadHeight = Collapsible.getQuadHeight(TE, quad);
 
 		Collapsible.setQuadHeight(TE, quad, --quadHeight);
+		smoothAdjacentCollapsibles(TE, quad);
+
+		return true;
+	}
+
+	@Override
+	/**
+	 * Lower quadrant of block.
+	 */
+	protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer)
+	{
+		int quad = Collapsible.getQuad(EventHandler.hitX, EventHandler.hitZ);
+		int quadHeight = Collapsible.getQuadHeight(TE, quad);
+
+		Collapsible.setQuadHeight(TE, quad, ++quadHeight);
 		smoothAdjacentCollapsibles(TE, quad);
 
 		return true;

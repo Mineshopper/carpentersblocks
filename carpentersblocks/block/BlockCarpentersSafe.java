@@ -8,6 +8,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeDirection;
 import carpentersblocks.CarpentersBlocks;
 import carpentersblocks.data.Safe;
 import carpentersblocks.tileentity.TEBase;
@@ -67,7 +68,7 @@ public class BlockCarpentersSafe extends BlockBase {
 	/**
 	 * Cycles locked state.
 	 */
-	protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer, int side)
+	protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer)
 	{
 		if (entityPlayer.isSneaking()) {
 
@@ -208,6 +209,24 @@ public class BlockCarpentersSafe extends BlockBase {
 		 * that it is locked, or it returns the GUI.
 		 */
 		return new boolean[] { true, false };
+	}
+
+	@Override
+	/**
+	 * Checks if the block is a solid face on the given side, used by placement logic.
+	 *
+	 * @param world The current world
+	 * @param x X Position
+	 * @param y Y position
+	 * @param z Z position
+	 * @param side The side to check
+	 * @return True if the block is solid on the specified side.
+	 */
+	public boolean isBlockSolidOnSide(World world, int x, int y, int z, ForgeDirection side)
+	{
+		TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
+
+		return side != Safe.getFacing(TE);
 	}
 
 	@Override

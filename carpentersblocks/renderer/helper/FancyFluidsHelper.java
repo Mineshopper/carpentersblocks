@@ -202,7 +202,7 @@ public class FancyFluidsHelper {
 				{
 					double fluidHeight = (fluidBlock instanceof BlockFluid ? 1.0D - 1.0F / 9.0F : 0.875F) - 0.0010000000474974513D;
 					renderBlocks.setRenderBounds(minX, offset, minZ, maxX, fluidHeight, maxZ);
-					float rgb[] = lightingHelper.getRGB(fluidBlock, x, y, z);
+					float rgb[] = lightingHelper.getBlockRGB(fluidBlock, x, y, z);
 					renderBlocks.renderStandardBlockWithColorMultiplier(fluidBlock, x, y, z, rgb[0], rgb[1], rgb[2]);
 					return true;
 				}

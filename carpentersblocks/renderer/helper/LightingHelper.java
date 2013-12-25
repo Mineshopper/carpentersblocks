@@ -17,7 +17,6 @@ import net.minecraft.util.Icon;
 import carpentersblocks.data.Slope;
 import carpentersblocks.renderer.BlockHandlerBase;
 import carpentersblocks.util.BlockProperties;
-import carpentersblocks.util.handler.DyeColorHandler;
 import carpentersblocks.util.handler.OptifineHandler;
 import carpentersblocks.util.registry.FeatureRegistry;
 
@@ -37,6 +36,10 @@ public class LightingHelper {
 	private boolean				hasColorOverride;
 	private float[]				colorOverride 		= new float[3];
 
+	private final int RED	= 0;
+	private final int GREEN	= 1;
+	private final int BLUE 	= 2;
+
 	public LightingHelper bind(BlockHandlerBase blockHandler)
 	{
 		this.blockHandler = blockHandler;
@@ -55,15 +58,20 @@ public class LightingHelper {
 		return this;
 	}
 
+	public RenderBlocks getRenderBlocks()
+	{
+		return renderBlocks;
+	}
+
 	/**
 	 * Sets color override.
 	 */
 	public void setColorOverride(float[] rgb)
 	{
 		hasColorOverride = true;
-		colorOverride[0] = rgb[0];
-		colorOverride[1] = rgb[1];
-		colorOverride[2] = rgb[2];
+		colorOverride[RED] = rgb[RED];
+		colorOverride[GREEN] = rgb[GREEN];
+		colorOverride[BLUE] = rgb[BLUE];
 	}
 
 	/**
@@ -160,22 +168,26 @@ public class LightingHelper {
 
 	/**
 	 * Returns float array with RGB values for block.
+	 * If using our custom render helpers, be sure to apply anaglyph filter
+	 * before rendering.
 	 */
-	public float[] getRGB(Block block, int x, int y, int z)
+	public float[] getBlockRGB(Block block, int x, int y, int z)
 	{
-		float[] rgb = { 0, 0, 0 };
-
 		int color = FeatureRegistry.enableOptifineIntegration ? OptifineHandler.getColorMultiplier(block, renderBlocks.blockAccess, x, y, z) : block.colorMultiplier(renderBlocks.blockAccess, x, y, z);
 
-		rgb[0] = (color >> 16 & 255) / 255.0F;
-		rgb[1] = (color >> 8 & 255) / 255.0F;
-		rgb[2] = (color & 255) / 255.0F;
+		return new float[] { (color >> 16 & 255) / 255.0F, (color >> 8 & 255) / 255.0F, (color & 255) / 255.0F };
+	}
 
+	/**
+	 * If anaglyph is enabled, will apply a color filter to the RGB and return it.
+	 */
+	public float[] applyAnaglyphFilter(float[] rgb)
+	{
 		if (EntityRenderer.anaglyphEnable)
 		{
-			rgb[0] = (rgb[0] * 30.0F + rgb[1] * 59.0F + rgb[2] * 11.0F) / 100.0F;
-			rgb[1] = (rgb[0] * 30.0F + rgb[1] * 70.0F) / 100.0F;
-			rgb[2] = (rgb[0] * 30.0F + rgb[2] * 70.0F) / 100.0F;
+			rgb[RED] = (rgb[RED] * 30.0F + rgb[GREEN] * 59.0F + rgb[BLUE] * 11.0F) / 100.0F;
+			rgb[GREEN] = (rgb[RED] * 30.0F + rgb[GREEN] * 70.0F) / 100.0F;
+			rgb[BLUE] = (rgb[RED] * 30.0F + rgb[BLUE] * 70.0F) / 100.0F;
 		}
 
 		return rgb;
@@ -186,39 +198,41 @@ public class LightingHelper {
 	 */
 	public void colorSide(Block block, int x, int y, int z, int side, Icon icon)
 	{
-		float[] blockRGB = getRGB(block, x, y, z);
-		float[] dyeRGB = blockHandler.suppressDyeColor ? new float[] { 1.0F, 1.0F, 1.0F } : DyeColorHandler.getDyeColorRGB(blockHandler.hasDyeColorOverride ? blockHandler.dyeColorOverride : BlockProperties.getDyeColor(blockHandler.TE, blockHandler.coverRendering));
+		float[] dyeRGB = BlockProperties.getDyeRGB(blockHandler.hasDyeColorOverride ? blockHandler.dyeColorOverride : BlockProperties.getDyeColor(blockHandler.TE, blockHandler.coverRendering));
+		float[] blockRGB = getBlockRGB(block, x, y, z);
 
-		/* Calculate color for side. */
+		/* If block is grass, we have to apply color selectively. */
 
-		float[] finalRGB = { (blockRGB[0] += lightnessOffset) * dyeRGB[0], (blockRGB[1] += lightnessOffset) * dyeRGB[1], (blockRGB[2] += lightnessOffset) * dyeRGB[2] };
+		if (block.equals(Block.grass)) {
 
-		if (block.equals(Block.grass))
-		{
 			boolean posSlopedSide = blockHandler.isSideSloped ? Slope.slopesList[BlockProperties.getData(blockHandler.TE)].isPositive : false;
+			boolean useGrassColor = block.equals(Block.grass) && (side == 1 || icon.equals(BlockGrass.getIconSideOverlay()) || posSlopedSide);
 
-			if (!(side == 1 || icon == BlockGrass.getIconSideOverlay() || posSlopedSide)) {
-				finalRGB = dyeRGB;
+			if (!useGrassColor) {
+				blockRGB = new float[] { 1.0F, 1.0F, 1.0F };
 			}
+
 		}
 
 		/* Apply color to side. */
+
+		float[] finalRGB = applyAnaglyphFilter(new float[] { (blockRGB[RED] += lightnessOffset) * dyeRGB[RED], (blockRGB[GREEN] += lightnessOffset) * dyeRGB[GREEN], (blockRGB[BLUE] += lightnessOffset) * dyeRGB[BLUE] });
 
 		if (renderBlocks.enableAO) {
 
 			aoResetColor();
 			if (hasColorOverride) {
-				aoSetColor(colorOverride[0], colorOverride[1], colorOverride[2], lightness);
+				aoSetColor(colorOverride[RED], colorOverride[GREEN], colorOverride[BLUE], lightness);
 			} else {
-				aoSetColor(finalRGB[0], finalRGB[1], finalRGB[2], lightness);
+				aoSetColor(finalRGB[RED], finalRGB[GREEN], finalRGB[BLUE], lightness);
 			}
 
 		} else {
 
 			if (hasColorOverride) {
-				Tessellator.instance.setColorOpaque_F(colorOverride[0] * lightness, colorOverride[1] * lightness, colorOverride[2] * lightness);
+				Tessellator.instance.setColorOpaque_F(colorOverride[RED] * lightness, colorOverride[GREEN] * lightness, colorOverride[BLUE] * lightness);
 			} else {
-				Tessellator.instance.setColorOpaque_F(finalRGB[0] * lightness, finalRGB[1] * lightness, finalRGB[2] * lightness);
+				Tessellator.instance.setColorOpaque_F(finalRGB[RED] * lightness, finalRGB[GREEN] * lightness, finalRGB[BLUE] * lightness);
 			}
 
 		}

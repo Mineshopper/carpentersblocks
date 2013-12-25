@@ -23,7 +23,6 @@ import carpentersblocks.tileentity.TECarpentersFlowerPot;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.flowerpot.FlowerPotDesignHandler;
 import carpentersblocks.util.flowerpot.FlowerPotHandler;
-import carpentersblocks.util.flowerpot.FlowerPotHandler.Profile;
 import carpentersblocks.util.flowerpot.FlowerPotProperties;
 import carpentersblocks.util.handler.EventHandler;
 import carpentersblocks.util.registry.BlockRegistry;
@@ -66,49 +65,39 @@ public class BlockCarpentersFlowerPot extends BlockBase {
 	 */
 	public Icon getIcon(int side, int metadata)
 	{
-		return IconRegistry.icon_flower_pot;
+		/*
+		 * This doesn't work perfectly, but it's necessary to render
+		 * the pot as an Item in the inventory.  Block destruction will
+		 * spawn cover and block icons as a result.
+		 */
+		if (side == 1 && metadata == 0) {
+			return IconRegistry.icon_flower_pot;
+		} else {
+			return super.getIcon(side, metadata);
+		}
 	}
 
 	@Override
 	/**
-	 * Cycle backward through bed designs.
 	 * Sneak-click removes plant and/or soil.
 	 */
-	protected boolean onHammerLeftClick(TEBase TE, EntityPlayer entityPlayer)
+	protected boolean preOnBlockClicked(TEBase TE, World world, int x, int y, int z, EntityPlayer entityPlayer)
 	{
 		if (entityPlayer.isSneaking()) {
 
 			if (EventHandler.hitY > 0.375F) {
 
 				if (FlowerPotProperties.hasPlant(TE)) {
-					FlowerPotProperties.setPlant((TECarpentersFlowerPot)TE, (ItemStack)null);
-					return true;
+					return FlowerPotProperties.setPlant((TECarpentersFlowerPot)TE, (ItemStack)null);
 				}
 
-			} else {
+			} else if (FlowerPotProperties.hasSoil(TE)) {
 
-				if (FlowerPotProperties.hasSoil(TE))
-				{
-					boolean soilAreaClicked = EventHandler.eventFace == 1 && EventHandler.hitX > 0.375F && EventHandler.hitX < 0.625F && EventHandler.hitZ > 0.375F && EventHandler.hitZ < 0.625F;
-
-					if (soilAreaClicked || !BlockProperties.hasAttribute(TE, 6))
-					{
-						if (FlowerPotProperties.hasPlant(TE)) {
-							FlowerPotProperties.setPlant((TECarpentersFlowerPot)TE, (ItemStack)null);
-						}
-
-						FlowerPotProperties.setSoil((TECarpentersFlowerPot)TE, (ItemStack)null);
-						return true;
-					}
+				if (EventHandler.eventFace == 1 && EventHandler.hitX > 0.375F && EventHandler.hitX < 0.625F && EventHandler.hitZ > 0.375F && EventHandler.hitZ < 0.625F) {
+					return FlowerPotProperties.setSoil((TECarpentersFlowerPot)TE, (ItemStack)null);
 				}
 
 			}
-
-		} else {
-
-			int design = FlowerPotDesignHandler.getPrev(FlowerPot.getDesign(TE));
-			FlowerPot.setDesign(TE, design);
-			return true;
 
 		}
 
@@ -117,9 +106,21 @@ public class BlockCarpentersFlowerPot extends BlockBase {
 
 	@Override
 	/**
-	 * Cycle forward through bed designs.
+	 * Cycle backward through bed designs.
 	 */
-	protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer, int side)
+	protected boolean onHammerLeftClick(TEBase TE, EntityPlayer entityPlayer)
+	{
+		int design = FlowerPotDesignHandler.getPrev(FlowerPot.getDesign(TE));
+		FlowerPot.setDesign(TE, design);
+
+		return true;
+	}
+
+	@Override
+	/**
+	 * Cycle forward through designs or set to no design.
+	 */
+	protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer)
 	{
 		if (entityPlayer.isSneaking()) {
 			FlowerPot.setDesign(TE, 0);
@@ -132,6 +133,10 @@ public class BlockCarpentersFlowerPot extends BlockBase {
 	}
 
 	@Override
+	/**
+	 * Everything contained in this will run before default onBlockActivated events take place,
+	 * but after the player has been verified to have permission to edit block.
+	 */
 	protected boolean[] preOnBlockActivated(TEBase TE, World world, int x, int y, int z, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ)
 	{
 		ItemStack itemStack = entityPlayer.getCurrentEquippedItem();
@@ -201,11 +206,9 @@ public class BlockCarpentersFlowerPot extends BlockBase {
 	{
 		if (!world.isRemote)
 		{
-			if (!canPlaceBlockAt(world, x, y, z)) {
+			if (!canPlaceBlockOnSide(world, x, y, z, 1)) {
 				dropBlockAsItem(world, x, y, z, world.getBlockMetadata(x, y, z), 0);
 				world.setBlockToAir(x, y, z);
-			} else {
-				super.onNeighborBlockChange(world, x, y, z, blockID);
 			}
 		}
 
@@ -214,14 +217,14 @@ public class BlockCarpentersFlowerPot extends BlockBase {
 
 	@Override
 	/**
-	 * Checks to see if its valid to put this block at the specified coordinates. Args: world, x, y, z
+	 * checks to see if you can place this block can be placed on that side of a block: BlockLever overrides
 	 */
-	public boolean canPlaceBlockAt(World world, int x, int y, int z)
+	public boolean canPlaceBlockOnSide(World world, int x, int y, int z, int side)
 	{
 		int blockID = world.getBlockId(x, y - 1, z);
+		boolean canPlaceOnTop = blockID > 0 && Block.blocksList[blockID].canPlaceTorchOnTop(world, x, y, z);
 
-		return	blockID > 0 &&
-				(Block.blocksList[blockID].isBlockSolidOnSide(world, x, y - 1, z, ForgeDirection.UP) || Block.blocksList[blockID].canPlaceTorchOnTop(world, x, y - 1, z));
+		return world.isBlockSolidOnSide(x, y - 1, z, ForgeDirection.UP) || canPlaceOnTop;
 	}
 
 	@Override
@@ -234,12 +237,12 @@ public class BlockCarpentersFlowerPot extends BlockBase {
 
 		if (FlowerPotProperties.hasPlant(TE)) {
 
-			Profile profile = FlowerPotHandler.getPlantProfile(TE);
-
-			if (profile.equals(Profile.CACTUS) || profile.equals(Profile.LEAVES)) {
+			switch (FlowerPotHandler.getPlantProfile(TE)) {
+			case CACTUS:
+			case LEAVES:
 				setBlockBounds(0.3125F, 0.0F, 0.3125F, 0.6875F, 0.99F, 0.6875F);
-				return;
-			} else {
+				break;
+			default:
 				setBlockBounds(0.3125F, 0.0F, 0.3125F, 0.6875F, 0.75F, 0.6875F);
 			}
 
@@ -252,14 +255,33 @@ public class BlockCarpentersFlowerPot extends BlockBase {
 
 	@Override
 	/**
-	 * Adds all intersecting collision boxes to a list. (Be sure to only add boxes to the list if they intersect the
-	 * mask.) Parameters: World, X, Y, Z, mask, list, colliding entity
+	 * Returns a bounding box from the pool of bounding boxes (this means this box can change after the pool has been
+	 * cleared to be reused)
 	 */
-	public void addCollisionBoxesToList(World world, int x, int y, int z, AxisAlignedBB axisAlignedBB, List list, Entity entity)
+	public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int x, int y, int z)
 	{
-		setBlockBoundsBasedOnState(world, x, y, z);
+		if (extendsBlockBase(world, x, y, z))
+		{
+			TECarpentersFlowerPot TE = (TECarpentersFlowerPot) world.getBlockTileEntity(x, y, z);
 
-		super.addCollisionBoxesToList(world, x, y, z, axisAlignedBB, list, entity);
+			AxisAlignedBB axisAlignedBB = AxisAlignedBB.getAABBPool().getAABB(x + 0.3125F, y, z + 0.3125F, x + 0.6875F, y + 0.375F, z + 0.6875F);
+
+			if (FlowerPotProperties.hasPlant(TE)) {
+
+				switch (FlowerPotHandler.getPlantProfile(TE)) {
+				case CACTUS:
+				case LEAVES:
+					axisAlignedBB = AxisAlignedBB.getAABBPool().getAABB(x + 0.3125F, y, z + 0.3125F, x + 0.6875F, y + 0.99F, z + 0.6875F);
+					break;
+				default: {}
+				}
+
+			}
+
+			return axisAlignedBB;
+		}
+
+		return super.getCollisionBoundingBoxFromPool(world, x, y, z);
 	}
 
 	@Override

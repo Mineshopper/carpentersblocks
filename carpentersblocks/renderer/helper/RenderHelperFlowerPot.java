@@ -13,7 +13,9 @@ public class RenderHelperFlowerPot extends RenderHelper {
 	private static void setPlantColor(Block block, int x, int y, int z)
 	{
 		Tessellator tessellator = Tessellator.instance;
-		float[] rgb = LightingHelper.instance.getRGB(block, x, y, z);
+		LightingHelper lightingHelper = LightingHelper.instance;
+
+		float[] rgb = lightingHelper.applyAnaglyphFilter(lightingHelper.getBlockRGB(block, x, y, z));
 
 		tessellator.setColorOpaque_F(rgb[0], rgb[1], rgb[2]);
 
@@ -147,7 +149,7 @@ public class RenderHelperFlowerPot extends RenderHelper {
 	}
 
 	/**
-	 * 	Renders vanilla cactus using "prickly" method.
+	 * Renders vanilla cactus using "prickly" method.
 	 */
 	public static void drawPlantCactus(RenderBlocks renderBlocks, Block block, int x, int y, int z)
 	{
@@ -155,16 +157,16 @@ public class RenderHelperFlowerPot extends RenderHelper {
 
 		LightingHelper lightingHelper = LightingHelper.instance;
 
-		double uMinR = icon.getInterpolatedU(0.0D);
-		double uMaxR = icon.getInterpolatedU(3.0D);
-		double uMinL = icon.getInterpolatedU(13.0D);
-		double uMaxL = icon.getInterpolatedU(16.0D);
+		double uMinL = icon.getInterpolatedU(0.0D);
+		double uMaxL = icon.getInterpolatedU(3.0D);
+		double uMinR = icon.getInterpolatedU(13.0D);
+		double uMaxR = icon.getInterpolatedU(16.0D);
 		double vMin = icon.getInterpolatedV(16.0D);
 		double vMax = icon.getInterpolatedV(0.0D);
 
 		renderBlocks.enableAO = true;
 
-		renderBlocks.setRenderBounds(0.375D, 0.25D, 0.375D, 0.6875F, 1.0D, 0.6875D);
+		renderBlocks.setRenderBounds(0.375D, 0.25D, 0.375D, 0.6875D, 1.0D, 0.6875D);
 
 		/* NORTH FACE */
 
@@ -172,16 +174,16 @@ public class RenderHelperFlowerPot extends RenderHelper {
 		lightingHelper.colorSide(block, x, y, z, 2, icon);
 
 		// LEFT
-		setupVertex(renderBlocks, x + 0.5F, y, z + 0.375F, uMinL, vMin, BOTTOM_CENTER);
-		setupVertex(renderBlocks, x + 0.5F, y + 0.75F, z + 0.375F, uMinL, vMax, TOP_CENTER);
-		setupVertex(renderBlocks, x + 0.6875F, y + 0.75F, z + 0.375F, uMaxL, vMax, TOP_LEFT);
-		setupVertex(renderBlocks, x + 0.6875F, y, z + 0.375F, uMaxL, vMin, BOTTOM_LEFT);
+		setupVertex(renderBlocks, x + 0.6875F, y + 0.75F, z + 0.375F, uMinL, vMax, TOP_LEFT);
+		setupVertex(renderBlocks, x + 0.6875F, y, z + 0.375F, uMinL, vMin, BOTTOM_LEFT);
+		setupVertex(renderBlocks, x + 0.5F, y, z + 0.375F, uMaxL, vMin, BOTTOM_CENTER);
+		setupVertex(renderBlocks, x + 0.5F, y + 0.75F, z + 0.375F, uMaxL, vMax, TOP_CENTER);
 
 		// RIGHT
-		setupVertex(renderBlocks, x + 0.3125D, y, z + 0.375D, uMinR, vMin, BOTTOM_RIGHT);
-		setupVertex(renderBlocks, x + 0.3125F, y + 0.75F, z + 0.375F, uMinR, vMax, TOP_RIGHT);
-		setupVertex(renderBlocks, x + 0.5F, y + 0.75F, z + 0.375F, uMaxR, vMax, TOP_CENTER);
-		setupVertex(renderBlocks, x + 0.5F, y, z + 0.375F, uMaxR, vMin, BOTTOM_CENTER);
+		setupVertex(renderBlocks, x + 0.5F, y + 0.75F, z + 0.375F, uMinR, vMax, TOP_CENTER);
+		setupVertex(renderBlocks, x + 0.5F, y, z + 0.375F, uMinR, vMin, BOTTOM_CENTER);
+		setupVertex(renderBlocks, x + 0.3125F, y, z + 0.375F, uMaxR, vMin, BOTTOM_RIGHT);
+		setupVertex(renderBlocks, x + 0.3125F, y + 0.75F, z + 0.375F, uMaxR, vMax, TOP_RIGHT);
 
 		/* SOUTH FACE */
 
@@ -189,16 +191,16 @@ public class RenderHelperFlowerPot extends RenderHelper {
 		lightingHelper.colorSide(block, x, y, z, 3, icon);
 
 		// LEFT
-		setupVertex(renderBlocks, x + 0.5F, y, z + 0.625F, uMinL, vMin, BOTTOM_CENTER);
-		setupVertex(renderBlocks, x + 0.5F, y + 0.75F, z + 0.625F, uMinL, vMax, TOP_CENTER);
-		setupVertex(renderBlocks, x + 0.3125F, y + 0.75F, z + 0.625F, uMaxL, vMax, TOP_LEFT);
-		setupVertex(renderBlocks, x + 0.3125F, y, z + 0.625F, uMaxL, vMin, BOTTOM_LEFT);
+		setupVertex(renderBlocks, x + 0.3125F, y + 0.75F, z + 0.625F, uMinL, vMax, TOP_LEFT);
+		setupVertex(renderBlocks, x + 0.3125F, y, z + 0.625F, uMinL, vMin, BOTTOM_LEFT);
+		setupVertex(renderBlocks, x + 0.5F, y, z + 0.625F, uMaxL, vMin, BOTTOM_CENTER);
+		setupVertex(renderBlocks, x + 0.5F, y + 0.75F, z + 0.625F, uMaxL, vMax, TOP_CENTER);
 
 		// RIGHT
-		setupVertex(renderBlocks, x + 0.6875F, y, z + 0.625F, uMinR, vMin, BOTTOM_RIGHT);
-		setupVertex(renderBlocks, x + 0.6875F, y + 0.75F, z + 0.625F, uMinR, vMax, TOP_RIGHT);
-		setupVertex(renderBlocks, x + 0.5F, y + 0.75F, z + 0.625F, uMaxR, vMax, TOP_CENTER);
-		setupVertex(renderBlocks, x + 0.5F, y, z + 0.625F, uMaxR, vMin, BOTTOM_CENTER);
+		setupVertex(renderBlocks, x + 0.5F, y + 0.75F, z + 0.625F, uMinR, vMax, TOP_CENTER);
+		setupVertex(renderBlocks, x + 0.5F, y, z + 0.625F, uMinR, vMin, BOTTOM_CENTER);
+		setupVertex(renderBlocks, x + 0.6875F, y, z + 0.625F, uMaxR, vMin, BOTTOM_RIGHT);
+		setupVertex(renderBlocks, x + 0.6875F, y + 0.75F, z + 0.625F, uMaxR, vMax, TOP_RIGHT);
 
 		/* WEST FACE */
 
@@ -206,16 +208,16 @@ public class RenderHelperFlowerPot extends RenderHelper {
 		lightingHelper.colorSide(block, x, y, z, 4, icon);
 
 		// LEFT
-		setupVertex(renderBlocks, x + 0.375F, y, z + 0.5F, uMinL, vMin, BOTTOM_CENTER);
-		setupVertex(renderBlocks, x + 0.375F, y + 0.75F, z + 0.5F, uMinL, vMax, TOP_CENTER);
-		setupVertex(renderBlocks, x + 0.375F, y + 0.75F, z + 0.3125F, uMaxL, vMax, TOP_LEFT);
-		setupVertex(renderBlocks, x + 0.375F, y, z + 0.3125F, uMaxL, vMin, BOTTOM_LEFT);
+		setupVertex(renderBlocks, x + 0.375F, y + 0.75F, z + 0.3125F, uMinL, vMax, TOP_LEFT);
+		setupVertex(renderBlocks, x + 0.375F, y, z + 0.3125F, uMinL, vMin, BOTTOM_LEFT);
+		setupVertex(renderBlocks, x + 0.375F, y, z + 0.5F, uMaxL, vMin, BOTTOM_CENTER);
+		setupVertex(renderBlocks, x + 0.375F, y + 0.75F, z + 0.5F, uMaxL, vMax, TOP_CENTER);
 
 		// RIGHT
-		setupVertex(renderBlocks, x + 0.375F, y, z + 0.6875F, uMinR, vMin, BOTTOM_RIGHT);
-		setupVertex(renderBlocks, x + 0.375F, y + 0.75F, z + 0.6875F, uMinR, vMax, TOP_RIGHT);
-		setupVertex(renderBlocks, x + 0.375F, y + 0.75F, z + 0.5F, uMaxR, vMax, TOP_CENTER);
-		setupVertex(renderBlocks, x + 0.375F, y, z + 0.5F, uMaxR, vMin, BOTTOM_CENTER);
+		setupVertex(renderBlocks, x + 0.375F, y + 0.75F, z + 0.5F, uMinR, vMax, TOP_CENTER);
+		setupVertex(renderBlocks, x + 0.375F, y, z + 0.5F, uMinR, vMin, BOTTOM_CENTER);
+		setupVertex(renderBlocks, x + 0.375F, y, z + 0.6875F, uMaxR, vMin, BOTTOM_RIGHT);
+		setupVertex(renderBlocks, x + 0.375F, y + 0.75F, z + 0.6875F, uMaxR, vMax, TOP_RIGHT);
 
 		/* EAST FACE */
 
@@ -223,16 +225,16 @@ public class RenderHelperFlowerPot extends RenderHelper {
 		lightingHelper.colorSide(block, x, y, z, 5, icon);
 
 		// LEFT
-		setupVertex(renderBlocks, x + 0.625F, y, z + 0.5F, uMinL, vMin, BOTTOM_CENTER);
-		setupVertex(renderBlocks, x + 0.625F, y + 0.75F, z + 0.5F, uMinL, vMax, TOP_CENTER);
-		setupVertex(renderBlocks, x + 0.625F, y + 0.75F, z + 0.6875F, uMaxL, vMax, TOP_LEFT);
-		setupVertex(renderBlocks, x + 0.625F, y, z + 0.6875F, uMaxL, vMin, BOTTOM_LEFT);
+		setupVertex(renderBlocks, x + 0.625F, y + 0.75F, z + 0.6875F, uMinL, vMax, TOP_LEFT);
+		setupVertex(renderBlocks, x + 0.625F, y, z + 0.6875F, uMinL, vMin, BOTTOM_LEFT);
+		setupVertex(renderBlocks, x + 0.625F, y, z + 0.5F, uMaxL, vMin, BOTTOM_CENTER);
+		setupVertex(renderBlocks, x + 0.625F, y + 0.75F, z + 0.5F, uMaxL, vMax, TOP_CENTER);
 
 		// RIGHT
-		setupVertex(renderBlocks, x + 0.625F, y, z + 0.3125F, uMinR, vMin, BOTTOM_RIGHT);
-		setupVertex(renderBlocks, x + 0.625F, y + 0.75F, z + 0.3125F, uMinR, vMax, TOP_RIGHT);
-		setupVertex(renderBlocks, x + 0.625F, y + 0.75F, z + 0.5F, uMaxR, vMax, TOP_CENTER);
-		setupVertex(renderBlocks, x + 0.625F, y, z + 0.5F, uMaxR, vMin, BOTTOM_CENTER);
+		setupVertex(renderBlocks, x + 0.625F, y + 0.75F, z + 0.5F, uMinR, vMax, TOP_CENTER);
+		setupVertex(renderBlocks, x + 0.625F, y, z + 0.5F, uMinR, vMin, BOTTOM_CENTER);
+		setupVertex(renderBlocks, x + 0.625F, y, z + 0.3125F, uMaxR, vMin, BOTTOM_RIGHT);
+		setupVertex(renderBlocks, x + 0.625F, y + 0.75F, z + 0.3125F, uMaxR, vMax, TOP_RIGHT);
 
 		/* UP */
 

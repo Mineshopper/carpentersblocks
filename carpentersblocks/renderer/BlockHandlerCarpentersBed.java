@@ -126,8 +126,6 @@ public class BlockHandlerCarpentersBed extends BlockDeterminantRender {
 					suppressOverlay = true;
 					suppressPattern = true;
 
-					disableAO = false;
-
 					// Render mattress
 					setMetadataOverride(0);
 					renderBlocks.setRenderBounds(bedParallelNeg ? 0.0D : 0.0625D, 0.3125D, 0.0D, bedParallelPos ? 1.0D : 0.9375D, 0.5625D, 0.875D);
@@ -143,7 +141,9 @@ public class BlockHandlerCarpentersBed extends BlockDeterminantRender {
 					renderBlocks.uvRotateTop = 0;
 
 					// Render blanket
-					if (!hasCustomBlanket) {
+					if (!hasCustomBlanket)
+					{
+						disableAO = false;
 						setMetadataOverride(blanketColor);
 						renderBlocks.setRenderBounds(0.0D, isOccupied ? 0.4375D : 0.3125D, 0.0D, 0.0625D, isOccupied ? 0.8125D : 0.5625D, 0.5D);
 						renderBlock(Block.cloth, x, y, z);
@@ -152,9 +152,8 @@ public class BlockHandlerCarpentersBed extends BlockDeterminantRender {
 						renderBlocks.setRenderBounds(0.9375D, isOccupied ? 0.4375D : 0.3125D, 0.0D, 1.0D, isOccupied ? 0.8125D : 0.5625D, 0.5D);
 						renderBlock(Block.cloth, x, y, z);
 						clearMetadataOverride();
+						disableAO = true;
 					}
-
-					disableAO = true;
 
 					suppressDyeColor = false;
 					suppressOverlay = false;
@@ -190,8 +189,6 @@ public class BlockHandlerCarpentersBed extends BlockDeterminantRender {
 					suppressOverlay = true;
 					suppressPattern = true;
 
-					disableAO = false;
-
 					// Render mattress
 					setMetadataOverride(0);
 					renderBlocks.setRenderBounds(bedParallelNeg ? 0.0D : 0.0625D, 0.3125D, 0.0625D, bedParallelPos ? 1.0D : 0.9375D, 0.5625D, 1.0D);
@@ -199,7 +196,9 @@ public class BlockHandlerCarpentersBed extends BlockDeterminantRender {
 					clearMetadataOverride();
 
 					// Render blanket
-					if (!hasCustomBlanket) {
+					if (!hasCustomBlanket)
+					{
+						disableAO = false;
 						setMetadataOverride(blanketColor);
 						renderBlocks.setRenderBounds(0.0D, isOccupied ? 0.4375D : 0.3125D, 0.0D, 0.0625D, isOccupied ? 0.8125D : 0.5625D, 1.0D);
 						renderBlock(Block.cloth, x, y, z);
@@ -210,9 +209,8 @@ public class BlockHandlerCarpentersBed extends BlockDeterminantRender {
 						renderBlocks.setRenderBounds(0.0625D, isOccupied ? 0.4375D : 0.3125D, 0.0D, 0.9375D, isOccupied ? 0.8125D : 0.5625D, 0.0625D);
 						renderBlock(Block.cloth, x, y, z);
 						clearMetadataOverride();
+						disableAO = true;
 					}
-
-					disableAO = true;
 
 					suppressDyeColor = false;
 					suppressOverlay = false;
@@ -249,8 +247,6 @@ public class BlockHandlerCarpentersBed extends BlockDeterminantRender {
 					suppressOverlay = true;
 					suppressPattern = true;
 
-					disableAO = false;
-
 					// Render mattress
 					setMetadataOverride(0);
 					renderBlocks.setRenderBounds(bedParallelNeg ? 0.0D : 0.0625D, 0.3125D, 0.125D, bedParallelPos ? 1.0D : 0.9375D, 0.5625D, 1.0D);
@@ -265,7 +261,9 @@ public class BlockHandlerCarpentersBed extends BlockDeterminantRender {
 					renderBlocks.uvRotateTop = 0;
 
 					// Render blanket
-					if (!hasCustomBlanket) {
+					if (!hasCustomBlanket)
+					{
+						disableAO = false;
 						setMetadataOverride(blanketColor);
 						renderBlocks.setRenderBounds(0.0D, isOccupied ? 0.4375D : 0.3125D, 0.5D, 0.0625D, isOccupied ? 0.8125D : 0.5625D, 1.0D);
 						renderBlock(Block.cloth, x, y, z);
@@ -274,9 +272,8 @@ public class BlockHandlerCarpentersBed extends BlockDeterminantRender {
 						renderBlocks.setRenderBounds(0.9375D, isOccupied ? 0.4375D : 0.3125D, 0.5D, 1.0D, isOccupied ? 0.8125D : 0.5625D, 1.0D);
 						renderBlock(Block.cloth, x, y, z);
 						clearMetadataOverride();
+						disableAO = true;
 					}
-
-					disableAO = true;
 
 					suppressDyeColor = false;
 					suppressOverlay = false;
@@ -312,8 +309,6 @@ public class BlockHandlerCarpentersBed extends BlockDeterminantRender {
 					suppressOverlay = true;
 					suppressPattern = true;
 
-					disableAO = false;
-
 					// Render mattress
 					setMetadataOverride(0);
 					renderBlocks.setRenderBounds(bedParallelNeg ? 0.0D : 0.0625D, 0.3125D, 0.0D, bedParallelPos ? 1.0D : 0.9375D, 0.5625D, 0.9375D);
@@ -321,7 +316,9 @@ public class BlockHandlerCarpentersBed extends BlockDeterminantRender {
 					clearMetadataOverride();
 
 					// Render blanket
-					if (!hasCustomBlanket) {
+					if (!hasCustomBlanket)
+					{
+						disableAO = false;
 						setMetadataOverride(blanketColor);
 						renderBlocks.setRenderBounds(0.0D, isOccupied ? 0.4375D : 0.3125D, 0.0D, 0.0625D, isOccupied ? 0.8125D : 0.5625D, 1.0D);
 						renderBlock(Block.cloth, x, y, z);
@@ -332,9 +329,8 @@ public class BlockHandlerCarpentersBed extends BlockDeterminantRender {
 						renderBlocks.setRenderBounds(0.0625D, isOccupied ? 0.4375D : 0.3125D, 0.9375D, 0.9375D, isOccupied ? 0.8125D : 0.5625D, 1.0D);
 						renderBlock(Block.cloth, x, y, z);
 						clearMetadataOverride();
+						disableAO = true;
 					}
-
-					disableAO = true;
 
 					suppressDyeColor = false;
 					suppressOverlay = false;
@@ -371,8 +367,6 @@ public class BlockHandlerCarpentersBed extends BlockDeterminantRender {
 					suppressOverlay = true;
 					suppressPattern = true;
 
-					disableAO = false;
-
 					// Render mattress
 					setMetadataOverride(0);
 					renderBlocks.setRenderBounds(0.0D, 0.3125D, bedParallelNeg ? 0.0D : 0.0625D, 0.875D, 0.5625D, bedParallelPos ? 1.0D : 0.9375D);
@@ -388,7 +382,9 @@ public class BlockHandlerCarpentersBed extends BlockDeterminantRender {
 					renderBlocks.uvRotateTop = 0;
 
 					// Render blanket
-					if (!hasCustomBlanket) {
+					if (!hasCustomBlanket)
+					{
+						disableAO = false;
 						setMetadataOverride(blanketColor);
 						renderBlocks.setRenderBounds(0.0D, isOccupied ? 0.4375D : 0.3125D, 0.0D, 0.5D, isOccupied ? 0.8125D : 0.5625D, 0.0625D);
 						renderBlock(Block.cloth, x, y, z);
@@ -397,9 +393,8 @@ public class BlockHandlerCarpentersBed extends BlockDeterminantRender {
 						renderBlocks.setRenderBounds(0.0D, isOccupied ? 0.4375D : 0.3125D, 0.9375D, 0.5D, isOccupied ? 0.8125D : 0.5625D, 1.0D);
 						renderBlock(Block.cloth, x, y, z);
 						clearMetadataOverride();
+						disableAO = true;
 					}
-
-					disableAO = true;
 
 					suppressDyeColor = false;
 					suppressOverlay = false;
@@ -435,8 +430,6 @@ public class BlockHandlerCarpentersBed extends BlockDeterminantRender {
 					suppressOverlay = true;
 					suppressPattern = true;
 
-					disableAO = false;
-
 					// Render mattress
 					setMetadataOverride(0);
 					renderBlocks.setRenderBounds(0.0625D, 0.3125D, bedParallelNeg ? 0.0D : 0.0625D, 1.0D, 0.5625D, bedParallelPos ? 1.0D : 0.9375D);
@@ -444,7 +437,9 @@ public class BlockHandlerCarpentersBed extends BlockDeterminantRender {
 					clearMetadataOverride();
 
 					// Render blanket
-					if (!hasCustomBlanket) {
+					if (!hasCustomBlanket)
+					{
+						disableAO = false;
 						setMetadataOverride(blanketColor);
 						renderBlocks.setRenderBounds(0.0D, isOccupied ? 0.4375D : 0.3125D, 0.0D, 1.0D, isOccupied ? 0.8125D : 0.5625D, 0.0625D);
 						renderBlock(Block.cloth, x, y, z);
@@ -455,9 +450,8 @@ public class BlockHandlerCarpentersBed extends BlockDeterminantRender {
 						renderBlocks.setRenderBounds(0.0D, isOccupied ? 0.4375D : 0.3125D, 0.0625D, 0.0625D, isOccupied ? 0.8125D : 0.5625D, 0.9375D);
 						renderBlock(Block.cloth, x, y, z);
 						clearMetadataOverride();
+						disableAO = true;
 					}
-
-					disableAO = true;
 
 					suppressDyeColor = false;
 					suppressOverlay = false;
@@ -494,8 +488,6 @@ public class BlockHandlerCarpentersBed extends BlockDeterminantRender {
 					suppressOverlay = true;
 					suppressPattern = true;
 
-					disableAO = false;
-
 					// Render mattress
 					setMetadataOverride(0);
 					renderBlocks.setRenderBounds(0.125D, 0.3125D, bedParallelNeg ? 0.0D : 0.0625D, 1.0D, 0.5625D, bedParallelPos ? 1.0D : 0.9375D);
@@ -511,7 +503,9 @@ public class BlockHandlerCarpentersBed extends BlockDeterminantRender {
 					renderBlocks.uvRotateTop = 0;
 
 					// Render blanket
-					if (!hasCustomBlanket) {
+					if (!hasCustomBlanket)
+					{
+						disableAO = false;
 						setMetadataOverride(blanketColor);
 						renderBlocks.setRenderBounds(0.5D, isOccupied ? 0.4375D : 0.3125D, 0.0D, 1.0D, isOccupied ? 0.8125D : 0.5625D, 0.0625D);
 						renderBlock(Block.cloth, x, y, z);
@@ -520,9 +514,8 @@ public class BlockHandlerCarpentersBed extends BlockDeterminantRender {
 						renderBlocks.setRenderBounds(0.5D, isOccupied ? 0.4375D : 0.3125D, 0.9375D, 1.0D, isOccupied ? 0.8125D : 0.5625D, 1.0D);
 						renderBlock(Block.cloth, x, y, z);
 						clearMetadataOverride();
+						disableAO = true;
 					}
-
-					disableAO = true;
 
 					suppressDyeColor = false;
 					suppressOverlay = false;
@@ -558,8 +551,6 @@ public class BlockHandlerCarpentersBed extends BlockDeterminantRender {
 					suppressOverlay = true;
 					suppressPattern = true;
 
-					disableAO = false;
-
 					// Render mattress
 					setMetadataOverride(0);
 					renderBlocks.setRenderBounds(0.0D, 0.3125D, bedParallelNeg ? 0.0D : 0.0625D, 0.9375D, 0.5625D, bedParallelPos ? 1.0D : 0.9375D);
@@ -567,7 +558,9 @@ public class BlockHandlerCarpentersBed extends BlockDeterminantRender {
 					clearMetadataOverride();
 
 					// Render blanket
-					if (!hasCustomBlanket) {
+					if (!hasCustomBlanket)
+					{
+						disableAO = false;
 						setMetadataOverride(blanketColor);
 						renderBlocks.setRenderBounds(0.0D, isOccupied ? 0.4375D : 0.3125D, 0.0D, 1.0D, isOccupied ? 0.8125D : 0.5625D, 0.0625D);
 						renderBlock(Block.cloth, x, y, z);
@@ -578,9 +571,8 @@ public class BlockHandlerCarpentersBed extends BlockDeterminantRender {
 						renderBlocks.setRenderBounds(0.9375D, isOccupied ? 0.4375D : 0.3125D, 0.0625D, 1.0D, isOccupied ? 0.8125D : 0.5625D, 0.9375D);
 						renderBlock(Block.cloth, x, y, z);
 						clearMetadataOverride();
+						disableAO = true;
 					}
-
-					disableAO = true;
 
 					suppressDyeColor = false;
 					suppressOverlay = false;

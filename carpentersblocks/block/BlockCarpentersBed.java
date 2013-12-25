@@ -90,7 +90,7 @@ public class BlockCarpentersBed extends BlockBase {
 	/**
 	 * Cycle forward through bed designs.
 	 */
-	protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer, int side)
+	protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer)
 	{
 		int design = BedDesignHandler.getNext(Bed.getDesign(TE));
 

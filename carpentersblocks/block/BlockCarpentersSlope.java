@@ -168,7 +168,7 @@ public class BlockCarpentersSlope extends BlockBase {
 	/**
 	 * Alters block type.
 	 */
-	protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer, int side)
+	protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer)
 	{
 		int slopeID = BlockProperties.getData(TE);
 		Slope slope = Slope.slopesList[slopeID];

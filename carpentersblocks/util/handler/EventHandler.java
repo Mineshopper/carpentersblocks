@@ -7,6 +7,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
@@ -14,11 +15,13 @@ import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.PlaySoundAtEntityEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
+import carpentersblocks.api.ICarpentersChisel;
+import carpentersblocks.api.ICarpentersHammer;
 import carpentersblocks.block.BlockBase;
 import carpentersblocks.renderer.helper.ParticleHelper;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
-import carpentersblocks.util.registry.ItemRegistry;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
@@ -35,6 +38,8 @@ public class EventHandler {
 	public static double hitX;
 	public static double hitY;
 	public static double hitZ;
+
+	public static Action action;
 
 	/** This is an offset used for blockIcon. */
 	public final static int BLOCKICON_BASE_ID = 1000;
@@ -53,37 +58,43 @@ public class EventHandler {
 		{
 			BlockBase block = (BlockBase) Block.blocksList[blockID];
 
+			action = event.action;
+			eventFace = event.face;
 			eventEntity = event.entity;
 
-			ItemStack itemStack = event.entityPlayer.getHeldItem();
+			MovingObjectPosition object = Minecraft.getMinecraft().objectMouseOver;
 
-			boolean isHammerEquipped = itemStack != null && itemStack.itemID == ItemRegistry.itemCarpentersHammerID;
-
-			if (event.action.equals(PlayerInteractEvent.Action.LEFT_CLICK_BLOCK)) {
-
-				eventFace = event.face;
-
+			if (object != null)
+			{
 				Vec3 vec = Minecraft.getMinecraft().objectMouseOver.hitVec;
-
 				hitX = (float)vec.xCoord - event.x;
 				hitY = (float)vec.yCoord - event.y;
 				hitZ = (float)vec.zCoord - event.z;
+			}
+
+			ItemStack itemStack = event.entityPlayer.getHeldItem();
+
+			boolean toolEquipped = itemStack != null && (itemStack.getItem() instanceof ICarpentersHammer || itemStack.getItem() instanceof ICarpentersChisel);
+
+			if (action.equals(PlayerInteractEvent.Action.LEFT_CLICK_BLOCK)) {
 
 				/*
 				 * Creative mode won't call onBlockClicked() because it will try to destroy the block.
-				 * We'll invoke it here if the hammer is equipped while in creative mode.
+				 * We'll invoke it here when a Carpenter's tool is being held.
 				 */
-				if (event.entityPlayer.capabilities.isCreativeMode && isHammerEquipped) {
+				if (event.entityPlayer.capabilities.isCreativeMode && toolEquipped) {
 					block.onBlockClicked(event.entity.worldObj, event.x, event.y, event.z, event.entityPlayer);
 				}
 
-			} else {
+			} else if (toolEquipped) {
 
 				/*
 				 * onBlockActivated() isn't called if the player is sneaking.
-				 * We'll invoke it here if the hammer is equipped.
+				 * We'll invoke it here.  It's not able to adjust the player's
+				 * inventory for operations such as decrementing an itemstack,
+				 * so we're limiting it to tool actions only.
 				 */
-				if (isHammerEquipped && event.entityPlayer.isSneaking()) {
+				if (event.entityPlayer.isSneaking()) {
 					block.onBlockActivated(event.entity.worldObj, event.x, event.y, event.z, event.entityPlayer, event.face, 1.0F, 1.0F, 1.0F);
 				}
 

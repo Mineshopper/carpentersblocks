@@ -47,35 +47,32 @@ public class Collapsible {
 	public static void setQuadHeight(TEBase TE, int corner, int height)
 	{
 		int data = BlockProperties.getData(TE);
-
-		/* Correct out-of-range values. */
-		if (height < 1) {
-			height = 16;
-		}
-
 		--height;
 
-		switch (corner) {
-		case QUAD_XZNN:
-			data &= 0xfff;
-			data |= 15 - height << 12;
-			break;
-		case QUAD_XZNP:
-			data &= 0xf0ff;
-			data |= 15 - height << 8;
-			break;
-		case QUAD_XZPN:
-			data &= 0xff0f;
-			data |= 15 - height << 4;
-			break;
-		case QUAD_XZPP:
-			data &= 0xfff0;
-			data |= 15 - height;
-			break;
-		}
+		if (height >= 0 && height < 16)
+		{
+			switch (corner) {
+			case QUAD_XZNN:
+				data &= 0xfff;
+				data |= 15 - height << 12;
+				break;
+			case QUAD_XZNP:
+				data &= 0xf0ff;
+				data |= 15 - height << 8;
+				break;
+			case QUAD_XZPN:
+				data &= 0xff0f;
+				data |= 15 - height << 4;
+				break;
+			case QUAD_XZPP:
+				data &= 0xfff0;
+				data |= 15 - height;
+				break;
+			}
 
-		if (BlockProperties.getData(TE) != data) {
-			BlockProperties.setData(TE, data);
+			if (BlockProperties.getData(TE) != data) {
+				BlockProperties.setData(TE, data);
+			}
 		}
 	}
 

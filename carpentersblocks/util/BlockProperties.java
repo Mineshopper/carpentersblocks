@@ -10,13 +10,13 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemDye;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import carpentersblocks.tileentity.TEBase;
-import carpentersblocks.util.handler.DyeColorHandler;
 import carpentersblocks.util.handler.OverlayHandler;
 
 public class BlockProperties {
@@ -27,6 +27,20 @@ public class BlockProperties {
 	public static int getEntityFacing(Entity entity)
 	{
 		return MathHelper.floor_double(entity.rotationYaw * 4.0F / 360.0F + 0.5D) & 3;
+	}
+
+	/**
+	 * Returns RGB of dye metadata.
+	 */
+	public static float[] getDyeRGB(int metadata)
+	{
+		int color = ItemDye.dyeColors[15 - metadata];
+
+		float red = (color >> 16 & 255) / 255.0F;
+		float green = (color >> 8 & 255) / 255.0F;
+		float blue = (color & 255) / 255.0F;
+
+		return new float[] { red, green, blue };
 	}
 
 	/**
@@ -159,7 +173,7 @@ public class BlockProperties {
 	{
 		suppressUpdate = true;
 
-		setDyeColor(TE, side, DyeColorHandler.NO_COLOR);
+		setDyeColor(TE, side, 0);
 		setOverlay(TE, side, (ItemStack)null);
 		setCover(TE, side, 0, (ItemStack)null);
 		setPattern(TE, side, 0);

@@ -13,7 +13,6 @@ import org.lwjgl.opengl.GL11;
 import carpentersblocks.data.Bed;
 import carpentersblocks.renderer.helper.BedDesignHelper;
 import carpentersblocks.tileentity.TEBase;
-import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.bed.BedDesignHandler;
 
 public class TERendererCarpentersBed extends TileEntitySpecialRenderer {
@@ -39,7 +38,6 @@ public class TERendererCarpentersBed extends TileEntitySpecialRenderer {
 
 	private void renderBedDesignAt(TEBase TE, double x, double y, double z, int design)
 	{
-		BlockProperties.getData(TE);
 		boolean isHead = Bed.isHeadOfBed(TE);
 		boolean isOccupied = Bed.isOccupied(TE);
 
