@@ -51,10 +51,9 @@ public class PatternHandler {
 
 			mod.close();
 		}
-		catch (Exception exception)
+		catch (Exception e)
 		{
-			ModLogger.log(Level.WARNING, "Encountered a problem while initializing pattern icons.  See trace below.");
-			exception.printStackTrace();
+			ModLogger.log(Level.WARNING, "Encountered a problem while initializing pattern icons: " + e.getMessage());
 		}
 
 		return true;

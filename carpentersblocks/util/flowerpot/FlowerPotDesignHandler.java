@@ -51,10 +51,9 @@ public class FlowerPotDesignHandler {
 
 			mod.close();
 		}
-		catch (Exception exception)
+		catch (Exception e)
 		{
-			ModLogger.log(Level.WARNING, "Encountered a problem while initializing flower pot designs.  See trace below.");
-			exception.printStackTrace();
+			ModLogger.log(Level.WARNING, "Encountered a problem while initializing flower pot designs: " + e.getMessage());
 		}
 
 		return true;

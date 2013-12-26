@@ -22,6 +22,18 @@ import carpentersblocks.util.handler.OverlayHandler;
 public class BlockProperties {
 
 	/**
+	 * Returns depth of side cover.
+	 */
+	public static float getSideCoverDepth(TEBase TE, int side)
+	{
+		if (getOverlay(TE, side) == OverlayHandler.OVERLAY_SNOW) {
+			return 0.125F;
+		} else {
+			return 0.0625F;
+		}
+	}
+
+	/**
 	 * Returns entity facing.
 	 */
 	public static int getEntityFacing(Entity entity)

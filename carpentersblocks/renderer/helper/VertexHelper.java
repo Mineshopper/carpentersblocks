@@ -14,6 +14,8 @@ public class VertexHelper {
 
 	public final static int TOP_CENTER		= 4;
 	public final static int BOTTOM_CENTER	= 5;
+	public final static int LEFT_CENTER		= 6;
+	public final static int RIGHT_CENTER	= 7;
 
 	public final static int NORTHWEST 		= TOP_LEFT;
 	public final static int SOUTHWEST 		= BOTTOM_LEFT;
@@ -69,6 +71,14 @@ public class VertexHelper {
 			case TOP_CENTER:
 				tessellator.setColorOpaque_F((renderBlocks.colorRedTopLeft + renderBlocks.colorRedTopRight) / 2.0F, (renderBlocks.colorGreenTopLeft + renderBlocks.colorGreenTopRight) / 2.0F, (renderBlocks.colorBlueTopLeft + renderBlocks.colorBlueTopRight) / 2);
 				tessellator.setBrightness((renderBlocks.brightnessTopRight + renderBlocks.brightnessTopLeft) / 2);
+				break;
+			case LEFT_CENTER:
+				tessellator.setColorOpaque_F((renderBlocks.colorRedTopLeft + renderBlocks.colorRedBottomLeft) / 2.0F, (renderBlocks.colorGreenTopLeft + renderBlocks.colorGreenBottomLeft) / 2.0F, (renderBlocks.colorBlueTopLeft + renderBlocks.colorBlueBottomLeft) / 2.0F);
+				tessellator.setBrightness((renderBlocks.brightnessTopLeft + renderBlocks.brightnessBottomLeft) / 2);
+				break;
+			case RIGHT_CENTER:
+				tessellator.setColorOpaque_F((renderBlocks.colorRedTopRight + renderBlocks.colorRedBottomRight) / 2.0F, (renderBlocks.colorGreenTopRight + renderBlocks.colorGreenBottomRight) / 2.0F, (renderBlocks.colorBlueTopRight + renderBlocks.colorBlueBottomRight) / 2);
+				tessellator.setBrightness((renderBlocks.brightnessTopRight + renderBlocks.brightnessBottomRight) / 2);
 				break;
 			case TOP_LEFT:
 				tessellator.setColorOpaque_F(renderBlocks.colorRedTopLeft, renderBlocks.colorGreenTopLeft, renderBlocks.colorBlueTopLeft);

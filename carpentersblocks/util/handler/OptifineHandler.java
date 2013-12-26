@@ -25,7 +25,7 @@ public class OptifineHandler {
 			ModLogger.log(Level.INFO, "Optifine integration successful.");
 			return true;
 		} catch (Exception e) {
-			ModLogger.log(Level.WARNING, "Optifine integration failed.");
+			ModLogger.log(Level.WARNING, "Optifine integration failed: " + e.getMessage());
 			return false;
 		}
 	}
@@ -36,8 +36,8 @@ public class OptifineHandler {
 		try {
 			int tempColorMultiplier = (Integer) getColorMultiplier.invoke(null, block, blockAccess, x, y, z);
 			colorMultiplier = tempColorMultiplier;
-		} catch (InvocationTargetException E) {
-			ModLogger.log(Level.WARNING, "Block custom coloring failed, disabling Optifine integration.");
+		} catch (InvocationTargetException e) {
+			ModLogger.log(Level.WARNING, "Block custom coloring failed, disabling Optifine integration: " + e.getMessage());
 			FeatureRegistry.enableOptifineIntegration = false;
 		} catch (Exception E) {}
 

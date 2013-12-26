@@ -179,7 +179,7 @@ public class LightingHelper {
 	}
 
 	/**
-	 * If anaglyph is enabled, will apply a color filter to the RGB and return it.
+	 * If anaglyph is enabled, will apply a color filter to the RGB before returning it.
 	 */
 	public float[] applyAnaglyphFilter(float[] rgb)
 	{
@@ -198,7 +198,15 @@ public class LightingHelper {
 	 */
 	public void colorSide(Block block, int x, int y, int z, int side, Icon icon)
 	{
-		float[] dyeRGB = BlockProperties.getDyeRGB(blockHandler.hasDyeColorOverride ? blockHandler.dyeColorOverride : BlockProperties.getDyeColor(blockHandler.TE, blockHandler.coverRendering));
+		float[] dyeRGB = { 1.0F, 1.0F, 1.0F };
+
+		if (!blockHandler.suppressDyeColor && !(block.equals(Block.grass) && side == 1)) {
+			if (BlockProperties.hasDyeColor(blockHandler.TE, blockHandler.coverRendering) || blockHandler.hasDyeColorOverride) {
+				int dyeColor = blockHandler.hasDyeColorOverride ? blockHandler.dyeColorOverride : BlockProperties.getDyeColor(blockHandler.TE, blockHandler.coverRendering);
+				dyeRGB = BlockProperties.getDyeRGB(dyeColor);
+			}
+		}
+
 		float[] blockRGB = getBlockRGB(block, x, y, z);
 
 		/* If block is grass, we have to apply color selectively. */

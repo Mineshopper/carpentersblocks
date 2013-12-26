@@ -155,6 +155,10 @@ public class FlowerPotProperties {
 			ejectEntity(TE, new ItemStack(getPlantID(TE), 1, getPlantMetadata(TE)));
 		}
 
+		if (itemStack != null) {
+			System.out.println("DEBUG: plant name = " + FlowerPotHandler.getFullUnlocalizedName(itemStack));
+		}
+
 		itemStack = FlowerPotHandler.getEquivalentBlock(itemStack);
 
 		int blockID = itemStack == null ? 0 : itemStack.itemID;

@@ -16,7 +16,6 @@ import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDirectional;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.Icon;
@@ -38,7 +37,7 @@ import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.handler.EventHandler;
 import carpentersblocks.util.registry.IconRegistry;
 
-public class BlockHandlerCarpentersSlope extends BlockHandlerBase {
+public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
 
 	/* RENDER IDS */
 	private static final int NORMAL_YN 				= 0;
@@ -88,12 +87,6 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerBase {
 	private static final int PRISM_WEDGE_XN			= 44;
 	private static final int PRISM_WEDGE_XP			= 45;
 
-	private final float LIGHTNESS_YN 				= 0.5F;
-	private final float LIGHTNESS_YP 				= 1.0F;
-	private final float LIGHTNESS_ZN 				= 0.8F;
-	private final float LIGHTNESS_ZP 				= 0.8F;
-	private final float LIGHTNESS_XN 				= 0.6F;
-	private final float LIGHTNESS_XP 				= 0.6F;
 	private final float LIGHTNESS_XYNN 				= 0.55F;
 	private final float LIGHTNESS_XYPN 				= 0.55F;
 	private final float LIGHTNESS_ZYNN 				= 0.65F;
@@ -105,24 +98,6 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerBase {
 	private final float LIGHTNESS_SIDE_WEDGE 		= 0.7F;
 	private final float LIGHTNESS_POS_OBL 			= 0.9F;
 	private final float LIGHTNESS_NEG_OBL			= 0.55F;
-
-	/** Identifies which render helper to use. */
-	protected int slopeRenderID	= 0;
-
-	/** Represents a value for all sides. */
-	private final int SIDE_ALL = 6;
-
-	/** Holds AO values for all six faces. */
-	private float[][] ao = new float[6][4];
-
-	/** Holds brightness values for all six faces. */
-	private int[][] brightness = new int[6][4];
-
-	/** Holds offset AO values for all six faces. */
-	private float[][] offset_ao = new float[6][4];
-
-	/** Holds offset brightness values for all six faces. */
-	private int[][] offset_brightness = new int[6][4];
 
 	@Override
 	public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderBlocks) {
@@ -187,263 +162,154 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerBase {
 		return icon;
 	}
 
-	/**
-	 * Applies full rendering bounds and calculates lighting for side.
-	 * Side 6 represents all sides.
-	 */
-	private void setRenderBoundsAndRelight(Block block, int side, double xMin, double yMin, double zMin, double xMax, double yMax, double zMax)
-	{
-		renderBlocks.setRenderBounds(xMin, yMin, zMin, xMax, yMax, zMax);
-
-		boolean allSides = side == SIDE_ALL;
-
-		if (allSides || side == DOWN) {
-			lightingHelper.setLightness(LIGHTNESS_YN).setLightingYNeg(block, TE.xCoord, TE.yCoord, TE.zCoord);
-			if (renderBlocks.enableAO) {
-				ao[DOWN] = new float[] { lightingHelper.ao[NORTHWEST], lightingHelper.ao[SOUTHWEST], lightingHelper.ao[SOUTHEAST], lightingHelper.ao[NORTHEAST] };
-				brightness[DOWN] = new int[] { renderBlocks.brightnessTopLeft, renderBlocks.brightnessBottomLeft, renderBlocks.brightnessBottomRight, renderBlocks.brightnessTopRight };
-			}
-		}
-
-		if (allSides || side == UP) {
-			lightingHelper.setLightness(LIGHTNESS_YP).setLightingYPos(block, TE.xCoord, TE.yCoord, TE.zCoord);
-			if (renderBlocks.enableAO) {
-				ao[UP] = new float[] { lightingHelper.ao[NORTHWEST], lightingHelper.ao[SOUTHWEST], lightingHelper.ao[SOUTHEAST], lightingHelper.ao[NORTHEAST] };
-				brightness[UP] = new int[] { renderBlocks.brightnessTopLeft, renderBlocks.brightnessBottomLeft, renderBlocks.brightnessBottomRight, renderBlocks.brightnessTopRight };
-			}
-		}
-
-		if (allSides || side == NORTH) {
-			lightingHelper.setLightness(LIGHTNESS_ZN).setLightingZNeg(block, TE.xCoord, TE.yCoord, TE.zCoord);
-			if (renderBlocks.enableAO) {
-				ao[NORTH] = new float[] { lightingHelper.ao[TOP_LEFT], lightingHelper.ao[BOTTOM_LEFT], lightingHelper.ao[BOTTOM_RIGHT], lightingHelper.ao[TOP_RIGHT] };
-				brightness[NORTH] = new int[] { renderBlocks.brightnessTopLeft, renderBlocks.brightnessBottomLeft, renderBlocks.brightnessBottomRight, renderBlocks.brightnessTopRight };
-			}
-		}
-
-		if (allSides || side == SOUTH) {
-			lightingHelper.setLightness(LIGHTNESS_ZP).setLightingZPos(block, TE.xCoord, TE.yCoord, TE.zCoord);
-			if (renderBlocks.enableAO) {
-				ao[SOUTH] = new float[] { lightingHelper.ao[TOP_LEFT], lightingHelper.ao[BOTTOM_LEFT], lightingHelper.ao[BOTTOM_RIGHT], lightingHelper.ao[TOP_RIGHT] };
-				brightness[SOUTH] = new int[] { renderBlocks.brightnessTopLeft, renderBlocks.brightnessBottomLeft, renderBlocks.brightnessBottomRight, renderBlocks.brightnessTopRight };
-			}
-		}
-
-		if (allSides || side == WEST) {
-			lightingHelper.setLightness(LIGHTNESS_XN).setLightingXNeg(block, TE.xCoord, TE.yCoord, TE.zCoord);
-			if (renderBlocks.enableAO) {
-				ao[WEST] = new float[] { lightingHelper.ao[TOP_LEFT], lightingHelper.ao[BOTTOM_LEFT], lightingHelper.ao[BOTTOM_RIGHT], lightingHelper.ao[TOP_RIGHT] };
-				brightness[WEST] = new int[] { renderBlocks.brightnessTopLeft, renderBlocks.brightnessBottomLeft, renderBlocks.brightnessBottomRight, renderBlocks.brightnessTopRight };
-			}
-		}
-
-		if (allSides || side == EAST) {
-			lightingHelper.setLightness(LIGHTNESS_XP).setLightingXPos(block, TE.xCoord, TE.yCoord, TE.zCoord);
-			if (renderBlocks.enableAO) {
-				ao[EAST] = new float[] { lightingHelper.ao[TOP_LEFT], lightingHelper.ao[BOTTOM_LEFT], lightingHelper.ao[BOTTOM_RIGHT], lightingHelper.ao[TOP_RIGHT] };
-				brightness[EAST] = new int[] { renderBlocks.brightnessTopLeft, renderBlocks.brightnessBottomLeft, renderBlocks.brightnessBottomRight, renderBlocks.brightnessTopRight };
-			}
-		}
-	}
-
-	/**
-	 * Fills separate AO and brightness tables for offset block coordinates.
-	 */
-	private void populateOffsetLighting(Block block, int x, int y, int z)
-	{
-		if (renderBlocks.enableAO)
-		{
-			lightingHelper.setLightness(LIGHTNESS_YN).setLightingYNeg(block, x, y + 1, z);
-			offset_ao[DOWN] = new float[] { lightingHelper.ao[NORTHWEST], lightingHelper.ao[SOUTHWEST], lightingHelper.ao[SOUTHEAST], lightingHelper.ao[NORTHEAST] };
-			offset_brightness[DOWN] = new int[] { renderBlocks.brightnessTopLeft, renderBlocks.brightnessBottomLeft, renderBlocks.brightnessBottomRight, renderBlocks.brightnessTopRight };
-
-			lightingHelper.setLightness(LIGHTNESS_YP).setLightingYPos(block, x, y - 1, z);
-			offset_ao[UP] = new float[] { lightingHelper.ao[NORTHWEST], lightingHelper.ao[SOUTHWEST], lightingHelper.ao[SOUTHEAST], lightingHelper.ao[NORTHEAST] };
-			offset_brightness[UP] = new int[] { renderBlocks.brightnessTopLeft, renderBlocks.brightnessBottomLeft, renderBlocks.brightnessBottomRight, renderBlocks.brightnessTopRight };
-
-			lightingHelper.setLightness(LIGHTNESS_ZN).setLightingZNeg(block, x, y, z + 1);
-			offset_ao[NORTH] = new float[] { lightingHelper.ao[TOP_LEFT], lightingHelper.ao[BOTTOM_LEFT], lightingHelper.ao[BOTTOM_RIGHT], lightingHelper.ao[TOP_RIGHT] };
-			offset_brightness[NORTH] = new int[] { renderBlocks.brightnessTopLeft, renderBlocks.brightnessBottomLeft, renderBlocks.brightnessBottomRight, renderBlocks.brightnessTopRight };
-
-			lightingHelper.setLightness(LIGHTNESS_ZP).setLightingZPos(block, x, y, z - 1);
-			offset_ao[SOUTH] = new float[] { lightingHelper.ao[TOP_LEFT], lightingHelper.ao[BOTTOM_LEFT], lightingHelper.ao[BOTTOM_RIGHT], lightingHelper.ao[TOP_RIGHT] };
-			offset_brightness[SOUTH] = new int[] { renderBlocks.brightnessTopLeft, renderBlocks.brightnessBottomLeft, renderBlocks.brightnessBottomRight, renderBlocks.brightnessTopRight };
-
-			lightingHelper.setLightness(LIGHTNESS_XN).setLightingXNeg(block, x + 1, y, z);
-			offset_ao[WEST] = new float[] { lightingHelper.ao[TOP_LEFT], lightingHelper.ao[BOTTOM_LEFT], lightingHelper.ao[BOTTOM_RIGHT], lightingHelper.ao[TOP_RIGHT] };
-			offset_brightness[WEST] = new int[] { renderBlocks.brightnessTopLeft, renderBlocks.brightnessBottomLeft, renderBlocks.brightnessBottomRight, renderBlocks.brightnessTopRight };
-
-			lightingHelper.setLightness(LIGHTNESS_XP).setLightingXPos(block, x - 1, y, z);
-			offset_ao[EAST] = new float[] { lightingHelper.ao[TOP_LEFT], lightingHelper.ao[BOTTOM_LEFT], lightingHelper.ao[BOTTOM_RIGHT], lightingHelper.ao[TOP_RIGHT] };
-			offset_brightness[EAST] = new int[] { renderBlocks.brightnessTopLeft, renderBlocks.brightnessBottomLeft, renderBlocks.brightnessBottomRight, renderBlocks.brightnessTopRight };
-		}
-	}
-
-	/**
-	 * Sets slope-specific renderID to identify which RenderHelper to use
-	 * and passes control to delegateSideRender().
-	 */
-	private void setIDAndRender(Block block, int renderID, int x, int y, int z, int side)
-	{
-		slopeRenderID = renderID;
-		delegateSideRender(block, x, y, z, side);
-	}
-
 	@Override
 	/**
 	 * Renders side.
 	 */
-	protected void renderSide(int x, int y, int z, int side, double offset, Icon icon)
+	protected void renderBaseSide(int x, int y, int z, int side, Icon icon)
 	{
-		if (coverRendering != 6) {
+		int slopeID = BlockProperties.getData(TE);
 
-			super.renderSide(x, y, z, side, offset, icon);
-
-		} else {
-
-			int slopeID = BlockProperties.getData(TE);
-
-			switch (slopeRenderID)
-			{
-			case NORMAL_YN:
-				RenderHelper.renderFaceYNeg(renderBlocks, x, y, z, icon);
-				break;
-			case NORMAL_YP:
-				RenderHelper.renderFaceYPos(renderBlocks, x, y, z, icon);
-				break;
-			case NORMAL_ZN:
-				RenderHelper.renderFaceZNeg(renderBlocks, x, y, z, icon);
-				break;
-			case NORMAL_ZP:
-				RenderHelper.renderFaceZPos(renderBlocks, x, y, z, icon);
-				break;
-			case NORMAL_XN:
-				RenderHelper.renderFaceXNeg(renderBlocks, x, y, z, icon);
-				break;
-			case NORMAL_XP:
-				RenderHelper.renderFaceXPos(renderBlocks, x, y, z, icon);
-				break;
-			case TRIANGLE_XN:
-				HelperTriangle.renderFaceXNeg(renderBlocks, x, y, z, icon);
-				break;
-			case TRIANGLE_XP:
-				HelperTriangle.renderFaceXPos(renderBlocks, x, y, z, icon);
-				break;
-			case TRIANGLE_ZN:
-				HelperTriangle.renderFaceZNeg(renderBlocks, x, y, z, icon);
-				break;
-			case TRIANGLE_ZP:
-				HelperTriangle.renderFaceZPos(renderBlocks, x, y, z, icon);
-				break;
-			case WEDGE_YN:
-				HelperOrthoWedge.renderFaceYNeg(renderBlocks, slopeID, x, y, z, icon);
-				break;
-			case WEDGE_YP:
-				HelperOrthoWedge.renderFaceYPos(renderBlocks, slopeID, x, y, z, icon);
-				break;
-			case WEDGE_SLOPED_ZN:
-				HelperOblWedge.renderSlopeZNeg(renderBlocks, slopeID, x, y, z, icon);
-				break;
-			case WEDGE_ZN:
-				HelperOrthoWedge.renderFaceZNeg(renderBlocks, slopeID, x, y, z, icon);
-				break;
-			case WEDGE_SLOPED_ZP:
-				HelperOblWedge.renderSlopeZPos(renderBlocks, slopeID, x, y, z, icon);
-				break;
-			case WEDGE_ZP:
-				HelperOrthoWedge.renderFaceZPos(renderBlocks, slopeID, x, y, z, icon);
-				break;
-			case WEDGE_SLOPED_XN:
-				HelperOblWedge.renderSlopeXNeg(renderBlocks, slopeID, x, y, z, icon);
-				break;
-			case WEDGE_XN:
-				HelperOrthoWedge.renderFaceXNeg(renderBlocks, slopeID, x, y, z, icon);
-				break;
-			case WEDGE_SLOPED_XP:
-				HelperOblWedge.renderSlopeXPos(renderBlocks, slopeID, x, y, z, icon);
-				break;
-			case WEDGE_XP:
-				HelperOrthoWedge.renderFaceXPos(renderBlocks, slopeID, x, y, z, icon);
-				break;
-			case WEDGE_CORNER_SLOPED_ZN:
-				HelperCorner.renderSlopeZNeg(renderBlocks, slopeID, x, y, z, icon);
-				break;
-			case WEDGE_CORNER_SLOPED_ZP:
-				HelperCorner.renderSlopeZPos(renderBlocks, slopeID, x, y, z, icon);
-				break;
-			case WEDGE_CORNER_SLOPED_XN:
-				HelperCorner.renderSlopeXNeg(renderBlocks, slopeID, x, y, z, icon);
-				break;
-			case WEDGE_CORNER_SLOPED_XP:
-				HelperCorner.renderSlopeXPos(renderBlocks, slopeID, x, y, z, icon);
-				break;
-			case OBL_CORNER_SLOPED_YN:
-				HelperOblique.renderSlopeYNeg(renderBlocks, slopeID, x, y, z, icon);
-				break;
-			case OBL_CORNER_SLOPED_YP:
-				HelperOblique.renderSlopeYPos(renderBlocks, slopeID, x, y, z, icon);
-				break;
-			case PYR_YZNN:
-				HelperPyramid.renderFaceYNegZNeg(renderBlocks, x, y, z, icon);
-				break;
-			case PYR_YZNP:
-				HelperPyramid.renderFaceYNegZPos(renderBlocks, x, y, z, icon);
-				break;
-			case PYR_YXNN:
-				HelperPyramid.renderFaceYNegXNeg(renderBlocks, x, y, z, icon);
-				break;
-			case PYR_YXNP:
-				HelperPyramid.renderFaceYNegXPos(renderBlocks, x, y, z, icon);
-				break;
-			case PYR_YZPN:
-				HelperPyramid.renderFaceYPosZNeg(renderBlocks, x, y, z, icon);
-				break;
-			case PYR_YZPP:
-				HelperPyramid.renderFaceYPosZPos(renderBlocks, x, y, z, icon);
-				break;
-			case PYR_YXPN:
-				HelperPyramid.renderFaceYPosXNeg(renderBlocks, x, y, z, icon);
-				break;
-			case PYR_YXPP:
-				HelperPyramid.renderFaceYPosXPos(renderBlocks, x, y, z, icon);
-				break;
-			case PRISM_NORTH_XN:
-				HelperPrism.renderNorthFaceXNeg(renderBlocks, x, y, z, icon);
-				break;
-			case PRISM_NORTH_XP:
-				HelperPrism.renderNorthFaceXPos(renderBlocks, x, y, z, icon);
-				break;
-			case PRISM_SOUTH_XN:
-				HelperPrism.renderSouthFaceXNeg(renderBlocks, x, y, z, icon);
-				break;
-			case PRISM_SOUTH_XP:
-				HelperPrism.renderSouthFaceXPos(renderBlocks, x, y, z, icon);
-				break;
-			case PRISM_WEST_ZN:
-				HelperPrism.renderWestFaceZNeg(renderBlocks, x, y, z, icon);
-				break;
-			case PRISM_WEST_ZP:
-				HelperPrism.renderWestFaceZPos(renderBlocks, x, y, z, icon);
-				break;
-			case PRISM_EAST_ZN:
-				HelperPrism.renderEastFaceZNeg(renderBlocks, x, y, z, icon);
-				break;
-			case PRISM_EAST_ZP:
-				HelperPrism.renderEastFaceZPos(renderBlocks, x, y, z, icon);
-				break;
-			case PRISM_WEDGE_ZN:
-				HelperPrism.renderSlopeZNeg(renderBlocks, x, y, z, icon);
-				break;
-			case PRISM_WEDGE_ZP:
-				HelperPrism.renderSlopeZPos(renderBlocks, x, y, z, icon);
-				break;
-			case PRISM_WEDGE_XN:
-				HelperPrism.renderSlopeXNeg(renderBlocks, x, y, z, icon);
-				break;
-			case PRISM_WEDGE_XP:
-				HelperPrism.renderSlopeXPos(renderBlocks, x, y, z, icon);
-				break;
-			}
+		switch (renderID)
+		{
+		case NORMAL_YN:
+			RenderHelper.renderFaceYNeg(renderBlocks, x, y, z, icon);
+			break;
+		case NORMAL_YP:
+			RenderHelper.renderFaceYPos(renderBlocks, x, y, z, icon);
+			break;
+		case NORMAL_ZN:
+			RenderHelper.renderFaceZNeg(renderBlocks, x, y, z, icon);
+			break;
+		case NORMAL_ZP:
+			RenderHelper.renderFaceZPos(renderBlocks, x, y, z, icon);
+			break;
+		case NORMAL_XN:
+			RenderHelper.renderFaceXNeg(renderBlocks, x, y, z, icon);
+			break;
+		case NORMAL_XP:
+			RenderHelper.renderFaceXPos(renderBlocks, x, y, z, icon);
+			break;
+		case TRIANGLE_XN:
+			HelperTriangle.renderFaceXNeg(renderBlocks, x, y, z, icon);
+			break;
+		case TRIANGLE_XP:
+			HelperTriangle.renderFaceXPos(renderBlocks, x, y, z, icon);
+			break;
+		case TRIANGLE_ZN:
+			HelperTriangle.renderFaceZNeg(renderBlocks, x, y, z, icon);
+			break;
+		case TRIANGLE_ZP:
+			HelperTriangle.renderFaceZPos(renderBlocks, x, y, z, icon);
+			break;
+		case WEDGE_YN:
+			HelperOrthoWedge.renderFaceYNeg(renderBlocks, slopeID, x, y, z, icon);
+			break;
+		case WEDGE_YP:
+			HelperOrthoWedge.renderFaceYPos(renderBlocks, slopeID, x, y, z, icon);
+			break;
+		case WEDGE_SLOPED_ZN:
+			HelperOblWedge.renderSlopeZNeg(renderBlocks, slopeID, x, y, z, icon);
+			break;
+		case WEDGE_ZN:
+			HelperOrthoWedge.renderFaceZNeg(renderBlocks, slopeID, x, y, z, icon);
+			break;
+		case WEDGE_SLOPED_ZP:
+			HelperOblWedge.renderSlopeZPos(renderBlocks, slopeID, x, y, z, icon);
+			break;
+		case WEDGE_ZP:
+			HelperOrthoWedge.renderFaceZPos(renderBlocks, slopeID, x, y, z, icon);
+			break;
+		case WEDGE_SLOPED_XN:
+			HelperOblWedge.renderSlopeXNeg(renderBlocks, slopeID, x, y, z, icon);
+			break;
+		case WEDGE_XN:
+			HelperOrthoWedge.renderFaceXNeg(renderBlocks, slopeID, x, y, z, icon);
+			break;
+		case WEDGE_SLOPED_XP:
+			HelperOblWedge.renderSlopeXPos(renderBlocks, slopeID, x, y, z, icon);
+			break;
+		case WEDGE_XP:
+			HelperOrthoWedge.renderFaceXPos(renderBlocks, slopeID, x, y, z, icon);
+			break;
+		case WEDGE_CORNER_SLOPED_ZN:
+			HelperCorner.renderSlopeZNeg(renderBlocks, slopeID, x, y, z, icon);
+			break;
+		case WEDGE_CORNER_SLOPED_ZP:
+			HelperCorner.renderSlopeZPos(renderBlocks, slopeID, x, y, z, icon);
+			break;
+		case WEDGE_CORNER_SLOPED_XN:
+			HelperCorner.renderSlopeXNeg(renderBlocks, slopeID, x, y, z, icon);
+			break;
+		case WEDGE_CORNER_SLOPED_XP:
+			HelperCorner.renderSlopeXPos(renderBlocks, slopeID, x, y, z, icon);
+			break;
+		case OBL_CORNER_SLOPED_YN:
+			HelperOblique.renderSlopeYNeg(renderBlocks, slopeID, x, y, z, icon);
+			break;
+		case OBL_CORNER_SLOPED_YP:
+			HelperOblique.renderSlopeYPos(renderBlocks, slopeID, x, y, z, icon);
+			break;
+		case PYR_YZNN:
+			HelperPyramid.renderFaceYNegZNeg(renderBlocks, x, y, z, icon);
+			break;
+		case PYR_YZNP:
+			HelperPyramid.renderFaceYNegZPos(renderBlocks, x, y, z, icon);
+			break;
+		case PYR_YXNN:
+			HelperPyramid.renderFaceYNegXNeg(renderBlocks, x, y, z, icon);
+			break;
+		case PYR_YXNP:
+			HelperPyramid.renderFaceYNegXPos(renderBlocks, x, y, z, icon);
+			break;
+		case PYR_YZPN:
+			HelperPyramid.renderFaceYPosZNeg(renderBlocks, x, y, z, icon);
+			break;
+		case PYR_YZPP:
+			HelperPyramid.renderFaceYPosZPos(renderBlocks, x, y, z, icon);
+			break;
+		case PYR_YXPN:
+			HelperPyramid.renderFaceYPosXNeg(renderBlocks, x, y, z, icon);
+			break;
+		case PYR_YXPP:
+			HelperPyramid.renderFaceYPosXPos(renderBlocks, x, y, z, icon);
+			break;
+		case PRISM_NORTH_XN:
+			HelperPrism.renderNorthFaceXNeg(renderBlocks, x, y, z, icon);
+			break;
+		case PRISM_NORTH_XP:
+			HelperPrism.renderNorthFaceXPos(renderBlocks, x, y, z, icon);
+			break;
+		case PRISM_SOUTH_XN:
+			HelperPrism.renderSouthFaceXNeg(renderBlocks, x, y, z, icon);
+			break;
+		case PRISM_SOUTH_XP:
+			HelperPrism.renderSouthFaceXPos(renderBlocks, x, y, z, icon);
+			break;
+		case PRISM_WEST_ZN:
+			HelperPrism.renderWestFaceZNeg(renderBlocks, x, y, z, icon);
+			break;
+		case PRISM_WEST_ZP:
+			HelperPrism.renderWestFaceZPos(renderBlocks, x, y, z, icon);
+			break;
+		case PRISM_EAST_ZN:
+			HelperPrism.renderEastFaceZNeg(renderBlocks, x, y, z, icon);
+			break;
+		case PRISM_EAST_ZP:
+			HelperPrism.renderEastFaceZPos(renderBlocks, x, y, z, icon);
+			break;
+		case PRISM_WEDGE_ZN:
+			HelperPrism.renderSlopeZNeg(renderBlocks, x, y, z, icon);
+			break;
+		case PRISM_WEDGE_ZP:
+			HelperPrism.renderSlopeZPos(renderBlocks, x, y, z, icon);
+			break;
+		case PRISM_WEDGE_XN:
+			HelperPrism.renderSlopeXNeg(renderBlocks, x, y, z, icon);
+			break;
+		case PRISM_WEDGE_XP:
+			HelperPrism.renderSlopeXPos(renderBlocks, x, y, z, icon);
+			break;
 		}
 	}
 
@@ -451,94 +317,85 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerBase {
 	/**
 	 * Renders slope.
 	 */
-	public boolean renderBlock(Block block, int x, int y, int z)
+	public boolean renderBaseBlock(Block block, int x, int y, int z)
 	{
-		if (coverRendering != 6) {
+		Slope slope = Slope.slopesList[BlockProperties.getData(TE)];
 
-			return super.renderBlock(block, x, y, z);
+		renderBlocks.enableAO = getEnableAO(block);
 
-		} else {
+		setRenderBoundsAndRelight(block, SIDE_ALL, 0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
+		populateOffsetLighting(block, x, y, z);
 
-			Slope slope = Slope.slopesList[BlockProperties.getData(TE)];
+		/* Render sloped faces. */
 
-			renderBlocks.enableAO = Minecraft.isAmbientOcclusionEnabled() && !disableAO && Block.lightValue[block.blockID] == 0;
+		isSideSloped = true;
 
-			setRenderBoundsAndRelight(block, SIDE_ALL, 0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
-			populateOffsetLighting(block, x, y, z);
-
-			/* Render sloped faces. */
-
-			isSideSloped = true;
-
-			switch (slope.type) {
-			case WEDGE_XZ:
-				prepareHorizontalWedge(block, slope, x, y, z);
-				break;
-			case WEDGE_Y:
-				prepareVerticalWedge(block, slope, x, y, z);
-				break;
-			case WEDGE_INT:
-				prepareWedgeIntCorner(block, slope, x, y, z);
-				break;
-			case WEDGE_EXT:
-				prepareWedgeExtCorner(block, slope, x, y, z);
-				break;
-			case OBLIQUE_INT:
-				prepareObliqueIntCorner(block, slope, x, y, z);
-				break;
-			case OBLIQUE_EXT:
-				prepareObliqueExtCorner(block, slope, x, y, z);
-				break;
-			case PYRAMID:
-				preparePyramid(block, slope, x, y, z);
-				break;
-			default: // PRISM TYPES
-				preparePrism(block, slope, x, y, z);
-				break;
-			}
-
-			isSideSloped = false;
-
-			/* Render non-sloped faces. */
-
-			/* BOTTOM FACE */
-			if (slope.hasSide(ForgeDirection.DOWN) && srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x, y - 1, z, DOWN)) {
-				prepareFaceYNeg(block, slope, x, y, z);
-			}
-
-			/* TOP FACE */
-			if (slope.hasSide(ForgeDirection.UP) && srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x, y + 1, z, UP)) {
-				prepareFaceYPos(block, slope, x, y, z);
-			}
-
-			/* NORTH FACE */
-			if (slope.hasSide(ForgeDirection.NORTH) && srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x, y, z - 1, NORTH)) {
-				prepareFaceZNeg(block, slope, x, y, z);
-			}
-
-			/* SOUTH FACE */
-			if (slope.hasSide(ForgeDirection.SOUTH) && srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x, y, z + 1, SOUTH)) {
-				prepareFaceZPos(block, slope, x, y, z);
-			}
-
-			/* WEST FACE */
-			if (slope.hasSide(ForgeDirection.WEST) && srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x - 1, y, z, WEST)) {
-				prepareFaceXNeg(block, slope, x, y, z);
-			}
-
-			/* EAST FACE */
-			if (slope.hasSide(ForgeDirection.EAST) && srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x + 1, y, z, EAST)) {
-				prepareFaceXPos(block, slope, x, y, z);
-			}
-
-			RenderHelper.startDrawing(QUADS);
+		switch (slope.type) {
+		case WEDGE_XZ:
+			prepareHorizontalWedge(block, slope, x, y, z);
+			break;
+		case WEDGE_Y:
+			prepareVerticalWedge(block, slope, x, y, z);
+			break;
+		case WEDGE_INT:
+			prepareWedgeIntCorner(block, slope, x, y, z);
+			break;
+		case WEDGE_EXT:
+			prepareWedgeExtCorner(block, slope, x, y, z);
+			break;
+		case OBLIQUE_INT:
+			prepareObliqueIntCorner(block, slope, x, y, z);
+			break;
+		case OBLIQUE_EXT:
+			prepareObliqueExtCorner(block, slope, x, y, z);
+			break;
+		case PYRAMID:
+			preparePyramid(block, slope, x, y, z);
+			break;
+		default: // PRISM TYPES
+			preparePrism(block, slope, x, y, z);
+			break;
 		}
+
+		isSideSloped = false;
+
+		/* Render non-sloped faces. */
+
+		/* BOTTOM FACE */
+		if (slope.hasSide(ForgeDirection.DOWN) && srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x, y - 1, z, DOWN)) {
+			prepareFaceYNeg(block, slope, x, y, z);
+		}
+
+		/* TOP FACE */
+		if (slope.hasSide(ForgeDirection.UP) && srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x, y + 1, z, UP)) {
+			prepareFaceYPos(block, slope, x, y, z);
+		}
+
+		/* NORTH FACE */
+		if (slope.hasSide(ForgeDirection.NORTH) && srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x, y, z - 1, NORTH)) {
+			prepareFaceZNeg(block, slope, x, y, z);
+		}
+
+		/* SOUTH FACE */
+		if (slope.hasSide(ForgeDirection.SOUTH) && srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x, y, z + 1, SOUTH)) {
+			prepareFaceZPos(block, slope, x, y, z);
+		}
+
+		/* WEST FACE */
+		if (slope.hasSide(ForgeDirection.WEST) && srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x - 1, y, z, WEST)) {
+			prepareFaceXNeg(block, slope, x, y, z);
+		}
+
+		/* EAST FACE */
+		if (slope.hasSide(ForgeDirection.EAST) && srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x + 1, y, z, EAST)) {
+			prepareFaceXPos(block, slope, x, y, z);
+		}
+
+		RenderHelper.startDrawing(QUADS);
 
 		renderBlocks.enableAO = false;
 		return true;
 	}
-
-
 
 	/**
 	 * Will set lighting and render prism sloped faces.

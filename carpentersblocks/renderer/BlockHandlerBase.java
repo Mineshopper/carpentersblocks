@@ -30,7 +30,7 @@ import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 
 public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
 
-	protected int PASS_SOLID = 0;
+	protected int PASS_OPAQUE = 0;
 	protected int PASS_ALPHA = 1;
 
 	protected static final int DOWN 		= 0;
@@ -109,7 +109,6 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
 			this.srcBlock = srcBlock;
 
 			lightingHelper.bind(this);
-			setRenderBounds();
 
 			result.add(renderCarpentersBlock(x, y, z));
 			result.add(renderSideBlocks(x, y, z));
@@ -137,6 +136,15 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
 	public int getRenderId()
 	{
 		return 0;
+	}
+
+	/**
+	 * Sets renderBlocks enableAO state to true depending on
+	 * rendering environment and block requirements.
+	 */
+	protected boolean getEnableAO(Block block)
+	{
+		return Minecraft.isAmbientOcclusionEnabled() && !disableAO && Block.lightValue[block.blockID] == 0;
 	}
 
 	/**
@@ -278,11 +286,6 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
 	}
 
 	/**
-	 * Override for specific block rendering applications.
-	 */
-	protected void setRenderBounds() { }
-
-	/**
 	 * Returns whether block should render this pass.
 	 */
 	protected boolean shouldRenderBlock(Block block)
@@ -292,7 +295,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
 		} else {
 			return	renderBlocks.hasOverrideBlockTexture() ||
 					block.getRenderBlockPass() == renderPass ||
-					block instanceof BlockBase && renderPass == PASS_SOLID ||
+					block instanceof BlockBase && renderPass == PASS_OPAQUE ||
 					this instanceof BlockDeterminantRender;
 		}
 	}
@@ -486,11 +489,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
 			icon = iconOverride[side];
 		}
 
-		if (icon == null) {
-			icon = IconRegistry.icon_missing;
-		}
-
-		return icon;
+		return icon != null ? icon : IconRegistry.icon_missing;
 	}
 
 	/**
@@ -498,6 +497,8 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
 	 */
 	protected void renderMultiTexturedSide(Block block, int x, int y, int z, int side, Icon icon)
 	{
+		boolean temp_dye_state = suppressDyeColor;
+
 		/* Render side */
 		if (shouldRenderBlock(block))
 		{
@@ -510,7 +511,6 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
 			clearRotation(side);
 		}
 
-		boolean temp_state = suppressDyeColor;
 		suppressDyeColor = true;
 
 		/* Grass sides are a special case. */
@@ -528,7 +528,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
 			renderOverlay(block, x, y, z, side, icon);
 		}
 
-		suppressDyeColor = temp_state;
+		suppressDyeColor = temp_dye_state;
 	}
 
 	/**
@@ -556,7 +556,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
 	{
 		if (side > UP)
 		{
-			if (renderAlphaOverride && renderPass == PASS_ALPHA || !renderAlphaOverride && renderPass == PASS_SOLID)
+			if (renderAlphaOverride && renderPass == PASS_ALPHA || !renderAlphaOverride && renderPass == PASS_OPAQUE)
 			{
 				Icon icon = getGrassOverlayIcon(side);
 				lightingHelper.colorSide(Block.grass, x, y, z, side, icon);
@@ -576,12 +576,9 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
 			side = UP;
 		}
 
-		switch (overlay)
-		{
-		case OverlayHandler.OVERLAY_SNOW:
-		{
-			switch (side)
-			{
+		switch (overlay) {
+		case OverlayHandler.OVERLAY_SNOW: {
+			switch (side) {
 			case DOWN:
 				return;
 			case UP:
@@ -595,10 +592,8 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
 			renderSide(x, y, z, side, 0.0D, icon);
 			break;
 		}
-		case OverlayHandler.OVERLAY_HAY:
-		{
-			switch (side)
-			{
+		case OverlayHandler.OVERLAY_HAY: {
+			switch (side) {
 			case DOWN:
 				return;
 			case UP:
@@ -612,24 +607,20 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
 			renderSide(x, y, z, side, 0.0D, icon);
 			break;
 		}
-		case OverlayHandler.OVERLAY_WEB:
-		{
+		case OverlayHandler.OVERLAY_WEB: {
 			icon = Block.web.getBlockTextureFromSide(side);
 			lightingHelper.colorSide(Block.web, x, y, z, side, icon);
 			renderSide(x, y, z, side, 0.0D, icon);
 			break;
 		}
-		case OverlayHandler.OVERLAY_VINE:
-		{
+		case OverlayHandler.OVERLAY_VINE: {
 			icon = Block.vine.getBlockTextureFromSide(side);
 			lightingHelper.colorSide(Block.vine, x, y, z, side, icon);
 			renderSide(x, y, z, side, 0.0D, icon);
 			break;
 		}
-		case OverlayHandler.OVERLAY_MYCELIUM:
-		{
-			switch (side)
-			{
+		case OverlayHandler.OVERLAY_MYCELIUM: {
+			switch (side) {
 			case DOWN:
 				return;
 			case UP:
@@ -643,8 +634,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
 			renderSide(x, y, z, side, 0.0D, icon);
 			break;
 		}
-		case OverlayHandler.OVERLAY_GRASS:
-		{
+		case OverlayHandler.OVERLAY_GRASS: {
 			if (block != Block.grass && side > DOWN) {
 				icon = getGrassOverlayIcon(side);
 				lightingHelper.colorSide(Block.grass, x, y, z, side, icon);
@@ -707,9 +697,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
 	 */
 	protected void renderSide(int x, int y, int z, int side, double offset, Icon icon)
 	{
-		if (offset != 0) {
-			VertexHelper.setOffset(offset);
-		}
+		VertexHelper.setOffset(offset);
 
 		switch (side) {
 		case DOWN:
@@ -750,7 +738,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
 	protected boolean renderBlock(Block block, int x, int y, int z)
 	{
 		boolean side_rendered = false;
-		renderBlocks.enableAO = Minecraft.isAmbientOcclusionEnabled() && !disableAO && Block.lightValue[block.blockID] == 0;
+		renderBlocks.enableAO = getEnableAO(block);
 
 		if (renderBlocks.renderAllFaces || srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x, y - 1, z, DOWN) || renderBlocks.renderMinY > 0.0D)
 		{

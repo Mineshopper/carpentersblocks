@@ -31,10 +31,9 @@ public class LanguageHandler {
 
 			zip.close();
 		}
-		catch (Exception exception)
+		catch (Exception e)
 		{
-			ModLogger.log(Level.WARNING, "Encountered a problem while loading language files.  See trace below.");
-			exception.printStackTrace();
+			ModLogger.log(Level.WARNING, "Encountered a problem while loading language files: " + e.getMessage());
 		}
 	}
 

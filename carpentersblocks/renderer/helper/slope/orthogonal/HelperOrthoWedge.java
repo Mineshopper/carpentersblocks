@@ -19,80 +19,78 @@ public class HelperOrthoWedge extends RenderHelper {
 	 */
 	public static void renderFaceYNeg(RenderBlocks renderBlocks, int slopeID, double x, double y, double z, Icon icon)
 	{
-		setBounds(renderBlocks, DOWN, x, y, z);
-		setUV(renderBlocks, DOWN, renderBlocks.uvRotateBottom, icon);
+		prepareRender(renderBlocks, DOWN, x, y, z, icon);
 
 		switch (slopeID)
 		{
-			case Slope.ID_OBL_EXT_POS_NW:
-			case Slope.ID_OBL_INT_NEG_NW:
-			case Slope.ID_WEDGE_NW:
-				setupVertex(renderBlocks, xMin, yMin, zMax, UV_DOWN[renderBlocks.uvRotateBottom][0][0], UV_DOWN[renderBlocks.uvRotateBottom][0][1], SOUTHWEST);
-				setupVertex(renderBlocks, xMax, yMin, zMin, UV_DOWN[renderBlocks.uvRotateBottom][2][0], UV_DOWN[renderBlocks.uvRotateBottom][2][1], NORTHEAST);
-				setupVertex(renderBlocks, xMax, yMin, zMax, UV_DOWN[renderBlocks.uvRotateBottom][3][0], UV_DOWN[renderBlocks.uvRotateBottom][3][1], SOUTHEAST);
-				break;
-			case Slope.ID_OBL_EXT_POS_SW:
-			case Slope.ID_OBL_INT_NEG_SW:
-			case Slope.ID_WEDGE_SW:
-				setupVertex(renderBlocks, xMin, yMin, zMin, UV_DOWN[renderBlocks.uvRotateBottom][1][0], UV_DOWN[renderBlocks.uvRotateBottom][1][1], NORTHWEST);
-				setupVertex(renderBlocks, xMax, yMin, zMin, UV_DOWN[renderBlocks.uvRotateBottom][2][0], UV_DOWN[renderBlocks.uvRotateBottom][2][1], NORTHEAST);
-				setupVertex(renderBlocks, xMax, yMin, zMax, UV_DOWN[renderBlocks.uvRotateBottom][3][0], UV_DOWN[renderBlocks.uvRotateBottom][3][1], SOUTHEAST);
-				break;
-			case Slope.ID_OBL_EXT_POS_NE:
-			case Slope.ID_OBL_INT_NEG_NE:
-			case Slope.ID_WEDGE_NE:
-				setupVertex(renderBlocks, xMin, yMin, zMax, UV_DOWN[renderBlocks.uvRotateBottom][0][0], UV_DOWN[renderBlocks.uvRotateBottom][0][1], SOUTHWEST);
-				setupVertex(renderBlocks, xMin, yMin, zMin, UV_DOWN[renderBlocks.uvRotateBottom][1][0], UV_DOWN[renderBlocks.uvRotateBottom][1][1], NORTHWEST);
-				setupVertex(renderBlocks, xMax, yMin, zMax, UV_DOWN[renderBlocks.uvRotateBottom][3][0], UV_DOWN[renderBlocks.uvRotateBottom][3][1], SOUTHEAST);
-				break;
-			case Slope.ID_OBL_EXT_POS_SE:
-			case Slope.ID_OBL_INT_NEG_SE:
-			case Slope.ID_WEDGE_SE:
-				setupVertex(renderBlocks, xMin, yMin, zMax, UV_DOWN[renderBlocks.uvRotateBottom][0][0], UV_DOWN[renderBlocks.uvRotateBottom][0][1], SOUTHWEST);
-				setupVertex(renderBlocks, xMin, yMin, zMin, UV_DOWN[renderBlocks.uvRotateBottom][1][0], UV_DOWN[renderBlocks.uvRotateBottom][1][1], NORTHWEST);
-				setupVertex(renderBlocks, xMax, yMin, zMin, UV_DOWN[renderBlocks.uvRotateBottom][2][0], UV_DOWN[renderBlocks.uvRotateBottom][2][1], NORTHEAST);
-				break;
+		case Slope.ID_OBL_EXT_POS_NW:
+		case Slope.ID_OBL_INT_NEG_NW:
+		case Slope.ID_WEDGE_NW:
+			setupVertex(renderBlocks, xMin, yMin, zMax, UV_DOWN[renderBlocks.uvRotateBottom][0][0], UV_DOWN[renderBlocks.uvRotateBottom][0][1], SOUTHWEST);
+			setupVertex(renderBlocks, xMax, yMin, zMin, UV_DOWN[renderBlocks.uvRotateBottom][2][0], UV_DOWN[renderBlocks.uvRotateBottom][2][1], NORTHEAST);
+			setupVertex(renderBlocks, xMax, yMin, zMax, UV_DOWN[renderBlocks.uvRotateBottom][3][0], UV_DOWN[renderBlocks.uvRotateBottom][3][1], SOUTHEAST);
+			break;
+		case Slope.ID_OBL_EXT_POS_SW:
+		case Slope.ID_OBL_INT_NEG_SW:
+		case Slope.ID_WEDGE_SW:
+			setupVertex(renderBlocks, xMin, yMin, zMin, UV_DOWN[renderBlocks.uvRotateBottom][1][0], UV_DOWN[renderBlocks.uvRotateBottom][1][1], NORTHWEST);
+			setupVertex(renderBlocks, xMax, yMin, zMin, UV_DOWN[renderBlocks.uvRotateBottom][2][0], UV_DOWN[renderBlocks.uvRotateBottom][2][1], NORTHEAST);
+			setupVertex(renderBlocks, xMax, yMin, zMax, UV_DOWN[renderBlocks.uvRotateBottom][3][0], UV_DOWN[renderBlocks.uvRotateBottom][3][1], SOUTHEAST);
+			break;
+		case Slope.ID_OBL_EXT_POS_NE:
+		case Slope.ID_OBL_INT_NEG_NE:
+		case Slope.ID_WEDGE_NE:
+			setupVertex(renderBlocks, xMin, yMin, zMax, UV_DOWN[renderBlocks.uvRotateBottom][0][0], UV_DOWN[renderBlocks.uvRotateBottom][0][1], SOUTHWEST);
+			setupVertex(renderBlocks, xMin, yMin, zMin, UV_DOWN[renderBlocks.uvRotateBottom][1][0], UV_DOWN[renderBlocks.uvRotateBottom][1][1], NORTHWEST);
+			setupVertex(renderBlocks, xMax, yMin, zMax, UV_DOWN[renderBlocks.uvRotateBottom][3][0], UV_DOWN[renderBlocks.uvRotateBottom][3][1], SOUTHEAST);
+			break;
+		case Slope.ID_OBL_EXT_POS_SE:
+		case Slope.ID_OBL_INT_NEG_SE:
+		case Slope.ID_WEDGE_SE:
+			setupVertex(renderBlocks, xMin, yMin, zMax, UV_DOWN[renderBlocks.uvRotateBottom][0][0], UV_DOWN[renderBlocks.uvRotateBottom][0][1], SOUTHWEST);
+			setupVertex(renderBlocks, xMin, yMin, zMin, UV_DOWN[renderBlocks.uvRotateBottom][1][0], UV_DOWN[renderBlocks.uvRotateBottom][1][1], NORTHWEST);
+			setupVertex(renderBlocks, xMax, yMin, zMin, UV_DOWN[renderBlocks.uvRotateBottom][2][0], UV_DOWN[renderBlocks.uvRotateBottom][2][1], NORTHEAST);
+			break;
 		}
 	}
-	
+
 	/**
 	 * Renders the given texture to the top face of the block.
 	 */
 	public static void renderFaceYPos(RenderBlocks renderBlocks, int slopeID, double x, double y, double z, Icon icon)
 	{
-		setBounds(renderBlocks, UP, x, y, z);
-        setUV(renderBlocks, UP, renderBlocks.uvRotateTop, icon);
+		prepareRender(renderBlocks, UP, x, y, z, icon);
 
 		switch (slopeID)
 		{
-			case Slope.ID_OBL_EXT_NEG_NW:
-     		case Slope.ID_OBL_INT_POS_NW:
-			case Slope.ID_WEDGE_NW:
-				setupVertex(renderBlocks, xMax, yMax, zMax, UV_UP[renderBlocks.uvRotateTop][0][0], UV_UP[renderBlocks.uvRotateTop][0][1], SOUTHEAST);
-				setupVertex(renderBlocks, xMax, yMax, zMin, UV_UP[renderBlocks.uvRotateTop][1][0], UV_UP[renderBlocks.uvRotateTop][1][1], NORTHEAST);
-				setupVertex(renderBlocks, xMin, yMax, zMax, UV_UP[renderBlocks.uvRotateTop][3][0], UV_UP[renderBlocks.uvRotateTop][3][1], SOUTHWEST);
-				break;
-			case Slope.ID_OBL_EXT_NEG_SW:
-         	case Slope.ID_OBL_INT_POS_SW:
-			case Slope.ID_WEDGE_SW:
-				setupVertex(renderBlocks, xMax, yMax, zMax, UV_UP[renderBlocks.uvRotateTop][0][0], UV_UP[renderBlocks.uvRotateTop][0][1], SOUTHEAST);
-				setupVertex(renderBlocks, xMax, yMax, zMin, UV_UP[renderBlocks.uvRotateTop][1][0], UV_UP[renderBlocks.uvRotateTop][1][1], NORTHEAST);
-				setupVertex(renderBlocks, xMin, yMax, zMin, UV_UP[renderBlocks.uvRotateTop][2][0], UV_UP[renderBlocks.uvRotateTop][2][1], NORTHWEST);
-				break;
-			case Slope.ID_OBL_EXT_NEG_NE:
-         	case Slope.ID_OBL_INT_POS_NE:
-			case Slope.ID_WEDGE_NE:
-				setupVertex(renderBlocks, xMax, yMax, zMax, UV_UP[renderBlocks.uvRotateTop][0][0], UV_UP[renderBlocks.uvRotateTop][0][1], SOUTHEAST);
-				setupVertex(renderBlocks, xMin, yMax, zMin, UV_UP[renderBlocks.uvRotateTop][2][0], UV_UP[renderBlocks.uvRotateTop][2][1], NORTHWEST);
-				setupVertex(renderBlocks, xMin, yMax, zMax, UV_UP[renderBlocks.uvRotateTop][3][0], UV_UP[renderBlocks.uvRotateTop][3][1], SOUTHWEST);
-				break;
-			case Slope.ID_OBL_EXT_NEG_SE:
-			case Slope.ID_OBL_INT_POS_SE:
-			case Slope.ID_WEDGE_SE:
-				setupVertex(renderBlocks, xMax, yMax, zMin, UV_UP[renderBlocks.uvRotateTop][1][0], UV_UP[renderBlocks.uvRotateTop][1][1], NORTHEAST);
-				setupVertex(renderBlocks, xMin, yMax, zMin, UV_UP[renderBlocks.uvRotateTop][2][0], UV_UP[renderBlocks.uvRotateTop][2][1], NORTHWEST);
-				setupVertex(renderBlocks, xMin, yMax, zMax, UV_UP[renderBlocks.uvRotateTop][3][0], UV_UP[renderBlocks.uvRotateTop][3][1], SOUTHWEST);
-				break;
+		case Slope.ID_OBL_EXT_NEG_NW:
+		case Slope.ID_OBL_INT_POS_NW:
+		case Slope.ID_WEDGE_NW:
+			setupVertex(renderBlocks, xMax, yMax, zMax, UV_UP[renderBlocks.uvRotateTop][0][0], UV_UP[renderBlocks.uvRotateTop][0][1], SOUTHEAST);
+			setupVertex(renderBlocks, xMax, yMax, zMin, UV_UP[renderBlocks.uvRotateTop][1][0], UV_UP[renderBlocks.uvRotateTop][1][1], NORTHEAST);
+			setupVertex(renderBlocks, xMin, yMax, zMax, UV_UP[renderBlocks.uvRotateTop][3][0], UV_UP[renderBlocks.uvRotateTop][3][1], SOUTHWEST);
+			break;
+		case Slope.ID_OBL_EXT_NEG_SW:
+		case Slope.ID_OBL_INT_POS_SW:
+		case Slope.ID_WEDGE_SW:
+			setupVertex(renderBlocks, xMax, yMax, zMax, UV_UP[renderBlocks.uvRotateTop][0][0], UV_UP[renderBlocks.uvRotateTop][0][1], SOUTHEAST);
+			setupVertex(renderBlocks, xMax, yMax, zMin, UV_UP[renderBlocks.uvRotateTop][1][0], UV_UP[renderBlocks.uvRotateTop][1][1], NORTHEAST);
+			setupVertex(renderBlocks, xMin, yMax, zMin, UV_UP[renderBlocks.uvRotateTop][2][0], UV_UP[renderBlocks.uvRotateTop][2][1], NORTHWEST);
+			break;
+		case Slope.ID_OBL_EXT_NEG_NE:
+		case Slope.ID_OBL_INT_POS_NE:
+		case Slope.ID_WEDGE_NE:
+			setupVertex(renderBlocks, xMax, yMax, zMax, UV_UP[renderBlocks.uvRotateTop][0][0], UV_UP[renderBlocks.uvRotateTop][0][1], SOUTHEAST);
+			setupVertex(renderBlocks, xMin, yMax, zMin, UV_UP[renderBlocks.uvRotateTop][2][0], UV_UP[renderBlocks.uvRotateTop][2][1], NORTHWEST);
+			setupVertex(renderBlocks, xMin, yMax, zMax, UV_UP[renderBlocks.uvRotateTop][3][0], UV_UP[renderBlocks.uvRotateTop][3][1], SOUTHWEST);
+			break;
+		case Slope.ID_OBL_EXT_NEG_SE:
+		case Slope.ID_OBL_INT_POS_SE:
+		case Slope.ID_WEDGE_SE:
+			setupVertex(renderBlocks, xMax, yMax, zMin, UV_UP[renderBlocks.uvRotateTop][1][0], UV_UP[renderBlocks.uvRotateTop][1][1], NORTHEAST);
+			setupVertex(renderBlocks, xMin, yMax, zMin, UV_UP[renderBlocks.uvRotateTop][2][0], UV_UP[renderBlocks.uvRotateTop][2][1], NORTHWEST);
+			setupVertex(renderBlocks, xMin, yMax, zMax, UV_UP[renderBlocks.uvRotateTop][3][0], UV_UP[renderBlocks.uvRotateTop][3][1], SOUTHWEST);
+			break;
 		}
 	}
 
@@ -101,8 +99,7 @@ public class HelperOrthoWedge extends RenderHelper {
 	 */
 	public static void renderFaceZNeg(RenderBlocks renderBlocks, int slopeID, double x, double y, double z, Icon icon)
 	{
-		setBounds(renderBlocks, NORTH, x, y, z);
-		setUV(renderBlocks, ForgeDirection.NORTH, renderBlocks.uvRotateNorth, icon);
+		prepareRender(renderBlocks, NORTH, x, y, z, icon);
 
 		boolean floatingHeight = iconHasFloatingHeight(icon);
 		Slope slope = Slope.slopesList[slopeID];
@@ -129,21 +126,20 @@ public class HelperOrthoWedge extends RenderHelper {
 			}
 		}
 	}
-	
+
 	/**
 	 * Renders the given texture to the South face of the block.
 	 */
 	public static void renderFaceZPos(RenderBlocks renderBlocks, int slopeID, double x, double y, double z, Icon icon)
 	{
-		setBounds(renderBlocks, SOUTH, x, y, z);
-		setUV(renderBlocks, SOUTH, renderBlocks.uvRotateSouth, icon);
+		prepareRender(renderBlocks, SOUTH, x, y, z, icon);
 
 		boolean floatingHeight = iconHasFloatingHeight(icon);
 		Slope slope = Slope.slopesList[slopeID];
 
 		if (slope.isPositive) {
 			if (slope.facings.contains(ForgeDirection.WEST)) {
-				setupVertex(renderBlocks, xMin, yMin, zMax, UV_SOUTH[renderBlocks.uvRotateSouth][1][0], floatingHeight ? vMax : UV_SOUTH[renderBlocks.uvRotateSouth][1][1], BOTTOM_LEFT); 
+				setupVertex(renderBlocks, xMin, yMin, zMax, UV_SOUTH[renderBlocks.uvRotateSouth][1][0], floatingHeight ? vMax : UV_SOUTH[renderBlocks.uvRotateSouth][1][1], BOTTOM_LEFT);
 				setupVertex(renderBlocks, xMax, yMin, zMax, UV_SOUTH[renderBlocks.uvRotateSouth][2][0], UV_SOUTH[renderBlocks.uvRotateSouth][2][1], BOTTOM_RIGHT);
 				setupVertex(renderBlocks, xMax, yMax, zMax, UV_SOUTH[renderBlocks.uvRotateSouth][3][0], UV_SOUTH[renderBlocks.uvRotateSouth][3][1], TOP_RIGHT);
 			} else {
@@ -163,14 +159,13 @@ public class HelperOrthoWedge extends RenderHelper {
 			}
 		}
 	}
-	
+
 	/**
 	 * Renders the given texture to the West face of the block.
 	 */
 	public static void renderFaceXNeg(RenderBlocks renderBlocks, int slopeID, double x, double y, double z, Icon icon)
 	{
-		setBounds(renderBlocks, WEST, x, y, z);
-		setUV(renderBlocks, WEST, renderBlocks.uvRotateWest, icon);
+		prepareRender(renderBlocks, WEST, x, y, z, icon);
 
 		boolean floatingHeight = iconHasFloatingHeight(icon);
 		Slope slope = Slope.slopesList[slopeID];
@@ -197,14 +192,13 @@ public class HelperOrthoWedge extends RenderHelper {
 			}
 		}
 	}
-	
+
 	/**
 	 * Renders the given texture to the East face of the block.
 	 */
 	public static void renderFaceXPos(RenderBlocks renderBlocks, int slopeID, double x, double y, double z, Icon icon)
 	{
-		setBounds(renderBlocks, EAST, x, y, z);
-		setUV(renderBlocks, EAST, renderBlocks.uvRotateEast, icon);
+		prepareRender(renderBlocks, EAST, x, y, z, icon);
 
 		boolean floatingHeight = iconHasFloatingHeight(icon);
 		Slope slope = Slope.slopesList[slopeID];

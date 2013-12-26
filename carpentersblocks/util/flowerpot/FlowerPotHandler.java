@@ -60,6 +60,12 @@ public class FlowerPotHandler {
 		plantProfile.put("unknown:brownmoonflower", Profile.THIN_YP);
 		plantProfile.put("unknown:redmoonflower", Profile.THIN_YP);
 
+		/* Harvestcraft */
+
+		plantProfile.put("unknown:tile.PamHarvestCraft:strawberrycrop_2", Profile.THIN_YP);
+		plantProfile.put("unknown:tile.PamHarvestCraft:cranberrycrop_2", Profile.THIN_YP);
+		plantProfile.put("unknown:tile.PamHarvestCraft:whitemushroomcrop_2", Profile.THIN_YP);
+
 		/* Biomes O' Plenty */
 
 		plantProfile.put("tile.bop.plants.thorn", Profile.TRUE_SCALE);

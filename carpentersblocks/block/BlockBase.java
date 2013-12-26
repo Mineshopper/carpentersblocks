@@ -160,7 +160,7 @@ public class BlockBase extends BlockContainer {
 	/**
 	 * Called when the block is clicked by a player. Args: x, y, z, entityPlayer
 	 */
-	public void onBlockClicked(World world, int x, int y, int z, EntityPlayer entityPlayer)
+	public final void onBlockClicked(World world, int x, int y, int z, EntityPlayer entityPlayer)
 	{
 		if (!world.isRemote)
 		{
@@ -231,7 +231,7 @@ public class BlockBase extends BlockContainer {
 	/**
 	 * Called upon block activation (right click on the block.)
 	 */
-	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ)
+	public final boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ)
 	{
 		if (world.isRemote) {
 
@@ -418,6 +418,8 @@ public class BlockBase extends BlockContainer {
 							return;
 						}
 
+						float sideCoverDepth = BlockProperties.getSideCoverDepth(TE, side);
+
 						/*
 						 * If side is obstructed, eject side cover.
 						 * Currently does not check for side depth.
@@ -430,8 +432,43 @@ public class BlockBase extends BlockContainer {
 						if (world.getBlockId(x_offset, y_offset, z_offset) > 0)
 						{
 							Block adjBlock = Block.blocksList[world.getBlockId(x_offset, y_offset, z_offset)];
-							if (adjBlock.isBlockSolidOnSide(world, x_offset, y_offset, z_offset, ForgeDirection.getOrientation(ForgeDirection.OPPOSITES[side]))) {
-								BlockProperties.clearAttributes(TE, side);
+							ForgeDirection adj_side = ForgeDirection.getOrientation(ForgeDirection.OPPOSITES[side]);
+
+							if (adjBlock.isBlockSolidOnSide(world, x_offset, y_offset, z_offset, adj_side)) {
+
+								switch (adj_side) {
+								case DOWN:
+									if (adjBlock.getBlockBoundsMinY() < sideCoverDepth) {
+										BlockProperties.clearAttributes(TE, side);
+									}
+									break;
+								case UP:
+									if (adjBlock.getBlockBoundsMaxY() > 1.0F - sideCoverDepth) {
+										BlockProperties.clearAttributes(TE, side);
+									}
+									break;
+								case NORTH:
+									if (adjBlock.getBlockBoundsMinZ() < sideCoverDepth) {
+										BlockProperties.clearAttributes(TE, side);
+									}
+									break;
+								case SOUTH:
+									if (adjBlock.getBlockBoundsMaxZ() > 1.0F - sideCoverDepth) {
+										BlockProperties.clearAttributes(TE, side);
+									}
+									break;
+								case WEST:
+									if (adjBlock.getBlockBoundsMinX() < sideCoverDepth) {
+										BlockProperties.clearAttributes(TE, side);
+									}
+									break;
+								case EAST:
+									if (adjBlock.getBlockBoundsMaxX() > 1.0F - sideCoverDepth) {
+										BlockProperties.clearAttributes(TE, side);
+									}
+									break;
+								default: {}
+								}
 							}
 						}
 					}

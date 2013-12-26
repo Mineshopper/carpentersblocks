@@ -47,6 +47,13 @@ public class BlockHandlerCarpentersFlowerPot extends BlockDeterminantRender {
 
 		Block block = BlockProperties.getCoverBlock(TE, 6);
 
+		if (FlowerPot.getDesign(TE) > 0)
+		{
+			suppressOverlay = true;
+			suppressPattern = true;
+			suppressDyeColor = true;
+		}
+
 		if (shouldRenderBlock(block)) {
 			renderPot(block, x, y, z);
 		}
@@ -87,57 +94,37 @@ public class BlockHandlerCarpentersFlowerPot extends BlockDeterminantRender {
 	 */
 	public boolean renderPot(Block block, int x, int y, int z)
 	{
-		boolean hasDesign = FlowerPot.getDesign(TE) > 0;
-		Icon designIcon = IconRegistry.icon_flower_pot_design[FlowerPot.getDesign(TE)];
+		if (FlowerPot.getDesign(TE) > 0) {
+			Icon designIcon = IconRegistry.icon_flower_pot_design[FlowerPot.getDesign(TE)];
+			setIconOverride(6, designIcon);
+			block = srcBlock;
+		}
 
 		/* BOTTOM BOX */
 
-		if (hasDesign) {
-			setIconOverride(6, designIcon);
-			clearIconOverride(1);
-		}
 		renderBlocks.setRenderBounds(0.375D, 0.0D, 0.375D, 0.625D, 0.0625D, 0.625D);
 		renderBlock(block, x, y, z);
-		clearIconOverride(6);
 
 		/* NORTH BOX */
 
-		if (hasDesign) {
-			setIconOverride(6, designIcon);
-			clearIconOverride(3);
-		}
 		renderBlocks.setRenderBounds(0.375D, 0.0D, 0.3125D, 0.625D, 0.375D, 0.375D);
 		renderBlock(block, x, y, z);
-		clearIconOverride(6);
 
 		/* SOUTH BOX */
 
-		if (hasDesign) {
-			setIconOverride(6, designIcon);
-			clearIconOverride(2);
-		}
 		renderBlocks.setRenderBounds(0.375D, 0.0D, 0.625D, 0.625D, 0.375D, 0.6875D);
 		renderBlock(block, x, y, z);
-		clearIconOverride(6);
 
 		/* WEST BOX */
 
-		if (hasDesign) {
-			setIconOverride(6, designIcon);
-			clearIconOverride(5);
-		}
 		renderBlocks.setRenderBounds(0.3125D, 0.0D, 0.3125D, 0.375D, 0.375D, 0.6875D);
 		renderBlock(block, x, y, z);
-		clearIconOverride(6);
 
 		/* EAST BOX */
 
-		if (hasDesign) {
-			setIconOverride(6, designIcon);
-			clearIconOverride(4);
-		}
 		renderBlocks.setRenderBounds(0.625D, 0.0D, 0.3125D, 0.6875D, 0.375D, 0.6875D);
 		renderBlock(block, x, y, z);
+
 		clearIconOverride(6);
 
 		return true;

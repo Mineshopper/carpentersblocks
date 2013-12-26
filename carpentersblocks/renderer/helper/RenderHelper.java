@@ -52,13 +52,44 @@ public class RenderHelper extends VertexHelper {
 	}
 
 	/**
-	 * Sets side icon UV with rotation.
-	 * 
-	 * Keep in mind that renderBlocks.uvRotateX directions don't match Forge directions,
-	 * and this will not mirror some rotations like vanilla does (which is a bug).
+	 * Will apply vertex offset and populate u, v tables from icon.
 	 */
-	protected static void setUV(RenderBlocks renderBlocks, ForgeDirection side, int rotation, Icon icon)
+	protected static void prepareRender(RenderBlocks renderBlocks, ForgeDirection side, double x, double y, double z, Icon icon)
 	{
+		/* Set render bounds. */
+
+		yMin = y + renderBlocks.renderMinY - (side.equals(DOWN) ? offset : 0);
+		yMax = y + renderBlocks.renderMaxY + (side.equals(UP) ? offset : 0);
+		zMin = z + renderBlocks.renderMinZ - (side.equals(NORTH) ? offset : 0);
+		zMax = z + renderBlocks.renderMaxZ + (side.equals(SOUTH) ? offset : 0);
+		xMin = x + renderBlocks.renderMinX - (side.equals(WEST) ? offset : 0);
+		xMax = x + renderBlocks.renderMaxX + (side.equals(EAST) ? offset : 0);
+
+		/* Set U,V for icon with rotation. */
+
+		int rotation = 0;
+		switch (side) {
+		case DOWN:
+			rotation = renderBlocks.uvRotateBottom;
+			break;
+		case UP:
+			rotation = renderBlocks.uvRotateTop;
+			break;
+		case NORTH:
+			rotation = renderBlocks.uvRotateNorth;
+			break;
+		case SOUTH:
+			rotation = renderBlocks.uvRotateSouth;
+			break;
+		case WEST:
+			rotation = renderBlocks.uvRotateWest;
+			break;
+		case EAST:
+			rotation = renderBlocks.uvRotateEast;
+			break;
+		default: {}
+		}
+
 		switch (side)
 		{
 		case DOWN:
@@ -309,23 +340,12 @@ public class RenderHelper extends VertexHelper {
 		}
 	}
 
-	protected static void setBounds(RenderBlocks renderBlocks, ForgeDirection side, double x, double y, double z)
-	{
-		yMin = y + renderBlocks.renderMinY - (side.equals(DOWN) ? offset : 0);
-		yMax = y + renderBlocks.renderMaxY + (side.equals(UP) ? offset : 0);
-		zMin = z + renderBlocks.renderMinZ - (side.equals(NORTH) ? offset : 0);
-		zMax = z + renderBlocks.renderMaxZ + (side.equals(SOUTH) ? offset : 0);
-		xMin = x + renderBlocks.renderMinX - (side.equals(WEST) ? offset : 0);
-		xMax = x + renderBlocks.renderMaxX + (side.equals(EAST) ? offset : 0);
-	}
-
 	/**
 	 * Renders the given texture to the bottom face of the block. Args: slope, x, y, z, texture
 	 */
 	public static void renderFaceYNeg(RenderBlocks renderBlocks, double x, double y, double z, Icon icon)
 	{
-		setBounds(renderBlocks, DOWN, x, y, z);
-		setUV(renderBlocks, DOWN, renderBlocks.uvRotateBottom, icon);
+		prepareRender(renderBlocks, DOWN, x, y, z, icon);
 
 		setupVertex(renderBlocks, xMin, yMin, zMax, UV_DOWN[renderBlocks.uvRotateBottom][0][0], UV_DOWN[renderBlocks.uvRotateBottom][0][1], SOUTHWEST);
 		setupVertex(renderBlocks, xMin, yMin, zMin, UV_DOWN[renderBlocks.uvRotateBottom][1][0], UV_DOWN[renderBlocks.uvRotateBottom][1][1], NORTHWEST);
@@ -338,8 +358,7 @@ public class RenderHelper extends VertexHelper {
 	 */
 	public static void renderFaceYPos(RenderBlocks renderBlocks, double x, double y, double z, Icon icon)
 	{
-		setBounds(renderBlocks, UP, x, y, z);
-		setUV(renderBlocks, UP, renderBlocks.uvRotateTop, icon);
+		prepareRender(renderBlocks, UP, x, y, z, icon);
 
 		setupVertex(renderBlocks, xMax, yMax, zMax, UV_UP[renderBlocks.uvRotateTop][0][0], UV_UP[renderBlocks.uvRotateTop][0][1], SOUTHEAST);
 		setupVertex(renderBlocks, xMax, yMax, zMin, UV_UP[renderBlocks.uvRotateTop][1][0], UV_UP[renderBlocks.uvRotateTop][1][1], NORTHEAST);
@@ -352,8 +371,7 @@ public class RenderHelper extends VertexHelper {
 	 */
 	public static void renderFaceZNeg(RenderBlocks renderBlocks, double x, double y, double z, Icon icon)
 	{
-		setBounds(renderBlocks, NORTH, x, y, z);
-		setUV(renderBlocks, NORTH, renderBlocks.uvRotateNorth, icon);
+		prepareRender(renderBlocks, NORTH, x, y, z, icon);
 
 		setupVertex(renderBlocks, xMin, yMax, zMin, UV_NORTH[renderBlocks.uvRotateNorth][0][0], UV_NORTH[renderBlocks.uvRotateNorth][0][1], TOP_RIGHT);
 		setupVertex(renderBlocks, xMax, yMax, zMin, UV_NORTH[renderBlocks.uvRotateNorth][1][0], UV_NORTH[renderBlocks.uvRotateNorth][1][1], TOP_LEFT);
@@ -366,8 +384,7 @@ public class RenderHelper extends VertexHelper {
 	 */
 	public static void renderFaceZPos(RenderBlocks renderBlocks, double x, double y, double z, Icon icon)
 	{
-		setBounds(renderBlocks, SOUTH, x, y, z);
-		setUV(renderBlocks, SOUTH, renderBlocks.uvRotateSouth, icon);
+		prepareRender(renderBlocks, SOUTH, x, y, z, icon);
 
 		setupVertex(renderBlocks, xMin, yMax, zMax, UV_SOUTH[renderBlocks.uvRotateSouth][0][0], UV_SOUTH[renderBlocks.uvRotateSouth][0][1], TOP_LEFT);
 		setupVertex(renderBlocks, xMin, yMin, zMax, UV_SOUTH[renderBlocks.uvRotateSouth][1][0], UV_SOUTH[renderBlocks.uvRotateSouth][1][1], BOTTOM_LEFT);
@@ -380,8 +397,7 @@ public class RenderHelper extends VertexHelper {
 	 */
 	public static void renderFaceXNeg(RenderBlocks renderBlocks, double x, double y, double z, Icon icon)
 	{
-		setBounds(renderBlocks, WEST, x, y, z);
-		setUV(renderBlocks, WEST, renderBlocks.uvRotateWest, icon);
+		prepareRender(renderBlocks, WEST, x, y, z, icon);
 
 		setupVertex(renderBlocks, xMin, yMax, zMax, UV_WEST[renderBlocks.uvRotateWest][0][0], UV_WEST[renderBlocks.uvRotateWest][0][1], TOP_RIGHT);
 		setupVertex(renderBlocks, xMin, yMax, zMin, UV_WEST[renderBlocks.uvRotateWest][1][0], UV_WEST[renderBlocks.uvRotateWest][1][1], TOP_LEFT);
@@ -394,8 +410,7 @@ public class RenderHelper extends VertexHelper {
 	 */
 	public static void renderFaceXPos(RenderBlocks renderBlocks, double x, double y, double z, Icon icon)
 	{
-		setBounds(renderBlocks, EAST, x, y, z);
-		setUV(renderBlocks, EAST, renderBlocks.uvRotateEast, icon);
+		prepareRender(renderBlocks, EAST, x, y, z, icon);
 
 		setupVertex(renderBlocks, xMax, yMin, zMax, UV_EAST[renderBlocks.uvRotateEast][0][0], UV_EAST[renderBlocks.uvRotateEast][0][1], BOTTOM_LEFT);
 		setupVertex(renderBlocks, xMax, yMin, zMin, UV_EAST[renderBlocks.uvRotateEast][1][0], UV_EAST[renderBlocks.uvRotateEast][1][1], BOTTOM_RIGHT);

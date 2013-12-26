@@ -21,10 +21,10 @@ public class ExtendedPlantHandler {
 	{
 		try {
 			canThisPlantGrowOnThisBlockID = ReflectionHelper.findMethod(BlockFlower.class, null, new String[] { "func_72263_d_" }, int.class);
-			ModLogger.log(Level.INFO, "Plant support integration successful.");
+			ModLogger.log(Level.INFO, "Extended plant support integration successful.");
 			return true;
 		} catch (Exception e) {
-			ModLogger.log(Level.WARNING, "Plant support integration failed.");
+			ModLogger.log(Level.WARNING, "Extended plant support integration failed: " + e.getMessage());
 			return false;
 		}
 	}
@@ -36,10 +36,10 @@ public class ExtendedPlantHandler {
 		try {
 			boolean tempCanSupportPlant = (Boolean) canThisPlantGrowOnThisBlockID.invoke(null, blockID);
 			canSupportPlant = tempCanSupportPlant;
-		} catch (InvocationTargetException E) {
-			ModLogger.log(Level.WARNING, "Extended plant compatibility failed, disabling plant support integration.");
+		} catch (InvocationTargetException e) {
+			ModLogger.log(Level.WARNING, "Extended plant compatibility failed, disabling plant support integration: " + e.getMessage());
 			FeatureRegistry.enableExtendedPlantSupport = false;
-		} catch (Exception E) {}
+		} catch (Exception e) {}
 
 		return canSupportPlant;
 	}

@@ -19,8 +19,6 @@ import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.handler.EventHandler;
 import carpentersblocks.util.registry.BlockRegistry;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockCarpentersCollapsibleBlock extends BlockBase {
 
@@ -161,10 +159,10 @@ public class BlockCarpentersCollapsibleBlock extends BlockBase {
 	 */
 	public boolean isBlockSolidOnSide(World world, int x, int y, int z, ForgeDirection side)
 	{
-		TEBase TE = (TEBase)world.getBlockTileEntity(x, y, z);
-
 		if (isBlockSolid(world, x, y, z))
 		{
+			TEBase TE = (TEBase)world.getBlockTileEntity(x, y, z);
+
 			switch (side) {
 			case UP:
 				return BlockProperties.getData(TE) == 0;
@@ -337,17 +335,6 @@ public class BlockCarpentersCollapsibleBlock extends BlockBase {
 
 		setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
 		return finalTrace;
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	/**
-	 * Returns true if the given side of this block type should be rendered, if the adjacent block is at the given
-	 * coordinates.  Args: world, x, y, z, side
-	 */
-	public boolean shouldSideBeRendered(IBlockAccess world, int x, int y, int z, int side)
-	{
-		return side == ForgeDirection.UP.ordinal() ? true : super.shouldSideBeRendered(world, x, y, z, side);
 	}
 
 	@Override

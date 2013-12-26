@@ -184,8 +184,12 @@ public class BlockCarpentersBlock extends BlockBase {
 	 */
 	public boolean isBlockNormalCube(World world, int x, int y, int z)
 	{
-		TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
-		return BlockProperties.getData(TE) == Slab.BLOCK_FULL;
+		if (extendsBlockBase(world, x, y, z)) {
+			TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
+			return BlockProperties.getData(TE) == Slab.BLOCK_FULL;
+		}
+
+		return false;
 	}
 
 	@Override
@@ -194,10 +198,9 @@ public class BlockCarpentersBlock extends BlockBase {
 	 */
 	public boolean isBlockSolidOnSide(World world, int x, int y, int z, ForgeDirection side)
 	{
-		TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
-
 		if (isBlockSolid(world, x, y, z))
 		{
+			TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
 			int data = BlockProperties.getData(TE);
 
 			if (data == Slab.BLOCK_FULL) {
