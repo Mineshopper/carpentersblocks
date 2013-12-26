@@ -880,9 +880,12 @@ public class BlockBase extends BlockContainer {
 	 */
 	protected boolean isBlockSolid(World world, int x, int y, int z)
 	{
-		TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
-
-		return !BlockProperties.hasCover(TE, 6) || BlockProperties.getCoverBlock(TE, 6).isOpaqueCube();
+		if (extendsBlockBase(world, x, y, z)) {
+			TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
+			return !BlockProperties.hasCover(TE, 6) || BlockProperties.getCoverBlock(TE, 6).isOpaqueCube();
+		} else {
+			return false;
+		}
 	}
 
 	@Override

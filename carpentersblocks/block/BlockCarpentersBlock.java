@@ -194,7 +194,7 @@ public class BlockCarpentersBlock extends BlockBase {
 	 */
 	public boolean isBlockSolidOnSide(World world, int x, int y, int z, ForgeDirection side)
 	{
-		TEBase TE = (TEBase)world.getBlockTileEntity(x, y, z);
+		TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
 
 		if (isBlockSolid(world, x, y, z))
 		{
