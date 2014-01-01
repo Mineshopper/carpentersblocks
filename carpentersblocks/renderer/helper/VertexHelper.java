@@ -17,10 +17,10 @@ public class VertexHelper {
 	public final static int LEFT_CENTER		= 6;
 	public final static int RIGHT_CENTER	= 7;
 
-	public final static int NORTHWEST 		= TOP_LEFT;
-	public final static int SOUTHWEST 		= BOTTOM_LEFT;
-	public final static int SOUTHEAST	 	= BOTTOM_RIGHT;
-	public final static int NORTHEAST 		= TOP_RIGHT;
+	public final static int SOUTHEAST	 	= TOP_LEFT;
+	public final static int NORTHEAST 		= BOTTOM_LEFT;
+	public final static int NORTHWEST 		= BOTTOM_RIGHT;
+	public final static int SOUTHWEST 		= TOP_RIGHT;
 
 	/**
 	 * Offset used for faces.
