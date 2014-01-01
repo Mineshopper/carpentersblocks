@@ -110,6 +110,10 @@ public class BlockCarpentersFlowerPot extends BlockBase {
 	 */
 	protected boolean onHammerLeftClick(TEBase TE, EntityPlayer entityPlayer)
 	{
+		if (FlowerPotProperties.hasDesign(TE) && BlockProperties.hasCover(TE, 6)) {
+			BlockProperties.setCover(TE, 6, 0, (ItemStack)null);
+		}
+
 		int design = FlowerPotDesignHandler.getPrev(FlowerPot.getDesign(TE));
 		FlowerPot.setDesign(TE, design);
 
@@ -122,6 +126,10 @@ public class BlockCarpentersFlowerPot extends BlockBase {
 	 */
 	protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer)
 	{
+		if (FlowerPotProperties.hasDesign(TE) && BlockProperties.hasCover(TE, 6)) {
+			BlockProperties.setCover(TE, 6, 0, (ItemStack)null);
+		}
+
 		if (entityPlayer.isSneaking()) {
 			FlowerPot.setDesign(TE, 0);
 		} else {
@@ -347,6 +355,12 @@ public class BlockCarpentersFlowerPot extends BlockBase {
 	public boolean isFlowerPot()
 	{
 		return true;
+	}
+
+	@Override
+	protected boolean canCoverBase(TEBase TE, World world, int x, int y, int z)
+	{
+		return !FlowerPotProperties.hasDesign(TE);
 	}
 
 	@Override

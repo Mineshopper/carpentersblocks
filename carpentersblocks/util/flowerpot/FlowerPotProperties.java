@@ -6,6 +6,7 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.IShearable;
+import carpentersblocks.data.FlowerPot;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.tileentity.TECarpentersFlowerPot;
 import carpentersblocks.util.BlockProperties;
@@ -18,6 +19,14 @@ public class FlowerPotProperties {
 	public static void ejectEntity(TEBase TE, ItemStack itemStack)
 	{
 		BlockProperties.ejectEntity(TE, FlowerPotHandler.getFilteredItem(itemStack));
+	}
+
+	/**
+	 * Returns whether flower pot has a design.
+	 */
+	public final static boolean hasDesign(TEBase TE)
+	{
+		return FlowerPot.getDesign(TE) > 0;
 	}
 
 	/**
@@ -153,10 +162,6 @@ public class FlowerPotProperties {
 	{
 		if (hasPlant(TE)) {
 			ejectEntity(TE, new ItemStack(getPlantID(TE), 1, getPlantMetadata(TE)));
-		}
-
-		if (itemStack != null) {
-			System.out.println("DEBUG: plant name = " + FlowerPotHandler.getFullUnlocalizedName(itemStack));
 		}
 
 		itemStack = FlowerPotHandler.getEquivalentBlock(itemStack);

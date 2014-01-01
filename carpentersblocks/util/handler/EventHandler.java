@@ -1,9 +1,9 @@
 package carpentersblocks.util.handler;
 
 import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
@@ -15,7 +15,6 @@ import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.PlaySoundAtEntityEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 import carpentersblocks.api.ICarpentersChisel;
 import carpentersblocks.api.ICarpentersHammer;
 import carpentersblocks.block.BlockBase;
@@ -29,17 +28,15 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class EventHandler {
 
-	/** Stores face for onBlockClicked(). */
-	public static int eventFace;
-
-	/** Stores entity that hit block. */
-	public static Entity eventEntity;
-
 	public static double hitX;
 	public static double hitY;
 	public static double hitZ;
 
-	public static Action action;
+	/** Stores face for onBlockClicked(). */
+	public static int eventFace;
+
+	/** Stores entity that hit block. */
+	public static EntityPlayer eventEntityPlayer;
 
 	/** This is an offset used for blockIcon. */
 	public final static int BLOCKICON_BASE_ID = 1000;
@@ -58,32 +55,31 @@ public class EventHandler {
 		{
 			BlockBase block = (BlockBase) Block.blocksList[blockID];
 
-			action = event.action;
 			eventFace = event.face;
-			eventEntity = event.entity;
+			eventEntityPlayer = event.entityPlayer;
 
-			MovingObjectPosition object = Minecraft.getMinecraft().objectMouseOver;
+			ItemStack itemStack = eventEntityPlayer.getHeldItem();
+
+			MovingObjectPosition object = getMovingObjectPositionFromPlayer(eventEntityPlayer.worldObj, eventEntityPlayer, false);
 
 			if (object != null)
 			{
-				Vec3 vec = Minecraft.getMinecraft().objectMouseOver.hitVec;
+				Vec3 vec = object.hitVec;
 				hitX = (float)vec.xCoord - event.x;
 				hitY = (float)vec.yCoord - event.y;
 				hitZ = (float)vec.zCoord - event.z;
 			}
 
-			ItemStack itemStack = event.entityPlayer.getHeldItem();
-
 			boolean toolEquipped = itemStack != null && (itemStack.getItem() instanceof ICarpentersHammer || itemStack.getItem() instanceof ICarpentersChisel);
 
-			if (action.equals(PlayerInteractEvent.Action.LEFT_CLICK_BLOCK)) {
+			if (event.action.equals(PlayerInteractEvent.Action.LEFT_CLICK_BLOCK)) {
 
 				/*
 				 * Creative mode won't call onBlockClicked() because it will try to destroy the block.
 				 * We'll invoke it here when a Carpenter's tool is being held.
 				 */
-				if (event.entityPlayer.capabilities.isCreativeMode && toolEquipped) {
-					block.onBlockClicked(event.entity.worldObj, event.x, event.y, event.z, event.entityPlayer);
+				if (eventEntityPlayer.capabilities.isCreativeMode && toolEquipped) {
+					block.onBlockClicked(eventEntityPlayer.worldObj, event.x, event.y, event.z, eventEntityPlayer);
 				}
 
 			} else if (toolEquipped) {
@@ -94,12 +90,40 @@ public class EventHandler {
 				 * inventory for operations such as decrementing an itemstack,
 				 * so we're limiting it to tool actions only.
 				 */
-				if (event.entityPlayer.isSneaking()) {
-					block.onBlockActivated(event.entity.worldObj, event.x, event.y, event.z, event.entityPlayer, event.face, 1.0F, 1.0F, 1.0F);
+				if (eventEntityPlayer.isSneaking()) {
+					block.onBlockActivated(eventEntityPlayer.worldObj, event.x, event.y, event.z, eventEntityPlayer, eventFace, 1.0F, 1.0F, 1.0F);
 				}
 
 			}
 		}
+	}
+
+	/**
+	 * Copied from Item.class.
+	 * Returns the MovingObjectPosition of block hit by player.
+	 */
+	private MovingObjectPosition getMovingObjectPositionFromPlayer(World world, EntityPlayer entityPlayer, boolean right_click_boat_held)
+	{
+		float f = 1.0F;
+		float f1 = entityPlayer.prevRotationPitch + (entityPlayer.rotationPitch - entityPlayer.prevRotationPitch) * f;
+		float f2 = entityPlayer.prevRotationYaw + (entityPlayer.rotationYaw - entityPlayer.prevRotationYaw) * f;
+		double d0 = entityPlayer.prevPosX + (entityPlayer.posX - entityPlayer.prevPosX) * f;
+		double d1 = entityPlayer.prevPosY + (entityPlayer.posY - entityPlayer.prevPosY) * f + (world.isRemote ? entityPlayer.getEyeHeight() - entityPlayer.getDefaultEyeHeight() : entityPlayer.getEyeHeight()); // isRemote check to revert changes to ray trace position due to adding the eye height clientside and player yOffset differences
+		double d2 = entityPlayer.prevPosZ + (entityPlayer.posZ - entityPlayer.prevPosZ) * f;
+		Vec3 vec3 = world.getWorldVec3Pool().getVecFromPool(d0, d1, d2);
+		float f3 = MathHelper.cos(-f2 * 0.017453292F - (float)Math.PI);
+		float f4 = MathHelper.sin(-f2 * 0.017453292F - (float)Math.PI);
+		float f5 = -MathHelper.cos(-f1 * 0.017453292F);
+		float f6 = MathHelper.sin(-f1 * 0.017453292F);
+		float f7 = f4 * f5;
+		float f8 = f3 * f5;
+		double d3 = 5.0D;
+		if (entityPlayer instanceof EntityPlayerMP)
+		{
+			d3 = ((EntityPlayerMP)entityPlayer).theItemInWorldManager.getBlockReachDistance();
+		}
+		Vec3 vec31 = vec3.addVector(f7 * d3, f6 * d3, f8 * d3);
+		return world.rayTraceBlocks_do_do(vec3, vec31, right_click_boat_held, !right_click_boat_held);
 	}
 
 	@ForgeSubscribe
