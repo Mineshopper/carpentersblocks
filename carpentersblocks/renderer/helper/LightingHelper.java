@@ -32,7 +32,9 @@ public class LightingHelper {
 
 	private float 				lightnessOffset;
 	private boolean				hasBrightnessOverride;
+	private boolean				hasLightnessOverride;
 	private int					brightnessOverride;
+	private float				lightnessOverride;
 	private boolean				hasColorOverride;
 	private float[]				colorOverride 		= new float[3];
 
@@ -55,7 +57,27 @@ public class LightingHelper {
 	public LightingHelper setLightness(float lightness)
 	{
 		this.lightness = lightness;
+
 		return this;
+	}
+
+	/**
+	 * Sets lightness override.
+	 */
+	public LightingHelper setLightnessOverride(float lightness)
+	{
+		hasLightnessOverride = true;
+		lightnessOverride = lightness;
+
+		return this;
+	}
+
+	/**
+	 * Clears lightness override/
+	 */
+	public void clearLightnessOverride()
+	{
+		hasLightnessOverride = false;
 	}
 
 	public RenderBlocks getRenderBlocks()
@@ -85,10 +107,12 @@ public class LightingHelper {
 	/**
 	 * Sets brightness offset.
 	 */
-	public void setBrightnessOverride(int brightness)
+	public LightingHelper setBrightnessOverride(int brightness)
 	{
 		hasBrightnessOverride = true;
 		brightnessOverride = brightness;
+
+		return this;
 	}
 
 	/**
@@ -225,6 +249,8 @@ public class LightingHelper {
 		/* Apply color to side. */
 
 		float[] finalRGB = applyAnaglyphFilter(new float[] { (blockRGB[RED] += lightnessOffset) * dyeRGB[RED], (blockRGB[GREEN] += lightnessOffset) * dyeRGB[GREEN], (blockRGB[BLUE] += lightnessOffset) * dyeRGB[BLUE] });
+
+		float lightness = hasLightnessOverride ? lightnessOverride : this.lightness;
 
 		if (renderBlocks.enableAO) {
 

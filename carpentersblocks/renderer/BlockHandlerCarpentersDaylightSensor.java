@@ -3,7 +3,7 @@ package carpentersblocks.renderer;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
-import carpentersblocks.block.BlockCarpentersDaylightSensor;
+import carpentersblocks.data.DaylightSensor;
 import carpentersblocks.renderer.helper.RenderHelper;
 import carpentersblocks.renderer.helper.VertexHelper;
 import carpentersblocks.util.BlockProperties;
@@ -105,13 +105,13 @@ public class BlockHandlerCarpentersDaylightSensor extends BlockDeterminantRender
 
 			/* Render bordering redstone inlay */
 
-			BlockCarpentersDaylightSensor blockRef = (BlockCarpentersDaylightSensor) BlockRegistry.blockCarpentersDaylightSensor;
-			boolean isPowered = blockRef.isProvidingWeakPower(renderBlocks.blockAccess, x, y, z, 0) == 0;
+			boolean isActive = DaylightSensor.isActive(TE);
 
-			disableAO = isPowered;
-
-			if (isPowered) {
-				lightingHelper.setBrightnessOverride(lightingHelper.NORMAL_BRIGHTNESS);
+			if (isActive) {
+				disableAO = true;
+				lightingHelper.setBrightnessOverride(lightingHelper.MAX_BRIGHTNESS);
+			} else {
+				lightingHelper.setLightnessOverride(0.5F);
 			}
 
 			renderBlocks.setRenderBounds(0.0625D, 0.0625D, 0.0625D, 0.125D, 0.1875D, 0.9375D);
@@ -123,10 +123,8 @@ public class BlockHandlerCarpentersDaylightSensor extends BlockDeterminantRender
 			renderBlocks.setRenderBounds(0.0625D, 0.0625D, 0.875D, 0.9375D, 0.1875D, 0.9375D);
 			renderBlock(Block.blockRedstone, x, y, z);
 
-			if (isPowered) {
-				lightingHelper.clearBrightnessOverride();
-			}
-
+			lightingHelper.clearLightnessOverride();
+			lightingHelper.clearBrightnessOverride();
 			disableAO = false;
 
 			suppressDyeColor = false;

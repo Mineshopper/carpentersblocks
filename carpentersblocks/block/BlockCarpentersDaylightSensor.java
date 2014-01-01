@@ -4,7 +4,6 @@ import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.MathHelper;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -54,10 +53,27 @@ public class BlockCarpentersDaylightSensor extends BlockBase {
 
 		switch (polarity) {
 		case DaylightSensor.POLARITY_POSITIVE:
-			entityPlayer.addChatMessage("message.activation_day.name");
+			entityPlayer.addChatMessage("message.polarity_pos.name");
 			break;
 		case DaylightSensor.POLARITY_NEGATIVE:
-			entityPlayer.addChatMessage("message.activation_night.name");
+			entityPlayer.addChatMessage("message.polarity_neg.name");
+		}
+
+		return true;
+	}
+
+	@Override
+	/**
+	 * Alters polarity.
+	 */
+	protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer)
+	{
+		int sensitivity = DaylightSensor.setNextSensitivity(TE);
+
+		if (sensitivity == DaylightSensor.SENSITIVITY_SLEEP) {
+			entityPlayer.addChatMessage("message.sensitivity_sleep.name");
+		} else {
+			entityPlayer.addChatMessage("message.sensitivity_monsters.name");
 		}
 
 		return true;
@@ -71,44 +87,26 @@ public class BlockCarpentersDaylightSensor extends BlockBase {
 	 */
 	public int isProvidingWeakPower(IBlockAccess world, int x, int y, int z, int side)
 	{
-		TEBase TE = (TEBase)world.getBlockTileEntity(x, y, z);
+		TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
 
-		int type = DaylightSensor.getType(TE);
-
-		boolean isDay = type > 2;
-		boolean outputDay = DaylightSensor.getPolarity(TE) == DaylightSensor.POLARITY_POSITIVE;
-
-		return isDay ? outputDay ? type : 0 : !outputDay ? 15 : 0;
+		return DaylightSensor.isActive(TE) ? 15 : 0;
 	}
 
 	public void updateLightLevel(World world, int x, int y, int z)
 	{
 		if (!world.provider.hasNoSky)
 		{
-			TEBase TE = (TEBase)world.getBlockTileEntity(x, y, z);
+			TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
 
-			int old_lightValue = DaylightSensor.getType(TE);
-
+			int temp_lightValue = DaylightSensor.getLightLevel(TE);
 			int lightValue = world.getSavedLightValue(EnumSkyBlock.Sky, x, y, z) - world.skylightSubtracted;
-			float lightAngle = world.getCelestialAngleRadians(1.0F);
 
-			if (lightAngle < (float)Math.PI) {
-				lightAngle += (0.0F - lightAngle) * 0.2F;
-			} else {
-				lightAngle += ((float)Math.PI * 2F - lightAngle) * 0.2F;
+			if (world.isThundering()) {
+				lightValue = 7;
 			}
 
-			lightValue = Math.round(lightValue * MathHelper.cos(lightAngle));
-
-			if (lightValue < 0) {
-				lightValue = 0;
-			} else if (lightValue > 15) {
-				lightValue = 15;
-			}
-
-			if (old_lightValue != lightValue)
-			{
-				DaylightSensor.setType(TE, lightValue);
+			if (temp_lightValue != lightValue) {
+				DaylightSensor.setLightLevel(TE, lightValue);
 				world.notifyBlocksOfNeighborChange(x, y, z, blockID);
 			}
 		}
