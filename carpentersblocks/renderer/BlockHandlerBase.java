@@ -139,15 +139,6 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
 	}
 
 	/**
-	 * Sets renderBlocks enableAO state to true depending on
-	 * rendering environment and block requirements.
-	 */
-	protected boolean getEnableAO(Block block)
-	{
-		return Minecraft.isAmbientOcclusionEnabled() && !disableAO && Block.lightValue[block.blockID] == 0;
-	}
-
-	/**
 	 * Sets directional block side rotation in RenderBlocks.
 	 */
 	protected void setDirectionalRotation(int side)
@@ -729,6 +720,15 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
 	protected boolean renderCarpentersBlock(int x, int y, int z)
 	{
 		return renderBlock(BlockProperties.getCoverBlock(TE, 6), x, y, z);
+	}
+
+	/**
+	 * Sets renderBlocks enableAO state to true depending on
+	 * rendering environment and block requirements.
+	 */
+	protected boolean getEnableAO(Block block)
+	{
+		return Minecraft.isAmbientOcclusionEnabled() && !disableAO && Block.lightValue[block.blockID] == 0;
 	}
 
 	/**
