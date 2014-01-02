@@ -66,8 +66,7 @@ public class FlowerPotHandler {
 
 		/* Biomes O' Plenty */
 
-		plantProfile.put("tile.bop.plants.thorn", Profile.TRUE_SCALE);
-		plantProfile.put("tile.bop.foliage.poisonivy", Profile.THIN_YP);
+		plantProfile.put("tile.bop.foliage.poisonivy", Profile.REDUCED_SCALE_YP);
 		plantProfile.put("tile.bop.flowers.swampflower", Profile.THIN_YP);
 		plantProfile.put("tile.bop.flowers.violet", Profile.THIN_YP);
 		plantProfile.put("tile.bop.flowers.anemone", Profile.THIN_YP);

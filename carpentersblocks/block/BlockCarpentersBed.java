@@ -91,14 +91,13 @@ public class BlockCarpentersBed extends BlockBase {
 	 */
 	protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer)
 	{
-		int design = BedDesignHandler.getNext(Bed.getDesign(TE));
+		int temp_design = entityPlayer.isSneaking() ? 0 : BedDesignHandler.getNext(Bed.getDesign(TE));
 
-		Bed.setDesign(TE, design);
-
+		Bed.setDesign(TE, temp_design);
 		TEBase TE_opp = Bed.getOppositeTE(TE);
 
 		if (TE_opp != null) {
-			Bed.setDesign(TE_opp, design);
+			Bed.setDesign(TE_opp, temp_design);
 		}
 
 		return true;

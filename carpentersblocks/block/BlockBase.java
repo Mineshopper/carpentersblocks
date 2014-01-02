@@ -48,6 +48,7 @@ public class BlockBase extends BlockContainer {
 	public BlockBase(int blockID, Material material)
 	{
 		super(blockID, material);
+		setBurnProperties(blockID, 5, 20);
 		setStepSound(new StepSound("carpentersblock", 1.0F, 1.0F));
 	}
 
