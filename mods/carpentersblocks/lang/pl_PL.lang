@@ -1,0 +1,49 @@
+﻿# Carpenter's Blocks Language File = POLAND POLISH
+
+# CREATIVE TAB
+itemGroup.carpentersBlocks.name=Bloki ciesielskie
+
+# ITEMS
+item.itemCarpentersHammer.name=Młotek cieśli
+item.itemCarpentersChisel.name=Dłuto cieśli
+item.itemCarpentersDoor.name=Ciesielskie drzwi
+item.itemCarpentersBed.name=Ciesielskie łóżko
+
+# BLOCKS
+tile.blockCarpentersBarrier.name=Ciesielski płot
+tile.blockCarpentersBed.name=Ciesielskie łóżko
+tile.blockCarpentersBlock.name=Ciesielski blok
+tile.blockCarpentersButton.name=Ciesielski przycisk
+tile.blockCarpentersDaylightSensor.name=Ciesielski czujnik światła
+tile.blockCarpentersDoor.name=Ciesielskie drzwi
+tile.blockCarpentersGate.name=Ciesielska furtka
+tile.blockCarpentersHatch.name=Ciesielske klapa
+tile.blockCarpentersLadder.name=Ciesielske drabina
+tile.blockCarpentersLever.name=Ciesielske dźwignia
+tile.blockCarpentersPressurePlate.name=Ciesielske płytka naciskowa
+tile.blockCarpentersSlope.name=Ciesielski skos
+tile.blockCarpentersStairs.name=Ciesielskie schody
+tile.blockCarpentersTorch.name=Ciesielska pochodnia
+tile.blockCarpentersSafe.name=Ciesielski sejf
+tile.blockCarpentersFlowerPot.name=Ciesielska doniczka
+
+# MESSAGES
+message.polarity_pos.name=\u00a76POLARYZACJA: \u00a7fProste wyjście redstone.
+message.polarity_neg.name=\u00a76POLARYZACJA: \u00a7fOdwrócone wyjście redstone.
+message.activation_day.name=\u00a76AKTYWACJA: \u00a7fAktywowane w dzień.
+message.activation_night.name=\u00a76AKTYWACJA: \u00a7fAktywowane nocą.
+message.activation_iron.name=\u00a76AKTYWACJA: \u00a7fDrzwi będą się zachowywać jak żelazne.
+message.activation_wood.name=\u00a76AKTYWACJA: \u00a7fDrzwi będą się zachowywać jak drewniane.
+message.trigger_player.name=\u00a76WYZWALANIE: \u00a7fAktywowane tylko przez graczy.
+message.trigger_monster.name=\u00a76WYZWALANIE: \u00a7fAktywowane tylko przez potwory.
+message.trigger_animal.name=\u00a76WYZWALANIE: \u00a7fAktywowane tylko przez zwierzęta.
+message.trigger_all.name=\u00a76WYZWALANIE: \u00a7fAktywowane przez wszystkie postacie.
+message.safe_lock.name=\u00a76STEROWANIE: \u00a7fSejf zabezpieczony.
+message.safe_unlock.name=\u00a76STEROWANIE: \u00a7fSejf odbezpieczony.
+message.automation_all.name=\u00a76AUTOMATYKA: \u00a7fPrzedmioty mogą być wkładane i wyciągane.
+message.automation_disabled.name=\u00a76AUTOMATYKA: \u00a7fWyłączona.
+message.automation_insert.name=\u00a76AUTOMATYKA: \u00a7fPrzedmioty mogą być tylko wkładane.
+message.automation_extract.name=\u00a76AUTOMATYKA: \u00a7fPrzedmioty mogą by tyko wyciągane.
+message.block_lock.name=\u00a76STEROWANIE: \u00a7fTen blok jest zablokowany.
+
+# </file>
