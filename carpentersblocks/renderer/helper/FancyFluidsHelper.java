@@ -4,7 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockFluid;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraftforge.common.ForgeDirection;
-import net.minecraftforge.liquids.ILiquid;
+import net.minecraftforge.fluids.IFluidBlock;
 import carpentersblocks.tileentity.TEBase;
 
 public class FancyFluidsHelper {
@@ -23,14 +23,14 @@ public class FancyFluidsHelper {
 		Block block_XZNN = !renderBlocks.blockAccess.isAirBlock(x - 1, y, z - 1) ? Block.blocksList[renderBlocks.blockAccess.getBlockId(x - 1, y, z - 1)] : null;
 		Block block_XZPN = !renderBlocks.blockAccess.isAirBlock(x + 1, y, z - 1) ? Block.blocksList[renderBlocks.blockAccess.getBlockId(x + 1, y, z - 1)] : null;
 
-		boolean isFluid_XN = block_XN != null ? block_XN instanceof ILiquid || block_XN instanceof BlockFluid : false;
-		boolean	isFluid_XP = block_XP != null ? block_XP instanceof ILiquid || block_XP instanceof BlockFluid : false;
-		boolean	isFluid_ZN = block_ZN != null ? block_ZN instanceof ILiquid || block_ZN instanceof BlockFluid : false;
-		boolean	isFluid_ZP = block_ZP != null ? block_ZP instanceof ILiquid || block_ZP instanceof BlockFluid : false;
-		boolean	isFluid_XZNP = block_XZNP != null ? block_XZNP instanceof ILiquid || block_XZNP instanceof BlockFluid : false;
-		boolean	isFluid_XZPP = block_XZPP != null ? block_XZPP instanceof ILiquid || block_XZPP instanceof BlockFluid : false;
-		boolean	isFluid_XZNN = block_XZNN != null ? block_XZNN instanceof ILiquid || block_XZNN instanceof BlockFluid : false;
-		boolean	isFluid_XZPN = block_XZPN != null ? block_XZPN instanceof ILiquid || block_XZPN instanceof BlockFluid : false;
+		boolean isFluid_XN = block_XN != null ? block_XN instanceof BlockFluid || block_XN instanceof IFluidBlock : false;
+		boolean	isFluid_XP = block_XP != null ? block_XP instanceof BlockFluid || block_XP instanceof IFluidBlock : false;
+		boolean	isFluid_ZN = block_ZN != null ? block_ZN instanceof BlockFluid || block_ZN instanceof IFluidBlock : false;
+		boolean	isFluid_ZP = block_ZP != null ? block_ZP instanceof BlockFluid || block_ZP instanceof IFluidBlock : false;
+		boolean	isFluid_XZNP = block_XZNP != null ? block_XZNP instanceof BlockFluid || block_XZNP instanceof IFluidBlock : false;
+		boolean	isFluid_XZPP = block_XZPP != null ? block_XZPP instanceof BlockFluid || block_XZPP instanceof IFluidBlock : false;
+		boolean	isFluid_XZNN = block_XZNN != null ? block_XZNN instanceof BlockFluid || block_XZNN instanceof IFluidBlock : false;
+		boolean	isFluid_XZPN = block_XZPN != null ? block_XZPN instanceof BlockFluid || block_XZPN instanceof IFluidBlock : false;
 
 		boolean isSolid_XN = renderBlocks.blockAccess.isBlockSolidOnSide(x, y, z, ForgeDirection.WEST, true);
 		boolean	isSolid_XP = renderBlocks.blockAccess.isBlockSolidOnSide(x, y, z, ForgeDirection.EAST, true);
