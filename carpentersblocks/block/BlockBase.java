@@ -249,7 +249,10 @@ public class BlockBase extends BlockContainer {
 				/* Sides 0-5 are side covers, and 6 is the base block. */
 				int effectiveSide = BlockProperties.hasCover(TE, side) ? side : 6;
 
-				altered.add(preOnBlockActivated(TE, world, x, y, z, entityPlayer, side, hitX, hitY, hitZ)[0]);
+				boolean[] result = preOnBlockActivated(TE, world, x, y, z, entityPlayer, side, hitX, hitY, hitZ);
+
+				altered.add(result[0]);
+				decInv.add(result[1]);
 
 				if (!altered.contains(true))
 				{
