@@ -1,7 +1,7 @@
 # Carpenter's Blocks Language File = Simplified Chinese
 
 # CREATIVE TAB
-itemGroup.carpentersBlocks.name=木匠方块
+itemGroup.carpentersBlocks.name=Carpenter's Blocks
 
 # ITEMS
 item.itemCarpentersHammer.name=木匠锤

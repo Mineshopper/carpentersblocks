@@ -1,7 +1,7 @@
 ﻿# Carpenter's Blocks Language File = RUSSIA RUSSIAN
 
 # CREATIVE TAB
-itemGroup.carpentersBlocks.name=Блоки плотника
+itemGroup.carpentersBlocks.name=Carpenter's Blocks
 
 # ITEMS
 item.itemCarpentersHammer.name=Молоток плотника

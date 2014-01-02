@@ -1,7 +1,7 @@
 ﻿# Carpenter's Blocks Language File = POLAND POLISH
 
 # CREATIVE TAB
-itemGroup.carpentersBlocks.name=Bloki ciesielskie
+itemGroup.carpentersBlocks.name=Carpenter's Blocks
 
 # ITEMS
 item.itemCarpentersHammer.name=Młotek cieśli
