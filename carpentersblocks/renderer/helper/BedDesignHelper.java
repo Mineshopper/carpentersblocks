@@ -2,7 +2,10 @@ package carpentersblocks.renderer.helper;
 
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public class BedDesignHelper {
 
 	public static final byte	SIDE1 = 0;

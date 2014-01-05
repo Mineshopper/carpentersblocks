@@ -8,7 +8,10 @@ import static net.minecraftforge.common.ForgeDirection.WEST;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.util.Icon;
 import carpentersblocks.util.collapsible.CollapsibleUtil;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public class RenderHelperCollapsible extends RenderHelper {
 
 	/**

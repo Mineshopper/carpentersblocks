@@ -19,7 +19,10 @@ import carpentersblocks.renderer.BlockHandlerBase;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.handler.OptifineHandler;
 import carpentersblocks.util.registry.FeatureRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public class LightingHelper {
 
 	public static LightingHelper instance = new LightingHelper();
@@ -37,6 +40,13 @@ public class LightingHelper {
 	private float				lightnessOverride;
 	private boolean				hasColorOverride;
 	private float[]				colorOverride 		= new float[3];
+
+	public final float LIGHTNESS_YN = 0.5F;
+	public final float LIGHTNESS_YP = 1.0F;
+	public final float LIGHTNESS_ZN = 0.8F;
+	public final float LIGHTNESS_ZP = 0.8F;
+	public final float LIGHTNESS_XN = 0.6F;
+	public final float LIGHTNESS_XP = 0.6F;
 
 	private final int RED	= 0;
 	private final int GREEN	= 1;
@@ -73,13 +83,16 @@ public class LightingHelper {
 	}
 
 	/**
-	 * Clears lightness override/
+	 * Clears lightness override.
 	 */
 	public void clearLightnessOverride()
 	{
 		hasLightnessOverride = false;
 	}
 
+	/**
+	 * Returns RenderBlocks instance.
+	 */
 	public RenderBlocks getRenderBlocks()
 	{
 		return renderBlocks;
@@ -91,9 +104,7 @@ public class LightingHelper {
 	public void setColorOverride(float[] rgb)
 	{
 		hasColorOverride = true;
-		colorOverride[RED] = rgb[RED];
-		colorOverride[GREEN] = rgb[GREEN];
-		colorOverride[BLUE] = rgb[BLUE];
+		colorOverride = rgb;
 	}
 
 	/**
@@ -105,7 +116,7 @@ public class LightingHelper {
 	}
 
 	/**
-	 * Sets brightness offset.
+	 * Sets brightness override.
 	 */
 	public LightingHelper setBrightnessOverride(int brightness)
 	{
@@ -132,7 +143,7 @@ public class LightingHelper {
 	}
 
 	/**
-	 * Clears lightness override.
+	 * Clears lightness offset.
 	 */
 	public void clearLightnessOffset()
 	{
@@ -145,52 +156,6 @@ public class LightingHelper {
 	public float[] ao = { 0.0F, 0.0F, 0.0F, 0.0F };
 
 	/**
-	 * Sets AO color.
-	 */
-	private void aoSetColor(float red, float green, float blue, float lightness)
-	{
-		/* Set base light values against color multiplier. */
-
-		renderBlocks.colorRedTopLeft = renderBlocks.colorRedBottomLeft = renderBlocks.colorRedBottomRight = renderBlocks.colorRedTopRight = red * lightness;
-		renderBlocks.colorGreenTopLeft = renderBlocks.colorGreenBottomLeft = renderBlocks.colorGreenBottomRight = renderBlocks.colorGreenTopRight = green * lightness;
-		renderBlocks.colorBlueTopLeft = renderBlocks.colorBlueBottomLeft = renderBlocks.colorBlueBottomRight = renderBlocks.colorBlueTopRight = blue * lightness;
-
-		/* Shade corner values. */
-
-		renderBlocks.colorRedTopLeft *= ao[TOP_LEFT];
-		renderBlocks.colorGreenTopLeft *= ao[TOP_LEFT];
-		renderBlocks.colorBlueTopLeft *= ao[TOP_LEFT];
-		renderBlocks.colorRedBottomLeft *= ao[BOTTOM_LEFT];
-		renderBlocks.colorGreenBottomLeft *= ao[BOTTOM_LEFT];
-		renderBlocks.colorBlueBottomLeft *= ao[BOTTOM_LEFT];
-		renderBlocks.colorRedBottomRight *= ao[BOTTOM_RIGHT];
-		renderBlocks.colorGreenBottomRight *= ao[BOTTOM_RIGHT];
-		renderBlocks.colorBlueBottomRight *= ao[BOTTOM_RIGHT];
-		renderBlocks.colorRedTopRight *= ao[TOP_RIGHT];
-		renderBlocks.colorGreenTopRight *= ao[TOP_RIGHT];
-		renderBlocks.colorBlueTopRight *= ao[TOP_RIGHT];
-	}
-
-	/**
-	 * Resets AO color.
-	 */
-	private void aoResetColor()
-	{
-		renderBlocks.colorRedTopLeft = ao[TOP_LEFT];
-		renderBlocks.colorGreenTopLeft = ao[TOP_LEFT];
-		renderBlocks.colorBlueTopLeft = ao[TOP_LEFT];
-		renderBlocks.colorRedBottomLeft = ao[BOTTOM_LEFT];
-		renderBlocks.colorGreenBottomLeft = ao[BOTTOM_LEFT];
-		renderBlocks.colorBlueBottomLeft = ao[BOTTOM_LEFT];
-		renderBlocks.colorRedBottomRight = ao[BOTTOM_RIGHT];
-		renderBlocks.colorGreenBottomRight = ao[BOTTOM_RIGHT];
-		renderBlocks.colorBlueBottomRight = ao[BOTTOM_RIGHT];
-		renderBlocks.colorRedTopRight = ao[TOP_RIGHT];
-		renderBlocks.colorGreenTopRight = ao[TOP_RIGHT];
-		renderBlocks.colorBlueTopRight = ao[TOP_RIGHT];
-	}
-
-	/**
 	 * Returns float array with RGB values for block.
 	 * If using our custom render helpers, be sure to apply anaglyph filter
 	 * before rendering.
@@ -198,8 +163,9 @@ public class LightingHelper {
 	public float[] getBlockRGB(Block block, int x, int y, int z)
 	{
 		int color = FeatureRegistry.enableOptifineIntegration ? OptifineHandler.getColorMultiplier(block, renderBlocks.blockAccess, x, y, z) : block.colorMultiplier(renderBlocks.blockAccess, x, y, z);
+		float[] rgb = { (color >> 16 & 255) / 255.0F, (color >> 8 & 255) / 255.0F, (color & 255) / 255.0F };
 
-		return new float[] { (color >> 16 & 255) / 255.0F, (color >> 8 & 255) / 255.0F, (color & 255) / 255.0F };
+		return rgb;
 	}
 
 	/**
@@ -241,33 +207,44 @@ public class LightingHelper {
 			boolean useGrassColor = block.equals(Block.grass) && (side == 1 || icon.equals(BlockGrass.getIconSideOverlay()) || posSlopedSide);
 
 			if (!useGrassColor) {
-				blockRGB = new float[] { 1.0F, 1.0F, 1.0F };
+				blockRGB[RED] = blockRGB[GREEN] = blockRGB[BLUE] = 1.0F;
 			}
 
 		}
 
-		/* Apply color to side. */
+		/* Apply color. */
 
-		float[] finalRGB = applyAnaglyphFilter(new float[] { (blockRGB[RED] += lightnessOffset) * dyeRGB[RED], (blockRGB[GREEN] += lightnessOffset) * dyeRGB[GREEN], (blockRGB[BLUE] += lightnessOffset) * dyeRGB[BLUE] });
+		float[] finalRGB = { (blockRGB[RED] += lightnessOffset) * dyeRGB[RED], (blockRGB[GREEN] += lightnessOffset) * dyeRGB[GREEN], (blockRGB[BLUE] += lightnessOffset) * dyeRGB[BLUE] };
+		finalRGB = applyAnaglyphFilter(finalRGB);
 
 		float lightness = hasLightnessOverride ? lightnessOverride : this.lightness;
 
+		if (hasColorOverride) {
+			finalRGB = colorOverride;
+		}
+
 		if (renderBlocks.enableAO) {
 
-			aoResetColor();
-			if (hasColorOverride) {
-				aoSetColor(colorOverride[RED], colorOverride[GREEN], colorOverride[BLUE], lightness);
-			} else {
-				aoSetColor(finalRGB[RED], finalRGB[GREEN], finalRGB[BLUE], lightness);
-			}
+			renderBlocks.colorRedTopLeft = renderBlocks.colorRedBottomLeft = renderBlocks.colorRedBottomRight = renderBlocks.colorRedTopRight = finalRGB[RED] * lightness;
+			renderBlocks.colorGreenTopLeft = renderBlocks.colorGreenBottomLeft = renderBlocks.colorGreenBottomRight = renderBlocks.colorGreenTopRight = finalRGB[GREEN] * lightness;
+			renderBlocks.colorBlueTopLeft = renderBlocks.colorBlueBottomLeft = renderBlocks.colorBlueBottomRight = renderBlocks.colorBlueTopRight = finalRGB[BLUE] * lightness;
+
+			renderBlocks.colorRedTopLeft *= ao[TOP_LEFT];
+			renderBlocks.colorGreenTopLeft *= ao[TOP_LEFT];
+			renderBlocks.colorBlueTopLeft *= ao[TOP_LEFT];
+			renderBlocks.colorRedBottomLeft *= ao[BOTTOM_LEFT];
+			renderBlocks.colorGreenBottomLeft *= ao[BOTTOM_LEFT];
+			renderBlocks.colorBlueBottomLeft *= ao[BOTTOM_LEFT];
+			renderBlocks.colorRedBottomRight *= ao[BOTTOM_RIGHT];
+			renderBlocks.colorGreenBottomRight *= ao[BOTTOM_RIGHT];
+			renderBlocks.colorBlueBottomRight *= ao[BOTTOM_RIGHT];
+			renderBlocks.colorRedTopRight *= ao[TOP_RIGHT];
+			renderBlocks.colorGreenTopRight *= ao[TOP_RIGHT];
+			renderBlocks.colorBlueTopRight *= ao[TOP_RIGHT];
 
 		} else {
 
-			if (hasColorOverride) {
-				Tessellator.instance.setColorOpaque_F(colorOverride[RED] * lightness, colorOverride[GREEN] * lightness, colorOverride[BLUE] * lightness);
-			} else {
-				Tessellator.instance.setColorOpaque_F(finalRGB[RED] * lightness, finalRGB[GREEN] * lightness, finalRGB[BLUE] * lightness);
-			}
+			Tessellator.instance.setColorOpaque_F(finalRGB[RED] * lightness, finalRGB[GREEN] * lightness, finalRGB[BLUE] * lightness);
 
 		}
 	}
@@ -286,11 +263,12 @@ public class LightingHelper {
 
 		} else {
 
-			Tessellator.instance.setBrightness(NORMAL_BRIGHTNESS);
-			boolean useOffsetLightness = renderBlocks.renderMinY >= 0.0D && renderBlocks.renderMinY <= 0.5D;
-			boolean partialLighting = renderBlocks.partialRenderBounds;
+			int brightness = hasBrightnessOverride ? brightnessOverride : NORMAL_BRIGHTNESS;
+			Tessellator.instance.setBrightness(brightness);
 
-			y -= useOffsetLightness ? 1 : 0;
+			if (renderBlocks.renderMinY <= 0.0D) {
+				--y;
+			}
 
 			renderBlocks.aoBrightnessXYNN = block.getMixedBrightnessForBlock(renderBlocks.blockAccess, x - 1, y, z);
 			renderBlocks.aoBrightnessYZNN = block.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y, z - 1);
@@ -337,22 +315,22 @@ public class LightingHelper {
 				renderBlocks.aoBrightnessXYZPNP = block.getMixedBrightnessForBlock(renderBlocks.blockAccess, x + 1, y, z + 1);
 			}
 
-			y += useOffsetLightness ? 1 : 0;
-
-			int offsetBrightness = mixedBrightness;
-
-			if (renderBlocks.renderMinY <= 0.0D || !renderBlocks.blockAccess.isBlockOpaqueCube(x, y - 1, z)) {
-				offsetBrightness = block.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y - 1, z);
+			if (renderBlocks.renderMinY <= 0.0D) {
+				++y;
 			}
 
-			float aoBlock = block.getAmbientOcclusionLightValue(renderBlocks.blockAccess, x, y - 1, z);
+			if (renderBlocks.renderMinY <= 0.0D || !renderBlocks.blockAccess.isBlockOpaqueCube(x, y - 1, z)) {
+				mixedBrightness = block.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y - 1, z);
+			}
 
-			if (partialLighting) {
+			float aoLightValue = block.getAmbientOcclusionLightValue(renderBlocks.blockAccess, x, y - 1, z);
 
-				float aoMixed_XYZNNN = (renderBlocks.aoLightValueScratchXYNN + renderBlocks.aoLightValueScratchXYZNNN + aoBlock + renderBlocks.aoLightValueScratchYZNN) / 4.0F; /* NW CORNER */
-				float aoMixed_XYZNNP = (renderBlocks.aoLightValueScratchXYZNNP + renderBlocks.aoLightValueScratchXYNN + renderBlocks.aoLightValueScratchYZNP + aoBlock) / 4.0F; /* SW CORNER */
-				float aoMixed_XYZPNP = (renderBlocks.aoLightValueScratchYZNP + aoBlock + renderBlocks.aoLightValueScratchXYZPNP + renderBlocks.aoLightValueScratchXYPN) / 4.0F; /* SE CORNER */
-				float aoMixed_XYZPNN = (aoBlock + renderBlocks.aoLightValueScratchYZNN + renderBlocks.aoLightValueScratchXYPN + renderBlocks.aoLightValueScratchXYZPNN) / 4.0F; /* NE CORNER */
+			if (renderBlocks.partialRenderBounds) {
+
+				float aoMixed_XYZNNN = (renderBlocks.aoLightValueScratchXYNN + renderBlocks.aoLightValueScratchXYZNNN + aoLightValue + renderBlocks.aoLightValueScratchYZNN) / 4.0F; /* NW CORNER */
+				float aoMixed_XYZNNP = (renderBlocks.aoLightValueScratchXYZNNP + renderBlocks.aoLightValueScratchXYNN + renderBlocks.aoLightValueScratchYZNP + aoLightValue) / 4.0F; /* SW CORNER */
+				float aoMixed_XYZPNP = (renderBlocks.aoLightValueScratchYZNP + aoLightValue + renderBlocks.aoLightValueScratchXYZPNP + renderBlocks.aoLightValueScratchXYPN) / 4.0F; /* SE CORNER */
+				float aoMixed_XYZPNN = (aoLightValue + renderBlocks.aoLightValueScratchYZNN + renderBlocks.aoLightValueScratchXYPN + renderBlocks.aoLightValueScratchXYZPNN) / 4.0F; /* NE CORNER */
 
 				ao[NORTHWEST] = (float)(aoMixed_XYZNNP * renderBlocks.renderMinZ * (1.0D - renderBlocks.renderMinX) + aoMixed_XYZPNP * renderBlocks.renderMinZ * renderBlocks.renderMinX + aoMixed_XYZPNN * (1.0D - renderBlocks.renderMinZ) * renderBlocks.renderMinX + aoMixed_XYZNNN * (1.0D - renderBlocks.renderMinZ) * (1.0D - renderBlocks.renderMinX)); /* NW CORNER */
 				ao[SOUTHWEST] = (float)(aoMixed_XYZNNP * renderBlocks.renderMaxZ * (1.0D - renderBlocks.renderMinX) + aoMixed_XYZPNP * renderBlocks.renderMaxZ * renderBlocks.renderMinX + aoMixed_XYZPNN * (1.0D - renderBlocks.renderMaxZ) * renderBlocks.renderMinX + aoMixed_XYZNNN * (1.0D - renderBlocks.renderMaxZ) * (1.0D - renderBlocks.renderMinX)); /* SW CORNER */
@@ -361,17 +339,17 @@ public class LightingHelper {
 
 			} else {
 
-				ao[NORTHWEST] = (renderBlocks.aoLightValueScratchXYNN + renderBlocks.aoLightValueScratchXYZNNN + aoBlock + renderBlocks.aoLightValueScratchYZNN) / 4.0F; /* NW CORNER */
-				ao[SOUTHWEST] = (renderBlocks.aoLightValueScratchXYZNNP + renderBlocks.aoLightValueScratchXYNN + renderBlocks.aoLightValueScratchYZNP + aoBlock) / 4.0F; /* SW CORNER */
-				ao[SOUTHEAST] = (renderBlocks.aoLightValueScratchYZNP + aoBlock + renderBlocks.aoLightValueScratchXYZPNP + renderBlocks.aoLightValueScratchXYPN) / 4.0F; /* SE CORNER */
-				ao[NORTHEAST] = (aoBlock + renderBlocks.aoLightValueScratchYZNN + renderBlocks.aoLightValueScratchXYPN + renderBlocks.aoLightValueScratchXYZPNN) / 4.0F; /* NE CORNER */
+				ao[NORTHWEST] = (renderBlocks.aoLightValueScratchXYNN + renderBlocks.aoLightValueScratchXYZNNN + aoLightValue + renderBlocks.aoLightValueScratchYZNN) / 4.0F; /* NW CORNER */
+				ao[SOUTHWEST] = (renderBlocks.aoLightValueScratchXYZNNP + renderBlocks.aoLightValueScratchXYNN + renderBlocks.aoLightValueScratchYZNP + aoLightValue) / 4.0F; /* SW CORNER */
+				ao[SOUTHEAST] = (renderBlocks.aoLightValueScratchYZNP + aoLightValue + renderBlocks.aoLightValueScratchXYZPNP + renderBlocks.aoLightValueScratchXYPN) / 4.0F; /* SE CORNER */
+				ao[NORTHEAST] = (aoLightValue + renderBlocks.aoLightValueScratchYZNN + renderBlocks.aoLightValueScratchXYPN + renderBlocks.aoLightValueScratchXYZPNN) / 4.0F; /* NE CORNER */
 
 			}
 
-			renderBlocks.brightnessTopLeft = renderBlocks.getAoBrightness(renderBlocks.aoBrightnessXYNN, renderBlocks.aoBrightnessXYZNNN, renderBlocks.aoBrightnessYZNN, offsetBrightness); /* NW CORNER */
-			renderBlocks.brightnessBottomLeft = renderBlocks.getAoBrightness(renderBlocks.aoBrightnessXYZNNP, renderBlocks.aoBrightnessXYNN, renderBlocks.aoBrightnessYZNP, offsetBrightness); /* SW CORNER */
-			renderBlocks.brightnessBottomRight = renderBlocks.getAoBrightness(renderBlocks.aoBrightnessYZNP, renderBlocks.aoBrightnessXYZPNP, renderBlocks.aoBrightnessXYPN, offsetBrightness); /* SE CORNER */
-			renderBlocks.brightnessTopRight = renderBlocks.getAoBrightness(renderBlocks.aoBrightnessYZNN, renderBlocks.aoBrightnessXYPN, renderBlocks.aoBrightnessXYZPNN, offsetBrightness); /* NE CORNER */
+			renderBlocks.brightnessTopLeft 		= renderBlocks.getAoBrightness(renderBlocks.aoBrightnessXYNN, renderBlocks.aoBrightnessXYZNNN, renderBlocks.aoBrightnessYZNN, mixedBrightness); /* NW CORNER */
+			renderBlocks.brightnessBottomLeft 	= renderBlocks.getAoBrightness(renderBlocks.aoBrightnessXYZNNP, renderBlocks.aoBrightnessXYNN, renderBlocks.aoBrightnessYZNP, mixedBrightness); /* SW CORNER */
+			renderBlocks.brightnessBottomRight 	= renderBlocks.getAoBrightness(renderBlocks.aoBrightnessYZNP, renderBlocks.aoBrightnessXYZPNP, renderBlocks.aoBrightnessXYPN, mixedBrightness); /* SE CORNER */
+			renderBlocks.brightnessTopRight 	= renderBlocks.getAoBrightness(renderBlocks.aoBrightnessYZNN, renderBlocks.aoBrightnessXYPN, renderBlocks.aoBrightnessXYZPNN, mixedBrightness); /* NE CORNER */
 
 		}
 	}
@@ -390,11 +368,12 @@ public class LightingHelper {
 
 		} else {
 
-			Tessellator.instance.setBrightness(NORMAL_BRIGHTNESS);
-			boolean useOffsetLightness = renderBlocks.renderMaxY <= 1.0D && renderBlocks.renderMaxY > 0.5D;
-			boolean partialLighting = renderBlocks.partialRenderBounds;
+			int brightness = hasBrightnessOverride ? brightnessOverride : NORMAL_BRIGHTNESS;
+			Tessellator.instance.setBrightness(brightness);
 
-			y += useOffsetLightness ? 1 : 0;
+			if (renderBlocks.renderMaxY >= 1.0D) {
+				++y;
+			}
 
 			renderBlocks.aoBrightnessXYNP = block.getMixedBrightnessForBlock(renderBlocks.blockAccess, x - 1, y, z);
 			renderBlocks.aoBrightnessXYPP = block.getMixedBrightnessForBlock(renderBlocks.blockAccess, x + 1, y, z);
@@ -441,17 +420,17 @@ public class LightingHelper {
 				renderBlocks.aoBrightnessXYZPPP = block.getMixedBrightnessForBlock(renderBlocks.blockAccess, x + 1, y, z + 1);
 			}
 
-			y -= useOffsetLightness ? 1 : 0;
-
-			int offsetBrightness = mixedBrightness;
+			if (renderBlocks.renderMaxY >= 1.0D) {
+				--y;
+			}
 
 			if (renderBlocks.renderMaxY >= 1.0D || !renderBlocks.blockAccess.isBlockOpaqueCube(x, y + 1, z)) {
-				offsetBrightness = block.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y + 1, z);
+				mixedBrightness = block.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y + 1, z);
 			}
 
 			float aoLightValue = block.getAmbientOcclusionLightValue(renderBlocks.blockAccess, x, y + 1, z);
 
-			if (partialLighting) {
+			if (renderBlocks.partialRenderBounds) {
 
 				float aoMixed_XYZNPN = (renderBlocks.aoLightValueScratchXYNP + renderBlocks.aoLightValueScratchXYZNPN + aoLightValue + renderBlocks.aoLightValueScratchYZPN) / 4.0F; /* NW CORNER */
 				float aoMixed_XYZNPP = (renderBlocks.aoLightValueScratchXYZNPP + renderBlocks.aoLightValueScratchXYNP + renderBlocks.aoLightValueScratchYZPP + aoLightValue) / 4.0F; /* SW CORNER */
@@ -472,10 +451,10 @@ public class LightingHelper {
 
 			}
 
-			renderBlocks.brightnessTopLeft 		= renderBlocks.getAoBrightness(renderBlocks.aoBrightnessYZPP, renderBlocks.aoBrightnessXYZPPP, renderBlocks.aoBrightnessXYPP, offsetBrightness);
-			renderBlocks.brightnessBottomLeft 	= renderBlocks.getAoBrightness(renderBlocks.aoBrightnessYZPN, renderBlocks.aoBrightnessXYPP, renderBlocks.aoBrightnessXYZPPN, offsetBrightness);
-			renderBlocks.brightnessBottomRight 	= renderBlocks.getAoBrightness(renderBlocks.aoBrightnessXYNP, renderBlocks.aoBrightnessXYZNPN, renderBlocks.aoBrightnessYZPN, offsetBrightness);
-			renderBlocks.brightnessTopRight 	= renderBlocks.getAoBrightness(renderBlocks.aoBrightnessXYZNPP, renderBlocks.aoBrightnessXYNP, renderBlocks.aoBrightnessYZPP, offsetBrightness);
+			renderBlocks.brightnessTopLeft 		= renderBlocks.getAoBrightness(renderBlocks.aoBrightnessYZPP, renderBlocks.aoBrightnessXYZPPP, renderBlocks.aoBrightnessXYPP, mixedBrightness);
+			renderBlocks.brightnessBottomLeft 	= renderBlocks.getAoBrightness(renderBlocks.aoBrightnessYZPN, renderBlocks.aoBrightnessXYPP, renderBlocks.aoBrightnessXYZPPN, mixedBrightness);
+			renderBlocks.brightnessBottomRight 	= renderBlocks.getAoBrightness(renderBlocks.aoBrightnessXYNP, renderBlocks.aoBrightnessXYZNPN, renderBlocks.aoBrightnessYZPN, mixedBrightness);
+			renderBlocks.brightnessTopRight 	= renderBlocks.getAoBrightness(renderBlocks.aoBrightnessXYZNPP, renderBlocks.aoBrightnessXYNP, renderBlocks.aoBrightnessYZPP, mixedBrightness);
 
 		}
 	}
@@ -494,11 +473,12 @@ public class LightingHelper {
 
 		} else {
 
-			Tessellator.instance.setBrightness(NORMAL_BRIGHTNESS);
-			boolean useOffsetLightness = renderBlocks.renderMinZ >= 0.0D && renderBlocks.renderMinZ <= 0.5D;
-			boolean partialLighting = renderBlocks.partialRenderBounds;
+			int brightness = hasBrightnessOverride ? brightnessOverride : NORMAL_BRIGHTNESS;
+			Tessellator.instance.setBrightness(brightness);
 
-			z -= useOffsetLightness ? 1 : 0;
+			if (renderBlocks.renderMinZ <= 0.0D) {
+				--z;
+			}
 
 			renderBlocks.aoLightValueScratchXZNN = block.getAmbientOcclusionLightValue(renderBlocks.blockAccess, x - 1, y, z);
 			renderBlocks.aoLightValueScratchYZNN = block.getAmbientOcclusionLightValue(renderBlocks.blockAccess, x, y - 1, z);
@@ -545,32 +525,32 @@ public class LightingHelper {
 				renderBlocks.aoBrightnessXYZPPN = block.getMixedBrightnessForBlock(renderBlocks.blockAccess, x + 1, y + 1, z);
 			}
 
-			z += useOffsetLightness ? 1 : 0;
-
-			int offsetBrightness = mixedBrightness;
+			if (renderBlocks.renderMinZ <= 0.0D) {
+				++z;
+			}
 
 			if (renderBlocks.renderMinZ <= 0.0D || !renderBlocks.blockAccess.isBlockOpaqueCube(x, y, z - 1)) {
-				offsetBrightness = block.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y, z - 1);
+				mixedBrightness = block.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y, z - 1);
 			}
 
 			float aoLightValue = block.getAmbientOcclusionLightValue(renderBlocks.blockAccess, x, y, z - 1);
 
-			if (partialLighting) {
+			if (renderBlocks.partialRenderBounds) {
 
 				float aoMixed_XYZPPN = (aoLightValue + renderBlocks.aoLightValueScratchYZPN + renderBlocks.aoLightValueScratchXZPN + renderBlocks.aoLightValueScratchXYZPPN) / 4.0F; /* TL CORNER */
 				float aoMixed_XYZPNN = (renderBlocks.aoLightValueScratchYZNN + aoLightValue + renderBlocks.aoLightValueScratchXYZPNN + renderBlocks.aoLightValueScratchXZPN) / 4.0F; /* BL CORNER */
 				float aoMixed_XYZNNN = (renderBlocks.aoLightValueScratchXYZNNN + renderBlocks.aoLightValueScratchXZNN + renderBlocks.aoLightValueScratchYZNN + aoLightValue) / 4.0F; /* BR CORNER */
 				float aoMixed_XYZNPN = (renderBlocks.aoLightValueScratchXZNN + renderBlocks.aoLightValueScratchXYZNPN + aoLightValue + renderBlocks.aoLightValueScratchYZPN) / 4.0F; /* TR CORNER */
 
-				ao[TOP_LEFT] = (float)(aoMixed_XYZNPN * renderBlocks.renderMaxY * (1.0D - renderBlocks.renderMaxX) + aoMixed_XYZPPN * renderBlocks.renderMaxY * renderBlocks.renderMaxX + aoMixed_XYZPNN * (1.0D - renderBlocks.renderMaxY) * renderBlocks.renderMaxX + aoMixed_XYZNNN * (1.0D - renderBlocks.renderMaxY) * (1.0D - renderBlocks.renderMaxX)); /* TL CORNER */
-				ao[BOTTOM_LEFT] = (float)(aoMixed_XYZNPN * renderBlocks.renderMinY * (1.0D - renderBlocks.renderMaxX) + aoMixed_XYZPPN * renderBlocks.renderMinY * renderBlocks.renderMaxX + aoMixed_XYZPNN * (1.0D - renderBlocks.renderMinY) * renderBlocks.renderMaxX + aoMixed_XYZNNN * (1.0D - renderBlocks.renderMinY) * (1.0D - renderBlocks.renderMaxX)); /* BL CORNER */
-				ao[BOTTOM_RIGHT] = (float)(aoMixed_XYZNPN * renderBlocks.renderMinY * (1.0D - renderBlocks.renderMinX) + aoMixed_XYZPPN * renderBlocks.renderMinY * renderBlocks.renderMinX + aoMixed_XYZPNN * (1.0D - renderBlocks.renderMinY) * renderBlocks.renderMinX + aoMixed_XYZNNN * (1.0D - renderBlocks.renderMinY) * (1.0D - renderBlocks.renderMinX)); /* BR CORNER */
-				ao[TOP_RIGHT] = (float)(aoMixed_XYZNPN * renderBlocks.renderMaxY * (1.0D - renderBlocks.renderMinX) + aoMixed_XYZPPN * renderBlocks.renderMaxY * renderBlocks.renderMinX + aoMixed_XYZPNN * (1.0D - renderBlocks.renderMaxY) * renderBlocks.renderMinX + aoMixed_XYZNNN * (1.0D - renderBlocks.renderMaxY) * (1.0D - renderBlocks.renderMinX)); /* TR CORNER */
+				ao[TOP_LEFT] 		= (float)(aoMixed_XYZNPN * renderBlocks.renderMaxY * (1.0D - renderBlocks.renderMaxX) + aoMixed_XYZPPN * renderBlocks.renderMaxY * renderBlocks.renderMaxX + aoMixed_XYZPNN * (1.0D - renderBlocks.renderMaxY) * renderBlocks.renderMaxX + aoMixed_XYZNNN * (1.0D - renderBlocks.renderMaxY) * (1.0D - renderBlocks.renderMaxX)); /* TL CORNER */
+				ao[BOTTOM_LEFT] 	= (float)(aoMixed_XYZNPN * renderBlocks.renderMinY * (1.0D - renderBlocks.renderMaxX) + aoMixed_XYZPPN * renderBlocks.renderMinY * renderBlocks.renderMaxX + aoMixed_XYZPNN * (1.0D - renderBlocks.renderMinY) * renderBlocks.renderMaxX + aoMixed_XYZNNN * (1.0D - renderBlocks.renderMinY) * (1.0D - renderBlocks.renderMaxX)); /* BL CORNER */
+				ao[BOTTOM_RIGHT] 	= (float)(aoMixed_XYZNPN * renderBlocks.renderMinY * (1.0D - renderBlocks.renderMinX) + aoMixed_XYZPPN * renderBlocks.renderMinY * renderBlocks.renderMinX + aoMixed_XYZPNN * (1.0D - renderBlocks.renderMinY) * renderBlocks.renderMinX + aoMixed_XYZNNN * (1.0D - renderBlocks.renderMinY) * (1.0D - renderBlocks.renderMinX)); /* BR CORNER */
+				ao[TOP_RIGHT] 		= (float)(aoMixed_XYZNPN * renderBlocks.renderMaxY * (1.0D - renderBlocks.renderMinX) + aoMixed_XYZPPN * renderBlocks.renderMaxY * renderBlocks.renderMinX + aoMixed_XYZPNN * (1.0D - renderBlocks.renderMaxY) * renderBlocks.renderMinX + aoMixed_XYZNNN * (1.0D - renderBlocks.renderMaxY) * (1.0D - renderBlocks.renderMinX)); /* TR CORNER */
 
-				int brightnessMixed_XYZPPN = renderBlocks.getAoBrightness(renderBlocks.aoBrightnessYZPN, renderBlocks.aoBrightnessXZPN, renderBlocks.aoBrightnessXYZPPN, offsetBrightness); /* TL CORNER */
-				int brightnessMixed_XYZPNN = renderBlocks.getAoBrightness(renderBlocks.aoBrightnessYZNN, renderBlocks.aoBrightnessXYZPNN, renderBlocks.aoBrightnessXZPN, offsetBrightness); /* BL CORNER */
-				int brightnessMixed_XYZNNN = renderBlocks.getAoBrightness(renderBlocks.aoBrightnessXYZNNN, renderBlocks.aoBrightnessXZNN, renderBlocks.aoBrightnessYZNN, offsetBrightness); /* BR CORNER */
-				int brightnessMixed_XYZNPN = renderBlocks.getAoBrightness(renderBlocks.aoBrightnessXZNN, renderBlocks.aoBrightnessXYZNPN, renderBlocks.aoBrightnessYZPN, offsetBrightness); /* TR CORNER */
+				int brightnessMixed_XYZPPN = renderBlocks.getAoBrightness(renderBlocks.aoBrightnessYZPN, renderBlocks.aoBrightnessXZPN, renderBlocks.aoBrightnessXYZPPN, mixedBrightness); /* TL CORNER */
+				int brightnessMixed_XYZPNN = renderBlocks.getAoBrightness(renderBlocks.aoBrightnessYZNN, renderBlocks.aoBrightnessXYZPNN, renderBlocks.aoBrightnessXZPN, mixedBrightness); /* BL CORNER */
+				int brightnessMixed_XYZNNN = renderBlocks.getAoBrightness(renderBlocks.aoBrightnessXYZNNN, renderBlocks.aoBrightnessXZNN, renderBlocks.aoBrightnessYZNN, mixedBrightness); /* BR CORNER */
+				int brightnessMixed_XYZNPN = renderBlocks.getAoBrightness(renderBlocks.aoBrightnessXZNN, renderBlocks.aoBrightnessXYZNPN, renderBlocks.aoBrightnessYZPN, mixedBrightness); /* TR CORNER */
 
 				renderBlocks.brightnessTopLeft 		= renderBlocks.mixAoBrightness(brightnessMixed_XYZNPN, brightnessMixed_XYZPPN, brightnessMixed_XYZPNN, brightnessMixed_XYZNNN, renderBlocks.renderMaxY * (1.0D - renderBlocks.renderMaxX), renderBlocks.renderMaxY * renderBlocks.renderMaxX, (1.0D - renderBlocks.renderMaxY) * renderBlocks.renderMaxX, (1.0D - renderBlocks.renderMaxY) * (1.0D - renderBlocks.renderMaxX)); /* TL CORNER */
 				renderBlocks.brightnessBottomLeft 	= renderBlocks.mixAoBrightness(brightnessMixed_XYZNPN, brightnessMixed_XYZPPN, brightnessMixed_XYZPNN, brightnessMixed_XYZNNN, renderBlocks.renderMinY * (1.0D - renderBlocks.renderMaxX), renderBlocks.renderMinY * renderBlocks.renderMaxX, (1.0D - renderBlocks.renderMinY) * renderBlocks.renderMaxX, (1.0D - renderBlocks.renderMinY) * (1.0D - renderBlocks.renderMaxX)); /* BL CORNER */
@@ -579,15 +559,15 @@ public class LightingHelper {
 
 			} else {
 
-				ao[TOP_LEFT] = (aoLightValue + renderBlocks.aoLightValueScratchYZPN + renderBlocks.aoLightValueScratchXZPN + renderBlocks.aoLightValueScratchXYZPPN) / 4.0F; /* TL CORNER */
-				ao[BOTTOM_LEFT] = (renderBlocks.aoLightValueScratchYZNN + aoLightValue + renderBlocks.aoLightValueScratchXYZPNN + renderBlocks.aoLightValueScratchXZPN) / 4.0F; /* BL CORNER */
-				ao[BOTTOM_RIGHT] = (renderBlocks.aoLightValueScratchXYZNNN + renderBlocks.aoLightValueScratchXZNN + renderBlocks.aoLightValueScratchYZNN + aoLightValue) / 4.0F; /* BR CORNER */
-				ao[TOP_RIGHT] = (renderBlocks.aoLightValueScratchXZNN + renderBlocks.aoLightValueScratchXYZNPN + aoLightValue + renderBlocks.aoLightValueScratchYZPN) / 4.0F; /* TR CORNER */
+				ao[TOP_LEFT] 		= (aoLightValue + renderBlocks.aoLightValueScratchYZPN + renderBlocks.aoLightValueScratchXZPN + renderBlocks.aoLightValueScratchXYZPPN) / 4.0F; /* TL CORNER */
+				ao[BOTTOM_LEFT] 	= (renderBlocks.aoLightValueScratchYZNN + aoLightValue + renderBlocks.aoLightValueScratchXYZPNN + renderBlocks.aoLightValueScratchXZPN) / 4.0F; /* BL CORNER */
+				ao[BOTTOM_RIGHT] 	= (renderBlocks.aoLightValueScratchXYZNNN + renderBlocks.aoLightValueScratchXZNN + renderBlocks.aoLightValueScratchYZNN + aoLightValue) / 4.0F; /* BR CORNER */
+				ao[TOP_RIGHT] 		= (renderBlocks.aoLightValueScratchXZNN + renderBlocks.aoLightValueScratchXYZNPN + aoLightValue + renderBlocks.aoLightValueScratchYZPN) / 4.0F; /* TR CORNER */
 
-				renderBlocks.brightnessTopLeft 		= renderBlocks.getAoBrightness(renderBlocks.aoBrightnessYZPN, renderBlocks.aoBrightnessXZPN, renderBlocks.aoBrightnessXYZPPN, offsetBrightness); /* TL CORNER */
-				renderBlocks.brightnessBottomLeft 	= renderBlocks.getAoBrightness(renderBlocks.aoBrightnessYZNN, renderBlocks.aoBrightnessXYZPNN, renderBlocks.aoBrightnessXZPN, offsetBrightness); /* BL CORNER */
-				renderBlocks.brightnessBottomRight 	= renderBlocks.getAoBrightness(renderBlocks.aoBrightnessXYZNNN, renderBlocks.aoBrightnessXZNN, renderBlocks.aoBrightnessYZNN, offsetBrightness); /* BR CORNER */
-				renderBlocks.brightnessTopRight 	= renderBlocks.getAoBrightness(renderBlocks.aoBrightnessXZNN, renderBlocks.aoBrightnessXYZNPN, renderBlocks.aoBrightnessYZPN, offsetBrightness); /* TR CORNER */
+				renderBlocks.brightnessTopLeft 		= renderBlocks.getAoBrightness(renderBlocks.aoBrightnessYZPN, renderBlocks.aoBrightnessXZPN, renderBlocks.aoBrightnessXYZPPN, mixedBrightness); /* TL CORNER */
+				renderBlocks.brightnessBottomLeft 	= renderBlocks.getAoBrightness(renderBlocks.aoBrightnessYZNN, renderBlocks.aoBrightnessXYZPNN, renderBlocks.aoBrightnessXZPN, mixedBrightness); /* BL CORNER */
+				renderBlocks.brightnessBottomRight 	= renderBlocks.getAoBrightness(renderBlocks.aoBrightnessXYZNNN, renderBlocks.aoBrightnessXZNN, renderBlocks.aoBrightnessYZNN, mixedBrightness); /* BR CORNER */
+				renderBlocks.brightnessTopRight 	= renderBlocks.getAoBrightness(renderBlocks.aoBrightnessXZNN, renderBlocks.aoBrightnessXYZNPN, renderBlocks.aoBrightnessYZPN, mixedBrightness); /* TR CORNER */
 
 			}
 		}
@@ -607,11 +587,12 @@ public class LightingHelper {
 
 		} else {
 
-			Tessellator.instance.setBrightness(NORMAL_BRIGHTNESS);
-			boolean useOffsetLightness = renderBlocks.renderMaxZ <= 1.0D && renderBlocks.renderMaxZ > 0.5D;
-			boolean partialLighting = renderBlocks.partialRenderBounds;
+			int brightness = hasBrightnessOverride ? brightnessOverride : NORMAL_BRIGHTNESS;
+			Tessellator.instance.setBrightness(brightness);
 
-			z += useOffsetLightness ? 1 : 0;
+			if (renderBlocks.renderMaxZ >= 1.0D) {
+				++z;
+			}
 
 			renderBlocks.aoLightValueScratchXZNP = block.getAmbientOcclusionLightValue(renderBlocks.blockAccess, x - 1, y, z);
 			renderBlocks.aoLightValueScratchXZPP = block.getAmbientOcclusionLightValue(renderBlocks.blockAccess, x + 1, y, z);
@@ -658,49 +639,49 @@ public class LightingHelper {
 				renderBlocks.aoBrightnessXYZPPP = block.getMixedBrightnessForBlock(renderBlocks.blockAccess, x + 1, y + 1, z);
 			}
 
-			z -= useOffsetLightness ? 1 : 0;
-
-			int offsetBrightness = mixedBrightness;
+			if (renderBlocks.renderMaxZ >= 1.0D) {
+				--z;
+			}
 
 			if (renderBlocks.renderMaxZ >= 1.0D || !renderBlocks.blockAccess.isBlockOpaqueCube(x, y, z + 1)) {
-				offsetBrightness = block.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y, z + 1);
+				mixedBrightness = block.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y, z + 1);
 			}
 
 			float aoLightValue = block.getAmbientOcclusionLightValue(renderBlocks.blockAccess, x, y, z + 1);
 
-			if (partialLighting) {
+			if (renderBlocks.partialRenderBounds) {
 
 				float aoMixed_XYZNPP = (renderBlocks.aoLightValueScratchXZNP + renderBlocks.aoLightValueScratchXYZNPP + aoLightValue + renderBlocks.aoLightValueScratchYZPP) / 4.0F; /* TL CORNER */
 				float aoMixed_XYZNNP = (renderBlocks.aoLightValueScratchXYZNNP + renderBlocks.aoLightValueScratchXZNP + renderBlocks.aoLightValueScratchYZNP + aoLightValue) / 4.0F; /* BL CORNER */
 				float aoMixed_XYZPNP = (renderBlocks.aoLightValueScratchYZNP + aoLightValue + renderBlocks.aoLightValueScratchXYZPNP + renderBlocks.aoLightValueScratchXZPP) / 4.0F; /* BR CORNER */
 				float aoMixed_XYZPPP = (aoLightValue + renderBlocks.aoLightValueScratchYZPP + renderBlocks.aoLightValueScratchXZPP + renderBlocks.aoLightValueScratchXYZPPP) / 4.0F; /* TR CORNER */
 
-				ao[TOP_LEFT] = (float)(aoMixed_XYZNPP * renderBlocks.renderMaxY * (1.0D - renderBlocks.renderMinX) + aoMixed_XYZPPP * renderBlocks.renderMaxY * renderBlocks.renderMinX + aoMixed_XYZPNP * (1.0D - renderBlocks.renderMaxY) * renderBlocks.renderMinX + aoMixed_XYZNNP * (1.0D - renderBlocks.renderMaxY) * (1.0D - renderBlocks.renderMinX)); /* TL CORNER */
-				ao[BOTTOM_LEFT] = (float)(aoMixed_XYZNPP * renderBlocks.renderMinY * (1.0D - renderBlocks.renderMinX) + aoMixed_XYZPPP * renderBlocks.renderMinY * renderBlocks.renderMinX + aoMixed_XYZPNP * (1.0D - renderBlocks.renderMinY) * renderBlocks.renderMinX + aoMixed_XYZNNP * (1.0D - renderBlocks.renderMinY) * (1.0D - renderBlocks.renderMinX)); /* BL CORNER */
-				ao[BOTTOM_RIGHT] = (float)(aoMixed_XYZNPP * renderBlocks.renderMinY * (1.0D - renderBlocks.renderMaxX) + aoMixed_XYZPPP * renderBlocks.renderMinY * renderBlocks.renderMaxX + aoMixed_XYZPNP * (1.0D - renderBlocks.renderMinY) * renderBlocks.renderMaxX + aoMixed_XYZNNP * (1.0D - renderBlocks.renderMinY) * (1.0D - renderBlocks.renderMaxX)); /* BR CORNER */
-				ao[TOP_RIGHT] = (float)(aoMixed_XYZNPP * renderBlocks.renderMaxY * (1.0D - renderBlocks.renderMaxX) + aoMixed_XYZPPP * renderBlocks.renderMaxY * renderBlocks.renderMaxX + aoMixed_XYZPNP * (1.0D - renderBlocks.renderMaxY) * renderBlocks.renderMaxX + aoMixed_XYZNNP * (1.0D - renderBlocks.renderMaxY) * (1.0D - renderBlocks.renderMaxX)); /* TR CORNER */
+				ao[TOP_LEFT] 		= (float)(aoMixed_XYZNPP * renderBlocks.renderMaxY * (1.0D - renderBlocks.renderMinX) + aoMixed_XYZPPP * renderBlocks.renderMaxY * renderBlocks.renderMinX + aoMixed_XYZPNP * (1.0D - renderBlocks.renderMaxY) * renderBlocks.renderMinX + aoMixed_XYZNNP * (1.0D - renderBlocks.renderMaxY) * (1.0D - renderBlocks.renderMinX)); /* TL CORNER */
+				ao[BOTTOM_LEFT] 	= (float)(aoMixed_XYZNPP * renderBlocks.renderMinY * (1.0D - renderBlocks.renderMinX) + aoMixed_XYZPPP * renderBlocks.renderMinY * renderBlocks.renderMinX + aoMixed_XYZPNP * (1.0D - renderBlocks.renderMinY) * renderBlocks.renderMinX + aoMixed_XYZNNP * (1.0D - renderBlocks.renderMinY) * (1.0D - renderBlocks.renderMinX)); /* BL CORNER */
+				ao[BOTTOM_RIGHT] 	= (float)(aoMixed_XYZNPP * renderBlocks.renderMinY * (1.0D - renderBlocks.renderMaxX) + aoMixed_XYZPPP * renderBlocks.renderMinY * renderBlocks.renderMaxX + aoMixed_XYZPNP * (1.0D - renderBlocks.renderMinY) * renderBlocks.renderMaxX + aoMixed_XYZNNP * (1.0D - renderBlocks.renderMinY) * (1.0D - renderBlocks.renderMaxX)); /* BR CORNER */
+				ao[TOP_RIGHT] 		= (float)(aoMixed_XYZNPP * renderBlocks.renderMaxY * (1.0D - renderBlocks.renderMaxX) + aoMixed_XYZPPP * renderBlocks.renderMaxY * renderBlocks.renderMaxX + aoMixed_XYZPNP * (1.0D - renderBlocks.renderMaxY) * renderBlocks.renderMaxX + aoMixed_XYZNNP * (1.0D - renderBlocks.renderMaxY) * (1.0D - renderBlocks.renderMaxX)); /* TR CORNER */
 
-				int brightnessMixed_XYZNPP = renderBlocks.getAoBrightness(renderBlocks.aoBrightnessXZNP, renderBlocks.aoBrightnessXYZNPP, renderBlocks.aoBrightnessYZPP, offsetBrightness); /* TL CORNER */
-				int brightnessMixed_XYZNNP = renderBlocks.getAoBrightness(renderBlocks.aoBrightnessXYZNNP, renderBlocks.aoBrightnessXZNP, renderBlocks.aoBrightnessYZNP, offsetBrightness); /* BL CORNER */
-				int brightnessMixed_XYZPNP = renderBlocks.getAoBrightness(renderBlocks.aoBrightnessYZNP, renderBlocks.aoBrightnessXYZPNP, renderBlocks.aoBrightnessXZPP, offsetBrightness); /* BR CORNER */
-				int brightnessMixed_XYZPPP = renderBlocks.getAoBrightness(renderBlocks.aoBrightnessYZPP, renderBlocks.aoBrightnessXZPP, renderBlocks.aoBrightnessXYZPPP, offsetBrightness); /* TR CORNER */
+				int brightnessMixed_XYZNPP = renderBlocks.getAoBrightness(renderBlocks.aoBrightnessXZNP, renderBlocks.aoBrightnessXYZNPP, renderBlocks.aoBrightnessYZPP, mixedBrightness); /* TL CORNER */
+				int brightnessMixed_XYZNNP = renderBlocks.getAoBrightness(renderBlocks.aoBrightnessXYZNNP, renderBlocks.aoBrightnessXZNP, renderBlocks.aoBrightnessYZNP, mixedBrightness); /* BL CORNER */
+				int brightnessMixed_XYZPNP = renderBlocks.getAoBrightness(renderBlocks.aoBrightnessYZNP, renderBlocks.aoBrightnessXYZPNP, renderBlocks.aoBrightnessXZPP, mixedBrightness); /* BR CORNER */
+				int brightnessMixed_XYZPPP = renderBlocks.getAoBrightness(renderBlocks.aoBrightnessYZPP, renderBlocks.aoBrightnessXZPP, renderBlocks.aoBrightnessXYZPPP, mixedBrightness); /* TR CORNER */
 
-				renderBlocks.brightnessTopLeft = renderBlocks.mixAoBrightness(brightnessMixed_XYZNPP, brightnessMixed_XYZNNP, brightnessMixed_XYZPNP, brightnessMixed_XYZPPP, renderBlocks.renderMaxY * (1.0D - renderBlocks.renderMinX), (1.0D - renderBlocks.renderMaxY) * (1.0D - renderBlocks.renderMinX), (1.0D - renderBlocks.renderMaxY) * renderBlocks.renderMinX, renderBlocks.renderMaxY * renderBlocks.renderMinX); /* TL CORNER */
-				renderBlocks.brightnessBottomLeft = renderBlocks.mixAoBrightness(brightnessMixed_XYZNPP, brightnessMixed_XYZNNP, brightnessMixed_XYZPNP, brightnessMixed_XYZPPP, renderBlocks.renderMinY * (1.0D - renderBlocks.renderMinX), (1.0D - renderBlocks.renderMinY) * (1.0D - renderBlocks.renderMinX), (1.0D - renderBlocks.renderMinY) * renderBlocks.renderMinX, renderBlocks.renderMinY * renderBlocks.renderMinX); /* BL CORNER */
-				renderBlocks.brightnessBottomRight = renderBlocks.mixAoBrightness(brightnessMixed_XYZNPP, brightnessMixed_XYZNNP, brightnessMixed_XYZPNP, brightnessMixed_XYZPPP, renderBlocks.renderMinY * (1.0D - renderBlocks.renderMaxX), (1.0D - renderBlocks.renderMinY) * (1.0D - renderBlocks.renderMaxX), (1.0D - renderBlocks.renderMinY) * renderBlocks.renderMaxX, renderBlocks.renderMinY * renderBlocks.renderMaxX); /* BR CORNER */
-				renderBlocks.brightnessTopRight = renderBlocks.mixAoBrightness(brightnessMixed_XYZNPP, brightnessMixed_XYZNNP, brightnessMixed_XYZPNP, brightnessMixed_XYZPPP, renderBlocks.renderMaxY * (1.0D - renderBlocks.renderMaxX), (1.0D - renderBlocks.renderMaxY) * (1.0D - renderBlocks.renderMaxX), (1.0D - renderBlocks.renderMaxY) * renderBlocks.renderMaxX, renderBlocks.renderMaxY * renderBlocks.renderMaxX); /* TR CORNER */
+				renderBlocks.brightnessTopLeft 		= renderBlocks.mixAoBrightness(brightnessMixed_XYZNPP, brightnessMixed_XYZNNP, brightnessMixed_XYZPNP, brightnessMixed_XYZPPP, renderBlocks.renderMaxY * (1.0D - renderBlocks.renderMinX), (1.0D - renderBlocks.renderMaxY) * (1.0D - renderBlocks.renderMinX), (1.0D - renderBlocks.renderMaxY) * renderBlocks.renderMinX, renderBlocks.renderMaxY * renderBlocks.renderMinX); /* TL CORNER */
+				renderBlocks.brightnessBottomLeft 	= renderBlocks.mixAoBrightness(brightnessMixed_XYZNPP, brightnessMixed_XYZNNP, brightnessMixed_XYZPNP, brightnessMixed_XYZPPP, renderBlocks.renderMinY * (1.0D - renderBlocks.renderMinX), (1.0D - renderBlocks.renderMinY) * (1.0D - renderBlocks.renderMinX), (1.0D - renderBlocks.renderMinY) * renderBlocks.renderMinX, renderBlocks.renderMinY * renderBlocks.renderMinX); /* BL CORNER */
+				renderBlocks.brightnessBottomRight 	= renderBlocks.mixAoBrightness(brightnessMixed_XYZNPP, brightnessMixed_XYZNNP, brightnessMixed_XYZPNP, brightnessMixed_XYZPPP, renderBlocks.renderMinY * (1.0D - renderBlocks.renderMaxX), (1.0D - renderBlocks.renderMinY) * (1.0D - renderBlocks.renderMaxX), (1.0D - renderBlocks.renderMinY) * renderBlocks.renderMaxX, renderBlocks.renderMinY * renderBlocks.renderMaxX); /* BR CORNER */
+				renderBlocks.brightnessTopRight 	= renderBlocks.mixAoBrightness(brightnessMixed_XYZNPP, brightnessMixed_XYZNNP, brightnessMixed_XYZPNP, brightnessMixed_XYZPPP, renderBlocks.renderMaxY * (1.0D - renderBlocks.renderMaxX), (1.0D - renderBlocks.renderMaxY) * (1.0D - renderBlocks.renderMaxX), (1.0D - renderBlocks.renderMaxY) * renderBlocks.renderMaxX, renderBlocks.renderMaxY * renderBlocks.renderMaxX); /* TR CORNER */
 
 			} else {
 
-				ao[TOP_LEFT] = (renderBlocks.aoLightValueScratchXZNP + renderBlocks.aoLightValueScratchXYZNPP + aoLightValue + renderBlocks.aoLightValueScratchYZPP) / 4.0F; /* TL CORNER */
-				ao[BOTTOM_LEFT] = (renderBlocks.aoLightValueScratchXYZNNP + renderBlocks.aoLightValueScratchXZNP + renderBlocks.aoLightValueScratchYZNP + aoLightValue) / 4.0F; /* BL CORNER */
-				ao[BOTTOM_RIGHT] = (renderBlocks.aoLightValueScratchYZNP + aoLightValue + renderBlocks.aoLightValueScratchXYZPNP + renderBlocks.aoLightValueScratchXZPP) / 4.0F; /* BR CORNER */
-				ao[TOP_RIGHT] = (aoLightValue + renderBlocks.aoLightValueScratchYZPP + renderBlocks.aoLightValueScratchXZPP + renderBlocks.aoLightValueScratchXYZPPP) / 4.0F; /* TR CORNER */
+				ao[TOP_LEFT] 		= (renderBlocks.aoLightValueScratchXZNP + renderBlocks.aoLightValueScratchXYZNPP + aoLightValue + renderBlocks.aoLightValueScratchYZPP) / 4.0F; /* TL CORNER */
+				ao[BOTTOM_LEFT] 	= (renderBlocks.aoLightValueScratchXYZNNP + renderBlocks.aoLightValueScratchXZNP + renderBlocks.aoLightValueScratchYZNP + aoLightValue) / 4.0F; /* BL CORNER */
+				ao[BOTTOM_RIGHT] 	= (renderBlocks.aoLightValueScratchYZNP + aoLightValue + renderBlocks.aoLightValueScratchXYZPNP + renderBlocks.aoLightValueScratchXZPP) / 4.0F; /* BR CORNER */
+				ao[TOP_RIGHT] 		= (aoLightValue + renderBlocks.aoLightValueScratchYZPP + renderBlocks.aoLightValueScratchXZPP + renderBlocks.aoLightValueScratchXYZPPP) / 4.0F; /* TR CORNER */
 
-				renderBlocks.brightnessTopLeft = renderBlocks.getAoBrightness(renderBlocks.aoBrightnessXZNP, renderBlocks.aoBrightnessXYZNPP, renderBlocks.aoBrightnessYZPP, offsetBrightness); /* TL CORNER */
-				renderBlocks.brightnessBottomLeft = renderBlocks.getAoBrightness(renderBlocks.aoBrightnessXYZNNP, renderBlocks.aoBrightnessXZNP, renderBlocks.aoBrightnessYZNP, offsetBrightness); /* BL CORNER */
-				renderBlocks.brightnessBottomRight = renderBlocks.getAoBrightness(renderBlocks.aoBrightnessYZNP, renderBlocks.aoBrightnessXYZPNP, renderBlocks.aoBrightnessXZPP, offsetBrightness); /* BR CORNER */
-				renderBlocks.brightnessTopRight = renderBlocks.getAoBrightness(renderBlocks.aoBrightnessYZPP, renderBlocks.aoBrightnessXZPP, renderBlocks.aoBrightnessXYZPPP, offsetBrightness); /* TR CORNER */
+				renderBlocks.brightnessTopLeft 		= renderBlocks.getAoBrightness(renderBlocks.aoBrightnessXZNP, renderBlocks.aoBrightnessXYZNPP, renderBlocks.aoBrightnessYZPP, mixedBrightness); /* TL CORNER */
+				renderBlocks.brightnessBottomLeft 	= renderBlocks.getAoBrightness(renderBlocks.aoBrightnessXYZNNP, renderBlocks.aoBrightnessXZNP, renderBlocks.aoBrightnessYZNP, mixedBrightness); /* BL CORNER */
+				renderBlocks.brightnessBottomRight 	= renderBlocks.getAoBrightness(renderBlocks.aoBrightnessYZNP, renderBlocks.aoBrightnessXYZPNP, renderBlocks.aoBrightnessXZPP, mixedBrightness); /* BR CORNER */
+				renderBlocks.brightnessTopRight		= renderBlocks.getAoBrightness(renderBlocks.aoBrightnessYZPP, renderBlocks.aoBrightnessXZPP, renderBlocks.aoBrightnessXYZPPP, mixedBrightness); /* TR CORNER */
 
 			}
 		}
@@ -720,11 +701,12 @@ public class LightingHelper {
 
 		} else {
 
-			Tessellator.instance.setBrightness(NORMAL_BRIGHTNESS);
-			boolean useOffsetLightness = renderBlocks.renderMinX >= 0.0D && renderBlocks.renderMinX <= 0.5D;
-			boolean partialLighting = renderBlocks.partialRenderBounds;
+			int brightness = hasBrightnessOverride ? brightnessOverride : NORMAL_BRIGHTNESS;
+			Tessellator.instance.setBrightness(brightness);
 
-			x -= useOffsetLightness ? 1 : 0;
+			if (renderBlocks.renderMinX <= 0.0D) {
+				--x;
+			}
 
 			renderBlocks.aoLightValueScratchXYNN = block.getAmbientOcclusionLightValue(renderBlocks.blockAccess, x, y - 1, z);
 			renderBlocks.aoLightValueScratchXZNN = block.getAmbientOcclusionLightValue(renderBlocks.blockAccess, x, y, z - 1);
@@ -771,49 +753,49 @@ public class LightingHelper {
 				renderBlocks.aoBrightnessXYZNPP = block.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y + 1, z + 1);
 			}
 
-			x += useOffsetLightness ? 1 : 0;
-
-			int offsetBrightness = mixedBrightness;
+			if (renderBlocks.renderMinX <= 0.0D) {
+				++x;
+			}
 
 			if (renderBlocks.renderMinX <= 0.0D || !renderBlocks.blockAccess.isBlockOpaqueCube(x - 1, y, z)) {
-				offsetBrightness = block.getMixedBrightnessForBlock(renderBlocks.blockAccess, x - 1, y, z);
+				mixedBrightness = block.getMixedBrightnessForBlock(renderBlocks.blockAccess, x - 1, y, z);
 			}
 
 			float aoLightValue = block.getAmbientOcclusionLightValue(renderBlocks.blockAccess, x - 1, y, z);
 
-			if (partialLighting) {
+			if (renderBlocks.partialRenderBounds) {
 
 				float aoMixed_XYZNPN = (renderBlocks.aoLightValueScratchXZNN + aoLightValue + renderBlocks.aoLightValueScratchXYZNPN + renderBlocks.aoLightValueScratchXYNP) / 4.0F; /* TL CORNER */
 				float aoMixed_XYZNNN = (renderBlocks.aoLightValueScratchXYZNNN + renderBlocks.aoLightValueScratchXYNN + renderBlocks.aoLightValueScratchXZNN + aoLightValue) / 4.0F; /* BL CORNER */
 				float aoMixed_XYZNNP = (renderBlocks.aoLightValueScratchXYNN + renderBlocks.aoLightValueScratchXYZNNP + aoLightValue + renderBlocks.aoLightValueScratchXZNP) / 4.0F; /* BR CORNER */
 				float aoMixed_XYZNPP = (aoLightValue + renderBlocks.aoLightValueScratchXZNP + renderBlocks.aoLightValueScratchXYNP + renderBlocks.aoLightValueScratchXYZNPP) / 4.0F; /* TR CORNER */
 
-				ao[TOP_LEFT] = (float)(aoMixed_XYZNPP * renderBlocks.renderMaxY * renderBlocks.renderMinZ + aoMixed_XYZNPN * renderBlocks.renderMaxY * (1.0D - renderBlocks.renderMinZ) + aoMixed_XYZNNN * (1.0D - renderBlocks.renderMaxY) * (1.0D - renderBlocks.renderMinZ) + aoMixed_XYZNNP * (1.0D - renderBlocks.renderMaxY) * renderBlocks.renderMinZ); /* TL CORNER */
-				ao[BOTTOM_LEFT] = (float)(aoMixed_XYZNPP * renderBlocks.renderMinY * renderBlocks.renderMinZ + aoMixed_XYZNPN * renderBlocks.renderMinY * (1.0D - renderBlocks.renderMinZ) + aoMixed_XYZNNN * (1.0D - renderBlocks.renderMinY) * (1.0D - renderBlocks.renderMinZ) + aoMixed_XYZNNP * (1.0D - renderBlocks.renderMinY) * renderBlocks.renderMinZ); /* BL CORNER */
-				ao[BOTTOM_RIGHT] = (float)(aoMixed_XYZNPP * renderBlocks.renderMinY * renderBlocks.renderMaxZ + aoMixed_XYZNPN * renderBlocks.renderMinY * (1.0D - renderBlocks.renderMaxZ) + aoMixed_XYZNNN * (1.0D - renderBlocks.renderMinY) * (1.0D - renderBlocks.renderMaxZ) + aoMixed_XYZNNP * (1.0D - renderBlocks.renderMinY) * renderBlocks.renderMaxZ); /* BR CORNER */
-				ao[TOP_RIGHT] = (float)(aoMixed_XYZNPP * renderBlocks.renderMaxY * renderBlocks.renderMaxZ + aoMixed_XYZNPN * renderBlocks.renderMaxY * (1.0D - renderBlocks.renderMaxZ) + aoMixed_XYZNNN * (1.0D - renderBlocks.renderMaxY) * (1.0D - renderBlocks.renderMaxZ) + aoMixed_XYZNNP * (1.0D - renderBlocks.renderMaxY) * renderBlocks.renderMaxZ); /* TR CORNER */
+				ao[TOP_LEFT] 		= (float)(aoMixed_XYZNPP * renderBlocks.renderMaxY * renderBlocks.renderMinZ + aoMixed_XYZNPN * renderBlocks.renderMaxY * (1.0D - renderBlocks.renderMinZ) + aoMixed_XYZNNN * (1.0D - renderBlocks.renderMaxY) * (1.0D - renderBlocks.renderMinZ) + aoMixed_XYZNNP * (1.0D - renderBlocks.renderMaxY) * renderBlocks.renderMinZ); /* TL CORNER */
+				ao[BOTTOM_LEFT] 	= (float)(aoMixed_XYZNPP * renderBlocks.renderMinY * renderBlocks.renderMinZ + aoMixed_XYZNPN * renderBlocks.renderMinY * (1.0D - renderBlocks.renderMinZ) + aoMixed_XYZNNN * (1.0D - renderBlocks.renderMinY) * (1.0D - renderBlocks.renderMinZ) + aoMixed_XYZNNP * (1.0D - renderBlocks.renderMinY) * renderBlocks.renderMinZ); /* BL CORNER */
+				ao[BOTTOM_RIGHT] 	= (float)(aoMixed_XYZNPP * renderBlocks.renderMinY * renderBlocks.renderMaxZ + aoMixed_XYZNPN * renderBlocks.renderMinY * (1.0D - renderBlocks.renderMaxZ) + aoMixed_XYZNNN * (1.0D - renderBlocks.renderMinY) * (1.0D - renderBlocks.renderMaxZ) + aoMixed_XYZNNP * (1.0D - renderBlocks.renderMinY) * renderBlocks.renderMaxZ); /* BR CORNER */
+				ao[TOP_RIGHT] 		= (float)(aoMixed_XYZNPP * renderBlocks.renderMaxY * renderBlocks.renderMaxZ + aoMixed_XYZNPN * renderBlocks.renderMaxY * (1.0D - renderBlocks.renderMaxZ) + aoMixed_XYZNNN * (1.0D - renderBlocks.renderMaxY) * (1.0D - renderBlocks.renderMaxZ) + aoMixed_XYZNNP * (1.0D - renderBlocks.renderMaxY) * renderBlocks.renderMaxZ); /* TR CORNER */
 
-				int brightnessMixed_XYZNPN = renderBlocks.getAoBrightness(renderBlocks.aoBrightnessXZNN, renderBlocks.aoBrightnessXYZNPN, renderBlocks.aoBrightnessXYNP, offsetBrightness); /* TL CORNER */
-				int brightnessMixed_XYZNNN = renderBlocks.getAoBrightness(renderBlocks.aoBrightnessXYZNNN, renderBlocks.aoBrightnessXYNN, renderBlocks.aoBrightnessXZNN, offsetBrightness); /* BL CORNER */
-				int brightnessMixed_XYZNNP = renderBlocks.getAoBrightness(renderBlocks.aoBrightnessXYNN, renderBlocks.aoBrightnessXYZNNP, renderBlocks.aoBrightnessXZNP, offsetBrightness); /* BR CORNER */
-				int brightnessMixed_XYZNPP = renderBlocks.getAoBrightness(renderBlocks.aoBrightnessXZNP, renderBlocks.aoBrightnessXYNP, renderBlocks.aoBrightnessXYZNPP, offsetBrightness); /* TR CORNER */
+				int brightnessMixed_XYZNPN = renderBlocks.getAoBrightness(renderBlocks.aoBrightnessXZNN, renderBlocks.aoBrightnessXYZNPN, renderBlocks.aoBrightnessXYNP, mixedBrightness); /* TL CORNER */
+				int brightnessMixed_XYZNNN = renderBlocks.getAoBrightness(renderBlocks.aoBrightnessXYZNNN, renderBlocks.aoBrightnessXYNN, renderBlocks.aoBrightnessXZNN, mixedBrightness); /* BL CORNER */
+				int brightnessMixed_XYZNNP = renderBlocks.getAoBrightness(renderBlocks.aoBrightnessXYNN, renderBlocks.aoBrightnessXYZNNP, renderBlocks.aoBrightnessXZNP, mixedBrightness); /* BR CORNER */
+				int brightnessMixed_XYZNPP = renderBlocks.getAoBrightness(renderBlocks.aoBrightnessXZNP, renderBlocks.aoBrightnessXYNP, renderBlocks.aoBrightnessXYZNPP, mixedBrightness); /* TR CORNER */
 
-				renderBlocks.brightnessTopLeft = renderBlocks.mixAoBrightness(brightnessMixed_XYZNPP, brightnessMixed_XYZNPN, brightnessMixed_XYZNNN, brightnessMixed_XYZNNP, renderBlocks.renderMaxY * renderBlocks.renderMinZ, renderBlocks.renderMaxY * (1.0D - renderBlocks.renderMinZ), (1.0D - renderBlocks.renderMaxY) * (1.0D - renderBlocks.renderMinZ), (1.0D - renderBlocks.renderMaxY) * renderBlocks.renderMinZ); /* TL CORNER */
-				renderBlocks.brightnessBottomLeft = renderBlocks.mixAoBrightness(brightnessMixed_XYZNPP, brightnessMixed_XYZNPN, brightnessMixed_XYZNNN, brightnessMixed_XYZNNP, renderBlocks.renderMinY * renderBlocks.renderMinZ, renderBlocks.renderMinY * (1.0D - renderBlocks.renderMinZ), (1.0D - renderBlocks.renderMinY) * (1.0D - renderBlocks.renderMinZ), (1.0D - renderBlocks.renderMinY) * renderBlocks.renderMinZ); /* BL CORNER */
-				renderBlocks.brightnessBottomRight = renderBlocks.mixAoBrightness(brightnessMixed_XYZNPP, brightnessMixed_XYZNPN, brightnessMixed_XYZNNN, brightnessMixed_XYZNNP, renderBlocks.renderMinY * renderBlocks.renderMaxZ, renderBlocks.renderMinY * (1.0D - renderBlocks.renderMaxZ), (1.0D - renderBlocks.renderMinY) * (1.0D - renderBlocks.renderMaxZ), (1.0D - renderBlocks.renderMinY) * renderBlocks.renderMaxZ); /* BR CORNER */
-				renderBlocks.brightnessTopRight = renderBlocks.mixAoBrightness(brightnessMixed_XYZNPP, brightnessMixed_XYZNPN, brightnessMixed_XYZNNN, brightnessMixed_XYZNNP, renderBlocks.renderMaxY * renderBlocks.renderMaxZ, renderBlocks.renderMaxY * (1.0D - renderBlocks.renderMaxZ), (1.0D - renderBlocks.renderMaxY) * (1.0D - renderBlocks.renderMaxZ), (1.0D - renderBlocks.renderMaxY) * renderBlocks.renderMaxZ); /* TR CORNER */
+				renderBlocks.brightnessTopLeft 		= renderBlocks.mixAoBrightness(brightnessMixed_XYZNPP, brightnessMixed_XYZNPN, brightnessMixed_XYZNNN, brightnessMixed_XYZNNP, renderBlocks.renderMaxY * renderBlocks.renderMinZ, renderBlocks.renderMaxY * (1.0D - renderBlocks.renderMinZ), (1.0D - renderBlocks.renderMaxY) * (1.0D - renderBlocks.renderMinZ), (1.0D - renderBlocks.renderMaxY) * renderBlocks.renderMinZ); /* TL CORNER */
+				renderBlocks.brightnessBottomLeft 	= renderBlocks.mixAoBrightness(brightnessMixed_XYZNPP, brightnessMixed_XYZNPN, brightnessMixed_XYZNNN, brightnessMixed_XYZNNP, renderBlocks.renderMinY * renderBlocks.renderMinZ, renderBlocks.renderMinY * (1.0D - renderBlocks.renderMinZ), (1.0D - renderBlocks.renderMinY) * (1.0D - renderBlocks.renderMinZ), (1.0D - renderBlocks.renderMinY) * renderBlocks.renderMinZ); /* BL CORNER */
+				renderBlocks.brightnessBottomRight 	= renderBlocks.mixAoBrightness(brightnessMixed_XYZNPP, brightnessMixed_XYZNPN, brightnessMixed_XYZNNN, brightnessMixed_XYZNNP, renderBlocks.renderMinY * renderBlocks.renderMaxZ, renderBlocks.renderMinY * (1.0D - renderBlocks.renderMaxZ), (1.0D - renderBlocks.renderMinY) * (1.0D - renderBlocks.renderMaxZ), (1.0D - renderBlocks.renderMinY) * renderBlocks.renderMaxZ); /* BR CORNER */
+				renderBlocks.brightnessTopRight 	= renderBlocks.mixAoBrightness(brightnessMixed_XYZNPP, brightnessMixed_XYZNPN, brightnessMixed_XYZNNN, brightnessMixed_XYZNNP, renderBlocks.renderMaxY * renderBlocks.renderMaxZ, renderBlocks.renderMaxY * (1.0D - renderBlocks.renderMaxZ), (1.0D - renderBlocks.renderMaxY) * (1.0D - renderBlocks.renderMaxZ), (1.0D - renderBlocks.renderMaxY) * renderBlocks.renderMaxZ); /* TR CORNER */
 
 			} else {
 
-				ao[TOP_LEFT] = (renderBlocks.aoLightValueScratchXZNN + aoLightValue + renderBlocks.aoLightValueScratchXYZNPN + renderBlocks.aoLightValueScratchXYNP) / 4.0F; /* TL CORNER */
-				ao[BOTTOM_LEFT] = (renderBlocks.aoLightValueScratchXYZNNN + renderBlocks.aoLightValueScratchXYNN + renderBlocks.aoLightValueScratchXZNN + aoLightValue) / 4.0F; /* BL CORNER */
-				ao[BOTTOM_RIGHT] = (renderBlocks.aoLightValueScratchXYNN + renderBlocks.aoLightValueScratchXYZNNP + aoLightValue + renderBlocks.aoLightValueScratchXZNP) / 4.0F; /* BR CORNER */
-				ao[TOP_RIGHT] = (aoLightValue + renderBlocks.aoLightValueScratchXZNP + renderBlocks.aoLightValueScratchXYNP + renderBlocks.aoLightValueScratchXYZNPP) / 4.0F; /* TR CORNER */
+				ao[TOP_LEFT] 		= (renderBlocks.aoLightValueScratchXZNN + aoLightValue + renderBlocks.aoLightValueScratchXYZNPN + renderBlocks.aoLightValueScratchXYNP) / 4.0F; /* TL CORNER */
+				ao[BOTTOM_LEFT] 	= (renderBlocks.aoLightValueScratchXYZNNN + renderBlocks.aoLightValueScratchXYNN + renderBlocks.aoLightValueScratchXZNN + aoLightValue) / 4.0F; /* BL CORNER */
+				ao[BOTTOM_RIGHT] 	= (renderBlocks.aoLightValueScratchXYNN + renderBlocks.aoLightValueScratchXYZNNP + aoLightValue + renderBlocks.aoLightValueScratchXZNP) / 4.0F; /* BR CORNER */
+				ao[TOP_RIGHT] 		= (aoLightValue + renderBlocks.aoLightValueScratchXZNP + renderBlocks.aoLightValueScratchXYNP + renderBlocks.aoLightValueScratchXYZNPP) / 4.0F; /* TR CORNER */
 
-				renderBlocks.brightnessTopLeft = renderBlocks.getAoBrightness(renderBlocks.aoBrightnessXZNN, renderBlocks.aoBrightnessXYZNPN, renderBlocks.aoBrightnessXYNP, offsetBrightness); /* TL CORNER */
-				renderBlocks.brightnessBottomLeft = renderBlocks.getAoBrightness(renderBlocks.aoBrightnessXYZNNN, renderBlocks.aoBrightnessXYNN, renderBlocks.aoBrightnessXZNN, offsetBrightness); /* BL CORNER */
-				renderBlocks.brightnessBottomRight = renderBlocks.getAoBrightness(renderBlocks.aoBrightnessXYNN, renderBlocks.aoBrightnessXYZNNP, renderBlocks.aoBrightnessXZNP, offsetBrightness); /* BR CORNER */
-				renderBlocks.brightnessTopRight = renderBlocks.getAoBrightness(renderBlocks.aoBrightnessXZNP, renderBlocks.aoBrightnessXYNP, renderBlocks.aoBrightnessXYZNPP, offsetBrightness); /* TR CORNER */
+				renderBlocks.brightnessTopLeft 		= renderBlocks.getAoBrightness(renderBlocks.aoBrightnessXZNN, renderBlocks.aoBrightnessXYZNPN, renderBlocks.aoBrightnessXYNP, mixedBrightness); /* TL CORNER */
+				renderBlocks.brightnessBottomLeft 	= renderBlocks.getAoBrightness(renderBlocks.aoBrightnessXYZNNN, renderBlocks.aoBrightnessXYNN, renderBlocks.aoBrightnessXZNN, mixedBrightness); /* BL CORNER */
+				renderBlocks.brightnessBottomRight 	= renderBlocks.getAoBrightness(renderBlocks.aoBrightnessXYNN, renderBlocks.aoBrightnessXYZNNP, renderBlocks.aoBrightnessXZNP, mixedBrightness); /* BR CORNER */
+				renderBlocks.brightnessTopRight 	= renderBlocks.getAoBrightness(renderBlocks.aoBrightnessXZNP, renderBlocks.aoBrightnessXYNP, renderBlocks.aoBrightnessXYZNPP, mixedBrightness); /* TR CORNER */
 
 			}
 		}
@@ -833,11 +815,12 @@ public class LightingHelper {
 
 		} else {
 
-			Tessellator.instance.setBrightness(NORMAL_BRIGHTNESS);
-			boolean useOffsetLightness = renderBlocks.renderMaxX <= 1.0D && renderBlocks.renderMaxX > 0.5D;
-			boolean partialLighting = renderBlocks.partialRenderBounds;
+			int brightness = hasBrightnessOverride ? brightnessOverride : NORMAL_BRIGHTNESS;
+			Tessellator.instance.setBrightness(brightness);
 
-			x += useOffsetLightness ? 1 : 0;
+			if (renderBlocks.renderMaxX >= 1.0D) {
+				++x;
+			}
 
 			renderBlocks.aoLightValueScratchXYPN = block.getAmbientOcclusionLightValue(renderBlocks.blockAccess, x, y - 1, z);
 			renderBlocks.aoLightValueScratchXZPN = block.getAmbientOcclusionLightValue(renderBlocks.blockAccess, x, y, z - 1);
@@ -884,49 +867,49 @@ public class LightingHelper {
 				renderBlocks.aoBrightnessXYZPPP = block.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y + 1, z + 1);
 			}
 
-			x -= useOffsetLightness ? 1 : 0;
-
-			int offsetBrightness = mixedBrightness;
+			if (renderBlocks.renderMaxX >= 1.0D) {
+				--x;
+			}
 
 			if (renderBlocks.renderMaxX >= 1.0D || !renderBlocks.blockAccess.isBlockOpaqueCube(x + 1, y, z)) {
-				offsetBrightness = block.getMixedBrightnessForBlock(renderBlocks.blockAccess, x + 1, y, z);
+				mixedBrightness = block.getMixedBrightnessForBlock(renderBlocks.blockAccess, x + 1, y, z);
 			}
 
 			float aoLightValue = block.getAmbientOcclusionLightValue(renderBlocks.blockAccess, x + 1, y, z);
 
-			if (partialLighting) {
+			if (renderBlocks.partialRenderBounds) {
 
 				float aoMixed_XYZPPP = (aoLightValue + renderBlocks.aoLightValueScratchXZPP + renderBlocks.aoLightValueScratchXYPP + renderBlocks.aoLightValueScratchXYZPPP) / 4.0F; /* TL CORNER */
 				float aoMixed_XYZPNP = (renderBlocks.aoLightValueScratchXYPN + renderBlocks.aoLightValueScratchXYZPNP + aoLightValue + renderBlocks.aoLightValueScratchXZPP) / 4.0F; /* BL CORNER */
 				float aoMixed_XYZPNN = (renderBlocks.aoLightValueScratchXYZPNN + renderBlocks.aoLightValueScratchXYPN + renderBlocks.aoLightValueScratchXZPN + aoLightValue) / 4.0F; /* BR CORNER */
 				float aoMixed_XYZPPN = (renderBlocks.aoLightValueScratchXZPN + aoLightValue + renderBlocks.aoLightValueScratchXYZPPN + renderBlocks.aoLightValueScratchXYPP) / 4.0F; /* TR CORNER */
 
-				ao[TOP_LEFT] = (float)(aoMixed_XYZPNP * (1.0D - renderBlocks.renderMaxY) * renderBlocks.renderMaxZ + aoMixed_XYZPNN * (1.0D - renderBlocks.renderMaxY) * (1.0D - renderBlocks.renderMaxZ) + aoMixed_XYZPPN * renderBlocks.renderMaxY * (1.0D - renderBlocks.renderMaxZ) + aoMixed_XYZPPP * renderBlocks.renderMaxY * renderBlocks.renderMaxZ); /* TL CORNER */
-				ao[BOTTOM_LEFT] = (float)(aoMixed_XYZPNP * (1.0D - renderBlocks.renderMinY) * renderBlocks.renderMaxZ + aoMixed_XYZPNN * (1.0D - renderBlocks.renderMinY) * (1.0D - renderBlocks.renderMaxZ) + aoMixed_XYZPPN * renderBlocks.renderMinY * (1.0D - renderBlocks.renderMaxZ) + aoMixed_XYZPPP * renderBlocks.renderMinY * renderBlocks.renderMaxZ); /* BL CORNER */
-				ao[BOTTOM_RIGHT] = (float)(aoMixed_XYZPNP * (1.0D - renderBlocks.renderMinY) * renderBlocks.renderMinZ + aoMixed_XYZPNN * (1.0D - renderBlocks.renderMinY) * (1.0D - renderBlocks.renderMinZ) + aoMixed_XYZPPN * renderBlocks.renderMinY * (1.0D - renderBlocks.renderMinZ) + aoMixed_XYZPPP * renderBlocks.renderMinY * renderBlocks.renderMinZ); /* BR CORNER */
-				ao[TOP_RIGHT] = (float)(aoMixed_XYZPNP * (1.0D - renderBlocks.renderMaxY) * renderBlocks.renderMinZ + aoMixed_XYZPNN * (1.0D - renderBlocks.renderMaxY) * (1.0D - renderBlocks.renderMinZ) + aoMixed_XYZPPN * renderBlocks.renderMaxY * (1.0D - renderBlocks.renderMinZ) + aoMixed_XYZPPP * renderBlocks.renderMaxY * renderBlocks.renderMinZ); /* TR CORNER */
+				ao[TOP_LEFT] 		= (float)(aoMixed_XYZPNP * (1.0D - renderBlocks.renderMaxY) * renderBlocks.renderMaxZ + aoMixed_XYZPNN * (1.0D - renderBlocks.renderMaxY) * (1.0D - renderBlocks.renderMaxZ) + aoMixed_XYZPPN * renderBlocks.renderMaxY * (1.0D - renderBlocks.renderMaxZ) + aoMixed_XYZPPP * renderBlocks.renderMaxY * renderBlocks.renderMaxZ); /* TL CORNER */
+				ao[BOTTOM_LEFT] 	= (float)(aoMixed_XYZPNP * (1.0D - renderBlocks.renderMinY) * renderBlocks.renderMaxZ + aoMixed_XYZPNN * (1.0D - renderBlocks.renderMinY) * (1.0D - renderBlocks.renderMaxZ) + aoMixed_XYZPPN * renderBlocks.renderMinY * (1.0D - renderBlocks.renderMaxZ) + aoMixed_XYZPPP * renderBlocks.renderMinY * renderBlocks.renderMaxZ); /* BL CORNER */
+				ao[BOTTOM_RIGHT] 	= (float)(aoMixed_XYZPNP * (1.0D - renderBlocks.renderMinY) * renderBlocks.renderMinZ + aoMixed_XYZPNN * (1.0D - renderBlocks.renderMinY) * (1.0D - renderBlocks.renderMinZ) + aoMixed_XYZPPN * renderBlocks.renderMinY * (1.0D - renderBlocks.renderMinZ) + aoMixed_XYZPPP * renderBlocks.renderMinY * renderBlocks.renderMinZ); /* BR CORNER */
+				ao[TOP_RIGHT] 		= (float)(aoMixed_XYZPNP * (1.0D - renderBlocks.renderMaxY) * renderBlocks.renderMinZ + aoMixed_XYZPNN * (1.0D - renderBlocks.renderMaxY) * (1.0D - renderBlocks.renderMinZ) + aoMixed_XYZPPN * renderBlocks.renderMaxY * (1.0D - renderBlocks.renderMinZ) + aoMixed_XYZPPP * renderBlocks.renderMaxY * renderBlocks.renderMinZ); /* TR CORNER */
 
-				int brightnessMixed_XYZPPP = renderBlocks.getAoBrightness(renderBlocks.aoBrightnessXZPP, renderBlocks.aoBrightnessXYPP, renderBlocks.aoBrightnessXYZPPP, offsetBrightness); /* TL CORNER */
-				int brightnessMixed_XYZPNP = renderBlocks.getAoBrightness(renderBlocks.aoBrightnessXYPN, renderBlocks.aoBrightnessXYZPNP, renderBlocks.aoBrightnessXZPP, offsetBrightness); /* BL CORNER */
-				int brightnessMixed_XYZPNN = renderBlocks.getAoBrightness(renderBlocks.aoBrightnessXYZPNN, renderBlocks.aoBrightnessXYPN, renderBlocks.aoBrightnessXZPN, offsetBrightness); /* BR CORNER */
-				int brightnessMixed_XYZPPN = renderBlocks.getAoBrightness(renderBlocks.aoBrightnessXZPN, renderBlocks.aoBrightnessXYZPPN, renderBlocks.aoBrightnessXYPP, offsetBrightness); /* TR CORNER */
+				int brightnessMixed_XYZPPP = renderBlocks.getAoBrightness(renderBlocks.aoBrightnessXZPP, renderBlocks.aoBrightnessXYPP, renderBlocks.aoBrightnessXYZPPP, mixedBrightness); /* TL CORNER */
+				int brightnessMixed_XYZPNP = renderBlocks.getAoBrightness(renderBlocks.aoBrightnessXYPN, renderBlocks.aoBrightnessXYZPNP, renderBlocks.aoBrightnessXZPP, mixedBrightness); /* BL CORNER */
+				int brightnessMixed_XYZPNN = renderBlocks.getAoBrightness(renderBlocks.aoBrightnessXYZPNN, renderBlocks.aoBrightnessXYPN, renderBlocks.aoBrightnessXZPN, mixedBrightness); /* BR CORNER */
+				int brightnessMixed_XYZPPN = renderBlocks.getAoBrightness(renderBlocks.aoBrightnessXZPN, renderBlocks.aoBrightnessXYZPPN, renderBlocks.aoBrightnessXYPP, mixedBrightness); /* TR CORNER */
 
-				renderBlocks.brightnessTopLeft = renderBlocks.mixAoBrightness(brightnessMixed_XYZPNP, brightnessMixed_XYZPNN, brightnessMixed_XYZPPN, brightnessMixed_XYZPPP, (1.0D - renderBlocks.renderMaxY) * renderBlocks.renderMaxZ, (1.0D - renderBlocks.renderMaxY) * (1.0D - renderBlocks.renderMaxZ), renderBlocks.renderMaxY * (1.0D - renderBlocks.renderMaxZ), renderBlocks.renderMaxY * renderBlocks.renderMaxZ); /* TL CORNER */
-				renderBlocks.brightnessBottomLeft = renderBlocks.mixAoBrightness(brightnessMixed_XYZPNP, brightnessMixed_XYZPNN, brightnessMixed_XYZPPN, brightnessMixed_XYZPPP, (1.0D - renderBlocks.renderMinY) * renderBlocks.renderMaxZ, (1.0D - renderBlocks.renderMinY) * (1.0D - renderBlocks.renderMaxZ), renderBlocks.renderMinY * (1.0D - renderBlocks.renderMaxZ), renderBlocks.renderMinY * renderBlocks.renderMaxZ); /* BL CORNER */
-				renderBlocks.brightnessBottomRight = renderBlocks.mixAoBrightness(brightnessMixed_XYZPNP, brightnessMixed_XYZPNN, brightnessMixed_XYZPPN, brightnessMixed_XYZPPP, (1.0D - renderBlocks.renderMinY) * renderBlocks.renderMinZ, (1.0D - renderBlocks.renderMinY) * (1.0D - renderBlocks.renderMinZ), renderBlocks.renderMinY * (1.0D - renderBlocks.renderMinZ), renderBlocks.renderMinY * renderBlocks.renderMinZ); /* BR CORNER */
-				renderBlocks.brightnessTopRight = renderBlocks.mixAoBrightness(brightnessMixed_XYZPNP, brightnessMixed_XYZPNN, brightnessMixed_XYZPPN, brightnessMixed_XYZPPP, (1.0D - renderBlocks.renderMaxY) * renderBlocks.renderMinZ, (1.0D - renderBlocks.renderMaxY) * (1.0D - renderBlocks.renderMinZ), renderBlocks.renderMaxY * (1.0D - renderBlocks.renderMinZ), renderBlocks.renderMaxY * renderBlocks.renderMinZ); /* TR CORNER */
+				renderBlocks.brightnessTopLeft 		= renderBlocks.mixAoBrightness(brightnessMixed_XYZPNP, brightnessMixed_XYZPNN, brightnessMixed_XYZPPN, brightnessMixed_XYZPPP, (1.0D - renderBlocks.renderMaxY) * renderBlocks.renderMaxZ, (1.0D - renderBlocks.renderMaxY) * (1.0D - renderBlocks.renderMaxZ), renderBlocks.renderMaxY * (1.0D - renderBlocks.renderMaxZ), renderBlocks.renderMaxY * renderBlocks.renderMaxZ); /* TL CORNER */
+				renderBlocks.brightnessBottomLeft 	= renderBlocks.mixAoBrightness(brightnessMixed_XYZPNP, brightnessMixed_XYZPNN, brightnessMixed_XYZPPN, brightnessMixed_XYZPPP, (1.0D - renderBlocks.renderMinY) * renderBlocks.renderMaxZ, (1.0D - renderBlocks.renderMinY) * (1.0D - renderBlocks.renderMaxZ), renderBlocks.renderMinY * (1.0D - renderBlocks.renderMaxZ), renderBlocks.renderMinY * renderBlocks.renderMaxZ); /* BL CORNER */
+				renderBlocks.brightnessBottomRight 	= renderBlocks.mixAoBrightness(brightnessMixed_XYZPNP, brightnessMixed_XYZPNN, brightnessMixed_XYZPPN, brightnessMixed_XYZPPP, (1.0D - renderBlocks.renderMinY) * renderBlocks.renderMinZ, (1.0D - renderBlocks.renderMinY) * (1.0D - renderBlocks.renderMinZ), renderBlocks.renderMinY * (1.0D - renderBlocks.renderMinZ), renderBlocks.renderMinY * renderBlocks.renderMinZ); /* BR CORNER */
+				renderBlocks.brightnessTopRight 	= renderBlocks.mixAoBrightness(brightnessMixed_XYZPNP, brightnessMixed_XYZPNN, brightnessMixed_XYZPPN, brightnessMixed_XYZPPP, (1.0D - renderBlocks.renderMaxY) * renderBlocks.renderMinZ, (1.0D - renderBlocks.renderMaxY) * (1.0D - renderBlocks.renderMinZ), renderBlocks.renderMaxY * (1.0D - renderBlocks.renderMinZ), renderBlocks.renderMaxY * renderBlocks.renderMinZ); /* TR CORNER */
 
 			} else {
 
-				ao[TOP_LEFT] = (aoLightValue + renderBlocks.aoLightValueScratchXZPP + renderBlocks.aoLightValueScratchXYPP + renderBlocks.aoLightValueScratchXYZPPP) / 4.0F; /* TL CORNER */
-				ao[BOTTOM_LEFT] = (renderBlocks.aoLightValueScratchXYPN + renderBlocks.aoLightValueScratchXYZPNP + aoLightValue + renderBlocks.aoLightValueScratchXZPP) / 4.0F; /* BL CORNER */
-				ao[BOTTOM_RIGHT] = (renderBlocks.aoLightValueScratchXYZPNN + renderBlocks.aoLightValueScratchXYPN + renderBlocks.aoLightValueScratchXZPN + aoLightValue) / 4.0F; /* BR CORNER */
-				ao[TOP_RIGHT] = (renderBlocks.aoLightValueScratchXZPN + aoLightValue + renderBlocks.aoLightValueScratchXYZPPN + renderBlocks.aoLightValueScratchXYPP) / 4.0F; /* TR CORNER */
+				ao[TOP_LEFT] 		= (aoLightValue + renderBlocks.aoLightValueScratchXZPP + renderBlocks.aoLightValueScratchXYPP + renderBlocks.aoLightValueScratchXYZPPP) / 4.0F; /* TL CORNER */
+				ao[BOTTOM_LEFT] 	= (renderBlocks.aoLightValueScratchXYPN + renderBlocks.aoLightValueScratchXYZPNP + aoLightValue + renderBlocks.aoLightValueScratchXZPP) / 4.0F; /* BL CORNER */
+				ao[BOTTOM_RIGHT] 	= (renderBlocks.aoLightValueScratchXYZPNN + renderBlocks.aoLightValueScratchXYPN + renderBlocks.aoLightValueScratchXZPN + aoLightValue) / 4.0F; /* BR CORNER */
+				ao[TOP_RIGHT] 		= (renderBlocks.aoLightValueScratchXZPN + aoLightValue + renderBlocks.aoLightValueScratchXYZPPN + renderBlocks.aoLightValueScratchXYPP) / 4.0F; /* TR CORNER */
 
-				renderBlocks.brightnessTopLeft = renderBlocks.getAoBrightness(renderBlocks.aoBrightnessXZPP, renderBlocks.aoBrightnessXYPP, renderBlocks.aoBrightnessXYZPPP, offsetBrightness); /* TL CORNER */
-				renderBlocks.brightnessBottomLeft = renderBlocks.getAoBrightness(renderBlocks.aoBrightnessXYPN, renderBlocks.aoBrightnessXYZPNP, renderBlocks.aoBrightnessXZPP, offsetBrightness); /* BL CORNER */
-				renderBlocks.brightnessBottomRight = renderBlocks.getAoBrightness(renderBlocks.aoBrightnessXYZPNN, renderBlocks.aoBrightnessXYPN, renderBlocks.aoBrightnessXZPN, offsetBrightness); /* BR CORNER */
-				renderBlocks.brightnessTopRight = renderBlocks.getAoBrightness(renderBlocks.aoBrightnessXZPN, renderBlocks.aoBrightnessXYZPPN, renderBlocks.aoBrightnessXYPP, offsetBrightness); /* TR CORNER */
+				renderBlocks.brightnessTopLeft 		= renderBlocks.getAoBrightness(renderBlocks.aoBrightnessXZPP, renderBlocks.aoBrightnessXYPP, renderBlocks.aoBrightnessXYZPPP, mixedBrightness); /* TL CORNER */
+				renderBlocks.brightnessBottomLeft 	= renderBlocks.getAoBrightness(renderBlocks.aoBrightnessXYPN, renderBlocks.aoBrightnessXYZPNP, renderBlocks.aoBrightnessXZPP, mixedBrightness); /* BL CORNER */
+				renderBlocks.brightnessBottomRight 	= renderBlocks.getAoBrightness(renderBlocks.aoBrightnessXYZPNN, renderBlocks.aoBrightnessXYPN, renderBlocks.aoBrightnessXZPN, mixedBrightness); /* BR CORNER */
+				renderBlocks.brightnessTopRight 	= renderBlocks.getAoBrightness(renderBlocks.aoBrightnessXZPN, renderBlocks.aoBrightnessXYZPPN, renderBlocks.aoBrightnessXYPP, mixedBrightness); /* TR CORNER */
 
 			}
 		}

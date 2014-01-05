@@ -14,7 +14,10 @@ import carpentersblocks.data.Bed;
 import carpentersblocks.renderer.helper.BedDesignHelper;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.bed.BedDesignHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public class TERendererCarpentersBed extends TileEntitySpecialRenderer {
 
 	@Override

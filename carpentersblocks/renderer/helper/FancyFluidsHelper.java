@@ -6,7 +6,10 @@ import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.fluids.IFluidBlock;
 import carpentersblocks.tileentity.TEBase;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public class FancyFluidsHelper {
 
 	/**

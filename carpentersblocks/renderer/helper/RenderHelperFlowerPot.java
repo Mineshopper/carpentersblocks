@@ -7,7 +7,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Icon;
 import carpentersblocks.util.flowerpot.FlowerPotHandler;
 import carpentersblocks.util.registry.FeatureRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public class RenderHelperFlowerPot extends RenderHelper {
 
 	private static void setPlantColor(Block block, int x, int y, int z)

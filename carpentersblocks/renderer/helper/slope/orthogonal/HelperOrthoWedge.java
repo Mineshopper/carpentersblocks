@@ -11,7 +11,10 @@ import net.minecraft.util.Icon;
 import net.minecraftforge.common.ForgeDirection;
 import carpentersblocks.data.Slope;
 import carpentersblocks.renderer.helper.RenderHelper;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public class HelperOrthoWedge extends RenderHelper {
 
 	/**

@@ -9,7 +9,10 @@ import net.minecraft.world.World;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.handler.OverlayHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public class ParticleHelper {
 
 	/**

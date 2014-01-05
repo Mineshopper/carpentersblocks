@@ -2,7 +2,10 @@ package carpentersblocks.renderer;
 
 import net.minecraft.block.Block;
 import carpentersblocks.block.BlockBase;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public class BlockDeterminantRender extends BlockHandlerBase {
 
 	protected float REDUCED_OFFSET = -0.05F;

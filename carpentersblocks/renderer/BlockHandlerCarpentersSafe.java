@@ -7,7 +7,10 @@ import carpentersblocks.data.Safe;
 import carpentersblocks.tileentity.TECarpentersSafe;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.registry.IconRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public class BlockHandlerCarpentersSafe extends BlockDeterminantRender {
 
 	private final int numBoxes 		= 21;

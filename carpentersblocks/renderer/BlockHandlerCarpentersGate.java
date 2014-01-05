@@ -6,7 +6,10 @@ import net.minecraftforge.common.ForgeDirection;
 import carpentersblocks.data.Gate;
 import carpentersblocks.util.BlockProperties;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISimpleBlockRenderingHandler {
 
 	@Override

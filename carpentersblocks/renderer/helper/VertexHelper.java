@@ -4,7 +4,10 @@ import net.minecraft.block.BlockGrass;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.Icon;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public class VertexHelper {
 
 	public final static int TOP_LEFT 		= 0;

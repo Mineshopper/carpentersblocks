@@ -27,7 +27,10 @@ import carpentersblocks.util.handler.OverlayHandler;
 import carpentersblocks.util.registry.FeatureRegistry;
 import carpentersblocks.util.registry.IconRegistry;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
 
 	protected int PASS_OPAQUE = 0;
@@ -284,8 +287,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
 		if (renderAlphaOverride) {
 			return renderPass == PASS_ALPHA;
 		} else {
-			return	renderBlocks.hasOverrideBlockTexture() ||
-					block.getRenderBlockPass() == renderPass ||
+			return	block.getRenderBlockPass() == renderPass ||
 					block instanceof BlockBase && renderPass == PASS_OPAQUE ||
 					this instanceof BlockDeterminantRender;
 		}
@@ -429,7 +431,6 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
 
 	/**
 	 * Renders side covers.
-	 * @return
 	 */
 	protected boolean renderSideBlocks(int x, int y, int z)
 	{
@@ -524,6 +525,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
 
 	/**
 	 * Sets side icon, draws any attributes needed, and hands to appropriate render method.
+	 * This will bypass typical draw behavior if breaking animation is being drawn.
 	 */
 	protected void delegateSideRender(Block block, int x, int y, int z, int side)
 	{

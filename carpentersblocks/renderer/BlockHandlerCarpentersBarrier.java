@@ -8,7 +8,10 @@ import carpentersblocks.data.Barrier;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.registry.BlockRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public class BlockHandlerCarpentersBarrier extends BlockHandlerBase {
 
 	@Override

@@ -13,7 +13,10 @@ import net.minecraftforge.common.ForgeDirection;
 import carpentersblocks.renderer.helper.RenderHelper;
 import carpentersblocks.renderer.helper.RenderHelperCollapsible;
 import carpentersblocks.util.collapsible.CollapsibleUtil;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public class BlockHandlerCarpentersCollapsibleBlock extends BlockAdvancedLighting {
 
 	/* RENDER IDS */
@@ -92,11 +95,11 @@ public class BlockHandlerCarpentersCollapsibleBlock extends BlockAdvancedLightin
 
 		RenderHelper.startDrawing(QUADS);
 
-		setRenderBoundsAndRelight(block, SIDE_ALL, 0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
+		setRenderBoundsAndRelight(block, 6, 0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
 
 		/* BOTTOM FACE */
 		if (srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x, y - 1, z, DOWN)) {
-			lightingHelper.setLightness(LIGHTNESS_YN).setLightingYNeg(block, x, y, z);
+			lightingHelper.setLightness(lightingHelper.LIGHTNESS_YN).setLightingYNeg(block, x, y, z);
 			setIDAndRender(block, NORMAL_YN, x, y, z, DOWN);
 		}
 
@@ -131,28 +134,28 @@ public class BlockHandlerCarpentersCollapsibleBlock extends BlockAdvancedLightin
 	{
 		switch (side) {
 		case NORTH: {
-			double lightness_WE = (1.0F - LIGHTNESS_XN) * Math.abs(CollapsibleUtil.offset_XZNN - CollapsibleUtil.offset_XZPN);
-			double lightness_NS = (1.0F - LIGHTNESS_ZN) * Math.abs(CollapsibleUtil.CENTER_YMAX - (CollapsibleUtil.offset_XZPN + CollapsibleUtil.offset_XZNN) / 2.0F) * 2.0F;
+			double lightness_WE = (1.0F - lightingHelper.LIGHTNESS_XN) * Math.abs(CollapsibleUtil.offset_XZNN - CollapsibleUtil.offset_XZPN);
+			double lightness_NS = (1.0F - lightingHelper.LIGHTNESS_ZN) * Math.abs(CollapsibleUtil.CENTER_YMAX - (CollapsibleUtil.offset_XZPN + CollapsibleUtil.offset_XZNN) / 2.0F) * 2.0F;
 
-			return (float) (LIGHTNESS_YP - (lightness_WE + lightness_NS) / 2.0F);
+			return (float) (lightingHelper.LIGHTNESS_YP - (lightness_WE + lightness_NS) / 2.0F);
 		}
 		case SOUTH: {
-			double lightness_WE = (1.0F - LIGHTNESS_XN) * Math.abs(CollapsibleUtil.offset_XZNP - CollapsibleUtil.offset_XZPP);
-			double lightness_NS = (1.0F - LIGHTNESS_ZN) * Math.abs(CollapsibleUtil.CENTER_YMAX - (CollapsibleUtil.offset_XZPP + CollapsibleUtil.offset_XZNP) / 2.0F) * 2.0F;
+			double lightness_WE = (1.0F - lightingHelper.LIGHTNESS_XN) * Math.abs(CollapsibleUtil.offset_XZNP - CollapsibleUtil.offset_XZPP);
+			double lightness_NS = (1.0F - lightingHelper.LIGHTNESS_ZN) * Math.abs(CollapsibleUtil.CENTER_YMAX - (CollapsibleUtil.offset_XZPP + CollapsibleUtil.offset_XZNP) / 2.0F) * 2.0F;
 
-			return (float) (LIGHTNESS_YP - (lightness_WE + lightness_NS) / 2.0F);
+			return (float) (lightingHelper.LIGHTNESS_YP - (lightness_WE + lightness_NS) / 2.0F);
 		}
 		case WEST: {
-			double lightness_WE = (1.0F - LIGHTNESS_ZN) * Math.abs(CollapsibleUtil.offset_XZNN - CollapsibleUtil.offset_XZNP);
-			double lightness_NS = (1.0F - LIGHTNESS_XN) * Math.abs(CollapsibleUtil.CENTER_YMAX - (CollapsibleUtil.offset_XZNP + CollapsibleUtil.offset_XZNN) / 2.0F) * 2.0F;
+			double lightness_WE = (1.0F - lightingHelper.LIGHTNESS_ZN) * Math.abs(CollapsibleUtil.offset_XZNN - CollapsibleUtil.offset_XZNP);
+			double lightness_NS = (1.0F - lightingHelper.LIGHTNESS_XN) * Math.abs(CollapsibleUtil.CENTER_YMAX - (CollapsibleUtil.offset_XZNP + CollapsibleUtil.offset_XZNN) / 2.0F) * 2.0F;
 
-			return (float) (LIGHTNESS_YP - (lightness_WE + lightness_NS) / 2.0F);
+			return (float) (lightingHelper.LIGHTNESS_YP - (lightness_WE + lightness_NS) / 2.0F);
 		}
 		case EAST: {
-			double lightness_WE = (1.0F - LIGHTNESS_ZN) * Math.abs(CollapsibleUtil.offset_XZPP - CollapsibleUtil.offset_XZPN);
-			double lightness_NS = (1.0F - LIGHTNESS_XN) * Math.abs(CollapsibleUtil.CENTER_YMAX - (CollapsibleUtil.offset_XZPP + CollapsibleUtil.offset_XZPN) / 2.0F) * 2.0F;
+			double lightness_WE = (1.0F - lightingHelper.LIGHTNESS_ZN) * Math.abs(CollapsibleUtil.offset_XZPP - CollapsibleUtil.offset_XZPN);
+			double lightness_NS = (1.0F - lightingHelper.LIGHTNESS_XN) * Math.abs(CollapsibleUtil.CENTER_YMAX - (CollapsibleUtil.offset_XZPP + CollapsibleUtil.offset_XZPN) / 2.0F) * 2.0F;
 
-			return (float) (LIGHTNESS_YP - (lightness_WE + lightness_NS) / 2.0F);
+			return (float) (lightingHelper.LIGHTNESS_YP - (lightness_WE + lightness_NS) / 2.0F);
 		}
 		default:
 			return 1.0F;

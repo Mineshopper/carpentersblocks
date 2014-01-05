@@ -8,7 +8,10 @@ import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.util.Icon;
 import carpentersblocks.data.Slope;
 import carpentersblocks.renderer.helper.RenderHelper;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public class HelperCorner extends RenderHelper {
 
 	/**

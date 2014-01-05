@@ -7,7 +7,10 @@ import carpentersblocks.data.Stairs;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.registry.BlockRegistry;
 import carpentersblocks.util.stairs.StairsUtil;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public class BlockHandlerCarpentersStairs extends BlockHandlerBase {
 
 	@Override

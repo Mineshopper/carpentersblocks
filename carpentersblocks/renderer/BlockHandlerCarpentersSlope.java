@@ -36,7 +36,10 @@ import carpentersblocks.renderer.helper.slope.orthogonal.HelperTriangle;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.handler.EventHandler;
 import carpentersblocks.util.registry.IconRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
 
 	/* RENDER IDS */
@@ -323,7 +326,7 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
 
 		renderBlocks.enableAO = getEnableAO(block);
 
-		setRenderBoundsAndRelight(block, SIDE_ALL, 0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
+		setRenderBoundsAndRelight(block, 6, 0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
 		populateOffsetLighting(block, x, y, z);
 
 		/* Render sloped faces. */
@@ -468,73 +471,73 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
 		RenderHelper.startDrawing(TRIANGLES);
 
 		if (pieceList.contains(PRISM_N)) {
-			setRenderBoundsAndRelight(block, SIDE_ALL, 0.0D, 0.0D, 0.0D, 0.5D, 0.5D, 1.0D);
+			setRenderBoundsAndRelight(block, 6, 0.0D, 0.0D, 0.0D, 0.5D, 0.5D, 1.0D);
 			lightingHelper.setLightness(LIGHTNESS_XYNP);
 			setWedgeSlopeLighting(Slope.WEDGE_POS_W);
 			renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 0.5D, 0.5D, 0.5D);
 			setIDAndRender(block, PRISM_NORTH_XN, x, y, z, WEST);
-			setRenderBoundsAndRelight(block, SIDE_ALL, 0.5D, 0.0D, 0.0D, 1.0D, 0.5D, 1.0D);
+			setRenderBoundsAndRelight(block, 6, 0.5D, 0.0D, 0.0D, 1.0D, 0.5D, 1.0D);
 			lightingHelper.setLightness(LIGHTNESS_XYNP);
 			setWedgeSlopeLighting(Slope.WEDGE_POS_E);
 			renderBlocks.setRenderBounds(0.5D, 0.0D, 0.0D, 1.0D, 0.5D, 0.5D);
 			setIDAndRender(block, PRISM_NORTH_XP, x, y, z, EAST);
 		}
 		if (pieceList.contains(PRISM_S)) {
-			setRenderBoundsAndRelight(block, SIDE_ALL, 0.0D, 0.0D, 0.0D, 0.5D, 0.5D, 1.0D);
+			setRenderBoundsAndRelight(block, 6, 0.0D, 0.0D, 0.0D, 0.5D, 0.5D, 1.0D);
 			lightingHelper.setLightness(LIGHTNESS_XYNP);
 			setWedgeSlopeLighting(Slope.WEDGE_POS_W);
 			renderBlocks.setRenderBounds(0.0D, 0.0D, 0.5D, 0.5D, 0.5D, 1.0D);
 			setIDAndRender(block, PRISM_SOUTH_XN, x, y, z, WEST);
-			setRenderBoundsAndRelight(block, SIDE_ALL, 0.5D, 0.0D, 0.0D, 1.0D, 0.5D, 1.0D);
+			setRenderBoundsAndRelight(block, 6, 0.5D, 0.0D, 0.0D, 1.0D, 0.5D, 1.0D);
 			lightingHelper.setLightness(LIGHTNESS_XYNP);
 			setWedgeSlopeLighting(Slope.WEDGE_POS_E);
 			renderBlocks.setRenderBounds(0.5D, 0.0D, 0.5D, 1.0D, 0.5D, 1.0D);
 			setIDAndRender(block, PRISM_SOUTH_XP, x, y, z, EAST);
 		}
 		if (pieceList.contains(PRISM_W)) {
-			setRenderBoundsAndRelight(block, SIDE_ALL, 0.0D, 0.0D, 0.0D, 1.0D, 0.5D, 0.5D);
+			setRenderBoundsAndRelight(block, 6, 0.0D, 0.0D, 0.0D, 1.0D, 0.5D, 0.5D);
 			lightingHelper.setLightness(LIGHTNESS_ZYNP);
 			setWedgeSlopeLighting(Slope.WEDGE_POS_N);
 			renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 0.5D, 0.5D, 0.5D);
 			setIDAndRender(block, PRISM_WEST_ZN, x, y, z, NORTH);
-			setRenderBoundsAndRelight(block, SIDE_ALL, 0.0D, 0.0D, 0.5D, 1.0D, 0.5D, 1.0D);
+			setRenderBoundsAndRelight(block, 6, 0.0D, 0.0D, 0.5D, 1.0D, 0.5D, 1.0D);
 			lightingHelper.setLightness(LIGHTNESS_ZYNP);
 			setWedgeSlopeLighting(Slope.WEDGE_POS_S);
 			renderBlocks.setRenderBounds(0.0D, 0.0D, 0.5D, 0.5D, 0.5D, 1.0D);
 			setIDAndRender(block, PRISM_WEST_ZP, x, y, z, SOUTH);
 		}
 		if (pieceList.contains(PRISM_E)) {
-			setRenderBoundsAndRelight(block, SIDE_ALL, 0.0D, 0.0D, 0.0D, 1.0D, 0.5D, 0.5D);
+			setRenderBoundsAndRelight(block, 6, 0.0D, 0.0D, 0.0D, 1.0D, 0.5D, 0.5D);
 			lightingHelper.setLightness(LIGHTNESS_ZYNP);
 			setWedgeSlopeLighting(Slope.WEDGE_POS_N);
 			renderBlocks.setRenderBounds(0.5D, 0.0D, 0.0D, 1.0D, 0.5D, 0.5D);
 			setIDAndRender(block, PRISM_EAST_ZN, x, y, z, NORTH);
-			setRenderBoundsAndRelight(block, SIDE_ALL, 0.0D, 0.0D, 0.5D, 1.0D, 0.5D, 1.0D);
+			setRenderBoundsAndRelight(block, 6, 0.0D, 0.0D, 0.5D, 1.0D, 0.5D, 1.0D);
 			lightingHelper.setLightness(LIGHTNESS_ZYNP);
 			setWedgeSlopeLighting(Slope.WEDGE_POS_S);
 			renderBlocks.setRenderBounds(0.5D, 0.0D, 0.5D, 1.0D, 0.5D, 1.0D);
 			setIDAndRender(block, PRISM_EAST_ZP, x, y, z, SOUTH);
 		}
 		if (pieceList.contains(PYR_POS_N)) {
-			setRenderBoundsAndRelight(block, SIDE_ALL, 0.0D, 0.0D, 0.0D, 1.0D, 0.5D, 0.5D);
+			setRenderBoundsAndRelight(block, 6, 0.0D, 0.0D, 0.0D, 1.0D, 0.5D, 0.5D);
 			lightingHelper.setLightness(LIGHTNESS_ZYNP);
 			setWedgeSlopeLighting(Slope.WEDGE_POS_N);
 			setIDAndRender(block, PYR_YZPN, x, y, z, NORTH);
 		}
 		if (pieceList.contains(PYR_POS_S)) {
-			setRenderBoundsAndRelight(block, SIDE_ALL, 0.0D, 0.0D, 0.5D, 1.0D, 0.5D, 1.0D);
+			setRenderBoundsAndRelight(block, 6, 0.0D, 0.0D, 0.5D, 1.0D, 0.5D, 1.0D);
 			lightingHelper.setLightness(LIGHTNESS_ZYPP);
 			setWedgeSlopeLighting(Slope.WEDGE_POS_S);
 			setIDAndRender(block, PYR_YZPP, x, y, z, SOUTH);
 		}
 		if (pieceList.contains(PYR_POS_W)) {
-			setRenderBoundsAndRelight(block, SIDE_ALL, 0.0D, 0.0D, 0.0D, 0.5D, 0.5D, 1.0D);
+			setRenderBoundsAndRelight(block, 6, 0.0D, 0.0D, 0.0D, 0.5D, 0.5D, 1.0D);
 			lightingHelper.setLightness(LIGHTNESS_XYNP);
 			setWedgeSlopeLighting(Slope.WEDGE_POS_W);
 			setIDAndRender(block, PYR_YXPN, x, y, z, WEST);
 		}
 		if (pieceList.contains(PYR_POS_E)) {
-			setRenderBoundsAndRelight(block, SIDE_ALL, 0.5D, 0.0D, 0.0D, 1.0D, 0.5D, 1.0D);
+			setRenderBoundsAndRelight(block, 6, 0.5D, 0.0D, 0.0D, 1.0D, 0.5D, 1.0D);
 			lightingHelper.setLightness(LIGHTNESS_XYPP);
 			setWedgeSlopeLighting(Slope.WEDGE_POS_E);
 			setIDAndRender(block, PYR_YXPP, x, y, z, EAST);
@@ -544,7 +547,7 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
 
 		/* Render wedge intersecting mask, if piece requires it. */
 
-		setRenderBoundsAndRelight(block, SIDE_ALL, 0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
+		setRenderBoundsAndRelight(block, 6, 0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
 
 		if (pieceList.contains(WEDGE_POS_N)) {
 			setWedgeSlopeLighting(Slope.WEDGE_POS_N);
@@ -982,25 +985,25 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
 
 		if (slope.isPositive) {
 
-			setRenderBoundsAndRelight(block, SIDE_ALL, 0.0D, 0.0D, 0.0D, 1.0D, 0.5D, 0.5D);
+			setRenderBoundsAndRelight(block, 6, 0.0D, 0.0D, 0.0D, 1.0D, 0.5D, 0.5D);
 
 			lightingHelper.setLightness(LIGHTNESS_ZYNP);
 			setWedgeSlopeLighting(Slope.WEDGE_POS_N);
 			setIDAndRender(block, PYR_YZPN, x, y, z, NORTH);
 
-			setRenderBoundsAndRelight(block, SIDE_ALL, 0.0D, 0.0D, 0.5D, 1.0D, 0.5D, 1.0D);
+			setRenderBoundsAndRelight(block, 6, 0.0D, 0.0D, 0.5D, 1.0D, 0.5D, 1.0D);
 
 			lightingHelper.setLightness(LIGHTNESS_ZYPP);
 			setWedgeSlopeLighting(Slope.WEDGE_POS_S);
 			setIDAndRender(block, PYR_YZPP, x, y, z, SOUTH);
 
-			setRenderBoundsAndRelight(block, SIDE_ALL, 0.0D, 0.0D, 0.0D, 0.5D, 0.5D, 1.0D);
+			setRenderBoundsAndRelight(block, 6, 0.0D, 0.0D, 0.0D, 0.5D, 0.5D, 1.0D);
 
 			lightingHelper.setLightness(LIGHTNESS_XYNP);
 			setWedgeSlopeLighting(Slope.WEDGE_POS_W);
 			setIDAndRender(block, PYR_YXPN, x, y, z, WEST);
 
-			setRenderBoundsAndRelight(block, SIDE_ALL, 0.5D, 0.0D, 0.0D, 1.0D, 0.5D, 1.0D);
+			setRenderBoundsAndRelight(block, 6, 0.5D, 0.0D, 0.0D, 1.0D, 0.5D, 1.0D);
 
 			lightingHelper.setLightness(LIGHTNESS_XYPP);
 			setWedgeSlopeLighting(Slope.WEDGE_POS_E);
@@ -1008,25 +1011,25 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
 
 		} else {
 
-			setRenderBoundsAndRelight(block, SIDE_ALL, 0.0D, 0.5D, 0.0D, 1.0D, 1.0D, 0.5D);
+			setRenderBoundsAndRelight(block, 6, 0.0D, 0.5D, 0.0D, 1.0D, 1.0D, 0.5D);
 
 			lightingHelper.setLightness(LIGHTNESS_ZYNN);
 			setWedgeSlopeLighting(Slope.WEDGE_NEG_N);
 			setIDAndRender(block, PYR_YZNN, x, y, z, NORTH);
 
-			setRenderBoundsAndRelight(block, SIDE_ALL, 0.0D, 0.5D, 0.5D, 1.0D, 1.0D, 1.0D);
+			setRenderBoundsAndRelight(block, 6, 0.0D, 0.5D, 0.5D, 1.0D, 1.0D, 1.0D);
 
 			lightingHelper.setLightness(LIGHTNESS_ZYPN);
 			setWedgeSlopeLighting(Slope.WEDGE_NEG_S);
 			setIDAndRender(block, PYR_YZNP, x, y, z, SOUTH);
 
-			setRenderBoundsAndRelight(block, SIDE_ALL, 0.0D, 0.5D, 0.0D, 0.5D, 1.0D, 1.0D);
+			setRenderBoundsAndRelight(block, 6, 0.0D, 0.5D, 0.0D, 0.5D, 1.0D, 1.0D);
 
 			lightingHelper.setLightness(LIGHTNESS_XYNN);
 			setWedgeSlopeLighting(Slope.WEDGE_NEG_W);
 			setIDAndRender(block, PYR_YXNN, x, y, z, WEST);
 
-			setRenderBoundsAndRelight(block, SIDE_ALL, 0.5D, 0.5D, 0.0D, 1.0D, 1.0D, 1.0D);
+			setRenderBoundsAndRelight(block, 6, 0.5D, 0.5D, 0.0D, 1.0D, 1.0D, 1.0D);
 
 			lightingHelper.setLightness(LIGHTNESS_XYPN);
 			setWedgeSlopeLighting(Slope.WEDGE_NEG_E);

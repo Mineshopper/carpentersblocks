@@ -12,7 +12,10 @@ import carpentersblocks.data.Lever.Axis;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.registry.BlockRegistry;
 import carpentersblocks.util.registry.IconRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public class BlockHandlerCarpentersLever extends BlockHandlerBase {
 
 	@Override
