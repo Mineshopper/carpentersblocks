@@ -14,32 +14,32 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 
 public class CommonProxy {
 
-	public void registerHandlers(FMLPreInitializationEvent event)
-	{
-		if (FeatureRegistry.enableExtendedPlantSupport) {
-			FeatureRegistry.enableExtendedPlantSupport = ExtendedPlantHandler.init();
-		}
+    public void registerHandlers(FMLPreInitializationEvent event)
+    {
+        if (FeatureRegistry.enableExtendedPlantSupport) {
+            FeatureRegistry.enableExtendedPlantSupport = ExtendedPlantHandler.init();
+        }
 
-		if (BlockRegistry.enableFlowerPot) {
-			FlowerPotHandler.initPlantProfiles();
-			FlowerPotDesignHandler.init(event);
-		}
+        if (BlockRegistry.enableFlowerPot) {
+            FlowerPotHandler.initPlantProfiles();
+            FlowerPotDesignHandler.init(event);
+        }
 
-		if (FeatureRegistry.enableOverlays) {
-			OverlayHandler.init();
-		}
+        if (FeatureRegistry.enableOverlays) {
+            OverlayHandler.init();
+        }
 
-		if (FeatureRegistry.enablePatterns) {
-			PatternHandler.init(event);
-		}
+        if (FeatureRegistry.enablePatterns) {
+            PatternHandler.init(event);
+        }
 
-		if (BlockRegistry.enableBed) {
-			BedDesignHandler.init(event);
-		}
+        if (BlockRegistry.enableBed) {
+            BedDesignHandler.init(event);
+        }
 
-		MinecraftForge.EVENT_BUS.register(new EventHandler());
-	}
+        MinecraftForge.EVENT_BUS.register(new EventHandler());
+    }
 
-	public void registerRenderInformation(FMLPreInitializationEvent event) { }
+    public void registerRenderInformation(FMLPreInitializationEvent event) { }
 
 }

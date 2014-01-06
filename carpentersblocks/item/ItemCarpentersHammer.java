@@ -12,35 +12,35 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemCarpentersHammer extends Item implements ICarpentersHammer {
 
-	public ItemCarpentersHammer(int itemID)
-	{
-		super(itemID);
-		setUnlocalizedName("itemCarpentersHammer");
-		setMaxStackSize(1);
-		setCreativeTab(CarpentersBlocks.tabCarpentersBlocks);
+    public ItemCarpentersHammer(int itemID)
+    {
+        super(itemID);
+        setUnlocalizedName("itemCarpentersHammer");
+        setMaxStackSize(1);
+        setCreativeTab(CarpentersBlocks.tabCarpentersBlocks);
 
-		if (ItemRegistry.itemCarpentersToolsDamageable) {
-			setMaxDamage(300);
-		}
-	}
+        if (ItemRegistry.itemCarpentersToolsDamageable) {
+            setMaxDamage(ItemRegistry.itemCarpentersToolsUses);
+        }
+    }
 
-	@SideOnly(Side.CLIENT)
-	@Override
-	public void registerIcons(IconRegister iconRegister)
-	{
-		itemIcon = iconRegister.registerIcon("carpentersblocks:hammer");
-	}
+    @SideOnly(Side.CLIENT)
+    @Override
+    public void registerIcons(IconRegister iconRegister)
+    {
+        itemIcon = iconRegister.registerIcon("carpentersblocks:hammer");
+    }
 
-	@Override
-	public void onHammerUse(World world, EntityPlayer entityPlayer)
-	{
-		entityPlayer.getCurrentEquippedItem().damageItem(1, entityPlayer);
-	}
+    @Override
+    public void onHammerUse(World world, EntityPlayer entityPlayer)
+    {
+        entityPlayer.getCurrentEquippedItem().damageItem(1, entityPlayer);
+    }
 
-	@Override
-	public boolean canUseHammer(World world, EntityPlayer entityPlayer)
-	{
-		return true;
-	}
+    @Override
+    public boolean canUseHammer(World world, EntityPlayer entityPlayer)
+    {
+        return true;
+    }
 
 }

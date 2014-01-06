@@ -9,22 +9,22 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class CarpentersBlocksTab extends CreativeTabs {
 
-	public CarpentersBlocksTab(String label)
-	{
-		super(label);
-	}
+    public CarpentersBlocksTab(String label)
+    {
+        super(label);
+    }
 
-	@SideOnly(Side.CLIENT)
-	@Override
-	public Item getTabIconItem()
-	{
-		return ItemRegistry.itemCarpentersHammer;
-	}
+    @SideOnly(Side.CLIENT)
+    @Override
+    public Item getTabIconItem()
+    {
+        return ItemRegistry.itemCarpentersHammer;
+    }
 
-	@Override
-	public String getTranslatedTabLabel()
-	{
-		return LanguageRegistry.instance().getStringLocalization("itemGroup.carpentersBlocks.name");
-	}
+    @Override
+    public String getTranslatedTabLabel()
+    {
+        return LanguageRegistry.instance().getStringLocalization("itemGroup.carpentersBlocks.name");
+    }
 
 }

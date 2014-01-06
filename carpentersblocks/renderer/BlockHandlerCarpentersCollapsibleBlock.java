@@ -19,237 +19,238 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class BlockHandlerCarpentersCollapsibleBlock extends BlockAdvancedLighting {
 
-	/* RENDER IDS */
-	private static final int NORMAL_YN 	= 0;
-	private static final int NORMAL_ZN 	= 1;
-	private static final int NORMAL_ZP 	= 2;
-	private static final int NORMAL_XN 	= 3;
-	private static final int NORMAL_XP 	= 4;
-	private static final int SLOPE_YZPN	= 5;
-	private static final int SLOPE_YZPP	= 6;
-	private static final int SLOPE_XYNP	= 7;
-	private static final int SLOPE_XYPP	= 8;
+    /* RENDER IDS */
 
-	@Override
-	public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderBlocks)
-	{
-		renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
-		super.renderInventoryBlock(block, metadata, modelID, renderBlocks);
-	}
+    private static final int NORMAL_YN  = 0;
+    private static final int NORMAL_ZN  = 1;
+    private static final int NORMAL_ZP  = 2;
+    private static final int NORMAL_XN  = 3;
+    private static final int NORMAL_XP  = 4;
+    private static final int SLOPE_YZPN = 5;
+    private static final int SLOPE_YZPP = 6;
+    private static final int SLOPE_XYNP = 7;
+    private static final int SLOPE_XYPP = 8;
 
-	@Override
-	/**
-	 * Renders side.
-	 */
-	protected void renderBaseSide(int x, int y, int z, int side, Icon icon)
-	{
-		switch (renderID)
-		{
-		case NORMAL_YN:
-			RenderHelper.renderFaceYNeg(renderBlocks, x, y, z, icon);
-			break;
-		case NORMAL_ZN:
-			RenderHelperCollapsible.renderFaceZNeg(renderBlocks, x, y, z, icon);
-			break;
-		case NORMAL_ZP:
-			RenderHelperCollapsible.renderFaceZPos(renderBlocks, x, y, z, icon);
-			break;
-		case NORMAL_XN:
-			RenderHelperCollapsible.renderFaceXNeg(renderBlocks, x, y, z, icon);
-			break;
-		case NORMAL_XP:
-			RenderHelperCollapsible.renderFaceXPos(renderBlocks, x, y, z, icon);
-			break;
-		case SLOPE_YZPN:
-			RenderHelperCollapsible.renderSlopeYPosZNeg(renderBlocks, x, y, z, icon);
-			break;
-		case SLOPE_YZPP:
-			RenderHelperCollapsible.renderSlopeYPosZPos(renderBlocks, x, y, z, icon);
-			break;
-		case SLOPE_XYNP:
-			RenderHelperCollapsible.renderSlopeXNegYPos(renderBlocks, x, y, z, icon);
-			break;
-		case SLOPE_XYPP:
-			RenderHelperCollapsible.renderSlopeXPosYPos(renderBlocks, x, y, z, icon);
-			break;
-		}
-	}
+    @Override
+    public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderBlocks)
+    {
+        renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
+        super.renderInventoryBlock(block, metadata, modelID, renderBlocks);
+    }
 
-	@Override
-	/**
-	 * Renders base block.
-	 */
-	protected boolean renderBaseBlock(Block block, int x, int y, int z)
-	{
-		renderBlocks.enableAO = getEnableAO(block);
+    @Override
+    /**
+     * Renders side.
+     */
+    protected void renderBaseSide(int x, int y, int z, int side, Icon icon)
+    {
+        switch (renderID)
+        {
+        case NORMAL_YN:
+            RenderHelper.renderFaceYNeg(renderBlocks, x, y, z, icon);
+            break;
+        case NORMAL_ZN:
+            RenderHelperCollapsible.renderFaceZNeg(renderBlocks, x, y, z, icon);
+            break;
+        case NORMAL_ZP:
+            RenderHelperCollapsible.renderFaceZPos(renderBlocks, x, y, z, icon);
+            break;
+        case NORMAL_XN:
+            RenderHelperCollapsible.renderFaceXNeg(renderBlocks, x, y, z, icon);
+            break;
+        case NORMAL_XP:
+            RenderHelperCollapsible.renderFaceXPos(renderBlocks, x, y, z, icon);
+            break;
+        case SLOPE_YZPN:
+            RenderHelperCollapsible.renderSlopeYPosZNeg(renderBlocks, x, y, z, icon);
+            break;
+        case SLOPE_YZPP:
+            RenderHelperCollapsible.renderSlopeYPosZPos(renderBlocks, x, y, z, icon);
+            break;
+        case SLOPE_XYNP:
+            RenderHelperCollapsible.renderSlopeXNegYPos(renderBlocks, x, y, z, icon);
+            break;
+        case SLOPE_XYPP:
+            RenderHelperCollapsible.renderSlopeXPosYPos(renderBlocks, x, y, z, icon);
+            break;
+        }
+    }
 
-		CollapsibleUtil.computeOffsets(TE);
+    @Override
+    /**
+     * Renders base block.
+     */
+    protected boolean renderBaseBlock(Block block, int x, int y, int z)
+    {
+        renderBlocks.enableAO = getEnableAO(block);
 
-		/* Render top slopes. */
+        CollapsibleUtil.computeOffsets(TE);
 
-		RenderHelper.startDrawing(TRIANGLES);
+        /* Render top slopes. */
 
-		prepareTopFace(block, x, y, z);
+        RenderHelper.startDrawing(TRIANGLES);
 
-		/* Render all other faces. */
+        prepareTopFace(block, x, y, z);
 
-		RenderHelper.startDrawing(QUADS);
+        /* Render all other faces. */
 
-		setRenderBoundsAndRelight(block, 6, 0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
+        RenderHelper.startDrawing(QUADS);
 
-		/* BOTTOM FACE */
-		if (srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x, y - 1, z, DOWN)) {
-			lightingHelper.setLightness(lightingHelper.LIGHTNESS_YN).setLightingYNeg(block, x, y, z);
-			setIDAndRender(block, NORMAL_YN, x, y, z, DOWN);
-		}
+        setRenderBoundsAndRelight(block, 6, 0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
 
-		/* NORTH FACE */
-		if (srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x, y, z - 1, NORTH)) {
-			prepareFaceZNeg(block, x, y, z);
-		}
+        /* BOTTOM FACE */
+        if (srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x, y - 1, z, DOWN)) {
+            lightingHelper.setLightness(lightingHelper.LIGHTNESS_YN).setLightingYNeg(block, x, y, z);
+            setIDAndRender(block, NORMAL_YN, x, y, z, DOWN);
+        }
 
-		/* SOUTH FACE */
-		if (srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x, y, z + 1, SOUTH)) {
-			prepareFaceZPos(block, x, y, z);
-		}
+        /* NORTH FACE */
+        if (srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x, y, z - 1, NORTH)) {
+            prepareFaceZNeg(block, x, y, z);
+        }
 
-		/* WEST FACE */
-		if (srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x - 1, y, z, WEST)) {
-			prepareFaceXNeg(block, x, y, z);
-		}
+        /* SOUTH FACE */
+        if (srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x, y, z + 1, SOUTH)) {
+            prepareFaceZPos(block, x, y, z);
+        }
 
-		/* EAST FACE */
-		if (srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x + 1, y, z, EAST)) {
-			prepareFaceXPos(block, x, y, z);
-		}
+        /* WEST FACE */
+        if (srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x - 1, y, z, WEST)) {
+            prepareFaceXNeg(block, x, y, z);
+        }
 
-		renderBlocks.enableAO = false;
-		return true;
-	}
+        /* EAST FACE */
+        if (srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x + 1, y, z, EAST)) {
+            prepareFaceXPos(block, x, y, z);
+        }
 
-	/**
-	 * Returns lightness for sloped face on side.
-	 */
-	private float getInterpolatedLightness(ForgeDirection side)
-	{
-		switch (side) {
-		case NORTH: {
-			double lightness_WE = (1.0F - lightingHelper.LIGHTNESS_XN) * Math.abs(CollapsibleUtil.offset_XZNN - CollapsibleUtil.offset_XZPN);
-			double lightness_NS = (1.0F - lightingHelper.LIGHTNESS_ZN) * Math.abs(CollapsibleUtil.CENTER_YMAX - (CollapsibleUtil.offset_XZPN + CollapsibleUtil.offset_XZNN) / 2.0F) * 2.0F;
+        renderBlocks.enableAO = false;
+        return true;
+    }
 
-			return (float) (lightingHelper.LIGHTNESS_YP - (lightness_WE + lightness_NS) / 2.0F);
-		}
-		case SOUTH: {
-			double lightness_WE = (1.0F - lightingHelper.LIGHTNESS_XN) * Math.abs(CollapsibleUtil.offset_XZNP - CollapsibleUtil.offset_XZPP);
-			double lightness_NS = (1.0F - lightingHelper.LIGHTNESS_ZN) * Math.abs(CollapsibleUtil.CENTER_YMAX - (CollapsibleUtil.offset_XZPP + CollapsibleUtil.offset_XZNP) / 2.0F) * 2.0F;
+    /**
+     * Returns lightness for sloped face on side.
+     */
+    private float getInterpolatedLightness(ForgeDirection side)
+    {
+        switch (side) {
+        case NORTH: {
+            double lightness_WE = (1.0F - lightingHelper.LIGHTNESS_XN) * Math.abs(CollapsibleUtil.offset_XZNN - CollapsibleUtil.offset_XZPN);
+            double lightness_NS = (1.0F - lightingHelper.LIGHTNESS_ZN) * Math.abs(CollapsibleUtil.CENTER_YMAX - (CollapsibleUtil.offset_XZPN + CollapsibleUtil.offset_XZNN) / 2.0F) * 2.0F;
 
-			return (float) (lightingHelper.LIGHTNESS_YP - (lightness_WE + lightness_NS) / 2.0F);
-		}
-		case WEST: {
-			double lightness_WE = (1.0F - lightingHelper.LIGHTNESS_ZN) * Math.abs(CollapsibleUtil.offset_XZNN - CollapsibleUtil.offset_XZNP);
-			double lightness_NS = (1.0F - lightingHelper.LIGHTNESS_XN) * Math.abs(CollapsibleUtil.CENTER_YMAX - (CollapsibleUtil.offset_XZNP + CollapsibleUtil.offset_XZNN) / 2.0F) * 2.0F;
+            return (float) (lightingHelper.LIGHTNESS_YP - (lightness_WE + lightness_NS) / 2.0F);
+        }
+        case SOUTH: {
+            double lightness_WE = (1.0F - lightingHelper.LIGHTNESS_XN) * Math.abs(CollapsibleUtil.offset_XZNP - CollapsibleUtil.offset_XZPP);
+            double lightness_NS = (1.0F - lightingHelper.LIGHTNESS_ZN) * Math.abs(CollapsibleUtil.CENTER_YMAX - (CollapsibleUtil.offset_XZPP + CollapsibleUtil.offset_XZNP) / 2.0F) * 2.0F;
 
-			return (float) (lightingHelper.LIGHTNESS_YP - (lightness_WE + lightness_NS) / 2.0F);
-		}
-		case EAST: {
-			double lightness_WE = (1.0F - lightingHelper.LIGHTNESS_ZN) * Math.abs(CollapsibleUtil.offset_XZPP - CollapsibleUtil.offset_XZPN);
-			double lightness_NS = (1.0F - lightingHelper.LIGHTNESS_XN) * Math.abs(CollapsibleUtil.CENTER_YMAX - (CollapsibleUtil.offset_XZPP + CollapsibleUtil.offset_XZPN) / 2.0F) * 2.0F;
+            return (float) (lightingHelper.LIGHTNESS_YP - (lightness_WE + lightness_NS) / 2.0F);
+        }
+        case WEST: {
+            double lightness_WE = (1.0F - lightingHelper.LIGHTNESS_ZN) * Math.abs(CollapsibleUtil.offset_XZNN - CollapsibleUtil.offset_XZNP);
+            double lightness_NS = (1.0F - lightingHelper.LIGHTNESS_XN) * Math.abs(CollapsibleUtil.CENTER_YMAX - (CollapsibleUtil.offset_XZNP + CollapsibleUtil.offset_XZNN) / 2.0F) * 2.0F;
 
-			return (float) (lightingHelper.LIGHTNESS_YP - (lightness_WE + lightness_NS) / 2.0F);
-		}
-		default:
-			return 1.0F;
-		}
-	}
+            return (float) (lightingHelper.LIGHTNESS_YP - (lightness_WE + lightness_NS) / 2.0F);
+        }
+        case EAST: {
+            double lightness_WE = (1.0F - lightingHelper.LIGHTNESS_ZN) * Math.abs(CollapsibleUtil.offset_XZPP - CollapsibleUtil.offset_XZPN);
+            double lightness_NS = (1.0F - lightingHelper.LIGHTNESS_XN) * Math.abs(CollapsibleUtil.CENTER_YMAX - (CollapsibleUtil.offset_XZPP + CollapsibleUtil.offset_XZPN) / 2.0F) * 2.0F;
 
-	/**
-	 * Draws the top face using four triangles.
-	 */
-	private void prepareTopFace(Block block, int x, int y, int z)
-	{
-		/* Top North triangle. */
+            return (float) (lightingHelper.LIGHTNESS_YP - (lightness_WE + lightness_NS) / 2.0F);
+        }
+        default:
+            return 1.0F;
+        }
+    }
 
-		setRenderBoundsAndRelight(block, UP, 0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 0.5D);
-		lightingHelper.setLightness(getInterpolatedLightness(ForgeDirection.NORTH));
-		setIDAndRender(block, SLOPE_YZPN, x, y, z, UP);
+    /**
+     * Draws the top face using four triangles.
+     */
+    private void prepareTopFace(Block block, int x, int y, int z)
+    {
+        /* Top North triangle. */
 
-		/* Top South triangle. */
+        setRenderBoundsAndRelight(block, UP, 0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 0.5D);
+        lightingHelper.setLightness(getInterpolatedLightness(ForgeDirection.NORTH));
+        setIDAndRender(block, SLOPE_YZPN, x, y, z, UP);
 
-		setRenderBoundsAndRelight(block, UP, 0.0D, 0.0D, 0.5D, 1.0D, 1.0D, 1.0D);
-		lightingHelper.setLightness(getInterpolatedLightness(ForgeDirection.SOUTH));
-		setIDAndRender(block, SLOPE_YZPP, x, y, z, UP);
+        /* Top South triangle. */
 
-		/* Top West triangle. */
+        setRenderBoundsAndRelight(block, UP, 0.0D, 0.0D, 0.5D, 1.0D, 1.0D, 1.0D);
+        lightingHelper.setLightness(getInterpolatedLightness(ForgeDirection.SOUTH));
+        setIDAndRender(block, SLOPE_YZPP, x, y, z, UP);
 
-		setRenderBoundsAndRelight(block, UP, 0.0D, 0.0D, 0.0D, 0.5D, 1.0D, 1.0D);
-		lightingHelper.setLightness(getInterpolatedLightness(ForgeDirection.WEST));
-		setIDAndRender(block, SLOPE_XYNP, x, y, z, UP);
+        /* Top West triangle. */
 
-		/* Top East triangle. */
+        setRenderBoundsAndRelight(block, UP, 0.0D, 0.0D, 0.0D, 0.5D, 1.0D, 1.0D);
+        lightingHelper.setLightness(getInterpolatedLightness(ForgeDirection.WEST));
+        setIDAndRender(block, SLOPE_XYNP, x, y, z, UP);
 
-		setRenderBoundsAndRelight(block, UP, 0.5D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
-		lightingHelper.setLightness(getInterpolatedLightness(ForgeDirection.EAST));
-		setIDAndRender(block, SLOPE_XYPP, x, y, z, UP);
-	}
+        /* Top East triangle. */
 
-	/**
-	 * Prepare North face.
-	 */
-	private void prepareFaceZNeg(Block block, int x, int y, int z)
-	{
-		setRenderBoundsAndRelight(block, NORTH, 0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
+        setRenderBoundsAndRelight(block, UP, 0.5D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
+        lightingHelper.setLightness(getInterpolatedLightness(ForgeDirection.EAST));
+        setIDAndRender(block, SLOPE_XYPP, x, y, z, UP);
+    }
 
-		if (renderBlocks.enableAO) {
-			lightingHelper.ao[TOP_LEFT] = (float) (ao[NORTH][BOTTOM_LEFT] + (ao[NORTH][TOP_LEFT] - ao[NORTH][BOTTOM_LEFT]) * CollapsibleUtil.offset_XZPN);
-			lightingHelper.ao[TOP_RIGHT] = (float) (ao[NORTH][BOTTOM_RIGHT] + (ao[NORTH][TOP_RIGHT] - ao[NORTH][BOTTOM_RIGHT]) * CollapsibleUtil.offset_XZNN);
-		}
+    /**
+     * Prepare North face.
+     */
+    private void prepareFaceZNeg(Block block, int x, int y, int z)
+    {
+        setRenderBoundsAndRelight(block, NORTH, 0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
 
-		setIDAndRender(block, NORMAL_ZN, x, y, z, NORTH);
-	}
+        if (renderBlocks.enableAO) {
+            lightingHelper.ao[TOP_LEFT] = (float) (ao[NORTH][BOTTOM_LEFT] + (ao[NORTH][TOP_LEFT] - ao[NORTH][BOTTOM_LEFT]) * CollapsibleUtil.offset_XZPN);
+            lightingHelper.ao[TOP_RIGHT] = (float) (ao[NORTH][BOTTOM_RIGHT] + (ao[NORTH][TOP_RIGHT] - ao[NORTH][BOTTOM_RIGHT]) * CollapsibleUtil.offset_XZNN);
+        }
 
-	/**
-	 * Prepare South face.
-	 */
-	private void prepareFaceZPos(Block block, int x, int y, int z)
-	{
-		setRenderBoundsAndRelight(block, SOUTH, 0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
+        setIDAndRender(block, NORMAL_ZN, x, y, z, NORTH);
+    }
 
-		if (renderBlocks.enableAO) {
-			lightingHelper.ao[TOP_LEFT] = (float) (ao[SOUTH][BOTTOM_LEFT] + (ao[SOUTH][TOP_LEFT] - ao[SOUTH][BOTTOM_LEFT]) * CollapsibleUtil.offset_XZNP);
-			lightingHelper.ao[TOP_RIGHT] = (float) (ao[SOUTH][BOTTOM_RIGHT] + (ao[SOUTH][TOP_RIGHT] - ao[SOUTH][BOTTOM_RIGHT]) * CollapsibleUtil.offset_XZPP);
-		}
+    /**
+     * Prepare South face.
+     */
+    private void prepareFaceZPos(Block block, int x, int y, int z)
+    {
+        setRenderBoundsAndRelight(block, SOUTH, 0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
 
-		setIDAndRender(block, NORMAL_ZP, x, y, z, SOUTH);
-	}
+        if (renderBlocks.enableAO) {
+            lightingHelper.ao[TOP_LEFT] = (float) (ao[SOUTH][BOTTOM_LEFT] + (ao[SOUTH][TOP_LEFT] - ao[SOUTH][BOTTOM_LEFT]) * CollapsibleUtil.offset_XZNP);
+            lightingHelper.ao[TOP_RIGHT] = (float) (ao[SOUTH][BOTTOM_RIGHT] + (ao[SOUTH][TOP_RIGHT] - ao[SOUTH][BOTTOM_RIGHT]) * CollapsibleUtil.offset_XZPP);
+        }
 
-	/**
-	 * Prepare West face.
-	 */
-	private void prepareFaceXNeg(Block block, int x, int y, int z)
-	{
-		setRenderBoundsAndRelight(block, WEST, 0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
+        setIDAndRender(block, NORMAL_ZP, x, y, z, SOUTH);
+    }
 
-		if (renderBlocks.enableAO) {
-			lightingHelper.ao[TOP_LEFT] = (float) (ao[WEST][BOTTOM_LEFT] + (ao[WEST][TOP_LEFT] - ao[WEST][BOTTOM_LEFT]) * CollapsibleUtil.offset_XZNN);
-			lightingHelper.ao[TOP_RIGHT] = (float) (ao[WEST][BOTTOM_RIGHT] + (ao[WEST][TOP_RIGHT] - ao[WEST][BOTTOM_RIGHT]) * CollapsibleUtil.offset_XZNP);
-		}
+    /**
+     * Prepare West face.
+     */
+    private void prepareFaceXNeg(Block block, int x, int y, int z)
+    {
+        setRenderBoundsAndRelight(block, WEST, 0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
 
-		setIDAndRender(block, NORMAL_XN, x, y, z, WEST);
-	}
+        if (renderBlocks.enableAO) {
+            lightingHelper.ao[TOP_LEFT] = (float) (ao[WEST][BOTTOM_LEFT] + (ao[WEST][TOP_LEFT] - ao[WEST][BOTTOM_LEFT]) * CollapsibleUtil.offset_XZNN);
+            lightingHelper.ao[TOP_RIGHT] = (float) (ao[WEST][BOTTOM_RIGHT] + (ao[WEST][TOP_RIGHT] - ao[WEST][BOTTOM_RIGHT]) * CollapsibleUtil.offset_XZNP);
+        }
 
-	/**
-	 * Prepare East face.
-	 */
-	private void prepareFaceXPos(Block block, int x, int y, int z)
-	{
-		setRenderBoundsAndRelight(block, EAST, 0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
+        setIDAndRender(block, NORMAL_XN, x, y, z, WEST);
+    }
 
-		if (renderBlocks.enableAO) {
-			lightingHelper.ao[TOP_LEFT] = (float) (ao[EAST][BOTTOM_LEFT] + (ao[EAST][TOP_LEFT] - ao[EAST][BOTTOM_LEFT]) * CollapsibleUtil.offset_XZPP);
-			lightingHelper.ao[TOP_RIGHT] = (float) (ao[EAST][BOTTOM_RIGHT] + (ao[EAST][TOP_RIGHT] - ao[EAST][BOTTOM_RIGHT]) * CollapsibleUtil.offset_XZPN);
-		}
+    /**
+     * Prepare East face.
+     */
+    private void prepareFaceXPos(Block block, int x, int y, int z)
+    {
+        setRenderBoundsAndRelight(block, EAST, 0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
 
-		setIDAndRender(block, NORMAL_XP, x, y, z, EAST);
-	}
+        if (renderBlocks.enableAO) {
+            lightingHelper.ao[TOP_LEFT] = (float) (ao[EAST][BOTTOM_LEFT] + (ao[EAST][TOP_LEFT] - ao[EAST][BOTTOM_LEFT]) * CollapsibleUtil.offset_XZPP);
+            lightingHelper.ao[TOP_RIGHT] = (float) (ao[EAST][BOTTOM_RIGHT] + (ao[EAST][TOP_RIGHT] - ao[EAST][BOTTOM_RIGHT]) * CollapsibleUtil.offset_XZPN);
+        }
+
+        setIDAndRender(block, NORMAL_XP, x, y, z, EAST);
+    }
 
 }

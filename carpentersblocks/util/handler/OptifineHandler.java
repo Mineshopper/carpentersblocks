@@ -11,37 +11,37 @@ import carpentersblocks.util.registry.FeatureRegistry;
 
 public class OptifineHandler {
 
-	private static Method getColorMultiplier;
+    private static Method getColorMultiplier;
 
-	/**
-	 * Initializes Optifine integration.
-	 * If reflection fails, will return false.
-	 */
-	public static boolean init()
-	{
-		try {
-			Class<?> CustomColorizer = Class.forName("CustomColorizer");
-			getColorMultiplier = CustomColorizer.getMethod("getColorMultiplier", Block.class, IBlockAccess.class, int.class, int.class, int.class);
-			ModLogger.log(Level.INFO, "Optifine integration successful.");
-			return true;
-		} catch (Exception e) {
-			ModLogger.log(Level.WARNING, "Optifine integration failed: " + e.getMessage());
-			return false;
-		}
-	}
+    /**
+     * Initializes Optifine integration.
+     * If reflection fails, will return false.
+     */
+    public static boolean init()
+    {
+        try {
+            Class<?> CustomColorizer = Class.forName("CustomColorizer");
+            getColorMultiplier = CustomColorizer.getMethod("getColorMultiplier", Block.class, IBlockAccess.class, int.class, int.class, int.class);
+            ModLogger.log(Level.INFO, "Optifine integration successful.");
+            return true;
+        } catch (Exception e) {
+            ModLogger.log(Level.WARNING, "Optifine integration failed: " + e.getMessage());
+            return false;
+        }
+    }
 
-	public static int getColorMultiplier(Block block, IBlockAccess blockAccess, int x, int y, int z)
-	{
-		int colorMultiplier = block.colorMultiplier(blockAccess, x, y, z);
-		try {
-			int tempColorMultiplier = (Integer) getColorMultiplier.invoke(null, block, blockAccess, x, y, z);
-			colorMultiplier = tempColorMultiplier;
-		} catch (InvocationTargetException e) {
-			ModLogger.log(Level.WARNING, "Block custom coloring failed, disabling Optifine integration: " + e.getMessage());
-			FeatureRegistry.enableOptifineIntegration = false;
-		} catch (Exception E) {}
+    public static int getColorMultiplier(Block block, IBlockAccess blockAccess, int x, int y, int z)
+    {
+        int colorMultiplier = block.colorMultiplier(blockAccess, x, y, z);
+        try {
+            int tempColorMultiplier = (Integer) getColorMultiplier.invoke(null, block, blockAccess, x, y, z);
+            colorMultiplier = tempColorMultiplier;
+        } catch (InvocationTargetException e) {
+            ModLogger.log(Level.WARNING, "Block custom coloring failed, disabling Optifine integration: " + e.getMessage());
+            FeatureRegistry.enableOptifineIntegration = false;
+        } catch (Exception E) {}
 
-		return colorMultiplier;
-	}
+        return colorMultiplier;
+    }
 
 }

@@ -16,409 +16,411 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class RenderHelper extends VertexHelper {
 
-	protected static Tessellator tessellator = Tessellator.instance;
+    protected static Tessellator tessellator = Tessellator.instance;
 
-	/** Tessellator draw mode for triangles. */
-	public final static int TRIANGLES = 4;
-	public final static int QUADS = 7;
+    /** Tessellator draw mode for triangles. */
+    public final static int TRIANGLES = 4;
 
-	protected static double uMin;
-	protected static double uMax;
-	protected static double vMin;
-	protected static double vMax;
+    /** Tessellator draw mode for quads. */
+    public final static int QUADS = 7;
 
-	protected static double xMin;
-	protected static double xMax;
-	protected static double yMin;
-	protected static double yMax;
-	protected static double zMin;
-	protected static double zMax;
+    protected static double uMin;
+    protected static double uMax;
+    protected static double vMin;
+    protected static double vMax;
 
-	/*
-	 * Provides UV for all face corners.
-	 * [ROTATION][VERTEX][U/V]
-	 */
-	protected static double[][][] UV_DOWN;
-	protected static double[][][] UV_UP;
-	protected static double[][][] UV_NORTH;
-	protected static double[][][] UV_SOUTH;
-	protected static double[][][] UV_WEST;
-	protected static double[][][] UV_EAST;
+    protected static double xMin;
+    protected static double xMax;
+    protected static double yMin;
+    protected static double yMax;
+    protected static double zMin;
+    protected static double zMax;
 
-	/**
-	 * Sets draw mode in tessellator.
-	 */
-	public static void startDrawing(int drawMode)
-	{
-		Tessellator.instance.draw();
-		Tessellator.instance.startDrawing(drawMode);
-	}
+    /*
+     * Provides UV for all face corners.
+     * [ROTATION][VERTEX][U/V]
+     */
+    protected static double[][][] UV_DOWN;
+    protected static double[][][] UV_UP;
+    protected static double[][][] UV_NORTH;
+    protected static double[][][] UV_SOUTH;
+    protected static double[][][] UV_WEST;
+    protected static double[][][] UV_EAST;
 
-	/**
-	 * Will apply vertex offset and populate u, v tables from icon.
-	 */
-	protected static void prepareRender(RenderBlocks renderBlocks, ForgeDirection side, double x, double y, double z, Icon icon)
-	{
-		/* Set render bounds. */
+    /**
+     * Sets draw mode in tessellator.
+     */
+    public static void startDrawing(int drawMode)
+    {
+        Tessellator.instance.draw();
+        Tessellator.instance.startDrawing(drawMode);
+    }
 
-		yMin = y + renderBlocks.renderMinY - (side.equals(DOWN) ? offset : 0);
-		yMax = y + renderBlocks.renderMaxY + (side.equals(UP) ? offset : 0);
-		zMin = z + renderBlocks.renderMinZ - (side.equals(NORTH) ? offset : 0);
-		zMax = z + renderBlocks.renderMaxZ + (side.equals(SOUTH) ? offset : 0);
-		xMin = x + renderBlocks.renderMinX - (side.equals(WEST) ? offset : 0);
-		xMax = x + renderBlocks.renderMaxX + (side.equals(EAST) ? offset : 0);
+    /**
+     * Will apply vertex offset and populate u, v tables from icon.
+     */
+    protected static void prepareRender(RenderBlocks renderBlocks, ForgeDirection side, double x, double y, double z, Icon icon)
+    {
+        /* Set render bounds. */
 
-		/* Set U,V for icon with rotation. */
+        yMin = y + renderBlocks.renderMinY - (side.equals(DOWN) ? offset : 0);
+        yMax = y + renderBlocks.renderMaxY + (side.equals(UP) ? offset : 0);
+        zMin = z + renderBlocks.renderMinZ - (side.equals(NORTH) ? offset : 0);
+        zMax = z + renderBlocks.renderMaxZ + (side.equals(SOUTH) ? offset : 0);
+        xMin = x + renderBlocks.renderMinX - (side.equals(WEST) ? offset : 0);
+        xMax = x + renderBlocks.renderMaxX + (side.equals(EAST) ? offset : 0);
 
-		int rotation = 0;
-		switch (side) {
-		case DOWN:
-			rotation = renderBlocks.uvRotateBottom;
-			break;
-		case UP:
-			rotation = renderBlocks.uvRotateTop;
-			break;
-		case NORTH:
-			rotation = renderBlocks.uvRotateNorth;
-			break;
-		case SOUTH:
-			rotation = renderBlocks.uvRotateSouth;
-			break;
-		case WEST:
-			rotation = renderBlocks.uvRotateWest;
-			break;
-		case EAST:
-			rotation = renderBlocks.uvRotateEast;
-			break;
-		default: {}
-		}
+        /* Set U,V for icon with rotation. */
 
-		switch (side)
-		{
-		case DOWN:
+        int rotation = 0;
+        switch (side) {
+        case DOWN:
+            rotation = renderBlocks.uvRotateBottom;
+            break;
+        case UP:
+            rotation = renderBlocks.uvRotateTop;
+            break;
+        case NORTH:
+            rotation = renderBlocks.uvRotateNorth;
+            break;
+        case SOUTH:
+            rotation = renderBlocks.uvRotateSouth;
+            break;
+        case WEST:
+            rotation = renderBlocks.uvRotateWest;
+            break;
+        case EAST:
+            rotation = renderBlocks.uvRotateEast;
+            break;
+        default: {}
+        }
 
-			switch (rotation)
-			{
-			case 0:
-				uMin = icon.getInterpolatedU(renderBlocks.renderMinX * 16.0D);
-				uMax = icon.getInterpolatedU(renderBlocks.renderMaxX * 16.0D);
-				vMin = icon.getInterpolatedV(renderBlocks.renderMinZ * 16.0D);
-				vMax = icon.getInterpolatedV(renderBlocks.renderMaxZ * 16.0D);
-				break;
-			case 1:
-				uMin = icon.getInterpolatedU(16.0D - renderBlocks.renderMaxZ * 16.0D);
-				uMax = icon.getInterpolatedU(16.0D - renderBlocks.renderMinZ * 16.0D);
-				vMin = icon.getInterpolatedV(renderBlocks.renderMinX * 16.0D);
-				vMax = icon.getInterpolatedV(renderBlocks.renderMaxX * 16.0D);
-				break;
-			case 2:
-				uMin = icon.getInterpolatedU(16.0D - renderBlocks.renderMinX * 16.0D);
-				uMax = icon.getInterpolatedU(16.0D - renderBlocks.renderMaxX * 16.0D);
-				vMin = icon.getInterpolatedV(16.0D - renderBlocks.renderMinZ * 16.0D);
-				vMax = icon.getInterpolatedV(16.0D - renderBlocks.renderMaxZ * 16.0D);
-				break;
-			case 3:
-				uMin = icon.getInterpolatedU(renderBlocks.renderMaxZ * 16.0D);
-				uMax = icon.getInterpolatedU(renderBlocks.renderMinZ * 16.0D);
-				vMin = icon.getInterpolatedV(16.0D - renderBlocks.renderMinX * 16.0D);
-				vMax = icon.getInterpolatedV(16.0D - renderBlocks.renderMaxX * 16.0D);
-				break;
-			}
+        switch (side)
+        {
+        case DOWN:
 
-			UV_DOWN = new double[][][] {
-					{{ uMin, vMax }, { uMin, vMin }, { uMax, vMin }, { uMax, vMax }},
-					{{ uMin, vMin }, { uMax, vMin }, { uMax, vMax }, { uMin, vMax }},
-					{{ uMin, vMax }, { uMin, vMin }, { uMax, vMin }, { uMax, vMax }},
-					{{ uMin, vMin }, { uMax, vMin }, { uMax, vMax }, { uMin, vMax }}
-			};
+            switch (rotation)
+            {
+            case 0:
+                uMin = icon.getInterpolatedU(renderBlocks.renderMinX * 16.0D);
+                uMax = icon.getInterpolatedU(renderBlocks.renderMaxX * 16.0D);
+                vMin = icon.getInterpolatedV(renderBlocks.renderMinZ * 16.0D);
+                vMax = icon.getInterpolatedV(renderBlocks.renderMaxZ * 16.0D);
+                break;
+            case 1:
+                uMin = icon.getInterpolatedU(16.0D - renderBlocks.renderMaxZ * 16.0D);
+                uMax = icon.getInterpolatedU(16.0D - renderBlocks.renderMinZ * 16.0D);
+                vMin = icon.getInterpolatedV(renderBlocks.renderMinX * 16.0D);
+                vMax = icon.getInterpolatedV(renderBlocks.renderMaxX * 16.0D);
+                break;
+            case 2:
+                uMin = icon.getInterpolatedU(16.0D - renderBlocks.renderMinX * 16.0D);
+                uMax = icon.getInterpolatedU(16.0D - renderBlocks.renderMaxX * 16.0D);
+                vMin = icon.getInterpolatedV(16.0D - renderBlocks.renderMinZ * 16.0D);
+                vMax = icon.getInterpolatedV(16.0D - renderBlocks.renderMaxZ * 16.0D);
+                break;
+            case 3:
+                uMin = icon.getInterpolatedU(renderBlocks.renderMaxZ * 16.0D);
+                uMax = icon.getInterpolatedU(renderBlocks.renderMinZ * 16.0D);
+                vMin = icon.getInterpolatedV(16.0D - renderBlocks.renderMinX * 16.0D);
+                vMax = icon.getInterpolatedV(16.0D - renderBlocks.renderMaxX * 16.0D);
+                break;
+            }
 
-			break;
-		case UP:
+            UV_DOWN = new double[][][] {
+                    {{ uMin, vMax }, { uMin, vMin }, { uMax, vMin }, { uMax, vMax }},
+                    {{ uMin, vMin }, { uMax, vMin }, { uMax, vMax }, { uMin, vMax }},
+                    {{ uMin, vMax }, { uMin, vMin }, { uMax, vMin }, { uMax, vMax }},
+                    {{ uMin, vMin }, { uMax, vMin }, { uMax, vMax }, { uMin, vMax }}
+            };
 
-			switch (rotation)
-			{
-			case 0:
-				uMin = icon.getInterpolatedU(renderBlocks.renderMinX * 16.0D);
-				uMax = icon.getInterpolatedU(renderBlocks.renderMaxX * 16.0D);
-				vMin = icon.getInterpolatedV(renderBlocks.renderMinZ * 16.0D);
-				vMax = icon.getInterpolatedV(renderBlocks.renderMaxZ * 16.0D);
-				break;
-			case 1:
-				uMin = icon.getInterpolatedU(renderBlocks.renderMaxZ * 16.0D);
-				uMax = icon.getInterpolatedU(renderBlocks.renderMinZ * 16.0D);
-				vMin = icon.getInterpolatedV(16.0D - renderBlocks.renderMinX * 16.0D);
-				vMax = icon.getInterpolatedV(16.0D - renderBlocks.renderMaxX * 16.0D);
-				break;
-			case 2:
-				uMin = icon.getInterpolatedU(16.0D - renderBlocks.renderMinX * 16.0D);
-				uMax = icon.getInterpolatedU(16.0D - renderBlocks.renderMaxX * 16.0D);
-				vMin = icon.getInterpolatedV(16.0D - renderBlocks.renderMinZ * 16.0D);
-				vMax = icon.getInterpolatedV(16.0D - renderBlocks.renderMaxZ * 16.0D);
-				break;
-			case 3:
-				uMin = icon.getInterpolatedU(16.0D - renderBlocks.renderMaxZ * 16.0D);
-				uMax = icon.getInterpolatedU(16.0D - renderBlocks.renderMinZ * 16.0D);
-				vMin = icon.getInterpolatedV(renderBlocks.renderMinX * 16.0D);
-				vMax = icon.getInterpolatedV(renderBlocks.renderMaxX * 16.0D);
-				break;
-			}
+            break;
+        case UP:
 
-			UV_UP = new double[][][] {
-					{{ uMax, vMax }, { uMax, vMin }, { uMin, vMin }, { uMin, vMax }},
-					{{ uMin, vMax }, { uMax, vMax }, { uMax, vMin }, { uMin, vMin }},
-					{{ uMax, vMax }, { uMax, vMin }, { uMin, vMin }, { uMin, vMax }},
-					{{ uMin, vMax }, { uMax, vMax }, { uMax, vMin }, { uMin, vMin }}
-			};
+            switch (rotation)
+            {
+            case 0:
+                uMin = icon.getInterpolatedU(renderBlocks.renderMinX * 16.0D);
+                uMax = icon.getInterpolatedU(renderBlocks.renderMaxX * 16.0D);
+                vMin = icon.getInterpolatedV(renderBlocks.renderMinZ * 16.0D);
+                vMax = icon.getInterpolatedV(renderBlocks.renderMaxZ * 16.0D);
+                break;
+            case 1:
+                uMin = icon.getInterpolatedU(renderBlocks.renderMaxZ * 16.0D);
+                uMax = icon.getInterpolatedU(renderBlocks.renderMinZ * 16.0D);
+                vMin = icon.getInterpolatedV(16.0D - renderBlocks.renderMinX * 16.0D);
+                vMax = icon.getInterpolatedV(16.0D - renderBlocks.renderMaxX * 16.0D);
+                break;
+            case 2:
+                uMin = icon.getInterpolatedU(16.0D - renderBlocks.renderMinX * 16.0D);
+                uMax = icon.getInterpolatedU(16.0D - renderBlocks.renderMaxX * 16.0D);
+                vMin = icon.getInterpolatedV(16.0D - renderBlocks.renderMinZ * 16.0D);
+                vMax = icon.getInterpolatedV(16.0D - renderBlocks.renderMaxZ * 16.0D);
+                break;
+            case 3:
+                uMin = icon.getInterpolatedU(16.0D - renderBlocks.renderMaxZ * 16.0D);
+                uMax = icon.getInterpolatedU(16.0D - renderBlocks.renderMinZ * 16.0D);
+                vMin = icon.getInterpolatedV(renderBlocks.renderMinX * 16.0D);
+                vMax = icon.getInterpolatedV(renderBlocks.renderMaxX * 16.0D);
+                break;
+            }
 
-			break;
-		case NORTH:
+            UV_UP = new double[][][] {
+                    {{ uMax, vMax }, { uMax, vMin }, { uMin, vMin }, { uMin, vMax }},
+                    {{ uMin, vMax }, { uMax, vMax }, { uMax, vMin }, { uMin, vMin }},
+                    {{ uMax, vMax }, { uMax, vMin }, { uMin, vMin }, { uMin, vMax }},
+                    {{ uMin, vMax }, { uMax, vMax }, { uMax, vMin }, { uMin, vMin }}
+            };
 
-			/*
-			 * A note regarding this side rotation:
-			 * 
-			 * Vanilla rotation rotates and mirrors this side, whereas mine simply rotates.
-			 * This bug is easily detectable with fences and other objects that sometimes
-			 * rotate and cause texture alignment problems.
-			 */
+            break;
+        case NORTH:
 
-			switch (rotation)
-			{
-			case 0:
-				uMin = icon.getInterpolatedU(16.0D - renderBlocks.renderMaxX * 16.0D);
-				uMax = icon.getInterpolatedU(16.0D - renderBlocks.renderMinX * 16.0D);
-				vMin = icon.getInterpolatedV(16.0D - (iconHasFloatingHeight(icon) ? 1.0D - (renderBlocks.renderMaxY - renderBlocks.renderMinY) : renderBlocks.renderMinY) * 16.0D);
-				vMax = icon.getInterpolatedV(16.0D - (iconHasFloatingHeight(icon) ? 1.0D : renderBlocks.renderMaxY) * 16.0D);
-				break;
-			case 1:
-				uMin = icon.getInterpolatedU(16.0D - renderBlocks.renderMaxY * 16.0D);
-				uMax = icon.getInterpolatedU(16.0D - renderBlocks.renderMinY * 16.0D);
-				vMin = icon.getInterpolatedV(renderBlocks.renderMaxX * 16.0D);
-				vMax = icon.getInterpolatedV(renderBlocks.renderMinX * 16.0D);
-				break;
-			case 2:
-				uMin = icon.getInterpolatedU(renderBlocks.renderMaxX * 16.0D);
-				uMax = icon.getInterpolatedU(renderBlocks.renderMinX * 16.0D);
-				vMin = icon.getInterpolatedV(renderBlocks.renderMinY * 16.0D);
-				vMax = icon.getInterpolatedV(renderBlocks.renderMaxY * 16.0D);
-				break;
-			case 3:
-				uMin = icon.getInterpolatedU(renderBlocks.renderMaxY * 16.0D);
-				uMax = icon.getInterpolatedU(renderBlocks.renderMinY * 16.0D);
-				vMin = icon.getInterpolatedV(16.0D - renderBlocks.renderMaxX * 16.0D);
-				vMax = icon.getInterpolatedV(16.0D - renderBlocks.renderMinX * 16.0D);
-				break;
-			}
+            /*
+             * A note regarding this side rotation:
+             *
+             * Vanilla rotation rotates and mirrors this side, whereas mine simply rotates.
+             * This bug is easily detectable with fences and other objects that sometimes
+             * rotate and cause texture alignment problems.
+             */
 
-			UV_NORTH = new double[][][] {
-					{{ uMax, vMax }, { uMin, vMax }, { uMin, vMin }, { uMax, vMin }},
-					{{ uMin, vMax }, { uMin, vMin }, { uMax, vMin }, { uMax, vMax }},
-					{{ uMax, vMax }, { uMin, vMax }, { uMin, vMin }, { uMax, vMin }},
-					{{ uMin, vMax }, { uMin, vMin }, { uMax, vMin }, { uMax, vMax }}
-			};
+            switch (rotation)
+            {
+            case 0:
+                uMin = icon.getInterpolatedU(16.0D - renderBlocks.renderMaxX * 16.0D);
+                uMax = icon.getInterpolatedU(16.0D - renderBlocks.renderMinX * 16.0D);
+                vMin = icon.getInterpolatedV(16.0D - (iconHasFloatingHeight(icon) ? 1.0D - (renderBlocks.renderMaxY - renderBlocks.renderMinY) : renderBlocks.renderMinY) * 16.0D);
+                vMax = icon.getInterpolatedV(16.0D - (iconHasFloatingHeight(icon) ? 1.0D : renderBlocks.renderMaxY) * 16.0D);
+                break;
+            case 1:
+                uMin = icon.getInterpolatedU(16.0D - renderBlocks.renderMaxY * 16.0D);
+                uMax = icon.getInterpolatedU(16.0D - renderBlocks.renderMinY * 16.0D);
+                vMin = icon.getInterpolatedV(renderBlocks.renderMaxX * 16.0D);
+                vMax = icon.getInterpolatedV(renderBlocks.renderMinX * 16.0D);
+                break;
+            case 2:
+                uMin = icon.getInterpolatedU(renderBlocks.renderMaxX * 16.0D);
+                uMax = icon.getInterpolatedU(renderBlocks.renderMinX * 16.0D);
+                vMin = icon.getInterpolatedV(renderBlocks.renderMinY * 16.0D);
+                vMax = icon.getInterpolatedV(renderBlocks.renderMaxY * 16.0D);
+                break;
+            case 3:
+                uMin = icon.getInterpolatedU(renderBlocks.renderMaxY * 16.0D);
+                uMax = icon.getInterpolatedU(renderBlocks.renderMinY * 16.0D);
+                vMin = icon.getInterpolatedV(16.0D - renderBlocks.renderMaxX * 16.0D);
+                vMax = icon.getInterpolatedV(16.0D - renderBlocks.renderMinX * 16.0D);
+                break;
+            }
 
-			break;
-		case SOUTH:
+            UV_NORTH = new double[][][] {
+                    {{ uMax, vMax }, { uMin, vMax }, { uMin, vMin }, { uMax, vMin }},
+                    {{ uMin, vMax }, { uMin, vMin }, { uMax, vMin }, { uMax, vMax }},
+                    {{ uMax, vMax }, { uMin, vMax }, { uMin, vMin }, { uMax, vMin }},
+                    {{ uMin, vMax }, { uMin, vMin }, { uMax, vMin }, { uMax, vMax }}
+            };
 
-			switch (rotation)
-			{
-			case 0:
-				uMin = icon.getInterpolatedU(renderBlocks.renderMinX * 16.0D);
-				uMax = icon.getInterpolatedU(renderBlocks.renderMaxX * 16.0D);
-				vMin = icon.getInterpolatedV(16.0D - (iconHasFloatingHeight(icon) ? 1.0D - (renderBlocks.renderMaxY - renderBlocks.renderMinY) : renderBlocks.renderMinY) * 16.0D);
-				vMax = icon.getInterpolatedV(16.0D - (iconHasFloatingHeight(icon) ? 1.0D : renderBlocks.renderMaxY) * 16.0D);
-				break;
-			case 1:
-				uMin = icon.getInterpolatedU(16.0D - renderBlocks.renderMaxY * 16.0D);
-				uMax = icon.getInterpolatedU(16.0D - renderBlocks.renderMinY * 16.0D);
-				vMin = icon.getInterpolatedV(16.0D - renderBlocks.renderMinX * 16.0D);
-				vMax = icon.getInterpolatedV(16.0D - renderBlocks.renderMaxX * 16.0D);
-				break;
-			case 2:
-				uMin = icon.getInterpolatedU(16.0D - renderBlocks.renderMinX * 16.0D);
-				uMax = icon.getInterpolatedU(16.0D - renderBlocks.renderMaxX * 16.0D);
-				vMin = icon.getInterpolatedV(renderBlocks.renderMinY * 16.0D);
-				vMax = icon.getInterpolatedV(renderBlocks.renderMaxY * 16.0D);
-				break;
-			case 3:
-				uMin = icon.getInterpolatedU(renderBlocks.renderMaxY * 16.0D);
-				uMax = icon.getInterpolatedU(renderBlocks.renderMinY * 16.0D);
-				vMin = icon.getInterpolatedV(renderBlocks.renderMinX * 16.0D);
-				vMax = icon.getInterpolatedV(renderBlocks.renderMaxX * 16.0D);
-				break;
-			}
+            break;
+        case SOUTH:
 
-			UV_SOUTH = new double[][][] {
-					{{ uMin, vMax }, { uMin, vMin }, { uMax, vMin }, { uMax, vMax }},
-					{{ uMin, vMin }, { uMax, vMin }, { uMax, vMax }, { uMin, vMax }},
-					{{ uMin, vMax }, { uMin, vMin }, { uMax, vMin }, { uMax, vMax }},
-					{{ uMin, vMin }, { uMax, vMin }, { uMax, vMax }, { uMin, vMax }}
-			};
+            switch (rotation)
+            {
+            case 0:
+                uMin = icon.getInterpolatedU(renderBlocks.renderMinX * 16.0D);
+                uMax = icon.getInterpolatedU(renderBlocks.renderMaxX * 16.0D);
+                vMin = icon.getInterpolatedV(16.0D - (iconHasFloatingHeight(icon) ? 1.0D - (renderBlocks.renderMaxY - renderBlocks.renderMinY) : renderBlocks.renderMinY) * 16.0D);
+                vMax = icon.getInterpolatedV(16.0D - (iconHasFloatingHeight(icon) ? 1.0D : renderBlocks.renderMaxY) * 16.0D);
+                break;
+            case 1:
+                uMin = icon.getInterpolatedU(16.0D - renderBlocks.renderMaxY * 16.0D);
+                uMax = icon.getInterpolatedU(16.0D - renderBlocks.renderMinY * 16.0D);
+                vMin = icon.getInterpolatedV(16.0D - renderBlocks.renderMinX * 16.0D);
+                vMax = icon.getInterpolatedV(16.0D - renderBlocks.renderMaxX * 16.0D);
+                break;
+            case 2:
+                uMin = icon.getInterpolatedU(16.0D - renderBlocks.renderMinX * 16.0D);
+                uMax = icon.getInterpolatedU(16.0D - renderBlocks.renderMaxX * 16.0D);
+                vMin = icon.getInterpolatedV(renderBlocks.renderMinY * 16.0D);
+                vMax = icon.getInterpolatedV(renderBlocks.renderMaxY * 16.0D);
+                break;
+            case 3:
+                uMin = icon.getInterpolatedU(renderBlocks.renderMaxY * 16.0D);
+                uMax = icon.getInterpolatedU(renderBlocks.renderMinY * 16.0D);
+                vMin = icon.getInterpolatedV(renderBlocks.renderMinX * 16.0D);
+                vMax = icon.getInterpolatedV(renderBlocks.renderMaxX * 16.0D);
+                break;
+            }
 
-			break;
-		case WEST:
+            UV_SOUTH = new double[][][] {
+                    {{ uMin, vMax }, { uMin, vMin }, { uMax, vMin }, { uMax, vMax }},
+                    {{ uMin, vMin }, { uMax, vMin }, { uMax, vMax }, { uMin, vMax }},
+                    {{ uMin, vMax }, { uMin, vMin }, { uMax, vMin }, { uMax, vMax }},
+                    {{ uMin, vMin }, { uMax, vMin }, { uMax, vMax }, { uMin, vMax }}
+            };
 
-			switch (rotation)
-			{
-			case 0:
-				uMin = icon.getInterpolatedU(renderBlocks.renderMinZ * 16.0D);
-				uMax = icon.getInterpolatedU(renderBlocks.renderMaxZ * 16.0D);
-				vMax = icon.getInterpolatedV(16.0D - (iconHasFloatingHeight(icon) ? 1.0D : renderBlocks.renderMaxY) * 16.0D);
-				vMin = icon.getInterpolatedV(16.0D - (iconHasFloatingHeight(icon) ? 1.0D - (renderBlocks.renderMaxY - renderBlocks.renderMinY) : renderBlocks.renderMinY) * 16.0D);
-				break;
-			case 1:
-				uMin = icon.getInterpolatedU(16.0D - renderBlocks.renderMaxY * 16.0D);
-				uMax = icon.getInterpolatedU(16.0D - renderBlocks.renderMinY * 16.0D);
-				vMin = icon.getInterpolatedV(16.0D - renderBlocks.renderMinZ * 16.0D);
-				vMax = icon.getInterpolatedV(16.0D - renderBlocks.renderMaxZ * 16.0D);
-				break;
-			case 2:
-				uMin = icon.getInterpolatedU(16.0D - renderBlocks.renderMinZ * 16.0D);
-				uMax = icon.getInterpolatedU(16.0D - renderBlocks.renderMaxZ * 16.0D);
-				vMin = icon.getInterpolatedV(renderBlocks.renderMinY * 16.0D);
-				vMax = icon.getInterpolatedV(renderBlocks.renderMaxY * 16.0D);
-				break;
-			case 3:
-				uMin = icon.getInterpolatedU(renderBlocks.renderMaxY * 16.0D);
-				uMax = icon.getInterpolatedU(renderBlocks.renderMinY * 16.0D);
-				vMin = icon.getInterpolatedV(renderBlocks.renderMinZ * 16.0D);
-				vMax = icon.getInterpolatedV(renderBlocks.renderMaxZ * 16.0D);
-				break;
-			}
+            break;
+        case WEST:
 
-			UV_WEST = new double[][][] {
-					{{ uMax, vMax }, { uMin, vMax }, { uMin, vMin }, { uMax, vMin }},
-					{{ uMin, vMax }, { uMin, vMin }, { uMax, vMin }, { uMax, vMax }},
-					{{ uMax, vMax }, { uMin, vMax }, { uMin, vMin }, { uMax, vMin }},
-					{{ uMin, vMax }, { uMin, vMin }, { uMax, vMin }, { uMax, vMax }}
-			};
+            switch (rotation)
+            {
+            case 0:
+                uMin = icon.getInterpolatedU(renderBlocks.renderMinZ * 16.0D);
+                uMax = icon.getInterpolatedU(renderBlocks.renderMaxZ * 16.0D);
+                vMax = icon.getInterpolatedV(16.0D - (iconHasFloatingHeight(icon) ? 1.0D : renderBlocks.renderMaxY) * 16.0D);
+                vMin = icon.getInterpolatedV(16.0D - (iconHasFloatingHeight(icon) ? 1.0D - (renderBlocks.renderMaxY - renderBlocks.renderMinY) : renderBlocks.renderMinY) * 16.0D);
+                break;
+            case 1:
+                uMin = icon.getInterpolatedU(16.0D - renderBlocks.renderMaxY * 16.0D);
+                uMax = icon.getInterpolatedU(16.0D - renderBlocks.renderMinY * 16.0D);
+                vMin = icon.getInterpolatedV(16.0D - renderBlocks.renderMinZ * 16.0D);
+                vMax = icon.getInterpolatedV(16.0D - renderBlocks.renderMaxZ * 16.0D);
+                break;
+            case 2:
+                uMin = icon.getInterpolatedU(16.0D - renderBlocks.renderMinZ * 16.0D);
+                uMax = icon.getInterpolatedU(16.0D - renderBlocks.renderMaxZ * 16.0D);
+                vMin = icon.getInterpolatedV(renderBlocks.renderMinY * 16.0D);
+                vMax = icon.getInterpolatedV(renderBlocks.renderMaxY * 16.0D);
+                break;
+            case 3:
+                uMin = icon.getInterpolatedU(renderBlocks.renderMaxY * 16.0D);
+                uMax = icon.getInterpolatedU(renderBlocks.renderMinY * 16.0D);
+                vMin = icon.getInterpolatedV(renderBlocks.renderMinZ * 16.0D);
+                vMax = icon.getInterpolatedV(renderBlocks.renderMaxZ * 16.0D);
+                break;
+            }
 
-			break;
-		case EAST:
+            UV_WEST = new double[][][] {
+                    {{ uMax, vMax }, { uMin, vMax }, { uMin, vMin }, { uMax, vMin }},
+                    {{ uMin, vMax }, { uMin, vMin }, { uMax, vMin }, { uMax, vMax }},
+                    {{ uMax, vMax }, { uMin, vMax }, { uMin, vMin }, { uMax, vMin }},
+                    {{ uMin, vMax }, { uMin, vMin }, { uMax, vMin }, { uMax, vMax }}
+            };
 
-			/*
-			 * A note regarding this side rotation:
-			 * 
-			 * Vanilla rotation rotates and mirrors this side, whereas mine simply rotates.
-			 * This bug is easily detectable with fences and other objects that sometimes
-			 * rotate and cause texture alignment problems.
-			 */
+            break;
+        case EAST:
 
-			switch (rotation)
-			{
-			case 0:
-				uMin = icon.getInterpolatedU(16.0D - renderBlocks.renderMaxZ * 16.0D);
-				uMax = icon.getInterpolatedU(16.0D - renderBlocks.renderMinZ * 16.0D);
-				vMax = icon.getInterpolatedV(16.0D - (iconHasFloatingHeight(icon) ? 1.0D : renderBlocks.renderMaxY) * 16.0D);
-				vMin = icon.getInterpolatedV(16.0D - (iconHasFloatingHeight(icon) ? 1.0D - (renderBlocks.renderMaxY - renderBlocks.renderMinY) : renderBlocks.renderMinY) * 16.0D);
-				break;
-			case 1:
-				uMin = icon.getInterpolatedU(16.0D - renderBlocks.renderMaxY * 16.0D);
-				uMax = icon.getInterpolatedU(16.0D - renderBlocks.renderMinY * 16.0D);
-				vMin = icon.getInterpolatedV(renderBlocks.renderMaxZ * 16.0D);
-				vMax = icon.getInterpolatedV(renderBlocks.renderMinZ * 16.0D);
-				break;
-			case 2:
-				uMin = icon.getInterpolatedU(renderBlocks.renderMaxZ * 16.0D);
-				uMax = icon.getInterpolatedU(renderBlocks.renderMinZ * 16.0D);
-				vMin = icon.getInterpolatedV(renderBlocks.renderMinY * 16.0D);
-				vMax = icon.getInterpolatedV(renderBlocks.renderMaxY * 16.0D);
-				break;
-			case 3:
-				uMin = icon.getInterpolatedU(renderBlocks.renderMaxY * 16.0D);
-				uMax = icon.getInterpolatedU(renderBlocks.renderMinY * 16.0D);
-				vMin = icon.getInterpolatedV(16.0D - renderBlocks.renderMaxZ * 16.0D);
-				vMax = icon.getInterpolatedV(16.0D - renderBlocks.renderMinZ * 16.0D);
-				break;
-			}
+            /*
+             * A note regarding this side rotation:
+             *
+             * Vanilla rotation rotates and mirrors this side, whereas mine simply rotates.
+             * This bug is easily detectable with fences and other objects that sometimes
+             * rotate and cause texture alignment problems.
+             */
 
-			UV_EAST = new double[][][] {
-					{{ uMin, vMin }, { uMax, vMin }, { uMax, vMax }, { uMin, vMax }},
-					{{ uMax, vMin }, { uMax, vMax }, { uMin, vMax }, { uMin, vMin }},
-					{{ uMin, vMin }, { uMax, vMin }, { uMax, vMax }, { uMin, vMax }},
-					{{ uMax, vMin }, { uMax, vMax }, { uMin, vMax }, { uMin, vMin }}
-			};
+            switch (rotation)
+            {
+            case 0:
+                uMin = icon.getInterpolatedU(16.0D - renderBlocks.renderMaxZ * 16.0D);
+                uMax = icon.getInterpolatedU(16.0D - renderBlocks.renderMinZ * 16.0D);
+                vMax = icon.getInterpolatedV(16.0D - (iconHasFloatingHeight(icon) ? 1.0D : renderBlocks.renderMaxY) * 16.0D);
+                vMin = icon.getInterpolatedV(16.0D - (iconHasFloatingHeight(icon) ? 1.0D - (renderBlocks.renderMaxY - renderBlocks.renderMinY) : renderBlocks.renderMinY) * 16.0D);
+                break;
+            case 1:
+                uMin = icon.getInterpolatedU(16.0D - renderBlocks.renderMaxY * 16.0D);
+                uMax = icon.getInterpolatedU(16.0D - renderBlocks.renderMinY * 16.0D);
+                vMin = icon.getInterpolatedV(renderBlocks.renderMaxZ * 16.0D);
+                vMax = icon.getInterpolatedV(renderBlocks.renderMinZ * 16.0D);
+                break;
+            case 2:
+                uMin = icon.getInterpolatedU(renderBlocks.renderMaxZ * 16.0D);
+                uMax = icon.getInterpolatedU(renderBlocks.renderMinZ * 16.0D);
+                vMin = icon.getInterpolatedV(renderBlocks.renderMinY * 16.0D);
+                vMax = icon.getInterpolatedV(renderBlocks.renderMaxY * 16.0D);
+                break;
+            case 3:
+                uMin = icon.getInterpolatedU(renderBlocks.renderMaxY * 16.0D);
+                uMax = icon.getInterpolatedU(renderBlocks.renderMinY * 16.0D);
+                vMin = icon.getInterpolatedV(16.0D - renderBlocks.renderMaxZ * 16.0D);
+                vMax = icon.getInterpolatedV(16.0D - renderBlocks.renderMinZ * 16.0D);
+                break;
+            }
 
-			break;
-		default: {}
-		}
-	}
+            UV_EAST = new double[][][] {
+                    {{ uMin, vMin }, { uMax, vMin }, { uMax, vMax }, { uMin, vMax }},
+                    {{ uMax, vMin }, { uMax, vMax }, { uMin, vMax }, { uMin, vMin }},
+                    {{ uMin, vMin }, { uMax, vMin }, { uMax, vMax }, { uMin, vMax }},
+                    {{ uMax, vMin }, { uMax, vMax }, { uMin, vMax }, { uMin, vMin }}
+            };
 
-	/**
-	 * Renders the given texture to the bottom face of the block. Args: slope, x, y, z, texture
-	 */
-	public static void renderFaceYNeg(RenderBlocks renderBlocks, double x, double y, double z, Icon icon)
-	{
-		prepareRender(renderBlocks, DOWN, x, y, z, icon);
+            break;
+        default: {}
+        }
+    }
 
-		setupVertex(renderBlocks, xMin, yMin, zMax, UV_DOWN[renderBlocks.uvRotateBottom][0][0], UV_DOWN[renderBlocks.uvRotateBottom][0][1], SOUTHWEST);
-		setupVertex(renderBlocks, xMin, yMin, zMin, UV_DOWN[renderBlocks.uvRotateBottom][1][0], UV_DOWN[renderBlocks.uvRotateBottom][1][1], NORTHWEST);
-		setupVertex(renderBlocks, xMax, yMin, zMin, UV_DOWN[renderBlocks.uvRotateBottom][2][0], UV_DOWN[renderBlocks.uvRotateBottom][2][1], NORTHEAST);
-		setupVertex(renderBlocks, xMax, yMin, zMax, UV_DOWN[renderBlocks.uvRotateBottom][3][0], UV_DOWN[renderBlocks.uvRotateBottom][3][1], SOUTHEAST);
-	}
+    /**
+     * Renders the given texture to the bottom face of the block. Args: slope, x, y, z, texture
+     */
+    public static void renderFaceYNeg(RenderBlocks renderBlocks, double x, double y, double z, Icon icon)
+    {
+        prepareRender(renderBlocks, DOWN, x, y, z, icon);
 
-	/**
-	 * Renders the given texture to the top face of the block. Args: slope, x, y, z, texture
-	 */
-	public static void renderFaceYPos(RenderBlocks renderBlocks, double x, double y, double z, Icon icon)
-	{
-		prepareRender(renderBlocks, UP, x, y, z, icon);
+        setupVertex(renderBlocks, xMin, yMin, zMax, UV_DOWN[renderBlocks.uvRotateBottom][0][0], UV_DOWN[renderBlocks.uvRotateBottom][0][1], SOUTHWEST);
+        setupVertex(renderBlocks, xMin, yMin, zMin, UV_DOWN[renderBlocks.uvRotateBottom][1][0], UV_DOWN[renderBlocks.uvRotateBottom][1][1], NORTHWEST);
+        setupVertex(renderBlocks, xMax, yMin, zMin, UV_DOWN[renderBlocks.uvRotateBottom][2][0], UV_DOWN[renderBlocks.uvRotateBottom][2][1], NORTHEAST);
+        setupVertex(renderBlocks, xMax, yMin, zMax, UV_DOWN[renderBlocks.uvRotateBottom][3][0], UV_DOWN[renderBlocks.uvRotateBottom][3][1], SOUTHEAST);
+    }
 
-		setupVertex(renderBlocks, xMax, yMax, zMax, UV_UP[renderBlocks.uvRotateTop][0][0], UV_UP[renderBlocks.uvRotateTop][0][1], SOUTHEAST);
-		setupVertex(renderBlocks, xMax, yMax, zMin, UV_UP[renderBlocks.uvRotateTop][1][0], UV_UP[renderBlocks.uvRotateTop][1][1], NORTHEAST);
-		setupVertex(renderBlocks, xMin, yMax, zMin, UV_UP[renderBlocks.uvRotateTop][2][0], UV_UP[renderBlocks.uvRotateTop][2][1], NORTHWEST);
-		setupVertex(renderBlocks, xMin, yMax, zMax, UV_UP[renderBlocks.uvRotateTop][3][0], UV_UP[renderBlocks.uvRotateTop][3][1], SOUTHWEST);
-	}
+    /**
+     * Renders the given texture to the top face of the block. Args: slope, x, y, z, texture
+     */
+    public static void renderFaceYPos(RenderBlocks renderBlocks, double x, double y, double z, Icon icon)
+    {
+        prepareRender(renderBlocks, UP, x, y, z, icon);
 
-	/**
-	 * Renders the given texture to the North face of the block.  Args: slope, x, y, z, texture
-	 */
-	public static void renderFaceZNeg(RenderBlocks renderBlocks, double x, double y, double z, Icon icon)
-	{
-		prepareRender(renderBlocks, NORTH, x, y, z, icon);
+        setupVertex(renderBlocks, xMax, yMax, zMax, UV_UP[renderBlocks.uvRotateTop][0][0], UV_UP[renderBlocks.uvRotateTop][0][1], SOUTHEAST);
+        setupVertex(renderBlocks, xMax, yMax, zMin, UV_UP[renderBlocks.uvRotateTop][1][0], UV_UP[renderBlocks.uvRotateTop][1][1], NORTHEAST);
+        setupVertex(renderBlocks, xMin, yMax, zMin, UV_UP[renderBlocks.uvRotateTop][2][0], UV_UP[renderBlocks.uvRotateTop][2][1], NORTHWEST);
+        setupVertex(renderBlocks, xMin, yMax, zMax, UV_UP[renderBlocks.uvRotateTop][3][0], UV_UP[renderBlocks.uvRotateTop][3][1], SOUTHWEST);
+    }
 
-		setupVertex(renderBlocks, xMin, yMax, zMin, UV_NORTH[renderBlocks.uvRotateNorth][0][0], UV_NORTH[renderBlocks.uvRotateNorth][0][1], TOP_RIGHT);
-		setupVertex(renderBlocks, xMax, yMax, zMin, UV_NORTH[renderBlocks.uvRotateNorth][1][0], UV_NORTH[renderBlocks.uvRotateNorth][1][1], TOP_LEFT);
-		setupVertex(renderBlocks, xMax, yMin, zMin, UV_NORTH[renderBlocks.uvRotateNorth][2][0], UV_NORTH[renderBlocks.uvRotateNorth][2][1], BOTTOM_LEFT);
-		setupVertex(renderBlocks, xMin, yMin, zMin, UV_NORTH[renderBlocks.uvRotateNorth][3][0], UV_NORTH[renderBlocks.uvRotateNorth][3][1], BOTTOM_RIGHT);
-	}
+    /**
+     * Renders the given texture to the North face of the block.  Args: slope, x, y, z, texture
+     */
+    public static void renderFaceZNeg(RenderBlocks renderBlocks, double x, double y, double z, Icon icon)
+    {
+        prepareRender(renderBlocks, NORTH, x, y, z, icon);
 
-	/**
-	 * Renders the given texture to the South face of the block.  Args: slope, x, y, z, texture
-	 */
-	public static void renderFaceZPos(RenderBlocks renderBlocks, double x, double y, double z, Icon icon)
-	{
-		prepareRender(renderBlocks, SOUTH, x, y, z, icon);
+        setupVertex(renderBlocks, xMin, yMax, zMin, UV_NORTH[renderBlocks.uvRotateNorth][0][0], UV_NORTH[renderBlocks.uvRotateNorth][0][1], TOP_RIGHT);
+        setupVertex(renderBlocks, xMax, yMax, zMin, UV_NORTH[renderBlocks.uvRotateNorth][1][0], UV_NORTH[renderBlocks.uvRotateNorth][1][1], TOP_LEFT);
+        setupVertex(renderBlocks, xMax, yMin, zMin, UV_NORTH[renderBlocks.uvRotateNorth][2][0], UV_NORTH[renderBlocks.uvRotateNorth][2][1], BOTTOM_LEFT);
+        setupVertex(renderBlocks, xMin, yMin, zMin, UV_NORTH[renderBlocks.uvRotateNorth][3][0], UV_NORTH[renderBlocks.uvRotateNorth][3][1], BOTTOM_RIGHT);
+    }
 
-		setupVertex(renderBlocks, xMin, yMax, zMax, UV_SOUTH[renderBlocks.uvRotateSouth][0][0], UV_SOUTH[renderBlocks.uvRotateSouth][0][1], TOP_LEFT);
-		setupVertex(renderBlocks, xMin, yMin, zMax, UV_SOUTH[renderBlocks.uvRotateSouth][1][0], UV_SOUTH[renderBlocks.uvRotateSouth][1][1], BOTTOM_LEFT);
-		setupVertex(renderBlocks, xMax, yMin, zMax, UV_SOUTH[renderBlocks.uvRotateSouth][2][0], UV_SOUTH[renderBlocks.uvRotateSouth][2][1], BOTTOM_RIGHT);
-		setupVertex(renderBlocks, xMax, yMax, zMax, UV_SOUTH[renderBlocks.uvRotateSouth][3][0], UV_SOUTH[renderBlocks.uvRotateSouth][3][1], TOP_RIGHT);
-	}
+    /**
+     * Renders the given texture to the South face of the block.  Args: slope, x, y, z, texture
+     */
+    public static void renderFaceZPos(RenderBlocks renderBlocks, double x, double y, double z, Icon icon)
+    {
+        prepareRender(renderBlocks, SOUTH, x, y, z, icon);
 
-	/**
-	 * Renders the given texture to the West face of the block.  Args: slope, x, y, z, texture
-	 */
-	public static void renderFaceXNeg(RenderBlocks renderBlocks, double x, double y, double z, Icon icon)
-	{
-		prepareRender(renderBlocks, WEST, x, y, z, icon);
+        setupVertex(renderBlocks, xMin, yMax, zMax, UV_SOUTH[renderBlocks.uvRotateSouth][0][0], UV_SOUTH[renderBlocks.uvRotateSouth][0][1], TOP_LEFT);
+        setupVertex(renderBlocks, xMin, yMin, zMax, UV_SOUTH[renderBlocks.uvRotateSouth][1][0], UV_SOUTH[renderBlocks.uvRotateSouth][1][1], BOTTOM_LEFT);
+        setupVertex(renderBlocks, xMax, yMin, zMax, UV_SOUTH[renderBlocks.uvRotateSouth][2][0], UV_SOUTH[renderBlocks.uvRotateSouth][2][1], BOTTOM_RIGHT);
+        setupVertex(renderBlocks, xMax, yMax, zMax, UV_SOUTH[renderBlocks.uvRotateSouth][3][0], UV_SOUTH[renderBlocks.uvRotateSouth][3][1], TOP_RIGHT);
+    }
 
-		setupVertex(renderBlocks, xMin, yMax, zMax, UV_WEST[renderBlocks.uvRotateWest][0][0], UV_WEST[renderBlocks.uvRotateWest][0][1], TOP_RIGHT);
-		setupVertex(renderBlocks, xMin, yMax, zMin, UV_WEST[renderBlocks.uvRotateWest][1][0], UV_WEST[renderBlocks.uvRotateWest][1][1], TOP_LEFT);
-		setupVertex(renderBlocks, xMin, yMin, zMin, UV_WEST[renderBlocks.uvRotateWest][2][0], UV_WEST[renderBlocks.uvRotateWest][2][1], BOTTOM_LEFT);
-		setupVertex(renderBlocks, xMin, yMin, zMax, UV_WEST[renderBlocks.uvRotateWest][3][0], UV_WEST[renderBlocks.uvRotateWest][3][1], BOTTOM_RIGHT);
-	}
+    /**
+     * Renders the given texture to the West face of the block.  Args: slope, x, y, z, texture
+     */
+    public static void renderFaceXNeg(RenderBlocks renderBlocks, double x, double y, double z, Icon icon)
+    {
+        prepareRender(renderBlocks, WEST, x, y, z, icon);
 
-	/**
-	 * Renders the given texture to the East face of the block.  Args: slope, x, y, z, texture
-	 */
-	public static void renderFaceXPos(RenderBlocks renderBlocks, double x, double y, double z, Icon icon)
-	{
-		prepareRender(renderBlocks, EAST, x, y, z, icon);
+        setupVertex(renderBlocks, xMin, yMax, zMax, UV_WEST[renderBlocks.uvRotateWest][0][0], UV_WEST[renderBlocks.uvRotateWest][0][1], TOP_RIGHT);
+        setupVertex(renderBlocks, xMin, yMax, zMin, UV_WEST[renderBlocks.uvRotateWest][1][0], UV_WEST[renderBlocks.uvRotateWest][1][1], TOP_LEFT);
+        setupVertex(renderBlocks, xMin, yMin, zMin, UV_WEST[renderBlocks.uvRotateWest][2][0], UV_WEST[renderBlocks.uvRotateWest][2][1], BOTTOM_LEFT);
+        setupVertex(renderBlocks, xMin, yMin, zMax, UV_WEST[renderBlocks.uvRotateWest][3][0], UV_WEST[renderBlocks.uvRotateWest][3][1], BOTTOM_RIGHT);
+    }
 
-		setupVertex(renderBlocks, xMax, yMin, zMax, UV_EAST[renderBlocks.uvRotateEast][0][0], UV_EAST[renderBlocks.uvRotateEast][0][1], BOTTOM_LEFT);
-		setupVertex(renderBlocks, xMax, yMin, zMin, UV_EAST[renderBlocks.uvRotateEast][1][0], UV_EAST[renderBlocks.uvRotateEast][1][1], BOTTOM_RIGHT);
-		setupVertex(renderBlocks, xMax, yMax, zMin, UV_EAST[renderBlocks.uvRotateEast][2][0], UV_EAST[renderBlocks.uvRotateEast][2][1], TOP_RIGHT);
-		setupVertex(renderBlocks, xMax, yMax, zMax, UV_EAST[renderBlocks.uvRotateEast][3][0], UV_EAST[renderBlocks.uvRotateEast][3][1], TOP_LEFT);
-	}
+    /**
+     * Renders the given texture to the East face of the block.  Args: slope, x, y, z, texture
+     */
+    public static void renderFaceXPos(RenderBlocks renderBlocks, double x, double y, double z, Icon icon)
+    {
+        prepareRender(renderBlocks, EAST, x, y, z, icon);
+
+        setupVertex(renderBlocks, xMax, yMin, zMax, UV_EAST[renderBlocks.uvRotateEast][0][0], UV_EAST[renderBlocks.uvRotateEast][0][1], BOTTOM_LEFT);
+        setupVertex(renderBlocks, xMax, yMin, zMin, UV_EAST[renderBlocks.uvRotateEast][1][0], UV_EAST[renderBlocks.uvRotateEast][1][1], BOTTOM_RIGHT);
+        setupVertex(renderBlocks, xMax, yMax, zMin, UV_EAST[renderBlocks.uvRotateEast][2][0], UV_EAST[renderBlocks.uvRotateEast][2][1], TOP_RIGHT);
+        setupVertex(renderBlocks, xMax, yMax, zMax, UV_EAST[renderBlocks.uvRotateEast][3][0], UV_EAST[renderBlocks.uvRotateEast][3][1], TOP_LEFT);
+    }
 
 }

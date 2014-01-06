@@ -18,122 +18,122 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockCarpentersDaylightSensor extends BlockBase {
 
-	public BlockCarpentersDaylightSensor(int blockID)
-	{
-		super(blockID, Material.wood);
-		setHardness(0.2F);
-		setUnlocalizedName("blockCarpentersDaylightSensor");
-		setCreativeTab(CarpentersBlocks.tabCarpentersBlocks);
-		setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.25F, 1.0F);
-		setTextureName("carpentersblocks:general/solid");
-	}
+    public BlockCarpentersDaylightSensor(int blockID)
+    {
+        super(blockID, Material.wood);
+        setHardness(0.2F);
+        setUnlocalizedName("blockCarpentersDaylightSensor");
+        setCreativeTab(CarpentersBlocks.tabCarpentersBlocks);
+        setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.25F, 1.0F);
+        setTextureName("carpentersblocks:general/solid");
+    }
 
-	@SideOnly(Side.CLIENT)
-	@Override
-	/**
-	 * When this method is called, your block should register all the icons it needs with the given IconRegister. This
-	 * is the only chance you get to register icons.
-	 */
-	public void registerIcons(IconRegister iconRegister)
-	{
-		IconRegistry.icon_daylight_sensor_glass_top = iconRegister.registerIcon("carpentersblocks:daylightsensor/daylight_sensor_glass_top");
+    @SideOnly(Side.CLIENT)
+    @Override
+    /**
+     * When this method is called, your block should register all the icons it needs with the given IconRegister. This
+     * is the only chance you get to register icons.
+     */
+    public void registerIcons(IconRegister iconRegister)
+    {
+        IconRegistry.icon_daylight_sensor_glass_top = iconRegister.registerIcon("carpentersblocks:daylightsensor/daylight_sensor_glass_top");
 
-		super.registerIcons(iconRegister);
-	}
+        super.registerIcons(iconRegister);
+    }
 
-	@Override
-	/**
-	 * Alters polarity.
-	 */
-	protected boolean onHammerLeftClick(TEBase TE, EntityPlayer entityPlayer)
-	{
-		int polarity = DaylightSensor.getPolarity(TE) == DaylightSensor.POLARITY_POSITIVE ? DaylightSensor.POLARITY_NEGATIVE : DaylightSensor.POLARITY_POSITIVE;
+    @Override
+    /**
+     * Alters polarity.
+     */
+    protected boolean onHammerLeftClick(TEBase TE, EntityPlayer entityPlayer)
+    {
+        int polarity = DaylightSensor.getPolarity(TE) == DaylightSensor.POLARITY_POSITIVE ? DaylightSensor.POLARITY_NEGATIVE : DaylightSensor.POLARITY_POSITIVE;
 
-		DaylightSensor.setPolarity(TE, polarity);
+        DaylightSensor.setPolarity(TE, polarity);
 
-		switch (polarity) {
-		case DaylightSensor.POLARITY_POSITIVE:
-			entityPlayer.addChatMessage("message.polarity_pos.name");
-			break;
-		case DaylightSensor.POLARITY_NEGATIVE:
-			entityPlayer.addChatMessage("message.polarity_neg.name");
-		}
+        switch (polarity) {
+        case DaylightSensor.POLARITY_POSITIVE:
+            entityPlayer.addChatMessage("message.polarity_pos.name");
+            break;
+        case DaylightSensor.POLARITY_NEGATIVE:
+            entityPlayer.addChatMessage("message.polarity_neg.name");
+        }
 
-		return true;
-	}
+        return true;
+    }
 
-	@Override
-	/**
-	 * Alters polarity.
-	 */
-	protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer)
-	{
-		int sensitivity = DaylightSensor.setNextSensitivity(TE);
+    @Override
+    /**
+     * Alters polarity.
+     */
+    protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer)
+    {
+        int sensitivity = DaylightSensor.setNextSensitivity(TE);
 
-		if (sensitivity == DaylightSensor.SENSITIVITY_SLEEP) {
-			entityPlayer.addChatMessage("message.sensitivity_sleep.name");
-		} else {
-			entityPlayer.addChatMessage("message.sensitivity_monsters.name");
-		}
+        if (sensitivity == DaylightSensor.SENSITIVITY_SLEEP) {
+            entityPlayer.addChatMessage("message.sensitivity_sleep.name");
+        } else {
+            entityPlayer.addChatMessage("message.sensitivity_monsters.name");
+        }
 
-		return true;
-	}
+        return true;
+    }
 
-	@Override
-	/**
-	 * Returns true if the block is emitting indirect/weak redstone power on the specified side. If isBlockNormalCube
-	 * returns true, standard redstone propagation rules will apply instead and this will not be called. Args: World, X,
-	 * Y, Z, side. Note that the side is reversed - eg it is 1 (up) when checking the bottom of the block.
-	 */
-	public int isProvidingWeakPower(IBlockAccess world, int x, int y, int z, int side)
-	{
-		TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
+    @Override
+    /**
+     * Returns true if the block is emitting indirect/weak redstone power on the specified side. If isBlockNormalCube
+     * returns true, standard redstone propagation rules will apply instead and this will not be called. Args: World, X,
+     * Y, Z, side. Note that the side is reversed - eg it is 1 (up) when checking the bottom of the block.
+     */
+    public int isProvidingWeakPower(IBlockAccess world, int x, int y, int z, int side)
+    {
+        TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
 
-		return DaylightSensor.isActive(TE) ? 15 : 0;
-	}
+        return DaylightSensor.isActive(TE) ? 15 : 0;
+    }
 
-	public void updateLightLevel(World world, int x, int y, int z)
-	{
-		if (!world.provider.hasNoSky)
-		{
-			TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
+    public void updateLightLevel(World world, int x, int y, int z)
+    {
+        if (!world.provider.hasNoSky)
+        {
+            TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
 
-			int temp_lightValue = DaylightSensor.getLightLevel(TE);
-			int lightValue = world.getSavedLightValue(EnumSkyBlock.Sky, x, y, z) - world.skylightSubtracted;
+            int temp_lightValue = DaylightSensor.getLightLevel(TE);
+            int lightValue = world.getSavedLightValue(EnumSkyBlock.Sky, x, y, z) - world.skylightSubtracted;
 
-			if (world.isThundering()) {
-				lightValue = 7;
-			}
+            if (world.isThundering()) {
+                lightValue = 7;
+            }
 
-			if (temp_lightValue != lightValue) {
-				DaylightSensor.setLightLevel(TE, lightValue);
-				world.notifyBlocksOfNeighborChange(x, y, z, blockID);
-			}
-		}
-	}
+            if (temp_lightValue != lightValue) {
+                DaylightSensor.setLightLevel(TE, lightValue);
+                world.notifyBlocksOfNeighborChange(x, y, z, blockID);
+            }
+        }
+    }
 
-	@Override
-	/**
-	 * Can this block provide power. Only wire currently seems to have this change based on its state.
-	 */
-	public boolean canProvidePower()
-	{
-		return true;
-	}
+    @Override
+    /**
+     * Can this block provide power. Only wire currently seems to have this change based on its state.
+     */
+    public boolean canProvidePower()
+    {
+        return true;
+    }
 
-	@Override
-	public TileEntity createNewTileEntity(World world)
-	{
-		return new TECarpentersDaylightSensor();
-	}
+    @Override
+    public TileEntity createNewTileEntity(World world)
+    {
+        return new TECarpentersDaylightSensor();
+    }
 
-	@Override
-	/**
-	 * The type of render function that is called for this block
-	 */
-	public int getRenderType()
-	{
-		return BlockRegistry.carpentersDaylightSensorRenderID;
-	}
+    @Override
+    /**
+     * The type of render function that is called for this block
+     */
+    public int getRenderType()
+    {
+        return BlockRegistry.carpentersDaylightSensorRenderID;
+    }
 
 }

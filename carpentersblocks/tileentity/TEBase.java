@@ -10,106 +10,107 @@ import net.minecraft.tileentity.TileEntity;
 
 public class TEBase extends TileEntity {
 
-	public short[] cover = new short[7];
-	public byte[] pattern = new byte[7];
-	public byte[] color = new byte[7];
-	public byte[] overlay = new byte[7];
+    public short[] cover  = new short[7];
+    public byte[] pattern = new byte[7];
+    public byte[] color   = new byte[7];
+    public byte[] overlay = new byte[7];
 
-	/** Holds information like direction, block type, etc. */
-	public short data;
+    /** Holds information like direction, block type, etc. */
+    public short data;
 
-	/** Holds name of player that created tile entity. */
-	private String owner = "";
+    /** Holds name of player that created tile entity. */
+    private String owner = "";
 
-	@Override
-	public void readFromNBT(NBTTagCompound nbt)
-	{
-		super.readFromNBT(nbt);
+    @Override
+    public void readFromNBT(NBTTagCompound nbt)
+    {
+        super.readFromNBT(nbt);
 
-		for (int count = 0; count < 7; ++count) {
-			cover[count] = nbt.getShort("cover_" + count);
-		}
+        for (int count = 0; count < 7; ++count) {
+            cover[count] = nbt.getShort("cover_" + count);
+        }
 
-		pattern = nbt.getByteArray("pattern");
-		color = nbt.getByteArray("color");
-		overlay = nbt.getByteArray("overlay");
-		data = nbt.getShort("data");
+        pattern = nbt.getByteArray("pattern");
+        color = nbt.getByteArray("color");
+        overlay = nbt.getByteArray("overlay");
+        data = nbt.getShort("data");
 
-		/* For compatibility with versions prior to 1.9.7 */
-		if (nbt.hasKey("owner")) {
-			owner = nbt.getString("owner");
-		}
-	}
+        /* For compatibility with versions prior to 1.9.7 */
 
-	@Override
-	public void writeToNBT(NBTTagCompound nbt)
-	{
-		super.writeToNBT(nbt);
+        if (nbt.hasKey("owner")) {
+            owner = nbt.getString("owner");
+        }
+    }
 
-		for (int count = 0; count < 7; ++count) {
-			nbt.setShort("cover_" + count, cover[count]);
-		}
+    @Override
+    public void writeToNBT(NBTTagCompound nbt)
+    {
+        super.writeToNBT(nbt);
 
-		nbt.setByteArray("pattern", pattern);
-		nbt.setByteArray("color", color);
-		nbt.setByteArray("overlay", overlay);
-		nbt.setShort("data", data);
-		nbt.setString("owner", owner);
-	}
+        for (int count = 0; count < 7; ++count) {
+            nbt.setShort("cover_" + count, cover[count]);
+        }
 
-	@Override
-	/**
-	 * Overridden in a sign to provide the text.
-	 */
-	public Packet getDescriptionPacket()
-	{
-		NBTTagCompound nbt = new NBTTagCompound();
-		writeToNBT(nbt);
-		return new Packet132TileEntityData(xCoord, yCoord, zCoord, 1, nbt);
-	}
+        nbt.setByteArray("pattern", pattern);
+        nbt.setByteArray("color", color);
+        nbt.setByteArray("overlay", overlay);
+        nbt.setShort("data", data);
+        nbt.setString("owner", owner);
+    }
 
-	@Override
-	/**
-	 * Called when you receive a TileEntityData packet for the location this
-	 * TileEntity is currently in. On the client, the NetworkManager will always
-	 * be the remote server. On the server, it will be whomever is responsible for
-	 * sending the packet.
-	 *
-	 * @param net The NetworkManager the packet originated from
-	 * @param pkt The data packet
-	 */
-	public void onDataPacket(INetworkManager net, Packet132TileEntityData pkt)
-	{
-		readFromNBT(pkt.data);
+    @Override
+    /**
+     * Overridden in a sign to provide the text.
+     */
+    public Packet getDescriptionPacket()
+    {
+        NBTTagCompound nbt = new NBTTagCompound();
+        writeToNBT(nbt);
+        return new Packet132TileEntityData(xCoord, yCoord, zCoord, 1, nbt);
+    }
 
-		if (worldObj.isRemote) {
-			Minecraft.getMinecraft().renderGlobal.markBlockForRenderUpdate(xCoord, yCoord, zCoord);
-			worldObj.updateAllLightTypes(xCoord, yCoord, zCoord);
-		}
-	}
+    @Override
+    /**
+     * Called when you receive a TileEntityData packet for the location this
+     * TileEntity is currently in. On the client, the NetworkManager will always
+     * be the remote server. On the server, it will be whomever is responsible for
+     * sending the packet.
+     *
+     * @param net The NetworkManager the packet originated from
+     * @param pkt The data packet
+     */
+    public void onDataPacket(INetworkManager net, Packet132TileEntityData pkt)
+    {
+        readFromNBT(pkt.data);
 
-	/**
-	 * Returns true if entityPlayer is owner of tile entity.
-	 */
-	public boolean isOwner(EntityLivingBase entityLiving)
-	{
-		return owner.equals(entityLiving.getEntityName()) || owner.equals("");
-	}
+        if (worldObj.isRemote) {
+            Minecraft.getMinecraft().renderGlobal.markBlockForRenderUpdate(xCoord, yCoord, zCoord);
+            worldObj.updateAllLightTypes(xCoord, yCoord, zCoord);
+        }
+    }
 
-	/**
-	 * Sets owner of tile entity.
-	 */
-	public void setOwner(String owner)
-	{
-		this.owner = owner;
-	}
+    /**
+     * Returns true if entityPlayer is owner of tile entity.
+     */
+    public boolean isOwner(EntityLivingBase entityLiving)
+    {
+        return owner.equals(entityLiving.getEntityName()) || owner.equals("");
+    }
 
-	/**
-	 * Returns owner of tile entity.
-	 */
-	public String getOwner()
-	{
-		return owner;
-	}
+    /**
+     * Sets owner of tile entity.
+     */
+    public void setOwner(String owner)
+    {
+        this.owner = owner;
+    }
+
+    /**
+     * Returns owner of tile entity.
+     */
+    public String getOwner()
+    {
+        return owner;
+    }
 
 }

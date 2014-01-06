@@ -11,99 +11,100 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 
 public class BedDesignHandler {
 
-	public static int maxNum = 256;
-	public static boolean[]	hasDesign = new boolean[maxNum];
-	public static boolean[]	hasPillow = new boolean[maxNum];
-	public static boolean[]	hasBlanket = new boolean[maxNum];
+    public static int maxNum = 256;
 
-	/**
-	 * Bed design cache.
-	 */
-	public static ResourceLocation[] resource_blanket = new ResourceLocation[maxNum];
+    public static boolean[] hasDesign  = new boolean[maxNum];
+    public static boolean[] hasPillow  = new boolean[maxNum];
+    public static boolean[] hasBlanket = new boolean[maxNum];
 
-	/**
-	 * Initializes design detection.
-	 */
-	public static boolean init(FMLPreInitializationEvent event)
-	{
-		try
-		{
-			ZipFile mod = new ZipFile(event.getSourceFile());
-			Enumeration enumeration = mod.entries();
+    /**
+     * Bed design cache.
+     */
+    public static ResourceLocation[] resource_blanket = new ResourceLocation[maxNum];
 
-			int numDesigns = 0;
+    /**
+     * Initializes design detection.
+     */
+    public static boolean init(FMLPreInitializationEvent event)
+    {
+        try
+        {
+            ZipFile mod = new ZipFile(event.getSourceFile());
+            Enumeration enumeration = mod.entries();
 
-			while (enumeration.hasMoreElements())
-			{
-				ZipEntry zipentry = (ZipEntry)enumeration.nextElement();
+            int numDesigns = 0;
 
-				if (zipentry.getName().contains("/bed/design_"))
-				{
+            while (enumeration.hasMoreElements())
+            {
+                ZipEntry zipentry = (ZipEntry)enumeration.nextElement();
 
-					int numStart = zipentry.getName().indexOf("/bed/design_") + 12;
-					int numEnd = zipentry.getName().indexOf("/", numStart);
-					int numDesign = Integer.parseInt(zipentry.getName().substring(numStart, numEnd));
+                if (zipentry.getName().contains("/bed/design_"))
+                {
 
-					if (numDesign > maxNum - 1 || numDesign < 1) {
+                    int numStart = zipentry.getName().indexOf("/bed/design_") + 12;
+                    int numEnd = zipentry.getName().indexOf("/", numStart);
+                    int numDesign = Integer.parseInt(zipentry.getName().substring(numStart, numEnd));
 
-						ModLogger.log(Level.WARNING, "Encountered out of range bed design " + zipentry.getName() + ". This file will be ignored.");
+                    if (numDesign > maxNum - 1 || numDesign < 1) {
 
-					} else {
+                        ModLogger.log(Level.WARNING, "Encountered out of range bed design " + zipentry.getName() + ". This file will be ignored.");
 
-						if (zipentry.isDirectory()) {
-							hasDesign[numDesign] = true;
-							++numDesigns;
-						}
+                    } else {
 
-						if (zipentry.getName().endsWith("blanket.png")) {
-							hasBlanket[numDesign] = true;
-							resource_blanket[numDesign] = new ResourceLocation("carpentersblocks", "textures/blocks/bed/design_" + numDesign + "/blanket.png");
-						}
+                        if (zipentry.isDirectory()) {
+                            hasDesign[numDesign] = true;
+                            ++numDesigns;
+                        }
 
-						if (zipentry.getName().endsWith("pillow.png"))
-							hasPillow[numDesign] = true;
-					}
-				}
-			}
+                        if (zipentry.getName().endsWith("blanket.png")) {
+                            hasBlanket[numDesign] = true;
+                            resource_blanket[numDesign] = new ResourceLocation("carpentersblocks", "textures/blocks/bed/design_" + numDesign + "/blanket.png");
+                        }
 
-			if (numDesigns > 0)
-				ModLogger.log(Level.INFO, "Successfully loaded " + numDesigns + " bed design" + (numDesigns > 1 ? "s." : "."));
+                        if (zipentry.getName().endsWith("pillow.png"))
+                            hasPillow[numDesign] = true;
+                    }
+                }
+            }
 
-			mod.close();
-		}
-		catch (Exception e)
-		{
-			ModLogger.log(Level.WARNING, "Encountered a problem while initializing bed designs: " + e.getMessage());
-		}
+            if (numDesigns > 0)
+                ModLogger.log(Level.INFO, "Successfully loaded " + numDesigns + " bed design" + (numDesigns > 1 ? "s." : "."));
 
-		return true;
-	}
+            mod.close();
+        }
+        catch (Exception e)
+        {
+            ModLogger.log(Level.WARNING, "Encountered a problem while initializing bed designs: " + e.getMessage());
+        }
 
-	/**
-	 * Returns the next design in number sequence.
-	 */
-	public static int getNext(int inDesign)
-	{
-		for (int outDesign = ++inDesign; outDesign < maxNum; ++outDesign)
-			if (hasDesign[outDesign])
-				return outDesign;
+        return true;
+    }
 
-		return 0;
-	}
+    /**
+     * Returns the next design in number sequence.
+     */
+    public static int getNext(int inDesign)
+    {
+        for (int outDesign = ++inDesign; outDesign < maxNum; ++outDesign)
+            if (hasDesign[outDesign])
+                return outDesign;
 
-	/**
-	 * Returns the previous design in number sequence.
-	 */
-	public static int getPrev(int inDesign)
-	{
-		if (inDesign == 0)
-			inDesign = maxNum;
+        return 0;
+    }
 
-		for (int outDesign = inDesign - 1; outDesign > 0; --outDesign)
-			if (hasDesign[outDesign])
-				return outDesign;
+    /**
+     * Returns the previous design in number sequence.
+     */
+    public static int getPrev(int inDesign)
+    {
+        if (inDesign == 0)
+            inDesign = maxNum;
 
-		return 0;
-	}
+        for (int outDesign = inDesign - 1; outDesign > 0; --outDesign)
+            if (hasDesign[outDesign])
+                return outDesign;
+
+        return 0;
+    }
 
 }

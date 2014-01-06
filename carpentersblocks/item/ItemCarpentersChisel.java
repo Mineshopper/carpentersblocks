@@ -12,35 +12,35 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemCarpentersChisel extends Item implements ICarpentersChisel {
 
-	public ItemCarpentersChisel(int itemID)
-	{
-		super(itemID);
-		setUnlocalizedName("itemCarpentersChisel");
-		setMaxStackSize(1);
-		setCreativeTab(CarpentersBlocks.tabCarpentersBlocks);
+    public ItemCarpentersChisel(int itemID)
+    {
+        super(itemID);
+        setUnlocalizedName("itemCarpentersChisel");
+        setMaxStackSize(1);
+        setCreativeTab(CarpentersBlocks.tabCarpentersBlocks);
 
-		if (ItemRegistry.itemCarpentersToolsDamageable) {
-			setMaxDamage(300);
-		}
-	}
+        if (ItemRegistry.itemCarpentersToolsDamageable) {
+            setMaxDamage(ItemRegistry.itemCarpentersToolsUses);
+        }
+    }
 
-	@SideOnly(Side.CLIENT)
-	@Override
-	public void registerIcons(IconRegister iconRegister)
-	{
-		itemIcon = iconRegister.registerIcon("carpentersblocks:chisel");
-	}
+    @SideOnly(Side.CLIENT)
+    @Override
+    public void registerIcons(IconRegister iconRegister)
+    {
+        itemIcon = iconRegister.registerIcon("carpentersblocks:chisel");
+    }
 
-	@Override
-	public void onChiselUse(World world, EntityPlayer entityPlayer)
-	{
-		entityPlayer.getCurrentEquippedItem().damageItem(1, entityPlayer);
-	}
+    @Override
+    public void onChiselUse(World world, EntityPlayer entityPlayer)
+    {
+        entityPlayer.getCurrentEquippedItem().damageItem(1, entityPlayer);
+    }
 
-	@Override
-	public boolean canUseChisel(World world, EntityPlayer entityPlayer)
-	{
-		return true;
-	}
+    @Override
+    public boolean canUseChisel(World world, EntityPlayer entityPlayer)
+    {
+        return true;
+    }
 
 }
