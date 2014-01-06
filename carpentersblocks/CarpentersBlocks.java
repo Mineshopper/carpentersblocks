@@ -17,49 +17,41 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 
-@Mod(
-		modid = "CarpentersBlocks",
-		name = "Carpenter's Blocks",
-		version = "v1.9.9"
-		)
-@NetworkMod(
-		clientSideRequired = true,
-		serverSideRequired = false
-		)
-public class CarpentersBlocks
-{
+@Mod(modid = "CarpentersBlocks", name = "Carpenter's Blocks", version = "v2.0.0")
+@NetworkMod(clientSideRequired = true, serverSideRequired = false)
+public class CarpentersBlocks {
 
-	@Instance("CarpentersBlocks")
-	public static CarpentersBlocks instance;
+    @Instance("CarpentersBlocks")
+    public static CarpentersBlocks instance;
 
-	@SidedProxy(clientSide = "carpentersblocks.proxy.ClientProxy", serverSide = "carpentersblocks.proxy.CommonProxy")
-	public static CommonProxy proxy;
+    @SidedProxy(clientSide = "carpentersblocks.proxy.ClientProxy", serverSide = "carpentersblocks.proxy.CommonProxy")
+    public static CommonProxy proxy;
 
-	public static CreativeTabs tabCarpentersBlocks = new CarpentersBlocksTab("carpentersBlocks");
+    public static CreativeTabs tabCarpentersBlocks = new CarpentersBlocksTab("carpentersBlocks");
 
-	@EventHandler
-	public void preInit(FMLPreInitializationEvent event)
-	{
-		Configuration config = new Configuration(event.getSuggestedConfigurationFile());
+    @EventHandler
+    public void preInit(FMLPreInitializationEvent event)
+    {
+        Configuration config = new Configuration(event.getSuggestedConfigurationFile());
 
-		config.load();
-		FeatureRegistry.initFeatures(event, config);
-		BlockRegistry.initBlocks(event, config);
-		ItemRegistry.initItems(event, config);
-		config.save();
+        config.load();
+        FeatureRegistry.initFeatures(event, config);
+        BlockRegistry.initBlocks(event, config);
+        ItemRegistry.initItems(event, config);
+        config.save();
 
-		ModLogger.init();
+        ModLogger.init();
 
-		proxy.registerHandlers(event);
-		proxy.registerRenderInformation(event);
-	}
+        proxy.registerHandlers(event);
+        proxy.registerRenderInformation(event);
+    }
 
-	@EventHandler
-	public void init(FMLInitializationEvent event)
-	{
-		TileEntityHandler.registerTileEntities();
-		BlockRegistry.registerBlocks();
-		ItemRegistry.registerItems();
-	}
+    @EventHandler
+    public void init(FMLInitializationEvent event)
+    {
+        TileEntityHandler.registerTileEntities();
+        BlockRegistry.registerBlocks();
+        ItemRegistry.registerItems();
+    }
 
 }
