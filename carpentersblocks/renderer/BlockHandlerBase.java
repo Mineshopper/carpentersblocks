@@ -119,7 +119,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
             /* Will render a fluid block in this space if valid. */
 
             if (FeatureRegistry.enableFancyFluids) {
-                if (renderPass >= 0 && Minecraft.isFancyGraphicsEnabled() && BlockProperties.hasCover(TE, 6)) {
+                if (renderPass >= 0 && FMLClientHandler.instance().getClient().isFancyGraphicsEnabled() && BlockProperties.hasCover(TE, 6)) {
                     if (FancyFluidsHelper.render(TE, lightingHelper, renderBlocks, x, y, z, renderPass)) {
                         result = true;
                     }
@@ -732,7 +732,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
      */
     protected boolean getEnableAO(Block block)
     {
-        return Minecraft.isAmbientOcclusionEnabled() && !disableAO && Block.lightValue[block.blockID] == 0;
+        return FMLClientHandler.instance().getClient().isAmbientOcclusionEnabled() && !disableAO && Block.lightValue[block.blockID] == 0;
     }
 
     /**
