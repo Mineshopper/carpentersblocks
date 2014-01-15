@@ -63,55 +63,57 @@ public class ItemCarpentersDoor extends Item {
 
     private void placeDoorBlock(World world, int x, int y, int z, int facing, Block block)
     {
-        world.setBlock(x, y, z, block.blockID);
+        if (world.setBlock(x, y, z, block.blockID)) {
 
-        BlockProperties.playBlockSound(world, BlockRegistry.blockCarpentersDoor, x, y, z);
+            BlockProperties.playBlockSound(world, BlockRegistry.blockCarpentersDoor, x, y, z);
 
-        /*
-         * Create bottom door piece.
-         */
-        TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
-        Door.setFacing(TE, facing);
-        Door.setHingeSide(TE, getHingePoint(TE, block.blockID));
-        Door.setPiece(TE, Door.PIECE_BOTTOM);
+            /* Create bottom door piece. */
 
-        /*
-         * Match door type and rigidity with adjacent type if possible
-         */
-        TEBase TE_XN = world.getBlockId(x - 1, y, z) == block.blockID ? (TEBase) world.getBlockTileEntity(x - 1, y, z) : null;
-        TEBase TE_XP = world.getBlockId(x + 1, y, z) == block.blockID ? (TEBase) world.getBlockTileEntity(x + 1, y, z) : null;
-        TEBase TE_ZN = world.getBlockId(x, y, z - 1) == block.blockID ? (TEBase) world.getBlockTileEntity(x, y, z - 1) : null;
-        TEBase TE_ZP = world.getBlockId(x, y, z + 1) == block.blockID ? (TEBase) world.getBlockTileEntity(x, y, z + 1) : null;
+            TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
+            Door.setFacing(TE, facing);
+            Door.setHingeSide(TE, getHingePoint(TE, block.blockID));
+            Door.setPiece(TE, Door.PIECE_BOTTOM);
 
-        int type = 0;
-        if (TE_XN != null) {
-            Door.setType(TE, Door.getType(TE_XN));
-            Door.setRigidity(TE, Door.getRigidity(TE_XN));
-            type = Door.getType(TE_XN);
-        } else if (TE_XP != null) {
-            Door.setType(TE, Door.getType(TE_XP));
-            Door.setRigidity(TE, Door.getRigidity(TE_XP));
-            type = Door.getType(TE_XP);
-        } else if (TE_ZN != null) {
-            Door.setType(TE, Door.getType(TE_ZN));
-            Door.setRigidity(TE, Door.getRigidity(TE_ZN));
-            type = Door.getType(TE_ZN);
-        } else if (TE_ZP != null) {
-            Door.setType(TE, Door.getType(TE_ZP));
-            Door.setRigidity(TE, Door.getRigidity(TE_ZP));
-            type = Door.getType(TE_ZP);
+            /* Match door type and rigidity with adjacent type if possible. */
+
+            TEBase TE_XN = world.getBlockId(x - 1, y, z) == block.blockID ? (TEBase) world.getBlockTileEntity(x - 1, y, z) : null;
+            TEBase TE_XP = world.getBlockId(x + 1, y, z) == block.blockID ? (TEBase) world.getBlockTileEntity(x + 1, y, z) : null;
+            TEBase TE_ZN = world.getBlockId(x, y, z - 1) == block.blockID ? (TEBase) world.getBlockTileEntity(x, y, z - 1) : null;
+            TEBase TE_ZP = world.getBlockId(x, y, z + 1) == block.blockID ? (TEBase) world.getBlockTileEntity(x, y, z + 1) : null;
+
+            int type = 0;
+            if (TE_XN != null) {
+                Door.setType(TE, Door.getType(TE_XN));
+                Door.setRigidity(TE, Door.getRigidity(TE_XN));
+                type = Door.getType(TE_XN);
+            } else if (TE_XP != null) {
+                Door.setType(TE, Door.getType(TE_XP));
+                Door.setRigidity(TE, Door.getRigidity(TE_XP));
+                type = Door.getType(TE_XP);
+            } else if (TE_ZN != null) {
+                Door.setType(TE, Door.getType(TE_ZN));
+                Door.setRigidity(TE, Door.getRigidity(TE_ZN));
+                type = Door.getType(TE_ZN);
+            } else if (TE_ZP != null) {
+                Door.setType(TE, Door.getType(TE_ZP));
+                Door.setRigidity(TE, Door.getRigidity(TE_ZP));
+                type = Door.getType(TE_ZP);
+            }
+
+            /* Create top door piece. */
+
+            if (world.setBlock(x, y + 1, z, block.blockID)) {
+
+                TEBase TE_YP = (TEBase) world.getBlockTileEntity(x, y + 1, z);
+                Door.setFacing(TE_YP, facing);
+                Door.setType(TE_YP, type);
+                Door.setHingeSide(TE_YP, Door.getHinge(TE));
+                Door.setPiece(TE_YP, Door.PIECE_TOP);
+                Door.setRigidity(TE_YP, Door.getRigidity(TE));
+
+            }
+
         }
-
-        /*
-         * Create top door piece.
-         */
-        world.setBlock(x, y + 1, z, block.blockID);
-        TEBase TE_YP = (TEBase) world.getBlockTileEntity(x, y + 1, z);
-        Door.setFacing(TE_YP, facing);
-        Door.setType(TE_YP, type);
-        Door.setHingeSide(TE_YP, Door.getHinge(TE));
-        Door.setPiece(TE_YP, Door.PIECE_TOP);
-        Door.setRigidity(TE_YP, Door.getRigidity(TE));
     }
 
     /**
