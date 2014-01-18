@@ -127,7 +127,7 @@ public class BlockRegistry {
      */
     public static void initBlocks(FMLPreInitializationEvent event, Configuration config)
     {
-        int baseBlockID = 2401;
+        int baseBlockID = 3505;
 
         enableSlope            = config.get("control",             "Enable Slope",            enableSlope).getBoolean(enableSlope);
         enableStairs           = config.get("control",            "Enable Stairs",           enableStairs).getBoolean(enableStairs);
@@ -272,7 +272,8 @@ public class BlockRegistry {
         if (enableTorch) {
             blockCarpentersTorch = new BlockCarpentersTorch(blockCarpentersTorchID);
             GameRegistry.registerBlock(blockCarpentersTorch, "blockCarpentersTorch");
-            GameRegistry.addRecipe(new ItemStack(blockCarpentersTorch, recipeQuantityTorch), new Object[] {"X", "Y", 'X', Item.coal, 'Y', blockCarpentersBlock});
+            GameRegistry.addRecipe(new ItemStack(blockCarpentersTorch, recipeQuantityTorch), new Object[] {"X", "Y", 'X', new ItemStack(Item.coal, 1, 0), 'Y', blockCarpentersBlock});
+            GameRegistry.addRecipe(new ItemStack(blockCarpentersTorch, recipeQuantityTorch), new Object[] {"X", "Y", 'X', new ItemStack(Item.coal, 1, 1), 'Y', blockCarpentersBlock});
         }
 
         if (enableSafe) {
