@@ -14,107 +14,116 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class HelperTriangle extends RenderHelper {
 
     /**
-     * Renders the given texture to the North face of the block.
+     * Renders a half triangle on the North left face of the block.
      */
-    public static void renderFaceZNeg(RenderBlocks renderBlocks, double x, double y, double z, Icon icon)
+    public static void renderFaceZNegXPos(RenderBlocks renderBlocks, double x, double y, double z, Icon icon)
     {
         boolean floatingHeight = iconHasFloatingHeight(icon);
 
-        /* Render left (XPos) half of triangle. */
-
-        renderBlocks.setRenderBounds(0.5D, 0.0D, 0.0D, 1.0D, 0.5D, 1.0D);
         prepareRender(renderBlocks, NORTH, x, y, z, icon);
 
-        setupVertex(renderBlocks, xMin, yMax, zMin, UV_NORTH[renderBlocks.uvRotateNorth][0][0], floatingHeight ? vMax : UV_NORTH[renderBlocks.uvRotateNorth][0][1], TOP_CENTER);
-        setupVertex(renderBlocks, xMax, yMin, zMin, UV_NORTH[renderBlocks.uvRotateNorth][2][0], floatingHeight ? vMax : UV_NORTH[renderBlocks.uvRotateNorth][2][1], BOTTOM_LEFT);
-        setupVertex(renderBlocks, xMin, yMin, zMin, UV_NORTH[renderBlocks.uvRotateNorth][3][0], UV_NORTH[renderBlocks.uvRotateNorth][3][1], BOTTOM_CENTER);
+        setupVertex(renderBlocks, xMax, yMin, zMin, uBL, floatingHeight ? icon.getMaxV() : vBL, BOTTOM_LEFT );
+        setupVertex(renderBlocks, xMin, yMin, zMin, uBR,                                   vBR, BOTTOM_RIGHT);
+        setupVertex(renderBlocks, xMin, yMax, zMin, uTR, floatingHeight ? icon.getMaxV() : vTR, TOP_RIGHT   );
+    }
 
-        /* Render right (XNeg) half of triangle. */
+    /**
+     * Renders a half triangle on the North right face of the block.
+     */
+    public static void renderFaceZNegXNeg(RenderBlocks renderBlocks, double x, double y, double z, Icon icon)
+    {
+        boolean floatingHeight = iconHasFloatingHeight(icon);
 
         renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 0.5D, 0.5D, 1.0D);
         prepareRender(renderBlocks, NORTH, x, y, z, icon);
 
-        setupVertex(renderBlocks, xMax, yMax, zMin, UV_NORTH[renderBlocks.uvRotateNorth][1][0], floatingHeight ? vMax : UV_NORTH[renderBlocks.uvRotateNorth][0][1], TOP_CENTER);
-        setupVertex(renderBlocks, xMax, yMin, zMin, UV_NORTH[renderBlocks.uvRotateNorth][2][0], UV_NORTH[renderBlocks.uvRotateNorth][2][1], BOTTOM_CENTER);
-        setupVertex(renderBlocks, xMin, yMin, zMin, UV_NORTH[renderBlocks.uvRotateNorth][3][0], floatingHeight ? vMax : UV_NORTH[renderBlocks.uvRotateNorth][3][1], BOTTOM_RIGHT);
+        setupVertex(renderBlocks, xMax, yMax, zMin, uTL, floatingHeight ? icon.getMaxV() : vTL, TOP_LEFT    );
+        setupVertex(renderBlocks, xMax, yMin, zMin, uBL,                                   vBL, BOTTOM_LEFT );
+        setupVertex(renderBlocks, xMin, yMin, zMin, uBR, floatingHeight ? icon.getMaxV() : vBR, BOTTOM_RIGHT);
     }
 
     /**
-     * Renders the given texture to the South face of the block.
+     * Renders a half triangle on the South left face of the block.
      */
-    public static void renderFaceZPos(RenderBlocks renderBlocks, double x, double y, double z, Icon icon)
+    public static void renderFaceZPosXNeg(RenderBlocks renderBlocks, double x, double y, double z, Icon icon)
     {
         boolean floatingHeight = iconHasFloatingHeight(icon);
 
-        /* Render left (XNeg) half of triangle. */
-
-        renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 0.5D, 0.5D, 1.0D);
         prepareRender(renderBlocks, SOUTH, x, y, z, icon);
 
-        setupVertex(renderBlocks, xMin, yMin, zMax, UV_SOUTH[renderBlocks.uvRotateSouth][1][0], floatingHeight ? vMax : UV_SOUTH[renderBlocks.uvRotateSouth][1][1], BOTTOM_LEFT);
-        setupVertex(renderBlocks, xMax, yMin, zMax, UV_SOUTH[renderBlocks.uvRotateSouth][2][0], UV_SOUTH[renderBlocks.uvRotateSouth][2][1], BOTTOM_CENTER);
-        setupVertex(renderBlocks, xMax, yMax, zMax, UV_SOUTH[renderBlocks.uvRotateSouth][3][0], floatingHeight ? vMax : UV_SOUTH[renderBlocks.uvRotateSouth][3][1], TOP_CENTER);
+        setupVertex(renderBlocks, xMin, yMin, zMax, uBL, floatingHeight ? icon.getMaxV() : vBL, BOTTOM_LEFT );
+        setupVertex(renderBlocks, xMax, yMin, zMax, uBR,                                   vBR, BOTTOM_RIGHT);
+        setupVertex(renderBlocks, xMax, yMax, zMax, uTR, floatingHeight ? icon.getMaxV() : vTR, TOP_RIGHT   );
+    }
 
-        /* Render right (XPos) half of triangle. */
+    /**
+     * Renders a half triangle on the South right face of the block.
+     */
+    public static void renderFaceZPosXPos(RenderBlocks renderBlocks, double x, double y, double z, Icon icon)
+    {
+        boolean floatingHeight = iconHasFloatingHeight(icon);
 
-        renderBlocks.setRenderBounds(0.5D, 0.0D, 0.0D, 1.0D, 0.5D, 1.0D);
         prepareRender(renderBlocks, SOUTH, x, y, z, icon);
 
-        setupVertex(renderBlocks, xMin, yMin, zMax, UV_SOUTH[renderBlocks.uvRotateSouth][1][0], UV_SOUTH[renderBlocks.uvRotateSouth][1][1], BOTTOM_CENTER);
-        setupVertex(renderBlocks, xMax, yMin, zMax, UV_SOUTH[renderBlocks.uvRotateSouth][2][0], floatingHeight ? vMax : UV_SOUTH[renderBlocks.uvRotateSouth][2][1], BOTTOM_RIGHT);
-        setupVertex(renderBlocks, xMin, yMax, zMax, UV_SOUTH[renderBlocks.uvRotateSouth][0][0], floatingHeight ? vMax : UV_SOUTH[renderBlocks.uvRotateSouth][3][1], TOP_CENTER);
+        setupVertex(renderBlocks, xMin, yMin, zMax, uBL,                                   vBL, BOTTOM_LEFT );
+        setupVertex(renderBlocks, xMax, yMin, zMax, uBR, floatingHeight ? icon.getMaxV() : vBR, BOTTOM_RIGHT);
+        setupVertex(renderBlocks, xMin, yMax, zMax, uTL, floatingHeight ? icon.getMaxV() : vTL, TOP_LEFT    );
     }
 
     /**
-     * Renders the given texture to the West face of the block.
+     * Renders a half triangle on the West left face of the block.
      */
-    public static void renderFaceXNeg(RenderBlocks renderBlocks, double x, double y, double z, Icon icon)
+    public static void renderFaceXNegZNeg(RenderBlocks renderBlocks, double x, double y, double z, Icon icon)
     {
         boolean floatingHeight = iconHasFloatingHeight(icon);
 
-        /* Render left (ZNeg) half of triangle. */
-
-        renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 0.5D, 0.5D);
         prepareRender(renderBlocks, WEST, x, y, z, icon);
 
-        setupVertex(renderBlocks, xMin, yMax, zMax, UV_WEST[renderBlocks.uvRotateWest][0][0], floatingHeight ? vMax : UV_WEST[renderBlocks.uvRotateWest][1][1], TOP_CENTER);
-        setupVertex(renderBlocks, xMin, yMin, zMin, UV_WEST[renderBlocks.uvRotateWest][2][0], floatingHeight ? vMax : UV_WEST[renderBlocks.uvRotateWest][2][1], BOTTOM_LEFT);
-        setupVertex(renderBlocks, xMin, yMin, zMax, UV_WEST[renderBlocks.uvRotateWest][3][0], UV_WEST[renderBlocks.uvRotateWest][3][1], BOTTOM_CENTER);
-
-        /* Render right (ZPos) half of triangle. */
-
-        renderBlocks.setRenderBounds(0.0D, 0.0D, 0.5D, 1.0D, 0.5D, 1.0D);
-        prepareRender(renderBlocks, WEST, x, y, z, icon);
-
-        setupVertex(renderBlocks, xMin, yMax, zMin, UV_WEST[renderBlocks.uvRotateWest][1][0], floatingHeight ? vMax : UV_WEST[renderBlocks.uvRotateWest][1][1], TOP_CENTER);
-        setupVertex(renderBlocks, xMin, yMin, zMin, UV_WEST[renderBlocks.uvRotateWest][2][0], UV_WEST[renderBlocks.uvRotateWest][2][1], BOTTOM_CENTER);
-        setupVertex(renderBlocks, xMin, yMin, zMax, UV_WEST[renderBlocks.uvRotateWest][3][0], floatingHeight ? vMax : UV_WEST[renderBlocks.uvRotateWest][3][1], BOTTOM_RIGHT);
+        setupVertex(renderBlocks, xMin, yMin, zMin, uBL, floatingHeight ? icon.getMaxV() : vBL, BOTTOM_LEFT );
+        setupVertex(renderBlocks, xMin, yMin, zMax, uBR,                                   vBR, BOTTOM_RIGHT);
+        setupVertex(renderBlocks, xMin, yMax, zMax, uTR, floatingHeight ? icon.getMaxV() : vTR, TOP_RIGHT   );
     }
 
     /**
-     * Renders the given texture to the East face of the block.
+     * Renders a half triangle on the West right face of the block.
      */
-    public static void renderFaceXPos(RenderBlocks renderBlocks, double x, double y, double z, Icon icon)
+    public static void renderFaceXNegZPos(RenderBlocks renderBlocks, double x, double y, double z, Icon icon)
     {
         boolean floatingHeight = iconHasFloatingHeight(icon);
 
-        /* Render left (ZPos) half of triangle. */
+        prepareRender(renderBlocks, WEST, x, y, z, icon);
 
-        renderBlocks.setRenderBounds(0.0D, 0.0D, 0.5D, 1.0D, 0.5D, 1.0D);
+        setupVertex(renderBlocks, xMin, yMax, zMin, uTL, floatingHeight ? icon.getMaxV() : vTL, TOP_LEFT    );
+        setupVertex(renderBlocks, xMin, yMin, zMin, uBL,                                   vBL, BOTTOM_LEFT );
+        setupVertex(renderBlocks, xMin, yMin, zMax, uBR, floatingHeight ? icon.getMaxV() : vBR, BOTTOM_RIGHT);
+    }
+
+    /**
+     * Renders a half triangle on the East left face of the block.
+     */
+    public static void renderFaceXPosZPos(RenderBlocks renderBlocks, double x, double y, double z, Icon icon)
+    {
+        boolean floatingHeight = iconHasFloatingHeight(icon);
+
         prepareRender(renderBlocks, EAST, x, y, z, icon);
 
-        setupVertex(renderBlocks, xMax, yMin, zMax, UV_EAST[renderBlocks.uvRotateEast][0][0], floatingHeight ? vMax : UV_EAST[renderBlocks.uvRotateEast][0][1], BOTTOM_LEFT);
-        setupVertex(renderBlocks, xMax, yMin, zMin, UV_EAST[renderBlocks.uvRotateEast][1][0], UV_EAST[renderBlocks.uvRotateEast][1][1], BOTTOM_CENTER);
-        setupVertex(renderBlocks, xMax, yMax, zMin, UV_EAST[renderBlocks.uvRotateEast][2][0], floatingHeight ? vMax : UV_EAST[renderBlocks.uvRotateEast][3][1], TOP_CENTER);
+        setupVertex(renderBlocks, xMax, yMin, zMax, uBL, floatingHeight ? icon.getMaxV() : vBL, BOTTOM_LEFT );
+        setupVertex(renderBlocks, xMax, yMin, zMin, uBR,                                   vBR, BOTTOM_RIGHT);
+        setupVertex(renderBlocks, xMax, yMax, zMin, uTR, floatingHeight ? icon.getMaxV() : vTR, TOP_RIGHT   );
+    }
 
-        /* Render right (ZNeg) half of triangle. */
+    /**
+     * Renders a half triangle on the East right face of the block.
+     */
+    public static void renderFaceXPosZNeg(RenderBlocks renderBlocks, double x, double y, double z, Icon icon)
+    {
+        boolean floatingHeight = iconHasFloatingHeight(icon);
 
-        renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 0.5D, 0.5D);
         prepareRender(renderBlocks, EAST, x, y, z, icon);
 
-        setupVertex(renderBlocks, xMax, yMin, zMax, UV_EAST[renderBlocks.uvRotateEast][0][0], UV_EAST[renderBlocks.uvRotateEast][0][1], BOTTOM_CENTER);
-        setupVertex(renderBlocks, xMax, yMin, zMin, UV_EAST[renderBlocks.uvRotateEast][1][0], floatingHeight ? vMax : UV_EAST[renderBlocks.uvRotateEast][1][1], BOTTOM_RIGHT);
-        setupVertex(renderBlocks, xMax, yMax, zMax, UV_EAST[renderBlocks.uvRotateEast][3][0], floatingHeight ? vMax : UV_EAST[renderBlocks.uvRotateEast][3][1], TOP_CENTER);
+        setupVertex(renderBlocks, xMax, yMax, zMax, uTL, floatingHeight ? icon.getMaxV() : vTL, TOP_LEFT    );
+        setupVertex(renderBlocks, xMax, yMin, zMax, uBL,                                   vBL, BOTTOM_LEFT );
+        setupVertex(renderBlocks, xMax, yMin, zMin, uBR, floatingHeight ? icon.getMaxV() : vBR, BOTTOM_RIGHT);
     }
 
 }

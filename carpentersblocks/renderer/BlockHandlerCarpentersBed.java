@@ -28,6 +28,7 @@ public class BlockHandlerCarpentersBed extends BlockDeterminantRender {
     {
         Block block = BlockProperties.getCoverBlock(TE, 6);
         renderNormalBed(block, x, y, z);
+
         return true;
     }
 
@@ -77,6 +78,7 @@ public class BlockHandlerCarpentersBed extends BlockDeterminantRender {
 
         if (dir.equals(ForgeDirection.NORTH) || dir.equals(ForgeDirection.SOUTH))
         {
+
             if (renderBlocks.blockAccess.getBlockId(x + 1, y, z) == srcBlock.blockID) {
                 TEBase TE_adj = (TEBase) renderBlocks.blockAccess.getBlockTileEntity(x + 1,  y,  z);
                 bedParallelPos = Bed.isHeadOfBed(TE) == Bed.isHeadOfBed(TE_adj) && Bed.getDirection(TE) == Bed.getDirection(TE_adj);

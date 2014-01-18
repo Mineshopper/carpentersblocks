@@ -20,11 +20,12 @@ public class HelperPyramid extends RenderHelper {
     {
         prepareRender(renderBlocks, NORTH, x, y, z, icon);
 
-        double uMid = uMax - (uMax - uMin) / 2;
+        double uBM  = uBR  - (uBR  -  uBL) / 2;
+        double xMid = xMax - (xMax - xMin) / 2;
 
-        setupVertex(renderBlocks, xMin, yMax, zMin, uMax, vMax, TOP_RIGHT);
-        setupVertex(renderBlocks, xMax, yMax, zMin, uMin, vMax, TOP_LEFT);
-        setupVertex(renderBlocks, x + 0.5F, y + 0.5F, z + 0.5F, uMid, vMin, BOTTOM_CENTER);
+        setupVertex(renderBlocks, xMax, yMax, zMin, uTL, vTL, NORTHEAST );
+        setupVertex(renderBlocks, xMid, yMin, zMax, uBM, vBR, TOP_CENTER);
+        setupVertex(renderBlocks, xMin, yMax, zMin, uTR, vTR, NORTHWEST );
     }
 
     /**
@@ -34,11 +35,12 @@ public class HelperPyramid extends RenderHelper {
     {
         prepareRender(renderBlocks, SOUTH, x, y, z, icon);
 
-        double uMid = uMax - (uMax - uMin) / 2;
+        double uBM  = uBR  - (uBR  -  uBL) / 2;
+        double xMid = xMax - (xMax - xMin) / 2;
 
-        setupVertex(renderBlocks, xMin, yMax, zMax, uMin, vMax, TOP_LEFT);
-        setupVertex(renderBlocks, x + 0.5F, y + 0.5F, z + 0.5F, uMid, vMin, BOTTOM_CENTER);
-        setupVertex(renderBlocks, xMax, yMax, zMax, uMax, vMax, TOP_RIGHT);
+        setupVertex(renderBlocks, xMin, yMax, zMax, uTL, vTL, SOUTHWEST    );
+        setupVertex(renderBlocks, xMid, yMin, zMin, uBM, vBR, BOTTOM_CENTER);
+        setupVertex(renderBlocks, xMax, yMax, zMax, uTR, vTR, SOUTHEAST    );
     }
 
     /**
@@ -48,11 +50,12 @@ public class HelperPyramid extends RenderHelper {
     {
         prepareRender(renderBlocks, WEST, x, y, z, icon);
 
-        double uMid = uMax - (uMax - uMin) / 2;
+        double uBM  = uBR  - (uBR  -  uBL) / 2;
+        double zMid = zMax - (zMax - zMin) / 2;
 
-        setupVertex(renderBlocks, xMin, yMax, zMax, uMax, vMax, TOP_RIGHT);
-        setupVertex(renderBlocks, xMin, yMax, zMin, uMin, vMax, TOP_LEFT);
-        setupVertex(renderBlocks, x + 0.5F, y + 0.5F, z + 0.5F, uMid, vMin, BOTTOM_CENTER);
+        setupVertex(renderBlocks, xMin, yMax, zMin, uTL, vTL, NORTHWEST  );
+        setupVertex(renderBlocks, xMax, yMin, zMid, uBM, vBR, LEFT_CENTER);
+        setupVertex(renderBlocks, xMin, yMax, zMax, uTR, vTR, SOUTHWEST  );
     }
 
     /**
@@ -62,11 +65,12 @@ public class HelperPyramid extends RenderHelper {
     {
         prepareRender(renderBlocks, EAST, x, y, z, icon);
 
-        double uMid = uMax - (uMax - uMin) / 2;
+        double uBM  = uBR  - (uBR  -  uBL) / 2;
+        double zMid = zMax - (zMax - zMin) / 2;
 
-        setupVertex(renderBlocks, x + 0.5F, y + 0.5F, z + 0.5F, uMid, vMin, BOTTOM_CENTER);
-        setupVertex(renderBlocks, xMax, yMax, zMin, uMax, vMax, TOP_RIGHT);
-        setupVertex(renderBlocks, xMax, yMax, zMax, uMin, vMax, TOP_LEFT);
+        setupVertex(renderBlocks, xMax, yMax, zMax, uTL, vTL, SOUTHEAST   );
+        setupVertex(renderBlocks, xMin, yMin, zMid, uBM, vBR, RIGHT_CENTER);
+        setupVertex(renderBlocks, xMax, yMax, zMin, uTR, vTR, NORTHEAST   );
     }
 
     /**
@@ -76,11 +80,12 @@ public class HelperPyramid extends RenderHelper {
     {
         prepareRender(renderBlocks, NORTH, x, y, z, icon);
 
-        double uMid = uMax - (uMax - uMin) / 2;
+        double uTM  = uTR  - (uTR  -  uTL) / 2;
+        double xMid = xMax - (xMax - xMin) / 2;
 
-        setupVertex(renderBlocks, xMax, yMin, zMin, uMin, vMin, BOTTOM_LEFT);
-        setupVertex(renderBlocks, xMin, yMin, zMin, uMax, vMin, BOTTOM_RIGHT);
-        setupVertex(renderBlocks, x + 0.5F, y + 0.5F, z + 0.5F, uMid, vMax, TOP_CENTER);
+        setupVertex(renderBlocks, xMid, yMax, zMax, uTM, vTL, TOP_CENTER  );
+        setupVertex(renderBlocks, xMax, yMin, zMin, uBL, vBL, NORTHEAST   );
+        setupVertex(renderBlocks, xMin, yMin, zMin, uBR, vBR, NORTHWEST   );
     }
 
     /**
@@ -90,11 +95,12 @@ public class HelperPyramid extends RenderHelper {
     {
         prepareRender(renderBlocks, SOUTH, x, y, z, icon);
 
-        double uMid = uMax - (uMax - uMin) / 2;
+        double uTM  = uTR  - (uTR  -  uTL) / 2;
+        double xMid = xMax - (xMax - xMin) / 2;
 
-        setupVertex(renderBlocks, xMax, yMin, zMax, uMax, vMin, BOTTOM_RIGHT);
-        setupVertex(renderBlocks, x + 0.5F, y + 0.5F, z + 0.5F, uMid, vMax, TOP_CENTER);
-        setupVertex(renderBlocks, xMin, yMin, zMax, uMin, vMin, BOTTOM_LEFT);
+        setupVertex(renderBlocks, xMid, yMax, zMin, uTM, vTL, BOTTOM_CENTER);
+        setupVertex(renderBlocks, xMin, yMin, zMax, uBL, vBL, SOUTHWEST    );
+        setupVertex(renderBlocks, xMax, yMin, zMax, uBR, vBR, SOUTHEAST    );
     }
 
     /**
@@ -104,11 +110,12 @@ public class HelperPyramid extends RenderHelper {
     {
         prepareRender(renderBlocks, WEST, x, y, z, icon);
 
-        double uMid = uMax - (uMax - uMin) / 2;
+        double uTM  = uTR  - (uTR  -  uTL) / 2;
+        double zMid = zMax - (zMax - zMin) / 2;
 
-        setupVertex(renderBlocks, x + 0.5F, y + 0.5F, z + 0.5F, uMid, vMax, TOP_CENTER);
-        setupVertex(renderBlocks, xMin, yMin, zMin, uMin, vMin, BOTTOM_LEFT);
-        setupVertex(renderBlocks, xMin, yMin, zMax, uMax, vMin, BOTTOM_RIGHT);
+        setupVertex(renderBlocks, xMax, yMax, zMid, uTM, vTL, LEFT_CENTER );
+        setupVertex(renderBlocks, xMin, yMin, zMin, uBL, vBL, NORTHWEST   );
+        setupVertex(renderBlocks, xMin, yMin, zMax, uBR, vBR, SOUTHWEST   );
     }
 
     /**
@@ -118,11 +125,12 @@ public class HelperPyramid extends RenderHelper {
     {
         prepareRender(renderBlocks, EAST, x, y, z, icon);
 
-        double uMid = uMax - (uMax - uMin) / 2;
+        double uTM  = uTR  - (uTR  -  uTL) / 2;
+        double zMid = zMax - (zMax - zMin) / 2;
 
-        setupVertex(renderBlocks, xMax, yMin, zMax, uMin, vMin, BOTTOM_LEFT);
-        setupVertex(renderBlocks, xMax, yMin, zMin, uMax, vMin, BOTTOM_RIGHT);
-        setupVertex(renderBlocks, x + 0.5F, y + 0.5F, z + 0.5F, uMid, vMax, TOP_CENTER);
+        setupVertex(renderBlocks, xMin, yMax, zMid, uTM, vTR, RIGHT_CENTER);
+        setupVertex(renderBlocks, xMax, yMin, zMax, uBL, vBL, SOUTHEAST   );
+        setupVertex(renderBlocks, xMax, yMin, zMin, uBR, vBR, NORTHEAST   );
     }
 
 }

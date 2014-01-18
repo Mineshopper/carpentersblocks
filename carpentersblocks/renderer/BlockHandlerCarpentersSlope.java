@@ -49,46 +49,50 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
     private static final int NORMAL_ZP              = 3;
     private static final int NORMAL_XN              = 4;
     private static final int NORMAL_XP              = 5;
-    private static final int TRIANGLE_XN            = 6;
-    private static final int TRIANGLE_XP            = 7;
-    private static final int TRIANGLE_ZN            = 8;
-    private static final int TRIANGLE_ZP            = 9;
-    private static final int WEDGE_YN               = 10;
-    private static final int WEDGE_YP               = 11;
-    private static final int WEDGE_SLOPED_ZN        = 12;
-    private static final int WEDGE_ZN               = 13;
-    private static final int WEDGE_SLOPED_ZP        = 14;
-    private static final int WEDGE_ZP               = 15;
-    private static final int WEDGE_SLOPED_XN        = 16;
-    private static final int WEDGE_XN               = 17;
-    private static final int WEDGE_SLOPED_XP        = 18;
-    private static final int WEDGE_XP               = 19;
-    private static final int WEDGE_CORNER_SLOPED_ZN = 20;
-    private static final int WEDGE_CORNER_SLOPED_ZP = 21;
-    private static final int WEDGE_CORNER_SLOPED_XN = 22;
-    private static final int WEDGE_CORNER_SLOPED_XP = 23;
-    private static final int OBL_CORNER_SLOPED_YN   = 24;
-    private static final int OBL_CORNER_SLOPED_YP   = 25;
-    private static final int PYR_YZNN               = 26;
-    private static final int PYR_YZNP               = 27;
-    private static final int PYR_YXNN               = 28;
-    private static final int PYR_YXNP               = 29;
-    private static final int PYR_YZPN               = 30;
-    private static final int PYR_YZPP               = 31;
-    private static final int PYR_YXPN               = 32;
-    private static final int PYR_YXPP               = 33;
-    private static final int PRISM_NORTH_XN         = 34;
-    private static final int PRISM_NORTH_XP         = 35;
-    private static final int PRISM_SOUTH_XN         = 36;
-    private static final int PRISM_SOUTH_XP         = 37;
-    private static final int PRISM_WEST_ZN          = 38;
-    private static final int PRISM_WEST_ZP          = 39;
-    private static final int PRISM_EAST_ZN          = 40;
-    private static final int PRISM_EAST_ZP          = 41;
-    private static final int PRISM_WEDGE_ZN         = 42;
-    private static final int PRISM_WEDGE_ZP         = 43;
-    private static final int PRISM_WEDGE_XN         = 44;
-    private static final int PRISM_WEDGE_XP         = 45;
+    private static final int TRIANGLE_XZNN          = 6;
+    private static final int TRIANGLE_XZNP          = 7;
+    private static final int TRIANGLE_XZPP          = 8;
+    private static final int TRIANGLE_XZPN          = 9;
+    private static final int TRIANGLE_ZXNP          = 10;
+    private static final int TRIANGLE_ZXNN          = 11;
+    private static final int TRIANGLE_ZXPN          = 12;
+    private static final int TRIANGLE_ZXPP          = 13;
+    private static final int WEDGE_YN               = 14;
+    private static final int WEDGE_YP               = 15;
+    private static final int WEDGE_SLOPED_ZN        = 16;
+    private static final int WEDGE_ZN               = 17;
+    private static final int WEDGE_SLOPED_ZP        = 18;
+    private static final int WEDGE_ZP               = 19;
+    private static final int WEDGE_SLOPED_XN        = 20;
+    private static final int WEDGE_XN               = 21;
+    private static final int WEDGE_SLOPED_XP        = 22;
+    private static final int WEDGE_XP               = 23;
+    private static final int WEDGE_CORNER_SLOPED_ZN = 24;
+    private static final int WEDGE_CORNER_SLOPED_ZP = 25;
+    private static final int WEDGE_CORNER_SLOPED_XN = 26;
+    private static final int WEDGE_CORNER_SLOPED_XP = 27;
+    private static final int OBL_CORNER_SLOPED_YN   = 28;
+    private static final int OBL_CORNER_SLOPED_YP   = 29;
+    private static final int PYR_YZNN               = 30;
+    private static final int PYR_YZNP               = 31;
+    private static final int PYR_YXNN               = 32;
+    private static final int PYR_YXNP               = 33;
+    private static final int PYR_YZPN               = 34;
+    private static final int PYR_YZPP               = 35;
+    private static final int PYR_YXPN               = 36;
+    private static final int PYR_YXPP               = 37;
+    private static final int PRISM_NORTH_XN         = 38;
+    private static final int PRISM_NORTH_XP         = 39;
+    private static final int PRISM_SOUTH_XN         = 40;
+    private static final int PRISM_SOUTH_XP         = 41;
+    private static final int PRISM_WEST_ZN          = 42;
+    private static final int PRISM_WEST_ZP          = 43;
+    private static final int PRISM_EAST_ZN          = 44;
+    private static final int PRISM_EAST_ZP          = 45;
+    private static final int PRISM_WEDGE_ZN         = 46;
+    private static final int PRISM_WEDGE_ZP         = 47;
+    private static final int PRISM_WEDGE_XN         = 48;
+    private static final int PRISM_WEDGE_XP         = 49;
 
     private final float LIGHTNESS_XYNN              = 0.55F;
     private final float LIGHTNESS_XYPN              = 0.55F;
@@ -100,7 +104,7 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
     private final float LIGHTNESS_ZYPP              = 0.9F;
     private final float LIGHTNESS_SIDE_WEDGE        = 0.7F;
     private final float LIGHTNESS_POS_OBL           = 0.9F;
-    private final float LIGHTNESS_NEG_OBL           = 0.55F;
+    private final float LIGHTNESS_NEG_OBL           = 0.65F;
 
     @Override
     public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderBlocks)
@@ -193,17 +197,29 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
         case NORMAL_XP:
             RenderHelper.renderFaceXPos(renderBlocks, x, y, z, icon);
             break;
-        case TRIANGLE_XN:
-            HelperTriangle.renderFaceXNeg(renderBlocks, x, y, z, icon);
+        case TRIANGLE_XZNN:
+            HelperTriangle.renderFaceXNegZNeg(renderBlocks, x, y, z, icon);
             break;
-        case TRIANGLE_XP:
-            HelperTriangle.renderFaceXPos(renderBlocks, x, y, z, icon);
+        case TRIANGLE_XZNP:
+            HelperTriangle.renderFaceXNegZPos(renderBlocks, x, y, z, icon);
             break;
-        case TRIANGLE_ZN:
-            HelperTriangle.renderFaceZNeg(renderBlocks, x, y, z, icon);
+        case TRIANGLE_XZPP:
+            HelperTriangle.renderFaceXPosZPos(renderBlocks, x, y, z, icon);
             break;
-        case TRIANGLE_ZP:
-            HelperTriangle.renderFaceZPos(renderBlocks, x, y, z, icon);
+        case TRIANGLE_XZPN:
+            HelperTriangle.renderFaceXPosZNeg(renderBlocks, x, y, z, icon);
+            break;
+        case TRIANGLE_ZXNP:
+            HelperTriangle.renderFaceZNegXPos(renderBlocks, x, y, z, icon);
+            break;
+        case TRIANGLE_ZXNN:
+            HelperTriangle.renderFaceZNegXNeg(renderBlocks, x, y, z, icon);
+            break;
+        case TRIANGLE_ZXPN:
+            HelperTriangle.renderFaceZPosXNeg(renderBlocks, x, y, z, icon);
+            break;
+        case TRIANGLE_ZXPP:
+            HelperTriangle.renderFaceZPosXPos(renderBlocks, x, y, z, icon);
             break;
         case WEDGE_YN:
             HelperOrthoWedge.renderFaceYNeg(renderBlocks, slopeID, x, y, z, icon);
@@ -326,8 +342,10 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
 
         renderBlocks.enableAO = getEnableAO(block);
 
-        setRenderBoundsAndRelight(block, 6, 0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
-        populateOffsetLighting(block, x, y, z);
+        for (int side = 0; side < 6; ++side) {
+            populateLighting(block, side);
+            populateOffsetLighting(block, x, y, z, side);
+        }
 
         /* Render sloped faces. */
 
@@ -405,14 +423,14 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
      */
     private void preparePrism(Block block, Slope slope, int x, int y, int z)
     {
-        int PRISM_N = 0;
-        int PRISM_S = 1;
-        int PRISM_W = 2;
-        int PRISM_E = 3;
-        int PYR_POS_N = 4;
-        int PYR_POS_S = 5;
-        int PYR_POS_W = 6;
-        int PYR_POS_E = 7;
+        int PRISM_N     = 0;
+        int PRISM_S     = 1;
+        int PRISM_W     = 2;
+        int PRISM_E     = 3;
+        int PYR_POS_N   = 4;
+        int PYR_POS_S   = 5;
+        int PYR_POS_W   = 6;
+        int PYR_POS_E   = 7;
         int WEDGE_POS_N = 8;
         int WEDGE_POS_S = 9;
         int WEDGE_POS_W = 10;
@@ -471,75 +489,76 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
         RenderHelper.startDrawing(TRIANGLES);
 
         if (pieceList.contains(PRISM_N)) {
-            setRenderBoundsAndRelight(block, 6, 0.0D, 0.0D, 0.0D, 0.5D, 0.5D, 1.0D);
+            renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 0.5D, 0.5D, 0.5D);
+            populateLighting(block, UP);
+            populateOffsetLighting(block, x, y, z, UP);
             lightingHelper.setLightness(LIGHTNESS_XYNP);
             setWedgeSlopeLighting(Slope.WEDGE_POS_W);
-            renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 0.5D, 0.5D, 0.5D);
             setIDAndRender(block, PRISM_NORTH_XN, x, y, z, WEST);
-            setRenderBoundsAndRelight(block, 6, 0.5D, 0.0D, 0.0D, 1.0D, 0.5D, 1.0D);
-            lightingHelper.setLightness(LIGHTNESS_XYNP);
-            setWedgeSlopeLighting(Slope.WEDGE_POS_E);
             renderBlocks.setRenderBounds(0.5D, 0.0D, 0.0D, 1.0D, 0.5D, 0.5D);
+            lightingHelper.setLightingYPos(block, x, y, z);
+            populateLighting(block, UP);
+            populateOffsetLighting(block, x, y, z, UP);
+            lightingHelper.setLightness(LIGHTNESS_XYPP);
+            setWedgeSlopeLighting(Slope.WEDGE_POS_E);
             setIDAndRender(block, PRISM_NORTH_XP, x, y, z, EAST);
         }
         if (pieceList.contains(PRISM_S)) {
-            setRenderBoundsAndRelight(block, 6, 0.0D, 0.0D, 0.0D, 0.5D, 0.5D, 1.0D);
+            renderBlocks.setRenderBounds(0.0D, 0.0D, 0.5D, 0.5D, 0.5D, 1.0D);
+            populateLighting(block, UP);
+            populateOffsetLighting(block, x, y, z, UP);
             lightingHelper.setLightness(LIGHTNESS_XYNP);
             setWedgeSlopeLighting(Slope.WEDGE_POS_W);
-            renderBlocks.setRenderBounds(0.0D, 0.0D, 0.5D, 0.5D, 0.5D, 1.0D);
             setIDAndRender(block, PRISM_SOUTH_XN, x, y, z, WEST);
-            setRenderBoundsAndRelight(block, 6, 0.5D, 0.0D, 0.0D, 1.0D, 0.5D, 1.0D);
-            lightingHelper.setLightness(LIGHTNESS_XYNP);
-            setWedgeSlopeLighting(Slope.WEDGE_POS_E);
             renderBlocks.setRenderBounds(0.5D, 0.0D, 0.5D, 1.0D, 0.5D, 1.0D);
+            populateLighting(block, UP);
+            populateOffsetLighting(block, x, y, z, UP);
+            lightingHelper.setLightness(LIGHTNESS_XYPP);
+            setWedgeSlopeLighting(Slope.WEDGE_POS_E);
             setIDAndRender(block, PRISM_SOUTH_XP, x, y, z, EAST);
         }
         if (pieceList.contains(PRISM_W)) {
-            setRenderBoundsAndRelight(block, 6, 0.0D, 0.0D, 0.0D, 1.0D, 0.5D, 0.5D);
+            renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 0.5D, 0.5D, 0.5D);
+            populateLighting(block, UP);
+            populateOffsetLighting(block, x, y, z, UP);
             lightingHelper.setLightness(LIGHTNESS_ZYNP);
             setWedgeSlopeLighting(Slope.WEDGE_POS_N);
-            renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 0.5D, 0.5D, 0.5D);
             setIDAndRender(block, PRISM_WEST_ZN, x, y, z, NORTH);
-            setRenderBoundsAndRelight(block, 6, 0.0D, 0.0D, 0.5D, 1.0D, 0.5D, 1.0D);
-            lightingHelper.setLightness(LIGHTNESS_ZYNP);
-            setWedgeSlopeLighting(Slope.WEDGE_POS_S);
             renderBlocks.setRenderBounds(0.0D, 0.0D, 0.5D, 0.5D, 0.5D, 1.0D);
+            populateLighting(block, UP);
+            populateOffsetLighting(block, x, y, z, UP);
+            lightingHelper.setLightness(LIGHTNESS_ZYPP);
+            setWedgeSlopeLighting(Slope.WEDGE_POS_S);
             setIDAndRender(block, PRISM_WEST_ZP, x, y, z, SOUTH);
         }
         if (pieceList.contains(PRISM_E)) {
-            setRenderBoundsAndRelight(block, 6, 0.0D, 0.0D, 0.0D, 1.0D, 0.5D, 0.5D);
+            renderBlocks.setRenderBounds(0.5D, 0.0D, 0.0D, 1.0D, 0.5D, 0.5D);
+            populateLighting(block, UP);
+            populateOffsetLighting(block, x, y, z, UP);
             lightingHelper.setLightness(LIGHTNESS_ZYNP);
             setWedgeSlopeLighting(Slope.WEDGE_POS_N);
-            renderBlocks.setRenderBounds(0.5D, 0.0D, 0.0D, 1.0D, 0.5D, 0.5D);
             setIDAndRender(block, PRISM_EAST_ZN, x, y, z, NORTH);
-            setRenderBoundsAndRelight(block, 6, 0.0D, 0.0D, 0.5D, 1.0D, 0.5D, 1.0D);
-            lightingHelper.setLightness(LIGHTNESS_ZYNP);
-            setWedgeSlopeLighting(Slope.WEDGE_POS_S);
             renderBlocks.setRenderBounds(0.5D, 0.0D, 0.5D, 1.0D, 0.5D, 1.0D);
+            populateLighting(block, UP);
+            populateOffsetLighting(block, x, y, z, UP);
+            lightingHelper.setLightness(LIGHTNESS_ZYPP);
+            setWedgeSlopeLighting(Slope.WEDGE_POS_S);
             setIDAndRender(block, PRISM_EAST_ZP, x, y, z, SOUTH);
         }
         if (pieceList.contains(PYR_POS_N)) {
-            setRenderBoundsAndRelight(block, 6, 0.0D, 0.0D, 0.0D, 1.0D, 0.5D, 0.5D);
-            lightingHelper.setLightness(LIGHTNESS_ZYNP);
-            setWedgeSlopeLighting(Slope.WEDGE_POS_N);
+            setPyramidLighting(block, x, y, z, Slope.PYR_HALF_POS, NORTH);
             setIDAndRender(block, PYR_YZPN, x, y, z, NORTH);
         }
         if (pieceList.contains(PYR_POS_S)) {
-            setRenderBoundsAndRelight(block, 6, 0.0D, 0.0D, 0.5D, 1.0D, 0.5D, 1.0D);
-            lightingHelper.setLightness(LIGHTNESS_ZYPP);
-            setWedgeSlopeLighting(Slope.WEDGE_POS_S);
+            setPyramidLighting(block, x, y, z, Slope.PYR_HALF_POS, SOUTH);
             setIDAndRender(block, PYR_YZPP, x, y, z, SOUTH);
         }
         if (pieceList.contains(PYR_POS_W)) {
-            setRenderBoundsAndRelight(block, 6, 0.0D, 0.0D, 0.0D, 0.5D, 0.5D, 1.0D);
-            lightingHelper.setLightness(LIGHTNESS_XYNP);
-            setWedgeSlopeLighting(Slope.WEDGE_POS_W);
+            setPyramidLighting(block, x, y, z, Slope.PYR_HALF_POS, WEST);
             setIDAndRender(block, PYR_YXPN, x, y, z, WEST);
         }
         if (pieceList.contains(PYR_POS_E)) {
-            setRenderBoundsAndRelight(block, 6, 0.5D, 0.0D, 0.0D, 1.0D, 0.5D, 1.0D);
-            lightingHelper.setLightness(LIGHTNESS_XYPP);
-            setWedgeSlopeLighting(Slope.WEDGE_POS_E);
+            setPyramidLighting(block, x, y, z, Slope.PYR_HALF_POS, EAST);
             setIDAndRender(block, PYR_YXPP, x, y, z, EAST);
         }
 
@@ -547,23 +566,24 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
 
         /* Render wedge intersecting mask, if piece requires it. */
 
-        setRenderBoundsAndRelight(block, 6, 0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
+        renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
+        lightingHelper.setLightingYPos(block, x, y, z);
 
         if (pieceList.contains(WEDGE_POS_N)) {
-            setWedgeSlopeLighting(Slope.WEDGE_POS_N);
             lightingHelper.setLightness(LIGHTNESS_ZYNP);
+            setWedgeSlopeLighting(Slope.WEDGE_POS_N);
             setIDAndRender(block, PRISM_WEDGE_ZN, x, y, z, NORTH);
         } else if (pieceList.contains(WEDGE_POS_S)) {
-            setWedgeSlopeLighting(Slope.WEDGE_POS_S);
             lightingHelper.setLightness(LIGHTNESS_ZYPP);
+            setWedgeSlopeLighting(Slope.WEDGE_POS_S);
             setIDAndRender(block, PRISM_WEDGE_ZP, x, y, z, SOUTH);
         } else if (pieceList.contains(WEDGE_POS_W)) {
-            setWedgeSlopeLighting(Slope.WEDGE_POS_W);
             lightingHelper.setLightness(LIGHTNESS_XYNP);
+            setWedgeSlopeLighting(Slope.WEDGE_POS_W);
             setIDAndRender(block, PRISM_WEDGE_XN, x, y, z, WEST);
         } else if (pieceList.contains(WEDGE_POS_E)) {
-            setWedgeSlopeLighting(Slope.WEDGE_POS_E);
             lightingHelper.setLightness(LIGHTNESS_XYPP);
+            setWedgeSlopeLighting(Slope.WEDGE_POS_E);
             setIDAndRender(block, PRISM_WEDGE_XP, x, y, z, EAST);
         }
     }
@@ -576,6 +596,8 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
     {
         if (renderBlocks.enableAO)
         {
+            int FACE_Y = slope.isPositive ? UP : DOWN;
+
             switch (slope.slopeID)
             {
             case Slope.ID_WEDGE_NW:
@@ -631,107 +653,59 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
 
                 break;
             case Slope.ID_WEDGE_NEG_N:
+            case Slope.ID_WEDGE_POS_N:
 
-                lightingHelper.ao[TOP_LEFT]     = offset_ao[WEST][TOP_LEFT];
-                lightingHelper.ao[BOTTOM_LEFT]  = offset_ao[NORTH][BOTTOM_LEFT];
-                lightingHelper.ao[BOTTOM_RIGHT] = offset_ao[NORTH][BOTTOM_RIGHT];
-                lightingHelper.ao[TOP_RIGHT]    = offset_ao[EAST][TOP_RIGHT];
+                lightingHelper.ao[SOUTHEAST] = ao[FACE_Y][SOUTHEAST];
+                lightingHelper.ao[NORTHEAST] = offset_ao[FACE_Y][NORTHEAST];
+                lightingHelper.ao[NORTHWEST] = offset_ao[FACE_Y][NORTHWEST];
+                lightingHelper.ao[SOUTHWEST] = ao[FACE_Y][SOUTHWEST];
 
-                renderBlocks.brightnessTopLeft     = offset_brightness[WEST][TOP_LEFT];
-                renderBlocks.brightnessBottomLeft  = offset_brightness[NORTH][BOTTOM_LEFT];
-                renderBlocks.brightnessBottomRight = offset_brightness[NORTH][BOTTOM_RIGHT];
-                renderBlocks.brightnessTopRight    = offset_brightness[EAST][TOP_RIGHT];
+                renderBlocks.brightnessTopLeft     = brightness[FACE_Y][SOUTHEAST];
+                renderBlocks.brightnessBottomLeft  = offset_brightness[FACE_Y][NORTHEAST];
+                renderBlocks.brightnessBottomRight = offset_brightness[FACE_Y][NORTHWEST];
+                renderBlocks.brightnessTopRight    = brightness[FACE_Y][SOUTHWEST];
 
                 break;
             case Slope.ID_WEDGE_NEG_S:
+            case Slope.ID_WEDGE_POS_S:
 
-                lightingHelper.ao[TOP_LEFT]     = offset_ao[EAST][TOP_LEFT];
-                lightingHelper.ao[BOTTOM_LEFT]  = offset_ao[SOUTH][BOTTOM_LEFT];
-                lightingHelper.ao[BOTTOM_RIGHT] = offset_ao[SOUTH][BOTTOM_RIGHT];
-                lightingHelper.ao[TOP_RIGHT]    = offset_ao[WEST][TOP_RIGHT];
+                lightingHelper.ao[SOUTHEAST] = offset_ao[FACE_Y][SOUTHEAST];
+                lightingHelper.ao[NORTHEAST] = ao[FACE_Y][NORTHEAST];
+                lightingHelper.ao[NORTHWEST] = ao[FACE_Y][NORTHWEST];
+                lightingHelper.ao[SOUTHWEST] = offset_ao[FACE_Y][SOUTHWEST];
 
-                renderBlocks.brightnessTopLeft     = offset_brightness[EAST][TOP_LEFT];
-                renderBlocks.brightnessBottomLeft  = offset_brightness[SOUTH][BOTTOM_LEFT];
-                renderBlocks.brightnessBottomRight = offset_brightness[SOUTH][BOTTOM_RIGHT];
-                renderBlocks.brightnessTopRight    = offset_brightness[WEST][TOP_RIGHT];
+                renderBlocks.brightnessTopLeft     = offset_brightness[FACE_Y][SOUTHEAST];
+                renderBlocks.brightnessBottomLeft  = brightness[FACE_Y][NORTHEAST];
+                renderBlocks.brightnessBottomRight = brightness[FACE_Y][NORTHWEST];
+                renderBlocks.brightnessTopRight    = offset_brightness[FACE_Y][SOUTHWEST];
 
                 break;
             case Slope.ID_WEDGE_NEG_W:
+            case Slope.ID_WEDGE_POS_W:
 
-                lightingHelper.ao[TOP_LEFT]     = offset_ao[SOUTH][TOP_LEFT];
-                lightingHelper.ao[BOTTOM_LEFT]  = offset_ao[WEST][BOTTOM_LEFT];
-                lightingHelper.ao[BOTTOM_RIGHT] = offset_ao[WEST][BOTTOM_RIGHT];
-                lightingHelper.ao[TOP_RIGHT]    = offset_ao[NORTH][TOP_RIGHT];
+                lightingHelper.ao[SOUTHEAST] = ao[FACE_Y][SOUTHEAST];
+                lightingHelper.ao[NORTHEAST] = ao[FACE_Y][NORTHEAST];
+                lightingHelper.ao[NORTHWEST] = offset_ao[FACE_Y][NORTHWEST];
+                lightingHelper.ao[SOUTHWEST] = offset_ao[FACE_Y][SOUTHWEST];
 
-                renderBlocks.brightnessTopLeft     = offset_brightness[SOUTH][TOP_LEFT];
-                renderBlocks.brightnessBottomLeft  = offset_brightness[WEST][BOTTOM_LEFT];
-                renderBlocks.brightnessBottomRight = offset_brightness[WEST][BOTTOM_RIGHT];
-                renderBlocks.brightnessTopRight    = offset_brightness[NORTH][TOP_RIGHT];
+                renderBlocks.brightnessTopLeft     = brightness[FACE_Y][SOUTHEAST];
+                renderBlocks.brightnessBottomLeft  = brightness[FACE_Y][NORTHEAST];
+                renderBlocks.brightnessBottomRight = offset_brightness[FACE_Y][NORTHWEST];
+                renderBlocks.brightnessTopRight    = offset_brightness[FACE_Y][SOUTHWEST];
 
                 break;
             case Slope.ID_WEDGE_NEG_E:
-
-                lightingHelper.ao[TOP_LEFT]     = offset_ao[NORTH][TOP_LEFT];
-                lightingHelper.ao[BOTTOM_LEFT]  = offset_ao[EAST][BOTTOM_LEFT];
-                lightingHelper.ao[BOTTOM_RIGHT] = offset_ao[EAST][BOTTOM_RIGHT];
-                lightingHelper.ao[TOP_RIGHT]    = offset_ao[SOUTH][TOP_RIGHT];
-
-                renderBlocks.brightnessTopLeft     = offset_brightness[NORTH][TOP_LEFT];
-                renderBlocks.brightnessBottomLeft  = offset_brightness[EAST][BOTTOM_LEFT];
-                renderBlocks.brightnessBottomRight = offset_brightness[EAST][BOTTOM_RIGHT];
-                renderBlocks.brightnessTopRight    = offset_brightness[SOUTH][TOP_RIGHT];
-
-                break;
-            case Slope.ID_WEDGE_POS_N:
-
-                lightingHelper.ao[TOP_LEFT]     = ao[UP][SOUTHEAST];
-                lightingHelper.ao[BOTTOM_LEFT]  = offset_ao[UP][NORTHEAST];
-                lightingHelper.ao[BOTTOM_RIGHT] = offset_ao[UP][NORTHWEST];
-                lightingHelper.ao[TOP_RIGHT]    = ao[UP][SOUTHWEST];
-
-                renderBlocks.brightnessTopLeft     = brightness[UP][SOUTHEAST];
-                renderBlocks.brightnessBottomLeft  = offset_brightness[UP][NORTHEAST];
-                renderBlocks.brightnessBottomRight = offset_brightness[UP][NORTHWEST];
-                renderBlocks.brightnessTopRight    = brightness[UP][SOUTHWEST];
-
-                break;
-            case Slope.ID_WEDGE_POS_S:
-
-                lightingHelper.ao[TOP_LEFT]     = ao[UP][NORTHWEST];
-                lightingHelper.ao[BOTTOM_LEFT]  = offset_ao[UP][SOUTHWEST];
-                lightingHelper.ao[BOTTOM_RIGHT] = offset_ao[UP][SOUTHEAST];
-                lightingHelper.ao[TOP_RIGHT]    = ao[UP][NORTHEAST];
-
-                renderBlocks.brightnessTopLeft     = brightness[UP][NORTHWEST];
-                renderBlocks.brightnessBottomLeft  = offset_brightness[UP][SOUTHWEST];
-                renderBlocks.brightnessBottomRight = offset_brightness[UP][SOUTHEAST];
-                renderBlocks.brightnessTopRight    = brightness[UP][NORTHEAST];
-
-                break;
-            case Slope.ID_WEDGE_POS_W:
-
-                lightingHelper.ao[TOP_LEFT]     = ao[UP][NORTHEAST];
-                lightingHelper.ao[BOTTOM_LEFT]  = offset_ao[UP][NORTHWEST];
-                lightingHelper.ao[BOTTOM_RIGHT] = offset_ao[UP][SOUTHWEST];
-                lightingHelper.ao[TOP_RIGHT]    = ao[UP][SOUTHEAST];
-
-                renderBlocks.brightnessTopLeft     = brightness[UP][NORTHEAST];
-                renderBlocks.brightnessBottomLeft  = offset_brightness[UP][NORTHWEST];
-                renderBlocks.brightnessBottomRight = offset_brightness[UP][SOUTHWEST];
-                renderBlocks.brightnessTopRight    = brightness[UP][SOUTHEAST];
-
-                break;
             case Slope.ID_WEDGE_POS_E:
 
-                lightingHelper.ao[TOP_LEFT]     = ao[UP][SOUTHWEST];
-                lightingHelper.ao[BOTTOM_LEFT]  = offset_ao[UP][SOUTHEAST];
-                lightingHelper.ao[BOTTOM_RIGHT] = offset_ao[UP][NORTHEAST];
-                lightingHelper.ao[TOP_RIGHT]    = ao[UP][NORTHWEST];
+                lightingHelper.ao[SOUTHEAST] = offset_ao[FACE_Y][SOUTHEAST];
+                lightingHelper.ao[NORTHEAST] = offset_ao[FACE_Y][NORTHEAST];
+                lightingHelper.ao[NORTHWEST] = ao[FACE_Y][NORTHWEST];
+                lightingHelper.ao[SOUTHWEST] = ao[FACE_Y][SOUTHWEST];
 
-                renderBlocks.brightnessTopLeft     = brightness[UP][SOUTHWEST];
-                renderBlocks.brightnessBottomLeft  = offset_brightness[UP][SOUTHEAST];
-                renderBlocks.brightnessBottomRight = offset_brightness[UP][NORTHEAST];
-                renderBlocks.brightnessTopRight    = brightness[UP][NORTHWEST];
+                renderBlocks.brightnessTopLeft     = offset_brightness[FACE_Y][SOUTHEAST];
+                renderBlocks.brightnessBottomLeft  = offset_brightness[FACE_Y][NORTHEAST];
+                renderBlocks.brightnessBottomRight = brightness[FACE_Y][NORTHWEST];
+                renderBlocks.brightnessTopRight    = brightness[FACE_Y][SOUTHWEST];
 
                 break;
             }
@@ -836,58 +810,90 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
             switch (slope.slopeID) {
             case Slope.ID_OBL_INT_NEG_NW:
 
-                lightingHelper.ao[TOP_LEFT]     = offset_ao[DOWN][NORTHWEST];
-                lightingHelper.ao[BOTTOM_LEFT]  = (ao[NORTH][BOTTOM_LEFT] + offset_ao[WEST][BOTTOM_LEFT] + offset_ao[UP][NORTHEAST]) / 3;
-                lightingHelper.ao[BOTTOM_RIGHT] = (ao[WEST][BOTTOM_RIGHT] + offset_ao[NORTH][BOTTOM_RIGHT] + offset_ao[UP][SOUTHWEST]) / 3;
+                lightingHelper.ao[NORTHEAST] = ao[DOWN][NORTHEAST];
+                lightingHelper.ao[NORTHWEST] = offset_ao[DOWN][NORTHWEST];
+                lightingHelper.ao[SOUTHWEST] = ao[DOWN][SOUTHWEST];
+
+                renderBlocks.brightnessBottomLeft  = brightness[DOWN][NORTHEAST];
+                renderBlocks.brightnessBottomRight = offset_brightness[DOWN][NORTHWEST];
+                renderBlocks.brightnessTopRight    = brightness[DOWN][SOUTHWEST];
 
                 break;
             case Slope.ID_OBL_INT_NEG_NE:
 
-                lightingHelper.ao[TOP_LEFT]     = offset_ao[DOWN][NORTHEAST];
-                lightingHelper.ao[BOTTOM_LEFT]  = (ao[EAST][BOTTOM_LEFT] + offset_ao[NORTH][BOTTOM_LEFT] + offset_ao[UP][SOUTHEAST]) / 3;
-                lightingHelper.ao[BOTTOM_RIGHT] = (ao[NORTH][BOTTOM_RIGHT] + offset_ao[EAST][BOTTOM_RIGHT] + offset_ao[UP][NORTHWEST]) / 3;
+                lightingHelper.ao[SOUTHEAST] = ao[DOWN][SOUTHEAST];
+                lightingHelper.ao[NORTHEAST] = offset_ao[DOWN][NORTHEAST];
+                lightingHelper.ao[NORTHWEST] = ao[DOWN][NORTHWEST];
+
+                renderBlocks.brightnessTopLeft     = brightness[DOWN][SOUTHEAST];
+                renderBlocks.brightnessBottomLeft  = offset_brightness[DOWN][NORTHEAST];
+                renderBlocks.brightnessBottomRight = brightness[DOWN][NORTHWEST];
 
                 break;
             case Slope.ID_OBL_INT_NEG_SW:
 
-                lightingHelper.ao[TOP_LEFT]     = offset_ao[DOWN][SOUTHWEST];
-                lightingHelper.ao[BOTTOM_LEFT]  = (ao[WEST][BOTTOM_LEFT] + offset_ao[SOUTH][BOTTOM_LEFT] + offset_ao[UP][NORTHWEST]) / 3;
-                lightingHelper.ao[BOTTOM_RIGHT] = (ao[SOUTH][BOTTOM_RIGHT] + offset_ao[WEST][BOTTOM_RIGHT] + offset_ao[UP][SOUTHEAST]) / 3;
+                lightingHelper.ao[SOUTHEAST] = ao[DOWN][SOUTHEAST];
+                lightingHelper.ao[NORTHWEST] = ao[DOWN][NORTHWEST];
+                lightingHelper.ao[SOUTHWEST] = offset_ao[DOWN][SOUTHWEST];
+
+                renderBlocks.brightnessTopLeft     = brightness[DOWN][SOUTHEAST];
+                renderBlocks.brightnessBottomRight = brightness[DOWN][NORTHWEST];
+                renderBlocks.brightnessTopRight    = offset_brightness[DOWN][SOUTHWEST];
 
                 break;
             case Slope.ID_OBL_INT_NEG_SE:
 
-                lightingHelper.ao[TOP_LEFT]     = offset_ao[DOWN][SOUTHEAST];
-                lightingHelper.ao[BOTTOM_LEFT]  = (ao[SOUTH][BOTTOM_LEFT] + offset_ao[EAST][BOTTOM_LEFT] + offset_ao[UP][SOUTHWEST]) / 3;
-                lightingHelper.ao[BOTTOM_RIGHT] = (ao[EAST][BOTTOM_RIGHT] + offset_ao[SOUTH][BOTTOM_RIGHT] + offset_ao[UP][NORTHEAST]) / 3;
+                lightingHelper.ao[SOUTHEAST] = offset_ao[DOWN][SOUTHEAST];
+                lightingHelper.ao[NORTHEAST] = ao[DOWN][NORTHEAST];
+                lightingHelper.ao[SOUTHWEST] = ao[DOWN][SOUTHWEST];
+
+                renderBlocks.brightnessTopLeft    = offset_brightness[DOWN][SOUTHEAST];
+                renderBlocks.brightnessBottomLeft = brightness[DOWN][NORTHEAST];
+                renderBlocks.brightnessTopRight   = brightness[DOWN][SOUTHWEST];
 
                 break;
             case Slope.ID_OBL_INT_POS_NW:
 
-                lightingHelper.ao[TOP_LEFT]     = (ao[NORTH][TOP_LEFT] + offset_ao[WEST][TOP_LEFT] + ao[UP][NORTHEAST]) / 3;
-                lightingHelper.ao[BOTTOM_LEFT]  = offset_ao[UP][NORTHWEST];
-                lightingHelper.ao[TOP_RIGHT]    = (ao[WEST][TOP_RIGHT] + offset_ao[NORTH][TOP_RIGHT] + ao[UP][SOUTHWEST]) / 3;
+                lightingHelper.ao[NORTHEAST] = ao[UP][NORTHEAST];
+                lightingHelper.ao[NORTHWEST] = offset_ao[UP][NORTHWEST];
+                lightingHelper.ao[SOUTHWEST] = ao[UP][SOUTHWEST];
+
+                renderBlocks.brightnessBottomLeft  = brightness[UP][NORTHEAST];
+                renderBlocks.brightnessBottomRight = offset_brightness[UP][NORTHWEST];
+                renderBlocks.brightnessTopRight    = brightness[UP][SOUTHWEST];
 
                 break;
             case Slope.ID_OBL_INT_POS_NE:
 
-                lightingHelper.ao[TOP_LEFT]     = (ao[EAST][TOP_LEFT] + offset_ao[NORTH][TOP_LEFT] + ao[UP][NORTHWEST]) / 3;
-                lightingHelper.ao[BOTTOM_LEFT]  = offset_ao[UP][NORTHEAST];
-                lightingHelper.ao[TOP_RIGHT]    = (ao[NORTH][TOP_RIGHT] + offset_ao[EAST][TOP_RIGHT] + ao[UP][NORTHWEST]) / 3;
+                lightingHelper.ao[SOUTHEAST] = ao[UP][SOUTHEAST];
+                lightingHelper.ao[NORTHEAST] = offset_ao[UP][NORTHEAST];
+                lightingHelper.ao[NORTHWEST] = ao[UP][NORTHWEST];
+
+                renderBlocks.brightnessTopLeft     = brightness[UP][SOUTHEAST];
+                renderBlocks.brightnessBottomLeft  = offset_brightness[UP][NORTHEAST];
+                renderBlocks.brightnessBottomRight = brightness[UP][NORTHWEST];
 
                 break;
             case Slope.ID_OBL_INT_POS_SW:
 
-                lightingHelper.ao[TOP_LEFT]     = (ao[WEST][TOP_LEFT] + offset_ao[SOUTH][TOP_LEFT] + ao[UP][NORTHWEST]) / 3;
-                lightingHelper.ao[BOTTOM_LEFT]  = offset_ao[UP][SOUTHWEST];
-                lightingHelper.ao[TOP_RIGHT]    = (ao[SOUTH][TOP_RIGHT] + offset_ao[WEST][TOP_RIGHT] + ao[UP][SOUTHEAST]) / 3;
+                lightingHelper.ao[SOUTHEAST] = ao[UP][SOUTHEAST];
+                lightingHelper.ao[NORTHWEST] = ao[UP][NORTHWEST];
+                lightingHelper.ao[SOUTHWEST] = offset_ao[UP][SOUTHWEST];
+
+                renderBlocks.brightnessTopLeft     = brightness[UP][SOUTHEAST];
+                renderBlocks.brightnessBottomRight = brightness[UP][NORTHWEST];
+                renderBlocks.brightnessTopRight    = offset_brightness[UP][SOUTHWEST];
 
                 break;
             case Slope.ID_OBL_INT_POS_SE:
 
-                lightingHelper.ao[TOP_LEFT]     = (ao[SOUTH][TOP_LEFT] + offset_ao[EAST][TOP_LEFT] + ao[UP][SOUTHWEST]) / 3;
-                lightingHelper.ao[BOTTOM_LEFT]  = offset_ao[UP][SOUTHEAST];
-                lightingHelper.ao[TOP_RIGHT]    = (ao[EAST][TOP_RIGHT] + offset_ao[SOUTH][TOP_RIGHT] + ao[UP][NORTHEAST]) / 3;
+                lightingHelper.ao[SOUTHEAST] = offset_ao[UP][SOUTHEAST];
+                lightingHelper.ao[NORTHEAST] = ao[UP][NORTHEAST];
+                lightingHelper.ao[SOUTHWEST] = ao[UP][SOUTHWEST];
+
+                renderBlocks.brightnessTopLeft    = offset_brightness[UP][SOUTHEAST];
+                renderBlocks.brightnessBottomLeft = brightness[UP][NORTHEAST];
+                renderBlocks.brightnessTopRight   = brightness[UP][SOUTHWEST];
 
                 break;
             }
@@ -899,7 +905,7 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
             setIDAndRender(block, OBL_CORNER_SLOPED_YP, x, y, z, NORTH);
         } else {
             lightingHelper.setLightness(LIGHTNESS_NEG_OBL);
-            setIDAndRender(block, OBL_CORNER_SLOPED_YN, x, y, z, SOUTH);
+            setIDAndRender(block, OBL_CORNER_SLOPED_YN, x, y, z, NORTH);
         }
     }
 
@@ -912,58 +918,90 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
             switch (slope.slopeID) {
             case Slope.ID_OBL_EXT_NEG_NW:
 
-                lightingHelper.ao[TOP_LEFT]     = offset_ao[WEST][TOP_LEFT];
-                lightingHelper.ao[BOTTOM_LEFT]  = (offset_ao[WEST][BOTTOM_RIGHT] + offset_ao[NORTH][BOTTOM_LEFT]) / 2;
-                lightingHelper.ao[TOP_RIGHT]    = offset_ao[NORTH][TOP_RIGHT];
+                lightingHelper.ao[SOUTHEAST] = ao[DOWN][SOUTHEAST];
+                lightingHelper.ao[NORTHEAST] = offset_ao[DOWN][NORTHEAST];
+                lightingHelper.ao[SOUTHWEST] = offset_ao[DOWN][SOUTHWEST];
+
+                renderBlocks.brightnessTopLeft    = brightness[DOWN][SOUTHEAST];
+                renderBlocks.brightnessBottomLeft = offset_brightness[DOWN][NORTHEAST];
+                renderBlocks.brightnessTopRight   = offset_brightness[DOWN][SOUTHWEST];
 
                 break;
             case Slope.ID_OBL_EXT_NEG_NE:
 
-                lightingHelper.ao[TOP_LEFT]     = offset_ao[NORTH][TOP_LEFT];
-                lightingHelper.ao[BOTTOM_LEFT]  = (offset_ao[EAST][BOTTOM_LEFT] + offset_ao[NORTH][BOTTOM_RIGHT]) / 2;
-                lightingHelper.ao[TOP_RIGHT]    = offset_ao[EAST][TOP_RIGHT];
+                lightingHelper.ao[SOUTHEAST] = offset_ao[DOWN][SOUTHEAST];
+                lightingHelper.ao[NORTHWEST] = offset_ao[DOWN][NORTHWEST];
+                lightingHelper.ao[SOUTHWEST] = ao[DOWN][SOUTHWEST];
+
+                renderBlocks.brightnessTopLeft     = offset_brightness[DOWN][SOUTHEAST];
+                renderBlocks.brightnessBottomRight = offset_brightness[DOWN][NORTHWEST];
+                renderBlocks.brightnessTopRight    = brightness[DOWN][SOUTHWEST];
 
                 break;
             case Slope.ID_OBL_EXT_NEG_SW:
 
-                lightingHelper.ao[TOP_LEFT]     = offset_ao[SOUTH][TOP_LEFT];
-                lightingHelper.ao[BOTTOM_LEFT]  = (offset_ao[WEST][BOTTOM_LEFT] + offset_ao[SOUTH][BOTTOM_RIGHT]) / 2;
-                lightingHelper.ao[TOP_RIGHT]    = offset_ao[WEST][TOP_RIGHT];
+                lightingHelper.ao[SOUTHEAST] = offset_ao[DOWN][SOUTHEAST];
+                lightingHelper.ao[NORTHEAST] = ao[DOWN][NORTHEAST];
+                lightingHelper.ao[NORTHWEST] = offset_ao[DOWN][NORTHWEST];
+
+                renderBlocks.brightnessTopLeft     = offset_brightness[DOWN][SOUTHEAST];
+                renderBlocks.brightnessBottomLeft  = brightness[DOWN][NORTHEAST];
+                renderBlocks.brightnessBottomRight = offset_brightness[DOWN][NORTHWEST];
 
                 break;
             case Slope.ID_OBL_EXT_NEG_SE:
 
-                lightingHelper.ao[TOP_LEFT]     = offset_ao[EAST][TOP_LEFT];
-                lightingHelper.ao[BOTTOM_LEFT]  = (offset_ao[SOUTH][BOTTOM_LEFT] + offset_ao[EAST][BOTTOM_RIGHT]) / 2;
-                lightingHelper.ao[TOP_RIGHT]    = offset_ao[SOUTH][TOP_RIGHT];
+                lightingHelper.ao[NORTHEAST] = offset_ao[DOWN][NORTHEAST];
+                lightingHelper.ao[NORTHWEST] = ao[DOWN][NORTHWEST];
+                lightingHelper.ao[SOUTHWEST] = offset_ao[DOWN][SOUTHWEST];
+
+                renderBlocks.brightnessBottomLeft  = offset_brightness[DOWN][NORTHEAST];
+                renderBlocks.brightnessBottomRight = brightness[DOWN][NORTHWEST];
+                renderBlocks.brightnessTopRight    = offset_brightness[DOWN][SOUTHWEST];
 
                 break;
             case Slope.ID_OBL_EXT_POS_NW:
 
-                lightingHelper.ao[TOP_LEFT]     = (offset_ao[WEST][TOP_RIGHT] + offset_ao[NORTH][TOP_LEFT] + ao[UP][SOUTHEAST] + 1.0F) / 4F;
-                lightingHelper.ao[BOTTOM_LEFT]  = offset_ao[UP][NORTHEAST];
-                lightingHelper.ao[BOTTOM_RIGHT] = offset_ao[UP][SOUTHWEST];
+                lightingHelper.ao[SOUTHEAST] = ao[UP][SOUTHEAST];
+                lightingHelper.ao[NORTHEAST] = offset_ao[UP][NORTHEAST];
+                lightingHelper.ao[SOUTHWEST] = offset_ao[UP][SOUTHWEST];
+
+                renderBlocks.brightnessTopLeft    = brightness[UP][SOUTHEAST];
+                renderBlocks.brightnessBottomLeft = offset_brightness[UP][NORTHEAST];
+                renderBlocks.brightnessTopRight   = offset_brightness[UP][SOUTHWEST];
 
                 break;
             case Slope.ID_OBL_EXT_POS_NE:
 
-                lightingHelper.ao[TOP_LEFT]     = (offset_ao[EAST][TOP_LEFT] + offset_ao[NORTH][TOP_RIGHT] + ao[UP][SOUTHWEST] + 1.0F) / 4F;
-                lightingHelper.ao[BOTTOM_LEFT]  = offset_ao[UP][SOUTHEAST];
-                lightingHelper.ao[BOTTOM_RIGHT] = offset_ao[UP][NORTHWEST];
+                lightingHelper.ao[SOUTHEAST] = offset_ao[UP][SOUTHEAST];
+                lightingHelper.ao[NORTHWEST] = offset_ao[UP][NORTHWEST];
+                lightingHelper.ao[SOUTHWEST] = ao[UP][SOUTHWEST];
+
+                renderBlocks.brightnessTopLeft     = offset_brightness[UP][SOUTHEAST];
+                renderBlocks.brightnessBottomRight = offset_brightness[UP][NORTHWEST];
+                renderBlocks.brightnessTopRight    = brightness[UP][SOUTHWEST];
 
                 break;
             case Slope.ID_OBL_EXT_POS_SW:
 
-                lightingHelper.ao[TOP_LEFT]     = (offset_ao[WEST][TOP_LEFT] + offset_ao[SOUTH][TOP_RIGHT] + ao[UP][NORTHEAST] + 1.0F) / 4F;
-                lightingHelper.ao[BOTTOM_LEFT]  = offset_ao[UP][NORTHWEST];
-                lightingHelper.ao[BOTTOM_RIGHT] = offset_ao[UP][SOUTHEAST];
+                lightingHelper.ao[SOUTHEAST] = offset_ao[UP][SOUTHEAST];
+                lightingHelper.ao[NORTHEAST] = ao[UP][NORTHEAST];
+                lightingHelper.ao[NORTHWEST] = offset_ao[UP][NORTHWEST];
+
+                renderBlocks.brightnessTopLeft     = offset_brightness[UP][SOUTHEAST];
+                renderBlocks.brightnessBottomLeft  = brightness[UP][NORTHEAST];
+                renderBlocks.brightnessBottomRight = offset_brightness[UP][NORTHWEST];
 
                 break;
             case Slope.ID_OBL_EXT_POS_SE:
 
-                lightingHelper.ao[TOP_LEFT]     = (offset_ao[SOUTH][TOP_LEFT] + offset_ao[EAST][TOP_RIGHT] + ao[UP][NORTHWEST] + 1.0F) / 4F;
-                lightingHelper.ao[BOTTOM_LEFT]  = offset_ao[UP][SOUTHWEST];
-                lightingHelper.ao[BOTTOM_RIGHT] = offset_ao[UP][NORTHEAST];
+                lightingHelper.ao[NORTHEAST] = offset_ao[UP][NORTHEAST];
+                lightingHelper.ao[NORTHWEST] = ao[UP][NORTHWEST];
+                lightingHelper.ao[SOUTHWEST] = offset_ao[UP][SOUTHWEST];
+
+                renderBlocks.brightnessBottomLeft  = offset_brightness[UP][NORTHEAST];
+                renderBlocks.brightnessBottomRight = brightness[UP][NORTHWEST];
+                renderBlocks.brightnessTopRight    = offset_brightness[UP][SOUTHWEST];
 
                 break;
             }
@@ -979,60 +1017,107 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
         }
     }
 
+    private void setPyramidLighting(Block block, int x, int y, int z, Slope slope, int side)
+    {
+        if (slope.isPositive) {
+
+            switch (side) {
+            case NORTH:
+                renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 0.5D, 0.5D);
+                populateLighting(block, UP);
+                populateOffsetLighting(block, x, y, z, UP);
+                lightingHelper.setLightness(LIGHTNESS_ZYNP);
+                setWedgeSlopeLighting(Slope.WEDGE_POS_N);
+                break;
+            case SOUTH:
+                renderBlocks.setRenderBounds(0.0D, 0.0D, 0.5D, 1.0D, 0.5D, 1.0D);
+                populateLighting(block, UP);
+                populateOffsetLighting(block, x, y, z, UP);
+                lightingHelper.setLightness(LIGHTNESS_ZYPP);
+                setWedgeSlopeLighting(Slope.WEDGE_POS_S);
+                break;
+            case WEST:
+                renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 0.5D, 0.5D, 1.0D);
+                populateLighting(block, UP);
+                populateOffsetLighting(block, x, y, z, UP);
+                lightingHelper.setLightness(LIGHTNESS_XYNP);
+                setWedgeSlopeLighting(Slope.WEDGE_POS_W);
+                break;
+            case EAST:
+                renderBlocks.setRenderBounds(0.5D, 0.0D, 0.0D, 1.0D, 0.5D, 1.0D);
+                populateLighting(block, UP);
+                populateOffsetLighting(block, x, y, z, UP);
+                lightingHelper.setLightness(LIGHTNESS_XYPP);
+                setWedgeSlopeLighting(Slope.WEDGE_POS_E);
+                break;
+            }
+
+        } else {
+
+            switch (side) {
+            case NORTH:
+                renderBlocks.setRenderBounds(0.0D, 0.5D, 0.0D, 1.0D, 1.0D, 0.5D);
+                populateLighting(block, UP);
+                populateOffsetLighting(block, x, y, z, UP);
+                lightingHelper.setLightness(LIGHTNESS_ZYNN);
+                setWedgeSlopeLighting(Slope.WEDGE_NEG_N);
+                break;
+            case SOUTH:
+                renderBlocks.setRenderBounds(0.0D, 0.5D, 0.5D, 1.0D, 1.0D, 1.0D);
+                populateLighting(block, UP);
+                populateOffsetLighting(block, x, y, z, UP);
+                lightingHelper.setLightness(LIGHTNESS_ZYPN);
+                setWedgeSlopeLighting(Slope.WEDGE_NEG_S);
+                break;
+            case WEST:
+                renderBlocks.setRenderBounds(0.0D, 0.5D, 0.0D, 0.5D, 1.0D, 1.0D);
+                populateLighting(block, UP);
+                populateOffsetLighting(block, x, y, z, UP);
+                lightingHelper.setLightness(LIGHTNESS_XYNN);
+                setWedgeSlopeLighting(Slope.WEDGE_NEG_W);
+                break;
+            case EAST:
+                renderBlocks.setRenderBounds(0.5D, 0.5D, 0.0D, 1.0D, 1.0D, 1.0D);
+                populateLighting(block, UP);
+                populateOffsetLighting(block, x, y, z, UP);
+                lightingHelper.setLightness(LIGHTNESS_XYPN);
+                setWedgeSlopeLighting(Slope.WEDGE_NEG_E);
+                break;
+            }
+
+        }
+    }
+
     private void preparePyramid(Block block, Slope slope, int x, int y, int z)
     {
         RenderHelper.startDrawing(TRIANGLES);
 
         if (slope.isPositive) {
 
-            setRenderBoundsAndRelight(block, 6, 0.0D, 0.0D, 0.0D, 1.0D, 0.5D, 0.5D);
-
-            lightingHelper.setLightness(LIGHTNESS_ZYNP);
-            setWedgeSlopeLighting(Slope.WEDGE_POS_N);
+            setPyramidLighting(block, x, y, z, slope, NORTH);
             setIDAndRender(block, PYR_YZPN, x, y, z, NORTH);
 
-            setRenderBoundsAndRelight(block, 6, 0.0D, 0.0D, 0.5D, 1.0D, 0.5D, 1.0D);
-
-            lightingHelper.setLightness(LIGHTNESS_ZYPP);
-            setWedgeSlopeLighting(Slope.WEDGE_POS_S);
+            setPyramidLighting(block, x, y, z, slope, SOUTH);
             setIDAndRender(block, PYR_YZPP, x, y, z, SOUTH);
 
-            setRenderBoundsAndRelight(block, 6, 0.0D, 0.0D, 0.0D, 0.5D, 0.5D, 1.0D);
-
-            lightingHelper.setLightness(LIGHTNESS_XYNP);
-            setWedgeSlopeLighting(Slope.WEDGE_POS_W);
+            setPyramidLighting(block, x, y, z, slope, WEST);
             setIDAndRender(block, PYR_YXPN, x, y, z, WEST);
 
-            setRenderBoundsAndRelight(block, 6, 0.5D, 0.0D, 0.0D, 1.0D, 0.5D, 1.0D);
-
-            lightingHelper.setLightness(LIGHTNESS_XYPP);
-            setWedgeSlopeLighting(Slope.WEDGE_POS_E);
+            setPyramidLighting(block, x, y, z, slope, EAST);
             setIDAndRender(block, PYR_YXPP, x, y, z, EAST);
 
         } else {
 
-            setRenderBoundsAndRelight(block, 6, 0.0D, 0.5D, 0.0D, 1.0D, 1.0D, 0.5D);
-
-            lightingHelper.setLightness(LIGHTNESS_ZYNN);
-            setWedgeSlopeLighting(Slope.WEDGE_NEG_N);
+            setPyramidLighting(block, x, y, z, slope, NORTH);
             setIDAndRender(block, PYR_YZNN, x, y, z, NORTH);
 
-            setRenderBoundsAndRelight(block, 6, 0.0D, 0.5D, 0.5D, 1.0D, 1.0D, 1.0D);
-
-            lightingHelper.setLightness(LIGHTNESS_ZYPN);
-            setWedgeSlopeLighting(Slope.WEDGE_NEG_S);
+            setPyramidLighting(block, x, y, z, slope, SOUTH);
             setIDAndRender(block, PYR_YZNP, x, y, z, SOUTH);
 
-            setRenderBoundsAndRelight(block, 6, 0.0D, 0.5D, 0.0D, 0.5D, 1.0D, 1.0D);
-
-            lightingHelper.setLightness(LIGHTNESS_XYNN);
-            setWedgeSlopeLighting(Slope.WEDGE_NEG_W);
+            setPyramidLighting(block, x, y, z, slope, WEST);
             setIDAndRender(block, PYR_YXNN, x, y, z, WEST);
 
-            setRenderBoundsAndRelight(block, 6, 0.5D, 0.5D, 0.0D, 1.0D, 1.0D, 1.0D);
-
-            lightingHelper.setLightness(LIGHTNESS_XYPN);
-            setWedgeSlopeLighting(Slope.WEDGE_NEG_E);
+            setPyramidLighting(block, x, y, z, slope, EAST);
             setIDAndRender(block, PYR_YXNP, x, y, z, EAST);
 
         }
@@ -1043,15 +1128,8 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
      */
     private void prepareFaceYNeg(Block block, Slope slope, int x, int y, int z)
     {
-        if (renderBlocks.enableAO)
-        {
-            lightingHelper.ao[TOP_LEFT] = ao[DOWN][TOP_LEFT];
-            lightingHelper.ao[BOTTOM_LEFT] = ao[DOWN][BOTTOM_LEFT];
-            lightingHelper.ao[BOTTOM_RIGHT] = ao[DOWN][BOTTOM_RIGHT];
-            lightingHelper.ao[TOP_RIGHT] = ao[DOWN][TOP_RIGHT];
-        }
-
-        setRenderBoundsAndRelight(block, DOWN, 0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
+        renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
+        lightingHelper.setLightingYNeg(block, x, y, z);
 
         switch (slope.getFace(ForgeDirection.DOWN)) {
         case WEDGE:
@@ -1070,15 +1148,8 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
      */
     private void prepareFaceYPos(Block block, Slope slope, int x, int y, int z)
     {
-        if (renderBlocks.enableAO)
-        {
-            lightingHelper.ao[TOP_LEFT] = ao[UP][TOP_LEFT];
-            lightingHelper.ao[BOTTOM_LEFT] = ao[UP][BOTTOM_LEFT];
-            lightingHelper.ao[BOTTOM_RIGHT] = ao[UP][BOTTOM_RIGHT];
-            lightingHelper.ao[TOP_RIGHT] = ao[UP][TOP_RIGHT];
-        }
-
-        setRenderBoundsAndRelight(block, UP, 0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
+        renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
+        lightingHelper.setLightingYPos(block, x, y, z);
 
         switch (slope.getFace(ForgeDirection.UP)) {
         case WEDGE:
@@ -1097,28 +1168,28 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
      */
     private void prepareFaceZNeg(Block block, Slope slope, int x, int y, int z)
     {
-        if (renderBlocks.enableAO)
-        {
-            lightingHelper.ao[TOP_LEFT] = ao[NORTH][TOP_LEFT];
-            lightingHelper.ao[BOTTOM_LEFT] = ao[NORTH][BOTTOM_LEFT];
-            lightingHelper.ao[BOTTOM_RIGHT] = ao[NORTH][BOTTOM_RIGHT];
-            lightingHelper.ao[TOP_RIGHT] = ao[NORTH][TOP_RIGHT];
-        }
+        renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
+        lightingHelper.setLightingZNeg(block, x, y, z);
 
         switch (slope.getFace(ForgeDirection.NORTH)) {
         case WEDGE:
             RenderHelper.startDrawing(TRIANGLES);
-            setRenderBoundsAndRelight(block, NORTH, 0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
             setIDAndRender(block, WEDGE_ZN, x, y, z, NORTH);
             break;
         case TRIANGLE:
             RenderHelper.startDrawing(TRIANGLES);
-            setRenderBoundsAndRelight(block, NORTH, 0.0D, 0.0D, 0.0D, 1.0D, 0.5D, 1.0D);
-            setIDAndRender(block, TRIANGLE_ZN, x, y, z, NORTH);
+
+            renderBlocks.setRenderBounds(0.5D, 0.0D, 0.0D, 1.0D, 0.5D, 1.0D);
+            lightingHelper.setLightingZNeg(block, x, y, z);
+            setIDAndRender(block, TRIANGLE_ZXNP, x, y, z, NORTH);
+
+            renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 0.5D, 0.5D, 1.0D);
+            lightingHelper.setLightingZNeg(block, x, y, z);
+            setIDAndRender(block, TRIANGLE_ZXNN, x, y, z, NORTH);
+
             break;
         default:
             RenderHelper.startDrawing(QUADS);
-            setRenderBoundsAndRelight(block, NORTH, 0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
             setIDAndRender(block, NORMAL_ZN, x, y, z, NORTH);
             break;
         }
@@ -1129,28 +1200,28 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
      */
     private void prepareFaceZPos(Block block, Slope slope, int x, int y, int z)
     {
-        if (renderBlocks.enableAO)
-        {
-            lightingHelper.ao[TOP_LEFT] = ao[SOUTH][TOP_LEFT];
-            lightingHelper.ao[BOTTOM_LEFT] = ao[SOUTH][BOTTOM_LEFT];
-            lightingHelper.ao[BOTTOM_RIGHT] = ao[SOUTH][BOTTOM_RIGHT];
-            lightingHelper.ao[TOP_RIGHT] = ao[SOUTH][TOP_RIGHT];
-        }
+        renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
+        lightingHelper.setLightingZPos(block, x, y, z);
 
         switch (slope.getFace(ForgeDirection.SOUTH)) {
         case WEDGE:
             RenderHelper.startDrawing(TRIANGLES);
-            setRenderBoundsAndRelight(block, SOUTH, 0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
             setIDAndRender(block, WEDGE_ZP, x, y, z, SOUTH);
             break;
         case TRIANGLE:
             RenderHelper.startDrawing(TRIANGLES);
-            setRenderBoundsAndRelight(block, SOUTH, 0.0D, 0.0D, 0.0D, 1.0D, 0.5D, 1.0D);
-            setIDAndRender(block, TRIANGLE_ZP, x, y, z, SOUTH);
+
+            renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 0.5D, 0.5D, 1.0D);
+            lightingHelper.setLightingZPos(block, x, y, z);
+            setIDAndRender(block, TRIANGLE_ZXPN, x, y, z, SOUTH);
+
+            renderBlocks.setRenderBounds(0.5D, 0.0D, 0.0D, 1.0D, 0.5D, 1.0D);
+            lightingHelper.setLightingZPos(block, x, y, z);
+            setIDAndRender(block, TRIANGLE_ZXPP, x, y, z, SOUTH);
+
             break;
         default:
             RenderHelper.startDrawing(QUADS);
-            setRenderBoundsAndRelight(block, SOUTH, 0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
             setIDAndRender(block, NORMAL_ZP, x, y, z, SOUTH);
             break;
         }
@@ -1161,28 +1232,28 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
      */
     private void prepareFaceXNeg(Block block, Slope slope, int x, int y, int z)
     {
-        if (renderBlocks.enableAO)
-        {
-            lightingHelper.ao[TOP_LEFT] = ao[WEST][TOP_LEFT];
-            lightingHelper.ao[BOTTOM_LEFT] = ao[WEST][BOTTOM_LEFT];
-            lightingHelper.ao[BOTTOM_RIGHT] = ao[WEST][BOTTOM_RIGHT];
-            lightingHelper.ao[TOP_RIGHT] = ao[WEST][TOP_RIGHT];
-        }
+        renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
+        lightingHelper.setLightingXNeg(block, x, y, z);
 
         switch (slope.getFace(ForgeDirection.WEST)) {
         case WEDGE:
             RenderHelper.startDrawing(TRIANGLES);
-            setRenderBoundsAndRelight(block, WEST, 0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
             setIDAndRender(block, WEDGE_XN, x, y, z, WEST);
             break;
         case TRIANGLE:
             RenderHelper.startDrawing(TRIANGLES);
-            setRenderBoundsAndRelight(block, WEST, 0.0D, 0.0D, 0.0D, 1.0D, 0.5D, 1.0D);
-            setIDAndRender(block, TRIANGLE_XN, x, y, z, WEST);
+
+            renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 0.5D, 0.5D);
+            lightingHelper.setLightingXNeg(block, x, y, z);
+            setIDAndRender(block, TRIANGLE_XZNN, x, y, z, WEST);
+
+            renderBlocks.setRenderBounds(0.0D, 0.0D, 0.5D, 1.0D, 0.5D, 1.0D);
+            lightingHelper.setLightingXNeg(block, x, y, z);
+            setIDAndRender(block, TRIANGLE_XZNP, x, y, z, WEST);
+
             break;
         default:
             RenderHelper.startDrawing(QUADS);
-            setRenderBoundsAndRelight(block, WEST, 0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
             setIDAndRender(block, NORMAL_XN, x, y, z, WEST);
             break;
         }
@@ -1193,28 +1264,28 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
      */
     private void prepareFaceXPos(Block block, Slope slope, int x, int y, int z)
     {
-        if (renderBlocks.enableAO)
-        {
-            lightingHelper.ao[TOP_LEFT] = ao[EAST][TOP_LEFT];
-            lightingHelper.ao[BOTTOM_LEFT] = ao[EAST][BOTTOM_LEFT];
-            lightingHelper.ao[BOTTOM_RIGHT] = ao[EAST][BOTTOM_RIGHT];
-            lightingHelper.ao[TOP_RIGHT] = ao[EAST][TOP_RIGHT];
-        }
+        renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
+        lightingHelper.setLightingXPos(block, x, y, z);
 
         switch (slope.getFace(ForgeDirection.EAST)) {
         case WEDGE:
             RenderHelper.startDrawing(TRIANGLES);
-            setRenderBoundsAndRelight(block, EAST, 0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
             setIDAndRender(block, WEDGE_XP, x, y, z, EAST);
             break;
         case TRIANGLE:
             RenderHelper.startDrawing(TRIANGLES);
-            setRenderBoundsAndRelight(block, EAST, 0.0D, 0.0D, 0.0D, 1.0D, 0.5D, 1.0D);
-            setIDAndRender(block, TRIANGLE_XP, x, y, z, EAST);
+
+            renderBlocks.setRenderBounds(0.0D, 0.0D, 0.5D, 1.0D, 0.5D, 1.0D);
+            lightingHelper.setLightingXPos(block, x, y, z);
+            setIDAndRender(block, TRIANGLE_XZPP, x, y, z, EAST);
+
+            renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 0.5D, 0.5D);
+            lightingHelper.setLightingXPos(block, x, y, z);
+            setIDAndRender(block, TRIANGLE_XZPN, x, y, z, EAST);
+
             break;
         default:
             RenderHelper.startDrawing(QUADS);
-            setRenderBoundsAndRelight(block, EAST, 0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
             setIDAndRender(block, NORMAL_XP, x, y, z, EAST);
             break;
         }

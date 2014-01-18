@@ -23,6 +23,7 @@ import carpentersblocks.util.handler.EventHandler;
 import carpentersblocks.util.handler.OverlayHandler;
 import carpentersblocks.util.registry.FeatureRegistry;
 import carpentersblocks.util.registry.IconRegistry;
+import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -42,6 +43,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
 
     public RenderBlocks      renderBlocks;
     protected LightingHelper lightingHelper = LightingHelper.instance;
+    private Minecraft        minecraft = FMLClientHandler.instance().getClient();
     protected int            renderPass;
     public Block             srcBlock;
     public TEBase            TE;
@@ -112,14 +114,18 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
 
             lightingHelper.bind(this);
 
-            if (renderCarpentersBlock(x, y, z) || renderSideBlocks(x, y, z)) {
+            if (renderCarpentersBlock(x, y, z)) {
+                result = true;
+            }
+
+            if (renderSideBlocks(x, y, z)) {
                 result = true;
             }
 
             /* Will render a fluid block in this space if valid. */
 
             if (FeatureRegistry.enableFancyFluids) {
-                if (renderPass >= 0 && FMLClientHandler.instance().getClient().isFancyGraphicsEnabled() && BlockProperties.hasCover(TE, 6)) {
+                if (renderPass >= 0 && minecraft.isFancyGraphicsEnabled() && BlockProperties.hasCover(TE, 6)) {
                     if (FancyFluidsHelper.render(TE, lightingHelper, renderBlocks, x, y, z, renderPass)) {
                         result = true;
                     }
@@ -173,12 +179,12 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
             }
             break;
         case WEST:
-            if (metadata == 4 || dir == 8) {
+            if (metadata == 3 || dir == 8) {
                 renderBlocks.uvRotateWest = 1;
             }
             break;
         case EAST:
-            if (metadata == 4 || dir == 8) {
+            if (metadata == 3 || dir == 8) {
                 renderBlocks.uvRotateEast = 1;
             }
             break;
@@ -464,6 +470,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
 
     /**
      * Override to provide custom icons.
+     * Will be null checked later.
      */
     protected Icon getUniqueIcon(Block block, int side, Icon icon)
     {
@@ -477,13 +484,13 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
     {
         int metadata = hasMetadataOverride ? metadataOverride : BlockProperties.hasCover(TE, coverRendering) ? BlockProperties.getCoverMetadata(TE, coverRendering) : EventHandler.BLOCKICON_BASE_ID;
 
-        Icon icon = getUniqueIcon(block, side, block.getIcon(side, metadata));
+        Icon icon = renderBlocks.getIconSafe(getUniqueIcon(block, side, block.getIcon(side, metadata)));
 
-        if (hasIconOverride[side] && iconOverride[side] != null) {
-            icon = iconOverride[side];
+        if (hasIconOverride[side]) {
+            icon = renderBlocks.getIconSafe(iconOverride[side]);
         }
 
-        return icon != null ? icon : IconRegistry.icon_missing;
+        return icon;
     }
 
     /**
@@ -531,16 +538,16 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
      */
     protected void delegateSideRender(Block block, int x, int y, int z, int side)
     {
-        Icon icon = getIcon(block, side);
-
         /*
-         * A texture override indicates the breaking animation is being
-         * drawn.  If this is the case, only draw this for current pass.
+         * A texture override in the context of this mod indicates the breaking
+         * animation is being drawn. If this is the case, draw side without
+         * decorations. Can also check Icon name for beginsWith("destroy_stage_").
          */
         if (renderBlocks.hasOverrideBlockTexture()) {
+            lightingHelper.colorSide(block, x, y, z, side, renderBlocks.overrideBlockTexture);
             renderSide(x, y, z, side, 0.0D, renderBlocks.overrideBlockTexture);
         } else {
-            renderMultiTexturedSide(block, x, y, z, side, icon);
+            renderMultiTexturedSide(block, x, y, z, side, getIcon(block, side));
         }
     }
 
@@ -630,7 +637,8 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
             break;
         }
         case OverlayHandler.OVERLAY_GRASS: {
-            if (block != Block.grass && side > DOWN) {
+            if (block != Block.grass && side > DOWN)
+            {
                 icon = getGrassOverlayIcon(side);
                 lightingHelper.colorSide(Block.grass, x, y, z, side, icon);
                 renderSide(x, y, z, side, 0.0D, icon);
@@ -642,19 +650,16 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
 
     /**
      * Returns grass overlay icon.
-     * Needed to reduce redundant code, and also because Block.grass
-     * is the only real exception in the game due to biome-specific
-     * coloring and side specificity.
-     *
-     * Will return null if side is bottom.
      */
     protected Icon getGrassOverlayIcon(int side)
     {
         boolean isPositiveSlope = isSideSloped ? Slope.slopesList[BlockProperties.getData(TE)].isPositive : false;
 
+        Icon icon = BlockGrass.getIconSideOverlay();
+
         if (side == UP || isPositiveSlope) {
-            return Block.grass.getBlockTextureFromSide(1);
-        } else if (side > UP) {
+            icon = Block.grass.getBlockTextureFromSide(1);
+        } else {
 
             /*
              * When FAST graphics are used, grass blocks use a single
@@ -665,14 +670,12 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
              * off of our custom blocks, we must draw icon_fast_grass to
              * mimic the look of vanilla grass blocks.
              */
-            if (RenderBlocks.fancyGrass) {
-                return BlockGrass.getIconSideOverlay();
-            } else {
-                return IconRegistry.icon_overlay_fast_grass_side;
+            if (!RenderBlocks.fancyGrass) {
+                icon = IconRegistry.icon_overlay_fast_grass_side;
             }
         }
 
-        return null;
+        return icon;
     }
 
     /**
@@ -681,7 +684,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
     protected void renderPattern(int x, int y, int z, int side)
     {
         int pattern = BlockProperties.getPattern(TE, coverRendering);
-        Icon icon = IconRegistry.icon_pattern[pattern];
+        Icon icon = renderBlocks.getIconSafe(IconRegistry.icon_pattern[pattern]);
 
         lightingHelper.colorSide(Block.glass, x, y, z, side, icon);
         renderSide(x, y, z, side, 0.0D, icon);
@@ -732,7 +735,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
      */
     protected boolean getEnableAO(Block block)
     {
-        return FMLClientHandler.instance().getClient().isAmbientOcclusionEnabled() && !disableAO && Block.lightValue[block.blockID] == 0;
+        return minecraft.isAmbientOcclusionEnabled() && !disableAO && Block.lightValue[block.blockID] == 0;
     }
 
     /**
@@ -746,42 +749,42 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
 
         if (renderBlocks.renderAllFaces || srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x, y - 1, z, DOWN) || renderBlocks.renderMinY > 0.0D)
         {
-            lightingHelper.setLightness(0.5F).setLightingYNeg(block, x, y, z);
+            lightingHelper.setLightness(lightingHelper.LIGHTNESS_YN).setLightingYNeg(block, x, y, z);
             delegateSideRender(block, x, y, z, DOWN);
             side_rendered = true;
         }
 
         if (renderBlocks.renderAllFaces || srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x, y + 1, z, UP) || renderBlocks.renderMaxY < 1.0D)
         {
-            lightingHelper.setLightness(1.0F).setLightingYPos(block, x, y, z);
+            lightingHelper.setLightness(lightingHelper.LIGHTNESS_YP).setLightingYPos(block, x, y, z);
             delegateSideRender(block, x, y, z, UP);
             side_rendered = true;
         }
 
         if (renderBlocks.renderAllFaces || srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x, y, z - 1, NORTH) || renderBlocks.renderMinZ > 0.0D)
         {
-            lightingHelper.setLightness(0.8F).setLightingZNeg(block, x, y, z);
+            lightingHelper.setLightness(lightingHelper.LIGHTNESS_ZN).setLightingZNeg(block, x, y, z);
             delegateSideRender(block, x, y, z, NORTH);
             side_rendered = true;
         }
 
         if (renderBlocks.renderAllFaces || srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x, y, z + 1, SOUTH) || renderBlocks.renderMaxZ < 1.0D)
         {
-            lightingHelper.setLightness(0.8F).setLightingZPos(block, x, y, z);
+            lightingHelper.setLightness(lightingHelper.LIGHTNESS_ZP).setLightingZPos(block, x, y, z);
             delegateSideRender(block, x, y, z, SOUTH);
             side_rendered = true;
         }
 
         if (renderBlocks.renderAllFaces || srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x - 1, y, z, WEST) || renderBlocks.renderMinX > 0.0D)
         {
-            lightingHelper.setLightness(0.6F).setLightingXNeg(block, x, y, z);
+            lightingHelper.setLightness(lightingHelper.LIGHTNESS_XN).setLightingXNeg(block, x, y, z);
             delegateSideRender(block, x, y, z, WEST);
             side_rendered = true;
         }
 
         if (renderBlocks.renderAllFaces || srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x + 1, y, z, EAST) || renderBlocks.renderMaxX < 1.0D)
         {
-            lightingHelper.setLightness(0.6F).setLightingXPos(block, x, y, z);
+            lightingHelper.setLightness(lightingHelper.LIGHTNESS_XP).setLightingXPos(block, x, y, z);
             delegateSideRender(block, x, y, z, EAST);
             side_rendered = true;
         }

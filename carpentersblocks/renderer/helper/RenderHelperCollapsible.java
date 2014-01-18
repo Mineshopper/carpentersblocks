@@ -21,11 +21,12 @@ public class RenderHelperCollapsible extends RenderHelper {
     {
         prepareRender(renderBlocks, UP, x, y, z, icon);
 
-        double uMid = uMax - (uMax - uMin) / 2;
+        double uTM = uTR - (uTR - uTL) / 2;
+        double xMid = xMax - (xMax - xMin) / 2;
 
-        setupVertex(renderBlocks, xMax - 0.5F, yMin + CollapsibleUtil.CENTER_YMAX, zMax, uMid, UV_UP[renderBlocks.uvRotateTop][0][1], BOTTOM_CENTER);
-        setupVertex(renderBlocks, xMax, yMin + CollapsibleUtil.offset_XZPN, zMin, UV_UP[renderBlocks.uvRotateTop][1][0], UV_UP[renderBlocks.uvRotateTop][1][1], NORTHEAST);
-        setupVertex(renderBlocks, xMin, yMin + CollapsibleUtil.offset_XZNN, zMin, UV_UP[renderBlocks.uvRotateTop][2][0], UV_UP[renderBlocks.uvRotateTop][2][1], NORTHWEST);
+        setupVertex(renderBlocks, xMid, yMin + CollapsibleUtil.CENTER_YMAX, zMax, uTM, vTR, TOP_CENTER  );
+        setupVertex(renderBlocks, xMax, yMin + CollapsibleUtil.offset_XZPN, zMin, uBL, vBL, NORTHEAST   );
+        setupVertex(renderBlocks, xMin, yMin + CollapsibleUtil.offset_XZNN, zMin, uBR, vBR, NORTHWEST   );
     }
 
     /**
@@ -35,11 +36,12 @@ public class RenderHelperCollapsible extends RenderHelper {
     {
         prepareRender(renderBlocks, UP, x, y, z, icon);
 
-        double uMid = uMax - (uMax - uMin) / 2;
+        double uBM = uBR - (uBR - uBL) / 2;
+        double xMid = xMax - (xMax - xMin) / 2;
 
-        setupVertex(renderBlocks, xMin + 0.5F, yMin + CollapsibleUtil.CENTER_YMAX, zMin, uMid, UV_UP[renderBlocks.uvRotateTop][1][1], TOP_CENTER);
-        setupVertex(renderBlocks, xMin, yMin + CollapsibleUtil.offset_XZNP, zMax, UV_UP[renderBlocks.uvRotateTop][3][0], UV_UP[renderBlocks.uvRotateTop][3][1], SOUTHWEST);
-        setupVertex(renderBlocks, xMax, yMin + CollapsibleUtil.offset_XZPP, zMax, UV_UP[renderBlocks.uvRotateTop][0][0], UV_UP[renderBlocks.uvRotateTop][0][1], SOUTHEAST);
+        setupVertex(renderBlocks, xMax, yMin + CollapsibleUtil.offset_XZPP, zMax, uTL, vTL, SOUTHEAST    );
+        setupVertex(renderBlocks, xMid, yMin + CollapsibleUtil.CENTER_YMAX, zMin, uBM, vBR, BOTTOM_CENTER);
+        setupVertex(renderBlocks, xMin, yMin + CollapsibleUtil.offset_XZNP, zMax, uTR, vTR, SOUTHWEST    );
     }
 
     /**
@@ -49,11 +51,12 @@ public class RenderHelperCollapsible extends RenderHelper {
     {
         prepareRender(renderBlocks, UP, x, y, z, icon);
 
-        double vMid = vMax - (vMax - vMin) / 2;
+        double vLM = vBL - (vBL - vTL) / 2;
+        double zMid = zMax - (zMax - zMin) / 2;
 
-        setupVertex(renderBlocks, xMax, yMin + CollapsibleUtil.CENTER_YMAX, zMin + 0.5F, UV_UP[renderBlocks.uvRotateTop][1][0], vMid, RIGHT_CENTER);
-        setupVertex(renderBlocks, xMin, yMin + CollapsibleUtil.offset_XZNN, zMin, UV_UP[renderBlocks.uvRotateTop][2][0], UV_UP[renderBlocks.uvRotateTop][2][1], NORTHWEST);
-        setupVertex(renderBlocks, xMin, yMin + CollapsibleUtil.offset_XZNP, zMax, UV_UP[renderBlocks.uvRotateTop][3][0], UV_UP[renderBlocks.uvRotateTop][3][1], SOUTHWEST);
+        setupVertex(renderBlocks, xMax, yMin + CollapsibleUtil.CENTER_YMAX, zMid, uBL, vLM, LEFT_CENTER );
+        setupVertex(renderBlocks, xMin, yMin + CollapsibleUtil.offset_XZNN, zMin, uBR, vBR, NORTHWEST   );
+        setupVertex(renderBlocks, xMin, yMin + CollapsibleUtil.offset_XZNP, zMax, uTR, vTR, SOUTHWEST   );
     }
 
     /**
@@ -63,11 +66,12 @@ public class RenderHelperCollapsible extends RenderHelper {
     {
         prepareRender(renderBlocks, UP, x, y, z, icon);
 
-        double vMid = vMax - (vMax - vMin) / 2;
+        double vRM = vBR - (vBR - vTR) / 2;
+        double zMid = zMax - (zMax - zMin) / 2;
 
-        setupVertex(renderBlocks, xMin, yMin + CollapsibleUtil.CENTER_YMAX, zMax - 0.5F, UV_UP[renderBlocks.uvRotateTop][3][0], vMid, LEFT_CENTER);
-        setupVertex(renderBlocks, xMax, yMin + CollapsibleUtil.offset_XZPP, zMax, UV_UP[renderBlocks.uvRotateTop][0][0], UV_UP[renderBlocks.uvRotateTop][0][1], SOUTHEAST);
-        setupVertex(renderBlocks, xMax, yMin + CollapsibleUtil.offset_XZPN, zMin, UV_UP[renderBlocks.uvRotateTop][1][0], UV_UP[renderBlocks.uvRotateTop][1][1], NORTHEAST);
+        setupVertex(renderBlocks, xMax, yMin + CollapsibleUtil.offset_XZPP, zMax, uTL, vTL, SOUTHEAST   );
+        setupVertex(renderBlocks, xMax, yMin + CollapsibleUtil.offset_XZPN, zMin, uBL, vBL, NORTHEAST   );
+        setupVertex(renderBlocks, xMin, yMin + CollapsibleUtil.CENTER_YMAX, zMid, uBR, vRM, RIGHT_CENTER);
     }
 
     /**
@@ -77,23 +81,18 @@ public class RenderHelperCollapsible extends RenderHelper {
     {
         prepareRender(renderBlocks, NORTH, x, y, z, icon);
 
-        double VL_XZNN = UV_NORTH[renderBlocks.uvRotateNorth][3][1];
-        double VL_XZPN = UV_NORTH[renderBlocks.uvRotateNorth][2][1];
-        double VH_XZNN = UV_NORTH[renderBlocks.uvRotateNorth][0][1];
-        double VH_XZPN = UV_NORTH[renderBlocks.uvRotateNorth][1][1];
-
-        if (!iconHasFloatingHeight(icon)) {
-            VH_XZNN = UV_NORTH[renderBlocks.uvRotateNorth][3][1] + (UV_NORTH[renderBlocks.uvRotateNorth][0][1] - UV_NORTH[renderBlocks.uvRotateNorth][3][1]) * CollapsibleUtil.offset_XZNN;
-            VH_XZPN = UV_NORTH[renderBlocks.uvRotateNorth][2][1] + (UV_NORTH[renderBlocks.uvRotateNorth][1][1] - UV_NORTH[renderBlocks.uvRotateNorth][2][1]) * CollapsibleUtil.offset_XZPN;
+        if (iconHasFloatingHeight(icon)) {
+            vBL = vTL - (vTL - vBL) * CollapsibleUtil.offset_XZPN;
+            vBR = vTR - (vTR - vBR) * CollapsibleUtil.offset_XZNN;
         } else {
-            VL_XZNN = UV_NORTH[renderBlocks.uvRotateNorth][0][1] - (UV_NORTH[renderBlocks.uvRotateNorth][0][1] - UV_NORTH[renderBlocks.uvRotateNorth][3][1]) * CollapsibleUtil.offset_XZNN;
-            VL_XZPN = UV_NORTH[renderBlocks.uvRotateNorth][1][1] - (UV_NORTH[renderBlocks.uvRotateNorth][1][1] - UV_NORTH[renderBlocks.uvRotateNorth][2][1]) * CollapsibleUtil.offset_XZPN;
+            vTL = vBL + (vTL - vBL) * CollapsibleUtil.offset_XZPN;
+            vTR = vBR + (vTR - vBR) * CollapsibleUtil.offset_XZNN;
         }
 
-        setupVertex(renderBlocks, xMin, yMin + CollapsibleUtil.offset_XZNN, zMin, UV_NORTH[renderBlocks.uvRotateNorth][0][0], VH_XZNN, TOP_RIGHT);
-        setupVertex(renderBlocks, xMax, yMin + CollapsibleUtil.offset_XZPN, zMin, UV_NORTH[renderBlocks.uvRotateNorth][1][0], VH_XZPN, TOP_LEFT);
-        setupVertex(renderBlocks, xMax, yMin, zMin, UV_NORTH[renderBlocks.uvRotateNorth][2][0], VL_XZPN, BOTTOM_LEFT);
-        setupVertex(renderBlocks, xMin, yMin, zMin, UV_NORTH[renderBlocks.uvRotateNorth][3][0], VL_XZNN, BOTTOM_RIGHT);
+        setupVertex(renderBlocks, xMax, yMin + CollapsibleUtil.offset_XZPN, zMin, uTL, vTL, TOP_LEFT    );
+        setupVertex(renderBlocks, xMax,                               yMin, zMin, uBL, vBL, BOTTOM_LEFT );
+        setupVertex(renderBlocks, xMin,                               yMin, zMin, uBR, vBR, BOTTOM_RIGHT);
+        setupVertex(renderBlocks, xMin, yMin + CollapsibleUtil.offset_XZNN, zMin, uTR, vTR, TOP_RIGHT   );
     }
 
     /**
@@ -103,23 +102,18 @@ public class RenderHelperCollapsible extends RenderHelper {
     {
         prepareRender(renderBlocks, SOUTH, x, y, z, icon);
 
-        double VL_XZNP = UV_SOUTH[renderBlocks.uvRotateSouth][1][1];
-        double VL_XZPP = UV_SOUTH[renderBlocks.uvRotateSouth][2][1];
-        double VH_XZNP = UV_SOUTH[renderBlocks.uvRotateSouth][0][1];
-        double VH_XZPP = UV_SOUTH[renderBlocks.uvRotateSouth][3][1];
-
-        if (!iconHasFloatingHeight(icon)) {
-            VH_XZNP = UV_SOUTH[renderBlocks.uvRotateSouth][1][1] + (UV_SOUTH[renderBlocks.uvRotateSouth][0][1] - UV_SOUTH[renderBlocks.uvRotateSouth][1][1]) * CollapsibleUtil.offset_XZNP;
-            VH_XZPP = UV_SOUTH[renderBlocks.uvRotateSouth][2][1] + (UV_SOUTH[renderBlocks.uvRotateSouth][3][1] - UV_SOUTH[renderBlocks.uvRotateSouth][2][1]) * CollapsibleUtil.offset_XZPP;
+        if (iconHasFloatingHeight(icon)) {
+            vBL = vTL - (vTL - vBL) * CollapsibleUtil.offset_XZNP;
+            vBR = vTR - (vTR - vBR) * CollapsibleUtil.offset_XZPP;
         } else {
-            VL_XZNP = UV_SOUTH[renderBlocks.uvRotateSouth][0][1] - (UV_SOUTH[renderBlocks.uvRotateSouth][0][1] - UV_SOUTH[renderBlocks.uvRotateSouth][1][1]) * CollapsibleUtil.offset_XZNP;
-            VL_XZPP = UV_SOUTH[renderBlocks.uvRotateSouth][3][1] - (UV_SOUTH[renderBlocks.uvRotateSouth][3][1] - UV_SOUTH[renderBlocks.uvRotateSouth][2][1]) * CollapsibleUtil.offset_XZPP;
+            vTL = vBL + (vTL - vBL) * CollapsibleUtil.offset_XZNP;
+            vTR = vBR + (vTR - vBR) * CollapsibleUtil.offset_XZPP;
         }
 
-        setupVertex(renderBlocks, xMin, yMin + CollapsibleUtil.offset_XZNP, zMax, UV_SOUTH[renderBlocks.uvRotateSouth][0][0], VH_XZNP, TOP_LEFT);
-        setupVertex(renderBlocks, xMin, yMin, zMax, UV_SOUTH[renderBlocks.uvRotateSouth][1][0], VL_XZNP, BOTTOM_LEFT);
-        setupVertex(renderBlocks, xMax, yMin, zMax, UV_SOUTH[renderBlocks.uvRotateSouth][2][0], VL_XZPP, BOTTOM_RIGHT);
-        setupVertex(renderBlocks, xMax, yMin + CollapsibleUtil.offset_XZPP, zMax, UV_SOUTH[renderBlocks.uvRotateSouth][3][0], VH_XZPP, TOP_RIGHT);
+        setupVertex(renderBlocks, xMin, yMin + CollapsibleUtil.offset_XZNP, zMax, uTL, vTL, TOP_LEFT    );
+        setupVertex(renderBlocks, xMin,                               yMin, zMax, uBL, vBL, BOTTOM_LEFT );
+        setupVertex(renderBlocks, xMax,                               yMin, zMax, uBR, vBR, BOTTOM_RIGHT);
+        setupVertex(renderBlocks, xMax, yMin + CollapsibleUtil.offset_XZPP, zMax, uTR, vTR, TOP_RIGHT   );
     }
 
     /**
@@ -129,23 +123,18 @@ public class RenderHelperCollapsible extends RenderHelper {
     {
         prepareRender(renderBlocks, WEST, x, y, z, icon);
 
-        double VL_XZNP = UV_WEST[renderBlocks.uvRotateWest][3][1];
-        double VL_XZNN = UV_WEST[renderBlocks.uvRotateWest][2][1];
-        double VH_XZNP = UV_WEST[renderBlocks.uvRotateWest][0][1];
-        double VH_XZNN = UV_WEST[renderBlocks.uvRotateWest][1][1];
-
-        if (!iconHasFloatingHeight(icon)) {
-            VH_XZNP = UV_WEST[renderBlocks.uvRotateWest][3][1] + (UV_WEST[renderBlocks.uvRotateWest][0][1] - UV_WEST[renderBlocks.uvRotateWest][3][1]) * CollapsibleUtil.offset_XZNP;
-            VH_XZNN = UV_WEST[renderBlocks.uvRotateWest][2][1] + (UV_WEST[renderBlocks.uvRotateWest][1][1] - UV_WEST[renderBlocks.uvRotateWest][2][1]) * CollapsibleUtil.offset_XZNN;
+        if (iconHasFloatingHeight(icon)) {
+            vBL = vTL - (vTL - vBL) * CollapsibleUtil.offset_XZNN;
+            vBR = vTR - (vTR - vBR) * CollapsibleUtil.offset_XZNP;
         } else {
-            VL_XZNP = UV_WEST[renderBlocks.uvRotateWest][0][1] - (UV_WEST[renderBlocks.uvRotateWest][0][1] - UV_WEST[renderBlocks.uvRotateWest][3][1]) * CollapsibleUtil.offset_XZNP;
-            VL_XZNN = UV_WEST[renderBlocks.uvRotateWest][1][1] - (UV_WEST[renderBlocks.uvRotateWest][1][1] - UV_WEST[renderBlocks.uvRotateWest][2][1]) * CollapsibleUtil.offset_XZNN;
+            vTL = vBL + (vTL - vBL) * CollapsibleUtil.offset_XZNN;
+            vTR = vBR + (vTR - vBR) * CollapsibleUtil.offset_XZNP;
         }
 
-        setupVertex(renderBlocks, xMin, yMin + CollapsibleUtil.offset_XZNP, zMax, UV_WEST[renderBlocks.uvRotateWest][0][0], VH_XZNP, TOP_RIGHT);
-        setupVertex(renderBlocks, xMin, yMin + CollapsibleUtil.offset_XZNN, zMin, UV_WEST[renderBlocks.uvRotateWest][1][0], VH_XZNN, TOP_LEFT);
-        setupVertex(renderBlocks, xMin, yMin, zMin, UV_WEST[renderBlocks.uvRotateWest][2][0], VL_XZNN, BOTTOM_LEFT);
-        setupVertex(renderBlocks, xMin, yMin, zMax, UV_WEST[renderBlocks.uvRotateWest][3][0], VL_XZNP, BOTTOM_RIGHT);
+        setupVertex(renderBlocks, xMin, yMin + CollapsibleUtil.offset_XZNN, zMin, uTL, vTL, TOP_LEFT    );
+        setupVertex(renderBlocks, xMin,                               yMin, zMin, uBL, vBL, BOTTOM_LEFT );
+        setupVertex(renderBlocks, xMin,                               yMin, zMax, uBR, vBR, BOTTOM_RIGHT);
+        setupVertex(renderBlocks, xMin, yMin + CollapsibleUtil.offset_XZNP, zMax, uTR, vTR, TOP_RIGHT   );
     }
 
     /**
@@ -155,23 +144,18 @@ public class RenderHelperCollapsible extends RenderHelper {
     {
         prepareRender(renderBlocks, EAST, x, y, z, icon);
 
-        double VL_XZPN = UV_EAST[renderBlocks.uvRotateEast][1][1];
-        double VL_XZPP = UV_EAST[renderBlocks.uvRotateEast][0][1];
-        double VH_XZPN = UV_EAST[renderBlocks.uvRotateEast][2][1];
-        double VH_XZPP = UV_EAST[renderBlocks.uvRotateEast][3][1];
-
-        if (!iconHasFloatingHeight(icon)) {
-            VH_XZPN = UV_EAST[renderBlocks.uvRotateEast][1][1] + (UV_EAST[renderBlocks.uvRotateEast][2][1] - UV_EAST[renderBlocks.uvRotateEast][1][1]) * CollapsibleUtil.offset_XZPN;
-            VH_XZPP = UV_EAST[renderBlocks.uvRotateEast][0][1] + (UV_EAST[renderBlocks.uvRotateEast][3][1] - UV_EAST[renderBlocks.uvRotateEast][0][1]) * CollapsibleUtil.offset_XZPP;
+        if (iconHasFloatingHeight(icon)) {
+            vBL = vTL - (vTL - vBL) * CollapsibleUtil.offset_XZPP;
+            vBR = vTR - (vTR - vBR) * CollapsibleUtil.offset_XZPN;
         } else {
-            VL_XZPN = UV_EAST[renderBlocks.uvRotateEast][2][1] - (UV_EAST[renderBlocks.uvRotateEast][2][1] - UV_EAST[renderBlocks.uvRotateEast][1][1]) * CollapsibleUtil.offset_XZPN;
-            VL_XZPP = UV_EAST[renderBlocks.uvRotateEast][3][1] - (UV_EAST[renderBlocks.uvRotateEast][3][1] - UV_EAST[renderBlocks.uvRotateEast][0][1]) * CollapsibleUtil.offset_XZPP;
+            vTL = vBL + (vTL - vBL) * CollapsibleUtil.offset_XZPP;
+            vTR = vBR + (vTR - vBR) * CollapsibleUtil.offset_XZPN;
         }
 
-        setupVertex(renderBlocks, xMax, yMin, zMax, UV_EAST[renderBlocks.uvRotateEast][0][0], VL_XZPP, BOTTOM_LEFT);
-        setupVertex(renderBlocks, xMax, yMin, zMin, UV_EAST[renderBlocks.uvRotateEast][1][0], VL_XZPN, BOTTOM_RIGHT);
-        setupVertex(renderBlocks, xMax, yMin + CollapsibleUtil.offset_XZPN, zMin, UV_EAST[renderBlocks.uvRotateEast][2][0], VH_XZPN, TOP_RIGHT);
-        setupVertex(renderBlocks, xMax, yMin + CollapsibleUtil.offset_XZPP, zMax, UV_EAST[renderBlocks.uvRotateEast][3][0], VH_XZPP, TOP_LEFT);
+        setupVertex(renderBlocks, xMax, yMin + CollapsibleUtil.offset_XZPP, zMax, uTL, vTL, TOP_LEFT    );
+        setupVertex(renderBlocks, xMax,                               yMin, zMax, uBL, vBL, BOTTOM_LEFT );
+        setupVertex(renderBlocks, xMax,                               yMin, zMin, uBR, vBR, BOTTOM_RIGHT);
+        setupVertex(renderBlocks, xMax, yMin + CollapsibleUtil.offset_XZPN, zMin, uTR, vTR, TOP_RIGHT   );
     }
 
 }

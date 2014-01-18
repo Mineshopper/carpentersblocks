@@ -29,30 +29,30 @@ public class HelperOrthoWedge extends RenderHelper {
         case Slope.ID_OBL_EXT_POS_NW:
         case Slope.ID_OBL_INT_NEG_NW:
         case Slope.ID_WEDGE_NW:
-            setupVertex(renderBlocks, xMin, yMin, zMax, UV_DOWN[renderBlocks.uvRotateBottom][0][0], UV_DOWN[renderBlocks.uvRotateBottom][0][1], SOUTHWEST);
-            setupVertex(renderBlocks, xMax, yMin, zMin, UV_DOWN[renderBlocks.uvRotateBottom][2][0], UV_DOWN[renderBlocks.uvRotateBottom][2][1], NORTHEAST);
-            setupVertex(renderBlocks, xMax, yMin, zMax, UV_DOWN[renderBlocks.uvRotateBottom][3][0], UV_DOWN[renderBlocks.uvRotateBottom][3][1], SOUTHEAST);
+            setupVertex(renderBlocks, xMin, yMin, zMax, uTR, vTR, SOUTHWEST);
+            setupVertex(renderBlocks, xMax, yMin, zMin, uBL, vBL, NORTHEAST);
+            setupVertex(renderBlocks, xMax, yMin, zMax, uTL, vTL, SOUTHEAST);
             break;
         case Slope.ID_OBL_EXT_POS_SW:
         case Slope.ID_OBL_INT_NEG_SW:
         case Slope.ID_WEDGE_SW:
-            setupVertex(renderBlocks, xMin, yMin, zMin, UV_DOWN[renderBlocks.uvRotateBottom][1][0], UV_DOWN[renderBlocks.uvRotateBottom][1][1], NORTHWEST);
-            setupVertex(renderBlocks, xMax, yMin, zMin, UV_DOWN[renderBlocks.uvRotateBottom][2][0], UV_DOWN[renderBlocks.uvRotateBottom][2][1], NORTHEAST);
-            setupVertex(renderBlocks, xMax, yMin, zMax, UV_DOWN[renderBlocks.uvRotateBottom][3][0], UV_DOWN[renderBlocks.uvRotateBottom][3][1], SOUTHEAST);
+            setupVertex(renderBlocks, xMin, yMin, zMin, uBR, vBR, NORTHWEST);
+            setupVertex(renderBlocks, xMax, yMin, zMin, uBL, vBL, NORTHEAST);
+            setupVertex(renderBlocks, xMax, yMin, zMax, uTL, vTL, SOUTHEAST);
             break;
         case Slope.ID_OBL_EXT_POS_NE:
         case Slope.ID_OBL_INT_NEG_NE:
         case Slope.ID_WEDGE_NE:
-            setupVertex(renderBlocks, xMin, yMin, zMax, UV_DOWN[renderBlocks.uvRotateBottom][0][0], UV_DOWN[renderBlocks.uvRotateBottom][0][1], SOUTHWEST);
-            setupVertex(renderBlocks, xMin, yMin, zMin, UV_DOWN[renderBlocks.uvRotateBottom][1][0], UV_DOWN[renderBlocks.uvRotateBottom][1][1], NORTHWEST);
-            setupVertex(renderBlocks, xMax, yMin, zMax, UV_DOWN[renderBlocks.uvRotateBottom][3][0], UV_DOWN[renderBlocks.uvRotateBottom][3][1], SOUTHEAST);
+            setupVertex(renderBlocks, xMin, yMin, zMax, uTR, vTR, SOUTHWEST);
+            setupVertex(renderBlocks, xMin, yMin, zMin, uBR, vBR, NORTHWEST);
+            setupVertex(renderBlocks, xMax, yMin, zMax, uTL, vTL, SOUTHEAST);
             break;
         case Slope.ID_OBL_EXT_POS_SE:
         case Slope.ID_OBL_INT_NEG_SE:
         case Slope.ID_WEDGE_SE:
-            setupVertex(renderBlocks, xMin, yMin, zMax, UV_DOWN[renderBlocks.uvRotateBottom][0][0], UV_DOWN[renderBlocks.uvRotateBottom][0][1], SOUTHWEST);
-            setupVertex(renderBlocks, xMin, yMin, zMin, UV_DOWN[renderBlocks.uvRotateBottom][1][0], UV_DOWN[renderBlocks.uvRotateBottom][1][1], NORTHWEST);
-            setupVertex(renderBlocks, xMax, yMin, zMin, UV_DOWN[renderBlocks.uvRotateBottom][2][0], UV_DOWN[renderBlocks.uvRotateBottom][2][1], NORTHEAST);
+            setupVertex(renderBlocks, xMin, yMin, zMax, uTR, vTR, SOUTHWEST);
+            setupVertex(renderBlocks, xMin, yMin, zMin, uBR, vBR, NORTHWEST);
+            setupVertex(renderBlocks, xMax, yMin, zMin, uBL, vBL, NORTHEAST);
             break;
         }
     }
@@ -69,30 +69,30 @@ public class HelperOrthoWedge extends RenderHelper {
         case Slope.ID_OBL_EXT_NEG_NW:
         case Slope.ID_OBL_INT_POS_NW:
         case Slope.ID_WEDGE_NW:
-            setupVertex(renderBlocks, xMax, yMax, zMax, UV_UP[renderBlocks.uvRotateTop][0][0], UV_UP[renderBlocks.uvRotateTop][0][1], SOUTHEAST);
-            setupVertex(renderBlocks, xMax, yMax, zMin, UV_UP[renderBlocks.uvRotateTop][1][0], UV_UP[renderBlocks.uvRotateTop][1][1], NORTHEAST);
-            setupVertex(renderBlocks, xMin, yMax, zMax, UV_UP[renderBlocks.uvRotateTop][3][0], UV_UP[renderBlocks.uvRotateTop][3][1], SOUTHWEST);
+            setupVertex(renderBlocks, xMax, yMax, zMax, uTL, vTL, SOUTHEAST);
+            setupVertex(renderBlocks, xMax, yMax, zMin, uBL, vBL, NORTHEAST);
+            setupVertex(renderBlocks, xMin, yMax, zMax, uTR, vTR, SOUTHWEST);
             break;
         case Slope.ID_OBL_EXT_NEG_SW:
         case Slope.ID_OBL_INT_POS_SW:
         case Slope.ID_WEDGE_SW:
-            setupVertex(renderBlocks, xMax, yMax, zMax, UV_UP[renderBlocks.uvRotateTop][0][0], UV_UP[renderBlocks.uvRotateTop][0][1], SOUTHEAST);
-            setupVertex(renderBlocks, xMax, yMax, zMin, UV_UP[renderBlocks.uvRotateTop][1][0], UV_UP[renderBlocks.uvRotateTop][1][1], NORTHEAST);
-            setupVertex(renderBlocks, xMin, yMax, zMin, UV_UP[renderBlocks.uvRotateTop][2][0], UV_UP[renderBlocks.uvRotateTop][2][1], NORTHWEST);
+            setupVertex(renderBlocks, xMax, yMax, zMax, uTL, vTL, SOUTHEAST);
+            setupVertex(renderBlocks, xMax, yMax, zMin, uBL, vBL, NORTHEAST);
+            setupVertex(renderBlocks, xMin, yMax, zMin, uBR, vBR, NORTHWEST);
             break;
         case Slope.ID_OBL_EXT_NEG_NE:
         case Slope.ID_OBL_INT_POS_NE:
         case Slope.ID_WEDGE_NE:
-            setupVertex(renderBlocks, xMax, yMax, zMax, UV_UP[renderBlocks.uvRotateTop][0][0], UV_UP[renderBlocks.uvRotateTop][0][1], SOUTHEAST);
-            setupVertex(renderBlocks, xMin, yMax, zMin, UV_UP[renderBlocks.uvRotateTop][2][0], UV_UP[renderBlocks.uvRotateTop][2][1], NORTHWEST);
-            setupVertex(renderBlocks, xMin, yMax, zMax, UV_UP[renderBlocks.uvRotateTop][3][0], UV_UP[renderBlocks.uvRotateTop][3][1], SOUTHWEST);
+            setupVertex(renderBlocks, xMax, yMax, zMax, uTL, vTL, SOUTHEAST);
+            setupVertex(renderBlocks, xMin, yMax, zMin, uBR, vBR, NORTHWEST);
+            setupVertex(renderBlocks, xMin, yMax, zMax, uTR, vTR, SOUTHWEST);
             break;
         case Slope.ID_OBL_EXT_NEG_SE:
         case Slope.ID_OBL_INT_POS_SE:
         case Slope.ID_WEDGE_SE:
-            setupVertex(renderBlocks, xMax, yMax, zMin, UV_UP[renderBlocks.uvRotateTop][1][0], UV_UP[renderBlocks.uvRotateTop][1][1], NORTHEAST);
-            setupVertex(renderBlocks, xMin, yMax, zMin, UV_UP[renderBlocks.uvRotateTop][2][0], UV_UP[renderBlocks.uvRotateTop][2][1], NORTHWEST);
-            setupVertex(renderBlocks, xMin, yMax, zMax, UV_UP[renderBlocks.uvRotateTop][3][0], UV_UP[renderBlocks.uvRotateTop][3][1], SOUTHWEST);
+            setupVertex(renderBlocks, xMax, yMax, zMin, uBL, vBL, NORTHEAST);
+            setupVertex(renderBlocks, xMin, yMax, zMin, uBR, vBR, NORTHWEST);
+            setupVertex(renderBlocks, xMin, yMax, zMax, uTR, vTR, SOUTHWEST);
             break;
         }
     }
@@ -109,23 +109,23 @@ public class HelperOrthoWedge extends RenderHelper {
 
         if (slope.isPositive) {
             if (slope.facings.contains(ForgeDirection.WEST)) {
-                setupVertex(renderBlocks, xMax, yMax, zMin, UV_NORTH[renderBlocks.uvRotateNorth][1][0], UV_NORTH[renderBlocks.uvRotateNorth][1][1], TOP_LEFT);
-                setupVertex(renderBlocks, xMax, yMin, zMin, UV_NORTH[renderBlocks.uvRotateNorth][2][0], UV_NORTH[renderBlocks.uvRotateNorth][2][1], BOTTOM_LEFT);
-                setupVertex(renderBlocks, xMin, yMin, zMin, UV_NORTH[renderBlocks.uvRotateNorth][3][0], floatingHeight ? vMax : UV_NORTH[renderBlocks.uvRotateNorth][3][1], BOTTOM_RIGHT);
+                setupVertex(renderBlocks, xMax, yMax, zMin, uTL,                                   vTL, TOP_LEFT    );
+                setupVertex(renderBlocks, xMax, yMin, zMin, uBL,                                   vBL, BOTTOM_LEFT );
+                setupVertex(renderBlocks, xMin, yMin, zMin, uBR, floatingHeight ? icon.getMaxV() : vBR, BOTTOM_RIGHT);
             } else {
-                setupVertex(renderBlocks, xMin, yMax, zMin, UV_NORTH[renderBlocks.uvRotateNorth][0][0], UV_NORTH[renderBlocks.uvRotateNorth][0][1], TOP_RIGHT);
-                setupVertex(renderBlocks, xMax, yMin, zMin, UV_NORTH[renderBlocks.uvRotateNorth][2][0], floatingHeight ? vMax : UV_NORTH[renderBlocks.uvRotateNorth][2][1], BOTTOM_LEFT);
-                setupVertex(renderBlocks, xMin, yMin, zMin, UV_NORTH[renderBlocks.uvRotateNorth][3][0], UV_NORTH[renderBlocks.uvRotateNorth][3][1], BOTTOM_RIGHT);
+                setupVertex(renderBlocks, xMax, yMin, zMin, uBL, floatingHeight ? icon.getMaxV() : vBL, BOTTOM_LEFT );
+                setupVertex(renderBlocks, xMin, yMin, zMin, uBR,                                   vBR, BOTTOM_RIGHT);
+                setupVertex(renderBlocks, xMin, yMax, zMin, uTR,                                   vTR, TOP_RIGHT   );
             }
         } else {
             if (slope.facings.contains(ForgeDirection.WEST)) {
-                setupVertex(renderBlocks, xMin, yMax, zMin, UV_NORTH[renderBlocks.uvRotateNorth][0][0], UV_NORTH[renderBlocks.uvRotateNorth][0][1], TOP_RIGHT);
-                setupVertex(renderBlocks, xMax, yMax, zMin, UV_NORTH[renderBlocks.uvRotateNorth][1][0], UV_NORTH[renderBlocks.uvRotateNorth][1][1], TOP_LEFT);
-                setupVertex(renderBlocks, xMax, yMin, zMin, UV_NORTH[renderBlocks.uvRotateNorth][2][0], UV_NORTH[renderBlocks.uvRotateNorth][2][1], BOTTOM_LEFT);
+                setupVertex(renderBlocks, xMax, yMax, zMin, uTL, vTL, TOP_LEFT   );
+                setupVertex(renderBlocks, xMax, yMin, zMin, uBL, vBL, BOTTOM_LEFT);
+                setupVertex(renderBlocks, xMin, yMax, zMin, uTR, vTR, TOP_RIGHT  );
             } else {
-                setupVertex(renderBlocks, xMin, yMax, zMin, UV_NORTH[renderBlocks.uvRotateNorth][0][0], UV_NORTH[renderBlocks.uvRotateNorth][0][1], TOP_RIGHT);
-                setupVertex(renderBlocks, xMax, yMax, zMin, UV_NORTH[renderBlocks.uvRotateNorth][1][0], UV_NORTH[renderBlocks.uvRotateNorth][1][1], TOP_LEFT);
-                setupVertex(renderBlocks, xMin, yMin, zMin, UV_NORTH[renderBlocks.uvRotateNorth][3][0], UV_NORTH[renderBlocks.uvRotateNorth][3][1], BOTTOM_RIGHT);
+                setupVertex(renderBlocks, xMax, yMax, zMin, uTL, vTL, TOP_LEFT    );
+                setupVertex(renderBlocks, xMin, yMin, zMin, uBR, vBR, BOTTOM_RIGHT);
+                setupVertex(renderBlocks, xMin, yMax, zMin, uTR, vTR, TOP_RIGHT   );
             }
         }
     }
@@ -142,23 +142,23 @@ public class HelperOrthoWedge extends RenderHelper {
 
         if (slope.isPositive) {
             if (slope.facings.contains(ForgeDirection.WEST)) {
-                setupVertex(renderBlocks, xMin, yMin, zMax, UV_SOUTH[renderBlocks.uvRotateSouth][1][0], floatingHeight ? vMax : UV_SOUTH[renderBlocks.uvRotateSouth][1][1], BOTTOM_LEFT);
-                setupVertex(renderBlocks, xMax, yMin, zMax, UV_SOUTH[renderBlocks.uvRotateSouth][2][0], UV_SOUTH[renderBlocks.uvRotateSouth][2][1], BOTTOM_RIGHT);
-                setupVertex(renderBlocks, xMax, yMax, zMax, UV_SOUTH[renderBlocks.uvRotateSouth][3][0], UV_SOUTH[renderBlocks.uvRotateSouth][3][1], TOP_RIGHT);
+                setupVertex(renderBlocks, xMin, yMin, zMax, uBL, floatingHeight ? icon.getMaxV() : vBL, BOTTOM_LEFT );
+                setupVertex(renderBlocks, xMax, yMin, zMax, uBR,                                   vBR, BOTTOM_RIGHT);
+                setupVertex(renderBlocks, xMax, yMax, zMax, uTR,                                   vTR, TOP_RIGHT   );
             } else {
-                setupVertex(renderBlocks, xMin, yMax, zMax, UV_SOUTH[renderBlocks.uvRotateSouth][0][0], UV_SOUTH[renderBlocks.uvRotateSouth][0][1], TOP_LEFT);
-                setupVertex(renderBlocks, xMin, yMin, zMax, UV_SOUTH[renderBlocks.uvRotateSouth][1][0], UV_SOUTH[renderBlocks.uvRotateSouth][1][1], BOTTOM_LEFT);
-                setupVertex(renderBlocks, xMax, yMin, zMax, UV_SOUTH[renderBlocks.uvRotateSouth][2][0], floatingHeight ? vMax : UV_SOUTH[renderBlocks.uvRotateSouth][2][1], BOTTOM_RIGHT);
+                setupVertex(renderBlocks, xMin, yMax, zMax, uTL,                                   vTL, TOP_LEFT    );
+                setupVertex(renderBlocks, xMin, yMin, zMax, uBL,                                   vBL, BOTTOM_LEFT );
+                setupVertex(renderBlocks, xMax, yMin, zMax, uBR, floatingHeight ? icon.getMaxV() : vBR, BOTTOM_RIGHT);
             }
         } else {
             if (slope.facings.contains(ForgeDirection.WEST)) {
-                setupVertex(renderBlocks, xMin, yMax, zMax, UV_SOUTH[renderBlocks.uvRotateSouth][0][0], UV_SOUTH[renderBlocks.uvRotateSouth][0][1], TOP_LEFT);
-                setupVertex(renderBlocks, xMax, yMin, zMax, UV_SOUTH[renderBlocks.uvRotateSouth][2][0], UV_SOUTH[renderBlocks.uvRotateSouth][2][1], BOTTOM_RIGHT);
-                setupVertex(renderBlocks, xMax, yMax, zMax, UV_SOUTH[renderBlocks.uvRotateSouth][3][0], UV_SOUTH[renderBlocks.uvRotateSouth][3][1], TOP_RIGHT);
+                setupVertex(renderBlocks, xMin, yMax, zMax, uTL, vTL, TOP_LEFT    );
+                setupVertex(renderBlocks, xMax, yMin, zMax, uBR, vBR, BOTTOM_RIGHT);
+                setupVertex(renderBlocks, xMax, yMax, zMax, uTR, vTR, TOP_RIGHT   );
             } else {
-                setupVertex(renderBlocks, xMin, yMax, zMax, UV_SOUTH[renderBlocks.uvRotateSouth][0][0], UV_SOUTH[renderBlocks.uvRotateSouth][0][1], TOP_LEFT);
-                setupVertex(renderBlocks, xMin, yMin, zMax, UV_SOUTH[renderBlocks.uvRotateSouth][1][0], UV_SOUTH[renderBlocks.uvRotateSouth][1][1], BOTTOM_LEFT);
-                setupVertex(renderBlocks, xMax, yMax, zMax, UV_SOUTH[renderBlocks.uvRotateSouth][3][0], UV_SOUTH[renderBlocks.uvRotateSouth][3][1], TOP_RIGHT);
+                setupVertex(renderBlocks, xMin, yMax, zMax, uTL, vTL, TOP_LEFT    );
+                setupVertex(renderBlocks, xMin, yMin, zMax, uBL, vBL, BOTTOM_LEFT );
+                setupVertex(renderBlocks, xMax, yMax, zMax, uTR, vTR, TOP_RIGHT   );
             }
         }
     }
@@ -175,23 +175,23 @@ public class HelperOrthoWedge extends RenderHelper {
 
         if (slope.isPositive) {
             if (slope.facings.contains(ForgeDirection.NORTH)) {
-                setupVertex(renderBlocks, xMin, yMax, zMax, UV_WEST[renderBlocks.uvRotateWest][0][0], UV_WEST[renderBlocks.uvRotateWest][0][1], TOP_RIGHT);
-                setupVertex(renderBlocks, xMin, yMin, zMin, UV_WEST[renderBlocks.uvRotateWest][2][0], floatingHeight ? vMax : UV_WEST[renderBlocks.uvRotateWest][2][1], BOTTOM_LEFT);
-                setupVertex(renderBlocks, xMin, yMin, zMax, UV_WEST[renderBlocks.uvRotateWest][3][0], UV_WEST[renderBlocks.uvRotateWest][3][1], BOTTOM_RIGHT);
+                setupVertex(renderBlocks, xMin, yMin, zMin, uBL, floatingHeight ? icon.getMaxV() : vBL, BOTTOM_LEFT );
+                setupVertex(renderBlocks, xMin, yMin, zMax, uBR,                                   vBR, BOTTOM_RIGHT);
+                setupVertex(renderBlocks, xMin, yMax, zMax, uTR,                                   vTR, TOP_RIGHT   );
             } else {
-                setupVertex(renderBlocks, xMin, yMax, zMin, UV_WEST[renderBlocks.uvRotateWest][1][0], UV_WEST[renderBlocks.uvRotateWest][1][1], TOP_LEFT);
-                setupVertex(renderBlocks, xMin, yMin, zMin, UV_WEST[renderBlocks.uvRotateWest][2][0], UV_WEST[renderBlocks.uvRotateWest][2][1], BOTTOM_LEFT);
-                setupVertex(renderBlocks, xMin, yMin, zMax, UV_WEST[renderBlocks.uvRotateWest][3][0], floatingHeight ? vMax : UV_WEST[renderBlocks.uvRotateWest][3][1], BOTTOM_RIGHT);
+                setupVertex(renderBlocks, xMin, yMax, zMin, uTL,                                   vTL, TOP_LEFT    );
+                setupVertex(renderBlocks, xMin, yMin, zMin, uBL,                                   vBL, BOTTOM_LEFT );
+                setupVertex(renderBlocks, xMin, yMin, zMax, uBR, floatingHeight ? icon.getMaxV() : vBR, BOTTOM_RIGHT);
             }
         } else {
             if (slope.facings.contains(ForgeDirection.NORTH)) {
-                setupVertex(renderBlocks, xMin, yMax, zMax, UV_WEST[renderBlocks.uvRotateWest][0][0], UV_WEST[renderBlocks.uvRotateWest][0][1], TOP_RIGHT);
-                setupVertex(renderBlocks, xMin, yMax, zMin, UV_WEST[renderBlocks.uvRotateWest][1][0], UV_WEST[renderBlocks.uvRotateWest][1][1], TOP_LEFT);
-                setupVertex(renderBlocks, xMin, yMin, zMax, UV_WEST[renderBlocks.uvRotateWest][3][0], UV_WEST[renderBlocks.uvRotateWest][3][1], BOTTOM_RIGHT);
+                setupVertex(renderBlocks, xMin, yMax, zMax, uTR, vTR, TOP_RIGHT   );
+                setupVertex(renderBlocks, xMin, yMax, zMin, uTL, vTL, TOP_LEFT    );
+                setupVertex(renderBlocks, xMin, yMin, zMax, uBR, vBR, BOTTOM_RIGHT);
             } else {
-                setupVertex(renderBlocks, xMin, yMax, zMax, UV_WEST[renderBlocks.uvRotateWest][0][0], UV_WEST[renderBlocks.uvRotateWest][0][1], TOP_RIGHT);
-                setupVertex(renderBlocks, xMin, yMax, zMin, UV_WEST[renderBlocks.uvRotateWest][1][0], UV_WEST[renderBlocks.uvRotateWest][1][1], TOP_LEFT);
-                setupVertex(renderBlocks, xMin, yMin, zMin, UV_WEST[renderBlocks.uvRotateWest][2][0], UV_WEST[renderBlocks.uvRotateWest][2][1], BOTTOM_LEFT);
+                setupVertex(renderBlocks, xMin, yMax, zMax, uTR, vTR, TOP_RIGHT   );
+                setupVertex(renderBlocks, xMin, yMax, zMin, uTL, vTL, TOP_LEFT    );
+                setupVertex(renderBlocks, xMin, yMin, zMin, uBL, vBL, BOTTOM_LEFT );
             }
         }
     }
@@ -208,23 +208,23 @@ public class HelperOrthoWedge extends RenderHelper {
 
         if (slope.isPositive) {
             if (slope.facings.contains(ForgeDirection.NORTH)) {
-                setupVertex(renderBlocks, xMax, yMin, zMax, UV_EAST[renderBlocks.uvRotateEast][0][0], UV_EAST[renderBlocks.uvRotateEast][0][1], BOTTOM_LEFT);
-                setupVertex(renderBlocks, xMax, yMin, zMin, UV_EAST[renderBlocks.uvRotateEast][1][0], floatingHeight ? vMax : UV_EAST[renderBlocks.uvRotateEast][1][1], BOTTOM_RIGHT);
-                setupVertex(renderBlocks, xMax, yMax, zMax, UV_EAST[renderBlocks.uvRotateEast][3][0], UV_EAST[renderBlocks.uvRotateEast][3][1], TOP_LEFT);
+                setupVertex(renderBlocks, xMax, yMax, zMax, uTL,                                   vTL, TOP_LEFT    );
+                setupVertex(renderBlocks, xMax, yMin, zMax, uBL,                                   vBL, BOTTOM_LEFT );
+                setupVertex(renderBlocks, xMax, yMin, zMin, uBR, floatingHeight ? icon.getMaxV() : vBR, BOTTOM_RIGHT);
             } else {
-                setupVertex(renderBlocks, xMax, yMin, zMax, UV_EAST[renderBlocks.uvRotateEast][0][0], floatingHeight ? vMax : UV_EAST[renderBlocks.uvRotateEast][0][1], BOTTOM_LEFT);
-                setupVertex(renderBlocks, xMax, yMin, zMin, UV_EAST[renderBlocks.uvRotateEast][1][0], UV_EAST[renderBlocks.uvRotateEast][1][1], BOTTOM_RIGHT);
-                setupVertex(renderBlocks, xMax, yMax, zMin, UV_EAST[renderBlocks.uvRotateEast][2][0], UV_EAST[renderBlocks.uvRotateEast][2][1], TOP_RIGHT);
+                setupVertex(renderBlocks, xMax, yMin, zMax, uBL, floatingHeight ? icon.getMaxV() : vBL, BOTTOM_LEFT );
+                setupVertex(renderBlocks, xMax, yMin, zMin, uBR,                                   vBR, BOTTOM_RIGHT);
+                setupVertex(renderBlocks, xMax, yMax, zMin, uTR,                                   vTR, TOP_RIGHT   );
             }
         } else {
             if (slope.facings.contains(ForgeDirection.NORTH)) {
-                setupVertex(renderBlocks, xMax, yMin, zMax, UV_EAST[renderBlocks.uvRotateEast][0][0], UV_EAST[renderBlocks.uvRotateEast][0][1], BOTTOM_LEFT);
-                setupVertex(renderBlocks, xMax, yMax, zMin, UV_EAST[renderBlocks.uvRotateEast][2][0], UV_EAST[renderBlocks.uvRotateEast][2][1], TOP_RIGHT);
-                setupVertex(renderBlocks, xMax, yMax, zMax, UV_EAST[renderBlocks.uvRotateEast][3][0], UV_EAST[renderBlocks.uvRotateEast][3][1], TOP_LEFT);
+                setupVertex(renderBlocks, xMax, yMin, zMax, uBL, vBL, BOTTOM_LEFT );
+                setupVertex(renderBlocks, xMax, yMax, zMin, uTR, vTR, TOP_RIGHT   );
+                setupVertex(renderBlocks, xMax, yMax, zMax, uTL, vTL, TOP_LEFT    );
             } else {
-                setupVertex(renderBlocks, xMax, yMin, zMin, UV_EAST[renderBlocks.uvRotateEast][1][0], UV_EAST[renderBlocks.uvRotateEast][1][1], BOTTOM_RIGHT);
-                setupVertex(renderBlocks, xMax, yMax, zMin, UV_EAST[renderBlocks.uvRotateEast][2][0], UV_EAST[renderBlocks.uvRotateEast][2][1], TOP_RIGHT);
-                setupVertex(renderBlocks, xMax, yMax, zMax, UV_EAST[renderBlocks.uvRotateEast][3][0], UV_EAST[renderBlocks.uvRotateEast][3][1], TOP_LEFT);
+                setupVertex(renderBlocks, xMax, yMin, zMin, uBR, vBR, BOTTOM_RIGHT);
+                setupVertex(renderBlocks, xMax, yMax, zMin, uTR, vTR, TOP_RIGHT   );
+                setupVertex(renderBlocks, xMax, yMax, zMax, uTL, vTL, TOP_LEFT    );
             }
         }
     }

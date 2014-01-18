@@ -24,44 +24,44 @@ public class HelperCorner extends RenderHelper {
         switch (slopeID)
         {
         case Slope.ID_WEDGE_INT_NEG_NW:
-            setupVertex(renderBlocks, xMin, yMin, zMax, UV_NORTH[renderBlocks.uvRotateEast][3][0], UV_NORTH[renderBlocks.uvRotateEast][3][1], BOTTOM_RIGHT);
-            setupVertex(renderBlocks, xMin, yMax, zMin, UV_NORTH[renderBlocks.uvRotateEast][0][0], UV_NORTH[renderBlocks.uvRotateEast][0][1], TOP_RIGHT);
-            setupVertex(renderBlocks, xMax, yMin, zMax, UV_NORTH[renderBlocks.uvRotateEast][2][0], UV_NORTH[renderBlocks.uvRotateEast][2][1], BOTTOM_LEFT);
+            setupVertex(renderBlocks, xMin, yMin, zMax, uBR, vBR, SOUTHWEST);
+            setupVertex(renderBlocks, xMin, yMax, zMin, uTR, vTR, NORTHWEST);
+            setupVertex(renderBlocks, xMax, yMin, zMax, uBL, vBL, SOUTHEAST);
             break;
         case Slope.ID_WEDGE_INT_NEG_NE:
-            setupVertex(renderBlocks, xMin, yMin, zMax, UV_NORTH[renderBlocks.uvRotateEast][3][0], UV_NORTH[renderBlocks.uvRotateEast][3][1], BOTTOM_RIGHT);
-            setupVertex(renderBlocks, xMax, yMax, zMin, UV_NORTH[renderBlocks.uvRotateEast][1][0], UV_NORTH[renderBlocks.uvRotateEast][1][1], TOP_LEFT);
-            setupVertex(renderBlocks, xMax, yMin, zMax, UV_NORTH[renderBlocks.uvRotateEast][2][0], UV_NORTH[renderBlocks.uvRotateEast][2][1], BOTTOM_LEFT);
+            setupVertex(renderBlocks, xMin, yMin, zMax, uBR, vBR, SOUTHWEST);
+            setupVertex(renderBlocks, xMax, yMax, zMin, uTL, vTL, NORTHEAST);
+            setupVertex(renderBlocks, xMax, yMin, zMax, uBL, vBL, SOUTHEAST);
             break;
         case Slope.ID_WEDGE_EXT_NEG_NW:
-            setupVertex(renderBlocks, xMin, yMax, zMin, UV_NORTH[renderBlocks.uvRotateEast][0][0], UV_NORTH[renderBlocks.uvRotateEast][0][1], TOP_RIGHT);
-            setupVertex(renderBlocks, xMax, yMax, zMin, UV_NORTH[renderBlocks.uvRotateEast][1][0], UV_NORTH[renderBlocks.uvRotateEast][1][1], TOP_LEFT);
-            setupVertex(renderBlocks, xMax, yMin, zMax, UV_NORTH[renderBlocks.uvRotateEast][2][0], UV_NORTH[renderBlocks.uvRotateEast][2][1], BOTTOM_LEFT);
+            setupVertex(renderBlocks, xMin, yMax, zMin, uTR, vTR, NORTHWEST);
+            setupVertex(renderBlocks, xMax, yMax, zMin, uTL, vTL, NORTHEAST);
+            setupVertex(renderBlocks, xMax, yMin, zMax, uBL, vBL, SOUTHEAST);
             break;
         case Slope.ID_WEDGE_EXT_NEG_NE:
-            setupVertex(renderBlocks, xMin, yMin, zMax, UV_NORTH[renderBlocks.uvRotateEast][3][0], UV_NORTH[renderBlocks.uvRotateEast][3][1], BOTTOM_RIGHT);
-            setupVertex(renderBlocks, xMin, yMax, zMin, UV_NORTH[renderBlocks.uvRotateEast][0][0], UV_NORTH[renderBlocks.uvRotateEast][0][1], TOP_RIGHT);
-            setupVertex(renderBlocks, xMax, yMax, zMin, UV_NORTH[renderBlocks.uvRotateEast][1][0], UV_NORTH[renderBlocks.uvRotateEast][1][1], TOP_LEFT);
+            setupVertex(renderBlocks, xMin, yMin, zMax, uBR, vBR, SOUTHWEST);
+            setupVertex(renderBlocks, xMin, yMax, zMin, uTR, vTR, NORTHWEST);
+            setupVertex(renderBlocks, xMax, yMax, zMin, uTL, vTL, NORTHEAST);
             break;
         case Slope.ID_WEDGE_INT_POS_NW:
-            setupVertex(renderBlocks, xMax, yMax, zMax, UV_NORTH[renderBlocks.uvRotateEast][1][0], UV_NORTH[renderBlocks.uvRotateEast][1][1], TOP_LEFT);
-            setupVertex(renderBlocks, xMin, yMin, zMin, UV_NORTH[renderBlocks.uvRotateEast][3][0], UV_NORTH[renderBlocks.uvRotateEast][3][1], BOTTOM_RIGHT);
-            setupVertex(renderBlocks, xMin, yMax, zMax, UV_NORTH[renderBlocks.uvRotateEast][0][0], UV_NORTH[renderBlocks.uvRotateEast][0][1], TOP_RIGHT);
+            setupVertex(renderBlocks, xMax, yMax, zMax, uTL, vTL, SOUTHEAST);
+            setupVertex(renderBlocks, xMin, yMin, zMin, uBR, vBR, NORTHWEST);
+            setupVertex(renderBlocks, xMin, yMax, zMax, uTR, vTR, SOUTHWEST);
             break;
         case Slope.ID_WEDGE_INT_POS_NE:
-            setupVertex(renderBlocks, xMax, yMax, zMax, UV_NORTH[renderBlocks.uvRotateEast][1][0], UV_NORTH[renderBlocks.uvRotateEast][1][1], TOP_LEFT);
-            setupVertex(renderBlocks, xMax, yMin, zMin, UV_NORTH[renderBlocks.uvRotateEast][2][0], UV_NORTH[renderBlocks.uvRotateEast][2][1], BOTTOM_LEFT);
-            setupVertex(renderBlocks, xMin, yMax, zMax, UV_NORTH[renderBlocks.uvRotateEast][0][0], UV_NORTH[renderBlocks.uvRotateEast][0][1], TOP_RIGHT);
+            setupVertex(renderBlocks, xMax, yMax, zMax, uTL, vTL, SOUTHEAST);
+            setupVertex(renderBlocks, xMax, yMin, zMin, uBL, vBL, NORTHEAST);
+            setupVertex(renderBlocks, xMin, yMax, zMax, uTR, vTR, SOUTHWEST);
             break;
         case Slope.ID_WEDGE_EXT_POS_NW:
-            setupVertex(renderBlocks, xMax, yMax, zMax, UV_NORTH[renderBlocks.uvRotateEast][1][0], UV_NORTH[renderBlocks.uvRotateEast][1][1], TOP_LEFT);
-            setupVertex(renderBlocks, xMax, yMin, zMin, UV_NORTH[renderBlocks.uvRotateEast][2][0], UV_NORTH[renderBlocks.uvRotateEast][2][1], BOTTOM_LEFT);
-            setupVertex(renderBlocks, xMin, yMin, zMin, UV_NORTH[renderBlocks.uvRotateEast][3][0], UV_NORTH[renderBlocks.uvRotateEast][3][1], BOTTOM_RIGHT);
+            setupVertex(renderBlocks, xMax, yMax, zMax, uTL, vTL, SOUTHEAST);
+            setupVertex(renderBlocks, xMax, yMin, zMin, uBL, vBL, NORTHEAST);
+            setupVertex(renderBlocks, xMin, yMin, zMin, uBR, vBR, NORTHWEST);
             break;
         case Slope.ID_WEDGE_EXT_POS_NE:
-            setupVertex(renderBlocks, xMax, yMin, zMin, UV_NORTH[renderBlocks.uvRotateEast][2][0], UV_NORTH[renderBlocks.uvRotateEast][2][1], BOTTOM_LEFT);
-            setupVertex(renderBlocks, xMin, yMin, zMin, UV_NORTH[renderBlocks.uvRotateEast][3][0], UV_NORTH[renderBlocks.uvRotateEast][3][1], BOTTOM_RIGHT);
-            setupVertex(renderBlocks, xMin, yMax, zMax, UV_NORTH[renderBlocks.uvRotateEast][0][0], UV_NORTH[renderBlocks.uvRotateEast][0][1], TOP_RIGHT);
+            setupVertex(renderBlocks, xMax, yMin, zMin, uBL, vBL, NORTHEAST);
+            setupVertex(renderBlocks, xMin, yMin, zMin, uBR, vBR, NORTHWEST);
+            setupVertex(renderBlocks, xMin, yMax, zMax, uTR, vTR, SOUTHWEST);
             break;
         }
     }
@@ -76,44 +76,44 @@ public class HelperCorner extends RenderHelper {
         switch (slopeID)
         {
         case Slope.ID_WEDGE_INT_NEG_SW:
-            setupVertex(renderBlocks, xMin, yMax, zMax, UV_SOUTH[renderBlocks.uvRotateWest][0][0], UV_SOUTH[renderBlocks.uvRotateWest][0][1], TOP_LEFT);
-            setupVertex(renderBlocks, xMin, yMin, zMin, UV_SOUTH[renderBlocks.uvRotateWest][1][0], UV_SOUTH[renderBlocks.uvRotateWest][1][1], BOTTOM_LEFT);
-            setupVertex(renderBlocks, xMax, yMin, zMin, UV_SOUTH[renderBlocks.uvRotateWest][2][0], UV_SOUTH[renderBlocks.uvRotateWest][2][1], BOTTOM_RIGHT);
+            setupVertex(renderBlocks, xMin, yMax, zMax, uTL, vTL, SOUTHWEST);
+            setupVertex(renderBlocks, xMin, yMin, zMin, uBL, vBL, NORTHWEST);
+            setupVertex(renderBlocks, xMax, yMin, zMin, uBR, vBR, NORTHEAST);
             break;
         case Slope.ID_WEDGE_INT_NEG_SE:
-            setupVertex(renderBlocks, xMax, yMax, zMax, UV_SOUTH[renderBlocks.uvRotateWest][3][0], UV_SOUTH[renderBlocks.uvRotateWest][3][1], TOP_RIGHT);
-            setupVertex(renderBlocks, xMin, yMin, zMin, UV_SOUTH[renderBlocks.uvRotateWest][1][0], UV_SOUTH[renderBlocks.uvRotateWest][1][1], BOTTOM_LEFT);
-            setupVertex(renderBlocks, xMax, yMin, zMin, UV_SOUTH[renderBlocks.uvRotateWest][2][0], UV_SOUTH[renderBlocks.uvRotateWest][2][1], BOTTOM_RIGHT);
+            setupVertex(renderBlocks, xMax, yMax, zMax, uTR, vTR, SOUTHEAST);
+            setupVertex(renderBlocks, xMin, yMin, zMin, uBL, vBL, NORTHWEST);
+            setupVertex(renderBlocks, xMax, yMin, zMin, uBR, vBR, NORTHEAST);
             break;
         case Slope.ID_WEDGE_EXT_NEG_SW:
-            setupVertex(renderBlocks, xMin, yMax, zMax, UV_SOUTH[renderBlocks.uvRotateWest][0][0], UV_SOUTH[renderBlocks.uvRotateWest][0][1], TOP_LEFT);
-            setupVertex(renderBlocks, xMax, yMin, zMin, UV_SOUTH[renderBlocks.uvRotateWest][2][0], UV_SOUTH[renderBlocks.uvRotateWest][2][1], BOTTOM_RIGHT);
-            setupVertex(renderBlocks, xMax, yMax, zMax, UV_SOUTH[renderBlocks.uvRotateWest][3][0], UV_SOUTH[renderBlocks.uvRotateWest][3][1], TOP_RIGHT);
+            setupVertex(renderBlocks, xMin, yMax, zMax, uTL, vTL, SOUTHWEST);
+            setupVertex(renderBlocks, xMax, yMin, zMin, uBR, vBR, NORTHEAST);
+            setupVertex(renderBlocks, xMax, yMax, zMax, uTR, vTR, SOUTHEAST);
             break;
         case Slope.ID_WEDGE_EXT_NEG_SE:
-            setupVertex(renderBlocks, xMin, yMax, zMax, UV_SOUTH[renderBlocks.uvRotateWest][0][0], UV_SOUTH[renderBlocks.uvRotateWest][0][1], TOP_LEFT);
-            setupVertex(renderBlocks, xMin, yMin, zMin, UV_SOUTH[renderBlocks.uvRotateWest][1][0], UV_SOUTH[renderBlocks.uvRotateWest][1][1], BOTTOM_LEFT);
-            setupVertex(renderBlocks, xMax, yMax, zMax, UV_SOUTH[renderBlocks.uvRotateWest][3][0], UV_SOUTH[renderBlocks.uvRotateWest][3][1], TOP_RIGHT);
+            setupVertex(renderBlocks, xMin, yMax, zMax, uTL, vTL, SOUTHWEST);
+            setupVertex(renderBlocks, xMin, yMin, zMin, uBL, vBL, NORTHWEST);
+            setupVertex(renderBlocks, xMax, yMax, zMax, uTR, vTR, SOUTHEAST);
             break;
         case Slope.ID_WEDGE_INT_POS_SW:
-            setupVertex(renderBlocks, xMax, yMax, zMin, UV_SOUTH[renderBlocks.uvRotateWest][3][0], UV_SOUTH[renderBlocks.uvRotateWest][3][1], TOP_RIGHT);
-            setupVertex(renderBlocks, xMin, yMax, zMin, UV_SOUTH[renderBlocks.uvRotateWest][0][0], UV_SOUTH[renderBlocks.uvRotateWest][0][1], TOP_LEFT);
-            setupVertex(renderBlocks, xMin, yMin, zMax, UV_SOUTH[renderBlocks.uvRotateWest][1][0], UV_SOUTH[renderBlocks.uvRotateWest][1][1], BOTTOM_LEFT);
+            setupVertex(renderBlocks, xMax, yMax, zMin, uTR, vTR, NORTHEAST);
+            setupVertex(renderBlocks, xMin, yMax, zMin, uTL, vTL, NORTHWEST);
+            setupVertex(renderBlocks, xMin, yMin, zMax, uBL, vBL, SOUTHWEST);
             break;
         case Slope.ID_WEDGE_INT_POS_SE:
-            setupVertex(renderBlocks, xMax, yMin, zMax, UV_SOUTH[renderBlocks.uvRotateWest][2][0], UV_SOUTH[renderBlocks.uvRotateWest][2][1], BOTTOM_RIGHT);
-            setupVertex(renderBlocks, xMax, yMax, zMin, UV_SOUTH[renderBlocks.uvRotateWest][3][0], UV_SOUTH[renderBlocks.uvRotateWest][3][1], TOP_RIGHT);
-            setupVertex(renderBlocks, xMin, yMax, zMin, UV_SOUTH[renderBlocks.uvRotateWest][0][0], UV_SOUTH[renderBlocks.uvRotateWest][0][1], TOP_LEFT);
+            setupVertex(renderBlocks, xMax, yMin, zMax, uBR, vBR, SOUTHEAST);
+            setupVertex(renderBlocks, xMax, yMax, zMin, uTR, vTR, NORTHEAST);
+            setupVertex(renderBlocks, xMin, yMax, zMin, uTL, vTL, NORTHWEST);
             break;
         case Slope.ID_WEDGE_EXT_POS_SW:
-            setupVertex(renderBlocks, xMax, yMin, zMax, UV_SOUTH[renderBlocks.uvRotateWest][2][0], UV_SOUTH[renderBlocks.uvRotateWest][2][1], BOTTOM_RIGHT);
-            setupVertex(renderBlocks, xMax, yMax, zMin, UV_SOUTH[renderBlocks.uvRotateWest][3][0], UV_SOUTH[renderBlocks.uvRotateWest][3][1], TOP_RIGHT);
-            setupVertex(renderBlocks, xMin, yMin, zMax, UV_SOUTH[renderBlocks.uvRotateWest][1][0], UV_SOUTH[renderBlocks.uvRotateWest][1][1], BOTTOM_LEFT);
+            setupVertex(renderBlocks, xMax, yMin, zMax, uBR, vBR, SOUTHEAST);
+            setupVertex(renderBlocks, xMax, yMax, zMin, uTR, vTR, NORTHEAST);
+            setupVertex(renderBlocks, xMin, yMin, zMax, uBL, vBL, SOUTHWEST);
             break;
         case Slope.ID_WEDGE_EXT_POS_SE:
-            setupVertex(renderBlocks, xMax, yMin, zMax, UV_SOUTH[renderBlocks.uvRotateWest][2][0], UV_SOUTH[renderBlocks.uvRotateWest][2][1], BOTTOM_RIGHT);
-            setupVertex(renderBlocks, xMin, yMax, zMin, UV_SOUTH[renderBlocks.uvRotateWest][0][0], UV_SOUTH[renderBlocks.uvRotateWest][0][1], TOP_LEFT);
-            setupVertex(renderBlocks, xMin, yMin, zMax, UV_SOUTH[renderBlocks.uvRotateWest][1][0], UV_SOUTH[renderBlocks.uvRotateWest][1][1], BOTTOM_LEFT);
+            setupVertex(renderBlocks, xMax, yMin, zMax, uBR, vBR, SOUTHEAST);
+            setupVertex(renderBlocks, xMin, yMax, zMin, uTL, vTL, NORTHWEST);
+            setupVertex(renderBlocks, xMin, yMin, zMax, uBL, vBL, SOUTHWEST);
             break;
         }
     }
@@ -128,44 +128,44 @@ public class HelperCorner extends RenderHelper {
         switch (slopeID)
         {
         case Slope.ID_WEDGE_INT_NEG_NW:
-            setupVertex(renderBlocks, xMin, yMax, zMin, UV_WEST[renderBlocks.uvRotateNorth][1][0], UV_WEST[renderBlocks.uvRotateNorth][1][1], TOP_LEFT);
-            setupVertex(renderBlocks, xMax, yMin, zMin, UV_WEST[renderBlocks.uvRotateNorth][2][0], UV_WEST[renderBlocks.uvRotateNorth][2][1], BOTTOM_LEFT);
-            setupVertex(renderBlocks, xMax, yMin, zMax, UV_WEST[renderBlocks.uvRotateNorth][3][0], UV_WEST[renderBlocks.uvRotateNorth][3][1], BOTTOM_RIGHT);
+            setupVertex(renderBlocks, xMin, yMax, zMin, uTL, vTL, NORTHWEST);
+            setupVertex(renderBlocks, xMax, yMin, zMin, uBL, vBL, NORTHEAST);
+            setupVertex(renderBlocks, xMax, yMin, zMax, uBR, vBR, SOUTHEAST);
             break;
         case Slope.ID_WEDGE_INT_NEG_SW:
-            setupVertex(renderBlocks, xMin, yMax, zMax, UV_WEST[renderBlocks.uvRotateNorth][0][0], UV_WEST[renderBlocks.uvRotateNorth][0][1], TOP_RIGHT);
-            setupVertex(renderBlocks, xMax, yMin, zMin, UV_WEST[renderBlocks.uvRotateNorth][2][0], UV_WEST[renderBlocks.uvRotateNorth][2][1], BOTTOM_LEFT);
-            setupVertex(renderBlocks, xMax, yMin, zMax, UV_WEST[renderBlocks.uvRotateNorth][3][0], UV_WEST[renderBlocks.uvRotateNorth][3][1], BOTTOM_RIGHT);
+            setupVertex(renderBlocks, xMin, yMax, zMax, uTR, vTR, SOUTHWEST);
+            setupVertex(renderBlocks, xMax, yMin, zMin, uBL, vBL, NORTHEAST);
+            setupVertex(renderBlocks, xMax, yMin, zMax, uBR, vBR, SOUTHEAST);
             break;
         case Slope.ID_WEDGE_EXT_NEG_NW:
-            setupVertex(renderBlocks, xMin, yMax, zMax, UV_WEST[renderBlocks.uvRotateNorth][0][0], UV_WEST[renderBlocks.uvRotateNorth][0][1], TOP_RIGHT);
-            setupVertex(renderBlocks, xMin, yMax, zMin, UV_WEST[renderBlocks.uvRotateNorth][1][0], UV_WEST[renderBlocks.uvRotateNorth][1][1], TOP_LEFT);
-            setupVertex(renderBlocks, xMax, yMin, zMax, UV_WEST[renderBlocks.uvRotateNorth][3][0], UV_WEST[renderBlocks.uvRotateNorth][3][1], BOTTOM_RIGHT);
+            setupVertex(renderBlocks, xMin, yMax, zMax, uTR, vTR, SOUTHWEST);
+            setupVertex(renderBlocks, xMin, yMax, zMin, uTL, vTL, NORTHWEST);
+            setupVertex(renderBlocks, xMax, yMin, zMax, uBR, vBR, SOUTHEAST);
             break;
         case Slope.ID_WEDGE_EXT_NEG_SW:
-            setupVertex(renderBlocks, xMin, yMax, zMax, UV_WEST[renderBlocks.uvRotateNorth][0][0], UV_WEST[renderBlocks.uvRotateNorth][0][1], TOP_RIGHT);
-            setupVertex(renderBlocks, xMin, yMax, zMin, UV_WEST[renderBlocks.uvRotateNorth][1][0], UV_WEST[renderBlocks.uvRotateNorth][1][1], TOP_LEFT);
-            setupVertex(renderBlocks, xMax, yMin, zMin, UV_WEST[renderBlocks.uvRotateNorth][2][0], UV_WEST[renderBlocks.uvRotateNorth][2][1], BOTTOM_LEFT);
+            setupVertex(renderBlocks, xMin, yMax, zMax, uTR, vTR, SOUTHWEST);
+            setupVertex(renderBlocks, xMin, yMax, zMin, uTL, vTL, NORTHWEST);
+            setupVertex(renderBlocks, xMax, yMin, zMin, uBL, vBL, NORTHEAST);
             break;
         case Slope.ID_WEDGE_INT_POS_NW:
-            setupVertex(renderBlocks, xMax, yMax, zMax, UV_WEST[renderBlocks.uvRotateNorth][0][0], UV_WEST[renderBlocks.uvRotateNorth][0][1], TOP_RIGHT);
-            setupVertex(renderBlocks, xMax, yMax, zMin, UV_WEST[renderBlocks.uvRotateNorth][1][0], UV_WEST[renderBlocks.uvRotateNorth][1][1], TOP_LEFT);
-            setupVertex(renderBlocks, xMin, yMin, zMin, UV_WEST[renderBlocks.uvRotateNorth][2][0], UV_WEST[renderBlocks.uvRotateNorth][2][1], BOTTOM_LEFT);
+            setupVertex(renderBlocks, xMax, yMax, zMax, uTR, vTR, SOUTHEAST);
+            setupVertex(renderBlocks, xMax, yMax, zMin, uTL, vTL, NORTHEAST);
+            setupVertex(renderBlocks, xMin, yMin, zMin, uBL, vBL, NORTHWEST);
             break;
         case Slope.ID_WEDGE_INT_POS_SW:
-            setupVertex(renderBlocks, xMax, yMax, zMax, UV_WEST[renderBlocks.uvRotateNorth][0][0], UV_WEST[renderBlocks.uvRotateNorth][0][1], TOP_RIGHT);
-            setupVertex(renderBlocks, xMax, yMax, zMin, UV_WEST[renderBlocks.uvRotateNorth][1][0], UV_WEST[renderBlocks.uvRotateNorth][1][1], TOP_LEFT);
-            setupVertex(renderBlocks, xMin, yMin, zMax, UV_WEST[renderBlocks.uvRotateNorth][3][0], UV_WEST[renderBlocks.uvRotateNorth][3][1], BOTTOM_RIGHT);
+            setupVertex(renderBlocks, xMax, yMax, zMax, uTR, vTR, SOUTHEAST);
+            setupVertex(renderBlocks, xMax, yMax, zMin, uTL, vTL, NORTHEAST);
+            setupVertex(renderBlocks, xMin, yMin, zMax, uBR, vBR, SOUTHWEST);
             break;
         case Slope.ID_WEDGE_EXT_POS_NW:
-            setupVertex(renderBlocks, xMax, yMax, zMax, UV_WEST[renderBlocks.uvRotateNorth][0][0], UV_WEST[renderBlocks.uvRotateNorth][0][1], TOP_RIGHT);
-            setupVertex(renderBlocks, xMin, yMin, zMin, UV_WEST[renderBlocks.uvRotateNorth][2][0], UV_WEST[renderBlocks.uvRotateNorth][2][1], BOTTOM_LEFT);
-            setupVertex(renderBlocks, xMin, yMin, zMax, UV_WEST[renderBlocks.uvRotateNorth][3][0], UV_WEST[renderBlocks.uvRotateNorth][3][1], BOTTOM_RIGHT);
+            setupVertex(renderBlocks, xMax, yMax, zMax, uTR, vTR, SOUTHEAST);
+            setupVertex(renderBlocks, xMin, yMin, zMin, uBL, vBL, NORTHWEST);
+            setupVertex(renderBlocks, xMin, yMin, zMax, uBR, vBR, SOUTHWEST);
             break;
         case Slope.ID_WEDGE_EXT_POS_SW:
-            setupVertex(renderBlocks, xMax, yMax, zMin, UV_WEST[renderBlocks.uvRotateNorth][1][0], UV_WEST[renderBlocks.uvRotateNorth][1][1], TOP_LEFT);
-            setupVertex(renderBlocks, xMin, yMin, zMin, UV_WEST[renderBlocks.uvRotateNorth][2][0], UV_WEST[renderBlocks.uvRotateNorth][2][1], BOTTOM_LEFT);
-            setupVertex(renderBlocks, xMin, yMin, zMax, UV_WEST[renderBlocks.uvRotateNorth][3][0], UV_WEST[renderBlocks.uvRotateNorth][3][1], BOTTOM_RIGHT);
+            setupVertex(renderBlocks, xMax, yMax, zMin, uTL, vTL, NORTHEAST);
+            setupVertex(renderBlocks, xMin, yMin, zMin, uBL, vBL, NORTHWEST);
+            setupVertex(renderBlocks, xMin, yMin, zMax, uBR, vBR, SOUTHWEST);
             break;
         }
     }
@@ -180,44 +180,44 @@ public class HelperCorner extends RenderHelper {
         switch (slopeID)
         {
         case Slope.ID_WEDGE_INT_NEG_NE:
-            setupVertex(renderBlocks, xMin, yMin, zMax, UV_EAST[renderBlocks.uvRotateSouth][0][0], UV_EAST[renderBlocks.uvRotateSouth][0][1], BOTTOM_LEFT);
-            setupVertex(renderBlocks, xMin, yMin, zMin, UV_EAST[renderBlocks.uvRotateSouth][1][0], UV_EAST[renderBlocks.uvRotateSouth][1][1], BOTTOM_RIGHT);
-            setupVertex(renderBlocks, xMax, yMax, zMin, UV_EAST[renderBlocks.uvRotateSouth][2][0], UV_EAST[renderBlocks.uvRotateSouth][2][1], TOP_RIGHT);
+            setupVertex(renderBlocks, xMin, yMin, zMax, uBL, vBL, SOUTHWEST);
+            setupVertex(renderBlocks, xMin, yMin, zMin, uBR, vBR, NORTHWEST);
+            setupVertex(renderBlocks, xMax, yMax, zMin, uTR, vTR, NORTHEAST);
             break;
         case Slope.ID_WEDGE_INT_NEG_SE:
-            setupVertex(renderBlocks, xMin, yMin, zMax, UV_EAST[renderBlocks.uvRotateSouth][0][0], UV_EAST[renderBlocks.uvRotateSouth][0][1], BOTTOM_LEFT);
-            setupVertex(renderBlocks, xMin, yMin, zMin, UV_EAST[renderBlocks.uvRotateSouth][1][0], UV_EAST[renderBlocks.uvRotateSouth][1][1], BOTTOM_RIGHT);
-            setupVertex(renderBlocks, xMax, yMax, zMax, UV_EAST[renderBlocks.uvRotateSouth][3][0], UV_EAST[renderBlocks.uvRotateSouth][3][1], TOP_LEFT);
+            setupVertex(renderBlocks, xMin, yMin, zMax, uBL, vBL, SOUTHWEST);
+            setupVertex(renderBlocks, xMin, yMin, zMin, uBR, vBR, NORTHWEST);
+            setupVertex(renderBlocks, xMax, yMax, zMax, uTL, vTL, SOUTHEAST);
             break;
         case Slope.ID_WEDGE_EXT_NEG_NE:
-            setupVertex(renderBlocks, xMin, yMin, zMax, UV_EAST[renderBlocks.uvRotateSouth][0][0], UV_EAST[renderBlocks.uvRotateSouth][0][1], BOTTOM_LEFT);
-            setupVertex(renderBlocks, xMax, yMax, zMin, UV_EAST[renderBlocks.uvRotateSouth][2][0], UV_EAST[renderBlocks.uvRotateSouth][2][1], TOP_RIGHT);
-            setupVertex(renderBlocks, xMax, yMax, zMax, UV_EAST[renderBlocks.uvRotateSouth][3][0], UV_EAST[renderBlocks.uvRotateSouth][3][1], TOP_LEFT);
+            setupVertex(renderBlocks, xMin, yMin, zMax, uBL, vBL, SOUTHWEST);
+            setupVertex(renderBlocks, xMax, yMax, zMin, uTR, vTR, NORTHEAST);
+            setupVertex(renderBlocks, xMax, yMax, zMax, uTL, vTL, SOUTHEAST);
             break;
         case Slope.ID_WEDGE_EXT_NEG_SE:
-            setupVertex(renderBlocks, xMin, yMin, zMin, UV_EAST[renderBlocks.uvRotateSouth][1][0], UV_EAST[renderBlocks.uvRotateSouth][1][1], BOTTOM_RIGHT);
-            setupVertex(renderBlocks, xMax, yMax, zMin, UV_EAST[renderBlocks.uvRotateSouth][2][0], UV_EAST[renderBlocks.uvRotateSouth][2][1], TOP_RIGHT);
-            setupVertex(renderBlocks, xMax, yMax, zMax, UV_EAST[renderBlocks.uvRotateSouth][3][0], UV_EAST[renderBlocks.uvRotateSouth][3][1], TOP_LEFT);
+            setupVertex(renderBlocks, xMin, yMin, zMin, uBR, vBR, NORTHWEST);
+            setupVertex(renderBlocks, xMax, yMax, zMin, uTR, vTR, NORTHEAST);
+            setupVertex(renderBlocks, xMax, yMax, zMax, uTL, vTL, SOUTHEAST);
             break;
         case Slope.ID_WEDGE_INT_POS_NE:
-            setupVertex(renderBlocks, xMax, yMin, zMin, UV_EAST[renderBlocks.uvRotateSouth][1][0], UV_EAST[renderBlocks.uvRotateSouth][1][1], BOTTOM_RIGHT);
-            setupVertex(renderBlocks, xMin, yMax, zMin, UV_EAST[renderBlocks.uvRotateSouth][2][0], UV_EAST[renderBlocks.uvRotateSouth][2][1], TOP_RIGHT);
-            setupVertex(renderBlocks, xMin, yMax, zMax, UV_EAST[renderBlocks.uvRotateSouth][3][0], UV_EAST[renderBlocks.uvRotateSouth][3][1], TOP_LEFT);
+            setupVertex(renderBlocks, xMax, yMin, zMin, uBR, vBR, NORTHEAST);
+            setupVertex(renderBlocks, xMin, yMax, zMin, uTR, vTR, NORTHWEST);
+            setupVertex(renderBlocks, xMin, yMax, zMax, uTL, vTL, SOUTHWEST);
             break;
         case Slope.ID_WEDGE_INT_POS_SE:
-            setupVertex(renderBlocks, xMax, yMin, zMax, UV_EAST[renderBlocks.uvRotateSouth][0][0], UV_EAST[renderBlocks.uvRotateSouth][0][1], BOTTOM_LEFT);
-            setupVertex(renderBlocks, xMin, yMax, zMin, UV_EAST[renderBlocks.uvRotateSouth][2][0], UV_EAST[renderBlocks.uvRotateSouth][2][1], TOP_RIGHT);
-            setupVertex(renderBlocks, xMin, yMax, zMax, UV_EAST[renderBlocks.uvRotateSouth][3][0], UV_EAST[renderBlocks.uvRotateSouth][3][1], TOP_LEFT);
+            setupVertex(renderBlocks, xMax, yMin, zMax, uBL, vBL, SOUTHEAST);
+            setupVertex(renderBlocks, xMin, yMax, zMin, uTR, vTR, NORTHWEST);
+            setupVertex(renderBlocks, xMin, yMax, zMax, uTL, vTL, SOUTHWEST);
             break;
         case Slope.ID_WEDGE_EXT_POS_NE:
-            setupVertex(renderBlocks, xMax, yMin, zMax, UV_EAST[renderBlocks.uvRotateSouth][0][0], UV_EAST[renderBlocks.uvRotateSouth][0][1], BOTTOM_LEFT);
-            setupVertex(renderBlocks, xMax, yMin, zMin, UV_EAST[renderBlocks.uvRotateSouth][1][0], UV_EAST[renderBlocks.uvRotateSouth][1][1], BOTTOM_RIGHT);
-            setupVertex(renderBlocks, xMin, yMax, zMax, UV_EAST[renderBlocks.uvRotateSouth][3][0], UV_EAST[renderBlocks.uvRotateSouth][3][1], TOP_LEFT);
+            setupVertex(renderBlocks, xMax, yMin, zMax, uBL, vBL, SOUTHEAST);
+            setupVertex(renderBlocks, xMax, yMin, zMin, uBR, vBR, NORTHEAST);
+            setupVertex(renderBlocks, xMin, yMax, zMax, uTL, vTL, SOUTHWEST);
             break;
         case Slope.ID_WEDGE_EXT_POS_SE:
-            setupVertex(renderBlocks, xMax, yMin, zMax, UV_EAST[renderBlocks.uvRotateSouth][0][0], UV_EAST[renderBlocks.uvRotateSouth][0][1], BOTTOM_LEFT);
-            setupVertex(renderBlocks, xMax, yMin, zMin, UV_EAST[renderBlocks.uvRotateSouth][1][0], UV_EAST[renderBlocks.uvRotateSouth][1][1], BOTTOM_RIGHT);
-            setupVertex(renderBlocks, xMin, yMax, zMin, UV_EAST[renderBlocks.uvRotateSouth][2][0], UV_EAST[renderBlocks.uvRotateSouth][2][1], TOP_RIGHT);
+            setupVertex(renderBlocks, xMax, yMin, zMax, uBL, vBL, SOUTHEAST);
+            setupVertex(renderBlocks, xMax, yMin, zMin, uBR, vBR, NORTHEAST);
+            setupVertex(renderBlocks, xMin, yMax, zMin, uTR, vTR, NORTHWEST);
             break;
         }
     }

@@ -15,15 +15,15 @@ public class VertexHelper {
     public final static int BOTTOM_RIGHT = 2;
     public final static int TOP_RIGHT    = 3;
 
-    public final static int TOP_CENTER    = 4;
-    public final static int BOTTOM_CENTER = 5;
-    public final static int LEFT_CENTER   = 6;
-    public final static int RIGHT_CENTER  = 7;
-
     public final static int SOUTHEAST = TOP_LEFT;
     public final static int NORTHEAST = BOTTOM_LEFT;
     public final static int NORTHWEST = BOTTOM_RIGHT;
     public final static int SOUTHWEST = TOP_RIGHT;
+
+    public final static int TOP_CENTER    = 4;
+    public final static int BOTTOM_CENTER = 5;
+    public final static int LEFT_CENTER   = 6;
+    public final static int RIGHT_CENTER  = 7;
 
     /**
      * Offset used for faces.
@@ -58,6 +58,23 @@ public class VertexHelper {
     }
 
     /**
+     * Takes two brightness inputs and returns average brightness.
+     */
+    private static int getAverageBrightness(int brightness1, int brightness2)
+    {
+        int section_1_1 = brightness1 >> 16 & 255;
+        int section_1_3 = brightness1 & 255;
+
+        int section_2_1 = brightness2 >> 16 & 255;
+        int section_2_3 = brightness2 & 255;
+
+        int difference1 = (int) ((section_1_1 + section_2_1) / 2.0F);
+        int difference3 = (int) ((section_1_3 + section_2_3) / 2.0F);
+
+        return difference1 << 16 | difference3;
+    }
+
+    /**
      * Applies brightness, color, and adds vertex through tessellator
      */
     public static void setupVertex(RenderBlocks renderBlocks, double x, double y, double z, double u, double v, int vertex)
@@ -69,23 +86,19 @@ public class VertexHelper {
             switch(vertex) {
             case BOTTOM_CENTER:
                 tessellator.setColorOpaque_F((renderBlocks.colorRedBottomLeft + renderBlocks.colorRedBottomRight) / 2.0F, (renderBlocks.colorGreenBottomLeft + renderBlocks.colorGreenBottomRight) / 2.0F, (renderBlocks.colorBlueBottomLeft + renderBlocks.colorBlueBottomRight) / 2.0F);
-                /* TO DO: Mix brightness, don't take average. */
-                tessellator.setBrightness((renderBlocks.brightnessBottomLeft + renderBlocks.brightnessBottomRight) / 2);
+                tessellator.setBrightness(getAverageBrightness(renderBlocks.brightnessBottomLeft, renderBlocks.brightnessBottomRight));
                 break;
             case TOP_CENTER:
                 tessellator.setColorOpaque_F((renderBlocks.colorRedTopLeft + renderBlocks.colorRedTopRight) / 2.0F, (renderBlocks.colorGreenTopLeft + renderBlocks.colorGreenTopRight) / 2.0F, (renderBlocks.colorBlueTopLeft + renderBlocks.colorBlueTopRight) / 2);
-                /* TO DO: Mix brightness, don't take average. */
-                tessellator.setBrightness((renderBlocks.brightnessTopRight + renderBlocks.brightnessTopLeft) / 2);
+                tessellator.setBrightness(getAverageBrightness(renderBlocks.brightnessTopLeft, renderBlocks.brightnessTopRight));
                 break;
             case LEFT_CENTER:
                 tessellator.setColorOpaque_F((renderBlocks.colorRedTopLeft + renderBlocks.colorRedBottomLeft) / 2.0F, (renderBlocks.colorGreenTopLeft + renderBlocks.colorGreenBottomLeft) / 2.0F, (renderBlocks.colorBlueTopLeft + renderBlocks.colorBlueBottomLeft) / 2.0F);
-                /* TO DO: Mix brightness, don't take average. */
-                tessellator.setBrightness((renderBlocks.brightnessTopLeft + renderBlocks.brightnessBottomLeft) / 2);
+                tessellator.setBrightness(getAverageBrightness(renderBlocks.brightnessTopLeft, renderBlocks.brightnessBottomLeft));
                 break;
             case RIGHT_CENTER:
                 tessellator.setColorOpaque_F((renderBlocks.colorRedTopRight + renderBlocks.colorRedBottomRight) / 2.0F, (renderBlocks.colorGreenTopRight + renderBlocks.colorGreenBottomRight) / 2.0F, (renderBlocks.colorBlueTopRight + renderBlocks.colorBlueBottomRight) / 2);
-                /* TO DO: Mix brightness, don't take average. */
-                tessellator.setBrightness((renderBlocks.brightnessTopRight + renderBlocks.brightnessBottomRight) / 2);
+                tessellator.setBrightness(getAverageBrightness(renderBlocks.brightnessTopRight, renderBlocks.brightnessBottomRight));
                 break;
             case TOP_LEFT:
                 tessellator.setColorOpaque_F(renderBlocks.colorRedTopLeft, renderBlocks.colorGreenTopLeft, renderBlocks.colorBlueTopLeft);

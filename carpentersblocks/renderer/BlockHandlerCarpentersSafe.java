@@ -77,7 +77,7 @@ public class BlockHandlerCarpentersSafe extends BlockDeterminantRender {
             case BLOCKTYPE_HANDLE:
                 break;
             default:
-                renderBlocks.setOverrideBlockTexture(IconRegistry.icon_safe_light);
+                renderBlocks.setOverrideBlockTexture(renderBlocks.getIconSafe(IconRegistry.icon_safe_light));
             }
 
             super.renderInventoryBlock(block, metadata, modelID, renderBlocks);

@@ -6,6 +6,7 @@ import static net.minecraftforge.common.ForgeDirection.SOUTH;
 import static net.minecraftforge.common.ForgeDirection.WEST;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.util.Icon;
+import carpentersblocks.data.Slope;
 import carpentersblocks.renderer.helper.RenderHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -20,9 +21,9 @@ public class HelperPrism extends RenderHelper {
     {
         prepareRender(renderBlocks, NORTH, x, y, z, icon);
 
-        setupVertex(renderBlocks, xMin, yMax, zMin + 0.5F, UV_NORTH[renderBlocks.uvRotateNorth][0][0], UV_NORTH[renderBlocks.uvRotateNorth][0][1], TOP_RIGHT);
-        setupVertex(renderBlocks, xMax, yMax, zMin + 0.5F, UV_NORTH[renderBlocks.uvRotateNorth][1][0], UV_NORTH[renderBlocks.uvRotateNorth][1][1], TOP_CENTER);
-        setupVertex(renderBlocks, xMin, yMin, zMin, UV_NORTH[renderBlocks.uvRotateNorth][3][0], UV_NORTH[renderBlocks.uvRotateNorth][3][1], BOTTOM_RIGHT);
+        setupVertex(renderBlocks, xMax, yMax, zMax, uTL, vTL, SOUTHEAST);
+        setupVertex(renderBlocks, xMin, yMin, zMin, uBR, vBR, NORTHWEST);
+        setupVertex(renderBlocks, xMin, yMax, zMax, uTR, vTR, SOUTHWEST);
     }
 
     /**
@@ -32,9 +33,9 @@ public class HelperPrism extends RenderHelper {
     {
         prepareRender(renderBlocks, SOUTH, x, y, z, icon);
 
-        setupVertex(renderBlocks, xMin, yMax, zMax - 0.5F, UV_SOUTH[renderBlocks.uvRotateSouth][0][0], UV_SOUTH[renderBlocks.uvRotateSouth][0][1], TOP_LEFT);
-        setupVertex(renderBlocks, xMin, yMin, zMax, UV_SOUTH[renderBlocks.uvRotateSouth][1][0], UV_SOUTH[renderBlocks.uvRotateSouth][1][1], BOTTOM_LEFT);
-        setupVertex(renderBlocks, xMax, yMax, zMax - 0.5F, UV_SOUTH[renderBlocks.uvRotateSouth][3][0], UV_SOUTH[renderBlocks.uvRotateSouth][3][1], TOP_CENTER);
+        setupVertex(renderBlocks, xMin, yMax, zMin, uTL, vTL, NORTHWEST);
+        setupVertex(renderBlocks, xMin, yMin, zMax, uBL, vBL, SOUTHWEST);
+        setupVertex(renderBlocks, xMax, yMax, zMin, uTR, vTR, NORTHEAST);
     }
 
     /**
@@ -44,9 +45,9 @@ public class HelperPrism extends RenderHelper {
     {
         prepareRender(renderBlocks, NORTH, x, y, z, icon);
 
-        setupVertex(renderBlocks, xMin, yMax, zMin + 0.5F, UV_NORTH[renderBlocks.uvRotateNorth][0][0], UV_NORTH[renderBlocks.uvRotateNorth][0][1], TOP_CENTER);
-        setupVertex(renderBlocks, xMax, yMax, zMin + 0.5F, UV_NORTH[renderBlocks.uvRotateNorth][1][0], UV_NORTH[renderBlocks.uvRotateNorth][1][1], TOP_LEFT);
-        setupVertex(renderBlocks, xMax, yMin, zMin, UV_NORTH[renderBlocks.uvRotateNorth][2][0], UV_NORTH[renderBlocks.uvRotateNorth][2][1], BOTTOM_LEFT);
+        setupVertex(renderBlocks, xMax, yMax, zMax, uTL, vTL, SOUTHEAST);
+        setupVertex(renderBlocks, xMax, yMin, zMin, uBL, vBL, NORTHEAST);
+        setupVertex(renderBlocks, xMin, yMax, zMax, uTR, vTR, SOUTHWEST);
     }
 
     /**
@@ -56,9 +57,9 @@ public class HelperPrism extends RenderHelper {
     {
         prepareRender(renderBlocks, SOUTH, x, y, z, icon);
 
-        setupVertex(renderBlocks, xMin, yMax, zMax - 0.5F, UV_SOUTH[renderBlocks.uvRotateSouth][0][0], UV_SOUTH[renderBlocks.uvRotateSouth][0][1], TOP_CENTER);
-        setupVertex(renderBlocks, xMax, yMin, zMax, UV_SOUTH[renderBlocks.uvRotateSouth][2][0], UV_SOUTH[renderBlocks.uvRotateSouth][2][1], BOTTOM_RIGHT);
-        setupVertex(renderBlocks, xMax, yMax, zMax - 0.5F, UV_SOUTH[renderBlocks.uvRotateSouth][3][0], UV_SOUTH[renderBlocks.uvRotateSouth][3][1], TOP_RIGHT);
+        setupVertex(renderBlocks, xMin, yMax, zMin, uTL, vTL, NORTHWEST);
+        setupVertex(renderBlocks, xMax, yMin, zMax, uBR, vBR, SOUTHEAST);
+        setupVertex(renderBlocks, xMax, yMax, zMin, uTR, vTR, NORTHEAST);
     }
 
     /**
@@ -68,9 +69,9 @@ public class HelperPrism extends RenderHelper {
     {
         prepareRender(renderBlocks, WEST, x, y, z, icon);
 
-        setupVertex(renderBlocks, xMin + 0.5F, yMax, zMax, UV_WEST[renderBlocks.uvRotateWest][0][0], UV_WEST[renderBlocks.uvRotateWest][0][1], TOP_CENTER);
-        setupVertex(renderBlocks, xMin + 0.5F, yMax, zMin, UV_WEST[renderBlocks.uvRotateWest][1][0], UV_WEST[renderBlocks.uvRotateWest][1][1], TOP_LEFT);
-        setupVertex(renderBlocks, xMin, yMin, zMin, UV_WEST[renderBlocks.uvRotateWest][2][0], UV_WEST[renderBlocks.uvRotateWest][2][1], BOTTOM_LEFT);
+        setupVertex(renderBlocks, xMax, yMax, zMin, uTL, vTL, NORTHEAST);
+        setupVertex(renderBlocks, xMin, yMin, zMin, uBL, vBL, NORTHWEST);
+        setupVertex(renderBlocks, xMax, yMax, zMax, uTR, vTR, SOUTHEAST);
     }
 
     /**
@@ -80,9 +81,9 @@ public class HelperPrism extends RenderHelper {
     {
         prepareRender(renderBlocks, EAST, x, y, z, icon);
 
-        setupVertex(renderBlocks, xMax, yMin, zMin, UV_EAST[renderBlocks.uvRotateEast][1][0], UV_EAST[renderBlocks.uvRotateEast][1][1], BOTTOM_RIGHT);
-        setupVertex(renderBlocks, xMax - 0.5F, yMax, zMin, UV_EAST[renderBlocks.uvRotateEast][2][0], UV_EAST[renderBlocks.uvRotateEast][2][1], TOP_RIGHT);
-        setupVertex(renderBlocks, xMax - 0.5F, yMax, zMax, UV_EAST[renderBlocks.uvRotateEast][3][0], UV_EAST[renderBlocks.uvRotateEast][3][1], TOP_CENTER);
+        setupVertex(renderBlocks, xMin, yMax, zMax, uTL, vTL, SOUTHWEST);
+        setupVertex(renderBlocks, xMax, yMin, zMin, uBR, vBR, NORTHEAST);
+        setupVertex(renderBlocks, xMin, yMax, zMin, uTR, vTR, NORTHWEST);
     }
 
     /**
@@ -92,9 +93,9 @@ public class HelperPrism extends RenderHelper {
     {
         prepareRender(renderBlocks, WEST, x, y, z, icon);
 
-        setupVertex(renderBlocks, xMin + 0.5F, yMax, zMax, UV_WEST[renderBlocks.uvRotateWest][0][0], UV_WEST[renderBlocks.uvRotateWest][0][1], TOP_RIGHT);
-        setupVertex(renderBlocks, xMin + 0.5F, yMax, zMin, UV_WEST[renderBlocks.uvRotateWest][1][0], UV_WEST[renderBlocks.uvRotateWest][1][1], TOP_CENTER);
-        setupVertex(renderBlocks, xMin, yMin, zMax, UV_WEST[renderBlocks.uvRotateWest][3][0], UV_WEST[renderBlocks.uvRotateWest][3][1], BOTTOM_RIGHT);
+        setupVertex(renderBlocks, xMax, yMax, zMin, uTL, vTL, NORTHEAST);
+        setupVertex(renderBlocks, xMin, yMin, zMax, uBR, vBR, SOUTHWEST);
+        setupVertex(renderBlocks, xMax, yMax, zMax, uTR, vTR, SOUTHEAST);
     }
 
     /**
@@ -104,24 +105,17 @@ public class HelperPrism extends RenderHelper {
     {
         prepareRender(renderBlocks, EAST, x, y, z, icon);
 
-        setupVertex(renderBlocks, xMax, yMin, zMax, UV_EAST[renderBlocks.uvRotateEast][0][0], UV_EAST[renderBlocks.uvRotateEast][0][1], BOTTOM_LEFT);
-        setupVertex(renderBlocks, xMax - 0.5F, yMax, zMin, UV_EAST[renderBlocks.uvRotateEast][2][0], UV_EAST[renderBlocks.uvRotateEast][2][1], TOP_CENTER);
-        setupVertex(renderBlocks, xMax - 0.5F, yMax, zMax, UV_EAST[renderBlocks.uvRotateEast][3][0], UV_EAST[renderBlocks.uvRotateEast][3][1], TOP_LEFT);
+        setupVertex(renderBlocks, xMin, yMax, zMax, uTL, vTL, SOUTHWEST);
+        setupVertex(renderBlocks, xMax, yMin, zMax, uBL, vBL, SOUTHEAST);
+        setupVertex(renderBlocks, xMin, yMax, zMin, uTR, vTR, NORTHWEST);
     }
-
-    // WEDGE SLOPES BELOW FOR PRISM_SLOPE TYPE
 
     /**
      * Renders the given texture to the North sloped face of the block.
      */
     public static void renderSlopeZNeg(RenderBlocks renderBlocks, double x, double y, double z, Icon icon)
     {
-        prepareRender(renderBlocks, NORTH, x, y, z, icon);
-
-        setupVertex(renderBlocks, xMax, yMax, zMax, UV_NORTH[renderBlocks.uvRotateNorth][1][0], UV_NORTH[renderBlocks.uvRotateNorth][1][1], TOP_LEFT);
-        setupVertex(renderBlocks, xMax, yMin, zMin, UV_NORTH[renderBlocks.uvRotateNorth][2][0], UV_NORTH[renderBlocks.uvRotateNorth][2][1], BOTTOM_LEFT);
-        setupVertex(renderBlocks, xMin, yMin, zMin, UV_NORTH[renderBlocks.uvRotateNorth][3][0], UV_NORTH[renderBlocks.uvRotateNorth][3][1], BOTTOM_RIGHT);
-        setupVertex(renderBlocks, xMin, yMax, zMax, UV_NORTH[renderBlocks.uvRotateNorth][0][0], UV_NORTH[renderBlocks.uvRotateNorth][0][1], TOP_RIGHT);
+        HelperOblWedge.renderSlopeZNeg(renderBlocks, Slope.ID_WEDGE_POS_N, x, y, z, icon);
     }
 
     /**
@@ -129,12 +123,7 @@ public class HelperPrism extends RenderHelper {
      */
     public static void renderSlopeZPos(RenderBlocks renderBlocks, double x, double y, double z, Icon icon)
     {
-        prepareRender(renderBlocks, SOUTH, x, y, z, icon);
-
-        setupVertex(renderBlocks, xMax, yMin, zMax, UV_SOUTH[renderBlocks.uvRotateSouth][2][0], UV_SOUTH[renderBlocks.uvRotateSouth][2][1], BOTTOM_RIGHT);
-        setupVertex(renderBlocks, xMax, yMax, zMin, UV_SOUTH[renderBlocks.uvRotateSouth][3][0], UV_SOUTH[renderBlocks.uvRotateSouth][3][1], TOP_RIGHT);
-        setupVertex(renderBlocks, xMin, yMax, zMin, UV_SOUTH[renderBlocks.uvRotateSouth][0][0], UV_SOUTH[renderBlocks.uvRotateSouth][0][1], TOP_LEFT);
-        setupVertex(renderBlocks, xMin, yMin, zMax, UV_SOUTH[renderBlocks.uvRotateSouth][1][0], UV_SOUTH[renderBlocks.uvRotateSouth][1][1], BOTTOM_LEFT);
+        HelperOblWedge.renderSlopeZPos(renderBlocks, Slope.ID_WEDGE_POS_S, x, y, z, icon);
     }
 
     /**
@@ -142,12 +131,7 @@ public class HelperPrism extends RenderHelper {
      */
     public static void renderSlopeXNeg(RenderBlocks renderBlocks, double x, double y, double z, Icon icon)
     {
-        prepareRender(renderBlocks, WEST, x, y, z, icon);
-
-        setupVertex(renderBlocks, xMax, yMax, zMax, UV_WEST[renderBlocks.uvRotateWest][0][0], UV_WEST[renderBlocks.uvRotateWest][0][1], TOP_RIGHT);
-        setupVertex(renderBlocks, xMax, yMax, zMin, UV_WEST[renderBlocks.uvRotateWest][1][0], UV_WEST[renderBlocks.uvRotateWest][1][1], TOP_LEFT);
-        setupVertex(renderBlocks, xMin, yMin, zMin, UV_WEST[renderBlocks.uvRotateWest][2][0], UV_WEST[renderBlocks.uvRotateWest][2][1], BOTTOM_LEFT);
-        setupVertex(renderBlocks, xMin, yMin, zMax, UV_WEST[renderBlocks.uvRotateWest][3][0], UV_WEST[renderBlocks.uvRotateWest][3][1], BOTTOM_RIGHT);
+        HelperOblWedge.renderSlopeXNeg(renderBlocks, Slope.ID_WEDGE_POS_W, x, y, z, icon);
     }
 
     /**
@@ -155,12 +139,7 @@ public class HelperPrism extends RenderHelper {
      */
     public static void renderSlopeXPos(RenderBlocks renderBlocks, double x, double y, double z, Icon icon)
     {
-        prepareRender(renderBlocks, EAST, x, y, z, icon);
-
-        setupVertex(renderBlocks, xMax, yMin, zMax, UV_EAST[renderBlocks.uvRotateEast][0][0], UV_EAST[renderBlocks.uvRotateEast][0][1], BOTTOM_LEFT);
-        setupVertex(renderBlocks, xMax, yMin, zMin, UV_EAST[renderBlocks.uvRotateEast][1][0], UV_EAST[renderBlocks.uvRotateEast][1][1], BOTTOM_RIGHT);
-        setupVertex(renderBlocks, xMin, yMax, zMin, UV_EAST[renderBlocks.uvRotateEast][2][0], UV_EAST[renderBlocks.uvRotateEast][2][1], TOP_RIGHT);
-        setupVertex(renderBlocks, xMin, yMax, zMax, UV_EAST[renderBlocks.uvRotateEast][3][0], UV_EAST[renderBlocks.uvRotateEast][3][1], TOP_LEFT);
+        HelperOblWedge.renderSlopeXPos(renderBlocks, Slope.ID_WEDGE_POS_E, x, y, z, icon);
     }
 
 }
