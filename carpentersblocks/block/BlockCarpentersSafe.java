@@ -267,6 +267,22 @@ public class BlockCarpentersSafe extends BlockBase {
 
     @Override
     /**
+     * Gets the hardness of block at the given coordinates in the given world, relative to the ability of the given
+     * EntityPlayer.
+     */
+    public float getPlayerRelativeBlockHardness(EntityPlayer entityPlayer, World world, int x, int y, int z)
+    {
+        TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
+
+        if (!entityPlayer.equals(BlockProperties.getOwner(TE))) {
+            return -1; // Unbreakable
+        } else {
+            return super.getPlayerRelativeBlockHardness(entityPlayer, world, x, y, z);
+        }
+    }
+
+    @Override
+    /**
      * Returns a new instance of a block's tile entity class. Called on placing the block.
      */
     public TileEntity createNewTileEntity(World world)
