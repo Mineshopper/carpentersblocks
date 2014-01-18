@@ -25,7 +25,7 @@ public class ItemRegistry {
 
     public static boolean enableHammer = true;
     public static boolean enableChisel = true;
-    public static int itemCarpentersToolsUses = 300;
+    public static int itemCarpentersToolsUses = 400;
     public static boolean itemCarpentersToolsDamageable = true;
 
     /**
