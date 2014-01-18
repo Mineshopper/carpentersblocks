@@ -13,7 +13,6 @@ import carpentersblocks.util.handler.PatternHandler;
 
 public class IconRegistry {
 
-    public static Icon icon_missing;
     public static Icon icon_blank;
     public static Icon icon_solid;
     public static Icon icon_slope_oblique_pt_high;
@@ -54,7 +53,6 @@ public class IconRegistry {
     public void loadTextures(TextureStitchEvent.Pre event)
     {
         if (event.map.textureType == 0) {
-            icon_missing = event.map.getAtlasSprite("missingno");
             if (!FeatureRegistry.enableMCPatcherCompatibility) {
                 registerIcons(event.map);
             } else {

@@ -20,30 +20,30 @@ public class SlopeTransform {
     private final int y;
     private final int z;
 
-    private final byte SRC = 0;
-    private final byte XN = 1;
-    private final byte XP = 2;
-    private final byte YN = 3;
-    private final byte YP = 4;
-    private final byte ZN = 5;
-    private final byte ZP = 6;
-    private final byte XYNN = 7;
-    private final byte XYPN = 8;
-    private final byte XYNP = 9;
-    private final byte XYPP = 10;
-    private final byte YZNN = 11;
-    private final byte YZNP = 12;
-    private final byte YZPN = 13;
-    private final byte YZPP = 14;
+    private final byte SRC    = 0;
+    private final byte XN     = 1;
+    private final byte XP     = 2;
+    private final byte YN     = 3;
+    private final byte YP     = 4;
+    private final byte ZN     = 5;
+    private final byte ZP     = 6;
+    private final byte XYNN   = 7;
+    private final byte XYPN   = 8;
+    private final byte XYNP   = 9;
+    private final byte XYPP   = 10;
+    private final byte YZNN   = 11;
+    private final byte YZNP   = 12;
+    private final byte YZPN   = 13;
+    private final byte YZPP   = 14;
     private final byte XYZNNN = 15;
     private final byte XYZNNP = 16;
     private final byte XYZPNN = 17;
     private final byte XYZPNP = 18;
 
-    private final TEBase[]     TE         = new TEBase[19];
-    private Slope[]            slope     = new Slope[19];
-    private final boolean[] isSlope    = new boolean[19];
-    private final boolean[] isAir     = new boolean[19];
+    private final TEBase[]  TE      = new TEBase[19];
+    private Slope[]         slope   = new Slope[19];
+    private final boolean[] isSlope = new boolean[19];
+    private final boolean[] isAir   = new boolean[19];
 
     public SlopeTransform(TEBase TE)
     {
