@@ -28,6 +28,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.common.EnumPlantType;
 import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.IPlantable;
 import carpentersblocks.api.ICarpentersChisel;
 import carpentersblocks.api.ICarpentersHammer;
@@ -243,7 +244,7 @@ public class BlockBase extends BlockContainer {
             List<Boolean> altered = new ArrayList<Boolean>();
             List<Boolean> decInv = new ArrayList<Boolean>();
 
-            if (itemStack != null && canPlayerEdit(TE, entityPlayer))
+            if (itemStack != null && canPlayerActivate(TE, entityPlayer))
             {
                 /* Sides 0-5 are side covers, and 6 is the base block. */
                 int effectiveSide = BlockProperties.hasCover(TE, side) ? side : 6;
@@ -310,7 +311,7 @@ public class BlockBase extends BlockContainer {
 
             if (!altered.contains(true)) {
 
-                if (canPlayerEdit(TE, entityPlayer) && canPlayerActivate(TE, entityPlayer))
+                if (canPlayerActivate(TE, entityPlayer))
                 {
                     boolean[] result = postOnBlockActivated(TE, world, x, y, z, entityPlayer, side, hitX, hitY, hitZ);
                     altered.add(result[0]);
@@ -934,6 +935,17 @@ public class BlockBase extends BlockContainer {
         TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
 
         BlockProperties.setOwner(TE, entityLiving);
+    }
+
+    @Override
+    /**
+     * Gets the hardness of block at the given coordinates in the given world, relative to the ability of the given
+     * EntityPlayer.
+     */
+    public float getPlayerRelativeBlockHardness(EntityPlayer entityPlayer, World world, int x, int y, int z)
+    {
+        TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
+        return ForgeHooks.blockStrength(BlockProperties.getCoverBlock(TE, 6), entityPlayer, world, x, y, z);
     }
 
     @Override
