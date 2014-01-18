@@ -27,7 +27,7 @@ public class BlockHandlerCarpentersDaylightSensor extends BlockDeterminantRender
             case 0: // Glass top
                 temp_block = Block.glass;
                 renderBlocks.setRenderBounds(0.0625D, 0.1875D + yOffset, 0.0625D, 0.9375D, 0.25D + yOffset, 0.9375D);
-                renderBlocks.setOverrideBlockTexture(IconRegistry.icon_daylight_sensor_glass_top);
+                renderBlocks.setOverrideBlockTexture(renderBlocks.getIconSafe(IconRegistry.icon_daylight_sensor_glass_top));
                 break;
             case 1: // Lapis middle
                 temp_block = Block.blockLapis;
