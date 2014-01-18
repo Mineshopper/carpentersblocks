@@ -6,7 +6,9 @@ import net.minecraft.client.particle.EntityDiggingFX;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
+import carpentersblocks.data.Torch;
 import carpentersblocks.tileentity.TEBase;
+import carpentersblocks.tileentity.TECarpentersTorch;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.handler.OverlayHandler;
 import cpw.mods.fml.relauncher.Side;
@@ -14,6 +16,15 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class ParticleHelper {
+
+    /**
+     * Spawns big smoke particle when torch lowers state.
+     */
+    public static void spawnTorchBigSmoke(TECarpentersTorch TE)
+    {
+        double[] headCoords = Torch.getHeadCoordinates(TE);
+        TE.worldObj.spawnParticle("largesmoke", headCoords[0], headCoords[1], headCoords[2], 0.0D, 0.0D, 0.0D);
+    }
 
     /**
      * Spawns a particle at the base of an entity

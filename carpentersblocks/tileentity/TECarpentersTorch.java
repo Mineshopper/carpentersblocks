@@ -4,6 +4,7 @@ import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet132TileEntityData;
 import carpentersblocks.data.Torch;
 import carpentersblocks.data.Torch.State;
+import carpentersblocks.renderer.helper.ParticleHelper;
 
 public class TECarpentersTorch extends TEBase {
 
@@ -24,10 +25,8 @@ public class TECarpentersTorch extends TEBase {
 
             State new_state = Torch.getState(this);
 
-            if (new_state.ordinal() > existing_state.ordinal())
-            {
-                double[] headCoords = Torch.getHeadCoordinates(this);
-                worldObj.spawnParticle("largesmoke", headCoords[0], headCoords[1], headCoords[2], 0.0D, 0.0D, 0.0D);
+            if (new_state.ordinal() > existing_state.ordinal()) {
+                ParticleHelper.spawnTorchBigSmoke(this);
             }
         }
     }
