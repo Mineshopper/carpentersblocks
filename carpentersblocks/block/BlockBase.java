@@ -233,7 +233,12 @@ public class BlockBase extends BlockContainer {
     {
         if (world.isRemote) {
 
-            return true;
+            ItemStack itemStack = entityPlayer.getCurrentEquippedItem();
+
+            /* Assist eating food and perhaps other actions. */
+
+            return itemStack != null &&
+                    (BlockProperties.isCover(itemStack) || BlockProperties.isOverlay(itemStack) || itemStack.getItem().equals(Item.dyePowder) && itemStack.getItemDamage() != 15);
 
         } else {
 

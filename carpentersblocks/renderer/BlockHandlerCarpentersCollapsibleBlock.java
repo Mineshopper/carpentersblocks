@@ -89,6 +89,8 @@ public class BlockHandlerCarpentersCollapsibleBlock extends BlockAdvancedLightin
 
         RenderHelper.startDrawing(TRIANGLES);
 
+        prepareLighting(block);
+
         prepareTopFace(block, x, y, z);
 
         /* Render all other faces. */
@@ -99,35 +101,30 @@ public class BlockHandlerCarpentersCollapsibleBlock extends BlockAdvancedLightin
 
         /* BOTTOM FACE */
         if (srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x, y - 1, z, DOWN)) {
-            populateLighting(block, DOWN);
             lightingHelper.setLightingYNeg(block, x, y, z);
             setIDAndRender(block, NORMAL_YN, x, y, z, DOWN);
         }
 
         /* NORTH FACE */
         if (srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x, y, z - 1, NORTH)) {
-            populateLighting(block, NORTH);
             lightingHelper.setLightingZNeg(block, x, y, z);
             prepareFaceZNeg(block, x, y, z);
         }
 
         /* SOUTH FACE */
         if (srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x, y, z + 1, SOUTH)) {
-            populateLighting(block, SOUTH);
             lightingHelper.setLightingZPos(block, x, y, z);
             prepareFaceZPos(block, x, y, z);
         }
 
         /* WEST FACE */
         if (srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x - 1, y, z, WEST)) {
-            populateLighting(block, WEST);
             lightingHelper.setLightingXNeg(block, x, y, z);
             prepareFaceXNeg(block, x, y, z);
         }
 
         /* EAST FACE */
         if (srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x + 1, y, z, EAST)) {
-            populateLighting(block, EAST);
             lightingHelper.setLightingXPos(block, x, y, z);
             prepareFaceXPos(block, x, y, z);
         }

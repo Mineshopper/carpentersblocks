@@ -39,9 +39,20 @@ public class BlockAdvancedLighting extends BlockHandlerBase {
     }
 
     /**
+     * Prepares lighting for block and offset faces.
+     */
+    protected void prepareLighting(Block block)
+    {
+        for (int side = 0; side < 6; ++side) {
+            populateLighting(block, side);
+            populateOffsetLighting(block, side);
+        }
+    }
+
+    /**
      * Fills ambient occlusion and brightness tables.
      */
-    protected final void populateLighting(Block block, int side)
+    private final void populateLighting(Block block, int side)
     {
         switch (side) {
         case DOWN:
@@ -92,46 +103,46 @@ public class BlockAdvancedLighting extends BlockHandlerBase {
     /**
      * Fills ambient occlusion and brightness tables for offset block coordinates.
      */
-    protected final void populateOffsetLighting(Block block, int x, int y, int z, int side)
+    private final void populateOffsetLighting(Block block, int side)
     {
         switch (side) {
         case DOWN:
-            lightingHelper.setLightingYNeg(block, x, y + 1, z);
+            lightingHelper.setLightingYNeg(block, TE.xCoord, TE.yCoord + 1, TE.zCoord);
             if (renderBlocks.enableAO) {
                 offset_ao[DOWN] = new float[] { lightingHelper.ao[TOP_LEFT], lightingHelper.ao[BOTTOM_LEFT], lightingHelper.ao[BOTTOM_RIGHT], lightingHelper.ao[TOP_RIGHT] };
                 offset_brightness[DOWN] = new int[] { renderBlocks.brightnessTopLeft, renderBlocks.brightnessBottomLeft, renderBlocks.brightnessBottomRight, renderBlocks.brightnessTopRight };
             }
             break;
         case UP:
-            lightingHelper.setLightingYPos(block, x, y - 1, z);
+            lightingHelper.setLightingYPos(block, TE.xCoord, TE.yCoord - 1, TE.zCoord);
             if (renderBlocks.enableAO) {
                 offset_ao[UP] = new float[] { lightingHelper.ao[TOP_LEFT], lightingHelper.ao[BOTTOM_LEFT], lightingHelper.ao[BOTTOM_RIGHT], lightingHelper.ao[TOP_RIGHT] };
                 offset_brightness[UP] = new int[] { renderBlocks.brightnessTopLeft, renderBlocks.brightnessBottomLeft, renderBlocks.brightnessBottomRight, renderBlocks.brightnessTopRight };
             }
             break;
         case NORTH:
-            lightingHelper.setLightingZNeg(block, x, y, z + 1);
+            lightingHelper.setLightingZNeg(block, TE.xCoord, TE.yCoord, TE.zCoord + 1);
             if (renderBlocks.enableAO) {
                 offset_ao[NORTH] = new float[] { lightingHelper.ao[TOP_LEFT], lightingHelper.ao[BOTTOM_LEFT], lightingHelper.ao[BOTTOM_RIGHT], lightingHelper.ao[TOP_RIGHT] };
                 offset_brightness[NORTH] = new int[] { renderBlocks.brightnessTopLeft, renderBlocks.brightnessBottomLeft, renderBlocks.brightnessBottomRight, renderBlocks.brightnessTopRight };
             }
             break;
         case SOUTH:
-            lightingHelper.setLightingZPos(block, x, y, z - 1);
+            lightingHelper.setLightingZPos(block, TE.xCoord, TE.yCoord, TE.zCoord - 1);
             if (renderBlocks.enableAO) {
                 offset_ao[SOUTH] = new float[] { lightingHelper.ao[TOP_LEFT], lightingHelper.ao[BOTTOM_LEFT], lightingHelper.ao[BOTTOM_RIGHT], lightingHelper.ao[TOP_RIGHT] };
                 offset_brightness[SOUTH] = new int[] { renderBlocks.brightnessTopLeft, renderBlocks.brightnessBottomLeft, renderBlocks.brightnessBottomRight, renderBlocks.brightnessTopRight };
             }
             break;
         case WEST:
-            lightingHelper.setLightingXNeg(block, x + 1, y, z);
+            lightingHelper.setLightingXNeg(block, TE.xCoord + 1, TE.yCoord, TE.zCoord);
             if (renderBlocks.enableAO) {
                 offset_ao[WEST] = new float[] { lightingHelper.ao[TOP_LEFT], lightingHelper.ao[BOTTOM_LEFT], lightingHelper.ao[BOTTOM_RIGHT], lightingHelper.ao[TOP_RIGHT] };
                 offset_brightness[WEST] = new int[] { renderBlocks.brightnessTopLeft, renderBlocks.brightnessBottomLeft, renderBlocks.brightnessBottomRight, renderBlocks.brightnessTopRight };
             }
             break;
         case EAST:
-            lightingHelper.setLightingXPos(block, x - 1, y, z);
+            lightingHelper.setLightingXPos(block, TE.xCoord - 1, TE.yCoord, TE.zCoord);
             if (renderBlocks.enableAO) {
                 offset_ao[EAST] = new float[] { lightingHelper.ao[TOP_LEFT], lightingHelper.ao[BOTTOM_LEFT], lightingHelper.ao[BOTTOM_RIGHT], lightingHelper.ao[TOP_RIGHT] };
                 offset_brightness[EAST] = new int[] { renderBlocks.brightnessTopLeft, renderBlocks.brightnessBottomLeft, renderBlocks.brightnessBottomRight, renderBlocks.brightnessTopRight };

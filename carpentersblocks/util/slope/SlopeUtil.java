@@ -261,7 +261,7 @@ public class SlopeUtil {
             boolean renderPrism = getNumPasses(slope) / precision < 2.0F;
 
             switch (slope.slopeID) {
-            case Slope.ID_PRISM_SLOPE_N:
+            case Slope.ID_PRISM_SLOPE_N: // NEED TO FIX THIS WEDGE
                 switch (pass) {
                 case 1:
                     return new float[] { 0.0F, 0.0F, zeroOffset * 0.5F, 1.0F, oneOffset * 0.5F, 1.0F };
@@ -270,7 +270,7 @@ public class SlopeUtil {
                         return new float[] { zeroOffset * 0.5F, 0.0F, 0.0F, 1.0F - zeroOffset * 0.5F, oneOffset * 0.5F, 0.5F };
                     }
                 }
-            case Slope.ID_PRISM_SLOPE_S:
+            case Slope.ID_PRISM_SLOPE_S: // WEDGE PRECISION IS DOUBLE WHAT IT SHOULD BE
                 switch (pass) {
                 case 1:
                     return new float[] { 0.0F, 0.0F, 0.0F, 1.0F, 1.0F - zeroOffset * 0.5F, oneOffset * 0.5F };
@@ -279,7 +279,7 @@ public class SlopeUtil {
                         return new float[] { zeroOffset * 0.5F, 0.0F, 0.5F, 1.0F - zeroOffset * 0.5F, oneOffset * 0.5F, 1.0F };
                     }
                 }
-            case Slope.ID_PRISM_SLOPE_W:
+            case Slope.ID_PRISM_SLOPE_W: // NEED TO FIX THIS WEDGE
                 switch (pass) {
                 case 1:
                     return new float[] { zeroOffset * 0.5F, 0.0F, 0.0F, 1.0F, oneOffset * 0.5F, 1.0F };
@@ -288,7 +288,7 @@ public class SlopeUtil {
                         return new float[] { 0.0F, 0.0F, zeroOffset * 0.5F, 0.5F, oneOffset * 0.5F, 1.0F - zeroOffset * 0.5F };
                     }
                 }
-            case Slope.ID_PRISM_SLOPE_E:
+            case Slope.ID_PRISM_SLOPE_E: // WEDGE PRECISION IS DOUBLE WHAT IT SHOULD BE
                 switch (pass) {
                 case 1:
                     return new float[] { 0.0F, 0.0F, 0.0F, oneOffset * 0.5F, 1.0F - zeroOffset * 0.5F, 1.0F };
