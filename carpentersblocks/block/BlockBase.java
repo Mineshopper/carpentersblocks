@@ -18,6 +18,7 @@ import net.minecraft.entity.boss.EntityWither;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
@@ -141,11 +142,12 @@ public class BlockBase extends BlockContainer {
      */
     protected boolean canPlayerEdit(TEBase TE, EntityLivingBase entityLiving)
     {
-        if (FeatureRegistry.enableBlockOwnership) {
-            return ((EntityPlayer)entityLiving).canPlayerEdit(TE.xCoord, TE.yCoord, TE.zCoord, EventHandler.eventFace, entityLiving.getHeldItem()) &&
-                    (isOp(entityLiving) || TE.isOwner(entityLiving));
-        } else {
+        if (isOp(entityLiving)) {
             return true;
+        } else if (FeatureRegistry.enableBlockOwnership) {
+            return TE.isOwner(entityLiving);
+        } else {
+            return ((EntityPlayer)entityLiving).canPlayerEdit(TE.xCoord, TE.yCoord, TE.zCoord, EventHandler.eventFace, entityLiving.getHeldItem());
         }
     }
 
@@ -235,10 +237,11 @@ public class BlockBase extends BlockContainer {
 
             ItemStack itemStack = entityPlayer.getCurrentEquippedItem();
 
-            /* Assist eating food and perhaps other actions. */
-
-            return itemStack != null &&
-                    (BlockProperties.isCover(itemStack) || BlockProperties.isOverlay(itemStack) || itemStack.getItem().equals(Item.dyePowder) && itemStack.getItemDamage() != 15);
+            if (itemStack != null && itemStack.getItem() instanceof ItemFood) {
+                return false;
+            } else {
+                return true;
+            }
 
         } else {
 
