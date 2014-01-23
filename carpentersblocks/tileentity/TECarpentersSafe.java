@@ -36,7 +36,6 @@ public class TECarpentersSafe extends TEBase implements ISidedInventory {
             if (++tickCount >= 20 || forceEntityUpdate) {
                 tickCount = 0;
                 if (contentsChanged) {
-                    System.out.println("DEBUG: Safe contents changed, sending update.");
                     worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
                     contentsChanged = false;
                     forceEntityUpdate = false;
