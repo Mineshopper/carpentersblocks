@@ -292,12 +292,31 @@ public class BlockProperties {
     }
 
     /**
+     * Converts ItemStack block metadata to correct value.
+     * Things like logs should always drop with metadata 0, even if
+     * a rotation in metadata is set.
+     */
+    public static ItemStack getFilteredBlock(ItemStack itemStack)
+    {
+        if (itemStack != null)
+        {
+            int damageDropped = Block.blocksList[itemStack.itemID].damageDropped(itemStack.getItemDamage());
+
+            if (damageDropped != itemStack.getItemDamage()) {
+                itemStack.setItemDamage(damageDropped);
+            }
+        }
+
+        return itemStack;
+    }
+
+    /**
      * Sets cover block.
      */
     public static boolean setCover(TEBase TE, int side, int metadata, ItemStack itemStack)
     {
         if (hasCover(TE, side)) {
-            ejectEntity(TE, new ItemStack(getCoverID(TE, side), 1, getCoverMetadata(TE, side)));
+            ejectEntity(TE, getFilteredBlock(new ItemStack(getCoverID(TE, side), 1, getCoverMetadata(TE, side))));
         }
 
         int blockID = itemStack == null ? 0 : itemStack.itemID;
