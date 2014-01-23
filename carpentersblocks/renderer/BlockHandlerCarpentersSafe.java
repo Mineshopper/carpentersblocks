@@ -13,10 +13,10 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class BlockHandlerCarpentersSafe extends BlockDeterminantRender {
 
-    private final int numBoxes    = 21;
-    private final int numCapacity = 9;
-    private final float LIGHT_MAX = 1.0F;
-    private final float LIGHT_MIN = 0.15F;
+    private final int   numBoxes    = 21;
+    private final int   numCapacity = 9;
+    private final float LIGHT_MAX   = 1.0F;
+    private final float LIGHT_MIN   = 0.15F;
 
     private final byte BLOCKTYPE_COVER            = 0;
     private final byte BLOCKTYPE_PANEL            = 1;
@@ -47,12 +47,12 @@ public class BlockHandlerCarpentersSafe extends BlockDeterminantRender {
     private final byte GREEN_LIGHT                = 19;
     private final byte RED_LIGHT                  = 20;
 
-    private final float[] LIGHT_RED_ACTIVE        = { LIGHT_MAX, 0.0F, 0.0F };
-    private final float[] LIGHT_RED_INACTIVE      = { LIGHT_MAX / 3.0F, LIGHT_MIN, LIGHT_MIN };
-    private final float[] LIGHT_GREEN_ACTIVE      = { 0.0F, LIGHT_MAX, 0.0F };
-    private final float[] LIGHT_GREEN_INACTIVE    = { LIGHT_MIN, LIGHT_MAX / 3.0F, LIGHT_MIN };
-    private final float[] LIGHT_BLUE_ACTIVE       = { 0.0F, 0.0F, LIGHT_MAX };
-    private final float[] LIGHT_BLUE_INACTIVE     = { LIGHT_MIN, LIGHT_MIN, LIGHT_MAX / 3.0F };
+    private final float[] LIGHT_RED_ACTIVE        = {        LIGHT_MAX,             0.0F,             0.0F };
+    private final float[] LIGHT_RED_INACTIVE      = { LIGHT_MAX / 3.0F,        LIGHT_MIN,        LIGHT_MIN };
+    private final float[] LIGHT_GREEN_ACTIVE      = {             0.0F,        LIGHT_MAX,             0.0F };
+    private final float[] LIGHT_GREEN_INACTIVE    = {        LIGHT_MIN, LIGHT_MAX / 3.0F,        LIGHT_MIN };
+    private final float[] LIGHT_BLUE_ACTIVE       = {             0.0F,             0.0F,        LIGHT_MAX };
+    private final float[] LIGHT_BLUE_INACTIVE     = {        LIGHT_MIN,        LIGHT_MIN, LIGHT_MAX / 3.0F };
 
     @Override
     public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderBlocks)
@@ -242,7 +242,7 @@ public class BlockHandlerCarpentersSafe extends BlockDeterminantRender {
 
         /* Begin drawing the capacity light strip. */
 
-        if (!shouldRenderOpaque())
+        if (shouldRenderAlpha())
         {
             setIconOverride(6, IconRegistry.icon_safe_light);
 
@@ -313,7 +313,7 @@ public class BlockHandlerCarpentersSafe extends BlockDeterminantRender {
             }
             break;
         case BLOCKTYPE_GREEN_LIGHT:
-            if (!shouldRenderOpaque())
+            if (shouldRenderAlpha())
             {
                 disableAO = true;
                 setIconOverride(6, IconRegistry.icon_safe_light);
@@ -335,7 +335,7 @@ public class BlockHandlerCarpentersSafe extends BlockDeterminantRender {
             }
             break;
         case BLOCKTYPE_RED_LIGHT:
-            if (!shouldRenderOpaque())
+            if (shouldRenderAlpha())
             {
                 disableAO = true;
                 setIconOverride(6, IconRegistry.icon_safe_light);

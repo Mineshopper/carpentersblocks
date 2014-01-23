@@ -9,12 +9,19 @@ public class BlockDeterminantRender extends BlockHandlerBase {
     protected float REDUCED_LIGHTNESS_OFFSET = -0.05F;
 
     /**
-     * Returns whether non-cover blocks should render.
-     * These will always be rendered on the opaque pass.
+     * Returns whether opaque objects should render.
      */
     protected boolean shouldRenderOpaque()
     {
-        return renderAlphaOverride || renderPass == 0;
+        return renderAlphaOverride || renderPass == PASS_OPAQUE;
+    }
+
+    /**
+     * Returns whether alpha objects should render.
+     */
+    protected boolean shouldRenderAlpha()
+    {
+        return renderPass == PASS_ALPHA;
     }
 
 }
