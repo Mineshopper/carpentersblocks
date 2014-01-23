@@ -51,8 +51,12 @@ public class BlockCarpentersSafe extends BlockBase {
     @Override
     protected boolean canPlayerEdit(TEBase TE, EntityLivingBase entityLiving)
     {
-        return ((EntityPlayer)entityLiving).canPlayerEdit(TE.xCoord, TE.yCoord, TE.zCoord, EventHandler.eventFace, entityLiving.getHeldItem()) &&
-                (isOp(entityLiving) || TE.isOwner(entityLiving));
+        if (isOp(entityLiving)) {
+            return true;
+        } else {
+            return ((EntityPlayer)entityLiving).canPlayerEdit(TE.xCoord, TE.yCoord, TE.zCoord, EventHandler.eventFace, entityLiving.getHeldItem()) &&
+                    TE.isOwner(entityLiving);
+        }
     }
 
     /**
@@ -61,7 +65,7 @@ public class BlockCarpentersSafe extends BlockBase {
     @Override
     protected boolean canPlayerActivate(TEBase TE, EntityLivingBase entityLiving)
     {
-        return canPlayerEdit(TE, entityLiving) ? true : !Safe.isLocked(TE);
+        return isOp(entityLiving) || TE.isOwner(entityLiving) || !Safe.isLocked(TE);
     }
 
     @Override
@@ -138,6 +142,7 @@ public class BlockCarpentersSafe extends BlockBase {
      * @param z Z position
      * @return True if the block is actually destroyed.
      */
+    /*
     @Override
     public boolean removeBlockByPlayer(World world, EntityPlayer entityPlayer, int x, int y, int z)
     {
@@ -158,6 +163,7 @@ public class BlockCarpentersSafe extends BlockBase {
 
         return false;
     }
+     */
 
     @Override
     /**
@@ -181,7 +187,7 @@ public class BlockCarpentersSafe extends BlockBase {
         int DEC_INV = 1;
         boolean[] result = { true, false };
 
-        if (canPlayerActivate(TE, entityPlayer)) {
+        if (!Safe.isOpen(TE) && canPlayerActivate(TE, entityPlayer)) {
 
             TECarpentersSafe TE_safe = (TECarpentersSafe) TE;
             ItemStack itemStack = entityPlayer.getHeldItem();
@@ -198,7 +204,7 @@ public class BlockCarpentersSafe extends BlockBase {
                 }
             }
 
-            if (!Safe.isOpen(TE)) {
+            if (!result[DEC_INV]) {
                 entityPlayer.displayGUIChest((TECarpentersSafe)TE);
             }
 
@@ -244,8 +250,8 @@ public class BlockCarpentersSafe extends BlockBase {
     {
         TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
 
-        if (TE != null)
-        {
+        if (TE != null && !Safe.isOpen(TE)) {
+
             TECarpentersSafe TE_safe = (TECarpentersSafe) TE;
 
             if (TE_safe.hasUpgrade()) {
@@ -260,6 +266,7 @@ public class BlockCarpentersSafe extends BlockBase {
                     BlockProperties.ejectEntity(TE, itemStack);
                 }
             }
+
         }
 
         super.breakBlock(world, x, y, z, par5, metadata);
@@ -274,7 +281,7 @@ public class BlockCarpentersSafe extends BlockBase {
     {
         TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
 
-        if (!entityPlayer.equals(BlockProperties.getOwner(TE))) {
+        if (Safe.isOpen(TE) || !entityPlayer.equals(BlockProperties.getOwner(TE))) {
             return -1; // Unbreakable
         } else {
             return super.getPlayerRelativeBlockHardness(entityPlayer, world, x, y, z);
