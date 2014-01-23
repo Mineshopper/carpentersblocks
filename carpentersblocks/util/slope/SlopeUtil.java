@@ -181,6 +181,7 @@ public class SlopeUtil {
             case 3:
                 return new float[] { 0.0F, 0.0F, zeroOffset, 1.0F, oneOffset, 1.0F };
             }
+            break;
         case Slope.ID_OBL_INT_POS_SW:
             switch (pass) {
             case 1:
@@ -190,6 +191,7 @@ public class SlopeUtil {
             case 3:
                 return new float[] { 0.0F, 0.0F, 0.0F, 1.0F, 1.0F - zeroOffset, oneOffset };
             }
+            break;
         case Slope.ID_OBL_INT_POS_NE:
             switch (pass) {
             case 1:
@@ -199,6 +201,7 @@ public class SlopeUtil {
             case 3:
                 return new float[] { 0.0F, 0.0F, zeroOffset, 1.0F, oneOffset, 1.0F };
             }
+            break;
         case Slope.ID_OBL_INT_POS_SE:
             switch (pass) {
             case 1:
@@ -208,6 +211,7 @@ public class SlopeUtil {
             case 3:
                 return new float[] { 0.0F, 0.0F, 0.0F, 1.0F, 1.0F - zeroOffset, oneOffset };
             }
+            break;
         case Slope.ID_OBL_EXT_NEG_NW:
             return new float[] { zeroPassOffset + zeroOffset * (1.0F - zeroPassOffset), 1.0F - onePassOffset, 1.0F - oneOffset * (1.0F - zeroPassOffset), 1.0F, 1.0F, 1.0F };
         case Slope.ID_OBL_EXT_NEG_SW:
@@ -225,6 +229,7 @@ public class SlopeUtil {
             case 3:
                 return new float[] { 0.0F, 1.0F - oneOffset, zeroOffset, 1.0F, 1.0F, 1.0F };
             }
+            break;
         case Slope.ID_OBL_INT_NEG_SW:
             switch (pass) {
             case 1:
@@ -234,6 +239,7 @@ public class SlopeUtil {
             case 3:
                 return new float[] { 0.0F, zeroOffset, 0.0F, 1.0F, 1.0F, oneOffset };
             }
+            break;
         case Slope.ID_OBL_INT_NEG_NE:
             switch (pass) {
             case 1:
@@ -243,6 +249,7 @@ public class SlopeUtil {
             case 3:
                 return new float[] { 0.0F, 1.0F - oneOffset, zeroOffset, 1.0F, 1.0F, 1.0F };
             }
+            break;
         case Slope.ID_OBL_INT_NEG_SE:
             switch (pass) {
             case 1:
@@ -252,6 +259,7 @@ public class SlopeUtil {
             case 3:
                 return new float[] { 0.0F, zeroOffset, 0.0F, 1.0F, 1.0F, oneOffset };
             }
+            break;
         case Slope.ID_PYR_HALF_POS:
             return new float[] { zeroOffset * 0.5F, 0.0F, zeroOffset * 0.5F, 1.0F - zeroOffset * 0.5F, oneOffset * 0.5F, 1.0F - zeroOffset * 0.5F };
         case Slope.ID_PYR_HALF_NEG:
@@ -261,42 +269,46 @@ public class SlopeUtil {
             boolean renderPrism = getNumPasses(slope) / precision < 2.0F;
 
             switch (slope.slopeID) {
-            case Slope.ID_PRISM_SLOPE_N: // NEED TO FIX THIS WEDGE
+            case Slope.ID_PRISM_SLOPE_N:
                 switch (pass) {
                 case 1:
-                    return new float[] { 0.0F, 0.0F, zeroOffset * 0.5F, 1.0F, oneOffset * 0.5F, 1.0F };
+                    return new float[] { 0.0F, 0.0F, zeroOffset, 1.0F, oneOffset, 1.0F };
                 case 2:
                     if (renderPrism) {
                         return new float[] { zeroOffset * 0.5F, 0.0F, 0.0F, 1.0F - zeroOffset * 0.5F, oneOffset * 0.5F, 0.5F };
                     }
                 }
-            case Slope.ID_PRISM_SLOPE_S: // WEDGE PRECISION IS DOUBLE WHAT IT SHOULD BE
+                break;
+            case Slope.ID_PRISM_SLOPE_S:
                 switch (pass) {
                 case 1:
-                    return new float[] { 0.0F, 0.0F, 0.0F, 1.0F, 1.0F - zeroOffset * 0.5F, oneOffset * 0.5F };
+                    return new float[] { 0.0F, 0.0F, 0.0F, 1.0F, 1.0F - zeroOffset, oneOffset };
                 case 2:
                     if (renderPrism) {
                         return new float[] { zeroOffset * 0.5F, 0.0F, 0.5F, 1.0F - zeroOffset * 0.5F, oneOffset * 0.5F, 1.0F };
                     }
                 }
-            case Slope.ID_PRISM_SLOPE_W: // NEED TO FIX THIS WEDGE
+                break;
+            case Slope.ID_PRISM_SLOPE_W:
                 switch (pass) {
                 case 1:
-                    return new float[] { zeroOffset * 0.5F, 0.0F, 0.0F, 1.0F, oneOffset * 0.5F, 1.0F };
+                    return new float[] { zeroOffset, 0.0F, 0.0F, 1.0F, oneOffset, 1.0F };
                 case 2:
                     if (renderPrism) {
                         return new float[] { 0.0F, 0.0F, zeroOffset * 0.5F, 0.5F, oneOffset * 0.5F, 1.0F - zeroOffset * 0.5F };
                     }
                 }
-            case Slope.ID_PRISM_SLOPE_E: // WEDGE PRECISION IS DOUBLE WHAT IT SHOULD BE
+                break;
+            case Slope.ID_PRISM_SLOPE_E:
                 switch (pass) {
                 case 1:
-                    return new float[] { 0.0F, 0.0F, 0.0F, oneOffset * 0.5F, 1.0F - zeroOffset * 0.5F, 1.0F };
+                    return new float[] { 0.0F, 0.0F, 0.0F, oneOffset, 1.0F - zeroOffset, 1.0F };
                 case 2:
                     if (renderPrism) {
                         return new float[] { 0.5F, 0.0F, zeroOffset * 0.5F, 1.0F, oneOffset * 0.5F, 1.0F - zeroOffset * 0.5F };
                     }
                 }
+                break;
             default:
 
                 switch (pass) {
@@ -310,26 +322,29 @@ public class SlopeUtil {
                     if (slope.facings.contains(ForgeDirection.NORTH)) {
                         return new float[] { zeroOffset * 0.5F, 0.0F, 0.0F, 1.0F - zeroOffset * 0.5F, oneOffset * 0.5F, 0.5F };
                     }
+                    break;
                 case 3:
                     if (slope.facings.contains(ForgeDirection.SOUTH)) {
                         return new float[] { zeroOffset * 0.5F, 0.0F, 0.5F, 1.0F - zeroOffset * 0.5F, oneOffset * 0.5F, 1.0F };
                     }
+                    break;
                 case 4:
                     if (slope.facings.contains(ForgeDirection.WEST)) {
                         return new float[] { 0.0F, 0.0F, zeroOffset * 0.5F, 0.5F, oneOffset * 0.5F, 1.0F - zeroOffset * 0.5F };
                     }
+                    break;
                 case 5:
                     if (slope.facings.contains(ForgeDirection.EAST)) {
                         return new float[] { 0.5F, 0.0F, zeroOffset * 0.5F, 1.0F, oneOffset * 0.5F, 1.0F - zeroOffset * 0.5F };
                     }
-                default:
-                    return null;
+                    break;
                 }
-
             }
 
         }
         }
+
+        return null;
     }
 
 }
