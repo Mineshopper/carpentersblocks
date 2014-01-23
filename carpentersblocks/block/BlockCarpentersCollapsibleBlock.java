@@ -19,6 +19,7 @@ import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.handler.EventHandler;
 import carpentersblocks.util.registry.BlockRegistry;
+import carpentersblocks.util.registry.ItemRegistry;
 
 public class BlockCarpentersCollapsibleBlock extends BlockBase {
 
@@ -67,7 +68,7 @@ public class BlockCarpentersCollapsibleBlock extends BlockBase {
      */
     protected void damageItemWithChance(World world, EntityPlayer entityPlayer)
     {
-        if (world.rand.nextFloat() <= 0.2F) {
+        if (world.rand.nextFloat() <= ItemRegistry.itemHammerDamageChanceFromCollapsible) {
             super.damageItemWithChance(world, entityPlayer);
         }
     }

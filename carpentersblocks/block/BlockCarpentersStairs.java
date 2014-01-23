@@ -18,6 +18,7 @@ import carpentersblocks.data.Stairs;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.registry.BlockRegistry;
+import carpentersblocks.util.registry.ItemRegistry;
 import carpentersblocks.util.stairs.StairsTransform;
 import carpentersblocks.util.stairs.StairsUtil;
 
@@ -136,6 +137,17 @@ public class BlockCarpentersStairs extends BlockBase {
         BlockProperties.setData(TE, stairsID);
 
         return true;
+    }
+
+    @Override
+    /**
+     * Damages hammer with a chance to not damage.
+     */
+    protected void damageItemWithChance(World world, EntityPlayer entityPlayer)
+    {
+        if (world.rand.nextFloat() <= ItemRegistry.itemHammerDamageChanceFromStairs) {
+            super.damageItemWithChance(world, entityPlayer);
+        }
     }
 
     @Override

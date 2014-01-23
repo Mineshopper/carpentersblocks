@@ -28,6 +28,10 @@ public class ItemRegistry {
     public static int itemCarpentersToolsUses = 400;
     public static boolean itemCarpentersToolsDamageable = true;
 
+    public static double itemHammerDamageChanceFromSlopes = 0.75D;
+    public static double itemHammerDamageChanceFromStairs = 1.0D;
+    public static double itemHammerDamageChanceFromCollapsible = 0.2D;
+
     /**
      * Registers item IDs.
      */
@@ -39,6 +43,10 @@ public class ItemRegistry {
         enableChisel                  = config.get("tools",            "Enable Chisel",                  enableChisel).getBoolean(enableChisel);
         itemCarpentersToolsUses       = config.get("tools",       "Vanilla Tools Uses",       itemCarpentersToolsUses).getInt(itemCarpentersToolsUses);
         itemCarpentersToolsDamageable = config.get("tools", "Vanilla Tools Damageable", itemCarpentersToolsDamageable).getBoolean(itemCarpentersToolsDamageable);
+
+        itemHammerDamageChanceFromSlopes      = config.get("chance to damage hammer when interacting with block",      "itemHammerDamageChanceFromSlopes",      itemHammerDamageChanceFromSlopes).getDouble(     itemHammerDamageChanceFromSlopes);
+        itemHammerDamageChanceFromStairs      = config.get("chance to damage hammer when interacting with block",      "itemHammerDamageChanceFromStairs",      itemHammerDamageChanceFromStairs).getDouble(     itemHammerDamageChanceFromStairs);
+        itemHammerDamageChanceFromCollapsible = config.get("chance to damage hammer when interacting with block", "itemHammerDamageChanceFromCollapsible", itemHammerDamageChanceFromCollapsible).getDouble(itemHammerDamageChanceFromCollapsible);
 
         itemCarpentersHammerID        = config.getItem("Hammer", baseItemID++).getInt(baseItemID);
         itemCarpentersChiselID        = config.getItem("Chisel", baseItemID++).getInt(baseItemID);

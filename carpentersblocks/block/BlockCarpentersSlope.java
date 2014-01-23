@@ -22,6 +22,7 @@ import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.registry.BlockRegistry;
 import carpentersblocks.util.registry.IconRegistry;
+import carpentersblocks.util.registry.ItemRegistry;
 import carpentersblocks.util.slope.SlopeTransform;
 import carpentersblocks.util.slope.SlopeUtil;
 import cpw.mods.fml.relauncher.Side;
@@ -255,6 +256,17 @@ public class BlockCarpentersSlope extends BlockBase {
         BlockProperties.setData(TE, slopeID);
 
         return true;
+    }
+
+    @Override
+    /**
+     * Damages hammer with a chance to not damage.
+     */
+    protected void damageItemWithChance(World world, EntityPlayer entityPlayer)
+    {
+        if (world.rand.nextFloat() <= ItemRegistry.itemHammerDamageChanceFromSlopes) {
+            super.damageItemWithChance(world, entityPlayer);
+        }
     }
 
     @Override
