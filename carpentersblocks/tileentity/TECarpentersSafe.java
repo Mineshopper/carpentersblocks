@@ -15,14 +15,43 @@ public class TECarpentersSafe extends TEBase implements ISidedInventory {
     /** Holds size of inventory. */
     private int inventorySize = 27;
 
-    private static final int[] accessibleSlots =
+    /** Counts ticks. */
+    private int tickCount;
+
+    /** Used to determine whether capacity strip requires a redraw. */
+    private boolean contentsChanged;
+
+    /** Indicates safe render update should occur this tick. */
+    private boolean forceEntityUpdate;
+
+    @Override
+    /**
+     * Allows the entity to update its state. Overridden in most subclasses, e.g. the mob spawner uses this to count
+     * ticks and creates a new spawn inside its implementation.
+     */
+    public void updateEntity()
+    {
+        if (!worldObj.isRemote)
         {
+            if (++tickCount >= 20 || forceEntityUpdate) {
+                tickCount = 0;
+                if (contentsChanged) {
+                    System.out.println("DEBUG: Safe contents changed, sending update.");
+                    worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+                    contentsChanged = false;
+                    forceEntityUpdate = false;
+                }
+            }
+        }
+    }
+
+    private static final int[] accessibleSlots = {
         0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10,
         11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
         22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32,
         33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43,
         44, 45, 46, 47, 48, 49, 50, 51, 52, 53
-        };
+    };
 
     /**
      * Returns whether safe has 54 item slots.
@@ -136,7 +165,7 @@ public class TECarpentersSafe extends TEBase implements ISidedInventory {
      */
     public void onInventoryChanged()
     {
-        worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+        contentsChanged = true;
         super.onInventoryChanged();
     }
 
@@ -210,6 +239,9 @@ public class TECarpentersSafe extends TEBase implements ISidedInventory {
     public void closeChest()
     {
         Safe.setState(this, Safe.STATE_CLOSED);
+
+        /* Make updateEntity() check contents immediately on close. */
+        forceEntityUpdate = true;
     }
 
     @Override
