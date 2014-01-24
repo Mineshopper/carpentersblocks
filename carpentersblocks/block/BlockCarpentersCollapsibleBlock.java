@@ -92,50 +92,50 @@ public class BlockCarpentersCollapsibleBlock extends BlockBase {
 
         switch (src_quadrant)
         {
-        case Collapsible.QUAD_XZNN:
-            if (TE_ZN != null) {
-                Collapsible.setQuadHeight(TE_ZN, Collapsible.QUAD_XZNP, height);
-            }
-            if (TE_XZNN != null) {
-                Collapsible.setQuadHeight(TE_XZNN, Collapsible.QUAD_XZPP, height);
-            }
-            if (TE_XN != null) {
-                Collapsible.setQuadHeight(TE_XN, Collapsible.QUAD_XZPN, height);
-            }
-            break;
-        case Collapsible.QUAD_XZNP:
-            if (TE_XN != null) {
-                Collapsible.setQuadHeight(TE_XN, Collapsible.QUAD_XZPP, height);
-            }
-            if (TE_XZNP != null) {
-                Collapsible.setQuadHeight(TE_XZNP, Collapsible.QUAD_XZPN, height);
-            }
-            if (TE_ZP != null) {
-                Collapsible.setQuadHeight(TE_ZP, Collapsible.QUAD_XZNN, height);
-            }
-            break;
-        case Collapsible.QUAD_XZPN:
-            if (TE_XP != null) {
-                Collapsible.setQuadHeight(TE_XP, Collapsible.QUAD_XZNN, height);
-            }
-            if (TE_XZPN != null) {
-                Collapsible.setQuadHeight(TE_XZPN, Collapsible.QUAD_XZNP, height);
-            }
-            if (TE_ZN != null) {
-                Collapsible.setQuadHeight(TE_ZN, Collapsible.QUAD_XZPP, height);
-            }
-            break;
-        case Collapsible.QUAD_XZPP:
-            if (TE_ZP != null) {
-                Collapsible.setQuadHeight(TE_ZP, Collapsible.QUAD_XZPN, height);
-            }
-            if (TE_XZPP != null) {
-                Collapsible.setQuadHeight(TE_XZPP, Collapsible.QUAD_XZNN, height);
-            }
-            if (TE_XP != null) {
-                Collapsible.setQuadHeight(TE_XP, Collapsible.QUAD_XZNP, height);
-            }
-            break;
+            case Collapsible.QUAD_XZNN:
+                if (TE_ZN != null) {
+                    Collapsible.setQuadHeight(TE_ZN, Collapsible.QUAD_XZNP, height);
+                }
+                if (TE_XZNN != null) {
+                    Collapsible.setQuadHeight(TE_XZNN, Collapsible.QUAD_XZPP, height);
+                }
+                if (TE_XN != null) {
+                    Collapsible.setQuadHeight(TE_XN, Collapsible.QUAD_XZPN, height);
+                }
+                break;
+            case Collapsible.QUAD_XZNP:
+                if (TE_XN != null) {
+                    Collapsible.setQuadHeight(TE_XN, Collapsible.QUAD_XZPP, height);
+                }
+                if (TE_XZNP != null) {
+                    Collapsible.setQuadHeight(TE_XZNP, Collapsible.QUAD_XZPN, height);
+                }
+                if (TE_ZP != null) {
+                    Collapsible.setQuadHeight(TE_ZP, Collapsible.QUAD_XZNN, height);
+                }
+                break;
+            case Collapsible.QUAD_XZPN:
+                if (TE_XP != null) {
+                    Collapsible.setQuadHeight(TE_XP, Collapsible.QUAD_XZNN, height);
+                }
+                if (TE_XZPN != null) {
+                    Collapsible.setQuadHeight(TE_XZPN, Collapsible.QUAD_XZNP, height);
+                }
+                if (TE_ZN != null) {
+                    Collapsible.setQuadHeight(TE_ZN, Collapsible.QUAD_XZPP, height);
+                }
+                break;
+            case Collapsible.QUAD_XZPP:
+                if (TE_ZP != null) {
+                    Collapsible.setQuadHeight(TE_ZP, Collapsible.QUAD_XZPN, height);
+                }
+                if (TE_XZPP != null) {
+                    Collapsible.setQuadHeight(TE_XZPP, Collapsible.QUAD_XZNN, height);
+                }
+                if (TE_XP != null) {
+                    Collapsible.setQuadHeight(TE_XP, Collapsible.QUAD_XZNP, height);
+                }
+                break;
         }
     }
 
@@ -165,18 +165,18 @@ public class BlockCarpentersCollapsibleBlock extends BlockBase {
             TEBase TE = (TEBase)world.getBlockTileEntity(x, y, z);
 
             switch (side) {
-            case UP:
-                return BlockProperties.getData(TE) == 0;
-            case NORTH:
-                return Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZNN) + Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZPN) == 32;
-            case SOUTH:
-                return Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZNP) + Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZPP) == 32;
-            case WEST:
-                return Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZNP) + Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZNN) == 32;
-            case EAST:
-                return Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZPN) + Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZPP) == 32;
-            default:
-                return true;
+                case UP:
+                    return BlockProperties.getData(TE) == 0;
+                case NORTH:
+                    return Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZNN) + Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZPN) == 32;
+                case SOUTH:
+                    return Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZNP) + Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZPP) == 32;
+                case WEST:
+                    return Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZNP) + Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZNN) == 32;
+                case EAST:
+                    return Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZPN) + Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZPP) == 32;
+                default:
+                    return true;
             }
         }
 
@@ -251,22 +251,22 @@ public class BlockCarpentersCollapsibleBlock extends BlockBase {
 
         switch (quad)
         {
-        case Collapsible.QUAD_XZNN:
-            xMax = 0.5F;
-            zMax = 0.5F;
-            break;
-        case Collapsible.QUAD_XZNP:
-            xMax = 0.5F;
-            zMin = 0.5F;
-            break;
-        case Collapsible.QUAD_XZPN:
-            xMin = 0.5F;
-            zMax = 0.5F;
-            break;
-        case Collapsible.QUAD_XZPP:
-            xMin = 0.5F;
-            zMin = 0.5F;
-            break;
+            case Collapsible.QUAD_XZNN:
+                xMax = 0.5F;
+                zMax = 0.5F;
+                break;
+            case Collapsible.QUAD_XZNP:
+                xMax = 0.5F;
+                zMin = 0.5F;
+                break;
+            case Collapsible.QUAD_XZPN:
+                xMin = 0.5F;
+                zMax = 0.5F;
+                break;
+            case Collapsible.QUAD_XZPP:
+                xMin = 0.5F;
+                zMin = 0.5F;
+                break;
         }
 
         float maxHeight = getMaxHeight(TE);

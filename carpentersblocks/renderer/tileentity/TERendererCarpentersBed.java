@@ -60,29 +60,29 @@ public class TERendererCarpentersBed extends TileEntitySpecialRenderer {
 
             switch (dir)
             {
-            case NORTH: // -Z
-                renderBlocks.setRenderBounds(0.0D, isOccupied ? 0.4375D : 0.3125D, 0.0D, 1.0D, isOccupied ? 0.875D : 0.625D, 0.5D);
-                BedDesignHelper.renderFaceXNeg(renderBlocks, BedDesignHelper.SIDE5, x, y, z);
-                BedDesignHelper.renderFaceXPos(renderBlocks, BedDesignHelper.SIDE1, x, y, z);
-                break;
-            case SOUTH: // +Z
-                renderBlocks.uvRotateTop = 2;
-                renderBlocks.setRenderBounds(0.0D, isOccupied ? 0.4375D : 0.3125D, 0.5D, 1.0D, isOccupied ? 0.875D : 0.625D, 1.0D);
-                BedDesignHelper.renderFaceXNeg(renderBlocks, BedDesignHelper.SIDE1, x, y, z);
-                BedDesignHelper.renderFaceXPos(renderBlocks, BedDesignHelper.SIDE5, x, y, z);
-                break;
-            case WEST:     // -X
-                renderBlocks.uvRotateTop = 3;
-                renderBlocks.setRenderBounds(0.0D, isOccupied ? 0.4375D : 0.3125D, 0.0D, 0.5D, isOccupied ? 0.875D : 0.625D, 1.0D);
-                BedDesignHelper.renderFaceZNeg(renderBlocks, BedDesignHelper.SIDE1, x, y, z);
-                BedDesignHelper.renderFaceZPos(renderBlocks, BedDesignHelper.SIDE5, x, y, z);
-                break;
-            default:     // EAST +X
-                renderBlocks.uvRotateTop = 1;
-                renderBlocks.setRenderBounds(0.5D, isOccupied ? 0.4375D : 0.3125D, 0.0D, 1.0D, isOccupied ? 0.875D : 0.625D, 1.0D);
-                BedDesignHelper.renderFaceZNeg(renderBlocks, BedDesignHelper.SIDE5, x, y, z);
-                BedDesignHelper.renderFaceZPos(renderBlocks, BedDesignHelper.SIDE1, x, y, z);
-                break;
+                case NORTH: // -Z
+                    renderBlocks.setRenderBounds(0.0D, isOccupied ? 0.4375D : 0.3125D, 0.0D, 1.0D, isOccupied ? 0.875D : 0.625D, 0.5D);
+                    BedDesignHelper.renderFaceXNeg(renderBlocks, BedDesignHelper.SIDE5, x, y, z);
+                    BedDesignHelper.renderFaceXPos(renderBlocks, BedDesignHelper.SIDE1, x, y, z);
+                    break;
+                case SOUTH: // +Z
+                    renderBlocks.uvRotateTop = 2;
+                    renderBlocks.setRenderBounds(0.0D, isOccupied ? 0.4375D : 0.3125D, 0.5D, 1.0D, isOccupied ? 0.875D : 0.625D, 1.0D);
+                    BedDesignHelper.renderFaceXNeg(renderBlocks, BedDesignHelper.SIDE1, x, y, z);
+                    BedDesignHelper.renderFaceXPos(renderBlocks, BedDesignHelper.SIDE5, x, y, z);
+                    break;
+                case WEST:     // -X
+                    renderBlocks.uvRotateTop = 3;
+                    renderBlocks.setRenderBounds(0.0D, isOccupied ? 0.4375D : 0.3125D, 0.0D, 0.5D, isOccupied ? 0.875D : 0.625D, 1.0D);
+                    BedDesignHelper.renderFaceZNeg(renderBlocks, BedDesignHelper.SIDE1, x, y, z);
+                    BedDesignHelper.renderFaceZPos(renderBlocks, BedDesignHelper.SIDE5, x, y, z);
+                    break;
+                default:     // EAST +X
+                    renderBlocks.uvRotateTop = 1;
+                    renderBlocks.setRenderBounds(0.5D, isOccupied ? 0.4375D : 0.3125D, 0.0D, 1.0D, isOccupied ? 0.875D : 0.625D, 1.0D);
+                    BedDesignHelper.renderFaceZNeg(renderBlocks, BedDesignHelper.SIDE5, x, y, z);
+                    BedDesignHelper.renderFaceZPos(renderBlocks, BedDesignHelper.SIDE1, x, y, z);
+                    break;
             }
 
             BedDesignHelper.renderFaceYPos(renderBlocks, BedDesignHelper.HEAD, x, y, z);
@@ -92,33 +92,33 @@ public class TERendererCarpentersBed extends TileEntitySpecialRenderer {
 
             switch (dir)
             {
-            case NORTH: // -Z
-                renderBlocks.setRenderBounds(0.0D, isOccupied ? 0.4375D : 0.3125D, 0.0D, 1.0D, isOccupied ? 0.875D : 0.625D, 1.0D);
-                BedDesignHelper.renderFaceXNeg(renderBlocks, BedDesignHelper.SIDE4, x, y, z);
-                BedDesignHelper.renderFaceXPos(renderBlocks, BedDesignHelper.SIDE2, x, y, z);
-                BedDesignHelper.renderFaceZNeg(renderBlocks, BedDesignHelper.END, x, y, z);
-                break;
-            case SOUTH: // +Z
-                renderBlocks.uvRotateTop = 2;
-                renderBlocks.setRenderBounds(0.0D, isOccupied ? 0.4375D : 0.3125D, 0.0D, 1.0D, isOccupied ? 0.875D : 0.625D, 1.0D);
-                BedDesignHelper.renderFaceXNeg(renderBlocks, BedDesignHelper.SIDE2, x, y, z);
-                BedDesignHelper.renderFaceXPos(renderBlocks, BedDesignHelper.SIDE4, x, y, z);
-                BedDesignHelper.renderFaceZPos(renderBlocks, BedDesignHelper.END, x, y, z);
-                break;
-            case WEST:     // -X
-                renderBlocks.uvRotateTop = 3;
-                renderBlocks.setRenderBounds(0.0D, isOccupied ? 0.4375D : 0.3125D, 0.0D, 1.0D, isOccupied ? 0.875D : 0.625D, 1.0D);
-                BedDesignHelper.renderFaceZNeg(renderBlocks, BedDesignHelper.SIDE2, x, y, z);
-                BedDesignHelper.renderFaceZPos(renderBlocks, BedDesignHelper.SIDE4, x, y, z);
-                BedDesignHelper.renderFaceXNeg(renderBlocks, BedDesignHelper.END, x, y, z);
-                break;
-            default:     // EAST +X
-                renderBlocks.uvRotateTop = 1;
-                renderBlocks.setRenderBounds(0.0D, isOccupied ? 0.4375D : 0.3125D, 0.0D, 1.0D, isOccupied ? 0.875D : 0.625D, 1.0D);
-                BedDesignHelper.renderFaceZNeg(renderBlocks, BedDesignHelper.SIDE4, x, y, z);
-                BedDesignHelper.renderFaceZPos(renderBlocks, BedDesignHelper.SIDE2, x, y, z);
-                BedDesignHelper.renderFaceXPos(renderBlocks, BedDesignHelper.END, x, y, z);
-                break;
+                case NORTH: // -Z
+                    renderBlocks.setRenderBounds(0.0D, isOccupied ? 0.4375D : 0.3125D, 0.0D, 1.0D, isOccupied ? 0.875D : 0.625D, 1.0D);
+                    BedDesignHelper.renderFaceXNeg(renderBlocks, BedDesignHelper.SIDE4, x, y, z);
+                    BedDesignHelper.renderFaceXPos(renderBlocks, BedDesignHelper.SIDE2, x, y, z);
+                    BedDesignHelper.renderFaceZNeg(renderBlocks, BedDesignHelper.END, x, y, z);
+                    break;
+                case SOUTH: // +Z
+                    renderBlocks.uvRotateTop = 2;
+                    renderBlocks.setRenderBounds(0.0D, isOccupied ? 0.4375D : 0.3125D, 0.0D, 1.0D, isOccupied ? 0.875D : 0.625D, 1.0D);
+                    BedDesignHelper.renderFaceXNeg(renderBlocks, BedDesignHelper.SIDE2, x, y, z);
+                    BedDesignHelper.renderFaceXPos(renderBlocks, BedDesignHelper.SIDE4, x, y, z);
+                    BedDesignHelper.renderFaceZPos(renderBlocks, BedDesignHelper.END, x, y, z);
+                    break;
+                case WEST:     // -X
+                    renderBlocks.uvRotateTop = 3;
+                    renderBlocks.setRenderBounds(0.0D, isOccupied ? 0.4375D : 0.3125D, 0.0D, 1.0D, isOccupied ? 0.875D : 0.625D, 1.0D);
+                    BedDesignHelper.renderFaceZNeg(renderBlocks, BedDesignHelper.SIDE2, x, y, z);
+                    BedDesignHelper.renderFaceZPos(renderBlocks, BedDesignHelper.SIDE4, x, y, z);
+                    BedDesignHelper.renderFaceXNeg(renderBlocks, BedDesignHelper.END, x, y, z);
+                    break;
+                default:     // EAST +X
+                    renderBlocks.uvRotateTop = 1;
+                    renderBlocks.setRenderBounds(0.0D, isOccupied ? 0.4375D : 0.3125D, 0.0D, 1.0D, isOccupied ? 0.875D : 0.625D, 1.0D);
+                    BedDesignHelper.renderFaceZNeg(renderBlocks, BedDesignHelper.SIDE4, x, y, z);
+                    BedDesignHelper.renderFaceZPos(renderBlocks, BedDesignHelper.SIDE2, x, y, z);
+                    BedDesignHelper.renderFaceXPos(renderBlocks, BedDesignHelper.END, x, y, z);
+                    break;
             }
 
             BedDesignHelper.renderFaceYPos(renderBlocks, BedDesignHelper.FOOT, x, y, z);

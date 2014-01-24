@@ -58,24 +58,24 @@ public class BlockCarpentersBlock extends BlockBase {
         if (data == Slab.BLOCK_FULL) {
             switch (EventHandler.eventFace)
             {
-            case 0:
-                data = Slab.SLAB_Y_POS;
-                break;
-            case 1:
-                data = Slab.SLAB_Y_NEG;
-                break;
-            case 2:
-                data = Slab.SLAB_Z_POS;
-                break;
-            case 3:
-                data = Slab.SLAB_Z_NEG;
-                break;
-            case 4:
-                data = Slab.SLAB_X_POS;
-                break;
-            case 5:
-                data = Slab.SLAB_X_NEG;
-                break;
+                case 0:
+                    data = Slab.SLAB_Y_POS;
+                    break;
+                case 1:
+                    data = Slab.SLAB_Y_NEG;
+                    break;
+                case 2:
+                    data = Slab.SLAB_Z_POS;
+                    break;
+                case 3:
+                    data = Slab.SLAB_Z_NEG;
+                    break;
+                case 4:
+                    data = Slab.SLAB_X_POS;
+                    break;
+                case 5:
+                    data = Slab.SLAB_X_NEG;
+                    break;
             }
         } else {
             data = Slab.BLOCK_FULL;
@@ -99,36 +99,36 @@ public class BlockCarpentersBlock extends BlockBase {
         float[] bounds = { 0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F };
 
         switch (data) {
-        case Slab.SLAB_X_NEG: {
-            float[] tempBounds = { 0.0F, 0.0F, 0.0F, 0.5F, 1.0F, 1.0F };
-            bounds = tempBounds;
-            break;
-        }
-        case Slab.SLAB_X_POS: {
-            float[] tempBounds = { 0.5F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F };
-            bounds = tempBounds;
-            break;
-        }
-        case Slab.SLAB_Y_NEG: {
-            float[] tempBounds = { 0.0F, 0.0F, 0.0F, 1.0F, 0.5F, 1.0F };
-            bounds = tempBounds;
-            break;
-        }
-        case Slab.SLAB_Y_POS: {
-            float[] tempBounds = { 0.0F, 0.5F, 0.0F, 1.0F, 1.0F, 1.0F };
-            bounds = tempBounds;
-            break;
-        }
-        case Slab.SLAB_Z_NEG: {
-            float[] tempBounds = { 0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 0.5F };
-            bounds = tempBounds;
-            break;
-        }
-        case Slab.SLAB_Z_POS: {
-            float[] tempBounds = { 0.0F, 0.0F, 0.5F, 1.0F, 1.0F, 1.0F };
-            bounds = tempBounds;
-            break;
-        }
+            case Slab.SLAB_X_NEG: {
+                float[] tempBounds = { 0.0F, 0.0F, 0.0F, 0.5F, 1.0F, 1.0F };
+                bounds = tempBounds;
+                break;
+            }
+            case Slab.SLAB_X_POS: {
+                float[] tempBounds = { 0.5F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F };
+                bounds = tempBounds;
+                break;
+            }
+            case Slab.SLAB_Y_NEG: {
+                float[] tempBounds = { 0.0F, 0.0F, 0.0F, 1.0F, 0.5F, 1.0F };
+                bounds = tempBounds;
+                break;
+            }
+            case Slab.SLAB_Y_POS: {
+                float[] tempBounds = { 0.0F, 0.5F, 0.0F, 1.0F, 1.0F, 1.0F };
+                bounds = tempBounds;
+                break;
+            }
+            case Slab.SLAB_Z_NEG: {
+                float[] tempBounds = { 0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 0.5F };
+                bounds = tempBounds;
+                break;
+            }
+            case Slab.SLAB_Z_POS: {
+                float[] tempBounds = { 0.0F, 0.0F, 0.5F, 1.0F, 1.0F, 1.0F };
+                bounds = tempBounds;
+                break;
+            }
         }
 
         setBlockBounds(bounds[0], bounds[1], bounds[2], bounds[3], bounds[4], bounds[5]);
@@ -265,56 +265,56 @@ public class BlockCarpentersBlock extends BlockBase {
              */
             switch (side_src)
             {
-            case DOWN:
-                /** -Y */
-                return maxY == 1.0D &&
-                bounds_src[1] == 0.0D &&
-                minX == bounds_src[0] &&
-                maxX == bounds_src[3] &&
-                minZ == bounds_src[2] &&
-                maxZ == bounds_src[5];
-            case UP:
-                /** +Y */
-                return minY == 0.0D &&
-                bounds_src[4] == 1.0D &&
-                minX == bounds_src[0] &&
-                maxX == bounds_src[3] &&
-                minZ == bounds_src[2] &&
-                maxZ == bounds_src[5];
-            case NORTH:
-                /** -Z */
-                return maxZ == 1.0D &&
-                bounds_src[2] == 0.0D &&
-                minX == bounds_src[0] &&
-                maxX == bounds_src[3] &&
-                minY == bounds_src[1] &&
-                maxY == bounds_src[4];
-            case SOUTH:
-                /** +Z */
-                return minZ == 0.0D &&
-                bounds_src[5] == 1.0D &&
-                minX == bounds_src[0] &&
-                maxX == bounds_src[3] &&
-                minY == bounds_src[1] &&
-                maxY == bounds_src[4];
-            case WEST:
-                /** -X */
-                return maxX == 1.0D &&
-                bounds_src[0] == 0.0D &&
-                minY == bounds_src[1] &&
-                maxY == bounds_src[4] &&
-                minZ == bounds_src[2] &&
-                maxZ == bounds_src[5];
-            case EAST:
-                /** +X */
-                return minX == 0.0D &&
-                bounds_src[3] == 1.0D &&
-                minY == bounds_src[1] &&
-                maxY == bounds_src[4] &&
-                minZ == bounds_src[2] &&
-                maxZ == bounds_src[5];
-            default:
-                return false;
+                case DOWN:
+                    /** -Y */
+                    return maxY == 1.0D &&
+                    bounds_src[1] == 0.0D &&
+                    minX == bounds_src[0] &&
+                    maxX == bounds_src[3] &&
+                    minZ == bounds_src[2] &&
+                    maxZ == bounds_src[5];
+                case UP:
+                    /** +Y */
+                    return minY == 0.0D &&
+                    bounds_src[4] == 1.0D &&
+                    minX == bounds_src[0] &&
+                    maxX == bounds_src[3] &&
+                    minZ == bounds_src[2] &&
+                    maxZ == bounds_src[5];
+                case NORTH:
+                    /** -Z */
+                    return maxZ == 1.0D &&
+                    bounds_src[2] == 0.0D &&
+                    minX == bounds_src[0] &&
+                    maxX == bounds_src[3] &&
+                    minY == bounds_src[1] &&
+                    maxY == bounds_src[4];
+                case SOUTH:
+                    /** +Z */
+                    return minZ == 0.0D &&
+                    bounds_src[5] == 1.0D &&
+                    minX == bounds_src[0] &&
+                    maxX == bounds_src[3] &&
+                    minY == bounds_src[1] &&
+                    maxY == bounds_src[4];
+                case WEST:
+                    /** -X */
+                    return maxX == 1.0D &&
+                    bounds_src[0] == 0.0D &&
+                    minY == bounds_src[1] &&
+                    maxY == bounds_src[4] &&
+                    minZ == bounds_src[2] &&
+                    maxZ == bounds_src[5];
+                case EAST:
+                    /** +X */
+                    return minX == 0.0D &&
+                    bounds_src[3] == 1.0D &&
+                    minY == bounds_src[1] &&
+                    maxY == bounds_src[4] &&
+                    minZ == bounds_src[2] &&
+                    maxZ == bounds_src[5];
+                default:
+                    return false;
             }
         }
 

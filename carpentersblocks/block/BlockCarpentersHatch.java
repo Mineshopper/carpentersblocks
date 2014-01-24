@@ -90,11 +90,11 @@ public class BlockCarpentersHatch extends BlockBase {
             Hatch.setRigidity(TE, rigidity);
 
             switch (rigidity) {
-            case Hatch.HINGED_NONRIGID:
-                entityPlayer.addChatMessage("message.activation_wood.name");
-                break;
-            case Hatch.HINGED_RIGID:
-                entityPlayer.addChatMessage("message.activation_iron.name");
+                case Hatch.HINGED_NONRIGID:
+                    entityPlayer.addChatMessage("message.activation_wood.name");
+                    break;
+                case Hatch.HINGED_RIGID:
+                    entityPlayer.addChatMessage("message.activation_iron.name");
             }
 
         }
@@ -153,18 +153,18 @@ public class BlockCarpentersHatch extends BlockBase {
         if (isOpen)
         {
             switch (dir) {
-            case 0:
-                setBlockBounds(0.0F, 0.0F, 1.0F - thickness, 1.0F, 1.0F, 1.0F);
-                break;
-            case 1:
-                setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, thickness);
-                break;
-            case 2:
-                setBlockBounds(1.0F - thickness, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
-                break;
-            case 3:
-                setBlockBounds(0.0F, 0.0F, 0.0F, thickness, 1.0F, 1.0F);
-                break;
+                case 0:
+                    setBlockBounds(0.0F, 0.0F, 1.0F - thickness, 1.0F, 1.0F, 1.0F);
+                    break;
+                case 1:
+                    setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, thickness);
+                    break;
+                case 2:
+                    setBlockBounds(1.0F - thickness, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
+                    break;
+                case 3:
+                    setBlockBounds(0.0F, 0.0F, 0.0F, thickness, 1.0F, 1.0F);
+                    break;
             }
         }
     }
@@ -201,18 +201,18 @@ public class BlockCarpentersHatch extends BlockBase {
                 int zOffset = z;
 
                 switch (dir) {
-                case Hatch.DIR_Z_NEG:
-                    zOffset = z + 1;
-                    break;
-                case Hatch.DIR_Z_POS:
-                    --zOffset;
-                    break;
-                case Hatch.DIR_X_NEG:
-                    xOffset = x + 1;
-                    break;
-                case Hatch.DIR_X_POS:
-                    --xOffset;
-                    break;
+                    case Hatch.DIR_Z_NEG:
+                        zOffset = z + 1;
+                        break;
+                    case Hatch.DIR_Z_POS:
+                        --zOffset;
+                        break;
+                    case Hatch.DIR_X_NEG:
+                        xOffset = x + 1;
+                        break;
+                    case Hatch.DIR_X_POS:
+                        --xOffset;
+                        break;
                 }
 
                 if (!(isValidSupportBlock(world, x, y, z, world.getBlockId(xOffset, y, zOffset), dir + 2) || world.isBlockSolidOnSide(xOffset, y, zOffset, ForgeDirection.getOrientation(dir + 2)))) {
@@ -289,14 +289,14 @@ public class BlockCarpentersHatch extends BlockBase {
     public boolean canPlaceBlockOnSide(World world, int x, int y, int z, int side)
     {
         switch (side) {
-        case 2:
-            return isValidSupportBlock(world, x, y, z, world.getBlockId(x, y, z + 1), 3) || world.isBlockSolidOnSide(x, y, z + 1, ForgeDirection.getOrientation(ForgeDirection.OPPOSITES[3]));
-        case 3:
-            return isValidSupportBlock(world, x, y, z, world.getBlockId(x, y, z - 1), 2) || world.isBlockSolidOnSide(x, y, z - 1, ForgeDirection.getOrientation(ForgeDirection.OPPOSITES[2]));
-        case 4:
-            return isValidSupportBlock(world, x, y, z, world.getBlockId(x + 1, y, z), 5) || world.isBlockSolidOnSide(x + 1, y, z, ForgeDirection.getOrientation(ForgeDirection.OPPOSITES[5]));
-        case 5:
-            return isValidSupportBlock(world, x, y, z, world.getBlockId(x - 1, y, z), 4) || world.isBlockSolidOnSide(x - 1, y, z, ForgeDirection.getOrientation(ForgeDirection.OPPOSITES[4]));
+            case 2:
+                return isValidSupportBlock(world, x, y, z, world.getBlockId(x, y, z + 1), 3) || world.isBlockSolidOnSide(x, y, z + 1, ForgeDirection.getOrientation(ForgeDirection.OPPOSITES[3]));
+            case 3:
+                return isValidSupportBlock(world, x, y, z, world.getBlockId(x, y, z - 1), 2) || world.isBlockSolidOnSide(x, y, z - 1, ForgeDirection.getOrientation(ForgeDirection.OPPOSITES[2]));
+            case 4:
+                return isValidSupportBlock(world, x, y, z, world.getBlockId(x + 1, y, z), 5) || world.isBlockSolidOnSide(x + 1, y, z, ForgeDirection.getOrientation(ForgeDirection.OPPOSITES[5]));
+            case 5:
+                return isValidSupportBlock(world, x, y, z, world.getBlockId(x - 1, y, z), 4) || world.isBlockSolidOnSide(x - 1, y, z, ForgeDirection.getOrientation(ForgeDirection.OPPOSITES[4]));
         }
 
         return false;

@@ -63,24 +63,24 @@ public class BedDesignHelper {
          */
         switch (renderBlocks.uvRotateTop)
         {
-        case 1:
-            temp_TL = coord_BL;
-            temp_BL = coord_BR;
-            temp_BR = coord_TR;
-            temp_TR = coord_TL;
-            break;
-        case 2:
-            temp_TL = coord_BR;
-            temp_BL = coord_TR;
-            temp_BR = coord_TL;
-            temp_TR = coord_BL;
-            break;
-        case 3:
-            temp_TL = coord_TR;
-            temp_BL = coord_TL;
-            temp_BR = coord_BL;
-            temp_TR = coord_BR;
-            break;
+            case 1:
+                temp_TL = coord_BL;
+                temp_BL = coord_BR;
+                temp_BR = coord_TR;
+                temp_TR = coord_TL;
+                break;
+            case 2:
+                temp_TL = coord_BR;
+                temp_BL = coord_TR;
+                temp_BR = coord_TL;
+                temp_TR = coord_BL;
+                break;
+            case 3:
+                temp_TL = coord_TR;
+                temp_BL = coord_TL;
+                temp_BR = coord_BL;
+                temp_TR = coord_BR;
+                break;
         }
 
         double xMin = x + renderBlocks.renderMinX;

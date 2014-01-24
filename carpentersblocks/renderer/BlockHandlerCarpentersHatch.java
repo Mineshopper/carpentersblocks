@@ -2,7 +2,6 @@ package carpentersblocks.renderer;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.Icon;
 import carpentersblocks.block.BlockCarpentersHatch;
 import carpentersblocks.data.Hatch;
@@ -15,7 +14,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class BlockHandlerCarpentersHatch extends BlockDeterminantRender {
+public class BlockHandlerCarpentersHatch extends BlockHandlerBase {
 
     @Override
     public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderBlocks)
@@ -47,21 +46,21 @@ public class BlockHandlerCarpentersHatch extends BlockDeterminantRender {
         int type = Hatch.getType(TE);
 
         switch (type) {
-        case Hatch.TYPE_WINDOW:
-            renderHollowHatch(block, x, y, z);
-            break;
-        case Hatch.TYPE_SCREEN:
-            renderHollowHatch(block, x, y, z);
-            break;
-        case Hatch.TYPE_FRENCH_WINDOW:
-            renderFrenchWindowHatch(block, x, y, z);
-            break;
-        case Hatch.TYPE_PANEL:
-            renderPanelHatch(block, x, y, z);
-            break;
-        case Hatch.TYPE_HIDDEN:
-            renderHiddenHatch(block, x, y, z);
-            break;
+            case Hatch.TYPE_WINDOW:
+                renderHollowHatch(block, x, y, z);
+                break;
+            case Hatch.TYPE_SCREEN:
+                renderHollowHatch(block, x, y, z);
+                break;
+            case Hatch.TYPE_FRENCH_WINDOW:
+                renderFrenchWindowHatch(block, x, y, z);
+                break;
+            case Hatch.TYPE_PANEL:
+                renderPanelHatch(block, x, y, z);
+                break;
+            case Hatch.TYPE_HIDDEN:
+                renderHiddenHatch(block, x, y, z);
+                break;
         }
 
         renderBlocks.renderAllFaces = false;
@@ -74,8 +73,7 @@ public class BlockHandlerCarpentersHatch extends BlockDeterminantRender {
      */
     private void renderHiddenHatch(Block block, int x, int y, int z)
     {
-        if (shouldRenderBlock(block))
-        {
+        if (shouldRenderBlock(block)) {
             BlockCarpentersHatch blockRef = (BlockCarpentersHatch) BlockRegistry.blockCarpentersHatch;
             blockRef.setBlockBoundsBasedOnState(renderBlocks.blockAccess, x, y, z);
             renderBlock(block, x, y, z);
@@ -121,29 +119,29 @@ public class BlockHandlerCarpentersHatch extends BlockDeterminantRender {
         } else {
             switch (dir)
             {
-            case Hatch.DIR_X_NEG:
-                x_low = 0.8125F;
-                path_offset = 0.09375F;
-                break;
-            case Hatch.DIR_X_POS:
-                x_high = 0.1875F;
-                path_offset = 0.90625F;
-                break;
-            case Hatch.DIR_Z_NEG:
-                z_low = 0.8125F;
-                path_on_x = true;
-                path_offset = 0.09375F;
-                break;
-            case Hatch.DIR_Z_POS:
-                z_high = 0.1875F;
-                path_on_x = true;
-                path_offset = 0.90625F;
-                break;
+                case Hatch.DIR_X_NEG:
+                    x_low = 0.8125F;
+                    path_offset = 0.09375F;
+                    break;
+                case Hatch.DIR_X_POS:
+                    x_high = 0.1875F;
+                    path_offset = 0.90625F;
+                    break;
+                case Hatch.DIR_Z_NEG:
+                    z_low = 0.8125F;
+                    path_on_x = true;
+                    path_offset = 0.09375F;
+                    break;
+                case Hatch.DIR_Z_POS:
+                    z_high = 0.1875F;
+                    path_on_x = true;
+                    path_offset = 0.90625F;
+                    break;
             }
         }
 
-        if (shouldRenderBlock(block))
-        {
+        if (shouldRenderBlock(block)) {
+
             /* Draw sides */
 
             if (path_on_x) {
@@ -180,10 +178,11 @@ public class BlockHandlerCarpentersHatch extends BlockDeterminantRender {
                 renderBlock(block, x, y, z);
 
             }
+
         }
 
-        if (shouldRenderOpaque())
-        {
+        if (shouldRenderOpaque()) {
+
             Icon icon;
 
             if (Hatch.getType(TE) == Hatch.TYPE_SCREEN) {
@@ -192,35 +191,66 @@ public class BlockHandlerCarpentersHatch extends BlockDeterminantRender {
                 icon = IconRegistry.icon_hatch_glass;
             }
 
-            Tessellator.instance.setBrightness(Block.glass.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y, z));
-
             if (path_on_x) {
 
-                VertexHelper.setOffset(-(1 - path_offset));
-                Tessellator.instance.setColorOpaque_F(0.8F, 0.8F, 0.8F);
                 renderBlocks.setRenderBounds(0.1875F, 0.1875F, 0.0F, 0.8125F, 0.8125F, 1.0F);
-                RenderHelper.renderFaceZNeg(renderBlocks, x, y, z, icon);
+
+                lightingHelper.setLightingZPos(Block.glass, x, y, z);
+                lightingHelper.colorSide(Block.glass, x, y, z, 3, null);
                 VertexHelper.setOffset(-path_offset);
                 RenderHelper.renderFaceZPos(renderBlocks, x, y, z, icon);
 
+                if (!renderAlphaOverride) {
+                    lightingHelper.setLightingZNeg(Block.glass, x, y, z);
+                    lightingHelper.colorSide(Block.glass, x, y, z, 2, null);
+                    VertexHelper.setOffset(-(1 - path_offset));
+                    RenderHelper.renderFaceZNeg(renderBlocks, x, y, z, icon);
+                }
+
             } else if (path_on_y) {
 
-                VertexHelper.setOffset(-path_offset);
-                Tessellator.instance.setColorOpaque_F(0.5F, 0.5F, 0.5F);
                 renderBlocks.setRenderBounds(0.1875F, 0.0F, 0.1875F, 0.8125F, 1.0F, 0.8125F);
-                RenderHelper.renderFaceYNeg(renderBlocks, x, y, z, icon);
-                VertexHelper.setOffset(-(1 - path_offset));
-                Tessellator.instance.setColorOpaque_F(1.0F, 1.0F, 1.0F);
-                RenderHelper.renderFaceYPos(renderBlocks, x, y, z, icon);
+
+                if (renderAlphaOverride) {
+
+                    /* On alpha pass, YNeg face is drawn on both sides. */
+
+                    lightingHelper.setLightingYPos(Block.glass, x, y, z);
+                    lightingHelper.colorSide(Block.glass, x, y, z, 0, null);
+                    VertexHelper.setOffset(-path_offset);
+                    RenderHelper.renderFaceYNeg(renderBlocks, x, y, z, icon);
+
+                } else {
+
+                    lightingHelper.setLightingYNeg(Block.glass, x, y, z);
+                    lightingHelper.colorSide(Block.glass, x, y, z, 0, null);
+                    VertexHelper.setOffset(-path_offset);
+                    RenderHelper.renderFaceYNeg(renderBlocks, x, y, z, icon);
+
+                    if (!renderAlphaOverride) {
+                        lightingHelper.setLightingYPos(Block.glass, x, y, z);
+                        lightingHelper.colorSide(Block.glass, x, y, z, 1, null);
+                        VertexHelper.setOffset(-(1 - path_offset));
+                        RenderHelper.renderFaceYPos(renderBlocks, x, y, z, icon);
+                    }
+
+                }
 
             } else {
 
-                VertexHelper.setOffset(-(1 - path_offset));
-                Tessellator.instance.setColorOpaque_F(0.6F, 0.6F, 0.6F);
                 renderBlocks.setRenderBounds(0.0F, 0.1875F, 0.1875F, 1.0F, 0.8125F, 0.8125F);
-                RenderHelper.renderFaceXNeg(renderBlocks, x, y, z, icon);
+
+                lightingHelper.setLightingXPos(Block.glass, x, y, z);
+                lightingHelper.colorSide(Block.glass, x, y, z, 5, null);
                 VertexHelper.setOffset(-path_offset);
                 RenderHelper.renderFaceXPos(renderBlocks, x, y, z, icon);
+
+                if (!renderAlphaOverride) {
+                    lightingHelper.setLightingXNeg(Block.glass, x, y, z);
+                    lightingHelper.colorSide(Block.glass, x, y, z, 4, null);
+                    VertexHelper.setOffset(-(1 - path_offset));
+                    RenderHelper.renderFaceXNeg(renderBlocks, x, y, z, icon);
+                }
 
             }
 
@@ -267,30 +297,30 @@ public class BlockHandlerCarpentersHatch extends BlockDeterminantRender {
 
             switch (dir)
             {
-            case Hatch.DIR_X_NEG:
-                x_low = 0.8125F;
-                path_offset = 0.09375F;
-                break;
-            case Hatch.DIR_X_POS:
-                x_high = 0.1875F;
-                path_offset = 0.90625F;
-                break;
-            case Hatch.DIR_Z_NEG:
-                z_low = 0.8125F;
-                path_on_x = true;
-                path_offset = 0.09375F;
-                break;
-            case Hatch.DIR_Z_POS:
-                z_high = 0.1875F;
-                path_on_x = true;
-                path_offset = 0.90625F;
-                break;
+                case Hatch.DIR_X_NEG:
+                    x_low = 0.8125F;
+                    path_offset = 0.09375F;
+                    break;
+                case Hatch.DIR_X_POS:
+                    x_high = 0.1875F;
+                    path_offset = 0.90625F;
+                    break;
+                case Hatch.DIR_Z_NEG:
+                    z_low = 0.8125F;
+                    path_on_x = true;
+                    path_offset = 0.09375F;
+                    break;
+                case Hatch.DIR_Z_POS:
+                    z_high = 0.1875F;
+                    path_on_x = true;
+                    path_offset = 0.90625F;
+                    break;
             }
 
         }
 
-        if (shouldRenderBlock(block))
-        {
+        if (shouldRenderBlock(block)) {
+
             /* Draw sides */
 
             if (path_on_x) {
@@ -373,39 +403,71 @@ public class BlockHandlerCarpentersHatch extends BlockDeterminantRender {
             }
 
             lightingHelper.clearLightnessOffset();
+
         }
 
-        if (shouldRenderOpaque())
-        {
-            Tessellator.instance.setBrightness(Block.glass.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y, z));
+        if (shouldRenderOpaque()) {
 
             if (path_on_x) {
 
-                VertexHelper.setOffset(-(1 - path_offset));
-                Tessellator.instance.setColorOpaque_F(0.8F, 0.8F, 0.8F);
                 renderBlocks.setRenderBounds(0.1875F, 0.1875F, 0.0F, 0.8125F, 0.8125F, 1.0F);
-                RenderHelper.renderFaceZNeg(renderBlocks, x, y, z, IconRegistry.icon_hatch_french_glass);
+
+                lightingHelper.setLightingZPos(Block.glass, x, y, z);
+                lightingHelper.colorSide(Block.glass, x, y, z, 3, null);
                 VertexHelper.setOffset(-path_offset);
                 RenderHelper.renderFaceZPos(renderBlocks, x, y, z, IconRegistry.icon_hatch_french_glass);
 
+                if (!renderAlphaOverride) {
+                    lightingHelper.setLightingZNeg(Block.glass, x, y, z);
+                    lightingHelper.colorSide(Block.glass, x, y, z, 2, null);
+                    VertexHelper.setOffset(-(1 - path_offset));
+                    RenderHelper.renderFaceZNeg(renderBlocks, x, y, z, IconRegistry.icon_hatch_french_glass);
+                }
+
             } else if (path_on_y) {
 
-                VertexHelper.setOffset(-path_offset);
-                Tessellator.instance.setColorOpaque_F(0.5F, 0.5F, 0.5F);
                 renderBlocks.setRenderBounds(0.1875F, 0.0F, 0.1875F, 0.8125F, 1.0F, 0.8125F);
-                RenderHelper.renderFaceYNeg(renderBlocks, x, y, z, IconRegistry.icon_hatch_french_glass);
-                VertexHelper.setOffset(-(1 - path_offset));
-                Tessellator.instance.setColorOpaque_F(1.0F, 1.0F, 1.0F);
-                RenderHelper.renderFaceYPos(renderBlocks, x, y, z, IconRegistry.icon_hatch_french_glass);
+
+                if (renderAlphaOverride) {
+
+                    /* On alpha pass, YNeg face is drawn on both sides. */
+
+                    lightingHelper.setLightingYPos(Block.glass, x, y, z);
+                    lightingHelper.colorSide(Block.glass, x, y, z, 0, null);
+                    VertexHelper.setOffset(-path_offset);
+                    RenderHelper.renderFaceYNeg(renderBlocks, x, y, z, IconRegistry.icon_hatch_french_glass);
+
+                } else {
+
+                    lightingHelper.setLightingYNeg(Block.glass, x, y, z);
+                    lightingHelper.colorSide(Block.glass, x, y, z, 0, null);
+                    VertexHelper.setOffset(-path_offset);
+                    RenderHelper.renderFaceYNeg(renderBlocks, x, y, z, IconRegistry.icon_hatch_french_glass);
+
+                    if (!renderAlphaOverride) {
+                        lightingHelper.setLightingYPos(Block.glass, x, y, z);
+                        lightingHelper.colorSide(Block.glass, x, y, z, 1, null);
+                        VertexHelper.setOffset(-(1 - path_offset));
+                        RenderHelper.renderFaceYPos(renderBlocks, x, y, z, IconRegistry.icon_hatch_french_glass);
+                    }
+
+                }
 
             } else {
 
-                VertexHelper.setOffset(-(1 - path_offset));
-                Tessellator.instance.setColorOpaque_F(0.6F, 0.6F, 0.6F);
                 renderBlocks.setRenderBounds(0.0F, 0.1875F, 0.1875F, 1.0F, 0.8125F, 0.8125F);
-                RenderHelper.renderFaceXNeg(renderBlocks, x, y, z, IconRegistry.icon_hatch_french_glass);
+
+                lightingHelper.setLightingXPos(Block.glass, x, y, z);
+                lightingHelper.colorSide(Block.glass, x, y, z, 5, null);
                 VertexHelper.setOffset(-path_offset);
                 RenderHelper.renderFaceXPos(renderBlocks, x, y, z, IconRegistry.icon_hatch_french_glass);
+
+                if (!renderAlphaOverride) {
+                    lightingHelper.setLightingXNeg(Block.glass, x, y, z);
+                    lightingHelper.colorSide(Block.glass, x, y, z, 4, null);
+                    VertexHelper.setOffset(-(1 - path_offset));
+                    RenderHelper.renderFaceXNeg(renderBlocks, x, y, z, IconRegistry.icon_hatch_french_glass);
+                }
 
             }
 
@@ -448,26 +510,26 @@ public class BlockHandlerCarpentersHatch extends BlockDeterminantRender {
 
             switch (dir)
             {
-            case Hatch.DIR_X_NEG:
-                x_low = 0.8125F;
-                break;
-            case Hatch.DIR_X_POS:
-                x_high = 0.1875F;
-                break;
-            case Hatch.DIR_Z_NEG:
-                z_low = 0.8125F;
-                path_on_x = true;
-                break;
-            case Hatch.DIR_Z_POS:
-                z_high = 0.1875F;
-                path_on_x = true;
-                break;
+                case Hatch.DIR_X_NEG:
+                    x_low = 0.8125F;
+                    break;
+                case Hatch.DIR_X_POS:
+                    x_high = 0.1875F;
+                    break;
+                case Hatch.DIR_Z_NEG:
+                    z_low = 0.8125F;
+                    path_on_x = true;
+                    break;
+                case Hatch.DIR_Z_POS:
+                    z_high = 0.1875F;
+                    path_on_x = true;
+                    break;
             }
 
         }
 
-        if (shouldRenderBlock(block))
-        {
+        if (shouldRenderBlock(block)) {
+
             /* Draw sides */
 
             if (path_on_x) {
@@ -584,6 +646,7 @@ public class BlockHandlerCarpentersHatch extends BlockDeterminantRender {
 
             renderBlocks.setRenderBounds(temp_x_low, temp_y_low, temp_z_low, temp_x_high, temp_y_high, temp_z_high);
             renderBlock(block, x, y, z);
+
         }
 
         if (shouldRenderOpaque()) {
@@ -615,195 +678,195 @@ public class BlockHandlerCarpentersHatch extends BlockDeterminantRender {
             if (state == Hatch.STATE_CLOSED)
             {
                 switch (dir) {
-                case Hatch.DIR_X_NEG:
+                    case Hatch.DIR_X_NEG:
 
-                    if (render_inside_handle)
-                    {
-                        renderBlocks.setRenderBounds(0.0625F, thickness, 0.375F, 0.125F, thickness + 0.0625F, 0.4375F);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
-                        renderBlocks.setRenderBounds(0.0625F, thickness, 0.5625F, 0.125F, thickness + 0.0625F, 0.625F);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
-                        renderBlocks.setRenderBounds(0.0625F, thickness + 0.0625F, 0.375F, 0.125F, thickness + 0.125F, 0.625F);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
-                    }
+                        if (render_inside_handle)
+                        {
+                            renderBlocks.setRenderBounds(0.0625F, thickness, 0.375F, 0.125F, thickness + 0.0625F, 0.4375F);
+                            renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                            renderBlocks.setRenderBounds(0.0625F, thickness, 0.5625F, 0.125F, thickness + 0.0625F, 0.625F);
+                            renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                            renderBlocks.setRenderBounds(0.0625F, thickness + 0.0625F, 0.375F, 0.125F, thickness + 0.125F, 0.625F);
+                            renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                        }
 
-                    if (render_outside_handle)
-                    {
-                        renderBlocks.setRenderBounds(0.0625F, 0.9375F, 0.375F, 0.125F, 1.0F, 0.4375F);
-                        renderBlock(Block.blockIron, x, y - 1, z);
-                        renderBlocks.setRenderBounds(0.0625F, 0.9375F, 0.5625F, 0.125F, 1.0F, 0.625F);
-                        renderBlock(Block.blockIron, x, y - 1, z);
-                        renderBlocks.setRenderBounds(0.0625F, 0.875F, 0.375F, 0.125F, 0.9375F, 0.625F);
-                        renderBlock(Block.blockIron, x, y - 1, z);
-                    }
+                        if (render_outside_handle)
+                        {
+                            renderBlocks.setRenderBounds(0.0625F, 0.9375F, 0.375F, 0.125F, 1.0F, 0.4375F);
+                            renderBlock(Block.blockIron, x, y - 1, z);
+                            renderBlocks.setRenderBounds(0.0625F, 0.9375F, 0.5625F, 0.125F, 1.0F, 0.625F);
+                            renderBlock(Block.blockIron, x, y - 1, z);
+                            renderBlocks.setRenderBounds(0.0625F, 0.875F, 0.375F, 0.125F, 0.9375F, 0.625F);
+                            renderBlock(Block.blockIron, x, y - 1, z);
+                        }
 
-                    break;
-                case Hatch.DIR_X_POS:
+                        break;
+                    case Hatch.DIR_X_POS:
 
-                    if (render_inside_handle)
-                    {
-                        renderBlocks.setRenderBounds(0.875F, thickness, 0.375F, 0.9375F, thickness + 0.0625F, 0.4375F);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
-                        renderBlocks.setRenderBounds(0.875F, thickness, 0.5625F, 0.9375F, thickness + 0.0625F, 0.625F);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
-                        renderBlocks.setRenderBounds(0.875F, thickness + 0.0625F, 0.375F, 0.9375F, thickness + 0.125F, 0.625F);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
-                    }
+                        if (render_inside_handle)
+                        {
+                            renderBlocks.setRenderBounds(0.875F, thickness, 0.375F, 0.9375F, thickness + 0.0625F, 0.4375F);
+                            renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                            renderBlocks.setRenderBounds(0.875F, thickness, 0.5625F, 0.9375F, thickness + 0.0625F, 0.625F);
+                            renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                            renderBlocks.setRenderBounds(0.875F, thickness + 0.0625F, 0.375F, 0.9375F, thickness + 0.125F, 0.625F);
+                            renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                        }
 
-                    if (render_outside_handle)
-                    {
-                        renderBlocks.setRenderBounds(0.875F, 0.9375F, 0.375F, 0.9375F, 1.0F, 0.4375F);
-                        renderBlock(Block.blockIron, x, y - 1, z);
-                        renderBlocks.setRenderBounds(0.875F, 0.9375F, 0.5625F, 0.9375F, 1.0F, 0.625F);
-                        renderBlock(Block.blockIron, x, y - 1, z);
-                        renderBlocks.setRenderBounds(0.875F, 0.875F, 0.375F, 0.9375F, 0.9375F, 0.625F);
-                        renderBlock(Block.blockIron, x, y - 1, z);
-                    }
+                        if (render_outside_handle)
+                        {
+                            renderBlocks.setRenderBounds(0.875F, 0.9375F, 0.375F, 0.9375F, 1.0F, 0.4375F);
+                            renderBlock(Block.blockIron, x, y - 1, z);
+                            renderBlocks.setRenderBounds(0.875F, 0.9375F, 0.5625F, 0.9375F, 1.0F, 0.625F);
+                            renderBlock(Block.blockIron, x, y - 1, z);
+                            renderBlocks.setRenderBounds(0.875F, 0.875F, 0.375F, 0.9375F, 0.9375F, 0.625F);
+                            renderBlock(Block.blockIron, x, y - 1, z);
+                        }
 
-                    break;
-                case Hatch.DIR_Z_NEG:
+                        break;
+                    case Hatch.DIR_Z_NEG:
 
-                    if (render_inside_handle)
-                    {
-                        renderBlocks.setRenderBounds(0.375F, thickness, 0.0625F, 0.4375F, thickness + 0.0625F, 0.125F);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
-                        renderBlocks.setRenderBounds(0.5625F, thickness, 0.0625F, 0.625F, thickness + 0.0625F, 0.125F);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
-                        renderBlocks.setRenderBounds(0.375F, thickness + 0.0625F, 0.0625F, 0.625F, thickness + 0.125F, 0.125F);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
-                    }
+                        if (render_inside_handle)
+                        {
+                            renderBlocks.setRenderBounds(0.375F, thickness, 0.0625F, 0.4375F, thickness + 0.0625F, 0.125F);
+                            renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                            renderBlocks.setRenderBounds(0.5625F, thickness, 0.0625F, 0.625F, thickness + 0.0625F, 0.125F);
+                            renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                            renderBlocks.setRenderBounds(0.375F, thickness + 0.0625F, 0.0625F, 0.625F, thickness + 0.125F, 0.125F);
+                            renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                        }
 
-                    if (render_outside_handle)
-                    {
-                        renderBlocks.setRenderBounds(0.375F, 0.9375F, 0.0625F, 0.4375F, 1.0F, 0.125F);
-                        renderBlock(Block.blockIron, x, y - 1, z);
-                        renderBlocks.setRenderBounds(0.5625F, 0.9375F, 0.0625F, 0.625F, 1.0F, 0.125F);
-                        renderBlock(Block.blockIron, x, y - 1, z);
-                        renderBlocks.setRenderBounds(0.375F, 0.875F, 0.0625F, 0.625F, 0.9375F, 0.125F);
-                        renderBlock(Block.blockIron, x, y - 1, z);
-                    }
+                        if (render_outside_handle)
+                        {
+                            renderBlocks.setRenderBounds(0.375F, 0.9375F, 0.0625F, 0.4375F, 1.0F, 0.125F);
+                            renderBlock(Block.blockIron, x, y - 1, z);
+                            renderBlocks.setRenderBounds(0.5625F, 0.9375F, 0.0625F, 0.625F, 1.0F, 0.125F);
+                            renderBlock(Block.blockIron, x, y - 1, z);
+                            renderBlocks.setRenderBounds(0.375F, 0.875F, 0.0625F, 0.625F, 0.9375F, 0.125F);
+                            renderBlock(Block.blockIron, x, y - 1, z);
+                        }
 
-                    break;
-                case Hatch.DIR_Z_POS:
+                        break;
+                    case Hatch.DIR_Z_POS:
 
-                    if (render_inside_handle)
-                    {
-                        renderBlocks.setRenderBounds(0.375F, thickness, 0.875F, 0.4375F, thickness + 0.0625F, 0.9375F);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
-                        renderBlocks.setRenderBounds(0.5625F, thickness, 0.875F, 0.625F, thickness + 0.0625F, 0.9375F);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
-                        renderBlocks.setRenderBounds(0.375F, thickness + 0.0625F, 0.875F, 0.625F, thickness + 0.125F, 0.9375F);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
-                    }
+                        if (render_inside_handle)
+                        {
+                            renderBlocks.setRenderBounds(0.375F, thickness, 0.875F, 0.4375F, thickness + 0.0625F, 0.9375F);
+                            renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                            renderBlocks.setRenderBounds(0.5625F, thickness, 0.875F, 0.625F, thickness + 0.0625F, 0.9375F);
+                            renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                            renderBlocks.setRenderBounds(0.375F, thickness + 0.0625F, 0.875F, 0.625F, thickness + 0.125F, 0.9375F);
+                            renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                        }
 
-                    if (render_outside_handle)
-                    {
-                        renderBlocks.setRenderBounds(0.375F, 0.9375F, 0.875F, 0.4375F, 1.0F, 0.9375F);
-                        renderBlock(Block.blockIron, x, y - 1, z);
-                        renderBlocks.setRenderBounds(0.5625F, 0.9375F, 0.875F, 0.625F, 1.0F, 0.9375F);
-                        renderBlock(Block.blockIron, x, y - 1, z);
-                        renderBlocks.setRenderBounds(0.375F, 0.875F, 0.875F, 0.625F, 0.9375F, 0.9375F);
-                        renderBlock(Block.blockIron, x, y - 1, z);
-                    }
+                        if (render_outside_handle)
+                        {
+                            renderBlocks.setRenderBounds(0.375F, 0.9375F, 0.875F, 0.4375F, 1.0F, 0.9375F);
+                            renderBlock(Block.blockIron, x, y - 1, z);
+                            renderBlocks.setRenderBounds(0.5625F, 0.9375F, 0.875F, 0.625F, 1.0F, 0.9375F);
+                            renderBlock(Block.blockIron, x, y - 1, z);
+                            renderBlocks.setRenderBounds(0.375F, 0.875F, 0.875F, 0.625F, 0.9375F, 0.9375F);
+                            renderBlock(Block.blockIron, x, y - 1, z);
+                        }
 
-                    break;
+                        break;
                 }
 
             } else {
 
                 switch (dir) {
-                case Hatch.DIR_X_NEG:
+                    case Hatch.DIR_X_NEG:
 
-                    if (render_inside_handle)
-                    {
-                        renderBlocks.setRenderBounds(0.0F, 0.875F, 0.375F, 0.0625F, 0.9375F, 0.4375F);
-                        renderBlock(Block.blockIron, x + 1, y, z);
-                        renderBlocks.setRenderBounds(0.0F, 0.875F, 0.5625F, 0.0625F, 0.9375F, 0.625F);
-                        renderBlock(Block.blockIron, x + 1, y, z);
-                        renderBlocks.setRenderBounds(0.0625F, 0.875F, 0.375F, 0.125F, 0.9375F, 0.625F);
-                        renderBlock(Block.blockIron, x + 1, y, z);
-                    }
+                        if (render_inside_handle)
+                        {
+                            renderBlocks.setRenderBounds(0.0F, 0.875F, 0.375F, 0.0625F, 0.9375F, 0.4375F);
+                            renderBlock(Block.blockIron, x + 1, y, z);
+                            renderBlocks.setRenderBounds(0.0F, 0.875F, 0.5625F, 0.0625F, 0.9375F, 0.625F);
+                            renderBlock(Block.blockIron, x + 1, y, z);
+                            renderBlocks.setRenderBounds(0.0625F, 0.875F, 0.375F, 0.125F, 0.9375F, 0.625F);
+                            renderBlock(Block.blockIron, x + 1, y, z);
+                        }
 
-                    if (render_outside_handle)
-                    {
-                        renderBlocks.setRenderBounds(1.0F - thickness - 0.0625F, 0.875F, 0.375F, 1.0F - thickness, 0.9375F, 0.4375F);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
-                        renderBlocks.setRenderBounds(1.0F - thickness - 0.0625F, 0.875F, 0.5625F, 1.0F - thickness, 0.9375F, 0.625F);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
-                        renderBlocks.setRenderBounds(1.0F - thickness - 0.125F, 0.875F, 0.375F, 1.0F - thickness - 0.0625F, 0.9375F, 0.625F);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
-                    }
+                        if (render_outside_handle)
+                        {
+                            renderBlocks.setRenderBounds(1.0F - thickness - 0.0625F, 0.875F, 0.375F, 1.0F - thickness, 0.9375F, 0.4375F);
+                            renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                            renderBlocks.setRenderBounds(1.0F - thickness - 0.0625F, 0.875F, 0.5625F, 1.0F - thickness, 0.9375F, 0.625F);
+                            renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                            renderBlocks.setRenderBounds(1.0F - thickness - 0.125F, 0.875F, 0.375F, 1.0F - thickness - 0.0625F, 0.9375F, 0.625F);
+                            renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                        }
 
-                    break;
-                case Hatch.DIR_X_POS:
+                        break;
+                    case Hatch.DIR_X_POS:
 
-                    if (render_inside_handle)
-                    {
-                        renderBlocks.setRenderBounds(0.9375F, 0.875F, 0.375F, 1.0F, 0.9375F, 0.4375F);
-                        renderBlock(Block.blockIron, x - 1, y, z);
-                        renderBlocks.setRenderBounds(0.9375F, 0.875F, 0.5625F, 1.0F, 0.9375F, 0.625F);
-                        renderBlock(Block.blockIron, x - 1, y, z);
-                        renderBlocks.setRenderBounds(0.875F, 0.875F, 0.375F, 0.9375F, 0.9375F, 0.625F);
-                        renderBlock(Block.blockIron, x - 1, y, z);
-                    }
+                        if (render_inside_handle)
+                        {
+                            renderBlocks.setRenderBounds(0.9375F, 0.875F, 0.375F, 1.0F, 0.9375F, 0.4375F);
+                            renderBlock(Block.blockIron, x - 1, y, z);
+                            renderBlocks.setRenderBounds(0.9375F, 0.875F, 0.5625F, 1.0F, 0.9375F, 0.625F);
+                            renderBlock(Block.blockIron, x - 1, y, z);
+                            renderBlocks.setRenderBounds(0.875F, 0.875F, 0.375F, 0.9375F, 0.9375F, 0.625F);
+                            renderBlock(Block.blockIron, x - 1, y, z);
+                        }
 
-                    if (render_outside_handle)
-                    {
-                        renderBlocks.setRenderBounds(thickness, 0.875F, 0.375F, thickness + 0.0625F, 0.9375F, 0.4375F);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
-                        renderBlocks.setRenderBounds(thickness, 0.875F, 0.5625F, thickness + 0.0625F, 0.9375F, 0.625F);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
-                        renderBlocks.setRenderBounds(thickness + 0.0625F, 0.875F, 0.375F, thickness + 0.125F, 0.9375F, 0.625F);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
-                    }
+                        if (render_outside_handle)
+                        {
+                            renderBlocks.setRenderBounds(thickness, 0.875F, 0.375F, thickness + 0.0625F, 0.9375F, 0.4375F);
+                            renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                            renderBlocks.setRenderBounds(thickness, 0.875F, 0.5625F, thickness + 0.0625F, 0.9375F, 0.625F);
+                            renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                            renderBlocks.setRenderBounds(thickness + 0.0625F, 0.875F, 0.375F, thickness + 0.125F, 0.9375F, 0.625F);
+                            renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                        }
 
-                    break;
-                case Hatch.DIR_Z_NEG:
+                        break;
+                    case Hatch.DIR_Z_NEG:
 
-                    if (render_inside_handle)
-                    {
-                        renderBlocks.setRenderBounds(0.375F, 0.875F, 0.0F, 0.4375F, 0.9375F, 0.0625F);
-                        renderBlock(Block.blockIron, x, y, z + 1);
-                        renderBlocks.setRenderBounds(0.5625F, 0.875F, 0.0F, 0.625F, 0.9375F, 0.0625F);
-                        renderBlock(Block.blockIron, x, y, z + 1);
-                        renderBlocks.setRenderBounds(0.375F, 0.875F, 0.0625F, 0.625F, 0.9375F, 0.125F);
-                        renderBlock(Block.blockIron, x, y, z + 1);
-                    }
+                        if (render_inside_handle)
+                        {
+                            renderBlocks.setRenderBounds(0.375F, 0.875F, 0.0F, 0.4375F, 0.9375F, 0.0625F);
+                            renderBlock(Block.blockIron, x, y, z + 1);
+                            renderBlocks.setRenderBounds(0.5625F, 0.875F, 0.0F, 0.625F, 0.9375F, 0.0625F);
+                            renderBlock(Block.blockIron, x, y, z + 1);
+                            renderBlocks.setRenderBounds(0.375F, 0.875F, 0.0625F, 0.625F, 0.9375F, 0.125F);
+                            renderBlock(Block.blockIron, x, y, z + 1);
+                        }
 
-                    if (render_outside_handle)
-                    {
-                        renderBlocks.setRenderBounds(0.375F, 0.875F, 1.0F - thickness - 0.0625F, 0.4375F, 0.9375F, 1.0F - thickness);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
-                        renderBlocks.setRenderBounds(0.5625F, 0.875F, 1.0F - thickness - 0.0625F, 0.625F, 0.9375F, 1.0F - thickness);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
-                        renderBlocks.setRenderBounds(0.375F, 0.875F, 1.0F - thickness - 0.125F, 0.625, 0.9375F, 1.0F - thickness - 0.0625F);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
-                    }
+                        if (render_outside_handle)
+                        {
+                            renderBlocks.setRenderBounds(0.375F, 0.875F, 1.0F - thickness - 0.0625F, 0.4375F, 0.9375F, 1.0F - thickness);
+                            renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                            renderBlocks.setRenderBounds(0.5625F, 0.875F, 1.0F - thickness - 0.0625F, 0.625F, 0.9375F, 1.0F - thickness);
+                            renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                            renderBlocks.setRenderBounds(0.375F, 0.875F, 1.0F - thickness - 0.125F, 0.625, 0.9375F, 1.0F - thickness - 0.0625F);
+                            renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                        }
 
-                    break;
-                case Hatch.DIR_Z_POS:
+                        break;
+                    case Hatch.DIR_Z_POS:
 
-                    if (render_inside_handle)
-                    {
-                        renderBlocks.setRenderBounds(0.375F, 0.875F, 0.9375F, 0.4375F, 0.9375F, 1.0F);
-                        renderBlock(Block.blockIron, x, y, z - 1);
-                        renderBlocks.setRenderBounds(0.5625F, 0.875F, 0.9375F, 0.625F, 0.9375F, 1.0F);
-                        renderBlock(Block.blockIron, x, y, z - 1);
-                        renderBlocks.setRenderBounds(0.375F, 0.875F, 0.875F, 0.625, 0.9375F, 0.9375F);
-                        renderBlock(Block.blockIron, x, y, z - 1);
-                    }
+                        if (render_inside_handle)
+                        {
+                            renderBlocks.setRenderBounds(0.375F, 0.875F, 0.9375F, 0.4375F, 0.9375F, 1.0F);
+                            renderBlock(Block.blockIron, x, y, z - 1);
+                            renderBlocks.setRenderBounds(0.5625F, 0.875F, 0.9375F, 0.625F, 0.9375F, 1.0F);
+                            renderBlock(Block.blockIron, x, y, z - 1);
+                            renderBlocks.setRenderBounds(0.375F, 0.875F, 0.875F, 0.625, 0.9375F, 0.9375F);
+                            renderBlock(Block.blockIron, x, y, z - 1);
+                        }
 
-                    if (render_outside_handle)
-                    {
-                        renderBlocks.setRenderBounds(0.375F, 0.875F, thickness, 0.4375F, 0.9375F, thickness + 0.0625F);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
-                        renderBlocks.setRenderBounds(0.5625F, 0.875F, thickness, 0.625F, 0.9375F, thickness + 0.0625F);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
-                        renderBlocks.setRenderBounds(0.375F, 0.875F, thickness + 0.0625F, 0.625F, 0.9375F, thickness + 0.125F);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
-                    }
+                        if (render_outside_handle)
+                        {
+                            renderBlocks.setRenderBounds(0.375F, 0.875F, thickness, 0.4375F, 0.9375F, thickness + 0.0625F);
+                            renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                            renderBlocks.setRenderBounds(0.5625F, 0.875F, thickness, 0.625F, 0.9375F, thickness + 0.0625F);
+                            renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                            renderBlocks.setRenderBounds(0.375F, 0.875F, thickness + 0.0625F, 0.625F, 0.9375F, thickness + 0.125F);
+                            renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                        }
 
-                    break;
+                        break;
                 }
             }
 
@@ -812,195 +875,195 @@ public class BlockHandlerCarpentersHatch extends BlockDeterminantRender {
             if (state == Hatch.STATE_CLOSED)
             {
                 switch (dir) {
-                case Hatch.DIR_X_NEG:
+                    case Hatch.DIR_X_NEG:
 
-                    if (render_inside_handle)
-                    {
-                        renderBlocks.setRenderBounds(0.0625F, 1.0F - thickness - 0.0625F, 0.375F, 0.125F, 1.0F - thickness, 0.4375F);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
-                        renderBlocks.setRenderBounds(0.0625F, 1.0F - thickness - 0.0625F, 0.5625F, 0.125F, 1.0F - thickness, 0.625F);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
-                        renderBlocks.setRenderBounds(0.0625F, 1.0F - thickness - 0.125F, 0.375F, 0.125F, 1.0F - thickness - 0.0625F, 0.625F);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
-                    }
+                        if (render_inside_handle)
+                        {
+                            renderBlocks.setRenderBounds(0.0625F, 1.0F - thickness - 0.0625F, 0.375F, 0.125F, 1.0F - thickness, 0.4375F);
+                            renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                            renderBlocks.setRenderBounds(0.0625F, 1.0F - thickness - 0.0625F, 0.5625F, 0.125F, 1.0F - thickness, 0.625F);
+                            renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                            renderBlocks.setRenderBounds(0.0625F, 1.0F - thickness - 0.125F, 0.375F, 0.125F, 1.0F - thickness - 0.0625F, 0.625F);
+                            renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                        }
 
-                    if (render_outside_handle)
-                    {
-                        renderBlocks.setRenderBounds(0.0625F, 0.0F, 0.375F, 0.125F, 0.0625F, 0.4375F);
-                        renderBlock(Block.blockIron, x, y + 1, z);
-                        renderBlocks.setRenderBounds(0.0625F, 0.0F, 0.5625F, 0.125F, 0.0625F, 0.625F);
-                        renderBlock(Block.blockIron, x, y + 1, z);
-                        renderBlocks.setRenderBounds(0.0625F, 0.0625F, 0.375F, 0.125F, 0.125F, 0.625F);
-                        renderBlock(Block.blockIron, x, y + 1, z);
-                    }
+                        if (render_outside_handle)
+                        {
+                            renderBlocks.setRenderBounds(0.0625F, 0.0F, 0.375F, 0.125F, 0.0625F, 0.4375F);
+                            renderBlock(Block.blockIron, x, y + 1, z);
+                            renderBlocks.setRenderBounds(0.0625F, 0.0F, 0.5625F, 0.125F, 0.0625F, 0.625F);
+                            renderBlock(Block.blockIron, x, y + 1, z);
+                            renderBlocks.setRenderBounds(0.0625F, 0.0625F, 0.375F, 0.125F, 0.125F, 0.625F);
+                            renderBlock(Block.blockIron, x, y + 1, z);
+                        }
 
-                    break;
-                case Hatch.DIR_X_POS:
+                        break;
+                    case Hatch.DIR_X_POS:
 
-                    if (render_inside_handle)
-                    {
-                        renderBlocks.setRenderBounds(0.875F, 1.0F - thickness - 0.0625F, 0.375F, 0.9375F, 1.0F - thickness, 0.4375F);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
-                        renderBlocks.setRenderBounds(0.875F, 1.0F - thickness - 0.0625F, 0.5625F, 0.9375F, 1.0F - thickness, 0.625F);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
-                        renderBlocks.setRenderBounds(0.875F, 1.0F - thickness - 0.125F, 0.375F, 0.9375F, 1.0F - thickness - 0.0625F, 0.625F);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
-                    }
+                        if (render_inside_handle)
+                        {
+                            renderBlocks.setRenderBounds(0.875F, 1.0F - thickness - 0.0625F, 0.375F, 0.9375F, 1.0F - thickness, 0.4375F);
+                            renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                            renderBlocks.setRenderBounds(0.875F, 1.0F - thickness - 0.0625F, 0.5625F, 0.9375F, 1.0F - thickness, 0.625F);
+                            renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                            renderBlocks.setRenderBounds(0.875F, 1.0F - thickness - 0.125F, 0.375F, 0.9375F, 1.0F - thickness - 0.0625F, 0.625F);
+                            renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                        }
 
-                    if (render_outside_handle)
-                    {
-                        renderBlocks.setRenderBounds(0.875F, 0.0F, 0.375F, 0.9375F, 0.0625F, 0.4375F);
-                        renderBlock(Block.blockIron, x, y + 1, z);
-                        renderBlocks.setRenderBounds(0.875F, 0.0F, 0.5625F, 0.9375F, 0.0625F, 0.625F);
-                        renderBlock(Block.blockIron, x, y + 1, z);
-                        renderBlocks.setRenderBounds(0.875F, 0.0625F, 0.375F, 0.9375F, 0.125F, 0.625F);
-                        renderBlock(Block.blockIron, x, y + 1, z);
-                    }
+                        if (render_outside_handle)
+                        {
+                            renderBlocks.setRenderBounds(0.875F, 0.0F, 0.375F, 0.9375F, 0.0625F, 0.4375F);
+                            renderBlock(Block.blockIron, x, y + 1, z);
+                            renderBlocks.setRenderBounds(0.875F, 0.0F, 0.5625F, 0.9375F, 0.0625F, 0.625F);
+                            renderBlock(Block.blockIron, x, y + 1, z);
+                            renderBlocks.setRenderBounds(0.875F, 0.0625F, 0.375F, 0.9375F, 0.125F, 0.625F);
+                            renderBlock(Block.blockIron, x, y + 1, z);
+                        }
 
-                    break;
-                case Hatch.DIR_Z_NEG:
+                        break;
+                    case Hatch.DIR_Z_NEG:
 
-                    if (render_inside_handle)
-                    {
-                        renderBlocks.setRenderBounds(0.375F, 1.0F - thickness - 0.0625F, 0.0625F, 0.4375F, 1.0F - thickness, 0.125F);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
-                        renderBlocks.setRenderBounds(0.5625F, 1.0F - thickness - 0.0625F, 0.0625F, 0.625F, 1.0F - thickness, 0.125F);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
-                        renderBlocks.setRenderBounds(0.375F, 1.0F - thickness - 0.125F, 0.0625F, 0.625F, 1.0F - thickness - 0.0625F, 0.125F);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
-                    }
+                        if (render_inside_handle)
+                        {
+                            renderBlocks.setRenderBounds(0.375F, 1.0F - thickness - 0.0625F, 0.0625F, 0.4375F, 1.0F - thickness, 0.125F);
+                            renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                            renderBlocks.setRenderBounds(0.5625F, 1.0F - thickness - 0.0625F, 0.0625F, 0.625F, 1.0F - thickness, 0.125F);
+                            renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                            renderBlocks.setRenderBounds(0.375F, 1.0F - thickness - 0.125F, 0.0625F, 0.625F, 1.0F - thickness - 0.0625F, 0.125F);
+                            renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                        }
 
-                    if (render_outside_handle)
-                    {
-                        renderBlocks.setRenderBounds(0.375F, 0.0F, 0.0625F, 0.4375F, 0.0625F, 0.125F);
-                        renderBlock(Block.blockIron, x, y + 1, z);
-                        renderBlocks.setRenderBounds(0.5625F, 0.0F, 0.0625F, 0.625F, 0.0625F, 0.125F);
-                        renderBlock(Block.blockIron, x, y + 1, z);
-                        renderBlocks.setRenderBounds(0.375F, 0.0625F, 0.0625F, 0.625F, 0.125F, 0.125F);
-                        renderBlock(Block.blockIron, x, y + 1, z);
-                    }
+                        if (render_outside_handle)
+                        {
+                            renderBlocks.setRenderBounds(0.375F, 0.0F, 0.0625F, 0.4375F, 0.0625F, 0.125F);
+                            renderBlock(Block.blockIron, x, y + 1, z);
+                            renderBlocks.setRenderBounds(0.5625F, 0.0F, 0.0625F, 0.625F, 0.0625F, 0.125F);
+                            renderBlock(Block.blockIron, x, y + 1, z);
+                            renderBlocks.setRenderBounds(0.375F, 0.0625F, 0.0625F, 0.625F, 0.125F, 0.125F);
+                            renderBlock(Block.blockIron, x, y + 1, z);
+                        }
 
-                    break;
-                case Hatch.DIR_Z_POS:
+                        break;
+                    case Hatch.DIR_Z_POS:
 
-                    if (render_inside_handle)
-                    {
-                        renderBlocks.setRenderBounds(0.375F, 1.0F - thickness - 0.0625F, 0.875F, 0.4375F, 1.0F - thickness, 0.9375F);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
-                        renderBlocks.setRenderBounds(0.5625F, 1.0F - thickness - 0.0625F, 0.875F, 0.625F, 1.0F - thickness, 0.9375F);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
-                        renderBlocks.setRenderBounds(0.375F, 1.0F - thickness - 0.125F, 0.875F, 0.625F, 1.0F - thickness - 0.0625F, 0.9375F);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
-                    }
+                        if (render_inside_handle)
+                        {
+                            renderBlocks.setRenderBounds(0.375F, 1.0F - thickness - 0.0625F, 0.875F, 0.4375F, 1.0F - thickness, 0.9375F);
+                            renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                            renderBlocks.setRenderBounds(0.5625F, 1.0F - thickness - 0.0625F, 0.875F, 0.625F, 1.0F - thickness, 0.9375F);
+                            renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                            renderBlocks.setRenderBounds(0.375F, 1.0F - thickness - 0.125F, 0.875F, 0.625F, 1.0F - thickness - 0.0625F, 0.9375F);
+                            renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                        }
 
-                    if (render_outside_handle)
-                    {
-                        renderBlocks.setRenderBounds(0.375F, 0.0F, 0.875F, 0.4375F, 0.0625F, 0.9375F);
-                        renderBlock(Block.blockIron, x, y + 1, z);
-                        renderBlocks.setRenderBounds(0.5625F, 0.0F, 0.875F, 0.625F, 0.0625F, 0.9375F);
-                        renderBlock(Block.blockIron, x, y + 1, z);
-                        renderBlocks.setRenderBounds(0.375F, 0.0625F, 0.875F, 0.625F, 0.125F, 0.9375F);
-                        renderBlock(Block.blockIron, x, y + 1, z);
-                    }
+                        if (render_outside_handle)
+                        {
+                            renderBlocks.setRenderBounds(0.375F, 0.0F, 0.875F, 0.4375F, 0.0625F, 0.9375F);
+                            renderBlock(Block.blockIron, x, y + 1, z);
+                            renderBlocks.setRenderBounds(0.5625F, 0.0F, 0.875F, 0.625F, 0.0625F, 0.9375F);
+                            renderBlock(Block.blockIron, x, y + 1, z);
+                            renderBlocks.setRenderBounds(0.375F, 0.0625F, 0.875F, 0.625F, 0.125F, 0.9375F);
+                            renderBlock(Block.blockIron, x, y + 1, z);
+                        }
 
-                    break;
+                        break;
                 }
 
             } else {
 
                 switch (dir) {
-                case Hatch.DIR_X_NEG:
+                    case Hatch.DIR_X_NEG:
 
-                    if (render_inside_handle)
-                    {
-                        renderBlocks.setRenderBounds(0.0F, 0.0625F, 0.375F, 0.0625F, 0.125F, 0.4375F);
-                        renderBlock(Block.blockIron, x + 1, y, z);
-                        renderBlocks.setRenderBounds(0.0F, 0.0625F, 0.5625F, 0.0625F, 0.125F, 0.625F);
-                        renderBlock(Block.blockIron, x + 1, y, z);
-                        renderBlocks.setRenderBounds(0.0625F, 0.0625F, 0.375F, 0.125F, 0.125F, 0.625F);
-                        renderBlock(Block.blockIron, x + 1, y, z);
-                    }
+                        if (render_inside_handle)
+                        {
+                            renderBlocks.setRenderBounds(0.0F, 0.0625F, 0.375F, 0.0625F, 0.125F, 0.4375F);
+                            renderBlock(Block.blockIron, x + 1, y, z);
+                            renderBlocks.setRenderBounds(0.0F, 0.0625F, 0.5625F, 0.0625F, 0.125F, 0.625F);
+                            renderBlock(Block.blockIron, x + 1, y, z);
+                            renderBlocks.setRenderBounds(0.0625F, 0.0625F, 0.375F, 0.125F, 0.125F, 0.625F);
+                            renderBlock(Block.blockIron, x + 1, y, z);
+                        }
 
-                    if (render_outside_handle)
-                    {
-                        renderBlocks.setRenderBounds(1.0F - thickness - 0.0625F, 0.0625F, 0.375F, 1.0F - thickness, 0.125F, 0.4375F);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
-                        renderBlocks.setRenderBounds(1.0F - thickness - 0.0625F, 0.0625F, 0.5625F, 1.0F - thickness, 0.125F, 0.625F);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
-                        renderBlocks.setRenderBounds(1.0F - thickness - 0.125F, 0.0625F, 0.375F, 1.0F - thickness - 0.0625F, 0.125F, 0.625F);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
-                    }
+                        if (render_outside_handle)
+                        {
+                            renderBlocks.setRenderBounds(1.0F - thickness - 0.0625F, 0.0625F, 0.375F, 1.0F - thickness, 0.125F, 0.4375F);
+                            renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                            renderBlocks.setRenderBounds(1.0F - thickness - 0.0625F, 0.0625F, 0.5625F, 1.0F - thickness, 0.125F, 0.625F);
+                            renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                            renderBlocks.setRenderBounds(1.0F - thickness - 0.125F, 0.0625F, 0.375F, 1.0F - thickness - 0.0625F, 0.125F, 0.625F);
+                            renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                        }
 
-                    break;
-                case Hatch.DIR_X_POS:
+                        break;
+                    case Hatch.DIR_X_POS:
 
-                    if (render_inside_handle)
-                    {
-                        renderBlocks.setRenderBounds(0.9375F, 0.0625F, 0.375F, 1.0F, 0.125F, 0.4375F);
-                        renderBlock(Block.blockIron, x - 1, y, z);
-                        renderBlocks.setRenderBounds(0.9375F, 0.0625F, 0.5625F, 1.0F, 0.125F, 0.625F);
-                        renderBlock(Block.blockIron, x - 1, y, z);
-                        renderBlocks.setRenderBounds(0.875F, 0.0625F, 0.375F, 0.9375F, 0.125F, 0.625F);
-                        renderBlock(Block.blockIron, x - 1, y, z);
-                    }
+                        if (render_inside_handle)
+                        {
+                            renderBlocks.setRenderBounds(0.9375F, 0.0625F, 0.375F, 1.0F, 0.125F, 0.4375F);
+                            renderBlock(Block.blockIron, x - 1, y, z);
+                            renderBlocks.setRenderBounds(0.9375F, 0.0625F, 0.5625F, 1.0F, 0.125F, 0.625F);
+                            renderBlock(Block.blockIron, x - 1, y, z);
+                            renderBlocks.setRenderBounds(0.875F, 0.0625F, 0.375F, 0.9375F, 0.125F, 0.625F);
+                            renderBlock(Block.blockIron, x - 1, y, z);
+                        }
 
-                    if (render_outside_handle)
-                    {
-                        renderBlocks.setRenderBounds(thickness, 0.0625F, 0.375F, thickness + 0.0625F, 0.125F, 0.4375F);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
-                        renderBlocks.setRenderBounds(thickness, 0.0625F, 0.5625F, thickness + 0.0625F, 0.125F, 0.625F);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
-                        renderBlocks.setRenderBounds(thickness + 0.0625F, 0.0625F, 0.375F, thickness + 0.125F, 0.125F, 0.625F);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
-                    }
+                        if (render_outside_handle)
+                        {
+                            renderBlocks.setRenderBounds(thickness, 0.0625F, 0.375F, thickness + 0.0625F, 0.125F, 0.4375F);
+                            renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                            renderBlocks.setRenderBounds(thickness, 0.0625F, 0.5625F, thickness + 0.0625F, 0.125F, 0.625F);
+                            renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                            renderBlocks.setRenderBounds(thickness + 0.0625F, 0.0625F, 0.375F, thickness + 0.125F, 0.125F, 0.625F);
+                            renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                        }
 
-                    break;
-                case Hatch.DIR_Z_NEG:
+                        break;
+                    case Hatch.DIR_Z_NEG:
 
-                    if (render_inside_handle)
-                    {
-                        renderBlocks.setRenderBounds(0.375F, 0.0625F, 0.0F, 0.4375F, 0.125F, 0.0625F);
-                        renderBlock(Block.blockIron, x, y, z + 1);
-                        renderBlocks.setRenderBounds(0.5625F, 0.0625F, 0.0F, 0.625F, 0.125F, 0.0625F);
-                        renderBlock(Block.blockIron, x, y, z + 1);
-                        renderBlocks.setRenderBounds(0.375F, 0.0625F, 0.0625F, 0.625F, 0.125F, 0.125F);
-                        renderBlock(Block.blockIron, x, y, z + 1);
-                    }
+                        if (render_inside_handle)
+                        {
+                            renderBlocks.setRenderBounds(0.375F, 0.0625F, 0.0F, 0.4375F, 0.125F, 0.0625F);
+                            renderBlock(Block.blockIron, x, y, z + 1);
+                            renderBlocks.setRenderBounds(0.5625F, 0.0625F, 0.0F, 0.625F, 0.125F, 0.0625F);
+                            renderBlock(Block.blockIron, x, y, z + 1);
+                            renderBlocks.setRenderBounds(0.375F, 0.0625F, 0.0625F, 0.625F, 0.125F, 0.125F);
+                            renderBlock(Block.blockIron, x, y, z + 1);
+                        }
 
-                    if (render_outside_handle)
-                    {
-                        renderBlocks.setRenderBounds(0.375F, 0.0625F, 1.0F - thickness - 0.0625F, 0.4375F, 0.125F, 1.0F - thickness);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
-                        renderBlocks.setRenderBounds(0.5625F, 0.0625F, 1.0F - thickness - 0.0625F, 0.625F, 0.125F, 1.0F - thickness);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
-                        renderBlocks.setRenderBounds(0.375F, 0.0625F, 1.0F - thickness - 0.125F, 0.625F, 0.125F, 1.0F - thickness - 0.0625F);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
-                    }
+                        if (render_outside_handle)
+                        {
+                            renderBlocks.setRenderBounds(0.375F, 0.0625F, 1.0F - thickness - 0.0625F, 0.4375F, 0.125F, 1.0F - thickness);
+                            renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                            renderBlocks.setRenderBounds(0.5625F, 0.0625F, 1.0F - thickness - 0.0625F, 0.625F, 0.125F, 1.0F - thickness);
+                            renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                            renderBlocks.setRenderBounds(0.375F, 0.0625F, 1.0F - thickness - 0.125F, 0.625F, 0.125F, 1.0F - thickness - 0.0625F);
+                            renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                        }
 
-                    break;
-                case Hatch.DIR_Z_POS:
+                        break;
+                    case Hatch.DIR_Z_POS:
 
-                    if (render_inside_handle)
-                    {
-                        renderBlocks.setRenderBounds(0.375F, 0.0625F, 0.9375F, 0.4375F, 0.125F, 1.0F);
-                        renderBlock(Block.blockIron, x, y, z - 1);
-                        renderBlocks.setRenderBounds(0.5625F, 0.0625F, 0.9375F, 0.625F, 0.125F, 1.0F);
-                        renderBlock(Block.blockIron, x, y, z - 1);
-                        renderBlocks.setRenderBounds(0.375F, 0.0625F, 0.875F, 0.625F, 0.125F, 0.9375F);
-                        renderBlock(Block.blockIron, x, y, z - 1);
-                    }
+                        if (render_inside_handle)
+                        {
+                            renderBlocks.setRenderBounds(0.375F, 0.0625F, 0.9375F, 0.4375F, 0.125F, 1.0F);
+                            renderBlock(Block.blockIron, x, y, z - 1);
+                            renderBlocks.setRenderBounds(0.5625F, 0.0625F, 0.9375F, 0.625F, 0.125F, 1.0F);
+                            renderBlock(Block.blockIron, x, y, z - 1);
+                            renderBlocks.setRenderBounds(0.375F, 0.0625F, 0.875F, 0.625F, 0.125F, 0.9375F);
+                            renderBlock(Block.blockIron, x, y, z - 1);
+                        }
 
-                    if (render_outside_handle)
-                    {
-                        renderBlocks.setRenderBounds(0.375F, 0.0625F, thickness, 0.4375F, 0.125F, thickness + 0.0625F);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
-                        renderBlocks.setRenderBounds(0.5625F, 0.0625F, thickness, 0.625F, 0.125F, thickness + 0.0625F);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
-                        renderBlocks.setRenderBounds(0.375F, 0.0625F, thickness + 0.0625F, 0.625F, 0.125F, thickness + 0.125F);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
-                    }
+                        if (render_outside_handle)
+                        {
+                            renderBlocks.setRenderBounds(0.375F, 0.0625F, thickness, 0.4375F, 0.125F, thickness + 0.0625F);
+                            renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                            renderBlocks.setRenderBounds(0.5625F, 0.0625F, thickness, 0.625F, 0.125F, thickness + 0.0625F);
+                            renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                            renderBlocks.setRenderBounds(0.375F, 0.0625F, thickness + 0.0625F, 0.625F, 0.125F, thickness + 0.125F);
+                            renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                        }
 
-                    break;
+                        break;
                 }
             }
         }

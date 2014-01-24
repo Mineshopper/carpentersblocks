@@ -100,502 +100,502 @@ public class BlockHandlerCarpentersStairs extends BlockHandlerBase {
         ++box;
 
         switch (data) {
-        case Stairs.ID_NORMAL_POS_N:
-            switch (box) {
-            case 1:
-                if (side == 2) {
-                    renderBlocks.renderMinY += 0.5D;
+            case Stairs.ID_NORMAL_POS_N:
+                switch (box) {
+                    case 1:
+                        if (side == 2) {
+                            renderBlocks.renderMinY += 0.5D;
+                        }
+                        break;
+                    case 2:
+                        if (side == 3) {
+                            return false;
+                        }
+                        break;
+                }
+                break;
+            case Stairs.ID_NORMAL_POS_W:
+                switch (box) {
+                    case 1:
+                        if (side == 4) {
+                            renderBlocks.renderMinY += 0.5D;
+                        }
+                        break;
+                    case 2:
+                        if (side == 5) {
+                            return false;
+                        }
+                        break;
+                }
+                break;
+            case Stairs.ID_NORMAL_POS_E:
+                switch (box) {
+                    case 1:
+                        if (side == 5) {
+                            renderBlocks.renderMinY += 0.5D;
+                        }
+                        break;
+                    case 2:
+                        if (side == 4) {
+                            return false;
+                        }
+                        break;
+                }
+                break;
+            case Stairs.ID_NORMAL_POS_S:
+                switch (box) {
+                    case 1:
+                        if (side == 3) {
+                            renderBlocks.renderMinY += 0.5D;
+                        }
+                        break;
+                    case 2:
+                        if (side == 2) {
+                            return false;
+                        }
+                        break;
+                }
+                break;
+            case Stairs.ID_NORMAL_NEG_N:
+                switch (box) {
+                    case 1:
+                        if (side == 2) {
+                            renderBlocks.renderMaxY -= 0.5D;
+                        }
+                        break;
+                    case 2:
+                        if (side == 3) {
+                            return false;
+                        }
+                        break;
+                }
+                break;
+            case Stairs.ID_NORMAL_NEG_W:
+                switch (box) {
+                    case 1:
+                        if (side == 4) {
+                            renderBlocks.renderMaxY -= 0.5D;
+                        }
+                        break;
+                    case 2:
+                        if (side == 5) {
+                            return false;
+                        }
+                        break;
+                }
+                break;
+            case Stairs.ID_NORMAL_NEG_E:
+                switch (box) {
+                    case 1:
+                        if (side == 5) {
+                            renderBlocks.renderMaxY -= 0.5D;
+                        }
+                        break;
+                    case 2:
+                        if (side == 4) {
+                            return false;
+                        }
+                        break;
+                }
+                break;
+            case Stairs.ID_NORMAL_NEG_S:
+                switch (box) {
+                    case 1:
+                        if (side == 3) {
+                            renderBlocks.renderMaxY -= 0.5D;
+                        }
+                        break;
+                    case 2:
+                        if (side == 2) {
+                            return false;
+                        }
+                        break;
+                }
+                break;
+            case Stairs.ID_NORMAL_INT_POS_NW:
+                switch (box) {
+                    case 1:
+                        if (side == 4) {
+                            renderBlocks.renderMaxZ -= 0.5D;
+                            renderBlocks.renderMinY += 0.5D;
+                        }
+                        break;
+                    case 2:
+                        if (side == 2) {
+                            renderBlocks.renderMinY += 0.5D;
+                        } else if (side == 5) {
+                            return false;
+                        }
+                        break;
+                    case 3:
+                        if (side == 3 || side == 5) {
+                            return false;
+                        }
+                        break;
+                }
+                break;
+            case Stairs.ID_NORMAL_INT_POS_SW:
+                switch (box) {
+                    case 1:
+                        if (side == 4) {
+                            renderBlocks.renderMinZ += 0.5D;
+                            renderBlocks.renderMinY += 0.5D;
+                        }
+                        break;
+                    case 2:
+                        if (side == 3) {
+                            renderBlocks.renderMinY += 0.5D;
+                        } else if (side == 5) {
+                            return false;
+                        }
+                        break;
+                    case 3:
+                        if (side == 2 || side == 5) {
+                            return false;
+                        }
+                        break;
+                }
+                break;
+            case Stairs.ID_NORMAL_INT_POS_NE:
+                switch (box) {
+                    case 1:
+                        if (side == 5) {
+                            renderBlocks.renderMaxZ -= 0.5D;
+                            renderBlocks.renderMinY += 0.5D;
+                        }
+                        break;
+                    case 2:
+                        if (side == 2) {
+                            renderBlocks.renderMinY += 0.5D;
+                        } else if (side == 4) {
+                            return false;
+                        }
+                        break;
+                    case 3:
+                        if (side == 3 || side == 4) {
+                            return false;
+                        }
+                        break;
+                }
+                break;
+            case Stairs.ID_NORMAL_INT_POS_SE:
+                switch (box) {
+                    case 1:
+                        if (side == 5) {
+                            renderBlocks.renderMinZ += 0.5D;
+                            renderBlocks.renderMinY += 0.5D;
+                        }
+                        break;
+                    case 2:
+                        if (side == 3) {
+                            renderBlocks.renderMinY += 0.5D;
+                        } else if (side == 4) {
+                            return false;
+                        }
+                        break;
+                    case 3:
+                        if (side == 2 || side == 4) {
+                            return false;
+                        }
+                        break;
+                }
+                break;
+            case Stairs.ID_NORMAL_INT_NEG_NW:
+                switch (box) {
+                    case 1:
+                        if (side == 4) {
+                            renderBlocks.renderMaxZ -= 0.5D;
+                            renderBlocks.renderMaxY -= 0.5D;
+                        }
+                        break;
+                    case 2:
+                        if (side == 2) {
+                            renderBlocks.renderMaxY -= 0.5D;
+                        } else if (side == 5) {
+                            return false;
+                        }
+                        break;
+                    case 3:
+                        if (side == 3 || side == 5) {
+                            return false;
+                        }
+                        break;
+                }
+                break;
+            case Stairs.ID_NORMAL_INT_NEG_SW:
+                switch (box) {
+                    case 1:
+                        if (side == 4) {
+                            renderBlocks.renderMinZ += 0.5D;
+                            renderBlocks.renderMaxY -= 0.5D;
+                        }
+                        break;
+                    case 2:
+                        if (side == 3) {
+                            renderBlocks.renderMaxY -= 0.5D;
+                        } else if (side == 5) {
+                            return false;
+                        }
+                        break;
+                    case 3:
+                        if (side == 2 || side == 5) {
+                            return false;
+                        }
+                        break;
+                }
+                break;
+            case Stairs.ID_NORMAL_INT_NEG_NE:
+                switch (box) {
+                    case 1:
+                        if (side == 5) {
+                            renderBlocks.renderMaxZ -= 0.5D;
+                            renderBlocks.renderMaxY -= 0.5D;
+                        }
+                        break;
+                    case 2:
+                        if (side == 2) {
+                            renderBlocks.renderMaxY -= 0.5D;
+                        } else if (side == 4) {
+                            return false;
+                        }
+                        break;
+                    case 3:
+                        if (side == 3 || side == 4) {
+                            return false;
+                        }
+                        break;
+                }
+                break;
+            case Stairs.ID_NORMAL_INT_NEG_SE:
+                switch (box) {
+                    case 1:
+                        if (side == 5) {
+                            renderBlocks.renderMinZ += 0.5D;
+                            renderBlocks.renderMaxY -= 0.5D;
+                        }
+                        break;
+                    case 2:
+                        if (side == 3) {
+                            renderBlocks.renderMaxY -= 0.5D;
+                        } else if (side == 4) {
+                            return false;
+                        }
+                        break;
+                    case 3:
+                        if (side == 2 || side == 4) {
+                            return false;
+                        }
+                        break;
+                }
+                break;
+            case Stairs.ID_NORMAL_EXT_POS_NW:
+                switch (box) {
+                    case 1:
+                        if (side == 2 || side == 4) {
+                            renderBlocks.renderMinY += 0.5D;
+                        }
+                        break;
+                    case 2:
+                        if (side == 5) {
+                            return false;
+                        }
+                        break;
+                    case 3:
+                        if (side == 3 || side == 4) {
+                            return false;
+                        }
+                        break;
+                }
+                break;
+            case Stairs.ID_NORMAL_EXT_POS_SW:
+                switch (box) {
+                    case 1:
+                        if (side == 3 || side == 4) {
+                            renderBlocks.renderMinY += 0.5D;
+                        }
+                        break;
+                    case 2:
+                        if (side == 5) {
+                            return false;
+                        }
+                        break;
+                    case 3:
+                        if (side == 2 || side == 4) {
+                            return false;
+                        }
+                        break;
+                }
+                break;
+            case Stairs.ID_NORMAL_EXT_POS_NE:
+                switch (box) {
+                    case 1:
+                        if (side == 2 || side == 5) {
+                            renderBlocks.renderMinY += 0.5D;
+                        }
+                        break;
+                    case 2:
+                        if (side == 4) {
+                            return false;
+                        }
+                        break;
+                    case 3:
+                        if (side == 3 || side == 5) {
+                            return false;
+                        }
+                        break;
+                }
+                break;
+            case Stairs.ID_NORMAL_EXT_POS_SE:
+                switch (box) {
+                    case 1:
+                        if (side == 3 || side == 5) {
+                            renderBlocks.renderMinY += 0.5D;
+                        }
+                        break;
+                    case 2:
+                        if (side == 4) {
+                            return false;
+                        }
+                        break;
+                    case 3:
+                        if (side == 2 || side == 5) {
+                            return false;
+                        }
+                        break;
+                }
+                break;
+            case Stairs.ID_NORMAL_EXT_NEG_NW:
+                switch (box) {
+                    case 1:
+                        if (side == 2 || side == 4) {
+                            renderBlocks.renderMaxY -= 0.5D;
+                        }
+                        break;
+                    case 2:
+                        if (side == 5) {
+                            return false;
+                        }
+                        break;
+                    case 3:
+                        if (side == 3 || side == 4) {
+                            return false;
+                        }
+                        break;
+                }
+                break;
+            case Stairs.ID_NORMAL_EXT_NEG_SW:
+                switch (box) {
+                    case 1:
+                        if (side == 3 || side == 4) {
+                            renderBlocks.renderMaxY -= 0.5D;
+                        }
+                        break;
+                    case 2:
+                        if (side == 5) {
+                            return false;
+                        }
+                        break;
+                    case 3:
+                        if (side == 2 || side == 4) {
+                            return false;
+                        }
+                        break;
+                }
+                break;
+            case Stairs.ID_NORMAL_EXT_NEG_NE:
+                switch (box) {
+                    case 1:
+                        if (side == 2 || side == 5) {
+                            renderBlocks.renderMaxY -= 0.5D;
+                        }
+                        break;
+                    case 2:
+                        if (side == 4) {
+                            return false;
+                        }
+                        break;
+                    case 3:
+                        if (side == 3 || side == 5) {
+                            return false;
+                        }
+                        break;
+                }
+                break;
+            case Stairs.ID_NORMAL_EXT_NEG_SE:
+                switch (box) {
+                    case 1:
+                        if (side == 3 || side == 5) {
+                            renderBlocks.renderMaxY -= 0.5D;
+                        }
+                        break;
+                    case 2:
+                        if (side == 4) {
+                            return false;
+                        }
+                        break;
+                    case 3:
+                        if (side == 2 || side == 5) {
+                            return false;
+                        }
+                        break;
+                }
+                break;
+            case Stairs.ID_NORMAL_SW:
+                switch (box) {
+                    case 1:
+                        if (side == 4) {
+                            renderBlocks.renderMinZ += 0.5D;
+                        }
+                        break;
+                    case 2:
+                        if (side == 5) {
+                            return false;
+                        }
+                        break;
+                }
+                break;
+            case Stairs.ID_NORMAL_NW:
+                switch (box) {
+                    case 1:
+                        if (side == 4) {
+                            renderBlocks.renderMaxZ -= 0.5D;
+                        }
+                        break;
+                    case 2:
+                        if (side == 5) {
+                            return false;
+                        }
+                        break;
+                }
+                break;
+            case Stairs.ID_NORMAL_NE:
+                switch (box) {
+                    case 1:
+                        if (side == 5) {
+                            renderBlocks.renderMaxZ -= 0.5D;
+                        }
+                        break;
+                    case 2:
+                        if (side == 4) {
+                            return false;
+                        }
+                        break;
+                }
+                break;
+            case Stairs.ID_NORMAL_SE:
+                switch (box) {
+                    case 1:
+                        if (side == 5) {
+                            renderBlocks.renderMinZ += 0.5D;
+                        }
+                        break;
+                    case 2:
+                        if (side == 4) {
+                            return false;
+                        }
+                        break;
                 }
                 break;
-            case 2:
-                if (side == 3) {
-                    return false;
-                }
-                break;
-            }
-            break;
-        case Stairs.ID_NORMAL_POS_W:
-            switch (box) {
-            case 1:
-                if (side == 4) {
-                    renderBlocks.renderMinY += 0.5D;
-                }
-                break;
-            case 2:
-                if (side == 5) {
-                    return false;
-                }
-                break;
-            }
-            break;
-        case Stairs.ID_NORMAL_POS_E:
-            switch (box) {
-            case 1:
-                if (side == 5) {
-                    renderBlocks.renderMinY += 0.5D;
-                }
-                break;
-            case 2:
-                if (side == 4) {
-                    return false;
-                }
-                break;
-            }
-            break;
-        case Stairs.ID_NORMAL_POS_S:
-            switch (box) {
-            case 1:
-                if (side == 3) {
-                    renderBlocks.renderMinY += 0.5D;
-                }
-                break;
-            case 2:
-                if (side == 2) {
-                    return false;
-                }
-                break;
-            }
-            break;
-        case Stairs.ID_NORMAL_NEG_N:
-            switch (box) {
-            case 1:
-                if (side == 2) {
-                    renderBlocks.renderMaxY -= 0.5D;
-                }
-                break;
-            case 2:
-                if (side == 3) {
-                    return false;
-                }
-                break;
-            }
-            break;
-        case Stairs.ID_NORMAL_NEG_W:
-            switch (box) {
-            case 1:
-                if (side == 4) {
-                    renderBlocks.renderMaxY -= 0.5D;
-                }
-                break;
-            case 2:
-                if (side == 5) {
-                    return false;
-                }
-                break;
-            }
-            break;
-        case Stairs.ID_NORMAL_NEG_E:
-            switch (box) {
-            case 1:
-                if (side == 5) {
-                    renderBlocks.renderMaxY -= 0.5D;
-                }
-                break;
-            case 2:
-                if (side == 4) {
-                    return false;
-                }
-                break;
-            }
-            break;
-        case Stairs.ID_NORMAL_NEG_S:
-            switch (box) {
-            case 1:
-                if (side == 3) {
-                    renderBlocks.renderMaxY -= 0.5D;
-                }
-                break;
-            case 2:
-                if (side == 2) {
-                    return false;
-                }
-                break;
-            }
-            break;
-        case Stairs.ID_NORMAL_INT_POS_NW:
-            switch (box) {
-            case 1:
-                if (side == 4) {
-                    renderBlocks.renderMaxZ -= 0.5D;
-                    renderBlocks.renderMinY += 0.5D;
-                }
-                break;
-            case 2:
-                if (side == 2) {
-                    renderBlocks.renderMinY += 0.5D;
-                } else if (side == 5) {
-                    return false;
-                }
-                break;
-            case 3:
-                if (side == 3 || side == 5) {
-                    return false;
-                }
-                break;
-            }
-            break;
-        case Stairs.ID_NORMAL_INT_POS_SW:
-            switch (box) {
-            case 1:
-                if (side == 4) {
-                    renderBlocks.renderMinZ += 0.5D;
-                    renderBlocks.renderMinY += 0.5D;
-                }
-                break;
-            case 2:
-                if (side == 3) {
-                    renderBlocks.renderMinY += 0.5D;
-                } else if (side == 5) {
-                    return false;
-                }
-                break;
-            case 3:
-                if (side == 2 || side == 5) {
-                    return false;
-                }
-                break;
-            }
-            break;
-        case Stairs.ID_NORMAL_INT_POS_NE:
-            switch (box) {
-            case 1:
-                if (side == 5) {
-                    renderBlocks.renderMaxZ -= 0.5D;
-                    renderBlocks.renderMinY += 0.5D;
-                }
-                break;
-            case 2:
-                if (side == 2) {
-                    renderBlocks.renderMinY += 0.5D;
-                } else if (side == 4) {
-                    return false;
-                }
-                break;
-            case 3:
-                if (side == 3 || side == 4) {
-                    return false;
-                }
-                break;
-            }
-            break;
-        case Stairs.ID_NORMAL_INT_POS_SE:
-            switch (box) {
-            case 1:
-                if (side == 5) {
-                    renderBlocks.renderMinZ += 0.5D;
-                    renderBlocks.renderMinY += 0.5D;
-                }
-                break;
-            case 2:
-                if (side == 3) {
-                    renderBlocks.renderMinY += 0.5D;
-                } else if (side == 4) {
-                    return false;
-                }
-                break;
-            case 3:
-                if (side == 2 || side == 4) {
-                    return false;
-                }
-                break;
-            }
-            break;
-        case Stairs.ID_NORMAL_INT_NEG_NW:
-            switch (box) {
-            case 1:
-                if (side == 4) {
-                    renderBlocks.renderMaxZ -= 0.5D;
-                    renderBlocks.renderMaxY -= 0.5D;
-                }
-                break;
-            case 2:
-                if (side == 2) {
-                    renderBlocks.renderMaxY -= 0.5D;
-                } else if (side == 5) {
-                    return false;
-                }
-                break;
-            case 3:
-                if (side == 3 || side == 5) {
-                    return false;
-                }
-                break;
-            }
-            break;
-        case Stairs.ID_NORMAL_INT_NEG_SW:
-            switch (box) {
-            case 1:
-                if (side == 4) {
-                    renderBlocks.renderMinZ += 0.5D;
-                    renderBlocks.renderMaxY -= 0.5D;
-                }
-                break;
-            case 2:
-                if (side == 3) {
-                    renderBlocks.renderMaxY -= 0.5D;
-                } else if (side == 5) {
-                    return false;
-                }
-                break;
-            case 3:
-                if (side == 2 || side == 5) {
-                    return false;
-                }
-                break;
-            }
-            break;
-        case Stairs.ID_NORMAL_INT_NEG_NE:
-            switch (box) {
-            case 1:
-                if (side == 5) {
-                    renderBlocks.renderMaxZ -= 0.5D;
-                    renderBlocks.renderMaxY -= 0.5D;
-                }
-                break;
-            case 2:
-                if (side == 2) {
-                    renderBlocks.renderMaxY -= 0.5D;
-                } else if (side == 4) {
-                    return false;
-                }
-                break;
-            case 3:
-                if (side == 3 || side == 4) {
-                    return false;
-                }
-                break;
-            }
-            break;
-        case Stairs.ID_NORMAL_INT_NEG_SE:
-            switch (box) {
-            case 1:
-                if (side == 5) {
-                    renderBlocks.renderMinZ += 0.5D;
-                    renderBlocks.renderMaxY -= 0.5D;
-                }
-                break;
-            case 2:
-                if (side == 3) {
-                    renderBlocks.renderMaxY -= 0.5D;
-                } else if (side == 4) {
-                    return false;
-                }
-                break;
-            case 3:
-                if (side == 2 || side == 4) {
-                    return false;
-                }
-                break;
-            }
-            break;
-        case Stairs.ID_NORMAL_EXT_POS_NW:
-            switch (box) {
-            case 1:
-                if (side == 2 || side == 4) {
-                    renderBlocks.renderMinY += 0.5D;
-                }
-                break;
-            case 2:
-                if (side == 5) {
-                    return false;
-                }
-                break;
-            case 3:
-                if (side == 3 || side == 4) {
-                    return false;
-                }
-                break;
-            }
-            break;
-        case Stairs.ID_NORMAL_EXT_POS_SW:
-            switch (box) {
-            case 1:
-                if (side == 3 || side == 4) {
-                    renderBlocks.renderMinY += 0.5D;
-                }
-                break;
-            case 2:
-                if (side == 5) {
-                    return false;
-                }
-                break;
-            case 3:
-                if (side == 2 || side == 4) {
-                    return false;
-                }
-                break;
-            }
-            break;
-        case Stairs.ID_NORMAL_EXT_POS_NE:
-            switch (box) {
-            case 1:
-                if (side == 2 || side == 5) {
-                    renderBlocks.renderMinY += 0.5D;
-                }
-                break;
-            case 2:
-                if (side == 4) {
-                    return false;
-                }
-                break;
-            case 3:
-                if (side == 3 || side == 5) {
-                    return false;
-                }
-                break;
-            }
-            break;
-        case Stairs.ID_NORMAL_EXT_POS_SE:
-            switch (box) {
-            case 1:
-                if (side == 3 || side == 5) {
-                    renderBlocks.renderMinY += 0.5D;
-                }
-                break;
-            case 2:
-                if (side == 4) {
-                    return false;
-                }
-                break;
-            case 3:
-                if (side == 2 || side == 5) {
-                    return false;
-                }
-                break;
-            }
-            break;
-        case Stairs.ID_NORMAL_EXT_NEG_NW:
-            switch (box) {
-            case 1:
-                if (side == 2 || side == 4) {
-                    renderBlocks.renderMaxY -= 0.5D;
-                }
-                break;
-            case 2:
-                if (side == 5) {
-                    return false;
-                }
-                break;
-            case 3:
-                if (side == 3 || side == 4) {
-                    return false;
-                }
-                break;
-            }
-            break;
-        case Stairs.ID_NORMAL_EXT_NEG_SW:
-            switch (box) {
-            case 1:
-                if (side == 3 || side == 4) {
-                    renderBlocks.renderMaxY -= 0.5D;
-                }
-                break;
-            case 2:
-                if (side == 5) {
-                    return false;
-                }
-                break;
-            case 3:
-                if (side == 2 || side == 4) {
-                    return false;
-                }
-                break;
-            }
-            break;
-        case Stairs.ID_NORMAL_EXT_NEG_NE:
-            switch (box) {
-            case 1:
-                if (side == 2 || side == 5) {
-                    renderBlocks.renderMaxY -= 0.5D;
-                }
-                break;
-            case 2:
-                if (side == 4) {
-                    return false;
-                }
-                break;
-            case 3:
-                if (side == 3 || side == 5) {
-                    return false;
-                }
-                break;
-            }
-            break;
-        case Stairs.ID_NORMAL_EXT_NEG_SE:
-            switch (box) {
-            case 1:
-                if (side == 3 || side == 5) {
-                    renderBlocks.renderMaxY -= 0.5D;
-                }
-                break;
-            case 2:
-                if (side == 4) {
-                    return false;
-                }
-                break;
-            case 3:
-                if (side == 2 || side == 5) {
-                    return false;
-                }
-                break;
-            }
-            break;
-        case Stairs.ID_NORMAL_SW:
-            switch (box) {
-            case 1:
-                if (side == 4) {
-                    renderBlocks.renderMinZ += 0.5D;
-                }
-                break;
-            case 2:
-                if (side == 5) {
-                    return false;
-                }
-                break;
-            }
-            break;
-        case Stairs.ID_NORMAL_NW:
-            switch (box) {
-            case 1:
-                if (side == 4) {
-                    renderBlocks.renderMaxZ -= 0.5D;
-                }
-                break;
-            case 2:
-                if (side == 5) {
-                    return false;
-                }
-                break;
-            }
-            break;
-        case Stairs.ID_NORMAL_NE:
-            switch (box) {
-            case 1:
-                if (side == 5) {
-                    renderBlocks.renderMaxZ -= 0.5D;
-                }
-                break;
-            case 2:
-                if (side == 4) {
-                    return false;
-                }
-                break;
-            }
-            break;
-        case Stairs.ID_NORMAL_SE:
-            switch (box) {
-            case 1:
-                if (side == 5) {
-                    renderBlocks.renderMinZ += 0.5D;
-                }
-                break;
-            case 2:
-                if (side == 4) {
-                    return false;
-                }
-                break;
-            }
-            break;
         }
 
         return true;

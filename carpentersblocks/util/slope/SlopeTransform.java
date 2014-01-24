@@ -435,18 +435,18 @@ public class SlopeTransform {
                 temp_slopeID = slope[YP].slopeID;
             } else if (slope[YP].type.equals(Type.OBLIQUE_INT)) {
                 switch (slope[YP].slopeID) {
-                case Slope.ID_OBL_INT_NEG_NW:
-                    temp_slopeID = Slope.ID_WEDGE_NW;
-                    break;
-                case Slope.ID_OBL_INT_NEG_SW:
-                    temp_slopeID = Slope.ID_WEDGE_SW;
-                    break;
-                case Slope.ID_OBL_INT_NEG_NE:
-                    temp_slopeID = Slope.ID_WEDGE_NE;
-                    break;
-                default: // Slope.INT_NEG_OBL_SE
-                    temp_slopeID = Slope.ID_WEDGE_SE;
-                    break;
+                    case Slope.ID_OBL_INT_NEG_NW:
+                        temp_slopeID = Slope.ID_WEDGE_NW;
+                        break;
+                    case Slope.ID_OBL_INT_NEG_SW:
+                        temp_slopeID = Slope.ID_WEDGE_SW;
+                        break;
+                    case Slope.ID_OBL_INT_NEG_NE:
+                        temp_slopeID = Slope.ID_WEDGE_NE;
+                        break;
+                    default: // Slope.INT_NEG_OBL_SE
+                        temp_slopeID = Slope.ID_WEDGE_SE;
+                        break;
                 }
             }
         }
@@ -455,18 +455,18 @@ public class SlopeTransform {
                 temp_slopeID = slope[YN].slopeID;
             } else if (slope[YN].type.equals(Type.OBLIQUE_INT)) {
                 switch (slope[YN].slopeID) {
-                case Slope.ID_OBL_INT_POS_NW:
-                    temp_slopeID = Slope.ID_WEDGE_NW;
-                    break;
-                case Slope.ID_OBL_INT_POS_SW:
-                    temp_slopeID = Slope.ID_WEDGE_SW;
-                    break;
-                case Slope.ID_OBL_INT_POS_NE:
-                    temp_slopeID = Slope.ID_WEDGE_NE;
-                    break;
-                default: // Slope.INT_POS_OBL_SE
-                    temp_slopeID = Slope.ID_WEDGE_SE;
-                    break;
+                    case Slope.ID_OBL_INT_POS_NW:
+                        temp_slopeID = Slope.ID_WEDGE_NW;
+                        break;
+                    case Slope.ID_OBL_INT_POS_SW:
+                        temp_slopeID = Slope.ID_WEDGE_SW;
+                        break;
+                    case Slope.ID_OBL_INT_POS_NE:
+                        temp_slopeID = Slope.ID_WEDGE_NE;
+                        break;
+                    default: // Slope.INT_POS_OBL_SE
+                        temp_slopeID = Slope.ID_WEDGE_SE;
+                        break;
                 }
             }
         }

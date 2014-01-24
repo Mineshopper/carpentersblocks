@@ -12,7 +12,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class BlockHandlerCarpentersTorch extends BlockDeterminantRender {
+public class BlockHandlerCarpentersTorch extends BlockHandlerBase {
 
     private Vec3[] vector = new Vec3[8];
 
@@ -87,16 +87,16 @@ public class BlockHandlerCarpentersTorch extends BlockDeterminantRender {
 
         Icon icon = null;
         switch (Torch.getState(TE)) {
-        case LIT:
-            icon = IconRegistry.icon_torch_lit;
-            break;
-        case SMOLDERING:
-            icon = IconRegistry.icon_torch_head_smoldering;
-            break;
-        case UNLIT:
-            icon = IconRegistry.icon_torch_head_unlit;
-            break;
-        default: {}
+            case LIT:
+                icon = IconRegistry.icon_torch_lit;
+                break;
+            case SMOLDERING:
+                icon = IconRegistry.icon_torch_head_smoldering;
+                break;
+            case UNLIT:
+                icon = IconRegistry.icon_torch_head_unlit;
+                break;
+            default: {}
         }
 
         float vecX = 0.0625F;
@@ -183,19 +183,19 @@ public class BlockHandlerCarpentersTorch extends BlockDeterminantRender {
                 vector[vecCount].rotateAroundX((float)Math.PI / 2F);
 
                 switch (facing) {
-                case NORTH:
-                    vector[vecCount].rotateAroundY(0.0F);
-                    break;
-                case SOUTH:
-                    vector[vecCount].rotateAroundY((float)Math.PI);
-                    break;
-                case WEST:
-                    vector[vecCount].rotateAroundY((float)Math.PI / 2F);
-                    break;
-                case EAST:
-                    vector[vecCount].rotateAroundY(-((float)Math.PI / 2F));
-                    break;
-                default: {}
+                    case NORTH:
+                        vector[vecCount].rotateAroundY(0.0F);
+                        break;
+                    case SOUTH:
+                        vector[vecCount].rotateAroundY((float)Math.PI);
+                        break;
+                    case WEST:
+                        vector[vecCount].rotateAroundY((float)Math.PI / 2F);
+                        break;
+                    case EAST:
+                        vector[vecCount].rotateAroundY(-((float)Math.PI / 2F));
+                        break;
+                    default: {}
                 }
 
                 vector[vecCount].xCoord += x + 0.5D;
@@ -230,42 +230,42 @@ public class BlockHandlerCarpentersTorch extends BlockDeterminantRender {
         Vec3 vertex4 = null;
 
         switch (side) {
-        case 0:
-            vertex1 = vector[0];
-            vertex2 = vector[1];
-            vertex3 = vector[2];
-            vertex4 = vector[3];
-            break;
-        case 1:
-            vertex1 = vector[7];
-            vertex2 = vector[6];
-            vertex3 = vector[5];
-            vertex4 = vector[4];
-            break;
-        case 2:
-            vertex1 = vector[1];
-            vertex2 = vector[0];
-            vertex3 = vector[4];
-            vertex4 = vector[5];
-            break;
-        case 3:
-            vertex1 = vector[2];
-            vertex2 = vector[1];
-            vertex3 = vector[5];
-            vertex4 = vector[6];
-            break;
-        case 4:
-            vertex1 = vector[3];
-            vertex2 = vector[2];
-            vertex3 = vector[6];
-            vertex4 = vector[7];
-            break;
-        case 5:
-            vertex1 = vector[0];
-            vertex2 = vector[3];
-            vertex3 = vector[7];
-            vertex4 = vector[4];
-            break;
+            case 0:
+                vertex1 = vector[0];
+                vertex2 = vector[1];
+                vertex3 = vector[2];
+                vertex4 = vector[3];
+                break;
+            case 1:
+                vertex1 = vector[7];
+                vertex2 = vector[6];
+                vertex3 = vector[5];
+                vertex4 = vector[4];
+                break;
+            case 2:
+                vertex1 = vector[1];
+                vertex2 = vector[0];
+                vertex3 = vector[4];
+                vertex4 = vector[5];
+                break;
+            case 3:
+                vertex1 = vector[2];
+                vertex2 = vector[1];
+                vertex3 = vector[5];
+                vertex4 = vector[6];
+                break;
+            case 4:
+                vertex1 = vector[3];
+                vertex2 = vector[2];
+                vertex3 = vector[6];
+                vertex4 = vector[7];
+                break;
+            case 5:
+                vertex1 = vector[0];
+                vertex2 = vector[3];
+                vertex3 = vector[7];
+                vertex4 = vector[4];
+                break;
         }
 
         tessellator.addVertexWithUV(vertex1.xCoord, vertex1.yCoord, vertex1.zCoord, uMin, vMax);

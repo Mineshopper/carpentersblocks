@@ -40,17 +40,17 @@ public class BlockHandlerCarpentersBarrier extends BlockHandlerBase {
         Block block = BlockProperties.getCoverBlock(TE, 6);
 
         switch (type) {
-        case Barrier.TYPE_PICKET:
-            renderPicketFence(block, x, y, z);
-            break;
-        case Barrier.TYPE_PLANK_VERTICAL:
-            renderVerticalPlankFence(block, x, y, z);
-            break;
-        case Barrier.TYPE_WALL:
-            renderWall(block, x, y, z);
-            break;
-        default:
-            renderFence(block, x, y, z);
+            case Barrier.TYPE_PICKET:
+                renderPicketFence(block, x, y, z);
+                break;
+            case Barrier.TYPE_PLANK_VERTICAL:
+                renderVerticalPlankFence(block, x, y, z);
+                break;
+            case Barrier.TYPE_WALL:
+                renderWall(block, x, y, z);
+                break;
+            default:
+                renderFence(block, x, y, z);
         }
 
         return true;

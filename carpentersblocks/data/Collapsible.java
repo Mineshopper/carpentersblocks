@@ -52,22 +52,22 @@ public class Collapsible {
         if (height >= 0 && height < 16)
         {
             switch (corner) {
-            case QUAD_XZNN:
-                data &= 0xfff;
-                data |= 15 - height << 12;
-                break;
-            case QUAD_XZNP:
-                data &= 0xf0ff;
-                data |= 15 - height << 8;
-                break;
-            case QUAD_XZPN:
-                data &= 0xff0f;
-                data |= 15 - height << 4;
-                break;
-            case QUAD_XZPP:
-                data &= 0xfff0;
-                data |= 15 - height;
-                break;
+                case QUAD_XZNN:
+                    data &= 0xfff;
+                    data |= 15 - height << 12;
+                    break;
+                case QUAD_XZNP:
+                    data &= 0xf0ff;
+                    data |= 15 - height << 8;
+                    break;
+                case QUAD_XZPN:
+                    data &= 0xff0f;
+                    data |= 15 - height << 4;
+                    break;
+                case QUAD_XZPP:
+                    data &= 0xfff0;
+                    data |= 15 - height;
+                    break;
             }
 
             if (BlockProperties.getData(TE) != data) {
@@ -84,19 +84,19 @@ public class Collapsible {
         int data = BlockProperties.getData(TE);
 
         switch (corner) {
-        case QUAD_XZNN:
-            data &= 0xf000;
-            return 16 - (data >> 12);
-        case QUAD_XZNP:
-            data &= 0x0f00;
-            return 16 - (data >> 8);
-        case QUAD_XZPN:
-            data &= 0x00f0;
-            return 16 - (data >> 4);
-        case QUAD_XZPP:
-            return 16 - (data &= 0xf);
-        default:
-            return 16;
+            case QUAD_XZNN:
+                data &= 0xf000;
+                return 16 - (data >> 12);
+            case QUAD_XZNP:
+                data &= 0x0f00;
+                return 16 - (data >> 8);
+            case QUAD_XZPN:
+                data &= 0x00f0;
+                return 16 - (data >> 4);
+            case QUAD_XZPP:
+                return 16 - (data &= 0xf);
+            default:
+                return 16;
         }
     }
 

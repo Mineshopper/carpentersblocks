@@ -52,11 +52,11 @@ public class BlockCarpentersDaylightSensor extends BlockBase {
         DaylightSensor.setPolarity(TE, polarity);
 
         switch (polarity) {
-        case DaylightSensor.POLARITY_POSITIVE:
-            entityPlayer.addChatMessage("message.polarity_pos.name");
-            break;
-        case DaylightSensor.POLARITY_NEGATIVE:
-            entityPlayer.addChatMessage("message.polarity_neg.name");
+            case DaylightSensor.POLARITY_POSITIVE:
+                entityPlayer.addChatMessage("message.polarity_pos.name");
+                break;
+            case DaylightSensor.POLARITY_NEGATIVE:
+                entityPlayer.addChatMessage("message.polarity_neg.name");
         }
 
         return true;

@@ -11,7 +11,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class BlockHandlerCarpentersSafe extends BlockDeterminantRender {
+public class BlockHandlerCarpentersSafe extends BlockHandlerBase {
 
     private final int   numBoxes    = 21;
     private final int   numCapacity = 9;
@@ -67,17 +67,18 @@ public class BlockHandlerCarpentersSafe extends BlockDeterminantRender {
                 setBounds(renderBlocks, box);
             }
 
-            rotateBounds(renderBlocks, ForgeDirection.EAST);
+            rotateBounds(renderBlocks, ForgeDirection.WEST);
             int type = getBlockType(box);
             switch (type) {
-            case BLOCKTYPE_COVER:
-            case BLOCKTYPE_DOOR:
-                break;
-            case BLOCKTYPE_PANEL:
-            case BLOCKTYPE_HANDLE:
-                break;
-            default:
-                renderBlocks.setOverrideBlockTexture(renderBlocks.getIconSafe(IconRegistry.icon_safe_light));
+                case BLOCKTYPE_COVER:
+                case BLOCKTYPE_DOOR:
+                    break;
+                case BLOCKTYPE_PANEL:
+                case BLOCKTYPE_HANDLE:
+                    renderBlocks.setOverrideBlockTexture(renderBlocks.getIconSafe(Block.blockIron.getBlockTextureFromSide(0)));
+                    break;
+                default:
+                    renderBlocks.setOverrideBlockTexture(renderBlocks.getIconSafe(IconRegistry.icon_safe_light));
             }
 
             super.renderInventoryBlock(block, metadata, modelID, renderBlocks);
@@ -86,42 +87,42 @@ public class BlockHandlerCarpentersSafe extends BlockDeterminantRender {
     }
 
     /**
-     * Rotates renderBounds if direction does not equal NORTH.
+     * Rotates renderBounds if direction does not equal SOUTH.
      */
     private void rotateBounds(RenderBlocks renderBlocks, ForgeDirection dir)
     {
         switch (dir) {
-        case SOUTH:
-            renderBlocks.setRenderBounds(
-                    1.0D - renderBlocks.renderMaxX,
-                    renderBlocks.renderMinY,
-                    1.0D - renderBlocks.renderMaxZ,
-                    1.0D - renderBlocks.renderMinX,
-                    renderBlocks.renderMaxY,
-                    1.0D - renderBlocks.renderMinZ
-                    );
-            break;
-        case WEST:
-            renderBlocks.setRenderBounds(
-                    renderBlocks.renderMinZ,
-                    renderBlocks.renderMinY,
-                    1.0D - renderBlocks.renderMaxX,
-                    renderBlocks.renderMaxZ,
-                    renderBlocks.renderMaxY,
-                    1.0D - renderBlocks.renderMinX
-                    );
-            break;
-        case EAST:
-            renderBlocks.setRenderBounds(
-                    1.0D - renderBlocks.renderMaxZ,
-                    renderBlocks.renderMinY,
-                    renderBlocks.renderMinX,
-                    1.0D - renderBlocks.renderMinZ,
-                    renderBlocks.renderMaxY,
-                    renderBlocks.renderMaxX
-                    );
-            break;
-        default: {}
+            case NORTH:
+                renderBlocks.setRenderBounds(
+                        1.0D - renderBlocks.renderMaxX,
+                        renderBlocks.renderMinY,
+                        1.0D - renderBlocks.renderMaxZ,
+                        1.0D - renderBlocks.renderMinX,
+                        renderBlocks.renderMaxY,
+                        1.0D - renderBlocks.renderMinZ
+                        );
+                break;
+            case EAST:
+                renderBlocks.setRenderBounds(
+                        renderBlocks.renderMinZ,
+                        renderBlocks.renderMinY,
+                        1.0D - renderBlocks.renderMaxX,
+                        renderBlocks.renderMaxZ,
+                        renderBlocks.renderMaxY,
+                        1.0D - renderBlocks.renderMinX
+                        );
+                break;
+            case WEST:
+                renderBlocks.setRenderBounds(
+                        1.0D - renderBlocks.renderMaxZ,
+                        renderBlocks.renderMinY,
+                        renderBlocks.renderMinX,
+                        1.0D - renderBlocks.renderMinZ,
+                        renderBlocks.renderMaxY,
+                        renderBlocks.renderMaxX
+                        );
+                break;
+            default: {}
         }
     }
 
@@ -154,69 +155,69 @@ public class BlockHandlerCarpentersSafe extends BlockDeterminantRender {
         boolean isOpen = TE == null ? false : Safe.getState(TE) == Safe.STATE_OPEN;
 
         switch (box) {
-        case WOOD_XLOW_WALL:
-            renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 0.0625D, 1.0D, 1.0D);
-            break;
-        case WOOD_XMAX_WALL:
-            renderBlocks.setRenderBounds(0.9375D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
-            break;
-        case WOOD_BOTTOM_LEFT:
-            renderBlocks.setRenderBounds(0.0625D, 0.0D, 0.0625D, 0.3125D, 0.0625D, 1.0D);
-            break;
-        case WOOD_BOTTOM_RIGHT:
-            renderBlocks.setRenderBounds(0.375D, 0.0D, 0.0625D, 0.9375D, 0.0625D, 1.0D);
-            break;
-        case WOOD_TOP_LEFT:
-            renderBlocks.setRenderBounds(0.0625D, 0.9375D, 0.0625D, 0.3125D, 1.0D, 1.0D);
-            break;
-        case WOOD_TOP_RIGHT:
-            renderBlocks.setRenderBounds(0.375D, 0.9375D, 0.0625D, 0.9375D, 1.0D, 1.0D);
-            break;
-        case WOOD_BACK_LEFT:
-            renderBlocks.setRenderBounds(0.0625D, 0.0D, 0.0D, 0.3125D, 1.0D, 0.0625D);
-            break;
-        case WOOD_BACK_RIGHT:
-            renderBlocks.setRenderBounds(0.375D, 0.0D, 0.0D, 0.9375D, 1.0D, 0.0625D);
-            break;
-        case WOOD_VERTICAL_CENTER_PIECE:
-            renderBlocks.setRenderBounds(0.3125D, 0.0D, 0.0D, 0.375D, 1.0D, 1.0D);
-            break;
-        case WOOD_SHELF_TOP:
-            renderBlocks.setRenderBounds(0.375D, 0.625D, 0.0625D, 0.9375D, 0.6875D, 0.875D);
-            break;
-        case WOOD_SHELF_BOTTOM:
-            renderBlocks.setRenderBounds(0.375D, 0.3125D, 0.0625D, 0.9375D, 0.375D, 0.875D);
-            break;
-        case SLIDING_DOOR:
-            renderBlocks.setRenderBounds(0.375D, 0.0625D, 0.875F, isOpen ? 0.5625D : 0.9375D, 0.9375D, 0.9375D);
-            break;
-        case IRON_PANEL_TOP:
-            renderBlocks.setRenderBounds(0.125D, 0.875D, 0.9375D, 0.25D, 0.9375D, 1.0D);
-            break;
-        case IRON_PANEL_LEFT:
-            renderBlocks.setRenderBounds(0.0625D, 0.0625D, 0.9375D, 0.125D, 0.9375D, 1.0D);
-            break;
-        case IRON_PANEL_RIGHT:
-            renderBlocks.setRenderBounds(0.25D, 0.0625D, 0.9375D, 0.3125D, 0.9375D, 1.0D);
-            break;
-        case IRON_PANEL_CENTER:
-            renderBlocks.setRenderBounds(0.125D, 0.6875D, 0.9375D, 0.25D, 0.75D, 1.0D);
-            break;
-        case IRON_PANEL_BOTTOM:
-            renderBlocks.setRenderBounds(0.125D, 0.0625D, 0.9375D, 0.25D, 0.125D, 1.0D);
-            break;
-        case IRON_PANEL_BACK_PLATE:
-            renderBlocks.setRenderBounds(0.0625D, 0.0625D, 0.875D, 0.3125D, 0.9375D, 0.9375D);
-            break;
-        case HANDLE:
-            renderBlocks.setRenderBounds(isOpen ? 0.4375D : 0.8125D, 0.375D, 0.9375D, isOpen ? 0.5D : 0.875D, 0.625D, 1.0D);
-            break;
-        case GREEN_LIGHT:
-            renderBlocks.setRenderBounds(0.125D, 0.8125D, 0.9375D, 0.25D, 0.875D, 1.0D);
-            break;
-        case RED_LIGHT:
-            renderBlocks.setRenderBounds(0.125D, 0.75D, 0.9375D, 0.25D, 0.8125D, 1.0D);
-            break;
+            case WOOD_XLOW_WALL:
+                renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 0.0625D, 1.0D, 1.0D);
+                break;
+            case WOOD_XMAX_WALL:
+                renderBlocks.setRenderBounds(0.9375D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
+                break;
+            case WOOD_BOTTOM_LEFT:
+                renderBlocks.setRenderBounds(0.0625D, 0.0D, 0.0625D, 0.3125D, 0.0625D, 1.0D);
+                break;
+            case WOOD_BOTTOM_RIGHT:
+                renderBlocks.setRenderBounds(0.375D, 0.0D, 0.0625D, 0.9375D, 0.0625D, 1.0D);
+                break;
+            case WOOD_TOP_LEFT:
+                renderBlocks.setRenderBounds(0.0625D, 0.9375D, 0.0625D, 0.3125D, 1.0D, 1.0D);
+                break;
+            case WOOD_TOP_RIGHT:
+                renderBlocks.setRenderBounds(0.375D, 0.9375D, 0.0625D, 0.9375D, 1.0D, 1.0D);
+                break;
+            case WOOD_BACK_LEFT:
+                renderBlocks.setRenderBounds(0.0625D, 0.0D, 0.0D, 0.3125D, 1.0D, 0.0625D);
+                break;
+            case WOOD_BACK_RIGHT:
+                renderBlocks.setRenderBounds(0.375D, 0.0D, 0.0D, 0.9375D, 1.0D, 0.0625D);
+                break;
+            case WOOD_VERTICAL_CENTER_PIECE:
+                renderBlocks.setRenderBounds(0.3125D, 0.0D, 0.0D, 0.375D, 1.0D, 1.0D);
+                break;
+            case WOOD_SHELF_TOP:
+                renderBlocks.setRenderBounds(0.375D, 0.625D, 0.0625D, 0.9375D, 0.6875D, 0.875D);
+                break;
+            case WOOD_SHELF_BOTTOM:
+                renderBlocks.setRenderBounds(0.375D, 0.3125D, 0.0625D, 0.9375D, 0.375D, 0.875D);
+                break;
+            case SLIDING_DOOR:
+                renderBlocks.setRenderBounds(0.375D, 0.0625D, 0.875F, isOpen ? 0.5625D : 0.9375D, 0.9375D, 0.9375D);
+                break;
+            case IRON_PANEL_TOP:
+                renderBlocks.setRenderBounds(0.125D, 0.875D, 0.9375D, 0.25D, 0.9375D, 1.0D);
+                break;
+            case IRON_PANEL_LEFT:
+                renderBlocks.setRenderBounds(0.0625D, 0.0625D, 0.9375D, 0.125D, 0.9375D, 1.0D);
+                break;
+            case IRON_PANEL_RIGHT:
+                renderBlocks.setRenderBounds(0.25D, 0.0625D, 0.9375D, 0.3125D, 0.9375D, 1.0D);
+                break;
+            case IRON_PANEL_CENTER:
+                renderBlocks.setRenderBounds(0.125D, 0.6875D, 0.9375D, 0.25D, 0.75D, 1.0D);
+                break;
+            case IRON_PANEL_BOTTOM:
+                renderBlocks.setRenderBounds(0.125D, 0.0625D, 0.9375D, 0.25D, 0.125D, 1.0D);
+                break;
+            case IRON_PANEL_BACK_PLATE:
+                renderBlocks.setRenderBounds(0.0625D, 0.0625D, 0.875D, 0.3125D, 0.9375D, 0.9375D);
+                break;
+            case HANDLE:
+                renderBlocks.setRenderBounds(isOpen ? 0.4375D : 0.8125D, 0.375D, 0.9375D, isOpen ? 0.5D : 0.875D, 0.625D, 1.0D);
+                break;
+            case GREEN_LIGHT:
+                renderBlocks.setRenderBounds(0.125D, 0.8125D, 0.9375D, 0.25D, 0.875D, 1.0D);
+                break;
+            case RED_LIGHT:
+                renderBlocks.setRenderBounds(0.125D, 0.75D, 0.9375D, 0.25D, 0.8125D, 1.0D);
+                break;
         }
     }
 
@@ -302,66 +303,66 @@ public class BlockHandlerCarpentersSafe extends BlockDeterminantRender {
         }
 
         switch (type) {
-        case BLOCKTYPE_PANEL:
-            if (shouldRenderOpaque()) {
-                renderBlock(getMetalBlock(), x, y, z);
-            }
-            break;
-        case BLOCKTYPE_HANDLE:
-            if (shouldRenderOpaque()) {
-                renderBlock(Block.blockIron, x, y, z);
-            }
-            break;
-        case BLOCKTYPE_GREEN_LIGHT:
-            if (shouldRenderAlpha())
-            {
-                disableAO = true;
-                setIconOverride(6, IconRegistry.icon_safe_light);
-
-                if (isLocked) {
-                    lightingHelper.setColorOverride(LIGHT_GREEN_INACTIVE);
-                } else {
-                    lightingHelper.setLightnessOverride(1.0F);
-                    lightingHelper.setBrightnessOverride(lightingHelper.MAX_BRIGHTNESS);
-                    lightingHelper.setColorOverride(LIGHT_GREEN_ACTIVE);
+            case BLOCKTYPE_PANEL:
+                if (shouldRenderOpaque()) {
+                    renderBlock(getMetalBlock(), x, y, z);
                 }
-
-                renderBlock(Block.ice, x, y, z);
-                lightingHelper.clearColorOverride();
-                lightingHelper.clearBrightnessOverride();
-                lightingHelper.clearLightnessOverride();
-                clearIconOverride(6);
-                disableAO = false;
-            }
-            break;
-        case BLOCKTYPE_RED_LIGHT:
-            if (shouldRenderAlpha())
-            {
-                disableAO = true;
-                setIconOverride(6, IconRegistry.icon_safe_light);
-
-                if (isLocked) {
-                    lightingHelper.setLightnessOverride(1.0F);
-                    lightingHelper.setBrightnessOverride(lightingHelper.MAX_BRIGHTNESS);
-                    lightingHelper.setColorOverride(LIGHT_RED_ACTIVE);
-                } else {
-                    lightingHelper.setColorOverride(LIGHT_RED_INACTIVE);
+                break;
+            case BLOCKTYPE_HANDLE:
+                if (shouldRenderOpaque()) {
+                    renderBlock(Block.blockIron, x, y, z);
                 }
+                break;
+            case BLOCKTYPE_GREEN_LIGHT:
+                if (shouldRenderAlpha())
+                {
+                    disableAO = true;
+                    setIconOverride(6, IconRegistry.icon_safe_light);
 
-                renderBlock(Block.ice, x, y, z);
-                lightingHelper.clearColorOverride();
-                lightingHelper.clearBrightnessOverride();
-                lightingHelper.clearLightnessOverride();
-                clearIconOverride(6);
-                disableAO = false;
-            }
-            break;
-        case BLOCKTYPE_DOOR:
-            lightingHelper.setLightnessOffset(REDUCED_LIGHTNESS_OFFSET);
-        default:
-            if (shouldRenderBlock(block)) {
-                renderBlock(block, x, y, z);
-            }
+                    if (isLocked) {
+                        lightingHelper.setColorOverride(LIGHT_GREEN_INACTIVE);
+                    } else {
+                        lightingHelper.setLightnessOverride(1.0F);
+                        lightingHelper.setBrightnessOverride(lightingHelper.MAX_BRIGHTNESS);
+                        lightingHelper.setColorOverride(LIGHT_GREEN_ACTIVE);
+                    }
+
+                    renderBlock(Block.ice, x, y, z);
+                    lightingHelper.clearColorOverride();
+                    lightingHelper.clearBrightnessOverride();
+                    lightingHelper.clearLightnessOverride();
+                    clearIconOverride(6);
+                    disableAO = false;
+                }
+                break;
+            case BLOCKTYPE_RED_LIGHT:
+                if (shouldRenderAlpha())
+                {
+                    disableAO = true;
+                    setIconOverride(6, IconRegistry.icon_safe_light);
+
+                    if (isLocked) {
+                        lightingHelper.setLightnessOverride(1.0F);
+                        lightingHelper.setBrightnessOverride(lightingHelper.MAX_BRIGHTNESS);
+                        lightingHelper.setColorOverride(LIGHT_RED_ACTIVE);
+                    } else {
+                        lightingHelper.setColorOverride(LIGHT_RED_INACTIVE);
+                    }
+
+                    renderBlock(Block.ice, x, y, z);
+                    lightingHelper.clearColorOverride();
+                    lightingHelper.clearBrightnessOverride();
+                    lightingHelper.clearLightnessOverride();
+                    clearIconOverride(6);
+                    disableAO = false;
+                }
+                break;
+            case BLOCKTYPE_DOOR:
+                lightingHelper.setLightnessOffset(REDUCED_LIGHTNESS_OFFSET);
+            default:
+                if (shouldRenderBlock(block)) {
+                    renderBlock(block, x, y, z);
+                }
         }
 
         lightingHelper.clearLightnessOffset();

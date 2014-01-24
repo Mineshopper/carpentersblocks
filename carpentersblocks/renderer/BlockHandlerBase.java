@@ -67,6 +67,8 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
     /** Returns whether side is sloped face. */
     public boolean           isSideSloped        = false;
 
+    protected float          REDUCED_LIGHTNESS_OFFSET = -0.05F;
+
     @Override
     public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderBlocks)
     {
@@ -106,8 +108,8 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
          * like the door or bed when created or destroyed, when TE does not yet exist
          * or has already been removed.
          */
-        if (TE != null)
-        {
+        if (TE != null) {
+
             this.renderBlocks = renderBlocks;
             renderPass = MinecraftForgeClient.getRenderPass();
             this.srcBlock = srcBlock;
@@ -131,6 +133,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
                     }
                 }
             }
+
         }
 
         return result;
@@ -158,36 +161,36 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
 
         switch (side)
         {
-        case DOWN:
-            if (metadata == 3 || dir == 4) {
-                renderBlocks.uvRotateBottom = 1;
-            }
-            break;
-        case UP:
-            if (metadata == 3 || dir == 4) {
-                renderBlocks.uvRotateTop = 1;
-            }
-            break;
-        case NORTH:
-            if (metadata == 3 || dir == 4) {
-                renderBlocks.uvRotateNorth = 1;
-            }
-            break;
-        case SOUTH:
-            if (metadata == 3 || dir == 4) {
-                renderBlocks.uvRotateSouth = 1;
-            }
-            break;
-        case WEST:
-            if (metadata == 3 || dir == 8) {
-                renderBlocks.uvRotateWest = 1;
-            }
-            break;
-        case EAST:
-            if (metadata == 3 || dir == 8) {
-                renderBlocks.uvRotateEast = 1;
-            }
-            break;
+            case DOWN:
+                if (metadata == 3 || dir == 4) {
+                    renderBlocks.uvRotateBottom = 1;
+                }
+                break;
+            case UP:
+                if (metadata == 3 || dir == 4) {
+                    renderBlocks.uvRotateTop = 1;
+                }
+                break;
+            case NORTH:
+                if (metadata == 3 || dir == 4) {
+                    renderBlocks.uvRotateNorth = 1;
+                }
+                break;
+            case SOUTH:
+                if (metadata == 3 || dir == 4) {
+                    renderBlocks.uvRotateSouth = 1;
+                }
+                break;
+            case WEST:
+                if (metadata == 3 || dir == 8) {
+                    renderBlocks.uvRotateWest = 1;
+                }
+                break;
+            case EAST:
+                if (metadata == 3 || dir == 8) {
+                    renderBlocks.uvRotateEast = 1;
+                }
+                break;
         }
     }
 
@@ -198,24 +201,24 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
     {
         switch (side)
         {
-        case DOWN:
-            renderBlocks.uvRotateBottom = 0;
-            break;
-        case UP:
-            renderBlocks.uvRotateTop = 0;
-            break;
-        case NORTH:
-            renderBlocks.uvRotateNorth = 0;
-            break;
-        case SOUTH:
-            renderBlocks.uvRotateSouth = 0;
-            break;
-        case WEST:
-            renderBlocks.uvRotateWest = 0;
-            break;
-        case EAST:
-            renderBlocks.uvRotateEast = 0;
-            break;
+            case DOWN:
+                renderBlocks.uvRotateBottom = 0;
+                break;
+            case UP:
+                renderBlocks.uvRotateTop = 0;
+                break;
+            case NORTH:
+                renderBlocks.uvRotateNorth = 0;
+                break;
+            case SOUTH:
+                renderBlocks.uvRotateSouth = 0;
+                break;
+            case WEST:
+                renderBlocks.uvRotateWest = 0;
+                break;
+            case EAST:
+                renderBlocks.uvRotateEast = 0;
+                break;
         }
     }
 
@@ -291,13 +294,31 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
      */
     protected boolean shouldRenderBlock(Block block)
     {
-        if (renderAlphaOverride) {
+        if (renderBlocks.hasOverrideBlockTexture()) {
+            return true;
+        } else if (renderAlphaOverride) {
             return renderPass == PASS_ALPHA;
         } else {
-            return block.getRenderBlockPass() == renderPass ||
-                    block instanceof BlockBase && renderPass == PASS_OPAQUE ||
-                    this instanceof BlockDeterminantRender;
+            return  block.getRenderBlockPass() == renderPass ||
+                    block instanceof BlockBase && renderPass == PASS_OPAQUE;
         }
+    }
+
+    /**
+     * Returns whether opaque objects should render.
+     * Objects should not be decorated.
+     */
+    protected boolean shouldRenderOpaque()
+    {
+        return renderAlphaOverride && renderPass == PASS_ALPHA || renderPass == PASS_OPAQUE;
+    }
+
+    /**
+     * Returns whether alpha objects should render.
+     */
+    protected boolean shouldRenderAlpha()
+    {
+        return renderPass == PASS_ALPHA;
     }
 
     /**
@@ -371,66 +392,66 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
          * partial rendered blocks (slabs, stair steps)
          */
         switch (side) {
-        case DOWN:
-            if (renderBlocks.renderMinY > 0.0D) {
-                renderBlocks.renderMaxY = renderBlocks.renderMinY;
-                renderBlocks.renderMinY -= offset;
-            } else {
-                renderBlocks.renderMaxY = 1.0D;
-                renderBlocks.renderMinY = renderBlocks.renderMaxY - offset;
-                y -= 1;
-            }
-            break;
-        case UP:
-            if (renderBlocks.renderMaxY < 1.0D) {
-                renderBlocks.renderMinY = renderBlocks.renderMaxY;
-                renderBlocks.renderMaxY += offset;
-            } else {
-                renderBlocks.renderMaxY = offset;
-                renderBlocks.renderMinY = 0.0D;
-                y += 1;
-            }
-            break;
-        case NORTH:
-            if (renderBlocks.renderMinZ > 0.0D) {
-                renderBlocks.renderMaxZ = renderBlocks.renderMinZ;
-                renderBlocks.renderMinZ -= offset;
-            } else {
-                renderBlocks.renderMaxZ = 1.0D;
-                renderBlocks.renderMinZ = renderBlocks.renderMaxZ - offset;
-                z -= 1;
-            }
-            break;
-        case SOUTH:
-            if (renderBlocks.renderMaxZ < 1.0D) {
-                renderBlocks.renderMinZ = renderBlocks.renderMaxZ;
-                renderBlocks.renderMaxZ += offset;
-            } else {
-                renderBlocks.renderMaxZ = offset;
-                renderBlocks.renderMinZ = 0.0D;
-                z += 1;
-            }
-            break;
-        case WEST:
-            if (renderBlocks.renderMinX > 0.0D) {
-                renderBlocks.renderMaxX = renderBlocks.renderMinX;
-                renderBlocks.renderMinX -= offset;
-            } else {
-                renderBlocks.renderMaxX = 1.0D;
-                renderBlocks.renderMinX = renderBlocks.renderMaxX - offset;
-                x -= 1;
-            }
-            break;
-        case EAST:
-            if (renderBlocks.renderMaxX < 1.0D) {
-                renderBlocks.renderMinX = renderBlocks.renderMaxX;
-                renderBlocks.renderMaxX += offset;
-            } else {
-                renderBlocks.renderMaxX = offset;
-                renderBlocks.renderMinX = 0.0D;
-                x += 1;
-            }
-            break;
+            case DOWN:
+                if (renderBlocks.renderMinY > 0.0D) {
+                    renderBlocks.renderMaxY = renderBlocks.renderMinY;
+                    renderBlocks.renderMinY -= offset;
+                } else {
+                    renderBlocks.renderMaxY = 1.0D;
+                    renderBlocks.renderMinY = renderBlocks.renderMaxY - offset;
+                    y -= 1;
+                }
+                break;
+            case UP:
+                if (renderBlocks.renderMaxY < 1.0D) {
+                    renderBlocks.renderMinY = renderBlocks.renderMaxY;
+                    renderBlocks.renderMaxY += offset;
+                } else {
+                    renderBlocks.renderMaxY = offset;
+                    renderBlocks.renderMinY = 0.0D;
+                    y += 1;
+                }
+                break;
+            case NORTH:
+                if (renderBlocks.renderMinZ > 0.0D) {
+                    renderBlocks.renderMaxZ = renderBlocks.renderMinZ;
+                    renderBlocks.renderMinZ -= offset;
+                } else {
+                    renderBlocks.renderMaxZ = 1.0D;
+                    renderBlocks.renderMinZ = renderBlocks.renderMaxZ - offset;
+                    z -= 1;
+                }
+                break;
+            case SOUTH:
+                if (renderBlocks.renderMaxZ < 1.0D) {
+                    renderBlocks.renderMinZ = renderBlocks.renderMaxZ;
+                    renderBlocks.renderMaxZ += offset;
+                } else {
+                    renderBlocks.renderMaxZ = offset;
+                    renderBlocks.renderMinZ = 0.0D;
+                    z += 1;
+                }
+                break;
+            case WEST:
+                if (renderBlocks.renderMinX > 0.0D) {
+                    renderBlocks.renderMaxX = renderBlocks.renderMinX;
+                    renderBlocks.renderMinX -= offset;
+                } else {
+                    renderBlocks.renderMaxX = 1.0D;
+                    renderBlocks.renderMinX = renderBlocks.renderMaxX - offset;
+                    x -= 1;
+                }
+                break;
+            case EAST:
+                if (renderBlocks.renderMaxX < 1.0D) {
+                    renderBlocks.renderMinX = renderBlocks.renderMaxX;
+                    renderBlocks.renderMaxX += offset;
+                } else {
+                    renderBlocks.renderMaxX = offset;
+                    renderBlocks.renderMinX = 0.0D;
+                    x += 1;
+                }
+                break;
         }
 
         int[] coords = { x, y, z };
@@ -579,72 +600,72 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
         }
 
         switch (overlay) {
-        case OverlayHandler.OVERLAY_SNOW: {
-            switch (side) {
-            case DOWN:
-                return;
-            case UP:
-                icon = Block.snow.getBlockTextureFromSide(1);
-                break;
-            default:
-                icon = IconRegistry.icon_overlay_snow_side;
-                break;
-            }
-            lightingHelper.colorSide(Block.blockSnow, x, y, z, side, icon);
-            renderSide(x, y, z, side, 0.0D, icon);
-            break;
-        }
-        case OverlayHandler.OVERLAY_HAY: {
-            switch (side) {
-            case DOWN:
-                return;
-            case UP:
-                icon = Block.hay.getBlockTextureFromSide(1);
-                break;
-            default:
-                icon = IconRegistry.icon_overlay_hay_side;
-                break;
-            }
-            lightingHelper.colorSide(Block.hay, x, y, z, side, icon);
-            renderSide(x, y, z, side, 0.0D, icon);
-            break;
-        }
-        case OverlayHandler.OVERLAY_WEB: {
-            icon = Block.web.getBlockTextureFromSide(side);
-            lightingHelper.colorSide(Block.web, x, y, z, side, icon);
-            renderSide(x, y, z, side, 0.0D, icon);
-            break;
-        }
-        case OverlayHandler.OVERLAY_VINE: {
-            icon = Block.vine.getBlockTextureFromSide(side);
-            lightingHelper.colorSide(Block.vine, x, y, z, side, icon);
-            renderSide(x, y, z, side, 0.0D, icon);
-            break;
-        }
-        case OverlayHandler.OVERLAY_MYCELIUM: {
-            switch (side) {
-            case DOWN:
-                return;
-            case UP:
-                icon = Block.mycelium.getBlockTextureFromSide(1);
-                break;
-            default:
-                icon = IconRegistry.icon_overlay_mycelium_side;
-                break;
-            }
-            lightingHelper.colorSide(Block.mycelium, x, y, z, side, icon);
-            renderSide(x, y, z, side, 0.0D, icon);
-            break;
-        }
-        case OverlayHandler.OVERLAY_GRASS: {
-            if (block != Block.grass && side > DOWN)
-            {
-                icon = getGrassOverlayIcon(side);
-                lightingHelper.colorSide(Block.grass, x, y, z, side, icon);
+            case OverlayHandler.OVERLAY_SNOW: {
+                switch (side) {
+                    case DOWN:
+                        return;
+                    case UP:
+                        icon = Block.snow.getBlockTextureFromSide(1);
+                        break;
+                    default:
+                        icon = IconRegistry.icon_overlay_snow_side;
+                        break;
+                }
+                lightingHelper.colorSide(Block.blockSnow, x, y, z, side, icon);
                 renderSide(x, y, z, side, 0.0D, icon);
+                break;
             }
-            break;
-        }
+            case OverlayHandler.OVERLAY_HAY: {
+                switch (side) {
+                    case DOWN:
+                        return;
+                    case UP:
+                        icon = Block.hay.getBlockTextureFromSide(1);
+                        break;
+                    default:
+                        icon = IconRegistry.icon_overlay_hay_side;
+                        break;
+                }
+                lightingHelper.colorSide(Block.hay, x, y, z, side, icon);
+                renderSide(x, y, z, side, 0.0D, icon);
+                break;
+            }
+            case OverlayHandler.OVERLAY_WEB: {
+                icon = Block.web.getBlockTextureFromSide(side);
+                lightingHelper.colorSide(Block.web, x, y, z, side, icon);
+                renderSide(x, y, z, side, 0.0D, icon);
+                break;
+            }
+            case OverlayHandler.OVERLAY_VINE: {
+                icon = Block.vine.getBlockTextureFromSide(side);
+                lightingHelper.colorSide(Block.vine, x, y, z, side, icon);
+                renderSide(x, y, z, side, 0.0D, icon);
+                break;
+            }
+            case OverlayHandler.OVERLAY_MYCELIUM: {
+                switch (side) {
+                    case DOWN:
+                        return;
+                    case UP:
+                        icon = Block.mycelium.getBlockTextureFromSide(1);
+                        break;
+                    default:
+                        icon = IconRegistry.icon_overlay_mycelium_side;
+                        break;
+                }
+                lightingHelper.colorSide(Block.mycelium, x, y, z, side, icon);
+                renderSide(x, y, z, side, 0.0D, icon);
+                break;
+            }
+            case OverlayHandler.OVERLAY_GRASS: {
+                if (block != Block.grass && side > DOWN)
+                {
+                    icon = getGrassOverlayIcon(side);
+                    lightingHelper.colorSide(Block.grass, x, y, z, side, icon);
+                    renderSide(x, y, z, side, 0.0D, icon);
+                }
+                break;
+            }
         }
     }
 
@@ -698,24 +719,24 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
         VertexHelper.setOffset(offset);
 
         switch (side) {
-        case DOWN:
-            RenderHelper.renderFaceYNeg(renderBlocks, x, y, z, icon);
-            break;
-        case UP:
-            RenderHelper.renderFaceYPos(renderBlocks, x, y, z, icon);
-            break;
-        case NORTH:
-            RenderHelper.renderFaceZNeg(renderBlocks, x, y, z, icon);
-            break;
-        case SOUTH:
-            RenderHelper.renderFaceZPos(renderBlocks, x, y, z, icon);
-            break;
-        case WEST:
-            RenderHelper.renderFaceXNeg(renderBlocks, x, y, z, icon);
-            break;
-        case EAST:
-            RenderHelper.renderFaceXPos(renderBlocks, x, y, z, icon);
-            break;
+            case DOWN:
+                RenderHelper.renderFaceYNeg(renderBlocks, x, y, z, icon);
+                break;
+            case UP:
+                RenderHelper.renderFaceYPos(renderBlocks, x, y, z, icon);
+                break;
+            case NORTH:
+                RenderHelper.renderFaceZNeg(renderBlocks, x, y, z, icon);
+                break;
+            case SOUTH:
+                RenderHelper.renderFaceZPos(renderBlocks, x, y, z, icon);
+                break;
+            case WEST:
+                RenderHelper.renderFaceXNeg(renderBlocks, x, y, z, icon);
+                break;
+            case EAST:
+                RenderHelper.renderFaceXPos(renderBlocks, x, y, z, icon);
+                break;
         }
 
         VertexHelper.clearOffset();

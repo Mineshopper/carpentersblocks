@@ -45,18 +45,18 @@ public class ItemCarpentersBed extends Item {
         if (side == 1)
         {
             ++y;
-            int facing = BlockProperties.getEntityFacing(entityPlayer);
+            int facing = BlockProperties.getOppositeFacing(entityPlayer);
             ForgeDirection dir = BlockProperties.getDirectionFromFacing(facing);
 
             int x_offset = x - dir.offsetX;
             int z_offset = z - dir.offsetZ;
 
             if (
-                    entityPlayer.canPlayerEdit(x, y, z, side, itemStack)                &&
-                    entityPlayer.canPlayerEdit(x_offset, y, z_offset, side, itemStack)    &&
-                    world.isAirBlock(x, y, z)                                            &&
-                    world.isAirBlock(x_offset, y, z_offset)                                &&
-                    world.doesBlockHaveSolidTopSurface(x, y - 1, z)                        &&
+                    entityPlayer.canPlayerEdit(x, y, z, side, itemStack)               &&
+                    entityPlayer.canPlayerEdit(x_offset, y, z_offset, side, itemStack) &&
+                    world.isAirBlock(x, y, z)                                          &&
+                    world.isAirBlock(x_offset, y, z_offset)                            &&
+                    world.doesBlockHaveSolidTopSurface(x, y - 1, z)                    &&
                     world.doesBlockHaveSolidTopSurface(x_offset, y - 1, z_offset)
                     )
             {

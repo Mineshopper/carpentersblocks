@@ -64,162 +64,162 @@ public class BlockHandlerCarpentersLadder extends BlockHandlerBase {
         boolean connects_ZP = TE.worldObj.getBlockId(x, y, z + 1) == srcBlock.blockID && BlockProperties.getData((TEBase)TE.worldObj.getBlockTileEntity(x, y, z + 1)) == data;
 
         switch (data) {
-        case Ladder.FACING_ON_X:
+            case Ladder.FACING_ON_X:
 
-            // Side supports
-            if (!connects_XN) {
-                renderBlocks.setRenderBounds(0.0D, 0.0D, 0.375D, 0.125D, 1.0D, 0.625D);
+                // Side supports
+                if (!connects_XN) {
+                    renderBlocks.setRenderBounds(0.0D, 0.0D, 0.375D, 0.125D, 1.0D, 0.625D);
+                    renderBlock(block, x, y, z);
+                }
+                if (!connects_XP) {
+                    renderBlocks.setRenderBounds(0.875D, 0.0D, 0.375D, 1.0D, 1.0D, 0.625D);
+                    renderBlock(block, x, y, z);
+                }
+
+                xLow  = connects_XN ? 0.0D : 0.125D;
+                xHigh = connects_XP ? 1.0D : 0.875D;
+
+                // Slats
+                renderBlocks.setRenderBounds(xLow, 0.125D, 0.4375D, xHigh, 0.1875D, 0.5625D);
                 renderBlock(block, x, y, z);
-            }
-            if (!connects_XP) {
-                renderBlocks.setRenderBounds(0.875D, 0.0D, 0.375D, 1.0D, 1.0D, 0.625D);
+                renderBlocks.setRenderBounds(xLow, 0.375D, 0.4375D, xHigh, 0.4375D, 0.5625D);
                 renderBlock(block, x, y, z);
-            }
-
-            xLow  = connects_XN ? 0.0D : 0.125D;
-            xHigh = connects_XP ? 1.0D : 0.875D;
-
-            // Slats
-            renderBlocks.setRenderBounds(xLow, 0.125D, 0.4375D, xHigh, 0.1875D, 0.5625D);
-            renderBlock(block, x, y, z);
-            renderBlocks.setRenderBounds(xLow, 0.375D, 0.4375D, xHigh, 0.4375D, 0.5625D);
-            renderBlock(block, x, y, z);
-            renderBlocks.setRenderBounds(xLow, 0.625D, 0.4375D, xHigh, 0.6875D, 0.5625D);
-            renderBlock(block, x, y, z);
-            renderBlocks.setRenderBounds(xLow, 0.875D, 0.4375D, xHigh, 0.9375D, 0.5625D);
-            renderBlock(block, x, y, z);
-
-            break;
-        case Ladder.FACING_ON_Z:
-
-            // Side supports
-            if (!connects_ZN) {
-                renderBlocks.setRenderBounds(0.375D, 0.0D, 0.0D, 0.625D, 1.0D, 0.125D);
+                renderBlocks.setRenderBounds(xLow, 0.625D, 0.4375D, xHigh, 0.6875D, 0.5625D);
                 renderBlock(block, x, y, z);
-            }
-            if (!connects_ZP) {
-                renderBlocks.setRenderBounds(0.375D, 0.0D, 0.875D, 0.625D, 1.0D, 1.0D);
+                renderBlocks.setRenderBounds(xLow, 0.875D, 0.4375D, xHigh, 0.9375D, 0.5625D);
                 renderBlock(block, x, y, z);
-            }
 
-            zLow  = connects_ZN ? 0.0D : 0.125D;
-            zHigh = connects_ZP ? 1.0D : 0.875D;
+                break;
+            case Ladder.FACING_ON_Z:
 
-            // Slats
-            renderBlocks.setRenderBounds(0.4375D, 0.125D, zLow, 0.5625D, 0.1875D, zHigh);
-            renderBlock(block, x, y, z);
-            renderBlocks.setRenderBounds(0.4375D, 0.375D, zLow, 0.5625D, 0.4375D, zHigh);
-            renderBlock(block, x, y, z);
-            renderBlocks.setRenderBounds(0.4375D, 0.625D, zLow, 0.5625D, 0.6875D, zHigh);
-            renderBlock(block, x, y, z);
-            renderBlocks.setRenderBounds(0.4375D, 0.875D, zLow, 0.5625D, 0.9375D, zHigh);
-            renderBlock(block, x, y, z);
+                // Side supports
+                if (!connects_ZN) {
+                    renderBlocks.setRenderBounds(0.375D, 0.0D, 0.0D, 0.625D, 1.0D, 0.125D);
+                    renderBlock(block, x, y, z);
+                }
+                if (!connects_ZP) {
+                    renderBlocks.setRenderBounds(0.375D, 0.0D, 0.875D, 0.625D, 1.0D, 1.0D);
+                    renderBlock(block, x, y, z);
+                }
 
-            break;
-        case Ladder.FACING_NORTH: // Ladder on +Z
+                zLow  = connects_ZN ? 0.0D : 0.125D;
+                zHigh = connects_ZP ? 1.0D : 0.875D;
 
-            // Side supports
-            if (!connects_XN) {
-                renderBlocks.setRenderBounds(0.0D, 0.0D, 0.8125D, 0.125D, 1.0D, 1.0D);
+                // Slats
+                renderBlocks.setRenderBounds(0.4375D, 0.125D, zLow, 0.5625D, 0.1875D, zHigh);
                 renderBlock(block, x, y, z);
-            }
-            if (!connects_XP) {
-                renderBlocks.setRenderBounds(0.875D, 0.0D, 0.8125D, 1.0D, 1.0D, 1.0D);
+                renderBlocks.setRenderBounds(0.4375D, 0.375D, zLow, 0.5625D, 0.4375D, zHigh);
                 renderBlock(block, x, y, z);
-            }
-
-            xLow  = connects_XN ? 0.0D : 0.125D;
-            xHigh = connects_XP ? 1.0D : 0.875D;
-
-            // Slats
-            renderBlocks.setRenderBounds(xLow, 0.125D, 0.875D, xHigh, 0.1875D, 1.0D);
-            renderBlock(block, x, y, z);
-            renderBlocks.setRenderBounds(xLow, 0.375D, 0.875D, xHigh, 0.4375D, 1.0D);
-            renderBlock(block, x, y, z);
-            renderBlocks.setRenderBounds(xLow, 0.625D, 0.875D, xHigh, 0.6875D, 1.0D);
-            renderBlock(block, x, y, z);
-            renderBlocks.setRenderBounds(xLow, 0.875D, 0.875D, xHigh, 0.9375D, 1.0D);
-            renderBlock(block, x, y, z);
-
-            break;
-        case Ladder.FACING_SOUTH: // Ladder on -Z
-
-            // Side supports
-            if (!connects_XN) {
-                renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 0.125D, 1.0D, 0.1875D);
+                renderBlocks.setRenderBounds(0.4375D, 0.625D, zLow, 0.5625D, 0.6875D, zHigh);
                 renderBlock(block, x, y, z);
-            }
-            if (!connects_XP) {
-                renderBlocks.setRenderBounds(0.875D, 0.0D, 0.0D, 1.0D, 1.0D, 0.1875D);
+                renderBlocks.setRenderBounds(0.4375D, 0.875D, zLow, 0.5625D, 0.9375D, zHigh);
                 renderBlock(block, x, y, z);
-            }
 
-            xLow  = connects_XN ? 0.0D : 0.125D;
-            xHigh = connects_XP ? 1.0D : 0.875D;
+                break;
+            case Ladder.FACING_NORTH: // Ladder on +Z
 
-            // Slats
-            renderBlocks.setRenderBounds(xLow, 0.125D, 0.0D, xHigh, 0.1875D, 0.1875D);
-            renderBlock(block, x, y, z);
-            renderBlocks.setRenderBounds(xLow, 0.375D, 0.0D, xHigh, 0.4375D, 0.1875D);
-            renderBlock(block, x, y, z);
-            renderBlocks.setRenderBounds(xLow, 0.625D, 0.0D, xHigh, 0.6875D, 0.1875D);
-            renderBlock(block, x, y, z);
-            renderBlocks.setRenderBounds(xLow, 0.875D, 0.0D, xHigh, 0.9375D, 0.1875D);
-            renderBlock(block, x, y, z);
+                // Side supports
+                if (!connects_XN) {
+                    renderBlocks.setRenderBounds(0.0D, 0.0D, 0.8125D, 0.125D, 1.0D, 1.0D);
+                    renderBlock(block, x, y, z);
+                }
+                if (!connects_XP) {
+                    renderBlocks.setRenderBounds(0.875D, 0.0D, 0.8125D, 1.0D, 1.0D, 1.0D);
+                    renderBlock(block, x, y, z);
+                }
 
-            break;
-        case Ladder.FACING_WEST: // Ladder on +X
+                xLow  = connects_XN ? 0.0D : 0.125D;
+                xHigh = connects_XP ? 1.0D : 0.875D;
 
-            // Side supports
-            if (!connects_ZN) {
-                renderBlocks.setRenderBounds(0.8125D, 0.0D, 0.0D, 1.0D, 1.0D, 0.125D);
+                // Slats
+                renderBlocks.setRenderBounds(xLow, 0.125D, 0.875D, xHigh, 0.1875D, 1.0D);
                 renderBlock(block, x, y, z);
-            }
-            if (!connects_ZP) {
-                renderBlocks.setRenderBounds(0.8125D, 0.0D, 0.875D, 1.0D, 1.0D, 1.0D);
+                renderBlocks.setRenderBounds(xLow, 0.375D, 0.875D, xHigh, 0.4375D, 1.0D);
                 renderBlock(block, x, y, z);
-            }
-
-            zLow  = connects_ZN ? 0.0D : 0.125D;
-            zHigh = connects_ZP ? 1.0D : 0.875D;
-
-            // Slats
-            renderBlocks.setRenderBounds(0.875D, 0.125D, zLow, 1.0D, 0.1875D, zHigh);
-            renderBlock(block, x, y, z);
-            renderBlocks.setRenderBounds(0.875D, 0.375D, zLow, 1.0D, 0.4375D, zHigh);
-            renderBlock(block, x, y, z);
-            renderBlocks.setRenderBounds(0.875D, 0.625D, zLow, 1.0D, 0.6875D, zHigh);
-            renderBlock(block, x, y, z);
-            renderBlocks.setRenderBounds(0.875D, 0.875D, zLow, 1.0D, 0.9375D, zHigh);
-            renderBlock(block, x, y, z);
-
-            break;
-        case Ladder.FACING_EAST: // Ladder on -X
-
-            // Side supports
-            if (!connects_ZN) {
-                renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 0.1875D, 1.0D, 0.125D);
+                renderBlocks.setRenderBounds(xLow, 0.625D, 0.875D, xHigh, 0.6875D, 1.0D);
                 renderBlock(block, x, y, z);
-            }
-            if (!connects_ZP) {
-                renderBlocks.setRenderBounds(0.0D, 0.0D, 0.875D, 0.1875D, 1.0D, 1.0D);
+                renderBlocks.setRenderBounds(xLow, 0.875D, 0.875D, xHigh, 0.9375D, 1.0D);
                 renderBlock(block, x, y, z);
-            }
 
-            zLow  = connects_ZN ? 0.0D : 0.125D;
-            zHigh = connects_ZP ? 1.0D : 0.875D;
+                break;
+            case Ladder.FACING_SOUTH: // Ladder on -Z
 
-            // Slats
-            renderBlocks.setRenderBounds(0.0D, 0.125D, zLow, 0.1875D, 0.1875D, zHigh);
-            renderBlock(block, x, y, z);
-            renderBlocks.setRenderBounds(0.0D, 0.375D, zLow, 0.1875D, 0.4375D, zHigh);
-            renderBlock(block, x, y, z);
-            renderBlocks.setRenderBounds(0.0D, 0.625D, zLow, 0.1875D, 0.6875D, zHigh);
-            renderBlock(block, x, y, z);
-            renderBlocks.setRenderBounds(0.0D, 0.875D, zLow, 0.1875D, 0.9375D, zHigh);
-            renderBlock(block, x, y, z);
+                // Side supports
+                if (!connects_XN) {
+                    renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 0.125D, 1.0D, 0.1875D);
+                    renderBlock(block, x, y, z);
+                }
+                if (!connects_XP) {
+                    renderBlocks.setRenderBounds(0.875D, 0.0D, 0.0D, 1.0D, 1.0D, 0.1875D);
+                    renderBlock(block, x, y, z);
+                }
 
-            break;
+                xLow  = connects_XN ? 0.0D : 0.125D;
+                xHigh = connects_XP ? 1.0D : 0.875D;
+
+                // Slats
+                renderBlocks.setRenderBounds(xLow, 0.125D, 0.0D, xHigh, 0.1875D, 0.1875D);
+                renderBlock(block, x, y, z);
+                renderBlocks.setRenderBounds(xLow, 0.375D, 0.0D, xHigh, 0.4375D, 0.1875D);
+                renderBlock(block, x, y, z);
+                renderBlocks.setRenderBounds(xLow, 0.625D, 0.0D, xHigh, 0.6875D, 0.1875D);
+                renderBlock(block, x, y, z);
+                renderBlocks.setRenderBounds(xLow, 0.875D, 0.0D, xHigh, 0.9375D, 0.1875D);
+                renderBlock(block, x, y, z);
+
+                break;
+            case Ladder.FACING_WEST: // Ladder on +X
+
+                // Side supports
+                if (!connects_ZN) {
+                    renderBlocks.setRenderBounds(0.8125D, 0.0D, 0.0D, 1.0D, 1.0D, 0.125D);
+                    renderBlock(block, x, y, z);
+                }
+                if (!connects_ZP) {
+                    renderBlocks.setRenderBounds(0.8125D, 0.0D, 0.875D, 1.0D, 1.0D, 1.0D);
+                    renderBlock(block, x, y, z);
+                }
+
+                zLow  = connects_ZN ? 0.0D : 0.125D;
+                zHigh = connects_ZP ? 1.0D : 0.875D;
+
+                // Slats
+                renderBlocks.setRenderBounds(0.875D, 0.125D, zLow, 1.0D, 0.1875D, zHigh);
+                renderBlock(block, x, y, z);
+                renderBlocks.setRenderBounds(0.875D, 0.375D, zLow, 1.0D, 0.4375D, zHigh);
+                renderBlock(block, x, y, z);
+                renderBlocks.setRenderBounds(0.875D, 0.625D, zLow, 1.0D, 0.6875D, zHigh);
+                renderBlock(block, x, y, z);
+                renderBlocks.setRenderBounds(0.875D, 0.875D, zLow, 1.0D, 0.9375D, zHigh);
+                renderBlock(block, x, y, z);
+
+                break;
+            case Ladder.FACING_EAST: // Ladder on -X
+
+                // Side supports
+                if (!connects_ZN) {
+                    renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 0.1875D, 1.0D, 0.125D);
+                    renderBlock(block, x, y, z);
+                }
+                if (!connects_ZP) {
+                    renderBlocks.setRenderBounds(0.0D, 0.0D, 0.875D, 0.1875D, 1.0D, 1.0D);
+                    renderBlock(block, x, y, z);
+                }
+
+                zLow  = connects_ZN ? 0.0D : 0.125D;
+                zHigh = connects_ZP ? 1.0D : 0.875D;
+
+                // Slats
+                renderBlocks.setRenderBounds(0.0D, 0.125D, zLow, 0.1875D, 0.1875D, zHigh);
+                renderBlock(block, x, y, z);
+                renderBlocks.setRenderBounds(0.0D, 0.375D, zLow, 0.1875D, 0.4375D, zHigh);
+                renderBlock(block, x, y, z);
+                renderBlocks.setRenderBounds(0.0D, 0.625D, zLow, 0.1875D, 0.6875D, zHigh);
+                renderBlock(block, x, y, z);
+                renderBlocks.setRenderBounds(0.0D, 0.875D, zLow, 0.1875D, 0.9375D, zHigh);
+                renderBlock(block, x, y, z);
+
+                break;
         }
 
         disableAO = false;

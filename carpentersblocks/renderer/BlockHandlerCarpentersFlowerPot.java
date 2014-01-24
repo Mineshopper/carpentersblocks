@@ -15,7 +15,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class BlockHandlerCarpentersFlowerPot extends BlockDeterminantRender {
+public class BlockHandlerCarpentersFlowerPot extends BlockHandlerBase {
 
     @Override
     public boolean shouldRender3DInInventory()
@@ -161,27 +161,27 @@ public class BlockHandlerCarpentersFlowerPot extends BlockDeterminantRender {
         setMetadataOverride(metadata);
 
         switch (FlowerPotHandler.getPlantProfile(TE)) {
-        case REDUCED_SCALE_YP:
-            RenderHelperFlowerPot.renderPlantCrossedSquares(renderBlocks, block, metadata, x, y, z, 0.75F, false);
-            break;
-        case REDUCED_SCALE_YN:
-            RenderHelperFlowerPot.renderPlantCrossedSquares(renderBlocks, block, metadata, x, y, z, 0.75F, true);
-            break;
-        case TRUE_SCALE:
-            RenderHelperFlowerPot.renderPlantCrossedSquares(renderBlocks, block, metadata, x, y, z, 1.0F, false);
-            break;
-        case THIN_YP:
-            RenderHelperFlowerPot.renderPlantThinCrossedSquares(renderBlocks, block, metadata, x, y, z, false);
-            break;
-        case THIN_YN:
-            RenderHelperFlowerPot.renderPlantThinCrossedSquares(renderBlocks, block, metadata, x, y, z, true);
-            break;
-        case CACTUS:
-            RenderHelperFlowerPot.drawPlantCactus(renderBlocks, block, x, y, z);
-            break;
-        case LEAVES:
-            drawStackedBlocks(block, x, y, z);
-            break;
+            case REDUCED_SCALE_YP:
+                RenderHelperFlowerPot.renderPlantCrossedSquares(renderBlocks, block, metadata, x, y, z, 0.75F, false);
+                break;
+            case REDUCED_SCALE_YN:
+                RenderHelperFlowerPot.renderPlantCrossedSquares(renderBlocks, block, metadata, x, y, z, 0.75F, true);
+                break;
+            case TRUE_SCALE:
+                RenderHelperFlowerPot.renderPlantCrossedSquares(renderBlocks, block, metadata, x, y, z, 1.0F, false);
+                break;
+            case THIN_YP:
+                RenderHelperFlowerPot.renderPlantThinCrossedSquares(renderBlocks, block, metadata, x, y, z, false);
+                break;
+            case THIN_YN:
+                RenderHelperFlowerPot.renderPlantThinCrossedSquares(renderBlocks, block, metadata, x, y, z, true);
+                break;
+            case CACTUS:
+                RenderHelperFlowerPot.drawPlantCactus(renderBlocks, block, x, y, z);
+                break;
+            case LEAVES:
+                drawStackedBlocks(block, x, y, z);
+                break;
         }
 
         clearMetadataOverride();

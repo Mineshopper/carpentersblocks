@@ -40,24 +40,24 @@ public class BlockCarpentersLadder extends BlockBase {
         int data = BlockProperties.getData(TE);
 
         switch (data) {
-        case Ladder.FACING_NORTH: // Ladder on +Z
-            setBlockBounds(0.0F, 0.0F, 0.8125F, 1.0F, 1.0F, 1.0F);
-            break;
-        case Ladder.FACING_SOUTH: // Ladder on -Z
-            setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 0.1875F);
-            break;
-        case Ladder.FACING_WEST: // Ladder on +X
-            setBlockBounds(0.8125F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
-            break;
-        case Ladder.FACING_EAST: // Ladder on -X
-            setBlockBounds(0.0F, 0.0F, 0.0F, 0.1875F, 1.0F, 1.0F);
-            break;
-        case Ladder.FACING_ON_X:
-            setBlockBounds(0.0F, 0.0F, 0.375F, 1.0F, 1.0F, 0.625F);
-            break;
-        default: // Ladder.FACING_ON_Z
-            setBlockBounds(0.375F, 0.0F, 0.0F, 0.625F, 1.0F, 1.0F);
-            break;
+            case Ladder.FACING_NORTH: // Ladder on +Z
+                setBlockBounds(0.0F, 0.0F, 0.8125F, 1.0F, 1.0F, 1.0F);
+                break;
+            case Ladder.FACING_SOUTH: // Ladder on -Z
+                setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 0.1875F);
+                break;
+            case Ladder.FACING_WEST: // Ladder on +X
+                setBlockBounds(0.8125F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
+                break;
+            case Ladder.FACING_EAST: // Ladder on -X
+                setBlockBounds(0.0F, 0.0F, 0.0F, 0.1875F, 1.0F, 1.0F);
+                break;
+            case Ladder.FACING_ON_X:
+                setBlockBounds(0.0F, 0.0F, 0.375F, 1.0F, 1.0F, 0.625F);
+                break;
+            default: // Ladder.FACING_ON_Z
+                setBlockBounds(0.375F, 0.0F, 0.0F, 0.625F, 1.0F, 1.0F);
+                break;
         }
     }
 
@@ -76,16 +76,16 @@ public class BlockCarpentersLadder extends BlockBase {
     public boolean canPlaceBlockOnSide(World world, int x, int y, int z, int side)
     {
         switch (ForgeDirection.getOrientation(side)) {
-        case NORTH:
-            return world.isBlockSolidOnSide(x, y, z + 1, ForgeDirection.SOUTH);
-        case SOUTH:
-            return world.isBlockSolidOnSide(x, y, z - 1, ForgeDirection.NORTH);
-        case WEST:
-            return world.isBlockSolidOnSide(x + 1, y, z, ForgeDirection.EAST);
-        case EAST:
-            return world.isBlockSolidOnSide(x - 1, y, z, ForgeDirection.WEST);
-        default:
-            return true;
+            case NORTH:
+                return world.isBlockSolidOnSide(x, y, z + 1, ForgeDirection.SOUTH);
+            case SOUTH:
+                return world.isBlockSolidOnSide(x, y, z - 1, ForgeDirection.NORTH);
+            case WEST:
+                return world.isBlockSolidOnSide(x + 1, y, z, ForgeDirection.EAST);
+            case EAST:
+                return world.isBlockSolidOnSide(x - 1, y, z, ForgeDirection.WEST);
+            default:
+                return true;
         }
     }
 

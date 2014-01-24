@@ -6,7 +6,6 @@ import net.minecraft.block.BlockHalfSlab;
 import net.minecraft.block.BlockPane;
 import net.minecraft.block.BlockQuartz;
 import net.minecraft.block.StepSound;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.Item;
@@ -37,11 +36,31 @@ public class BlockProperties {
     }
 
     /**
-     * Returns entity facing.
+     * Returns opposite of entity facing.
      */
-    public static int getEntityFacing(Entity entity)
+    public static int getOppositeFacing(EntityLivingBase entityLiving)
     {
-        return MathHelper.floor_double(entity.rotationYaw * 4.0F / 360.0F + 0.5D) & 3;
+        return MathHelper.floor_double(entityLiving.rotationYaw * 4.0F / 360.0F + 0.5D) & 3;
+    }
+
+    /**
+     * Will return opposite direction from entity facing.
+     */
+    public static ForgeDirection getDirectionFromFacing(int facing)
+    {
+        switch (facing)
+        {
+            case 0:
+                return ForgeDirection.NORTH;
+            case 1:
+                return ForgeDirection.EAST;
+            case 2:
+                return ForgeDirection.SOUTH;
+            case 3:
+                return ForgeDirection.WEST;
+            default:
+                return ForgeDirection.UNKNOWN;
+        }
     }
 
     /**
@@ -58,41 +77,6 @@ public class BlockProperties {
         float[] rgb = { red, green, blue };
 
         return rgb;
-    }
-
-    /**
-     * Similar to ForgeDirection.OPPOSITES[], except for entity facing.
-     */
-    public static int getOppositeFacing(int facing)
-    {
-        switch (facing) {
-        case 0:
-            return 2;
-        case 1:
-            return 3;
-        case 2:
-            return 0;
-        default:
-            return 1;
-        }
-    }
-
-    /**
-     * Will return direction from entity facing.
-     */
-    public static ForgeDirection getDirectionFromFacing(int facing)
-    {
-        switch (facing)
-        {
-        case 0:
-            return ForgeDirection.NORTH;
-        case 1:
-            return ForgeDirection.EAST;
-        case 2:
-            return ForgeDirection.SOUTH;
-        default:
-            return ForgeDirection.WEST;
-        }
     }
 
     /**

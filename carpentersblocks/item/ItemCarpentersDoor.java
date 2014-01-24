@@ -134,42 +134,42 @@ public class ItemCarpentersDoor extends Item {
 
         switch (facing)
         {
-        case Door.FACING_XN:
+            case Door.FACING_XN:
 
-            if (TE_ZP != null) {
-                if (piece == Door.getPiece(TE_ZP) && facing == Door.getFacing(TE_ZP) && Door.getHinge(TE_ZP) == Door.HINGE_LEFT) {
-                    return Door.HINGE_RIGHT;
+                if (TE_ZP != null) {
+                    if (piece == Door.getPiece(TE_ZP) && facing == Door.getFacing(TE_ZP) && Door.getHinge(TE_ZP) == Door.HINGE_LEFT) {
+                        return Door.HINGE_RIGHT;
+                    }
                 }
-            }
 
-            break;
-        case Door.FACING_XP:
+                break;
+            case Door.FACING_XP:
 
-            if (TE_ZN != null) {
-                if (piece == Door.getPiece(TE_ZN) && facing == Door.getFacing(TE_ZN) && Door.getHinge(TE_ZN) == Door.HINGE_LEFT) {
-                    return Door.HINGE_RIGHT;
+                if (TE_ZN != null) {
+                    if (piece == Door.getPiece(TE_ZN) && facing == Door.getFacing(TE_ZN) && Door.getHinge(TE_ZN) == Door.HINGE_LEFT) {
+                        return Door.HINGE_RIGHT;
+                    }
                 }
-            }
 
-            break;
-        case Door.FACING_ZN:
+                break;
+            case Door.FACING_ZN:
 
-            if (TE_XN != null) {
-                if (piece == Door.getPiece(TE_XN) && facing == Door.getFacing(TE_XN) && Door.getHinge(TE_XN) == Door.HINGE_LEFT) {
-                    return Door.HINGE_RIGHT;
+                if (TE_XN != null) {
+                    if (piece == Door.getPiece(TE_XN) && facing == Door.getFacing(TE_XN) && Door.getHinge(TE_XN) == Door.HINGE_LEFT) {
+                        return Door.HINGE_RIGHT;
+                    }
                 }
-            }
 
-            break;
-        case Door.FACING_ZP:
+                break;
+            case Door.FACING_ZP:
 
-            if (TE_XP != null) {
-                if (piece == Door.getPiece(TE_XP) && facing == Door.getFacing(TE_XP) && Door.getHinge(TE_XP) == Door.HINGE_LEFT) {
-                    return Door.HINGE_RIGHT;
+                if (TE_XP != null) {
+                    if (piece == Door.getPiece(TE_XP) && facing == Door.getFacing(TE_XP) && Door.getHinge(TE_XP) == Door.HINGE_LEFT) {
+                        return Door.HINGE_RIGHT;
+                    }
                 }
-            }
 
-            break;
+                break;
         }
 
         return Door.HINGE_LEFT;

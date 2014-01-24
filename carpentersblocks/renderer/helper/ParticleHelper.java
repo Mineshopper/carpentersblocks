@@ -89,24 +89,24 @@ public class ParticleHelper {
         if (BlockProperties.hasOverlay(TE, coverSide))
         {
             switch (BlockProperties.getOverlay(TE, coverSide)) {
-            case OverlayHandler.OVERLAY_GRASS:
-                block = Block.grass;
-                break;
-            case OverlayHandler.OVERLAY_HAY:
-                block = Block.hay;
-                break;
-            case OverlayHandler.OVERLAY_MYCELIUM:
-                block = Block.mycelium;
-                break;
-            case OverlayHandler.OVERLAY_SNOW:
-                block = Block.blockSnow;
-                break;
-            case OverlayHandler.OVERLAY_VINE:
-                block = Block.vine;
-                break;
-            case OverlayHandler.OVERLAY_WEB:
-                block = Block.web;
-                break;
+                case OverlayHandler.OVERLAY_GRASS:
+                    block = Block.grass;
+                    break;
+                case OverlayHandler.OVERLAY_HAY:
+                    block = Block.hay;
+                    break;
+                case OverlayHandler.OVERLAY_MYCELIUM:
+                    block = Block.mycelium;
+                    break;
+                case OverlayHandler.OVERLAY_SNOW:
+                    block = Block.blockSnow;
+                    break;
+                case OverlayHandler.OVERLAY_VINE:
+                    block = Block.vine;
+                    break;
+                case OverlayHandler.OVERLAY_WEB:
+                    block = Block.web;
+                    break;
             }
         }
 

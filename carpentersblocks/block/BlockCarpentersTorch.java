@@ -78,13 +78,13 @@ public class BlockCarpentersTorch extends BlockBase {
             int torchLight = 0;
 
             switch (Torch.getState(TE)) {
-            case LIT:
-                torchLight = 15;
-                break;
-            case SMOLDERING:
-                torchLight = 10;
-                break;
-            default: {}
+                case LIT:
+                    torchLight = 15;
+                    break;
+                case SMOLDERING:
+                    torchLight = 10;
+                    break;
+                default: {}
             }
 
             return coverLight > torchLight ? coverLight : torchLight;
@@ -187,21 +187,21 @@ public class BlockCarpentersTorch extends BlockBase {
         ForgeDirection facing = Torch.getFacing(TE);
 
         switch (facing) {
-        case NORTH:
-            setBlockBounds(0.5F - 0.15F, 0.2F, 1.0F - 0.15F * 2.0F, 0.5F + 0.15F, 0.8F, 1.0F);
-            break;
-        case SOUTH:
-            setBlockBounds(0.5F - 0.15F, 0.2F, 0.0F, 0.5F + 0.15F, 0.8F, 0.15F * 2.0F);
-            break;
-        case WEST:
-            setBlockBounds(1.0F - 0.15F * 2.0F, 0.2F, 0.5F - 0.15F, 1.0F, 0.8F, 0.5F + 0.15F);
-            break;
-        case EAST:
-            setBlockBounds(0.0F, 0.2F, 0.5F - 0.15F, 0.15F * 2.0F, 0.8F, 0.5F + 0.15F);
-            break;
-        default:
-            setBlockBounds(0.5F - 0.1F, 0.0F, 0.5F - 0.1F, 0.5F + 0.1F, 0.6F, 0.5F + 0.1F);
-            break;
+            case NORTH:
+                setBlockBounds(0.5F - 0.15F, 0.2F, 1.0F - 0.15F * 2.0F, 0.5F + 0.15F, 0.8F, 1.0F);
+                break;
+            case SOUTH:
+                setBlockBounds(0.5F - 0.15F, 0.2F, 0.0F, 0.5F + 0.15F, 0.8F, 0.15F * 2.0F);
+                break;
+            case WEST:
+                setBlockBounds(1.0F - 0.15F * 2.0F, 0.2F, 0.5F - 0.15F, 1.0F, 0.8F, 0.5F + 0.15F);
+                break;
+            case EAST:
+                setBlockBounds(0.0F, 0.2F, 0.5F - 0.15F, 0.15F * 2.0F, 0.8F, 0.5F + 0.15F);
+                break;
+            default:
+                setBlockBounds(0.5F - 0.1F, 0.0F, 0.5F - 0.1F, 0.5F + 0.1F, 0.6F, 0.5F + 0.1F);
+                break;
         }
 
         return super.collisionRayTrace(world, x, y, z, startVec, endVec);
@@ -213,34 +213,35 @@ public class BlockCarpentersTorch extends BlockBase {
     @Override
     public void updateTick(World world, int x, int y, int z, Random random)
     {
-        if (!world.isRemote)
-        {
+        if (!world.isRemote) {
+
             TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
 
             boolean canDropState = FeatureRegistry.enableTorchWeatherEffects;
-            boolean isWet = world.isRaining() && world.canBlockSeeTheSky(x, y, z);
+            boolean isWet = world.isRaining() && world.canBlockSeeTheSky(x, y, z) && world.getBiomeGenForCoords(x, z).rainfall > 0.0F;
 
             switch (Torch.getState(TE))
             {
-            case LIT:
-                if (canDropState && isWet) {
-                    Torch.setState(TE, State.SMOLDERING);
-                }
-                break;
-            case SMOLDERING:
-                if (canDropState && isWet) {
-                    Torch.setState(TE, State.UNLIT);
-                } else {
-                    Torch.setState(TE, State.LIT);
-                }
-                break;
-            case UNLIT:
-                if (!canDropState || !isWet) {
-                    Torch.setState(TE, State.SMOLDERING);
-                }
-                break;
-            default: {}
+                case LIT:
+                    if (canDropState && isWet) {
+                        Torch.setState(TE, State.SMOLDERING);
+                    }
+                    break;
+                case SMOLDERING:
+                    if (canDropState && isWet) {
+                        Torch.setState(TE, State.UNLIT);
+                    } else {
+                        Torch.setState(TE, State.LIT);
+                    }
+                    break;
+                case UNLIT:
+                    if (!canDropState || !isWet) {
+                        Torch.setState(TE, State.SMOLDERING);
+                    }
+                    break;
+                default: {}
             }
+
         }
     }
 

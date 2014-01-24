@@ -70,6 +70,23 @@ public class BlockCarpentersSafe extends BlockBase {
 
     @Override
     /**
+     * Rotates safe so that it faces player.
+     */
+    protected boolean onHammerLeftClick(TEBase TE, EntityPlayer entityPlayer)
+    {
+        int facing = BlockProperties.getOppositeFacing(entityPlayer);
+        ForgeDirection dir = BlockProperties.getDirectionFromFacing(facing);
+
+        if (dir != Safe.getFacing(TE)) {
+            Safe.setFacing(TE, facing);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    /**
      * Cycles locked state.
      */
     protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer)
@@ -105,65 +122,24 @@ public class BlockCarpentersSafe extends BlockBase {
             Safe.setAutoPerm(TE, autoPerm);
 
             switch (autoPerm) {
-            case Safe.AUTOMATION_ALL:
-                entityPlayer.addChatMessage("message.automation_all.name");
-                break;
-            case Safe.AUTOMATION_DISABLED:
-                entityPlayer.addChatMessage("message.automation_disabled.name");
-                break;
-            case Safe.AUTOMATION_RECEIVE:
-                entityPlayer.addChatMessage("message.automation_insert.name");
-                break;
-            case Safe.AUTOMATION_SEND:
-                entityPlayer.addChatMessage("message.automation_extract.name");
-                break;
+                case Safe.AUTOMATION_ALL:
+                    entityPlayer.addChatMessage("message.automation_all.name");
+                    break;
+                case Safe.AUTOMATION_DISABLED:
+                    entityPlayer.addChatMessage("message.automation_disabled.name");
+                    break;
+                case Safe.AUTOMATION_RECEIVE:
+                    entityPlayer.addChatMessage("message.automation_insert.name");
+                    break;
+                case Safe.AUTOMATION_SEND:
+                    entityPlayer.addChatMessage("message.automation_extract.name");
+                    break;
             }
 
         }
 
         return true;
     }
-
-    /**
-     * Called when a player removes a block.  This is responsible for
-     * actually destroying the block, and the block is intact at time of call.
-     * This is called regardless of whether the player can harvest the block or
-     * not.
-     *
-     * Return true if the block is actually destroyed.
-     *
-     * Note: When used in multiplayer, this is called on both client and
-     * server sides!
-     *
-     * @param world The current world
-     * @param player The player damaging the block, may be null
-     * @param x X Position
-     * @param y Y position
-     * @param z Z position
-     * @return True if the block is actually destroyed.
-     */
-    /*
-    @Override
-    public boolean removeBlockByPlayer(World world, EntityPlayer entityPlayer, int x, int y, int z)
-    {
-        TECarpentersSafe TE = (TECarpentersSafe) world.getBlockTileEntity(x, y, z);
-
-        if (!world.isRemote && !Safe.isOpen(TE))
-        {
-            if (entityPlayer == null) {
-                return !Safe.isLocked(TE);
-            } else {
-                if (canPlayerEdit(TE, entityPlayer)) {
-                    return super.removeBlockByPlayer(world, entityPlayer, x, y, z);
-                } else {
-                    return false;
-                }
-            }
-        }
-
-        return false;
-    }
-     */
 
     @Override
     /**
@@ -173,7 +149,7 @@ public class BlockCarpentersSafe extends BlockBase {
     {
         TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
 
-        Safe.setFacing(TE, BlockProperties.getOppositeFacing(BlockProperties.getEntityFacing(entityLiving)));
+        Safe.setFacing(TE, BlockProperties.getOppositeFacing(entityLiving));
 
         super.onBlockPlacedBy(world, x, y, z, entityLiving, itemStack);
     }
@@ -281,7 +257,7 @@ public class BlockCarpentersSafe extends BlockBase {
     {
         TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
 
-        if (Safe.isOpen(TE) || !entityPlayer.equals(BlockProperties.getOwner(TE))) {
+        if (Safe.isOpen(TE) || !canPlayerEdit(TE, entityPlayer)) {
             return -1; // Unbreakable
         } else {
             return super.getPlayerRelativeBlockHardness(entityPlayer, world, x, y, z);

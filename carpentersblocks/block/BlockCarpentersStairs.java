@@ -46,44 +46,44 @@ public class BlockCarpentersStairs extends BlockBase {
 
         switch (stairs.stairsType)
         {
-        case NORMAL_XZ:
-            if (++stairsID > Stairs.ID_NORMAL_SW) {
-                stairsID = Stairs.ID_NORMAL_SE;
-            }
-            break;
-        case NORMAL_Y:
-            if (stairs.arePositive) {
-                if (++stairsID > Stairs.ID_NORMAL_POS_E) {
-                    stairsID = Stairs.ID_NORMAL_POS_N;
+            case NORMAL_XZ:
+                if (++stairsID > Stairs.ID_NORMAL_SW) {
+                    stairsID = Stairs.ID_NORMAL_SE;
                 }
-            } else {
-                if (++stairsID > Stairs.ID_NORMAL_NEG_E) {
-                    stairsID = Stairs.ID_NORMAL_NEG_N;
+                break;
+            case NORMAL_Y:
+                if (stairs.arePositive) {
+                    if (++stairsID > Stairs.ID_NORMAL_POS_E) {
+                        stairsID = Stairs.ID_NORMAL_POS_N;
+                    }
+                } else {
+                    if (++stairsID > Stairs.ID_NORMAL_NEG_E) {
+                        stairsID = Stairs.ID_NORMAL_NEG_N;
+                    }
                 }
-            }
-            break;
-        case NORMAL_INT:
-            if (stairs.arePositive) {
-                if ((stairsID += 2) > Stairs.ID_NORMAL_INT_POS_SE) {
-                    stairsID = Stairs.ID_NORMAL_INT_POS_NE;
+                break;
+            case NORMAL_INT:
+                if (stairs.arePositive) {
+                    if ((stairsID += 2) > Stairs.ID_NORMAL_INT_POS_SE) {
+                        stairsID = Stairs.ID_NORMAL_INT_POS_NE;
+                    }
+                } else {
+                    if ((stairsID += 2) > Stairs.ID_NORMAL_INT_NEG_SE) {
+                        stairsID = Stairs.ID_NORMAL_INT_NEG_NE;
+                    }
                 }
-            } else {
-                if ((stairsID += 2) > Stairs.ID_NORMAL_INT_NEG_SE) {
-                    stairsID = Stairs.ID_NORMAL_INT_NEG_NE;
+                break;
+            case NORMAL_EXT:
+                if (stairs.arePositive) {
+                    if ((stairsID += 2) > Stairs.ID_NORMAL_EXT_POS_NW) {
+                        stairsID = Stairs.ID_NORMAL_EXT_POS_SW;
+                    }
+                }  else {
+                    if ((stairsID += 2) > Stairs.ID_NORMAL_EXT_NEG_NW) {
+                        stairsID = Stairs.ID_NORMAL_EXT_NEG_SW;
+                    }
                 }
-            }
-            break;
-        case NORMAL_EXT:
-            if (stairs.arePositive) {
-                if ((stairsID += 2) > Stairs.ID_NORMAL_EXT_POS_NW) {
-                    stairsID = Stairs.ID_NORMAL_EXT_POS_SW;
-                }
-            }  else {
-                if ((stairsID += 2) > Stairs.ID_NORMAL_EXT_NEG_NW) {
-                    stairsID = Stairs.ID_NORMAL_EXT_NEG_SW;
-                }
-            }
-            break;
+                break;
         }
 
         BlockProperties.setData(TE, stairsID);
@@ -104,34 +104,34 @@ public class BlockCarpentersStairs extends BlockBase {
 
         switch (stairs.stairsType)
         {
-        case NORMAL_XZ:
-            stairsID = Stairs.ID_NORMAL_POS_N;
-            break;
-        case NORMAL_Y:
-            if (stairs.arePositive) {
-                stairsID -= 4;
-            } else {
-                stairsID = Stairs.ID_NORMAL_INT_POS_NE;
-            }
-            break;
-        case NORMAL_INT:
-            if (stairs.arePositive) {
-                stairsID += 1;
-            } else {
-                if (stairsID == Stairs.ID_NORMAL_INT_NEG_NE || stairsID == Stairs.ID_NORMAL_INT_NEG_NW) {
-                    stairsID += 11;
+            case NORMAL_XZ:
+                stairsID = Stairs.ID_NORMAL_POS_N;
+                break;
+            case NORMAL_Y:
+                if (stairs.arePositive) {
+                    stairsID -= 4;
                 } else {
-                    stairsID += 3;
+                    stairsID = Stairs.ID_NORMAL_INT_POS_NE;
                 }
-            }
-            break;
-        case NORMAL_EXT:
-            if (stairs.arePositive) {
-                stairsID += 1;
-            } else {
-                stairsID = Stairs.ID_NORMAL_SE;
-            }
-            break;
+                break;
+            case NORMAL_INT:
+                if (stairs.arePositive) {
+                    stairsID += 1;
+                } else {
+                    if (stairsID == Stairs.ID_NORMAL_INT_NEG_NE || stairsID == Stairs.ID_NORMAL_INT_NEG_NW) {
+                        stairsID += 11;
+                    } else {
+                        stairsID += 3;
+                    }
+                }
+                break;
+            case NORMAL_EXT:
+                if (stairs.arePositive) {
+                    stairsID += 1;
+                } else {
+                    stairsID = Stairs.ID_NORMAL_SE;
+                }
+                break;
         }
 
         BlockProperties.setData(TE, stairsID);
@@ -247,15 +247,15 @@ public class BlockCarpentersStairs extends BlockBase {
     {
         // Normalize face coordinates
         switch (side) {
-        case 2:
-            hitX = 1.0F - hitX;
-            break;
-        case 4:
-            hitX = hitZ;
-            break;
-        case 5:
-            hitX = 1.0F - hitZ;
-            break;
+            case 2:
+                hitX = 1.0F - hitX;
+                break;
+            case 4:
+                hitX = hitZ;
+                break;
+            case 5:
+                hitX = 1.0F - hitZ;
+                break;
         }
 
         if (side > 1) {
@@ -294,18 +294,18 @@ public class BlockCarpentersStairs extends BlockBase {
         if (stairsID > 11)
         {
             switch (facing) {
-            case 0:
-                stairsID = stairsID == 12 ? Stairs.ID_NORMAL_NEG_N : Stairs.ID_NORMAL_POS_N;
-                break;
-            case 1:
-                stairsID = stairsID == 12 ? Stairs.ID_NORMAL_NEG_E : Stairs.ID_NORMAL_POS_E;
-                break;
-            case 2:
-                stairsID = stairsID == 12 ? Stairs.ID_NORMAL_NEG_S : Stairs.ID_NORMAL_POS_S;
-                break;
-            case 3:
-                stairsID = stairsID == 12 ? Stairs.ID_NORMAL_NEG_W : Stairs.ID_NORMAL_POS_W;
-                break;
+                case 0:
+                    stairsID = stairsID == 12 ? Stairs.ID_NORMAL_NEG_N : Stairs.ID_NORMAL_POS_N;
+                    break;
+                case 1:
+                    stairsID = stairsID == 12 ? Stairs.ID_NORMAL_NEG_E : Stairs.ID_NORMAL_POS_E;
+                    break;
+                case 2:
+                    stairsID = stairsID == 12 ? Stairs.ID_NORMAL_NEG_S : Stairs.ID_NORMAL_POS_S;
+                    break;
+                case 3:
+                    stairsID = stairsID == 12 ? Stairs.ID_NORMAL_NEG_W : Stairs.ID_NORMAL_POS_W;
+                    break;
             }
         }
 

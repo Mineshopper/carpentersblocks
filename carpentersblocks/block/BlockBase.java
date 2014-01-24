@@ -79,10 +79,10 @@ public class BlockBase extends BlockContainer {
     public Icon getIcon(int side, int metadata)
     {
         switch (metadata) {
-        case EventHandler.BLOCKICON_BASE_ID:
-            return blockIcon;
-        default:
-            return IconRegistry.icon_blank;
+            case EventHandler.BLOCKICON_BASE_ID:
+                return blockIcon;
+            default:
+                return IconRegistry.icon_blank;
         }
     }
 
@@ -167,62 +167,60 @@ public class BlockBase extends BlockContainer {
     {
         TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
 
-        ItemStack itemStack = entityPlayer.getCurrentEquippedItem();
+        if (canPlayerEdit(TE, entityPlayer)) {
 
-        int side = EventHandler.eventFace;
+            ItemStack itemStack = entityPlayer.getCurrentEquippedItem();
 
-        if (itemStack != null && canPlayerEdit(TE, entityPlayer))
-        {
-            int effectiveSide = BlockProperties.hasCover(TE, side) ? side : 6;
-            Item item = itemStack.getItem();
+            if (itemStack != null) {
 
-            if (item instanceof ICarpentersHammer && ((ICarpentersHammer)item).canUseHammer(world, entityPlayer)) {
+                int effectiveSide = BlockProperties.hasCover(TE, EventHandler.eventFace) ? EventHandler.eventFace : 6;
+                Item item = itemStack.getItem();
 
-                List<Boolean> altered = new ArrayList<Boolean>();
+                if (item instanceof ICarpentersHammer && ((ICarpentersHammer)item).canUseHammer(world, entityPlayer)) {
 
-                altered.add(preOnBlockClicked(TE, world, x, y, z, entityPlayer));
+                    List<Boolean> altered = new ArrayList<Boolean>();
 
-                if (!altered.contains(true))
-                {
+                    altered.add(preOnBlockClicked(TE, world, x, y, z, entityPlayer));
+
+                    if (!altered.contains(true)) {
+
+                        if (entityPlayer.isSneaking()) {
+
+                            if (BlockProperties.hasOverlay(TE, effectiveSide)) {
+                                altered.add(BlockProperties.setOverlay(TE, effectiveSide, (ItemStack)null));
+                            } else if (BlockProperties.hasDyeColor(TE, effectiveSide)) {
+                                altered.add(BlockProperties.setDyeColor(TE, effectiveSide, 0));
+                            } else if (BlockProperties.hasCover(TE, effectiveSide)) {
+                                altered.add(BlockProperties.setCover(TE, effectiveSide, 0, (ItemStack)null));
+                                altered.add(BlockProperties.setPattern(TE, effectiveSide, 0));
+                            }
+
+                        } else {
+
+                            altered.add(onHammerLeftClick(TE, entityPlayer));
+
+                        }
+                    }
+
+                    if (altered.contains(true)) {
+                        onNeighborBlockChange(world, x, y, z, blockID);
+                        world.notifyBlocksOfNeighborChange(x, y, z, blockID);
+                    }
+
+                } else if (item instanceof ICarpentersChisel && ((ICarpentersChisel)item).canUseChisel(world, entityPlayer)) {
+
                     if (entityPlayer.isSneaking()) {
 
-                        if (BlockProperties.hasOverlay(TE, effectiveSide)) {
-                            altered.add(BlockProperties.setOverlay(TE, effectiveSide, (ItemStack)null));
-                        } else if (BlockProperties.hasDyeColor(TE, effectiveSide)) {
-                            altered.add(BlockProperties.setDyeColor(TE, effectiveSide, 0));
-                        } else if (BlockProperties.hasCover(TE, effectiveSide)) {
-                            altered.add(BlockProperties.setCover(TE, effectiveSide, 0, (ItemStack)null));
-                            altered.add(BlockProperties.setPattern(TE, effectiveSide, 0));
+                        if (BlockProperties.hasPattern(TE, effectiveSide)) {
+                            BlockProperties.setPattern(TE, effectiveSide, 0);
                         }
 
-                    } else {
+                    } else if (BlockProperties.hasCover(TE, effectiveSide) && BlockProperties.getCoverBlock(TE, effectiveSide).isOpaqueCube()) {
 
-                        altered.add(onHammerLeftClick(TE, entityPlayer));
+                        onChiselClick(TE, effectiveSide, true);
 
                     }
                 }
-
-                if (altered.contains(true)) {
-
-                    onNeighborBlockChange(world, x, y, z, blockID);
-                    world.notifyBlocksOfNeighborChange(x, y, z, blockID);
-
-                }
-
-            } else if (item instanceof ICarpentersChisel && ((ICarpentersChisel)item).canUseChisel(world, entityPlayer)) {
-
-                if (entityPlayer.isSneaking()) {
-
-                    if (BlockProperties.hasPattern(TE, effectiveSide)) {
-                        BlockProperties.setPattern(TE, effectiveSide, 0);
-                    }
-
-                } else if (BlockProperties.hasCover(TE, effectiveSide) && BlockProperties.getCoverBlock(TE, effectiveSide).isOpaqueCube()) {
-
-                    onChiselClick(TE, effectiveSide, true);
-
-                }
-
             }
         }
     }
@@ -237,23 +235,18 @@ public class BlockBase extends BlockContainer {
 
             ItemStack itemStack = entityPlayer.getCurrentEquippedItem();
 
-            if (itemStack != null && itemStack.getItem() instanceof ItemFood) {
-                return false;
-            } else {
-                return true;
-            }
+            return !(itemStack != null && itemStack.getItem() instanceof ItemFood);
 
         } else {
 
             TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
-
-            ItemStack itemStack = entityPlayer.getCurrentEquippedItem();
-
             List<Boolean> altered = new ArrayList<Boolean>();
-            List<Boolean> decInv = new ArrayList<Boolean>();
 
-            if (itemStack != null && canPlayerActivate(TE, entityPlayer))
-            {
+            if (canPlayerActivate(TE, entityPlayer)) {
+
+                ItemStack itemStack = entityPlayer.getCurrentEquippedItem();
+                List<Boolean> decInv = new ArrayList<Boolean>();
+
                 /* Sides 0-5 are side covers, and 6 is the base block. */
                 int effectiveSide = BlockProperties.hasCover(TE, side) ? side : 6;
 
@@ -262,87 +255,91 @@ public class BlockBase extends BlockContainer {
                 altered.add(result[0]);
                 decInv.add(result[1]);
 
-                if (!altered.contains(true))
-                {
-                    if (itemStack.getItem() instanceof ICarpentersHammer && ((ICarpentersHammer)itemStack.getItem()).canUseHammer(world, entityPlayer)) {
+                if (canPlayerEdit(TE, entityPlayer)) {
 
-                        altered.add(onHammerRightClick(TE, entityPlayer));
+                    if (!altered.contains(true)) {
 
-                    } else if (ItemRegistry.enableChisel && itemStack.getItem() instanceof ICarpentersChisel && ((ICarpentersChisel)itemStack.getItem()).canUseChisel(world, entityPlayer)) {
+                        if (itemStack != null) {
 
-                        if (BlockProperties.hasCover(TE, effectiveSide) && BlockProperties.getCoverBlock(TE, effectiveSide).isOpaqueCube()) {
-                            altered.add(onChiselClick(TE, effectiveSide, false));
-                        }
+                            if (itemStack.getItem() instanceof ICarpentersHammer && ((ICarpentersHammer)itemStack.getItem()).canUseHammer(world, entityPlayer)) {
 
-                    } else if (FeatureRegistry.enableCovers && canCoverBase(TE, world, x, y, z) && BlockProperties.isCover(itemStack)) {
+                                altered.add(onHammerRightClick(TE, entityPlayer));
 
-                        Block block = Block.blocksList[itemStack.itemID];
+                            } else if (ItemRegistry.enableChisel && itemStack.getItem() instanceof ICarpentersChisel && ((ICarpentersChisel)itemStack.getItem()).canUseChisel(world, entityPlayer)) {
 
-                        /* Will handle blocks that save directions using only x and y axes (pumpkin) */
-                        int metadata = block instanceof BlockDirectional ? MathHelper.floor_double(entityPlayer.rotationYaw * 4.0F / 360.0F + 2.5D) & 3 : itemStack.getItemDamage();
+                                if (BlockProperties.hasCover(TE, effectiveSide) && BlockProperties.getCoverBlock(TE, effectiveSide).isOpaqueCube()) {
+                                    altered.add(onChiselClick(TE, effectiveSide, false));
+                                }
 
-                        /* Will handle blocks that save directions using all axes (logs, quartz) */
-                        if (BlockProperties.blockRotates(world, block, x, y, z))
-                        {
-                            int facing = BlockProperties.getEntityFacing(EventHandler.eventEntityPlayer);
-                            int side_interpolated =    entityPlayer.rotationPitch < -45.0F ? 0 : entityPlayer.rotationPitch > 45 ? 1 : facing == 0 ? 3 : facing == 1 ? 4 : facing == 2 ? 2 : 5;
-                            metadata = block.onBlockPlaced(world, x, y, z, side_interpolated, hitX, hitY, hitZ, metadata);
-                        }
+                            } else if (FeatureRegistry.enableCovers && canCoverBase(TE, world, x, y, z) && BlockProperties.isCover(itemStack)) {
 
-                        if (!BlockProperties.hasCover(TE, 6)) {
+                                Block block = Block.blocksList[itemStack.itemID];
 
-                            altered.add(decInv.add(BlockProperties.setCover(TE, 6, metadata, itemStack)));
+                                /* Will handle blocks that save directions using only x and y axes (pumpkin) */
+                                int metadata = block instanceof BlockDirectional ? MathHelper.floor_double(entityPlayer.rotationYaw * 4.0F / 360.0F + 2.5D) & 3 : itemStack.getItemDamage();
 
-                        } else if (FeatureRegistry.enableSideCovers) {
+                                /* Will handle blocks that save directions using all axes (logs, quartz) */
+                                if (BlockProperties.blockRotates(world, block, x, y, z)) {
+                                    int facing = BlockProperties.getOppositeFacing(EventHandler.eventEntityPlayer);
+                                    int side_interpolated =    entityPlayer.rotationPitch < -45.0F ? 0 : entityPlayer.rotationPitch > 45 ? 1 : facing == 0 ? 3 : facing == 1 ? 4 : facing == 2 ? 2 : 5;
+                                    metadata = block.onBlockPlaced(world, x, y, z, side_interpolated, hitX, hitY, hitZ, metadata);
+                                }
 
-                            if (!BlockProperties.hasCover(TE, side) && canCoverSide(TE, world, x, y, z, side)) {
-                                altered.add(decInv.add(BlockProperties.setCover(TE, side, metadata, itemStack)));
+                                if (!BlockProperties.hasCover(TE, 6)) {
+
+                                    altered.add(decInv.add(BlockProperties.setCover(TE, 6, metadata, itemStack)));
+
+                                } else if (FeatureRegistry.enableSideCovers) {
+
+                                    if (!BlockProperties.hasCover(TE, side) && canCoverSide(TE, world, x, y, z, side)) {
+                                        altered.add(decInv.add(BlockProperties.setCover(TE, side, metadata, itemStack)));
+                                    }
+
+                                }
+
+                            } else if (FeatureRegistry.enableOverlays && BlockProperties.isOverlay(itemStack)) {
+
+                                if (!BlockProperties.hasOverlay(TE, effectiveSide) && (effectiveSide < 6 && BlockProperties.hasCover(TE, effectiveSide) || effectiveSide == 6)) {
+                                    altered.add(decInv.add(BlockProperties.setOverlay(TE, effectiveSide, itemStack)));
+                                }
+
+                            } else if (FeatureRegistry.enableDyeColors && itemStack.getItem().equals(Item.dyePowder) && itemStack.getItemDamage() != 15) {
+
+                                if (!BlockProperties.hasDyeColor(TE, effectiveSide)) {
+                                    altered.add(decInv.add(BlockProperties.setDyeColor(TE, effectiveSide, 15 - itemStack.getItemDamage())));
+                                }
+
                             }
-
                         }
-
-                    } else if (FeatureRegistry.enableOverlays && BlockProperties.isOverlay(itemStack)) {
-
-                        if (!BlockProperties.hasOverlay(TE, effectiveSide) && (effectiveSide < 6 && BlockProperties.hasCover(TE, effectiveSide) || effectiveSide == 6)) {
-                            altered.add(decInv.add(BlockProperties.setOverlay(TE, effectiveSide, itemStack)));
-                        }
-
-                    } else if (FeatureRegistry.enableDyeColors && itemStack.getItem().equals(Item.dyePowder) && itemStack.getItemDamage() != 15) {
-
-                        if (!BlockProperties.hasDyeColor(TE, effectiveSide)) {
-                            altered.add(decInv.add(BlockProperties.setDyeColor(TE, effectiveSide, 15 - itemStack.getItemDamage())));
-                        }
-
                     }
                 }
-            }
 
-            if (!altered.contains(true)) {
+                if (!altered.contains(true)) {
 
-                if (canPlayerActivate(TE, entityPlayer))
-                {
-                    boolean[] result = postOnBlockActivated(TE, world, x, y, z, entityPlayer, side, hitX, hitY, hitZ);
-                    altered.add(result[0]);
-                    decInv.add(result[1]);
+                    if (canPlayerActivate(TE, entityPlayer)) {
+                        result = postOnBlockActivated(TE, world, x, y, z, entityPlayer, side, hitX, hitY, hitZ);
+                        altered.add(result[0]);
+                        decInv.add(result[1]);
+                    }
+
+                } else {
+
+                    BlockProperties.playBlockSound(TE, BlockProperties.getCoverBlock(TE, 6));
+                    damageItemWithChance(world, entityPlayer);
+                    onNeighborBlockChange(world, x, y, z, blockID);
+                    world.notifyBlocksOfNeighborChange(x, y, z, blockID);
+
                 }
 
-            } else {
-
-                BlockProperties.playBlockSound(TE, BlockProperties.getCoverBlock(TE, 6));
-                damageItemWithChance(world, entityPlayer);
-                onNeighborBlockChange(world, x, y, z, blockID);
-                world.notifyBlocksOfNeighborChange(x, y, z, blockID);
-
-            }
-
-            if (decInv.contains(true)) {
-                if (!entityPlayer.capabilities.isCreativeMode && --itemStack.stackSize <= 0) {
-                    entityPlayer.inventory.setInventorySlotContents(entityPlayer.inventory.currentItem, (ItemStack)null);
+                if (decInv.contains(true)) {
+                    if (!entityPlayer.capabilities.isCreativeMode && --itemStack.stackSize <= 0) {
+                        entityPlayer.inventory.setInventorySlotContents(entityPlayer.inventory.currentItem, (ItemStack)null);
+                    }
                 }
+
             }
 
             return altered.contains(true);
-
         }
     }
 
@@ -446,37 +443,37 @@ public class BlockBase extends BlockContainer {
                             if (adjBlock.isBlockSolidOnSide(world, x_offset, y_offset, z_offset, adj_side)) {
 
                                 switch (adj_side) {
-                                case DOWN:
-                                    if (adjBlock.getBlockBoundsMinY() < sideCoverDepth) {
-                                        BlockProperties.clearAttributes(TE, side);
-                                    }
-                                    break;
-                                case UP:
-                                    if (adjBlock.getBlockBoundsMaxY() > 1.0F - sideCoverDepth) {
-                                        BlockProperties.clearAttributes(TE, side);
-                                    }
-                                    break;
-                                case NORTH:
-                                    if (adjBlock.getBlockBoundsMinZ() < sideCoverDepth) {
-                                        BlockProperties.clearAttributes(TE, side);
-                                    }
-                                    break;
-                                case SOUTH:
-                                    if (adjBlock.getBlockBoundsMaxZ() > 1.0F - sideCoverDepth) {
-                                        BlockProperties.clearAttributes(TE, side);
-                                    }
-                                    break;
-                                case WEST:
-                                    if (adjBlock.getBlockBoundsMinX() < sideCoverDepth) {
-                                        BlockProperties.clearAttributes(TE, side);
-                                    }
-                                    break;
-                                case EAST:
-                                    if (adjBlock.getBlockBoundsMaxX() > 1.0F - sideCoverDepth) {
-                                        BlockProperties.clearAttributes(TE, side);
-                                    }
-                                    break;
-                                default: {}
+                                    case DOWN:
+                                        if (adjBlock.getBlockBoundsMinY() < sideCoverDepth) {
+                                            BlockProperties.clearAttributes(TE, side);
+                                        }
+                                        break;
+                                    case UP:
+                                        if (adjBlock.getBlockBoundsMaxY() > 1.0F - sideCoverDepth) {
+                                            BlockProperties.clearAttributes(TE, side);
+                                        }
+                                        break;
+                                    case NORTH:
+                                        if (adjBlock.getBlockBoundsMinZ() < sideCoverDepth) {
+                                            BlockProperties.clearAttributes(TE, side);
+                                        }
+                                        break;
+                                    case SOUTH:
+                                        if (adjBlock.getBlockBoundsMaxZ() > 1.0F - sideCoverDepth) {
+                                            BlockProperties.clearAttributes(TE, side);
+                                        }
+                                        break;
+                                    case WEST:
+                                        if (adjBlock.getBlockBoundsMinX() < sideCoverDepth) {
+                                            BlockProperties.clearAttributes(TE, side);
+                                        }
+                                        break;
+                                    case EAST:
+                                        if (adjBlock.getBlockBoundsMaxX() > 1.0F - sideCoverDepth) {
+                                            BlockProperties.clearAttributes(TE, side);
+                                        }
+                                        break;
+                                    default: {}
                                 }
                             }
                         }
@@ -592,24 +589,24 @@ public class BlockBase extends BlockContainer {
         double zOffset = target.blockZ + TE.worldObj.rand.nextDouble() * (block.getBlockBoundsMaxZ() - block.getBlockBoundsMinZ() - 0.1F * 2.0F) + 0.1F + block.getBlockBoundsMinZ();
 
         switch (target.sideHit) {
-        case 0:
-            yOffset = target.blockY + block.getBlockBoundsMinY() - 0.1D;
-            break;
-        case 1:
-            yOffset = target.blockY + block.getBlockBoundsMaxY() + 0.1D;
-            break;
-        case 2:
-            zOffset = target.blockZ + block.getBlockBoundsMinZ() - 0.1D;
-            break;
-        case 3:
-            zOffset = target.blockZ + block.getBlockBoundsMaxZ() + 0.1D;
-            break;
-        case 4:
-            xOffset = target.blockX + block.getBlockBoundsMinX() - 0.1D;
-            break;
-        case 5:
-            xOffset = target.blockX + block.getBlockBoundsMaxX() + 0.1D;
-            break;
+            case 0:
+                yOffset = target.blockY + block.getBlockBoundsMinY() - 0.1D;
+                break;
+            case 1:
+                yOffset = target.blockY + block.getBlockBoundsMaxY() + 0.1D;
+                break;
+            case 2:
+                zOffset = target.blockZ + block.getBlockBoundsMinZ() - 0.1D;
+                break;
+            case 3:
+                zOffset = target.blockZ + block.getBlockBoundsMaxZ() + 0.1D;
+                break;
+            case 4:
+                xOffset = target.blockX + block.getBlockBoundsMinX() - 0.1D;
+                break;
+            case 5:
+                xOffset = target.blockX + block.getBlockBoundsMaxX() + 0.1D;
+                break;
         }
 
         ParticleHelper.addBlockHitEffect(TE, target, xOffset, yOffset, zOffset, block, metadata, effectRenderer);
@@ -844,42 +841,48 @@ public class BlockBase extends BlockContainer {
      */
     public boolean canSustainPlant(World world, int x, int y, int z, ForgeDirection dir, IPlantable plant)
     {
-        TEBase TE = (TEBase)world.getBlockTileEntity(x, y, z);
+        if (extendsBlockBase(world, x, y, z)) {
 
-        Block srcBlock = BlockProperties.getCoverBlock(TE, 6);
-        Block topBlock = BlockProperties.getCoverBlock(TE, 1);
+            TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
 
-        int baseOverlay = BlockProperties.getOverlay(TE, 6);
-        int topOverlay = BlockProperties.getOverlay(TE, 1);
+            Block srcBlock = BlockProperties.getCoverBlock(TE, 6);
+            Block topBlock = BlockProperties.getCoverBlock(TE, 1);
 
-        boolean canSupportPlant = false;
+            int baseOverlay = BlockProperties.getOverlay(TE, 6);
+            int topOverlay = BlockProperties.getOverlay(TE, 1);
 
-        int tempBlockID = blockID;
+            boolean canSupportPlant = false;
 
-        for (int count = 0; count < 4; ++count)
-        {
-            switch (count)
+            int tempBlockID = blockID;
+
+            for (int count = 0; count < 4; ++count)
             {
-            case 0:
-                tempBlockID = srcBlock.blockID;
-                break;
-            case 1:
-                tempBlockID = topBlock.blockID;
-                break;
-            case 2:
-                tempBlockID = baseOverlay == OverlayHandler.OVERLAY_GRASS || topOverlay == OverlayHandler.OVERLAY_GRASS ? Block.grass.blockID : blockID;
-                break;
-            case 3:
-                tempBlockID = baseOverlay == OverlayHandler.OVERLAY_MYCELIUM || topOverlay == OverlayHandler.OVERLAY_MYCELIUM ? Block.mycelium.blockID : blockID;
-                break;
+                switch (count)
+                {
+                    case 0:
+                        tempBlockID = srcBlock.blockID;
+                        break;
+                    case 1:
+                        tempBlockID = topBlock.blockID;
+                        break;
+                    case 2:
+                        tempBlockID = baseOverlay == OverlayHandler.OVERLAY_GRASS || topOverlay == OverlayHandler.OVERLAY_GRASS ? Block.grass.blockID : blockID;
+                        break;
+                    case 3:
+                        tempBlockID = baseOverlay == OverlayHandler.OVERLAY_MYCELIUM || topOverlay == OverlayHandler.OVERLAY_MYCELIUM ? Block.mycelium.blockID : blockID;
+                        break;
+                }
+
+                if (canSustainPlantWithBlockIdOverride(TE, world, x, y, z, tempBlockID, dir, plant)) {
+                    canSupportPlant = true;
+                }
             }
 
-            if (canSustainPlantWithBlockIdOverride(TE, world, x, y, z, tempBlockID, dir, plant)) {
-                canSupportPlant = true;
-            }
+            return canSupportPlant && isBlockSolidOnSide(world, x, y, z, ForgeDirection.UP);
+
         }
 
-        return canSupportPlant && isBlockSolidOnSide(world, x, y, z, ForgeDirection.UP);
+        return super.canSustainPlant(world, x, y, z, dir, plant);
     }
 
     /**
@@ -902,19 +905,19 @@ public class BlockBase extends BlockContainer {
 
             switch (plantType)
             {
-            case Desert: return blockID == sand.blockID;
-            case Nether: return blockID == slowSand.blockID;
-            case Crop:   return blockID == tilledField.blockID;
-            case Cave:   return true;
-            case Plains: return blockID == grass.blockID || blockID == dirt.blockID;
-            case Water:  return BlockProperties.getCoverBlock(TE, 6).blockMaterial == Material.water && world.getBlockMetadata(x, y, z) == 0;
-            case Beach:
-                boolean isBeach = blockID == Block.grass.blockID || blockID == Block.dirt.blockID || blockID == Block.sand.blockID;
-                boolean hasWater = world.getBlockMaterial(x - 1, y, z    ) == Material.water ||
-                        world.getBlockMaterial(x + 1, y, z    ) == Material.water ||
-                        world.getBlockMaterial(x,     y, z - 1) == Material.water ||
-                        world.getBlockMaterial(x,     y, z + 1) == Material.water;
-                return isBeach && hasWater;
+                case Desert: return blockID == sand.blockID;
+                case Nether: return blockID == slowSand.blockID;
+                case Crop:   return blockID == tilledField.blockID;
+                case Cave:   return true;
+                case Plains: return blockID == grass.blockID || blockID == dirt.blockID;
+                case Water:  return BlockProperties.getCoverBlock(TE, 6).blockMaterial == Material.water && world.getBlockMetadata(x, y, z) == 0;
+                case Beach:
+                    boolean isBeach = blockID == Block.grass.blockID || blockID == Block.dirt.blockID || blockID == Block.sand.blockID;
+                    boolean hasWater = world.getBlockMaterial(x - 1, y, z    ) == Material.water ||
+                            world.getBlockMaterial(x + 1, y, z    ) == Material.water ||
+                            world.getBlockMaterial(x,     y, z - 1) == Material.water ||
+                            world.getBlockMaterial(x,     y, z + 1) == Material.water;
+                    return isBeach && hasWater;
             }
         }
 

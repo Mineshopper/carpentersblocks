@@ -37,18 +37,18 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
         int type = Gate.getType(TE);
 
         switch (type) {
-        case Gate.TYPE_PICKET:
-            renderPicketGate(block, x, y, z);
-            break;
-        case Gate.TYPE_PLANK_VERTICAL:
-            renderVerticalPlankGate(block, x, y, z);
-            break;
-        case Gate.TYPE_WALL:
-            renderWallGate(block, x, y, z);
-            break;
-        default: // Gate.VANILLA
-            renderVanillaGate(block, x, y, z);
-            break;
+            case Gate.TYPE_PICKET:
+                renderPicketGate(block, x, y, z);
+                break;
+            case Gate.TYPE_PLANK_VERTICAL:
+                renderVerticalPlankGate(block, x, y, z);
+                break;
+            case Gate.TYPE_WALL:
+                renderWallGate(block, x, y, z);
+                break;
+            default: // Gate.VANILLA
+                renderVanillaGate(block, x, y, z);
+                break;
         }
 
         renderBlocks.renderAllFaces = false;
@@ -334,20 +334,20 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
                     for (int count = 0; count < 3; ++count)
                     {
                         switch (count) {
-                        case 0:
-                            x_High = 0.5625F;
-                            y_High = isGateAbove ? 1.0F : 0.8125F;
-                            break;
-                        case 1:
-                            x_Low = 0.6875F;
-                            x_High = 0.8125F;
-                            y_High = isGateAbove ? 1.0F : 0.875F;
-                            break;
-                        case 2:
-                            x_Low = 0.9375F;
-                            x_High = 1.0F;
-                            y_High = isGateAbove ? 1.0F : 0.875F;
-                            break;
+                            case 0:
+                                x_High = 0.5625F;
+                                y_High = isGateAbove ? 1.0F : 0.8125F;
+                                break;
+                            case 1:
+                                x_Low = 0.6875F;
+                                x_High = 0.8125F;
+                                y_High = isGateAbove ? 1.0F : 0.875F;
+                                break;
+                            case 2:
+                                x_Low = 0.9375F;
+                                x_High = 1.0F;
+                                y_High = isGateAbove ? 1.0F : 0.875F;
+                                break;
                         }
 
                         z_Low = 0.0F;
@@ -409,20 +409,20 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
                     for (int count = 0; count < 3; ++count)
                     {
                         switch (count) {
-                        case 0:
-                            x_Low = 0.4375F;
-                            y_High = isGateAbove ? 1.0F : 0.8125F;
-                            break;
-                        case 1:
-                            x_Low = 0.1875F;
-                            x_High = 0.3125F;
-                            y_High = isGateAbove ? 1.0F : 0.875F;
-                            break;
-                        case 2:
-                            x_Low = 0.0F;
-                            x_High = 0.0625F;
-                            y_High = isGateAbove ? 1.0F : 0.875F;
-                            break;
+                            case 0:
+                                x_Low = 0.4375F;
+                                y_High = isGateAbove ? 1.0F : 0.8125F;
+                                break;
+                            case 1:
+                                x_Low = 0.1875F;
+                                x_High = 0.3125F;
+                                y_High = isGateAbove ? 1.0F : 0.875F;
+                                break;
+                            case 2:
+                                x_Low = 0.0F;
+                                x_High = 0.0625F;
+                                y_High = isGateAbove ? 1.0F : 0.875F;
+                                break;
                         }
 
                         z_Low = 0.0F;
@@ -487,20 +487,20 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
                     for (int count = 0; count < 3; ++count)
                     {
                         switch (count) {
-                        case 0:
-                            y_High = isGateAbove ? 1.0F : 0.8125F;
-                            z_High = 0.5625F;
-                            break;
-                        case 1:
-                            y_High = isGateAbove ? 1.0F : 0.875F;
-                            z_Low = 0.6875F;
-                            z_High = 0.8125F;
-                            break;
-                        case 2:
-                            y_High = isGateAbove ? 1.0F : 0.875F;
-                            z_Low = 0.9375F;
-                            z_High = 1.0F;
-                            break;
+                            case 0:
+                                y_High = isGateAbove ? 1.0F : 0.8125F;
+                                z_High = 0.5625F;
+                                break;
+                            case 1:
+                                y_High = isGateAbove ? 1.0F : 0.875F;
+                                z_Low = 0.6875F;
+                                z_High = 0.8125F;
+                                break;
+                            case 2:
+                                y_High = isGateAbove ? 1.0F : 0.875F;
+                                z_Low = 0.9375F;
+                                z_High = 1.0F;
+                                break;
                         }
 
                         x_Low = 0.0F;
@@ -562,20 +562,20 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
                     for (int count = 0; count < 3; ++count)
                     {
                         switch (count) {
-                        case 0:
-                            y_High = isGateAbove ? 1.0F : 0.8125F;
-                            z_Low = 0.4375F;
-                            break;
-                        case 1:
-                            y_High = isGateAbove ? 1.0F : 0.875F;
-                            z_Low = 0.1875F;
-                            z_High = 0.3125F;
-                            break;
-                        case 2:
-                            y_High = isGateAbove ? 1.0F : 0.875F;
-                            z_Low = 0.0F;
-                            z_High = 0.0625F;
-                            break;
+                            case 0:
+                                y_High = isGateAbove ? 1.0F : 0.8125F;
+                                z_Low = 0.4375F;
+                                break;
+                            case 1:
+                                y_High = isGateAbove ? 1.0F : 0.875F;
+                                z_Low = 0.1875F;
+                                z_High = 0.3125F;
+                                break;
+                            case 2:
+                                y_High = isGateAbove ? 1.0F : 0.875F;
+                                z_Low = 0.0F;
+                                z_High = 0.0625F;
+                                break;
                         }
 
                         x_Low = 0.0F;
@@ -630,31 +630,31 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
                 for (int count = 0; count < 5; ++count)
                 {
                     switch (count) {
-                    case 0:
-                        x_Low = 0.0F;
-                        x_High = 0.0625F;
-                        y_High = isGateAbove ? 1.0F : 0.8125F;
-                        break;
-                    case 1:
-                        x_Low = 0.1875F;
-                        x_High = 0.3125F;
-                        y_High = isGateAbove ? 1.0F : 0.875F;
-                        break;
-                    case 2:
-                        x_Low = 0.4375F;
-                        x_High = 0.5625F;
-                        y_High = isGateAbove ? 1.0F : 0.875F;
-                        break;
-                    case 3:
-                        x_Low = 0.6875F;
-                        x_High = 0.8125F;
-                        y_High = isGateAbove ? 1.0F : 0.875F;
-                        break;
-                    case 4:
-                        x_Low = 0.9375F;
-                        x_High = 1.0F;
-                        y_High = isGateAbove ? 1.0F : 0.8125F;
-                        break;
+                        case 0:
+                            x_Low = 0.0F;
+                            x_High = 0.0625F;
+                            y_High = isGateAbove ? 1.0F : 0.8125F;
+                            break;
+                        case 1:
+                            x_Low = 0.1875F;
+                            x_High = 0.3125F;
+                            y_High = isGateAbove ? 1.0F : 0.875F;
+                            break;
+                        case 2:
+                            x_Low = 0.4375F;
+                            x_High = 0.5625F;
+                            y_High = isGateAbove ? 1.0F : 0.875F;
+                            break;
+                        case 3:
+                            x_Low = 0.6875F;
+                            x_High = 0.8125F;
+                            y_High = isGateAbove ? 1.0F : 0.875F;
+                            break;
+                        case 4:
+                            x_Low = 0.9375F;
+                            x_High = 1.0F;
+                            y_High = isGateAbove ? 1.0F : 0.8125F;
+                            break;
                     }
 
                     z_Low = 0.5625F;
@@ -697,31 +697,31 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
                 for (int count = 0; count < 5; ++count)
                 {
                     switch (count) {
-                    case 0:
-                        y_High = isGateAbove ? 1.0F : 0.8125F;
-                        z_Low = 0.0F;
-                        z_High = 0.0625F;
-                        break;
-                    case 1:
-                        y_High = isGateAbove ? 1.0F : 0.875F;
-                        z_Low = 0.1875F;
-                        z_High = 0.3125F;
-                        break;
-                    case 2:
-                        y_High = isGateAbove ? 1.0F : 0.875F;
-                        z_Low = 0.4375F;
-                        z_High = 0.5625F;
-                        break;
-                    case 3:
-                        y_High = isGateAbove ? 1.0F : 0.875F;
-                        z_Low = 0.6875F;
-                        z_High = 0.8125F;
-                        break;
-                    case 4:
-                        y_High = isGateAbove ? 1.0F : 0.8125F;
-                        z_Low = 0.9375F;
-                        z_High = 1.0F;
-                        break;
+                        case 0:
+                            y_High = isGateAbove ? 1.0F : 0.8125F;
+                            z_Low = 0.0F;
+                            z_High = 0.0625F;
+                            break;
+                        case 1:
+                            y_High = isGateAbove ? 1.0F : 0.875F;
+                            z_Low = 0.1875F;
+                            z_High = 0.3125F;
+                            break;
+                        case 2:
+                            y_High = isGateAbove ? 1.0F : 0.875F;
+                            z_Low = 0.4375F;
+                            z_High = 0.5625F;
+                            break;
+                        case 3:
+                            y_High = isGateAbove ? 1.0F : 0.875F;
+                            z_Low = 0.6875F;
+                            z_High = 0.8125F;
+                            break;
+                        case 4:
+                            y_High = isGateAbove ? 1.0F : 0.8125F;
+                            z_Low = 0.9375F;
+                            z_High = 1.0F;
+                            break;
                     }
 
                     x_Low = 0.5625F;
@@ -805,16 +805,16 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
                     for (int count = 0; count < 2; ++count)
                     {
                         switch (count) {
-                        case 0:
-                            x_High = 0.6875F;
-                            z_High = 0.0625F;
-                            break;
-                        case 1:
-                            x_Low = 0.8125F;
-                            x_High = 1.0F;
-                            z_Low = 0.0F;
-                            z_High = 0.0625F;
-                            break;
+                            case 0:
+                                x_High = 0.6875F;
+                                z_High = 0.0625F;
+                                break;
+                            case 1:
+                                x_Low = 0.8125F;
+                                x_High = 1.0F;
+                                z_Low = 0.0F;
+                                z_High = 0.0625F;
+                                break;
                         }
 
                         renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
@@ -876,16 +876,16 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
                     for (int count = 0; count < 2; ++count)
                     {
                         switch (count) {
-                        case 0:
-                            x_Low = 0.3125F;
-                            z_High = 0.0625F;
-                            break;
-                        case 1:
-                            x_Low = 0.0F;
-                            x_High = 0.1875F;
-                            z_Low = 0.0F;
-                            z_High = 0.0625F;
-                            break;
+                            case 0:
+                                x_Low = 0.3125F;
+                                z_High = 0.0625F;
+                                break;
+                            case 1:
+                                x_Low = 0.0F;
+                                x_High = 0.1875F;
+                                z_Low = 0.0F;
+                                z_High = 0.0625F;
+                                break;
                         }
 
                         renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
@@ -950,16 +950,16 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
                     for (int count = 0; count < 2; ++count)
                     {
                         switch (count) {
-                        case 0:
-                            z_High = 0.6875F;
-                            x_High = 0.0625F;
-                            break;
-                        case 1:
-                            x_Low = 0.0F;
-                            x_High = 0.0625F;
-                            z_Low = 0.8125F;
-                            z_High = 1.0F;
-                            break;
+                            case 0:
+                                z_High = 0.6875F;
+                                x_High = 0.0625F;
+                                break;
+                            case 1:
+                                x_Low = 0.0F;
+                                x_High = 0.0625F;
+                                z_Low = 0.8125F;
+                                z_High = 1.0F;
+                                break;
                         }
 
                         renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
@@ -1021,16 +1021,16 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
                     for (int count = 0; count < 2; ++count)
                     {
                         switch (count) {
-                        case 0:
-                            x_High = 0.0625F;
-                            z_Low = 0.3125F;
-                            break;
-                        case 1:
-                            x_Low = 0.0F;
-                            x_High = 0.0625F;
-                            z_Low = 0.0F;
-                            z_High = 0.1875F;
-                            break;
+                            case 0:
+                                x_High = 0.0625F;
+                                z_Low = 0.3125F;
+                                break;
+                            case 1:
+                                x_Low = 0.0F;
+                                x_High = 0.0625F;
+                                z_Low = 0.0F;
+                                z_High = 0.1875F;
+                                break;
                         }
 
                         renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
@@ -1084,18 +1084,18 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
                 for (int count = 0; count < 3; ++count)
                 {
                     switch (count) {
-                    case 0:
-                        x_Low = 0.0F;
-                        x_High = 0.1875F;
-                        break;
-                    case 1:
-                        x_Low = 0.3125F;
-                        x_High = 0.6875F;
-                        break;
-                    case 2:
-                        x_Low = 0.8125F;
-                        x_High = 1.0F;
-                        break;
+                        case 0:
+                            x_Low = 0.0F;
+                            x_High = 0.1875F;
+                            break;
+                        case 1:
+                            x_Low = 0.3125F;
+                            x_High = 0.6875F;
+                            break;
+                        case 2:
+                            x_Low = 0.8125F;
+                            x_High = 1.0F;
+                            break;
                     }
 
                     z_Low = 0.5625F;
@@ -1139,18 +1139,18 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
                 for (int count = 0; count < 3; ++count)
                 {
                     switch (count) {
-                    case 0:
-                        z_Low = 0.0F;
-                        z_High = 0.1875F;
-                        break;
-                    case 1:
-                        z_Low = 0.3125F;
-                        z_High = 0.6875F;
-                        break;
-                    case 2:
-                        z_Low = 0.8125F;
-                        z_High = 1.0F;
-                        break;
+                        case 0:
+                            z_Low = 0.0F;
+                            z_High = 0.1875F;
+                            break;
+                        case 1:
+                            z_Low = 0.3125F;
+                            z_High = 0.6875F;
+                            break;
+                        case 2:
+                            z_Low = 0.8125F;
+                            z_High = 1.0F;
+                            break;
                     }
 
                     x_Low = 0.5625F;

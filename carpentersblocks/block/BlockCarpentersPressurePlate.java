@@ -42,11 +42,11 @@ public class BlockCarpentersPressurePlate extends BlockBase {
         TE.worldObj.notifyBlocksOfNeighborChange(TE.xCoord, TE.yCoord - 1, TE.zCoord, blockID);
 
         switch (polarity) {
-        case PressurePlate.POLARITY_POSITIVE:
-            entityPlayer.addChatMessage("message.polarity_pos.name");
-            break;
-        case PressurePlate.POLARITY_NEGATIVE:
-            entityPlayer.addChatMessage("message.polarity_neg.name");
+            case PressurePlate.POLARITY_POSITIVE:
+                entityPlayer.addChatMessage("message.polarity_pos.name");
+                break;
+            case PressurePlate.POLARITY_NEGATIVE:
+                entityPlayer.addChatMessage("message.polarity_neg.name");
         }
 
         return true;
@@ -62,33 +62,33 @@ public class BlockCarpentersPressurePlate extends BlockBase {
 
         switch (PressurePlate.getTriggerEntity(TE))
         {
-        case PressurePlate.TRIGGER_PLAYER:
-            trigger = PressurePlate.TRIGGER_MONSTER;
-            break;
-        case PressurePlate.TRIGGER_MONSTER:
-            trigger = PressurePlate.TRIGGER_ANIMAL;
-            break;
-        case PressurePlate.TRIGGER_ANIMAL:
-            trigger = PressurePlate.TRIGGER_ALL;
-            break;
-        default:
-            trigger = PressurePlate.TRIGGER_PLAYER;
+            case PressurePlate.TRIGGER_PLAYER:
+                trigger = PressurePlate.TRIGGER_MONSTER;
+                break;
+            case PressurePlate.TRIGGER_MONSTER:
+                trigger = PressurePlate.TRIGGER_ANIMAL;
+                break;
+            case PressurePlate.TRIGGER_ANIMAL:
+                trigger = PressurePlate.TRIGGER_ALL;
+                break;
+            default:
+                trigger = PressurePlate.TRIGGER_PLAYER;
         }
 
         PressurePlate.setTriggerEntity(TE, trigger);
 
         switch (trigger) {
-        case PressurePlate.TRIGGER_PLAYER:
-            entityPlayer.addChatMessage("message.trigger_player.name");
-            break;
-        case PressurePlate.TRIGGER_MONSTER:
-            entityPlayer.addChatMessage("message.trigger_monster.name");
-            break;
-        case PressurePlate.TRIGGER_ANIMAL:
-            entityPlayer.addChatMessage("message.trigger_animal.name");
-            break;
-        case PressurePlate.TRIGGER_ALL:
-            entityPlayer.addChatMessage("message.trigger_all.name");
+            case PressurePlate.TRIGGER_PLAYER:
+                entityPlayer.addChatMessage("message.trigger_player.name");
+                break;
+            case PressurePlate.TRIGGER_MONSTER:
+                entityPlayer.addChatMessage("message.trigger_monster.name");
+                break;
+            case PressurePlate.TRIGGER_ANIMAL:
+                entityPlayer.addChatMessage("message.trigger_animal.name");
+                break;
+            case PressurePlate.TRIGGER_ALL:
+                entityPlayer.addChatMessage("message.trigger_all.name");
         }
 
         return true;
@@ -299,14 +299,14 @@ public class BlockCarpentersPressurePlate extends BlockBase {
         int trigger = PressurePlate.getTriggerEntity(TE);
 
         switch (trigger) {
-        case PressurePlate.TRIGGER_PLAYER:
-            return entity instanceof EntityPlayer;
-        case PressurePlate.TRIGGER_MONSTER:
-            return entity.isCreatureType(EnumCreatureType.monster, false);
-        case PressurePlate.TRIGGER_ANIMAL:
-            return entity.isCreatureType(EnumCreatureType.creature, false);
-        default: // TRIGGER_EVERYTHING
-            return true;
+            case PressurePlate.TRIGGER_PLAYER:
+                return entity instanceof EntityPlayer;
+            case PressurePlate.TRIGGER_MONSTER:
+                return entity.isCreatureType(EnumCreatureType.monster, false);
+            case PressurePlate.TRIGGER_ANIMAL:
+                return entity.isCreatureType(EnumCreatureType.creature, false);
+            default: // TRIGGER_EVERYTHING
+                return true;
         }
     }
 

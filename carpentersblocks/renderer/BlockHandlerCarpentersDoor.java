@@ -14,7 +14,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class BlockHandlerCarpentersDoor extends BlockDeterminantRender {
+public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
 
     @Override
     public boolean shouldRender3DInInventory()
@@ -34,24 +34,24 @@ public class BlockHandlerCarpentersDoor extends BlockDeterminantRender {
         int type = Door.getType(TE);
 
         switch (type) {
-        case Door.TYPE_GLASS_TOP:
-            renderGlassTopDoor(block, x, y, z);
-            break;
-        case Door.TYPE_GLASS_TALL:
-            renderTallDoor(block, x, y, z);
-            break;
-        case Door.TYPE_PANELS:
-            renderPanelsDoor(block, x, y, z);
-            break;
-        case Door.TYPE_SCREEN_TALL:
-            renderTallDoor(block, x, y, z);
-            break;
-        case Door.TYPE_FRENCH_GLASS:
-            renderFrenchGlassDoor(block, x, y, z);
-            break;
-        case Door.TYPE_HIDDEN:
-            renderHiddenDoor(block, x, y, z);
-            break;
+            case Door.TYPE_GLASS_TOP:
+                renderGlassTopDoor(block, x, y, z);
+                break;
+            case Door.TYPE_GLASS_TALL:
+                renderTallDoor(block, x, y, z);
+                break;
+            case Door.TYPE_PANELS:
+                renderPanelsDoor(block, x, y, z);
+                break;
+            case Door.TYPE_SCREEN_TALL:
+                renderTallDoor(block, x, y, z);
+                break;
+            case Door.TYPE_FRENCH_GLASS:
+                renderFrenchGlassDoor(block, x, y, z);
+                break;
+            case Door.TYPE_HIDDEN:
+                renderHiddenDoor(block, x, y, z);
+                break;
         }
 
         renderBlocks.renderAllFaces = false;
@@ -87,132 +87,132 @@ public class BlockHandlerCarpentersDoor extends BlockDeterminantRender {
 
         switch (facing)
         {
-        case Door.FACING_XN:
+            case Door.FACING_XN:
 
-            if (!isOpen) {
+                if (!isOpen) {
 
-                x_low = 0.8125F;
-                x_low_offset = x_low;
-                z_high_offset = 0.1875F;
-                z_low_offset = 0.8125F;
-                path_offset = 0.09375F;
-                path_on_x = true;
+                    x_low = 0.8125F;
+                    x_low_offset = x_low;
+                    z_high_offset = 0.1875F;
+                    z_low_offset = 0.8125F;
+                    path_offset = 0.09375F;
+                    path_on_x = true;
 
-            } else if (hinge == Door.HINGE_RIGHT) {
+                } else if (hinge == Door.HINGE_RIGHT) {
 
-                z_high = 0.1875F;
-                z_high_offset = z_high;
-                x_high_offset = 0.1875F;
-                x_low_offset = 0.8125F;
-                path_offset = 0.90625F;
+                    z_high = 0.1875F;
+                    z_high_offset = z_high;
+                    x_high_offset = 0.1875F;
+                    x_low_offset = 0.8125F;
+                    path_offset = 0.90625F;
 
-            } else {
+                } else {
 
-                z_low = 0.8125F;
-                z_low_offset = z_low;
-                x_high_offset = 0.1875F;
-                x_low_offset = 0.8125F;
-                path_offset = 0.09375F;
+                    z_low = 0.8125F;
+                    z_low_offset = z_low;
+                    x_high_offset = 0.1875F;
+                    x_low_offset = 0.8125F;
+                    path_offset = 0.09375F;
 
-            }
+                }
 
-            break;
-        case Door.FACING_XP:
+                break;
+            case Door.FACING_XP:
 
-            if (!isOpen) {
+                if (!isOpen) {
 
-                x_high = 0.1875F;
-                x_high_offset = x_high;
-                z_high_offset = 0.1875F;
-                z_low_offset = 0.8125F;
-                path_offset = 0.90625F;
-                path_on_x = true;
+                    x_high = 0.1875F;
+                    x_high_offset = x_high;
+                    z_high_offset = 0.1875F;
+                    z_low_offset = 0.8125F;
+                    path_offset = 0.90625F;
+                    path_on_x = true;
 
-            } else if (hinge == Door.HINGE_RIGHT) {
+                } else if (hinge == Door.HINGE_RIGHT) {
 
-                z_low = 0.8125F;
-                z_low_offset = z_low;
-                x_high_offset = 0.1875F;
-                x_low_offset = 0.8125F;
-                path_offset = 0.09375F;
+                    z_low = 0.8125F;
+                    z_low_offset = z_low;
+                    x_high_offset = 0.1875F;
+                    x_low_offset = 0.8125F;
+                    path_offset = 0.09375F;
 
-            } else {
+                } else {
 
-                z_high = 0.1875F;
-                z_high_offset = z_high;
-                x_high_offset = 0.1875F;
-                x_low_offset = 0.8125F;
-                path_offset = 0.90625F;
+                    z_high = 0.1875F;
+                    z_high_offset = z_high;
+                    x_high_offset = 0.1875F;
+                    x_low_offset = 0.8125F;
+                    path_offset = 0.90625F;
 
-            }
+                }
 
-            break;
-        case Door.FACING_ZN:
+                break;
+            case Door.FACING_ZN:
 
-            if (!isOpen) {
+                if (!isOpen) {
 
-                z_low = 0.8125F;
-                z_low_offset = z_low;
-                x_high_offset = 0.1875F;
-                x_low_offset = 0.8125F;
-                path_offset = 0.09375F;
+                    z_low = 0.8125F;
+                    z_low_offset = z_low;
+                    x_high_offset = 0.1875F;
+                    x_low_offset = 0.8125F;
+                    path_offset = 0.09375F;
 
-            } else if (hinge == Door.HINGE_RIGHT) {
+                } else if (hinge == Door.HINGE_RIGHT) {
 
-                x_low = 0.8125F;
-                x_low_offset = x_low;
-                z_high_offset = 0.1875F;
-                z_low_offset = 0.8125F;
-                path_offset = 0.09375F;
-                path_on_x = true;
+                    x_low = 0.8125F;
+                    x_low_offset = x_low;
+                    z_high_offset = 0.1875F;
+                    z_low_offset = 0.8125F;
+                    path_offset = 0.09375F;
+                    path_on_x = true;
 
-            } else {
+                } else {
 
-                x_high = 0.1875F;
-                x_high_offset = x_high;
-                z_high_offset = 0.1875F;
-                z_low_offset = 0.8125F;
-                path_offset = 0.90625F;
-                path_on_x = true;
+                    x_high = 0.1875F;
+                    x_high_offset = x_high;
+                    z_high_offset = 0.1875F;
+                    z_low_offset = 0.8125F;
+                    path_offset = 0.90625F;
+                    path_on_x = true;
 
-            }
+                }
 
-            break;
-        case Door.FACING_ZP:
+                break;
+            case Door.FACING_ZP:
 
-            if (!isOpen) {
+                if (!isOpen) {
 
-                z_high = 0.1875F;
-                z_high_offset = z_high;
-                x_high_offset = 0.1875F;
-                x_low_offset = 0.8125F;
-                path_offset = 0.90625F;
+                    z_high = 0.1875F;
+                    z_high_offset = z_high;
+                    x_high_offset = 0.1875F;
+                    x_low_offset = 0.8125F;
+                    path_offset = 0.90625F;
 
-            } else if (hinge == Door.HINGE_RIGHT) {
+                } else if (hinge == Door.HINGE_RIGHT) {
 
-                x_high = 0.1875F;
-                x_high_offset = x_high;
-                z_high_offset = 0.1875F;
-                z_low_offset = 0.8125F;
-                path_offset = 0.90625F;
-                path_on_x = true;
+                    x_high = 0.1875F;
+                    x_high_offset = x_high;
+                    z_high_offset = 0.1875F;
+                    z_low_offset = 0.8125F;
+                    path_offset = 0.90625F;
+                    path_on_x = true;
 
-            } else {
+                } else {
 
-                x_low = 0.8125F;
-                x_low_offset = x_low;
-                z_high_offset = 0.1875F;
-                z_low_offset = 0.8125F;
-                path_offset = 0.09375F;
-                path_on_x = true;
+                    x_low = 0.8125F;
+                    x_low_offset = x_low;
+                    z_high_offset = 0.1875F;
+                    z_low_offset = 0.8125F;
+                    path_offset = 0.09375F;
+                    path_on_x = true;
 
-            }
+                }
 
-            break;
+                break;
         }
 
-        if (shouldRenderBlock(block))
-        {
+        if (shouldRenderBlock(block)) {
+
             /* Draw vertical pieces. */
 
             renderBlocks.setRenderBounds(x_low, y_low, z_low, x_high_offset, y_high, z_high_offset);
@@ -316,8 +316,8 @@ public class BlockHandlerCarpentersDoor extends BlockDeterminantRender {
             }
         }
 
-        if (shouldRenderOpaque())
-        {
+        if (shouldRenderOpaque()) {
+
             Icon icon;
 
             if (isBottom) {
@@ -330,22 +330,41 @@ public class BlockHandlerCarpentersDoor extends BlockDeterminantRender {
             Tessellator.instance.setBrightness(Block.glass.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y, z));
 
             if (path_on_x) {
-                Tessellator.instance.setColorOpaque_F(0.6F, 0.6F, 0.6F);
+
                 renderBlocks.setRenderBounds(0.0F, isBottom ? 0.1875F : 0.0F, 0.1875F, 1.0F, isBottom ? 1.0F : 0.8125F, 0.8125F);
+
+                lightingHelper.setLightingXNeg(Block.glass, x, y, z);
+                lightingHelper.colorSide(Block.glass, x, y, z, 4, null);
                 RenderHelper.renderFaceXNeg(renderBlocks, x, y, z, icon);
-                VertexHelper.setOffset(-path_offset);
-                RenderHelper.renderFaceXPos(renderBlocks, x, y, z, icon);
+
+                if (!renderAlphaOverride) {
+                    lightingHelper.setLightingXPos(Block.glass, x, y, z);
+                    lightingHelper.colorSide(Block.glass, x, y, z, 5, null);
+                    VertexHelper.setOffset(-path_offset);
+                    RenderHelper.renderFaceXPos(renderBlocks, x, y, z, icon);
+                }
+
             } else {
-                Tessellator.instance.setColorOpaque_F(0.8F, 0.8F, 0.8F);
+
                 renderBlocks.setRenderBounds(0.1875F, isBottom ? 0.1875F : 0.0F, 0.0F, 0.8125F, isBottom ? 1.0F : 0.8125F, 1.0F);
+
+                lightingHelper.setLightingZNeg(Block.glass, x, y, z);
+                lightingHelper.colorSide(Block.glass, x, y, z, 2, null);
                 RenderHelper.renderFaceZNeg(renderBlocks, x, y, z, icon);
-                VertexHelper.setOffset(-path_offset);
-                RenderHelper.renderFaceZPos(renderBlocks, x, y, z, icon);
+
+                if (!renderAlphaOverride) {
+                    lightingHelper.setLightingZPos(Block.glass, x, y, z);
+                    lightingHelper.colorSide(Block.glass, x, y, z, 3, null);
+                    VertexHelper.setOffset(-path_offset);
+                    RenderHelper.renderFaceZPos(renderBlocks, x, y, z, icon);
+                }
+
             }
 
             VertexHelper.clearOffset();
 
             renderHandle(Block.blockIron, x, y, z, true, true);
+
         }
     }
 
@@ -376,132 +395,132 @@ public class BlockHandlerCarpentersDoor extends BlockDeterminantRender {
 
         switch (Door.getFacing(TE))
         {
-        case Door.FACING_XN:
+            case Door.FACING_XN:
 
-            if (!isOpen) {
+                if (!isOpen) {
 
-                x_low = 0.8125F;
-                x_low_offset = x_low;
-                z_high_offset = 0.1875F;
-                z_low_offset = 0.8125F;
-                path_offset = 0.09375F;
-                path_on_x = true;
+                    x_low = 0.8125F;
+                    x_low_offset = x_low;
+                    z_high_offset = 0.1875F;
+                    z_low_offset = 0.8125F;
+                    path_offset = 0.09375F;
+                    path_on_x = true;
 
-            } else if (hinge == Door.HINGE_RIGHT) {
+                } else if (hinge == Door.HINGE_RIGHT) {
 
-                z_high = 0.1875F;
-                z_high_offset = z_high;
-                x_high_offset = 0.1875F;
-                x_low_offset = 0.8125F;
-                path_offset = 0.90625F;
+                    z_high = 0.1875F;
+                    z_high_offset = z_high;
+                    x_high_offset = 0.1875F;
+                    x_low_offset = 0.8125F;
+                    path_offset = 0.90625F;
 
-            } else {
+                } else {
 
-                z_low = 0.8125F;
-                z_low_offset = z_low;
-                x_high_offset = 0.1875F;
-                x_low_offset = 0.8125F;
-                path_offset = 0.09375F;
+                    z_low = 0.8125F;
+                    z_low_offset = z_low;
+                    x_high_offset = 0.1875F;
+                    x_low_offset = 0.8125F;
+                    path_offset = 0.09375F;
 
-            }
+                }
 
-            break;
-        case Door.FACING_XP:
+                break;
+            case Door.FACING_XP:
 
-            if (!isOpen) {
+                if (!isOpen) {
 
-                x_high = 0.1875F;
-                x_high_offset = x_high;
-                z_high_offset = 0.1875F;
-                z_low_offset = 0.8125F;
-                path_offset = 0.90625F;
-                path_on_x = true;
+                    x_high = 0.1875F;
+                    x_high_offset = x_high;
+                    z_high_offset = 0.1875F;
+                    z_low_offset = 0.8125F;
+                    path_offset = 0.90625F;
+                    path_on_x = true;
 
-            } else if (hinge == Door.HINGE_RIGHT) {
+                } else if (hinge == Door.HINGE_RIGHT) {
 
-                z_low = 0.8125F;
-                z_low_offset = z_low;
-                x_high_offset = 0.1875F;
-                x_low_offset = 0.8125F;
-                path_offset = 0.09375F;
+                    z_low = 0.8125F;
+                    z_low_offset = z_low;
+                    x_high_offset = 0.1875F;
+                    x_low_offset = 0.8125F;
+                    path_offset = 0.09375F;
 
-            } else {
+                } else {
 
-                z_high = 0.1875F;
-                z_high_offset = z_high;
-                x_high_offset = 0.1875F;
-                x_low_offset = 0.8125F;
-                path_offset = 0.90625F;
+                    z_high = 0.1875F;
+                    z_high_offset = z_high;
+                    x_high_offset = 0.1875F;
+                    x_low_offset = 0.8125F;
+                    path_offset = 0.90625F;
 
-            }
+                }
 
-            break;
-        case Door.FACING_ZN:
+                break;
+            case Door.FACING_ZN:
 
-            if (!isOpen) {
+                if (!isOpen) {
 
-                z_low = 0.8125F;
-                z_low_offset = z_low;
-                x_high_offset = 0.1875F;
-                x_low_offset = 0.8125F;
-                path_offset = 0.09375F;
+                    z_low = 0.8125F;
+                    z_low_offset = z_low;
+                    x_high_offset = 0.1875F;
+                    x_low_offset = 0.8125F;
+                    path_offset = 0.09375F;
 
-            } else if (hinge == Door.HINGE_RIGHT) {
+                } else if (hinge == Door.HINGE_RIGHT) {
 
-                x_low = 0.8125F;
-                x_low_offset = x_low;
-                z_high_offset = 0.1875F;
-                z_low_offset = 0.8125F;
-                path_offset = 0.09375F;
-                path_on_x = true;
+                    x_low = 0.8125F;
+                    x_low_offset = x_low;
+                    z_high_offset = 0.1875F;
+                    z_low_offset = 0.8125F;
+                    path_offset = 0.09375F;
+                    path_on_x = true;
 
-            } else {
+                } else {
 
-                x_high = 0.1875F;
-                x_high_offset = x_high;
-                z_high_offset = 0.1875F;
-                z_low_offset = 0.8125F;
-                path_offset = 0.90625F;
-                path_on_x = true;
+                    x_high = 0.1875F;
+                    x_high_offset = x_high;
+                    z_high_offset = 0.1875F;
+                    z_low_offset = 0.8125F;
+                    path_offset = 0.90625F;
+                    path_on_x = true;
 
-            }
+                }
 
-            break;
-        case Door.FACING_ZP:
+                break;
+            case Door.FACING_ZP:
 
-            if (!isOpen) {
+                if (!isOpen) {
 
-                z_high = 0.1875F;
-                z_high_offset = z_high;
-                x_high_offset = 0.1875F;
-                x_low_offset = 0.8125F;
-                path_offset = 0.90625F;
+                    z_high = 0.1875F;
+                    z_high_offset = z_high;
+                    x_high_offset = 0.1875F;
+                    x_low_offset = 0.8125F;
+                    path_offset = 0.90625F;
 
-            } else if (hinge == Door.HINGE_RIGHT) {
+                } else if (hinge == Door.HINGE_RIGHT) {
 
-                x_high = 0.1875F;
-                x_high_offset = x_high;
-                z_high_offset = 0.1875F;
-                z_low_offset = 0.8125F;
-                path_offset = 0.90625F;
-                path_on_x = true;
+                    x_high = 0.1875F;
+                    x_high_offset = x_high;
+                    z_high_offset = 0.1875F;
+                    z_low_offset = 0.8125F;
+                    path_offset = 0.90625F;
+                    path_on_x = true;
 
-            } else {
+                } else {
 
-                x_low = 0.8125F;
-                x_low_offset = x_low;
-                z_high_offset = 0.1875F;
-                z_low_offset = 0.8125F;
-                path_offset = 0.09375F;
-                path_on_x = true;
+                    x_low = 0.8125F;
+                    x_low_offset = x_low;
+                    z_high_offset = 0.1875F;
+                    z_low_offset = 0.8125F;
+                    path_offset = 0.09375F;
+                    path_on_x = true;
 
-            }
+                }
 
-            break;
+                break;
         }
 
-        if (shouldRenderBlock(block))
-        {
+        if (shouldRenderBlock(block)) {
+
             renderBlocks.setRenderBounds(x_low, y_low, z_low, x_high_offset, y_high, z_high_offset);
             renderBlock(block, x, y, z);
             renderBlocks.setRenderBounds(x_low_offset, y_low, z_low_offset, x_high, y_high, z_high);
@@ -583,31 +602,50 @@ public class BlockHandlerCarpentersDoor extends BlockDeterminantRender {
             }
         }
 
-        if (shouldRenderOpaque())
-        {
-            if (!isBottom)
-            {
+        if (shouldRenderOpaque()) {
+
+            if (!isBottom) {
+
                 VertexHelper.setOffset(-(1 - path_offset));
-                Tessellator.instance.setBrightness(Block.glass.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y, z));
 
                 if (path_on_x) {
-                    Tessellator.instance.setColorOpaque_F(0.6F, 0.6F, 0.6F);
+
                     renderBlocks.setRenderBounds(0.0F, 0.1875F, 0.1875F, 1.0F, 0.8125F, 0.8125F);
+
+                    lightingHelper.setLightingXNeg(Block.glass, x, y, z);
+                    lightingHelper.colorSide(Block.glass, x, y, z, 4, null);
                     RenderHelper.renderFaceXNeg(renderBlocks, x, y, z, IconRegistry.icon_door_glass_top);
-                    VertexHelper.setOffset(-path_offset);
-                    RenderHelper.renderFaceXPos(renderBlocks, x, y, z, IconRegistry.icon_door_glass_top);
+
+                    if (!renderAlphaOverride) {
+                        lightingHelper.setLightingXPos(Block.glass, x, y, z);
+                        lightingHelper.colorSide(Block.glass, x, y, z, 5, null);
+                        VertexHelper.setOffset(-path_offset);
+                        RenderHelper.renderFaceXPos(renderBlocks, x, y, z, IconRegistry.icon_door_glass_top);
+                    }
+
                 } else {
-                    Tessellator.instance.setColorOpaque_F(0.8F, 0.8F, 0.8F);
+
                     renderBlocks.setRenderBounds(0.1875F, 0.1875F, 0.0F, 0.8125F, 0.8125F, 1.0F);
+
+                    lightingHelper.setLightingZNeg(Block.glass, x, y, z);
+                    lightingHelper.colorSide(Block.glass, x, y, z, 2, null);
                     RenderHelper.renderFaceZNeg(renderBlocks, x, y, z, IconRegistry.icon_door_glass_top);
-                    VertexHelper.setOffset(-path_offset);
-                    RenderHelper.renderFaceZPos(renderBlocks, x, y, z, IconRegistry.icon_door_glass_top);
+
+                    if (!renderAlphaOverride) {
+                        lightingHelper.setLightingZPos(Block.glass, x, y, z);
+                        lightingHelper.colorSide(Block.glass, x, y, z, 3, null);
+                        VertexHelper.setOffset(-path_offset);
+                        RenderHelper.renderFaceZPos(renderBlocks, x, y, z, IconRegistry.icon_door_glass_top);
+                    }
+
                 }
 
                 VertexHelper.clearOffset();
+
             }
 
             renderHandle(Block.blockIron, x, y, z, true, true);
+
         }
     }
 
@@ -636,120 +674,120 @@ public class BlockHandlerCarpentersDoor extends BlockDeterminantRender {
 
         switch (Door.getFacing(TE))
         {
-        case Door.FACING_XN:
+            case Door.FACING_XN:
 
-            if (!isOpen) {
+                if (!isOpen) {
 
-                x_low = 0.8125F;
-                x_low_offset = x_low;
-                z_high_offset = 0.1875F;
-                z_low_offset = 0.8125F;
-                path_on_x = true;
+                    x_low = 0.8125F;
+                    x_low_offset = x_low;
+                    z_high_offset = 0.1875F;
+                    z_low_offset = 0.8125F;
+                    path_on_x = true;
 
-            } else if (hinge == Door.HINGE_RIGHT) {
+                } else if (hinge == Door.HINGE_RIGHT) {
 
-                z_high = 0.1875F;
-                z_high_offset = z_high;
-                x_high_offset = 0.1875F;
-                x_low_offset = 0.8125F;
+                    z_high = 0.1875F;
+                    z_high_offset = z_high;
+                    x_high_offset = 0.1875F;
+                    x_low_offset = 0.8125F;
 
-            } else {
+                } else {
 
-                z_low = 0.8125F;
-                z_low_offset = z_low;
-                x_high_offset = 0.1875F;
-                x_low_offset = 0.8125F;
+                    z_low = 0.8125F;
+                    z_low_offset = z_low;
+                    x_high_offset = 0.1875F;
+                    x_low_offset = 0.8125F;
 
-            }
+                }
 
-            break;
-        case Door.FACING_XP:
+                break;
+            case Door.FACING_XP:
 
-            if (!isOpen) {
+                if (!isOpen) {
 
-                x_high = 0.1875F;
-                x_high_offset = x_high;
-                z_high_offset = 0.1875F;
-                z_low_offset = 0.8125F;
-                path_on_x = true;
+                    x_high = 0.1875F;
+                    x_high_offset = x_high;
+                    z_high_offset = 0.1875F;
+                    z_low_offset = 0.8125F;
+                    path_on_x = true;
 
-            } else if (hinge == Door.HINGE_RIGHT) {
+                } else if (hinge == Door.HINGE_RIGHT) {
 
-                z_low = 0.8125F;
-                z_low_offset = z_low;
-                x_high_offset = 0.1875F;
-                x_low_offset = 0.8125F;
+                    z_low = 0.8125F;
+                    z_low_offset = z_low;
+                    x_high_offset = 0.1875F;
+                    x_low_offset = 0.8125F;
 
-            } else {
+                } else {
 
-                z_high = 0.1875F;
-                z_high_offset = z_high;
-                x_high_offset = 0.1875F;
-                x_low_offset = 0.8125F;
+                    z_high = 0.1875F;
+                    z_high_offset = z_high;
+                    x_high_offset = 0.1875F;
+                    x_low_offset = 0.8125F;
 
-            }
+                }
 
-            break;
-        case Door.FACING_ZN:
+                break;
+            case Door.FACING_ZN:
 
-            if (!isOpen) {
+                if (!isOpen) {
 
-                z_low = 0.8125F;
-                z_low_offset = z_low;
-                x_high_offset = 0.1875F;
-                x_low_offset = 0.8125F;
+                    z_low = 0.8125F;
+                    z_low_offset = z_low;
+                    x_high_offset = 0.1875F;
+                    x_low_offset = 0.8125F;
 
-            } else if (hinge == Door.HINGE_RIGHT) {
+                } else if (hinge == Door.HINGE_RIGHT) {
 
-                x_low = 0.8125F;
-                x_low_offset = x_low;
-                z_high_offset = 0.1875F;
-                z_low_offset = 0.8125F;
-                path_on_x = true;
+                    x_low = 0.8125F;
+                    x_low_offset = x_low;
+                    z_high_offset = 0.1875F;
+                    z_low_offset = 0.8125F;
+                    path_on_x = true;
 
-            } else {
+                } else {
 
-                x_high = 0.1875F;
-                x_high_offset = x_high;
-                z_high_offset = 0.1875F;
-                z_low_offset = 0.8125F;
-                path_on_x = true;
+                    x_high = 0.1875F;
+                    x_high_offset = x_high;
+                    z_high_offset = 0.1875F;
+                    z_low_offset = 0.8125F;
+                    path_on_x = true;
 
-            }
+                }
 
-            break;
-        case Door.FACING_ZP:
+                break;
+            case Door.FACING_ZP:
 
-            if (!isOpen) {
+                if (!isOpen) {
 
-                z_high = 0.1875F;
-                z_high_offset = z_high;
-                x_high_offset = 0.1875F;
-                x_low_offset = 0.8125F;
+                    z_high = 0.1875F;
+                    z_high_offset = z_high;
+                    x_high_offset = 0.1875F;
+                    x_low_offset = 0.8125F;
 
-            } else if (hinge == Door.HINGE_RIGHT) {
+                } else if (hinge == Door.HINGE_RIGHT) {
 
-                x_high = 0.1875F;
-                x_high_offset = x_high;
-                z_high_offset = 0.1875F;
-                z_low_offset = 0.8125F;
-                path_on_x = true;
+                    x_high = 0.1875F;
+                    x_high_offset = x_high;
+                    z_high_offset = 0.1875F;
+                    z_low_offset = 0.8125F;
+                    path_on_x = true;
 
-            } else {
+                } else {
 
-                x_low = 0.8125F;
-                x_low_offset = x_low;
-                z_high_offset = 0.1875F;
-                z_low_offset = 0.8125F;
-                path_on_x = true;
+                    x_low = 0.8125F;
+                    x_low_offset = x_low;
+                    z_high_offset = 0.1875F;
+                    z_low_offset = 0.8125F;
+                    path_on_x = true;
 
-            }
+                }
 
-            break;
+                break;
         }
 
-        if (shouldRenderBlock(block))
-        {
+        if (shouldRenderBlock(block)) {
+
             renderBlocks.setRenderBounds(x_low, y_low, z_low, x_high_offset, y_high, z_high_offset);
             renderBlock(block, x, y, z);
             renderBlocks.setRenderBounds(x_low_offset, y_low, z_low_offset, x_high, y_high, z_high);
@@ -833,6 +871,7 @@ public class BlockHandlerCarpentersDoor extends BlockDeterminantRender {
                 renderBlocks.setRenderBounds(temp_x_low, 0.375F, temp_z_low, temp_x_high, 0.6875F, temp_z_high);
                 renderBlock(block, x, y, z);
             }
+
         }
 
         if (shouldRenderOpaque()) {
@@ -867,132 +906,132 @@ public class BlockHandlerCarpentersDoor extends BlockDeterminantRender {
 
         switch (Door.getFacing(TE))
         {
-        case Door.FACING_XN:
+            case Door.FACING_XN:
 
-            if (!isOpen) {
+                if (!isOpen) {
 
-                x_low = 0.8125F;
-                x_low_offset = x_low;
-                z_high_offset = 0.1875F;
-                z_low_offset = 0.8125F;
-                path_offset = 0.09375F;
-                path_on_x = true;
+                    x_low = 0.8125F;
+                    x_low_offset = x_low;
+                    z_high_offset = 0.1875F;
+                    z_low_offset = 0.8125F;
+                    path_offset = 0.09375F;
+                    path_on_x = true;
 
-            } else if (hinge == Door.HINGE_RIGHT) {
+                } else if (hinge == Door.HINGE_RIGHT) {
 
-                z_high = 0.1875F;
-                z_high_offset = z_high;
-                x_high_offset = 0.1875F;
-                x_low_offset = 0.8125F;
-                path_offset = 0.90625F;
+                    z_high = 0.1875F;
+                    z_high_offset = z_high;
+                    x_high_offset = 0.1875F;
+                    x_low_offset = 0.8125F;
+                    path_offset = 0.90625F;
 
-            } else {
+                } else {
 
-                z_low = 0.8125F;
-                z_low_offset = z_low;
-                x_high_offset = 0.1875F;
-                x_low_offset = 0.8125F;
-                path_offset = 0.09375F;
+                    z_low = 0.8125F;
+                    z_low_offset = z_low;
+                    x_high_offset = 0.1875F;
+                    x_low_offset = 0.8125F;
+                    path_offset = 0.09375F;
 
-            }
+                }
 
-            break;
-        case Door.FACING_XP:
+                break;
+            case Door.FACING_XP:
 
-            if (!isOpen) {
+                if (!isOpen) {
 
-                x_high = 0.1875F;
-                x_high_offset = x_high;
-                z_high_offset = 0.1875F;
-                z_low_offset = 0.8125F;
-                path_offset = 0.90625F;
-                path_on_x = true;
+                    x_high = 0.1875F;
+                    x_high_offset = x_high;
+                    z_high_offset = 0.1875F;
+                    z_low_offset = 0.8125F;
+                    path_offset = 0.90625F;
+                    path_on_x = true;
 
-            } else if (hinge == Door.HINGE_RIGHT) {
+                } else if (hinge == Door.HINGE_RIGHT) {
 
-                z_low = 0.8125F;
-                z_low_offset = z_low;
-                x_high_offset = 0.1875F;
-                x_low_offset = 0.8125F;
-                path_offset = 0.09375F;
+                    z_low = 0.8125F;
+                    z_low_offset = z_low;
+                    x_high_offset = 0.1875F;
+                    x_low_offset = 0.8125F;
+                    path_offset = 0.09375F;
 
-            } else {
+                } else {
 
-                z_high = 0.1875F;
-                z_high_offset = z_high;
-                x_high_offset = 0.1875F;
-                x_low_offset = 0.8125F;
-                path_offset = 0.90625F;
+                    z_high = 0.1875F;
+                    z_high_offset = z_high;
+                    x_high_offset = 0.1875F;
+                    x_low_offset = 0.8125F;
+                    path_offset = 0.90625F;
 
-            }
+                }
 
-            break;
-        case Door.FACING_ZN:
+                break;
+            case Door.FACING_ZN:
 
-            if (!isOpen) {
+                if (!isOpen) {
 
-                z_low = 0.8125F;
-                z_low_offset = z_low;
-                x_high_offset = 0.1875F;
-                x_low_offset = 0.8125F;
-                path_offset = 0.09375F;
+                    z_low = 0.8125F;
+                    z_low_offset = z_low;
+                    x_high_offset = 0.1875F;
+                    x_low_offset = 0.8125F;
+                    path_offset = 0.09375F;
 
-            } else if (hinge == Door.HINGE_RIGHT) {
+                } else if (hinge == Door.HINGE_RIGHT) {
 
-                x_low = 0.8125F;
-                x_low_offset = x_low;
-                z_high_offset = 0.1875F;
-                z_low_offset = 0.8125F;
-                path_offset = 0.09375F;
-                path_on_x = true;
+                    x_low = 0.8125F;
+                    x_low_offset = x_low;
+                    z_high_offset = 0.1875F;
+                    z_low_offset = 0.8125F;
+                    path_offset = 0.09375F;
+                    path_on_x = true;
 
-            } else {
+                } else {
 
-                x_high = 0.1875F;
-                x_high_offset = x_high;
-                z_high_offset = 0.1875F;
-                z_low_offset = 0.8125F;
-                path_offset = 0.90625F;
-                path_on_x = true;
+                    x_high = 0.1875F;
+                    x_high_offset = x_high;
+                    z_high_offset = 0.1875F;
+                    z_low_offset = 0.8125F;
+                    path_offset = 0.90625F;
+                    path_on_x = true;
 
-            }
+                }
 
-            break;
-        case Door.FACING_ZP:
+                break;
+            case Door.FACING_ZP:
 
-            if (!isOpen) {
+                if (!isOpen) {
 
-                z_high = 0.1875F;
-                z_high_offset = z_high;
-                x_high_offset = 0.1875F;
-                x_low_offset = 0.8125F;
-                path_offset = 0.90625F;
+                    z_high = 0.1875F;
+                    z_high_offset = z_high;
+                    x_high_offset = 0.1875F;
+                    x_low_offset = 0.8125F;
+                    path_offset = 0.90625F;
 
-            } else if (hinge == Door.HINGE_RIGHT) {
+                } else if (hinge == Door.HINGE_RIGHT) {
 
-                x_high = 0.1875F;
-                x_high_offset = x_high;
-                z_high_offset = 0.1875F;
-                z_low_offset = 0.8125F;
-                path_offset = 0.90625F;
-                path_on_x = true;
+                    x_high = 0.1875F;
+                    x_high_offset = x_high;
+                    z_high_offset = 0.1875F;
+                    z_low_offset = 0.8125F;
+                    path_offset = 0.90625F;
+                    path_on_x = true;
 
-            } else {
+                } else {
 
-                x_low = 0.8125F;
-                x_low_offset = x_low;
-                z_high_offset = 0.1875F;
-                z_low_offset = 0.8125F;
-                path_offset = 0.09375F;
-                path_on_x = true;
+                    x_low = 0.8125F;
+                    x_low_offset = x_low;
+                    z_high_offset = 0.1875F;
+                    z_low_offset = 0.8125F;
+                    path_offset = 0.09375F;
+                    path_on_x = true;
 
-            }
+                }
 
-            break;
+                break;
         }
 
-        if (shouldRenderBlock(block))
-        {
+        if (shouldRenderBlock(block)) {
+
             renderBlocks.setRenderBounds(x_low, y_low, z_low, x_high_offset, y_high, z_high_offset);
             renderBlock(block, x, y, z);
             renderBlocks.setRenderBounds(x_low_offset, y_low, z_low_offset, x_high, y_high, z_high);
@@ -1013,10 +1052,11 @@ public class BlockHandlerCarpentersDoor extends BlockDeterminantRender {
                 renderBlocks.setRenderBounds(x_low, 0.8125F, z_low, x_high, y_high, z_high);
                 renderBlock(block, x, y, z);
             }
+
         }
 
-        if (shouldRenderOpaque())
-        {
+        if (shouldRenderOpaque()) {
+
             int type = Door.getType(TE);
             Icon icon;
 
@@ -1030,17 +1070,27 @@ public class BlockHandlerCarpentersDoor extends BlockDeterminantRender {
             Tessellator.instance.setBrightness(Block.glass.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y, z));
 
             if (path_on_x) {
+
                 Tessellator.instance.setColorOpaque_F(0.6F, 0.6F, 0.6F);
                 renderBlocks.setRenderBounds(0.0F, isBottom ? 0.1875F : 0.0F, 0.1875F, 1.0F, isBottom ? 1.0F : 0.8125F, 0.8125F);
                 RenderHelper.renderFaceXNeg(renderBlocks, x, y, z, icon);
-                VertexHelper.setOffset(-path_offset);
-                RenderHelper.renderFaceXPos(renderBlocks, x, y, z, icon);
+
+                if (!renderAlphaOverride) {
+                    VertexHelper.setOffset(-path_offset);
+                    RenderHelper.renderFaceXPos(renderBlocks, x, y, z, icon);
+                }
+
             } else {
+
                 Tessellator.instance.setColorOpaque_F(0.8F, 0.8F, 0.8F);
                 renderBlocks.setRenderBounds(0.1875F, isBottom ? 0.1875F : 0.0F, 0.0F, 0.8125F, isBottom ? 1.0F : 0.8125F, 1.0F);
                 RenderHelper.renderFaceZNeg(renderBlocks, x, y, z, icon);
-                VertexHelper.setOffset(-path_offset);
-                RenderHelper.renderFaceZPos(renderBlocks, x, y, z, icon);
+
+                if (!renderAlphaOverride) {
+                    VertexHelper.setOffset(-path_offset);
+                    RenderHelper.renderFaceZPos(renderBlocks, x, y, z, icon);
+                }
+
             }
 
             VertexHelper.clearOffset();
@@ -1054,8 +1104,7 @@ public class BlockHandlerCarpentersDoor extends BlockDeterminantRender {
      */
     private void renderHiddenDoor(Block block, int x, int y, int z)
     {
-        if (shouldRenderBlock(block))
-        {
+        if (shouldRenderBlock(block)) {
             BlockCarpentersDoor blockRef = (BlockCarpentersDoor) BlockRegistry.blockCarpentersDoor;
             blockRef.setBlockBoundsBasedOnState(renderBlocks.blockAccess, x, y, z);
             renderBlock(block, x, y, z);
@@ -1088,250 +1137,250 @@ public class BlockHandlerCarpentersDoor extends BlockDeterminantRender {
 
         switch (Door.getFacing(TE))
         {
-        case Door.FACING_XN:
+            case Door.FACING_XN:
 
-            if (!isOpen) {
+                if (!isOpen) {
 
-                z_low = hinge == Door.HINGE_RIGHT ? 0.875F : 0.0625F;
+                    z_low = hinge == Door.HINGE_RIGHT ? 0.875F : 0.0625F;
 
-                if (render_inside_handle)
-                {
-                    renderBlocks.setRenderBounds(0.75F, y_low, z_low, 0.8125F, y_high, z_low + 0.0625F);
-                    renderBlocks.renderStandardBlock(handleBlock, x, y, z);
-                    renderBlocks.setRenderBounds(0.6875F, y_low_offset, z_low, 0.75F, y_high_offset, z_low + 0.0625F);
-                    renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                    if (render_inside_handle)
+                    {
+                        renderBlocks.setRenderBounds(0.75F, y_low, z_low, 0.8125F, y_high, z_low + 0.0625F);
+                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                        renderBlocks.setRenderBounds(0.6875F, y_low_offset, z_low, 0.75F, y_high_offset, z_low + 0.0625F);
+                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                    }
+
+                    if (render_outside_handle)
+                    {
+                        renderBlocks.setRenderBounds(0.0F, y_low, z_low, 0.0625F, y_high, z_low + 0.0625F);
+                        renderBlocks.renderStandardBlock(handleBlock, x + 1, y, z);
+                        renderBlocks.setRenderBounds(0.0625F, y_low_offset, z_low, 0.125F, y_high_offset, z_low + 0.0625F);
+                        renderBlocks.renderStandardBlock(handleBlock, x + 1, y, z);
+                    }
+
+                } else if (hinge == Door.HINGE_RIGHT) {
+
+                    if (render_outside_handle)
+                    {
+                        renderBlocks.setRenderBounds(0.0625F, y_low, 0.1875F, 0.0625F + 0.0625F, y_high, 0.25F);
+                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                        renderBlocks.setRenderBounds(0.0625F, y_low_offset, 0.25F, 0.0625F + 0.0625F, y_high_offset, 0.3125F);
+                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                    }
+
+                    if (render_inside_handle)
+                    {
+                        renderBlocks.setRenderBounds(0.0625F, y_low, 0.9375F, 0.0625F + 0.0625F, y_high, 1.0F);
+                        renderBlocks.renderStandardBlock(handleBlock, x, y, z - 1);
+                        renderBlocks.setRenderBounds(0.0625F, y_low_offset, 0.875F, 0.0625F + 0.0625F, y_high_offset, 0.9375F);
+                        renderBlocks.renderStandardBlock(handleBlock, x, y, z - 1);
+                    }
+
+                } else {
+
+                    if (render_outside_handle)
+                    {
+                        renderBlocks.setRenderBounds(0.0625F, y_low, 0.75F, 0.0625F + 0.0625F, y_high, 0.8125F);
+                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                        renderBlocks.setRenderBounds(0.0625F, y_low_offset, 0.6875F, 0.0625F + 0.0625F, y_high_offset, 0.75F);
+                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                    }
+
+                    if (render_inside_handle)
+                    {
+                        renderBlocks.setRenderBounds(0.0625F, y_low, 0.0F, 0.0625F + 0.0625F, y_high, 0.0625F);
+                        renderBlocks.renderStandardBlock(handleBlock, x, y, z + 1);
+                        renderBlocks.setRenderBounds(0.0625F, y_low_offset, 0.0625F, 0.0625F + 0.0625F, y_high_offset, 0.125F);
+                        renderBlocks.renderStandardBlock(handleBlock, x, y, z + 1);
+                    }
+
                 }
 
-                if (render_outside_handle)
-                {
-                    renderBlocks.setRenderBounds(0.0F, y_low, z_low, 0.0625F, y_high, z_low + 0.0625F);
-                    renderBlocks.renderStandardBlock(handleBlock, x + 1, y, z);
-                    renderBlocks.setRenderBounds(0.0625F, y_low_offset, z_low, 0.125F, y_high_offset, z_low + 0.0625F);
-                    renderBlocks.renderStandardBlock(handleBlock, x + 1, y, z);
+                break;
+            case Door.FACING_XP:
+
+                if (!isOpen) {
+
+                    z_low = hinge == Door.HINGE_RIGHT ? 0.0625F : 0.875F;
+
+                    if (render_inside_handle)
+                    {
+                        renderBlocks.setRenderBounds(0.1875F, y_low, z_low, 0.25F, y_high, z_low + 0.0625F);
+                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                        renderBlocks.setRenderBounds(0.25F, y_low_offset, z_low, 0.3125F, y_high_offset, z_low + 0.0625F);
+                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                    }
+
+                    if (render_outside_handle)
+                    {
+                        renderBlocks.setRenderBounds(0.9375F, y_low, z_low, 1.0F, y_high, z_low + 0.0625F);
+                        renderBlocks.renderStandardBlock(handleBlock, x - 1, y, z);
+                        renderBlocks.setRenderBounds(0.875F, y_low_offset, z_low, 0.9375F, y_high_offset, z_low + 0.0625F);
+                        renderBlocks.renderStandardBlock(handleBlock, x - 1, y, z);
+                    }
+
+                } else if (hinge == Door.HINGE_RIGHT) {
+
+                    if (render_outside_handle)
+                    {
+                        renderBlocks.setRenderBounds(0.875F, y_low, 0.75F, 0.875F + 0.0625F, y_high, 0.8125F);
+                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                        renderBlocks.setRenderBounds(0.875F, y_low_offset, 0.6875F, 0.875F + 0.0625F, y_high_offset, 0.75F);
+                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                    }
+
+                    if (render_inside_handle)
+                    {
+                        renderBlocks.setRenderBounds(0.875F, y_low, 0.0F, 0.875F + 0.0625F, y_high, 0.0625F);
+                        renderBlocks.renderStandardBlock(handleBlock, x, y, z + 1);
+                        renderBlocks.setRenderBounds(0.875F, y_low_offset, 0.0625F, 0.875F + 0.0625F, y_high_offset, 0.125F);
+                        renderBlocks.renderStandardBlock(handleBlock, x, y, z + 1);
+                    }
+
+                } else {
+
+                    if (render_outside_handle)
+                    {
+                        renderBlocks.setRenderBounds(0.875F, y_low, 0.1875F, 0.875F + 0.0625F, y_high, 0.25F);
+                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                        renderBlocks.setRenderBounds(0.875F, y_low_offset, 0.25F, 0.875F + 0.0625F, y_high_offset, 0.3125F);
+                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                    }
+
+                    if (render_inside_handle)
+                    {
+                        renderBlocks.setRenderBounds(0.875F, y_low, 0.9375F, 0.875F + 0.0625F, y_high, 1.0F);
+                        renderBlocks.renderStandardBlock(handleBlock, x, y, z - 1);
+                        renderBlocks.setRenderBounds(0.875F, y_low_offset, 0.875F, 0.875F + 0.0625F, y_high_offset, 0.9375F);
+                        renderBlocks.renderStandardBlock(handleBlock, x, y, z - 1);
+                    }
+
                 }
 
-            } else if (hinge == Door.HINGE_RIGHT) {
+                break;
+            case Door.FACING_ZN:
 
-                if (render_outside_handle)
-                {
-                    renderBlocks.setRenderBounds(0.0625F, y_low, 0.1875F, 0.0625F + 0.0625F, y_high, 0.25F);
-                    renderBlocks.renderStandardBlock(handleBlock, x, y, z);
-                    renderBlocks.setRenderBounds(0.0625F, y_low_offset, 0.25F, 0.0625F + 0.0625F, y_high_offset, 0.3125F);
-                    renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                if (!isOpen) {
+
+                    x_low = hinge == Door.HINGE_RIGHT ? 0.0625F : 0.875F;
+
+                    if (render_inside_handle)
+                    {
+                        renderBlocks.setRenderBounds(x_low, y_low, 0.75F, x_low + 0.0625F, y_high, 0.8125F);
+                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                        renderBlocks.setRenderBounds(x_low, y_low_offset, 0.6875F, x_low + 0.0625F, y_high_offset, 0.75F);
+                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                    }
+
+                    if (render_outside_handle)
+                    {
+                        renderBlocks.setRenderBounds(x_low, y_low, 0.0F, x_low + 0.0625F, y_high, 0.0625F);
+                        renderBlocks.renderStandardBlock(handleBlock, x, y, z + 1);
+                        renderBlocks.setRenderBounds(x_low, y_low_offset, 0.0625F, x_low + 0.0625F, y_high_offset, 0.125F);
+                        renderBlocks.renderStandardBlock(handleBlock, x, y, z + 1);
+                    }
+
+                } else if (hinge == Door.HINGE_RIGHT) {
+
+                    if (render_outside_handle)
+                    {
+                        renderBlocks.setRenderBounds(0.75F, y_low, 0.0625F, 0.8125F, y_high, 0.0625F + 0.0625F);
+                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                        renderBlocks.setRenderBounds(0.6875F, y_low_offset, 0.0625F, 0.75F, y_high_offset, 0.0625F + 0.0625F);
+                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                    }
+
+                    if (render_inside_handle)
+                    {
+                        renderBlocks.setRenderBounds(0.0F, y_low, 0.0625F, 0.0625F, y_high, 0.0625F + 0.0625F);
+                        renderBlocks.renderStandardBlock(handleBlock, x + 1, y, z);
+                        renderBlocks.setRenderBounds(0.0625F, y_low_offset, 0.0625F, 0.125F, y_high_offset, 0.0625F + 0.0625F);
+                        renderBlocks.renderStandardBlock(handleBlock, x + 1, y, z);
+                    }
+
+                } else {
+
+                    if (render_outside_handle)
+                    {
+                        renderBlocks.setRenderBounds(0.1875F, y_low, 0.0625F, 0.25F, y_high, 0.0625F + 0.0625F);
+                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                        renderBlocks.setRenderBounds(0.25F, y_low_offset, 0.0625F, 0.3125F, y_high_offset, 0.0625F + 0.0625F);
+                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                    }
+
+                    if (render_inside_handle)
+                    {
+                        renderBlocks.setRenderBounds(0.9375F, y_low, 0.0625F, 1.0F, y_high, 0.0625F + 0.0625F);
+                        renderBlocks.renderStandardBlock(handleBlock, x - 1, y, z);
+                        renderBlocks.setRenderBounds(0.875F, y_low_offset, 0.0625F, 0.9375F, y_high_offset, 0.0625F + 0.0625F);
+                        renderBlocks.renderStandardBlock(handleBlock, x - 1, y, z);
+                    }
+
                 }
 
-                if (render_inside_handle)
-                {
-                    renderBlocks.setRenderBounds(0.0625F, y_low, 0.9375F, 0.0625F + 0.0625F, y_high, 1.0F);
-                    renderBlocks.renderStandardBlock(handleBlock, x, y, z - 1);
-                    renderBlocks.setRenderBounds(0.0625F, y_low_offset, 0.875F, 0.0625F + 0.0625F, y_high_offset, 0.9375F);
-                    renderBlocks.renderStandardBlock(handleBlock, x, y, z - 1);
+                break;
+            case Door.FACING_ZP:
+
+                if (!isOpen) {
+
+                    x_low = hinge == Door.HINGE_RIGHT ? 0.875F : 0.0625F;
+
+                    if (render_inside_handle)
+                    {
+                        renderBlocks.setRenderBounds(x_low, y_low, 0.1875F, x_low + 0.0625F, y_high, 0.25F);
+                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                        renderBlocks.setRenderBounds(x_low, y_low_offset, 0.25F, x_low + 0.0625F, y_high_offset, 0.3125F);
+                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                    }
+
+                    if (render_outside_handle)
+                    {
+                        renderBlocks.setRenderBounds(x_low, y_low, 0.9375F, x_low + 0.0625F, y_high, 1.0F);
+                        renderBlocks.renderStandardBlock(handleBlock, x, y, z - 1);
+                        renderBlocks.setRenderBounds(x_low, y_low_offset, 0.875F, x_low + 0.0625F, y_high_offset, 0.9375F);
+                        renderBlocks.renderStandardBlock(handleBlock, x, y, z - 1);
+                    }
+
+                } else if (hinge == Door.HINGE_RIGHT) {
+
+                    if (render_outside_handle)
+                    {
+                        renderBlocks.setRenderBounds(0.1875F, y_low, 0.875F, 0.25F, y_high, 0.875F + 0.0625F);
+                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                        renderBlocks.setRenderBounds(0.25F, y_low_offset, 0.875F, 0.3125F, y_high_offset, 0.875F + 0.0625F);
+                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                    }
+
+                    if (render_inside_handle)
+                    {
+                        renderBlocks.setRenderBounds(0.9375F, y_low, 0.875F, 1.0F, y_high, 0.875F + 0.0625F);
+                        renderBlocks.renderStandardBlock(handleBlock, x - 1, y, z);
+                        renderBlocks.setRenderBounds(0.875F, y_low_offset, 0.875F, 0.9375F, y_high_offset, 0.875F + 0.0625F);
+                        renderBlocks.renderStandardBlock(handleBlock, x - 1, y, z);
+                    }
+
+                } else {
+
+                    if (render_outside_handle)
+                    {
+                        renderBlocks.setRenderBounds(0.75F, y_low, 0.875F, 0.8125F, y_high, 0.875F + 0.0625F);
+                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                        renderBlocks.setRenderBounds(0.6875F, y_low_offset, 0.875F, 0.75F, y_high_offset, 0.875F + 0.0625F);
+                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                    }
+
+                    if (render_inside_handle)
+                    {
+                        renderBlocks.setRenderBounds(0.0F, y_low, 0.875F, 0.0625F, y_high, 0.875F + 0.0625F);
+                        renderBlocks.renderStandardBlock(handleBlock, x + 1, y, z);
+                        renderBlocks.setRenderBounds(0.0625F, y_low_offset, 0.875F, 0.125F, y_high_offset, 0.875F + 0.0625F);
+                        renderBlocks.renderStandardBlock(handleBlock, x + 1, y, z);
+                    }
+
                 }
 
-            } else {
-
-                if (render_outside_handle)
-                {
-                    renderBlocks.setRenderBounds(0.0625F, y_low, 0.75F, 0.0625F + 0.0625F, y_high, 0.8125F);
-                    renderBlocks.renderStandardBlock(handleBlock, x, y, z);
-                    renderBlocks.setRenderBounds(0.0625F, y_low_offset, 0.6875F, 0.0625F + 0.0625F, y_high_offset, 0.75F);
-                    renderBlocks.renderStandardBlock(handleBlock, x, y, z);
-                }
-
-                if (render_inside_handle)
-                {
-                    renderBlocks.setRenderBounds(0.0625F, y_low, 0.0F, 0.0625F + 0.0625F, y_high, 0.0625F);
-                    renderBlocks.renderStandardBlock(handleBlock, x, y, z + 1);
-                    renderBlocks.setRenderBounds(0.0625F, y_low_offset, 0.0625F, 0.0625F + 0.0625F, y_high_offset, 0.125F);
-                    renderBlocks.renderStandardBlock(handleBlock, x, y, z + 1);
-                }
-
-            }
-
-            break;
-        case Door.FACING_XP:
-
-            if (!isOpen) {
-
-                z_low = hinge == Door.HINGE_RIGHT ? 0.0625F : 0.875F;
-
-                if (render_inside_handle)
-                {
-                    renderBlocks.setRenderBounds(0.1875F, y_low, z_low, 0.25F, y_high, z_low + 0.0625F);
-                    renderBlocks.renderStandardBlock(handleBlock, x, y, z);
-                    renderBlocks.setRenderBounds(0.25F, y_low_offset, z_low, 0.3125F, y_high_offset, z_low + 0.0625F);
-                    renderBlocks.renderStandardBlock(handleBlock, x, y, z);
-                }
-
-                if (render_outside_handle)
-                {
-                    renderBlocks.setRenderBounds(0.9375F, y_low, z_low, 1.0F, y_high, z_low + 0.0625F);
-                    renderBlocks.renderStandardBlock(handleBlock, x - 1, y, z);
-                    renderBlocks.setRenderBounds(0.875F, y_low_offset, z_low, 0.9375F, y_high_offset, z_low + 0.0625F);
-                    renderBlocks.renderStandardBlock(handleBlock, x - 1, y, z);
-                }
-
-            } else if (hinge == Door.HINGE_RIGHT) {
-
-                if (render_outside_handle)
-                {
-                    renderBlocks.setRenderBounds(0.875F, y_low, 0.75F, 0.875F + 0.0625F, y_high, 0.8125F);
-                    renderBlocks.renderStandardBlock(handleBlock, x, y, z);
-                    renderBlocks.setRenderBounds(0.875F, y_low_offset, 0.6875F, 0.875F + 0.0625F, y_high_offset, 0.75F);
-                    renderBlocks.renderStandardBlock(handleBlock, x, y, z);
-                }
-
-                if (render_inside_handle)
-                {
-                    renderBlocks.setRenderBounds(0.875F, y_low, 0.0F, 0.875F + 0.0625F, y_high, 0.0625F);
-                    renderBlocks.renderStandardBlock(handleBlock, x, y, z + 1);
-                    renderBlocks.setRenderBounds(0.875F, y_low_offset, 0.0625F, 0.875F + 0.0625F, y_high_offset, 0.125F);
-                    renderBlocks.renderStandardBlock(handleBlock, x, y, z + 1);
-                }
-
-            } else {
-
-                if (render_outside_handle)
-                {
-                    renderBlocks.setRenderBounds(0.875F, y_low, 0.1875F, 0.875F + 0.0625F, y_high, 0.25F);
-                    renderBlocks.renderStandardBlock(handleBlock, x, y, z);
-                    renderBlocks.setRenderBounds(0.875F, y_low_offset, 0.25F, 0.875F + 0.0625F, y_high_offset, 0.3125F);
-                    renderBlocks.renderStandardBlock(handleBlock, x, y, z);
-                }
-
-                if (render_inside_handle)
-                {
-                    renderBlocks.setRenderBounds(0.875F, y_low, 0.9375F, 0.875F + 0.0625F, y_high, 1.0F);
-                    renderBlocks.renderStandardBlock(handleBlock, x, y, z - 1);
-                    renderBlocks.setRenderBounds(0.875F, y_low_offset, 0.875F, 0.875F + 0.0625F, y_high_offset, 0.9375F);
-                    renderBlocks.renderStandardBlock(handleBlock, x, y, z - 1);
-                }
-
-            }
-
-            break;
-        case Door.FACING_ZN:
-
-            if (!isOpen) {
-
-                x_low = hinge == Door.HINGE_RIGHT ? 0.0625F : 0.875F;
-
-                if (render_inside_handle)
-                {
-                    renderBlocks.setRenderBounds(x_low, y_low, 0.75F, x_low + 0.0625F, y_high, 0.8125F);
-                    renderBlocks.renderStandardBlock(handleBlock, x, y, z);
-                    renderBlocks.setRenderBounds(x_low, y_low_offset, 0.6875F, x_low + 0.0625F, y_high_offset, 0.75F);
-                    renderBlocks.renderStandardBlock(handleBlock, x, y, z);
-                }
-
-                if (render_outside_handle)
-                {
-                    renderBlocks.setRenderBounds(x_low, y_low, 0.0F, x_low + 0.0625F, y_high, 0.0625F);
-                    renderBlocks.renderStandardBlock(handleBlock, x, y, z + 1);
-                    renderBlocks.setRenderBounds(x_low, y_low_offset, 0.0625F, x_low + 0.0625F, y_high_offset, 0.125F);
-                    renderBlocks.renderStandardBlock(handleBlock, x, y, z + 1);
-                }
-
-            } else if (hinge == Door.HINGE_RIGHT) {
-
-                if (render_outside_handle)
-                {
-                    renderBlocks.setRenderBounds(0.75F, y_low, 0.0625F, 0.8125F, y_high, 0.0625F + 0.0625F);
-                    renderBlocks.renderStandardBlock(handleBlock, x, y, z);
-                    renderBlocks.setRenderBounds(0.6875F, y_low_offset, 0.0625F, 0.75F, y_high_offset, 0.0625F + 0.0625F);
-                    renderBlocks.renderStandardBlock(handleBlock, x, y, z);
-                }
-
-                if (render_inside_handle)
-                {
-                    renderBlocks.setRenderBounds(0.0F, y_low, 0.0625F, 0.0625F, y_high, 0.0625F + 0.0625F);
-                    renderBlocks.renderStandardBlock(handleBlock, x + 1, y, z);
-                    renderBlocks.setRenderBounds(0.0625F, y_low_offset, 0.0625F, 0.125F, y_high_offset, 0.0625F + 0.0625F);
-                    renderBlocks.renderStandardBlock(handleBlock, x + 1, y, z);
-                }
-
-            } else {
-
-                if (render_outside_handle)
-                {
-                    renderBlocks.setRenderBounds(0.1875F, y_low, 0.0625F, 0.25F, y_high, 0.0625F + 0.0625F);
-                    renderBlocks.renderStandardBlock(handleBlock, x, y, z);
-                    renderBlocks.setRenderBounds(0.25F, y_low_offset, 0.0625F, 0.3125F, y_high_offset, 0.0625F + 0.0625F);
-                    renderBlocks.renderStandardBlock(handleBlock, x, y, z);
-                }
-
-                if (render_inside_handle)
-                {
-                    renderBlocks.setRenderBounds(0.9375F, y_low, 0.0625F, 1.0F, y_high, 0.0625F + 0.0625F);
-                    renderBlocks.renderStandardBlock(handleBlock, x - 1, y, z);
-                    renderBlocks.setRenderBounds(0.875F, y_low_offset, 0.0625F, 0.9375F, y_high_offset, 0.0625F + 0.0625F);
-                    renderBlocks.renderStandardBlock(handleBlock, x - 1, y, z);
-                }
-
-            }
-
-            break;
-        case Door.FACING_ZP:
-
-            if (!isOpen) {
-
-                x_low = hinge == Door.HINGE_RIGHT ? 0.875F : 0.0625F;
-
-                if (render_inside_handle)
-                {
-                    renderBlocks.setRenderBounds(x_low, y_low, 0.1875F, x_low + 0.0625F, y_high, 0.25F);
-                    renderBlocks.renderStandardBlock(handleBlock, x, y, z);
-                    renderBlocks.setRenderBounds(x_low, y_low_offset, 0.25F, x_low + 0.0625F, y_high_offset, 0.3125F);
-                    renderBlocks.renderStandardBlock(handleBlock, x, y, z);
-                }
-
-                if (render_outside_handle)
-                {
-                    renderBlocks.setRenderBounds(x_low, y_low, 0.9375F, x_low + 0.0625F, y_high, 1.0F);
-                    renderBlocks.renderStandardBlock(handleBlock, x, y, z - 1);
-                    renderBlocks.setRenderBounds(x_low, y_low_offset, 0.875F, x_low + 0.0625F, y_high_offset, 0.9375F);
-                    renderBlocks.renderStandardBlock(handleBlock, x, y, z - 1);
-                }
-
-            } else if (hinge == Door.HINGE_RIGHT) {
-
-                if (render_outside_handle)
-                {
-                    renderBlocks.setRenderBounds(0.1875F, y_low, 0.875F, 0.25F, y_high, 0.875F + 0.0625F);
-                    renderBlocks.renderStandardBlock(handleBlock, x, y, z);
-                    renderBlocks.setRenderBounds(0.25F, y_low_offset, 0.875F, 0.3125F, y_high_offset, 0.875F + 0.0625F);
-                    renderBlocks.renderStandardBlock(handleBlock, x, y, z);
-                }
-
-                if (render_inside_handle)
-                {
-                    renderBlocks.setRenderBounds(0.9375F, y_low, 0.875F, 1.0F, y_high, 0.875F + 0.0625F);
-                    renderBlocks.renderStandardBlock(handleBlock, x - 1, y, z);
-                    renderBlocks.setRenderBounds(0.875F, y_low_offset, 0.875F, 0.9375F, y_high_offset, 0.875F + 0.0625F);
-                    renderBlocks.renderStandardBlock(handleBlock, x - 1, y, z);
-                }
-
-            } else {
-
-                if (render_outside_handle)
-                {
-                    renderBlocks.setRenderBounds(0.75F, y_low, 0.875F, 0.8125F, y_high, 0.875F + 0.0625F);
-                    renderBlocks.renderStandardBlock(handleBlock, x, y, z);
-                    renderBlocks.setRenderBounds(0.6875F, y_low_offset, 0.875F, 0.75F, y_high_offset, 0.875F + 0.0625F);
-                    renderBlocks.renderStandardBlock(handleBlock, x, y, z);
-                }
-
-                if (render_inside_handle)
-                {
-                    renderBlocks.setRenderBounds(0.0F, y_low, 0.875F, 0.0625F, y_high, 0.875F + 0.0625F);
-                    renderBlocks.renderStandardBlock(handleBlock, x + 1, y, z);
-                    renderBlocks.setRenderBounds(0.0625F, y_low_offset, 0.875F, 0.125F, y_high_offset, 0.875F + 0.0625F);
-                    renderBlocks.renderStandardBlock(handleBlock, x + 1, y, z);
-                }
-
-            }
-
-            break;
+                break;
         }
     }
 

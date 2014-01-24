@@ -70,11 +70,11 @@ public class BlockCarpentersLever extends BlockBase {
         notifySideNeighbor(TE.worldObj, TE.xCoord, TE.yCoord, TE.zCoord, ForgeDirection.OPPOSITES[Lever.getFacing(TE).ordinal()]);
 
         switch (polarity) {
-        case Lever.POLARITY_POSITIVE:
-            entityPlayer.addChatMessage("message.polarity_pos.name");
-            break;
-        case Lever.POLARITY_NEGATIVE:
-            entityPlayer.addChatMessage("message.polarity_neg.name");
+            case Lever.POLARITY_POSITIVE:
+                entityPlayer.addChatMessage("message.polarity_pos.name");
+                break;
+            case Lever.POLARITY_NEGATIVE:
+                entityPlayer.addChatMessage("message.polarity_neg.name");
         }
 
         return true;
@@ -125,7 +125,7 @@ public class BlockCarpentersLever extends BlockBase {
         /* For vertical facings, set axis rotation. */
         if (facing < 2)
         {
-            ForgeDirection dir = BlockProperties.getDirectionFromFacing(BlockProperties.getEntityFacing(entityLiving));
+            ForgeDirection dir = BlockProperties.getDirectionFromFacing(BlockProperties.getOppositeFacing(entityLiving));
 
             if (dir.equals(NORTH) || dir.equals(SOUTH)) {
                 Lever.setAxis(TE, Axis.Z);
@@ -181,33 +181,33 @@ public class BlockCarpentersLever extends BlockBase {
         float offset = 0.1875F;
 
         switch (facing) {
-        case DOWN:
-            if (axis.equals(Axis.X)) {
-                setBlockBounds(0.2F, 1.0F - offset, 0.5F - offset, 0.8F, 1.0F, 0.5F + offset);
-            } else {
-                setBlockBounds(0.5F - offset, 1.0F - offset, 0.2F, 0.5F + offset, 1.0F, 0.8F);
-            }
-            break;
-        case UP:
-            if (axis.equals(Axis.X)) {
-                setBlockBounds(0.2F, 0.0F, 0.5F - offset, 0.8F, offset, 0.5F + offset);
-            } else {
-                setBlockBounds(0.5F - offset, 0.0F, 0.2F, 0.5F + offset, offset, 0.8F);
-            }
-            break;
-        case NORTH:
-            setBlockBounds(0.5F - offset, 0.2F, 1.0F - offset, 0.5F + offset, 0.8F, 1.0F);
-            break;
-        case SOUTH:
-            setBlockBounds(0.5F - offset, 0.2F, 0.0F, 0.5F + offset, 0.8F, offset);
-            break;
-        case WEST:
-            setBlockBounds(1.0F - offset, 0.2F, 0.5F - offset, 1.0F, 0.8F, 0.5F + offset);
-            break;
-        case EAST:
-            setBlockBounds(0.0F, 0.2F, 0.5F - offset, offset, 0.8F, 0.5F + offset);
-            break;
-        default: {}
+            case DOWN:
+                if (axis.equals(Axis.X)) {
+                    setBlockBounds(0.2F, 1.0F - offset, 0.5F - offset, 0.8F, 1.0F, 0.5F + offset);
+                } else {
+                    setBlockBounds(0.5F - offset, 1.0F - offset, 0.2F, 0.5F + offset, 1.0F, 0.8F);
+                }
+                break;
+            case UP:
+                if (axis.equals(Axis.X)) {
+                    setBlockBounds(0.2F, 0.0F, 0.5F - offset, 0.8F, offset, 0.5F + offset);
+                } else {
+                    setBlockBounds(0.5F - offset, 0.0F, 0.2F, 0.5F + offset, offset, 0.8F);
+                }
+                break;
+            case NORTH:
+                setBlockBounds(0.5F - offset, 0.2F, 1.0F - offset, 0.5F + offset, 0.8F, 1.0F);
+                break;
+            case SOUTH:
+                setBlockBounds(0.5F - offset, 0.2F, 0.0F, 0.5F + offset, 0.8F, offset);
+                break;
+            case WEST:
+                setBlockBounds(1.0F - offset, 0.2F, 0.5F - offset, 1.0F, 0.8F, 0.5F + offset);
+                break;
+            case EAST:
+                setBlockBounds(0.0F, 0.2F, 0.5F - offset, offset, 0.8F, 0.5F + offset);
+                break;
+            default: {}
         }
 
     }
@@ -279,24 +279,24 @@ public class BlockCarpentersLever extends BlockBase {
         world.notifyBlocksOfNeighborChange(x, y, z, blockID);
 
         switch (side) {
-        case 0:
-            world.notifyBlocksOfNeighborChange(x, y + 1, z, blockID);
-            break;
-        case 1:
-            world.notifyBlocksOfNeighborChange(x, y - 1, z, blockID);
-            break;
-        case 2:
-            world.notifyBlocksOfNeighborChange(x, y, z + 1, blockID);
-            break;
-        case 3:
-            world.notifyBlocksOfNeighborChange(x, y, z - 1, blockID);
-            break;
-        case 4:
-            world.notifyBlocksOfNeighborChange(x + 1, y, z, blockID);
-            break;
-        case 5:
-            world.notifyBlocksOfNeighborChange(x - 1, y, z, blockID);
-            break;
+            case 0:
+                world.notifyBlocksOfNeighborChange(x, y + 1, z, blockID);
+                break;
+            case 1:
+                world.notifyBlocksOfNeighborChange(x, y - 1, z, blockID);
+                break;
+            case 2:
+                world.notifyBlocksOfNeighborChange(x, y, z + 1, blockID);
+                break;
+            case 3:
+                world.notifyBlocksOfNeighborChange(x, y, z - 1, blockID);
+                break;
+            case 4:
+                world.notifyBlocksOfNeighborChange(x + 1, y, z, blockID);
+                break;
+            case 5:
+                world.notifyBlocksOfNeighborChange(x - 1, y, z, blockID);
+                break;
         }
     }
 

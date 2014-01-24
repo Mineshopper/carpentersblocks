@@ -83,11 +83,11 @@ public class BlockCarpentersDoor extends BlockBase {
             setDoorRigidity(TE, rigidity);
 
             switch (rigidity) {
-            case Door.HINGED_NONRIGID:
-                entityPlayer.addChatMessage("message.activation_wood.name");
-                break;
-            case Door.HINGED_RIGID:
-                entityPlayer.addChatMessage("message.activation_iron.name");
+                case Door.HINGED_NONRIGID:
+                    entityPlayer.addChatMessage("message.activation_wood.name");
+                    break;
+                case Door.HINGED_RIGID:
+                    entityPlayer.addChatMessage("message.activation_iron.name");
             }
 
         }
@@ -147,78 +147,78 @@ public class BlockCarpentersDoor extends BlockBase {
 
         switch (facing)
         {
-        case Door.FACING_XN:
+            case Door.FACING_XN:
 
-            if (TE_ZN != null) {
-                if (piece == Door.getPiece(TE_ZN) && facing == Door.getFacing(TE_ZN) && hinge == Door.HINGE_LEFT && Door.getHinge(TE_ZN) == Door.HINGE_RIGHT)
-                {
-                    list.add(TE_ZN);
-                    list.add((TEBase) TE.worldObj.getBlockTileEntity(TE.xCoord, TE.yCoord - (isTop ? 1 : -1), TE.zCoord - 1));
+                if (TE_ZN != null) {
+                    if (piece == Door.getPiece(TE_ZN) && facing == Door.getFacing(TE_ZN) && hinge == Door.HINGE_LEFT && Door.getHinge(TE_ZN) == Door.HINGE_RIGHT)
+                    {
+                        list.add(TE_ZN);
+                        list.add((TEBase) TE.worldObj.getBlockTileEntity(TE.xCoord, TE.yCoord - (isTop ? 1 : -1), TE.zCoord - 1));
+                    }
                 }
-            }
-            if (TE_ZP != null) {
-                if (piece == Door.getPiece(TE_ZP) && facing == Door.getFacing(TE_ZP) && hinge == Door.HINGE_RIGHT && Door.getHinge(TE_ZP) == Door.HINGE_LEFT)
-                {
-                    list.add(TE_ZP);
-                    list.add((TEBase) TE.worldObj.getBlockTileEntity(TE.xCoord, TE.yCoord - (isTop ? 1 : -1), TE.zCoord + 1));
+                if (TE_ZP != null) {
+                    if (piece == Door.getPiece(TE_ZP) && facing == Door.getFacing(TE_ZP) && hinge == Door.HINGE_RIGHT && Door.getHinge(TE_ZP) == Door.HINGE_LEFT)
+                    {
+                        list.add(TE_ZP);
+                        list.add((TEBase) TE.worldObj.getBlockTileEntity(TE.xCoord, TE.yCoord - (isTop ? 1 : -1), TE.zCoord + 1));
+                    }
                 }
-            }
-            break;
+                break;
 
-        case Door.FACING_XP:
+            case Door.FACING_XP:
 
-            if (TE_ZN != null) {
-                if (piece == Door.getPiece(TE_ZN) && facing == Door.getFacing(TE_ZN) && hinge == Door.HINGE_RIGHT && Door.getHinge(TE_ZN) == Door.HINGE_LEFT)
-                {
-                    list.add(TE_ZN);
-                    list.add((TEBase) TE.worldObj.getBlockTileEntity(TE.xCoord, TE.yCoord - (isTop ? 1 : -1), TE.zCoord - 1));
+                if (TE_ZN != null) {
+                    if (piece == Door.getPiece(TE_ZN) && facing == Door.getFacing(TE_ZN) && hinge == Door.HINGE_RIGHT && Door.getHinge(TE_ZN) == Door.HINGE_LEFT)
+                    {
+                        list.add(TE_ZN);
+                        list.add((TEBase) TE.worldObj.getBlockTileEntity(TE.xCoord, TE.yCoord - (isTop ? 1 : -1), TE.zCoord - 1));
+                    }
                 }
-            }
-            if (TE_ZP != null) {
-                if (piece == Door.getPiece(TE_ZP) && facing == Door.getFacing(TE_ZP) && hinge == Door.HINGE_LEFT && Door.getHinge(TE_ZP) == Door.HINGE_RIGHT)
-                {
-                    list.add(TE_ZP);
-                    list.add((TEBase) TE.worldObj.getBlockTileEntity(TE.xCoord, TE.yCoord - (isTop ? 1 : -1), TE.zCoord + 1));
+                if (TE_ZP != null) {
+                    if (piece == Door.getPiece(TE_ZP) && facing == Door.getFacing(TE_ZP) && hinge == Door.HINGE_LEFT && Door.getHinge(TE_ZP) == Door.HINGE_RIGHT)
+                    {
+                        list.add(TE_ZP);
+                        list.add((TEBase) TE.worldObj.getBlockTileEntity(TE.xCoord, TE.yCoord - (isTop ? 1 : -1), TE.zCoord + 1));
+                    }
                 }
-            }
-            break;
+                break;
 
-        case Door.FACING_ZN:
-        {
+            case Door.FACING_ZN:
+            {
 
-            if (TE_XN != null) {
-                if (piece == Door.getPiece(TE_XN) && facing == Door.getFacing(TE_XN) && hinge == Door.HINGE_RIGHT && Door.getHinge(TE_XN) == Door.HINGE_LEFT)
-                {
-                    list.add(TE_XN);
-                    list.add((TEBase) TE.worldObj.getBlockTileEntity(TE.xCoord - 1, TE.yCoord - (isTop ? 1 : -1), TE.zCoord));
+                if (TE_XN != null) {
+                    if (piece == Door.getPiece(TE_XN) && facing == Door.getFacing(TE_XN) && hinge == Door.HINGE_RIGHT && Door.getHinge(TE_XN) == Door.HINGE_LEFT)
+                    {
+                        list.add(TE_XN);
+                        list.add((TEBase) TE.worldObj.getBlockTileEntity(TE.xCoord - 1, TE.yCoord - (isTop ? 1 : -1), TE.zCoord));
+                    }
                 }
-            }
-            if (TE_XP != null) {
-                if (piece == Door.getPiece(TE_XP) && facing == Door.getFacing(TE_XP) && hinge == Door.HINGE_LEFT && Door.getHinge(TE_XP) == Door.HINGE_RIGHT)
-                {
-                    list.add(TE_XP);
-                    list.add((TEBase) TE.worldObj.getBlockTileEntity(TE.xCoord + 1, TE.yCoord - (isTop ? 1 : -1), TE.zCoord));
+                if (TE_XP != null) {
+                    if (piece == Door.getPiece(TE_XP) && facing == Door.getFacing(TE_XP) && hinge == Door.HINGE_LEFT && Door.getHinge(TE_XP) == Door.HINGE_RIGHT)
+                    {
+                        list.add(TE_XP);
+                        list.add((TEBase) TE.worldObj.getBlockTileEntity(TE.xCoord + 1, TE.yCoord - (isTop ? 1 : -1), TE.zCoord));
+                    }
                 }
+                break;
             }
-            break;
-        }
-        case Door.FACING_ZP:
+            case Door.FACING_ZP:
 
-            if (TE_XN != null) {
-                if (piece == Door.getPiece(TE_XN) && facing == Door.getFacing(TE_XN) && hinge == Door.HINGE_LEFT && Door.getHinge(TE_XN) == Door.HINGE_RIGHT)
-                {
-                    list.add(TE_XN);
-                    list.add((TEBase) TE.worldObj.getBlockTileEntity(TE.xCoord - 1, TE.yCoord - (isTop ? 1 : -1), TE.zCoord));
+                if (TE_XN != null) {
+                    if (piece == Door.getPiece(TE_XN) && facing == Door.getFacing(TE_XN) && hinge == Door.HINGE_LEFT && Door.getHinge(TE_XN) == Door.HINGE_RIGHT)
+                    {
+                        list.add(TE_XN);
+                        list.add((TEBase) TE.worldObj.getBlockTileEntity(TE.xCoord - 1, TE.yCoord - (isTop ? 1 : -1), TE.zCoord));
+                    }
                 }
-            }
-            if (TE_XP != null) {
-                if (piece == Door.getPiece(TE_XP) && facing == Door.getFacing(TE_XP) && hinge == Door.HINGE_RIGHT && Door.getHinge(TE_XP) == Door.HINGE_LEFT)
-                {
-                    list.add(TE_XP);
-                    list.add((TEBase) TE.worldObj.getBlockTileEntity(TE.xCoord + 1, TE.yCoord - (isTop ? 1 : -1), TE.zCoord));
+                if (TE_XP != null) {
+                    if (piece == Door.getPiece(TE_XP) && facing == Door.getFacing(TE_XP) && hinge == Door.HINGE_RIGHT && Door.getHinge(TE_XP) == Door.HINGE_LEFT)
+                    {
+                        list.add(TE_XP);
+                        list.add((TEBase) TE.worldObj.getBlockTileEntity(TE.xCoord + 1, TE.yCoord - (isTop ? 1 : -1), TE.zCoord));
+                    }
                 }
-            }
-            break;
+                break;
 
         }
 
@@ -275,42 +275,42 @@ public class BlockCarpentersDoor extends BlockBase {
 
         switch (facing)
         {
-        case Door.FACING_XN:
-            if (!isOpen) {
-                x_low = 0.8125F;
-            } else if (hinge == Door.HINGE_RIGHT) {
-                z_high = 0.1875F;
-            } else {
-                z_low = 0.8125F;
-            }
-            break;
-        case Door.FACING_XP:
-            if (!isOpen) {
-                x_high = 0.1875F;
-            } else if (hinge == Door.HINGE_RIGHT) {
-                z_low = 0.8125F;
-            } else {
-                z_high = 0.1875F;
-            }
-            break;
-        case Door.FACING_ZN:
-            if (!isOpen) {
-                z_low = 0.8125F;
-            } else if (hinge == Door.HINGE_RIGHT) {
-                x_low = 0.8125F;
-            } else {
-                x_high = 0.1875F;
-            }
-            break;
-        case Door.FACING_ZP:
-            if (!isOpen) {
-                z_high = 0.1875F;
-            } else if (hinge == Door.HINGE_RIGHT) {
-                x_high = 0.1875F;
-            } else {
-                x_low = 0.8125F;
-            }
-            break;
+            case Door.FACING_XN:
+                if (!isOpen) {
+                    x_low = 0.8125F;
+                } else if (hinge == Door.HINGE_RIGHT) {
+                    z_high = 0.1875F;
+                } else {
+                    z_low = 0.8125F;
+                }
+                break;
+            case Door.FACING_XP:
+                if (!isOpen) {
+                    x_high = 0.1875F;
+                } else if (hinge == Door.HINGE_RIGHT) {
+                    z_low = 0.8125F;
+                } else {
+                    z_high = 0.1875F;
+                }
+                break;
+            case Door.FACING_ZN:
+                if (!isOpen) {
+                    z_low = 0.8125F;
+                } else if (hinge == Door.HINGE_RIGHT) {
+                    x_low = 0.8125F;
+                } else {
+                    x_high = 0.1875F;
+                }
+                break;
+            case Door.FACING_ZP:
+                if (!isOpen) {
+                    z_high = 0.1875F;
+                } else if (hinge == Door.HINGE_RIGHT) {
+                    x_high = 0.1875F;
+                } else {
+                    x_low = 0.8125F;
+                }
+                break;
         }
 
         setBlockBounds(x_low, 0.0F, z_low, x_high, 1.0F, z_high);

@@ -243,12 +243,12 @@ public class BlockCarpentersFlowerPot extends BlockBase {
         if (FlowerPotProperties.hasPlant(TE)) {
 
             switch (FlowerPotHandler.getPlantProfile(TE)) {
-            case CACTUS:
-            case LEAVES:
-                setBlockBounds(0.3125F, 0.0F, 0.3125F, 0.6875F, 0.99F, 0.6875F);
-                break;
-            default:
-                setBlockBounds(0.3125F, 0.0F, 0.3125F, 0.6875F, 0.75F, 0.6875F);
+                case CACTUS:
+                case LEAVES:
+                    setBlockBounds(0.3125F, 0.0F, 0.3125F, 0.6875F, 0.99F, 0.6875F);
+                    break;
+                default:
+                    setBlockBounds(0.3125F, 0.0F, 0.3125F, 0.6875F, 0.75F, 0.6875F);
             }
 
         } else {
@@ -274,11 +274,11 @@ public class BlockCarpentersFlowerPot extends BlockBase {
             if (FlowerPotProperties.hasPlant(TE)) {
 
                 switch (FlowerPotHandler.getPlantProfile(TE)) {
-                case CACTUS:
-                case LEAVES:
-                    axisAlignedBB = AxisAlignedBB.getAABBPool().getAABB(x + 0.3125F, y, z + 0.3125F, x + 0.6875F, y + 0.99F, z + 0.6875F);
-                    break;
-                default: {}
+                    case CACTUS:
+                    case LEAVES:
+                        axisAlignedBB = AxisAlignedBB.getAABBPool().getAABB(x + 0.3125F, y, z + 0.3125F, x + 0.6875F, y + 0.99F, z + 0.6875F);
+                        break;
+                    default: {}
                 }
 
             }

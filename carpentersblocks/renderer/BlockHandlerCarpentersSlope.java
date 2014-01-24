@@ -263,10 +263,10 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
                 HelperCorner.renderSlopeXPos(renderBlocks, slopeID, x, y, z, icon);
                 break;
             case OBL_INT_YN:
-                HelperOblique.renderSlopeYNeg(renderBlocks, slopeID, x, y, z, icon);
+                HelperOblique.renderIntObliqueYNeg(renderBlocks, slopeID, x, y, z, icon);
                 break;
             case OBL_INT_YP:
-                HelperOblique.renderSlopeYPos(renderBlocks, slopeID, x, y, z, icon);
+                HelperOblique.renderIntObliqueYPos(renderBlocks, slopeID, x, y, z, icon);
                 break;
             case OBL_EXT_LEFT_YP:
                 HelperOblique.renderExtObliqueYPosLeft(renderBlocks, slopeID, x, y, z, icon);
@@ -483,6 +483,8 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
 
         /* Begin rendering sloped pieces. */
 
+        lightingHelper.setForceOffsetLighting();
+
         RenderHelper.startDrawing(TRIANGLES);
 
         if (pieceList.contains(PRISM_N)) {
@@ -533,6 +535,8 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
             setPyramidLighting(block, x, y, z, Slope.PYR_HALF_POS, EAST);
             setIDAndRender(block, PYR_YXPP, x, y, z, EAST);
         }
+
+        lightingHelper.clearForceOffsetLighting();
 
         RenderHelper.startDrawing(QUADS);
 
@@ -1100,6 +1104,8 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
     {
         RenderHelper.startDrawing(TRIANGLES);
 
+        lightingHelper.setForceOffsetLighting();
+
         if (slope.isPositive) {
 
             setPyramidLighting(block, x, y, z, slope, NORTH);
@@ -1129,6 +1135,8 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
             setIDAndRender(block, PYR_YXNP, x, y, z, EAST);
 
         }
+
+        lightingHelper.clearForceOffsetLighting();
     }
 
     /**

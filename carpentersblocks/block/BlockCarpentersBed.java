@@ -256,14 +256,14 @@ public class BlockCarpentersBed extends BlockBase {
 
         switch (Bed.getDirection(TE))
         {
-        case NORTH:
-            return 0;
-        case SOUTH:
-            return 2;
-        case WEST:
-            return 3;
-        default:
-            return 1;
+            case NORTH:
+                return 0;
+            case SOUTH:
+                return 2;
+            case WEST:
+                return 3;
+            default:
+                return 1;
         }
     }
 

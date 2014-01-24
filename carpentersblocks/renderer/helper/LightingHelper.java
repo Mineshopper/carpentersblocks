@@ -33,7 +33,7 @@ public class LightingHelper {
     private int              brightnessOverride;
     private float            lightnessOverride;
     private boolean          hasColorOverride;
-    private float[]          colorOverride     = new float[3];
+    private float[]          colorOverride      = new float[3];
 
     public final int         NORMAL_BRIGHTNESS = 0xff00ff;
     public final int         MAX_BRIGHTNESS    = 0xf000f0;
@@ -49,13 +49,32 @@ public class LightingHelper {
     private final int        GREEN             = 1;
     private final int        BLUE              = 2;
 
-    private double           lighting_offset   = 0.5D;
+    private boolean          ignoreRenderBounds;
+    private float            percentRenderOffset;
 
     public LightingHelper bind(BlockHandlerBase blockHandler)
     {
         this.blockHandler = blockHandler;
         renderBlocks = blockHandler.renderBlocks;
         return this;
+    }
+
+    /**
+     * This will force the lighting helper to ignore lighting
+     * offsets normally used when render bounds exceed certain
+     * limits.
+     */
+    public void setForceOffsetLighting()
+    {
+        ignoreRenderBounds = true;
+    }
+
+    /**
+     * Clears ignore render bounds.
+     */
+    public void clearForceOffsetLighting()
+    {
+        ignoreRenderBounds = false;
     }
 
     /**
@@ -137,6 +156,7 @@ public class LightingHelper {
     public void setLightnessOffset(float lightness)
     {
         lightnessOffset = lightness;
+        percentRenderOffset = 0.25F;
     }
 
     /**
@@ -145,6 +165,7 @@ public class LightingHelper {
     public void clearLightnessOffset()
     {
         lightnessOffset = 0.0F;
+        percentRenderOffset = 0.0F;
     }
 
     /**
@@ -273,7 +294,7 @@ public class LightingHelper {
             int brightness = hasBrightnessOverride ? brightnessOverride : NORMAL_BRIGHTNESS;
             tessellator.setBrightness(brightness);
 
-            if (renderBlocks.renderMinY <= lighting_offset) {
+            if (ignoreRenderBounds || renderBlocks.renderMinY <= 0.0D + percentRenderOffset) {
                 --y;
             }
 
@@ -322,11 +343,11 @@ public class LightingHelper {
                 renderBlocks.aoBrightnessXYZPNP = block.getMixedBrightnessForBlock(renderBlocks.blockAccess, x + 1, y, z + 1);
             }
 
-            if (renderBlocks.renderMinY <= lighting_offset) {
+            if (ignoreRenderBounds || renderBlocks.renderMinY <= 0.0D + percentRenderOffset) {
                 ++y;
             }
 
-            if (renderBlocks.renderMinY <= lighting_offset || !renderBlocks.blockAccess.isBlockOpaqueCube(x, y - 1, z)) {
+            if (ignoreRenderBounds || renderBlocks.renderMinY <= 0.0D + percentRenderOffset || !renderBlocks.blockAccess.isBlockOpaqueCube(x, y - 1, z)) {
                 mixedBrightness = block.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y - 1, z);
             }
 
@@ -390,7 +411,7 @@ public class LightingHelper {
             int brightness = hasBrightnessOverride ? brightnessOverride : NORMAL_BRIGHTNESS;
             tessellator.setBrightness(brightness);
 
-            if (renderBlocks.renderMaxY >= lighting_offset) {
+            if (ignoreRenderBounds || renderBlocks.renderMaxY >= 1.0D - percentRenderOffset) {
                 ++y;
             }
 
@@ -439,11 +460,11 @@ public class LightingHelper {
                 renderBlocks.aoBrightnessXYZPPP = block.getMixedBrightnessForBlock(renderBlocks.blockAccess, x + 1, y, z + 1);
             }
 
-            if (renderBlocks.renderMaxY >= lighting_offset) {
+            if (ignoreRenderBounds || renderBlocks.renderMaxY >= 1.0D - percentRenderOffset) {
                 --y;
             }
 
-            if (renderBlocks.renderMaxY >= lighting_offset || !renderBlocks.blockAccess.isBlockOpaqueCube(x, y + 1, z)) {
+            if (ignoreRenderBounds || renderBlocks.renderMaxY >= 1.0D - percentRenderOffset || !renderBlocks.blockAccess.isBlockOpaqueCube(x, y + 1, z)) {
                 mixedBrightness = block.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y + 1, z);
             }
 
@@ -507,7 +528,7 @@ public class LightingHelper {
             int brightness = hasBrightnessOverride ? brightnessOverride : NORMAL_BRIGHTNESS;
             tessellator.setBrightness(brightness);
 
-            if (renderBlocks.renderMinZ < lighting_offset) {
+            if (ignoreRenderBounds || renderBlocks.renderMinZ <= 0.0D + percentRenderOffset) {
                 --z;
             }
 
@@ -556,11 +577,11 @@ public class LightingHelper {
                 renderBlocks.aoBrightnessXYZPPN = block.getMixedBrightnessForBlock(renderBlocks.blockAccess, x + 1, y + 1, z);
             }
 
-            if (renderBlocks.renderMinZ < lighting_offset) {
+            if (ignoreRenderBounds || renderBlocks.renderMinZ <= 0.0D + percentRenderOffset) {
                 ++z;
             }
 
-            if (renderBlocks.renderMinZ < lighting_offset || !renderBlocks.blockAccess.isBlockOpaqueCube(x, y, z - 1)) {
+            if (ignoreRenderBounds || renderBlocks.renderMinZ <= 0.0D + percentRenderOffset || !renderBlocks.blockAccess.isBlockOpaqueCube(x, y, z - 1)) {
                 mixedBrightness = block.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y, z - 1);
             }
 
@@ -624,7 +645,7 @@ public class LightingHelper {
             int brightness = hasBrightnessOverride ? brightnessOverride : NORMAL_BRIGHTNESS;
             tessellator.setBrightness(brightness);
 
-            if (renderBlocks.renderMaxZ > lighting_offset) {
+            if (ignoreRenderBounds || renderBlocks.renderMaxZ >= 1.0D - percentRenderOffset) {
                 ++z;
             }
 
@@ -673,11 +694,11 @@ public class LightingHelper {
                 renderBlocks.aoBrightnessXYZPPP = block.getMixedBrightnessForBlock(renderBlocks.blockAccess, x + 1, y + 1, z);
             }
 
-            if (renderBlocks.renderMaxZ > lighting_offset) {
+            if (ignoreRenderBounds || renderBlocks.renderMaxZ >= 1.0D - percentRenderOffset) {
                 --z;
             }
 
-            if (renderBlocks.renderMaxZ > lighting_offset || !renderBlocks.blockAccess.isBlockOpaqueCube(x, y, z + 1)) {
+            if (ignoreRenderBounds || renderBlocks.renderMaxZ >= 1.0D - percentRenderOffset || !renderBlocks.blockAccess.isBlockOpaqueCube(x, y, z + 1)) {
                 mixedBrightness = block.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y, z + 1);
             }
 
@@ -741,7 +762,7 @@ public class LightingHelper {
             int brightness = hasBrightnessOverride ? brightnessOverride : NORMAL_BRIGHTNESS;
             tessellator.setBrightness(brightness);
 
-            if (renderBlocks.renderMinX < lighting_offset) {
+            if (ignoreRenderBounds || renderBlocks.renderMinX <= 0.0D + percentRenderOffset) {
                 --x;
             }
 
@@ -790,11 +811,11 @@ public class LightingHelper {
                 renderBlocks.aoBrightnessXYZNPP = block.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y + 1, z + 1);
             }
 
-            if (renderBlocks.renderMinX < lighting_offset) {
+            if (ignoreRenderBounds || renderBlocks.renderMinX <= 0.0D + percentRenderOffset) {
                 ++x;
             }
 
-            if (renderBlocks.renderMinX < lighting_offset || !renderBlocks.blockAccess.isBlockOpaqueCube(x - 1, y, z)) {
+            if (ignoreRenderBounds || renderBlocks.renderMinX <= 0.0D + percentRenderOffset || !renderBlocks.blockAccess.isBlockOpaqueCube(x - 1, y, z)) {
                 mixedBrightness = block.getMixedBrightnessForBlock(renderBlocks.blockAccess, x - 1, y, z);
             }
 
@@ -858,7 +879,7 @@ public class LightingHelper {
             int brightness = hasBrightnessOverride ? brightnessOverride : NORMAL_BRIGHTNESS;
             tessellator.setBrightness(brightness);
 
-            if (renderBlocks.renderMaxX > lighting_offset) {
+            if (ignoreRenderBounds || renderBlocks.renderMaxX >= 1.0D - percentRenderOffset) {
                 ++x;
             }
 
@@ -907,11 +928,11 @@ public class LightingHelper {
                 renderBlocks.aoBrightnessXYZPPP = block.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y + 1, z + 1);
             }
 
-            if (renderBlocks.renderMaxX > lighting_offset) {
+            if (ignoreRenderBounds || renderBlocks.renderMaxX >= 1.0D - percentRenderOffset) {
                 --x;
             }
 
-            if (renderBlocks.renderMaxX > lighting_offset || !renderBlocks.blockAccess.isBlockOpaqueCube(x + 1, y, z)) {
+            if (ignoreRenderBounds || renderBlocks.renderMaxX >= 1.0D - percentRenderOffset || !renderBlocks.blockAccess.isBlockOpaqueCube(x + 1, y, z)) {
                 mixedBrightness = block.getMixedBrightnessForBlock(renderBlocks.blockAccess, x + 1, y, z);
             }
 

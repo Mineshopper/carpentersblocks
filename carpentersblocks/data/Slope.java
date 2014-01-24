@@ -258,23 +258,23 @@ public class Slope {
     public Type getPrimaryType()
     {
         switch (type) {
-        case WEDGE_XZ:
-        case WEDGE_Y:
-        case WEDGE_INT:
-        case WEDGE_EXT:
-        case OBLIQUE_INT:
-        case OBLIQUE_EXT:
-            return Type.WEDGE_XZ;
-        case PYRAMID:
-            return Type.PYRAMID;
-        case PRISM_1P:
-        case PRISM_2P:
-        case PRISM_3P:
-        case PRISM_4P:
-        case PRISM_SLOPE:
-            return Type.PRISM_SLOPE;
-        default:
-            return Type.WEDGE_Y;
+            case WEDGE_XZ:
+            case WEDGE_Y:
+            case WEDGE_INT:
+            case WEDGE_EXT:
+            case OBLIQUE_INT:
+            case OBLIQUE_EXT:
+                return Type.WEDGE_XZ;
+            case PYRAMID:
+                return Type.PYRAMID;
+            case PRISM_1P:
+            case PRISM_2P:
+            case PRISM_3P:
+            case PRISM_4P:
+            case PRISM_SLOPE:
+                return Type.PRISM_SLOPE;
+            default:
+                return Type.WEDGE_Y;
         }
     }
 

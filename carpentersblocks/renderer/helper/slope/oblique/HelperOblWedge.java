@@ -22,30 +22,30 @@ public class HelperOblWedge extends RenderHelper {
         prepareRender(renderBlocks, NORTH, x, y, z, icon);
 
         switch (slopeID) {
-        case Slope.ID_WEDGE_POS_N:
-            setupVertex(renderBlocks, xMax, yMax, zMax, uTL, vTL, SOUTHEAST);
-            setupVertex(renderBlocks, xMax, yMin, zMin, uBL, vBL, NORTHEAST);
-            setupVertex(renderBlocks, xMin, yMin, zMin, uBR, vBR, NORTHWEST);
-            setupVertex(renderBlocks, xMin, yMax, zMax, uTR, vTR, SOUTHWEST);
-            break;
-        case Slope.ID_WEDGE_NEG_N:
-            setupVertex(renderBlocks, xMin, yMin, zMax, uBR, vBR, SOUTHWEST);
-            setupVertex(renderBlocks, xMin, yMax, zMin, uTR, vTR, NORTHWEST);
-            setupVertex(renderBlocks, xMax, yMax, zMin, uTL, vTL, NORTHEAST);
-            setupVertex(renderBlocks, xMax, yMin, zMax, uBL, vBL, SOUTHEAST);
-            break;
-        case Slope.ID_WEDGE_NW:
-            setupVertex(renderBlocks, xMax, yMax, zMin, uTL, vTL, TOP_LEFT    );
-            setupVertex(renderBlocks, xMax, yMin, zMin, uBL, vBL, BOTTOM_LEFT );
-            setupVertex(renderBlocks, xMin, yMin, zMax, uBR, vBR, BOTTOM_RIGHT);
-            setupVertex(renderBlocks, xMin, yMax, zMax, uTR, vTR, TOP_RIGHT   );
-            break;
-        case Slope.ID_WEDGE_NE:
-            setupVertex(renderBlocks, xMax, yMax, zMax, uTL, vTL, TOP_LEFT    );
-            setupVertex(renderBlocks, xMax, yMin, zMax, uBL, vBL, BOTTOM_LEFT );
-            setupVertex(renderBlocks, xMin, yMin, zMin, uBR, vBR, BOTTOM_RIGHT);
-            setupVertex(renderBlocks, xMin, yMax, zMin, uTR, vTR, TOP_RIGHT   );
-            break;
+            case Slope.ID_WEDGE_POS_N:
+                setupVertex(renderBlocks, xMax, yMax, zMax, uTL, vTL, SOUTHEAST);
+                setupVertex(renderBlocks, xMax, yMin, zMin, uBL, vBL, NORTHEAST);
+                setupVertex(renderBlocks, xMin, yMin, zMin, uBR, vBR, NORTHWEST);
+                setupVertex(renderBlocks, xMin, yMax, zMax, uTR, vTR, SOUTHWEST);
+                break;
+            case Slope.ID_WEDGE_NEG_N:
+                setupVertex(renderBlocks, xMin, yMin, zMax, uBR, vBR, SOUTHWEST);
+                setupVertex(renderBlocks, xMin, yMax, zMin, uTR, vTR, NORTHWEST);
+                setupVertex(renderBlocks, xMax, yMax, zMin, uTL, vTL, NORTHEAST);
+                setupVertex(renderBlocks, xMax, yMin, zMax, uBL, vBL, SOUTHEAST);
+                break;
+            case Slope.ID_WEDGE_NW:
+                setupVertex(renderBlocks, xMax, yMax, zMin, uTL, vTL, TOP_LEFT    );
+                setupVertex(renderBlocks, xMax, yMin, zMin, uBL, vBL, BOTTOM_LEFT );
+                setupVertex(renderBlocks, xMin, yMin, zMax, uBR, vBR, BOTTOM_RIGHT);
+                setupVertex(renderBlocks, xMin, yMax, zMax, uTR, vTR, TOP_RIGHT   );
+                break;
+            case Slope.ID_WEDGE_NE:
+                setupVertex(renderBlocks, xMax, yMax, zMax, uTL, vTL, TOP_LEFT    );
+                setupVertex(renderBlocks, xMax, yMin, zMax, uBL, vBL, BOTTOM_LEFT );
+                setupVertex(renderBlocks, xMin, yMin, zMin, uBR, vBR, BOTTOM_RIGHT);
+                setupVertex(renderBlocks, xMin, yMax, zMin, uTR, vTR, TOP_RIGHT   );
+                break;
         }
     }
 
@@ -57,30 +57,30 @@ public class HelperOblWedge extends RenderHelper {
         prepareRender(renderBlocks, SOUTH, x, y, z, icon);
 
         switch (slopeID) {
-        case Slope.ID_WEDGE_POS_S:
-            setupVertex(renderBlocks, xMax, yMin, zMax, uBR, vBR, SOUTHEAST);
-            setupVertex(renderBlocks, xMax, yMax, zMin, uTR, vTR, NORTHEAST);
-            setupVertex(renderBlocks, xMin, yMax, zMin, uTL, vTL, NORTHWEST);
-            setupVertex(renderBlocks, xMin, yMin, zMax, uBL, vBL, SOUTHWEST);
-            break;
-        case Slope.ID_WEDGE_NEG_S:
-            setupVertex(renderBlocks, xMin, yMax, zMax, uTL, vTL, SOUTHWEST);
-            setupVertex(renderBlocks, xMin, yMin, zMin, uBL, vBL, NORTHWEST);
-            setupVertex(renderBlocks, xMax, yMin, zMin, uBR, vBR, NORTHEAST);
-            setupVertex(renderBlocks, xMax, yMax, zMax, uTR, vTR, SOUTHEAST);
-            break;
-        case Slope.ID_WEDGE_SW:
-            setupVertex(renderBlocks, xMin, yMax, zMin, uTL, vTL, TOP_LEFT    );
-            setupVertex(renderBlocks, xMin, yMin, zMin, uBL, vBL, BOTTOM_LEFT );
-            setupVertex(renderBlocks, xMax, yMin, zMax, uBR, vBR, BOTTOM_RIGHT);
-            setupVertex(renderBlocks, xMax, yMax, zMax, uTR, vTR, TOP_RIGHT   );
-            break;
-        case Slope.ID_WEDGE_SE:
-            setupVertex(renderBlocks, xMin, yMax, zMax, uTL, vTL, TOP_LEFT    );
-            setupVertex(renderBlocks, xMin, yMin, zMax, uBL, vBL, BOTTOM_LEFT );
-            setupVertex(renderBlocks, xMax, yMin, zMin, uBR, vBR, BOTTOM_RIGHT);
-            setupVertex(renderBlocks, xMax, yMax, zMin, uTR, vTR, TOP_RIGHT   );
-            break;
+            case Slope.ID_WEDGE_POS_S:
+                setupVertex(renderBlocks, xMax, yMin, zMax, uBR, vBR, SOUTHEAST);
+                setupVertex(renderBlocks, xMax, yMax, zMin, uTR, vTR, NORTHEAST);
+                setupVertex(renderBlocks, xMin, yMax, zMin, uTL, vTL, NORTHWEST);
+                setupVertex(renderBlocks, xMin, yMin, zMax, uBL, vBL, SOUTHWEST);
+                break;
+            case Slope.ID_WEDGE_NEG_S:
+                setupVertex(renderBlocks, xMin, yMax, zMax, uTL, vTL, SOUTHWEST);
+                setupVertex(renderBlocks, xMin, yMin, zMin, uBL, vBL, NORTHWEST);
+                setupVertex(renderBlocks, xMax, yMin, zMin, uBR, vBR, NORTHEAST);
+                setupVertex(renderBlocks, xMax, yMax, zMax, uTR, vTR, SOUTHEAST);
+                break;
+            case Slope.ID_WEDGE_SW:
+                setupVertex(renderBlocks, xMin, yMax, zMin, uTL, vTL, TOP_LEFT    );
+                setupVertex(renderBlocks, xMin, yMin, zMin, uBL, vBL, BOTTOM_LEFT );
+                setupVertex(renderBlocks, xMax, yMin, zMax, uBR, vBR, BOTTOM_RIGHT);
+                setupVertex(renderBlocks, xMax, yMax, zMax, uTR, vTR, TOP_RIGHT   );
+                break;
+            case Slope.ID_WEDGE_SE:
+                setupVertex(renderBlocks, xMin, yMax, zMax, uTL, vTL, TOP_LEFT    );
+                setupVertex(renderBlocks, xMin, yMin, zMax, uBL, vBL, BOTTOM_LEFT );
+                setupVertex(renderBlocks, xMax, yMin, zMin, uBR, vBR, BOTTOM_RIGHT);
+                setupVertex(renderBlocks, xMax, yMax, zMin, uTR, vTR, TOP_RIGHT   );
+                break;
         }
     }
 
@@ -92,18 +92,18 @@ public class HelperOblWedge extends RenderHelper {
         prepareRender(renderBlocks, WEST, x, y, z, icon);
 
         switch (slopeID) {
-        case Slope.ID_WEDGE_POS_W:
-            setupVertex(renderBlocks, xMax, yMax, zMax, uTR, vTR, SOUTHEAST);
-            setupVertex(renderBlocks, xMax, yMax, zMin, uTL, vTL, NORTHEAST);
-            setupVertex(renderBlocks, xMin, yMin, zMin, uBL, vBL, NORTHWEST);
-            setupVertex(renderBlocks, xMin, yMin, zMax, uBR, vBR, SOUTHWEST);
-            break;
-        case Slope.ID_WEDGE_NEG_W:
-            setupVertex(renderBlocks, xMin, yMax, zMax, uTR, vTR, SOUTHWEST);
-            setupVertex(renderBlocks, xMin, yMax, zMin, uTL, vTL, NORTHWEST);
-            setupVertex(renderBlocks, xMax, yMin, zMin, uBL, vBL, NORTHEAST);
-            setupVertex(renderBlocks, xMax, yMin, zMax, uBR, vBR, SOUTHEAST);
-            break;
+            case Slope.ID_WEDGE_POS_W:
+                setupVertex(renderBlocks, xMax, yMax, zMax, uTR, vTR, SOUTHEAST);
+                setupVertex(renderBlocks, xMax, yMax, zMin, uTL, vTL, NORTHEAST);
+                setupVertex(renderBlocks, xMin, yMin, zMin, uBL, vBL, NORTHWEST);
+                setupVertex(renderBlocks, xMin, yMin, zMax, uBR, vBR, SOUTHWEST);
+                break;
+            case Slope.ID_WEDGE_NEG_W:
+                setupVertex(renderBlocks, xMin, yMax, zMax, uTR, vTR, SOUTHWEST);
+                setupVertex(renderBlocks, xMin, yMax, zMin, uTL, vTL, NORTHWEST);
+                setupVertex(renderBlocks, xMax, yMin, zMin, uBL, vBL, NORTHEAST);
+                setupVertex(renderBlocks, xMax, yMin, zMax, uBR, vBR, SOUTHEAST);
+                break;
         }
     }
 
@@ -115,18 +115,18 @@ public class HelperOblWedge extends RenderHelper {
         prepareRender(renderBlocks, EAST, x, y, z, icon);
 
         switch (slopeID) {
-        case Slope.ID_WEDGE_POS_E:
-            setupVertex(renderBlocks, xMax, yMin, zMax, uBL, vBL, SOUTHEAST);
-            setupVertex(renderBlocks, xMax, yMin, zMin, uBR, vBR, NORTHEAST);
-            setupVertex(renderBlocks, xMin, yMax, zMin, uTR, vTR, NORTHWEST);
-            setupVertex(renderBlocks, xMin, yMax, zMax, uTL, vTL, SOUTHWEST);
-            break;
-        case Slope.ID_WEDGE_NEG_E:
-            setupVertex(renderBlocks, xMin, yMin, zMax, uBL, vBL, SOUTHWEST);
-            setupVertex(renderBlocks, xMin, yMin, zMin, uBR, vBR, NORTHWEST);
-            setupVertex(renderBlocks, xMax, yMax, zMin, uTR, vTR, NORTHEAST);
-            setupVertex(renderBlocks, xMax, yMax, zMax, uTL, vTL, SOUTHEAST);
-            break;
+            case Slope.ID_WEDGE_POS_E:
+                setupVertex(renderBlocks, xMax, yMin, zMax, uBL, vBL, SOUTHEAST);
+                setupVertex(renderBlocks, xMax, yMin, zMin, uBR, vBR, NORTHEAST);
+                setupVertex(renderBlocks, xMin, yMax, zMin, uTR, vTR, NORTHWEST);
+                setupVertex(renderBlocks, xMin, yMax, zMax, uTL, vTL, SOUTHWEST);
+                break;
+            case Slope.ID_WEDGE_NEG_E:
+                setupVertex(renderBlocks, xMin, yMin, zMax, uBL, vBL, SOUTHWEST);
+                setupVertex(renderBlocks, xMin, yMin, zMin, uBR, vBR, NORTHWEST);
+                setupVertex(renderBlocks, xMax, yMax, zMin, uTR, vTR, NORTHEAST);
+                setupVertex(renderBlocks, xMax, yMax, zMax, uTL, vTL, SOUTHEAST);
+                break;
         }
     }
 

@@ -145,19 +145,19 @@ public class BlockHandlerCarpentersLever extends BlockHandlerBase {
                 vector[vecCount].rotateAroundX((float)Math.PI / 2F);
 
                 switch (facing) {
-                case NORTH:
-                    vector[vecCount].rotateAroundY(0.0F);
-                    break;
-                case SOUTH:
-                    vector[vecCount].rotateAroundY((float)Math.PI);
-                    break;
-                case WEST:
-                    vector[vecCount].rotateAroundY((float)Math.PI / 2F);
-                    break;
-                case EAST:
-                    vector[vecCount].rotateAroundY(-((float)Math.PI / 2F));
-                    break;
-                default: {}
+                    case NORTH:
+                        vector[vecCount].rotateAroundY(0.0F);
+                        break;
+                    case SOUTH:
+                        vector[vecCount].rotateAroundY((float)Math.PI);
+                        break;
+                    case WEST:
+                        vector[vecCount].rotateAroundY((float)Math.PI / 2F);
+                        break;
+                    case EAST:
+                        vector[vecCount].rotateAroundY(-((float)Math.PI / 2F));
+                        break;
+                    default: {}
                 }
 
                 vector[vecCount].xCoord += x + 0.5D;
@@ -187,46 +187,46 @@ public class BlockHandlerCarpentersLever extends BlockHandlerBase {
             }
 
             switch (side) {
-            case 0:
-                vertex1 = vector[0];
-                vertex2 = vector[1];
-                vertex3 = vector[2];
-                vertex4 = vector[3];
-                break;
-            case 1:
-                vertex1 = vector[7];
-                vertex2 = vector[6];
-                vertex3 = vector[5];
-                vertex4 = vector[4];
-                break;
-            case 2:
-                tessellator.setColorOpaque_F(0.8F, 0.8F, 0.8F);
-                vertex1 = vector[1];
-                vertex2 = vector[0];
-                vertex3 = vector[4];
-                vertex4 = vector[5];
-                break;
-            case 3:
-                tessellator.setColorOpaque_F(0.6F, 0.6F, 0.6F);
-                vertex1 = vector[2];
-                vertex2 = vector[1];
-                vertex3 = vector[5];
-                vertex4 = vector[6];
-                break;
-            case 4:
-                tessellator.setColorOpaque_F(0.8F, 0.8F, 0.8F);
-                vertex1 = vector[3];
-                vertex2 = vector[2];
-                vertex3 = vector[6];
-                vertex4 = vector[7];
-                break;
-            case 5:
-                tessellator.setColorOpaque_F(0.6F, 0.6F, 0.6F);
-                vertex1 = vector[0];
-                vertex2 = vector[3];
-                vertex3 = vector[7];
-                vertex4 = vector[4];
-                break;
+                case 0:
+                    vertex1 = vector[0];
+                    vertex2 = vector[1];
+                    vertex3 = vector[2];
+                    vertex4 = vector[3];
+                    break;
+                case 1:
+                    vertex1 = vector[7];
+                    vertex2 = vector[6];
+                    vertex3 = vector[5];
+                    vertex4 = vector[4];
+                    break;
+                case 2:
+                    tessellator.setColorOpaque_F(0.8F, 0.8F, 0.8F);
+                    vertex1 = vector[1];
+                    vertex2 = vector[0];
+                    vertex3 = vector[4];
+                    vertex4 = vector[5];
+                    break;
+                case 3:
+                    tessellator.setColorOpaque_F(0.6F, 0.6F, 0.6F);
+                    vertex1 = vector[2];
+                    vertex2 = vector[1];
+                    vertex3 = vector[5];
+                    vertex4 = vector[6];
+                    break;
+                case 4:
+                    tessellator.setColorOpaque_F(0.8F, 0.8F, 0.8F);
+                    vertex1 = vector[3];
+                    vertex2 = vector[2];
+                    vertex3 = vector[6];
+                    vertex4 = vector[7];
+                    break;
+                case 5:
+                    tessellator.setColorOpaque_F(0.6F, 0.6F, 0.6F);
+                    vertex1 = vector[0];
+                    vertex2 = vector[3];
+                    vertex3 = vector[7];
+                    vertex4 = vector[4];
+                    break;
             }
 
             tessellator.addVertexWithUV(vertex1.xCoord, vertex1.yCoord, vertex1.zCoord, uMin, vMax);

@@ -104,20 +104,20 @@ public class Torch {
         ForgeDirection facing = getFacing(TE);
 
         switch (facing) {
-        case NORTH:
-            coords = new double[] { xOffset, yOffset + offset1, zOffset + offset2 };
-            break;
-        case SOUTH:
-            coords = new double[] { xOffset, yOffset + offset1, zOffset - offset2 };
-            break;
-        case WEST:
-            coords = new double[] { xOffset + offset2, yOffset + offset1, zOffset };
-            break;
-        case EAST:
-            coords = new double[] { xOffset - offset2, yOffset + offset1, zOffset };
-            break;
-        default:
-            coords = new double[] { xOffset, yOffset, zOffset };
+            case NORTH:
+                coords = new double[] { xOffset, yOffset + offset1, zOffset + offset2 };
+                break;
+            case SOUTH:
+                coords = new double[] { xOffset, yOffset + offset1, zOffset - offset2 };
+                break;
+            case WEST:
+                coords = new double[] { xOffset + offset2, yOffset + offset1, zOffset };
+                break;
+            case EAST:
+                coords = new double[] { xOffset - offset2, yOffset + offset1, zOffset };
+                break;
+            default:
+                coords = new double[] { xOffset, yOffset, zOffset };
         }
 
         return coords;
