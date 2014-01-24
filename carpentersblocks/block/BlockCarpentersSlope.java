@@ -49,8 +49,7 @@ public class BlockCarpentersSlope extends BlockBase {
      */
     public void registerIcons(IconRegister iconRegister)
     {
-        IconRegistry.icon_slope_oblique_pt_low = iconRegister.registerIcon("carpentersblocks:slope/oblique_pt_low");
-        IconRegistry.icon_slope_oblique_pt_high = iconRegister.registerIcon("carpentersblocks:slope/oblique_pt_high");
+        IconRegistry.icon_slope_oblique = iconRegister.registerIcon("carpentersblocks:slope/slope_oblique");
 
         super.registerIcons(iconRegister);
     }
@@ -68,96 +67,96 @@ public class BlockCarpentersSlope extends BlockBase {
 
         switch (slope.type)
         {
-        case WEDGE_XZ:
-            if (++slopeID > Slope.ID_WEDGE_SW) {
-                slopeID = Slope.ID_WEDGE_SE;
-            }
-            break;
-        case WEDGE_Y:
-            if (slope.isPositive) {
-                if (++slopeID > Slope.ID_WEDGE_POS_E) {
-                    slopeID = Slope.ID_WEDGE_POS_N;
+            case WEDGE_XZ:
+                if (++slopeID > Slope.ID_WEDGE_SW) {
+                    slopeID = Slope.ID_WEDGE_SE;
                 }
-            } else {
-                if (++slopeID > Slope.ID_WEDGE_NEG_E) {
-                    slopeID = Slope.ID_WEDGE_NEG_N;
+                break;
+            case WEDGE_Y:
+                if (slope.isPositive) {
+                    if (++slopeID > Slope.ID_WEDGE_POS_E) {
+                        slopeID = Slope.ID_WEDGE_POS_N;
+                    }
+                } else {
+                    if (++slopeID > Slope.ID_WEDGE_NEG_E) {
+                        slopeID = Slope.ID_WEDGE_NEG_N;
+                    }
                 }
-            }
-            break;
-        case WEDGE_INT:
-            if (slope.isPositive) {
-                if ((slopeID += 2) > Slope.ID_WEDGE_INT_POS_SE) {
-                    slopeID = Slope.ID_WEDGE_INT_POS_NE;
+                break;
+            case WEDGE_INT:
+                if (slope.isPositive) {
+                    if ((slopeID += 2) > Slope.ID_WEDGE_INT_POS_SE) {
+                        slopeID = Slope.ID_WEDGE_INT_POS_NE;
+                    }
+                } else {
+                    if ((slopeID += 2) > Slope.ID_WEDGE_INT_NEG_SE) {
+                        slopeID = Slope.ID_WEDGE_INT_NEG_NE;
+                    }
                 }
-            } else {
-                if ((slopeID += 2) > Slope.ID_WEDGE_INT_NEG_SE) {
-                    slopeID = Slope.ID_WEDGE_INT_NEG_NE;
+                break;
+            case WEDGE_EXT:
+                if (slope.isPositive) {
+                    if ((slopeID += 2) > Slope.ID_WEDGE_EXT_POS_NW) {
+                        slopeID = Slope.ID_WEDGE_EXT_POS_SW;
+                    }
+                } else {
+                    if ((slopeID += 2) > Slope.ID_WEDGE_EXT_NEG_NW) {
+                        slopeID = Slope.ID_WEDGE_EXT_NEG_SW;
+                    }
                 }
-            }
-            break;
-        case WEDGE_EXT:
-            if (slope.isPositive) {
-                if ((slopeID += 2) > Slope.ID_WEDGE_EXT_POS_NW) {
-                    slopeID = Slope.ID_WEDGE_EXT_POS_SW;
+                break;
+            case OBLIQUE_INT:
+                if (slope.isPositive) {
+                    if ((slopeID += 2) > Slope.ID_OBL_INT_POS_SE) {
+                        slopeID = Slope.ID_OBL_INT_POS_NE;
+                    }
+                } else {
+                    if ((slopeID += 2) > Slope.ID_OBL_INT_NEG_SE) {
+                        slopeID = Slope.ID_OBL_INT_NEG_NE;
+                    }
                 }
-            } else {
-                if ((slopeID += 2) > Slope.ID_WEDGE_EXT_NEG_NW) {
-                    slopeID = Slope.ID_WEDGE_EXT_NEG_SW;
+                break;
+            case OBLIQUE_EXT:
+                if (slope.isPositive) {
+                    if ((slopeID += 2) > Slope.ID_OBL_EXT_POS_NW) {
+                        slopeID = Slope.ID_OBL_EXT_POS_SW;
+                    }
+                } else {
+                    if ((slopeID += 2) > Slope.ID_OBL_EXT_NEG_NW) {
+                        slopeID = Slope.ID_OBL_EXT_NEG_SW;
+                    }
                 }
-            }
-            break;
-        case OBLIQUE_INT:
-            if (slope.isPositive) {
-                if ((slopeID += 2) > Slope.ID_OBL_INT_POS_SE) {
-                    slopeID = Slope.ID_OBL_INT_POS_NE;
+                break;
+            case PYRAMID:
+                slopeID = slope.equals(Slope.PYR_HALF_POS) ? Slope.PYR_HALF_NEG.slopeID : Slope.PYR_HALF_POS.slopeID;
+                break;
+            case PRISM_1P:
+                if ((slopeID += 1) > Slope.ID_PRISM_1P_E) {
+                    slopeID = Slope.ID_PRISM_1P_N;
                 }
-            } else {
-                if ((slopeID += 2) > Slope.ID_OBL_INT_NEG_SE) {
-                    slopeID = Slope.ID_OBL_INT_NEG_NE;
+                break;
+            case PRISM_2P:
+                if (slope.equals(Slope.PRISM_2P_NS)) {
+                    slopeID = Slope.ID_PRISM_2P_WE;
+                } else if (slope.equals(Slope.PRISM_2P_WE)) {
+                    slopeID = Slope.ID_PRISM_2P_NS;
+                } else if ((slopeID += 1) > Slope.ID_PRISM_2P_SW) {
+                    slopeID = Slope.ID_PRISM_2P_SE;
                 }
-            }
-            break;
-        case OBLIQUE_EXT:
-            if (slope.isPositive) {
-                if ((slopeID += 2) > Slope.ID_OBL_EXT_POS_NW) {
-                    slopeID = Slope.ID_OBL_EXT_POS_SW;
+                break;
+            case PRISM_3P:
+                if ((slopeID += 1) > Slope.ID_PRISM_3P_NSE) {
+                    slopeID = Slope.ID_PRISM_3P_WEN;
                 }
-            } else {
-                if ((slopeID += 2) > Slope.ID_OBL_EXT_NEG_NW) {
-                    slopeID = Slope.ID_OBL_EXT_NEG_SW;
+                break;
+            case PRISM_4P:
+                break;
+            case PRISM_SLOPE:
+                if ((slopeID += 1) > Slope.ID_PRISM_SLOPE_E) {
+                    slopeID = Slope.ID_PRISM_SLOPE_N;
                 }
-            }
-            break;
-        case PYRAMID:
-            slopeID = slope.equals(Slope.PYR_HALF_POS) ? Slope.PYR_HALF_NEG.slopeID : Slope.PYR_HALF_POS.slopeID;
-            break;
-        case PRISM_1P:
-            if ((slopeID += 1) > Slope.ID_PRISM_1P_E) {
-                slopeID = Slope.ID_PRISM_1P_N;
-            }
-            break;
-        case PRISM_2P:
-            if (slope.equals(Slope.PRISM_2P_NS)) {
-                slopeID = Slope.ID_PRISM_2P_WE;
-            } else if (slope.equals(Slope.PRISM_2P_WE)) {
-                slopeID = Slope.ID_PRISM_2P_NS;
-            } else if ((slopeID += 1) > Slope.ID_PRISM_2P_SW) {
-                slopeID = Slope.ID_PRISM_2P_SE;
-            }
-            break;
-        case PRISM_3P:
-            if ((slopeID += 1) > Slope.ID_PRISM_3P_NSE) {
-                slopeID = Slope.ID_PRISM_3P_WEN;
-            }
-            break;
-        case PRISM_4P:
-            break;
-        case PRISM_SLOPE:
-            if ((slopeID += 1) > Slope.ID_PRISM_SLOPE_E) {
-                slopeID = Slope.ID_PRISM_SLOPE_N;
-            }
-            break;
-        default: {}
+                break;
+            default: {}
         }
 
         BlockProperties.setData(TE, slopeID);
@@ -178,79 +177,79 @@ public class BlockCarpentersSlope extends BlockBase {
 
         switch (slope.type)
         {
-        case WEDGE_XZ:
-            slopeID = Slope.ID_WEDGE_POS_N;
-            break;
-        case WEDGE_Y:
-            if (slope.isPositive) {
-                slopeID -= 4;
-            } else {
-                slopeID = Slope.ID_WEDGE_INT_POS_NE;
-            }
-            break;
-        case WEDGE_INT:
-            if (slope.isPositive) {
-                slopeID += 1;
-            } else {
-                if (slopeID == Slope.ID_WEDGE_INT_NEG_NE || slopeID == Slope.ID_WEDGE_INT_NEG_NW) {
-                    slopeID += 11;
+            case WEDGE_XZ:
+                slopeID = Slope.ID_WEDGE_POS_N;
+                break;
+            case WEDGE_Y:
+                if (slope.isPositive) {
+                    slopeID -= 4;
                 } else {
-                    slopeID +=3;
+                    slopeID = Slope.ID_WEDGE_INT_POS_NE;
                 }
-            }
-            break;
-        case WEDGE_EXT:
-            if (slope.isPositive) {
-                slopeID += 1;
-            } else {
-                if (slopeID == Slope.ID_WEDGE_EXT_NEG_SW || slopeID == Slope.ID_WEDGE_EXT_NEG_SE) {
-                    slopeID += 11;
+                break;
+            case WEDGE_INT:
+                if (slope.isPositive) {
+                    slopeID += 1;
                 } else {
-                    slopeID += 3;
+                    if (slopeID == Slope.ID_WEDGE_INT_NEG_NE || slopeID == Slope.ID_WEDGE_INT_NEG_NW) {
+                        slopeID += 11;
+                    } else {
+                        slopeID +=3;
+                    }
                 }
-            }
-            break;
-        case OBLIQUE_INT:
-            if (slope.isPositive) {
-                slopeID += 1;
-            } else {
-                if (slopeID == Slope.ID_OBL_INT_NEG_NE || slopeID == Slope.ID_OBL_INT_NEG_NW) {
-                    slopeID += 11;
+                break;
+            case WEDGE_EXT:
+                if (slope.isPositive) {
+                    slopeID += 1;
                 } else {
-                    slopeID += 3;
+                    if (slopeID == Slope.ID_WEDGE_EXT_NEG_SW || slopeID == Slope.ID_WEDGE_EXT_NEG_SE) {
+                        slopeID += 11;
+                    } else {
+                        slopeID += 3;
+                    }
                 }
-            }
-            break;
-        case OBLIQUE_EXT:
-            if (slope.isPositive) {
-                slopeID += 1;
-            } else {
-                slopeID = Slope.ID_PYR_HALF_POS;
-            }
-            break;
-        case PYRAMID:
-            slopeID = Slope.ID_PRISM_1P_N;
-            break;
-        case PRISM_1P:
-            slopeID = Slope.ID_PRISM_2P_NS;
-            break;
-        case PRISM_2P:
-            if (slope.equals(Slope.PRISM_2P_NS) || slope.equals(Slope.PRISM_2P_WE)) {
-                slopeID = Slope.ID_PRISM_2P_SE;
-            } else {
-                slopeID = Slope.ID_PRISM_3P_WEN;
-            }
-            break;
-        case PRISM_3P:
-            slopeID = Slope.ID_PRISM_4P;
-            break;
-        case PRISM_4P:
-            slopeID = Slope.ID_PRISM_SLOPE_N;
-            break;
-        case PRISM_SLOPE:
-            slopeID = Slope.ID_WEDGE_SE;
-            break;
-        default: {}
+                break;
+            case OBLIQUE_INT:
+                if (slope.isPositive) {
+                    slopeID += 1;
+                } else {
+                    if (slopeID == Slope.ID_OBL_INT_NEG_NE || slopeID == Slope.ID_OBL_INT_NEG_NW) {
+                        slopeID += 11;
+                    } else {
+                        slopeID += 3;
+                    }
+                }
+                break;
+            case OBLIQUE_EXT:
+                if (slope.isPositive) {
+                    slopeID += 1;
+                } else {
+                    slopeID = Slope.ID_PYR_HALF_POS;
+                }
+                break;
+            case PYRAMID:
+                slopeID = Slope.ID_PRISM_1P_N;
+                break;
+            case PRISM_1P:
+                slopeID = Slope.ID_PRISM_2P_NS;
+                break;
+            case PRISM_2P:
+                if (slope.equals(Slope.PRISM_2P_NS) || slope.equals(Slope.PRISM_2P_WE)) {
+                    slopeID = Slope.ID_PRISM_2P_SE;
+                } else {
+                    slopeID = Slope.ID_PRISM_3P_WEN;
+                }
+                break;
+            case PRISM_3P:
+                slopeID = Slope.ID_PRISM_4P;
+                break;
+            case PRISM_4P:
+                slopeID = Slope.ID_PRISM_SLOPE_N;
+                break;
+            case PRISM_SLOPE:
+                slopeID = Slope.ID_WEDGE_SE;
+                break;
+            default: {}
         }
 
         BlockProperties.setData(TE, slopeID);
@@ -283,22 +282,22 @@ public class BlockCarpentersSlope extends BlockBase {
             Slope slope = Slope.slopesList[slopeID];
 
             switch (slope.type) {
-            case PYRAMID:
-                if (slope.isPositive) {
+                case PYRAMID:
+                    if (slope.isPositive) {
+                        setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.5F, 1.0F);
+                    } else {
+                        setBlockBounds(0.0F, 0.5F, 0.0F, 1.0F, 1.0F, 1.0F);
+                    }
+                    break;
+                case PRISM_1P:
+                case PRISM_2P:
+                case PRISM_3P:
+                case PRISM_4P:
                     setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.5F, 1.0F);
-                } else {
-                    setBlockBounds(0.0F, 0.5F, 0.0F, 1.0F, 1.0F, 1.0F);
-                }
-                break;
-            case PRISM_1P:
-            case PRISM_2P:
-            case PRISM_3P:
-            case PRISM_4P:
-                setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.5F, 1.0F);
-                break;
-            default:
-                setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
-                break;
+                    break;
+                default:
+                    setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
+                    break;
             }
 
         }
@@ -441,15 +440,15 @@ public class BlockCarpentersSlope extends BlockBase {
     {
         // Normalize face coordinates
         switch (side) {
-        case 2:
-            hitX = 1.0F - hitX;
-            break;
-        case 4:
-            hitX = hitZ;
-            break;
-        case 5:
-            hitX = 1.0F - hitZ;
-            break;
+            case 2:
+                hitX = 1.0F - hitX;
+                break;
+            case 4:
+                hitX = hitZ;
+                break;
+            case 5:
+                hitX = 1.0F - hitZ;
+                break;
         }
 
         if (side > 1) {
@@ -488,18 +487,18 @@ public class BlockCarpentersSlope extends BlockBase {
         if (slopeID > 11)
         {
             switch (facing) {
-            case 0:
-                slopeID = slopeID == 12 ? Slope.ID_WEDGE_NEG_N : Slope.ID_WEDGE_POS_N;
-                break;
-            case 1:
-                slopeID = slopeID == 12 ? Slope.ID_WEDGE_NEG_E : Slope.ID_WEDGE_POS_E;
-                break;
-            case 2:
-                slopeID = slopeID == 12 ? Slope.ID_WEDGE_NEG_S : Slope.ID_WEDGE_POS_S;
-                break;
-            case 3:
-                slopeID = slopeID == 12 ? Slope.ID_WEDGE_NEG_W : Slope.ID_WEDGE_POS_W;
-                break;
+                case 0:
+                    slopeID = slopeID == 12 ? Slope.ID_WEDGE_NEG_N : Slope.ID_WEDGE_POS_N;
+                    break;
+                case 1:
+                    slopeID = slopeID == 12 ? Slope.ID_WEDGE_NEG_E : Slope.ID_WEDGE_POS_E;
+                    break;
+                case 2:
+                    slopeID = slopeID == 12 ? Slope.ID_WEDGE_NEG_S : Slope.ID_WEDGE_POS_S;
+                    break;
+                case 3:
+                    slopeID = slopeID == 12 ? Slope.ID_WEDGE_NEG_W : Slope.ID_WEDGE_POS_W;
+                    break;
             }
         }
 
