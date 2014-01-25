@@ -149,7 +149,7 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
             int metadata = BlockProperties.getCoverMetadata(TE, coverRendering);
 
             /* Uncovered sloped oblique faces use triangular frame icon. */
-            if (slope.type.equals(Type.OBLIQUE_EXT) || slope.type.equals(Type.OBLIQUE_INT) && !BlockProperties.hasCover(TE, 6)) {
+            if ((slope.type.equals(Type.OBLIQUE_EXT) || slope.type.equals(Type.OBLIQUE_INT)) && !BlockProperties.hasCover(TE, 6)) {
                 icon = IconRegistry.icon_slope_oblique;
             }
 
