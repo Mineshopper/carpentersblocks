@@ -42,9 +42,10 @@ public class ItemCarpentersBed extends Item {
      */
     public boolean onItemUse(ItemStack itemStack, EntityPlayer entityPlayer, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
     {
-        if (side == 1)
-        {
+        if (side == 1) {
+
             ++y;
+
             int facing = BlockProperties.getOppositeFacing(entityPlayer);
             ForgeDirection dir = BlockProperties.getDirectionFromFacing(facing);
 
@@ -52,30 +53,33 @@ public class ItemCarpentersBed extends Item {
             int z_offset = z - dir.offsetZ;
 
             if (
-                    entityPlayer.canPlayerEdit(x, y, z, side, itemStack)               &&
-                    entityPlayer.canPlayerEdit(x_offset, y, z_offset, side, itemStack) &&
-                    world.isAirBlock(x, y, z)                                          &&
-                    world.isAirBlock(x_offset, y, z_offset)                            &&
-                    world.doesBlockHaveSolidTopSurface(x, y - 1, z)                    &&
-                    world.doesBlockHaveSolidTopSurface(x_offset, y - 1, z_offset)
+                    entityPlayer.canPlayerEdit(x, y, z, side, itemStack)                            &&
+                    entityPlayer.canPlayerEdit(x_offset, y, z_offset, side, itemStack)              &&
+                    world.isAirBlock(x, y, z)                                                       &&
+                    world.isAirBlock(x_offset, y, z_offset)                                         &&
+                    world.doesBlockHaveSolidTopSurface(x, y - 1, z)                                 &&
+                    world.doesBlockHaveSolidTopSurface(x_offset, y - 1, z_offset)                   &&
+                    world.setBlock(x, y, z, BlockRegistry.blockCarpentersBedID, 0, 4)               &&
+                    world.setBlock(x_offset, y, z_offset, BlockRegistry.blockCarpentersBedID, 0, 4)
                     )
             {
-                /* Set foot of bed. */
-                world.setBlock(x, y, z, BlockRegistry.blockCarpentersBed.blockID);
+                BlockProperties.playBlockSound(world, BlockRegistry.blockCarpentersBed, x, y, z);
+
+                /* Foot of bed. */
+
                 TEBase TE_foot = (TEBase) world.getBlockTileEntity(x, y, z);
                 Bed.setDirection(TE_foot, facing);
 
-                /* Set head of bed. */
-                world.setBlock(x_offset, y, z_offset, BlockRegistry.blockCarpentersBed.blockID);
+                /* Head of bed. */
+
                 TEBase TE_head = (TEBase) world.getBlockTileEntity(x_offset, y, z_offset);
                 Bed.setHeadOfBed(TE_head);
                 Bed.setDirection(TE_head, facing);
 
-                BlockProperties.playBlockSound(world, BlockRegistry.blockCarpentersBed, x, y, z);
-
                 --itemStack.stackSize;
                 return true;
             }
+
         }
 
         return false;

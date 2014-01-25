@@ -463,17 +463,6 @@ public class BlockCarpentersDoor extends BlockBase {
 
     @Override
     /**
-     * Checks to see if its valid to put this block at the specified coordinates. Args: world, x, y, z
-     */
-    public boolean canPlaceBlockAt(World world, int x, int y, int z)
-    {
-        return y >= 255 ? false : world.doesBlockHaveSolidTopSurface(x, y - 1, z) &&
-                super.canPlaceBlockAt(world, x, y, z) &&
-                super.canPlaceBlockAt(world, x, y + 1, z);
-    }
-
-    @Override
-    /**
      * The type of render function that is called for this block
      */
     public int getRenderType()
