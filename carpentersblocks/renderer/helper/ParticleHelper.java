@@ -9,8 +9,6 @@ import net.minecraft.world.World;
 import carpentersblocks.data.Torch;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.tileentity.TECarpentersTorch;
-import carpentersblocks.util.BlockProperties;
-import carpentersblocks.util.handler.OverlayHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -78,39 +76,6 @@ public class ParticleHelper {
     {
         EntityDiggingFX particle = new EntityDiggingFX(TE.worldObj, x, y, z, 0.0D, 0.0D, 0.0D, block, metadata);
         effectRenderer.addEffect(particle.applyColourMultiplier(target.blockX, target.blockY, target.blockZ).multiplyVelocity(0.2F).multipleParticleScaleBy(0.6F));
-    }
-
-    /**
-     * Returns block with considerations for the overlay and side of block
-     * being interacted with.
-     */
-    public static Block getParticleBlockFromOverlay(TEBase TE, int coverSide, Block block)
-    {
-        if (BlockProperties.hasOverlay(TE, coverSide))
-        {
-            switch (BlockProperties.getOverlay(TE, coverSide)) {
-                case OverlayHandler.OVERLAY_GRASS:
-                    block = Block.grass;
-                    break;
-                case OverlayHandler.OVERLAY_HAY:
-                    block = Block.hay;
-                    break;
-                case OverlayHandler.OVERLAY_MYCELIUM:
-                    block = Block.mycelium;
-                    break;
-                case OverlayHandler.OVERLAY_SNOW:
-                    block = Block.blockSnow;
-                    break;
-                case OverlayHandler.OVERLAY_VINE:
-                    block = Block.vine;
-                    break;
-                case OverlayHandler.OVERLAY_WEB:
-                    block = Block.web;
-                    break;
-            }
-        }
-
-        return block;
     }
 
 }

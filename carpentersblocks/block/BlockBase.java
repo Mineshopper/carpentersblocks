@@ -579,7 +579,7 @@ public class BlockBase extends BlockContainer {
 
         /* Check for overlays that influence particles */
         if (EventHandler.eventFace == 1) {
-            block = ParticleHelper.getParticleBlockFromOverlay(TE, effectiveSide, block);
+            block = OverlayHandler.getBlockFromOverlay(TE, effectiveSide, block);
         }
 
         int metadata = block instanceof BlockBase ? EventHandler.BLOCKICON_BASE_ID : BlockProperties.getCoverMetadata(TE, effectiveSide);

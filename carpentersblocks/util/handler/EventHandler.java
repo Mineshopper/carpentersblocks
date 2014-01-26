@@ -132,29 +132,29 @@ public class EventHandler {
         EntityLivingBase entity = event.entityLiving;
         World world = entity.worldObj;
 
-        if (world.isRemote && entity.isSprinting() && !entity.isInWater())
-        {
-            int x = MathHelper.floor_double(entity.posX);
-            int y = MathHelper.floor_double(entity.posY - 0.20000000298023224D - entity.yOffset);
-            int z = MathHelper.floor_double(entity.posZ);
+        int x = MathHelper.floor_double(entity.posX);
+        int y = MathHelper.floor_double(entity.posY - 0.20000000298023224D - entity.yOffset);
+        int z = MathHelper.floor_double(entity.posZ);
 
-            int blockId = world.getBlockId(x, y, z);
+        int blockId = world.getBlockId(x, y, z);
 
-            if (blockId > 0 && Block.blocksList[blockId] instanceof BlockBase)
-            {
-                TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
+        if (blockId > 0 && Block.blocksList[blockId] instanceof BlockBase) {
 
-                int effectiveSide = BlockProperties.hasCover(TE, 1) ? 1 : 6;
+            TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
+            int effectiveSide = BlockProperties.hasCover(TE, 1) ? 1 : 6;
+            Block block = BlockProperties.getCoverBlock(TE, effectiveSide);
 
-                Block block = BlockProperties.getCoverBlock(TE, effectiveSide);
+            /* Spawn sprint particles client-side. */
+
+            if (world.isRemote && entity.isSprinting() && !entity.isInWater()) {
                 int metadata = block instanceof BlockBase ? BLOCKICON_BASE_ID : BlockProperties.getCoverMetadata(TE, effectiveSide);
-
-                /* Check for overlays that influence particles */
-                block = ParticleHelper.getParticleBlockFromOverlay(TE, effectiveSide, block);
-
-                /* Spawn sprint particles at the foot of the entity */
-                ParticleHelper.spawnTileParticleAt(world, entity, block.blockID, metadata);
+                ParticleHelper.spawnTileParticleAt(world, entity, OverlayHandler.getBlockFromOverlay(TE, effectiveSide, block).blockID, metadata);
             }
+
+            /* Adjust block slipperiness according to cover. */
+
+            TE.getBlockType().slipperiness = OverlayHandler.getBlockFromOverlay(TE, effectiveSide, block).slipperiness;
+
         }
     }
 
