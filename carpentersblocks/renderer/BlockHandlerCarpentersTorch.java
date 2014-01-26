@@ -102,6 +102,7 @@ public class BlockHandlerCarpentersTorch extends BlockHandlerBase {
         float vecX = 0.0625F;
         float vecY = 10.0F / 16.0F;
         float vecZ = 0.0625F;
+
         vector[0] = renderBlocks.blockAccess.getWorldVec3Pool().getVecFromPool(-vecX, 0.5D, -vecZ);
         vector[1] = renderBlocks.blockAccess.getWorldVec3Pool().getVecFromPool(vecX, 0.5D, -vecZ);
         vector[2] = renderBlocks.blockAccess.getWorldVec3Pool().getVecFromPool(vecX, 0.5D, vecZ);
@@ -126,6 +127,7 @@ public class BlockHandlerCarpentersTorch extends BlockHandlerBase {
         float vecX = 0.0625F;
         float vecY = 0.5F;
         float vecZ = 0.0625F;
+
         vector[0] = renderBlocks.blockAccess.getWorldVec3Pool().getVecFromPool(-vecX, 0.0D, -vecZ);
         vector[1] = renderBlocks.blockAccess.getWorldVec3Pool().getVecFromPool(vecX, 0.0D, -vecZ);
         vector[2] = renderBlocks.blockAccess.getWorldVec3Pool().getVecFromPool(vecX, 0.0D, vecZ);
@@ -137,30 +139,26 @@ public class BlockHandlerCarpentersTorch extends BlockHandlerBase {
 
         setRotations(Torch.getFacing(TE), x, y, z);
 
-        /*
-         * Lightness and sides won't match here.  Rotations and the ordering
-         * of the vectors may be to blame.
-         */
-
         /* Have to enforce partial render bounds on all sides to get correct lighting. */
+
         renderBlocks.setRenderBounds(0.1D, 0.1D, 0.1D, 0.9D, 0.9D, 0.9D);
 
-        lightingHelper.setLightness(0.5F).setLightingYNeg(block, x, y, z);
+        lightingHelper.setLightingYNeg(block, x, y, z);
         delegateSideRender(block, x, y, z, DOWN);
 
-        lightingHelper.setLightness(1.0F).setLightingYPos(block, x, y, z);
+        lightingHelper.setLightingYPos(block, x, y, z);
         delegateSideRender(block, x, y, z, UP);
 
-        lightingHelper.setLightness(0.8F).setLightingZNeg(block, x, y, z);
+        lightingHelper.setLightingZNeg(block, x, y, z);
         delegateSideRender(block, x, y, z, NORTH);
 
-        lightingHelper.setLightness(0.6F).setLightingZPos(block, x, y, z);
+        lightingHelper.setLightingZPos(block, x, y, z);
         delegateSideRender(block, x, y, z, SOUTH);
 
-        lightingHelper.setLightness(0.8F).setLightingXNeg(block, x, y, z);
+        lightingHelper.setLightingXNeg(block, x, y, z);
         delegateSideRender(block, x, y, z, WEST);
 
-        lightingHelper.setLightness(0.6F).setLightingXPos(block, x, y, z);
+        lightingHelper.setLightingXPos(block, x, y, z);
         delegateSideRender(block, x, y, z, EAST);
     }
 
@@ -230,41 +228,41 @@ public class BlockHandlerCarpentersTorch extends BlockHandlerBase {
         Vec3 vertex4 = null;
 
         switch (side) {
-            case 0:
+            case DOWN:
                 vertex1 = vector[0];
                 vertex2 = vector[1];
                 vertex3 = vector[2];
                 vertex4 = vector[3];
                 break;
-            case 1:
+            case UP:
                 vertex1 = vector[7];
                 vertex2 = vector[6];
                 vertex3 = vector[5];
                 vertex4 = vector[4];
                 break;
-            case 2:
+            case NORTH:
                 vertex1 = vector[1];
                 vertex2 = vector[0];
                 vertex3 = vector[4];
                 vertex4 = vector[5];
                 break;
-            case 3:
-                vertex1 = vector[2];
-                vertex2 = vector[1];
-                vertex3 = vector[5];
-                vertex4 = vector[6];
-                break;
-            case 4:
+            case SOUTH:
                 vertex1 = vector[3];
                 vertex2 = vector[2];
                 vertex3 = vector[6];
                 vertex4 = vector[7];
                 break;
-            case 5:
+            case WEST:
                 vertex1 = vector[0];
                 vertex2 = vector[3];
                 vertex3 = vector[7];
                 vertex4 = vector[4];
+                break;
+            case EAST:
+                vertex1 = vector[2];
+                vertex2 = vector[1];
+                vertex3 = vector[5];
+                vertex4 = vector[6];
                 break;
         }
 
