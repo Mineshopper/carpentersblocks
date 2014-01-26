@@ -326,6 +326,7 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
                 icon = IconRegistry.icon_door_french_glass_top;
             }
 
+            suppressDyeColor = true;
             VertexHelper.setOffset(-(1 - path_offset));
             Tessellator.instance.setBrightness(Block.glass.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y, z));
 
@@ -362,6 +363,7 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
             }
 
             VertexHelper.clearOffset();
+            suppressDyeColor = false;
 
             renderHandle(Block.blockIron, x, y, z, true, true);
 
@@ -606,6 +608,7 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
 
             if (!isBottom) {
 
+                suppressDyeColor = true;
                 VertexHelper.setOffset(-(1 - path_offset));
 
                 if (path_on_x) {
@@ -641,6 +644,7 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
                 }
 
                 VertexHelper.clearOffset();
+                suppressDyeColor = false;
 
             }
 

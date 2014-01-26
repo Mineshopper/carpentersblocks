@@ -191,6 +191,8 @@ public class BlockHandlerCarpentersHatch extends BlockHandlerBase {
                 icon = IconRegistry.icon_hatch_glass;
             }
 
+            suppressDyeColor = true;
+
             if (path_on_x) {
 
                 renderBlocks.setRenderBounds(0.1875F, 0.1875F, 0.0F, 0.8125F, 0.8125F, 1.0F);
@@ -255,6 +257,7 @@ public class BlockHandlerCarpentersHatch extends BlockHandlerBase {
             }
 
             VertexHelper.clearOffset();
+            suppressDyeColor = false;
 
             renderHandle(Block.blockIron, x, y, z, true, true);
         }
@@ -408,6 +411,8 @@ public class BlockHandlerCarpentersHatch extends BlockHandlerBase {
 
         if (shouldRenderOpaque()) {
 
+            suppressDyeColor = true;
+
             if (path_on_x) {
 
                 renderBlocks.setRenderBounds(0.1875F, 0.1875F, 0.0F, 0.8125F, 0.8125F, 1.0F);
@@ -472,6 +477,7 @@ public class BlockHandlerCarpentersHatch extends BlockHandlerBase {
             }
 
             VertexHelper.clearOffset();
+            suppressDyeColor = false;
 
             renderHandle(Block.blockIron, x, y, z, true, true);
         }
