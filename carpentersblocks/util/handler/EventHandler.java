@@ -153,7 +153,7 @@ public class EventHandler {
 
             /* Adjust block slipperiness according to cover. */
 
-            TE.getBlockType().slipperiness = OverlayHandler.getBlockFromOverlay(TE, effectiveSide, block).slipperiness;
+            TE.getBlockType().slipperiness = !BlockProperties.hasCover(TE, effectiveSide) ? Block.wood.slipperiness : OverlayHandler.getBlockFromOverlay(TE, effectiveSide, block).slipperiness;
 
         }
     }
