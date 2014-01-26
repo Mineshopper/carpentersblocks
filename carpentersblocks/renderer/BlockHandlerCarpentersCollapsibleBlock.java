@@ -107,25 +107,21 @@ public class BlockHandlerCarpentersCollapsibleBlock extends BlockAdvancedLightin
 
         /* NORTH FACE */
         if (srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x, y, z - 1, NORTH)) {
-            lightingHelper.setLightingZNeg(block, x, y, z);
             prepareFaceZNeg(block, x, y, z);
         }
 
         /* SOUTH FACE */
         if (srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x, y, z + 1, SOUTH)) {
-            lightingHelper.setLightingZPos(block, x, y, z);
             prepareFaceZPos(block, x, y, z);
         }
 
         /* WEST FACE */
         if (srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x - 1, y, z, WEST)) {
-            lightingHelper.setLightingXNeg(block, x, y, z);
             prepareFaceXNeg(block, x, y, z);
         }
 
         /* EAST FACE */
         if (srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x + 1, y, z, EAST)) {
-            lightingHelper.setLightingXPos(block, x, y, z);
             prepareFaceXPos(block, x, y, z);
         }
 
@@ -203,6 +199,8 @@ public class BlockHandlerCarpentersCollapsibleBlock extends BlockAdvancedLightin
      */
     private void prepareFaceZNeg(Block block, int x, int y, int z)
     {
+        lightingHelper.setLightingZNeg(block, x, y, z);
+
         if (renderBlocks.enableAO) {
             lightingHelper.ao[TOP_LEFT]  = (float) (ao[NORTH][BOTTOM_LEFT] + (ao[NORTH][TOP_LEFT] - ao[NORTH][BOTTOM_LEFT]) * CollapsibleUtil.offset_XZPN);
             lightingHelper.ao[TOP_RIGHT] = (float) (ao[NORTH][BOTTOM_RIGHT] + (ao[NORTH][TOP_RIGHT] - ao[NORTH][BOTTOM_RIGHT]) * CollapsibleUtil.offset_XZNN);
@@ -216,6 +214,8 @@ public class BlockHandlerCarpentersCollapsibleBlock extends BlockAdvancedLightin
      */
     private void prepareFaceZPos(Block block, int x, int y, int z)
     {
+        lightingHelper.setLightingZPos(block, x, y, z);
+
         if (renderBlocks.enableAO) {
             lightingHelper.ao[TOP_LEFT]  = (float) (ao[SOUTH][BOTTOM_LEFT] + (ao[SOUTH][TOP_LEFT] - ao[SOUTH][BOTTOM_LEFT]) * CollapsibleUtil.offset_XZNP);
             lightingHelper.ao[TOP_RIGHT] = (float) (ao[SOUTH][BOTTOM_RIGHT] + (ao[SOUTH][TOP_RIGHT] - ao[SOUTH][BOTTOM_RIGHT]) * CollapsibleUtil.offset_XZPP);
@@ -229,6 +229,8 @@ public class BlockHandlerCarpentersCollapsibleBlock extends BlockAdvancedLightin
      */
     private void prepareFaceXNeg(Block block, int x, int y, int z)
     {
+        lightingHelper.setLightingXNeg(block, x, y, z);
+
         if (renderBlocks.enableAO) {
             lightingHelper.ao[TOP_LEFT]  = (float) (ao[WEST][BOTTOM_LEFT] + (ao[WEST][TOP_LEFT] - ao[WEST][BOTTOM_LEFT]) * CollapsibleUtil.offset_XZNN);
             lightingHelper.ao[TOP_RIGHT] = (float) (ao[WEST][BOTTOM_RIGHT] + (ao[WEST][TOP_RIGHT] - ao[WEST][BOTTOM_RIGHT]) * CollapsibleUtil.offset_XZNP);
@@ -242,6 +244,8 @@ public class BlockHandlerCarpentersCollapsibleBlock extends BlockAdvancedLightin
      */
     private void prepareFaceXPos(Block block, int x, int y, int z)
     {
+        lightingHelper.setLightingXPos(block, x, y, z);
+
         if (renderBlocks.enableAO) {
             lightingHelper.ao[TOP_LEFT]  = (float) (ao[EAST][BOTTOM_LEFT] + (ao[EAST][TOP_LEFT] - ao[EAST][BOTTOM_LEFT]) * CollapsibleUtil.offset_XZPP);
             lightingHelper.ao[TOP_RIGHT] = (float) (ao[EAST][BOTTOM_RIGHT] + (ao[EAST][TOP_RIGHT] - ao[EAST][BOTTOM_RIGHT]) * CollapsibleUtil.offset_XZPN);

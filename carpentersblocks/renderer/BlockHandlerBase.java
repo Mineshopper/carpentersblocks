@@ -49,12 +49,12 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
     public TEBase            TE;
 
     protected boolean        renderAlphaOverride = FeatureRegistry.enableZFightingFix;
-    protected boolean        hasMetadataOverride = false;
-    protected boolean        suppressOverlay     = false;
-    protected boolean        suppressPattern     = false;
-    public boolean           suppressDyeColor    = false;
-    protected boolean        disableAO           = false;
-    public boolean           hasDyeColorOverride = false;
+    protected boolean        hasMetadataOverride;
+    protected boolean        suppressOverlay;
+    protected boolean        suppressPattern;
+    public boolean           suppressDyeColor;
+    protected boolean        disableAO;
+    public boolean           hasDyeColorOverride;
     protected int            metadataOverride;
     public int               dyeColorOverride;
 
@@ -65,7 +65,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
     public int               coverRendering      = 6;
 
     /** Returns whether side is sloped face. */
-    public boolean           isSideSloped        = false;
+    public boolean           isSideSloped;
 
     protected float          REDUCED_LIGHTNESS_OFFSET = -0.05F;
 
@@ -770,42 +770,42 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
 
         if (renderBlocks.renderAllFaces || srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x, y - 1, z, DOWN) || renderBlocks.renderMinY > 0.0D)
         {
-            lightingHelper.setLightness(lightingHelper.LIGHTNESS_YN).setLightingYNeg(block, x, y, z);
+            lightingHelper.setLightingYNeg(block, x, y, z);
             delegateSideRender(block, x, y, z, DOWN);
             side_rendered = true;
         }
 
         if (renderBlocks.renderAllFaces || srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x, y + 1, z, UP) || renderBlocks.renderMaxY < 1.0D)
         {
-            lightingHelper.setLightness(lightingHelper.LIGHTNESS_YP).setLightingYPos(block, x, y, z);
+            lightingHelper.setLightingYPos(block, x, y, z);
             delegateSideRender(block, x, y, z, UP);
             side_rendered = true;
         }
 
         if (renderBlocks.renderAllFaces || srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x, y, z - 1, NORTH) || renderBlocks.renderMinZ > 0.0D)
         {
-            lightingHelper.setLightness(lightingHelper.LIGHTNESS_ZN).setLightingZNeg(block, x, y, z);
+            lightingHelper.setLightingZNeg(block, x, y, z);
             delegateSideRender(block, x, y, z, NORTH);
             side_rendered = true;
         }
 
         if (renderBlocks.renderAllFaces || srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x, y, z + 1, SOUTH) || renderBlocks.renderMaxZ < 1.0D)
         {
-            lightingHelper.setLightness(lightingHelper.LIGHTNESS_ZP).setLightingZPos(block, x, y, z);
+            lightingHelper.setLightingZPos(block, x, y, z);
             delegateSideRender(block, x, y, z, SOUTH);
             side_rendered = true;
         }
 
         if (renderBlocks.renderAllFaces || srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x - 1, y, z, WEST) || renderBlocks.renderMinX > 0.0D)
         {
-            lightingHelper.setLightness(lightingHelper.LIGHTNESS_XN).setLightingXNeg(block, x, y, z);
+            lightingHelper.setLightingXNeg(block, x, y, z);
             delegateSideRender(block, x, y, z, WEST);
             side_rendered = true;
         }
 
         if (renderBlocks.renderAllFaces || srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x + 1, y, z, EAST) || renderBlocks.renderMaxX < 1.0D)
         {
-            lightingHelper.setLightness(lightingHelper.LIGHTNESS_XP).setLightingXPos(block, x, y, z);
+            lightingHelper.setLightingXPos(block, x, y, z);
             delegateSideRender(block, x, y, z, EAST);
             side_rendered = true;
         }
