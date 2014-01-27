@@ -130,36 +130,40 @@ public class FancyFluidsHelper {
                 switch (side)
                 {
                     case 2:
-                        renderFluid = !isSolid_ZP &&
-                        (
-                                isFluid_ZP ||
-                                !renderBlocks.blockAccess.isBlockSolidOnSide(x, y, z + 1, ForgeDirection.NORTH, true) &&
+                        if (
+                                !isSolid_ZP &&
+                                isFluid_ZP || !renderBlocks.blockAccess.isBlockSolidOnSide(x, y, z + 1, ForgeDirection.NORTH, true) &&
                                 (isFluid_XZNP && !renderBlocks.blockAccess.isBlockSolidOnSide(x, y, z + 1, ForgeDirection.WEST, true) || isFluid_XZPP && !renderBlocks.blockAccess.isBlockSolidOnSide(x, y, z + 1, ForgeDirection.EAST, true))
-                                );
+                                ) {
+                            renderFluid = true;
+                        }
                         break;
                     case 3:
-                        renderFluid = !isSolid_ZN &&
-                        (
-                                isFluid_ZN ||
-                                !renderBlocks.blockAccess.isBlockSolidOnSide(x, y, z - 1, ForgeDirection.SOUTH, true) &&
+                        if (
+                                !isSolid_ZN &&
+                                isFluid_ZN || !renderBlocks.blockAccess.isBlockSolidOnSide(x, y, z - 1, ForgeDirection.SOUTH, true) &&
                                 (isFluid_XZNN && !renderBlocks.blockAccess.isBlockSolidOnSide(x, y, z - 1, ForgeDirection.WEST, true) || isFluid_XZPN && !renderBlocks.blockAccess.isBlockSolidOnSide(x, y, z - 1, ForgeDirection.EAST, true))
-                                );
+                                ) {
+                            renderFluid = true;
+                        }
                         break;
                     case 4:
-                        renderFluid = !isSolid_XP &&
-                        (
-                                isFluid_XP ||
-                                !renderBlocks.blockAccess.isBlockSolidOnSide(x + 1, y, z, ForgeDirection.WEST, true) &&
+                        if (
+                                !isSolid_XP &&
+                                isFluid_XP || !renderBlocks.blockAccess.isBlockSolidOnSide(x + 1, y, z, ForgeDirection.WEST, true) &&
                                 (isFluid_XZPP && !renderBlocks.blockAccess.isBlockSolidOnSide(x + 1, y, z, ForgeDirection.SOUTH, true) || isFluid_XZPN && !renderBlocks.blockAccess.isBlockSolidOnSide(x + 1, y, z, ForgeDirection.NORTH, true))
-                                );
+                                ) {
+                            renderFluid = true;
+                        }
                         break;
                     case 5:
-                        renderFluid = !isSolid_XN &&
-                        (
-                                isFluid_XN ||
-                                !renderBlocks.blockAccess.isBlockSolidOnSide(x - 1, y, z, ForgeDirection.EAST, true) &&
+                        if (
+                                !isSolid_XN &&
+                                isFluid_XN || !renderBlocks.blockAccess.isBlockSolidOnSide(x - 1, y, z, ForgeDirection.EAST, true) &&
                                 (isFluid_XZNP && !renderBlocks.blockAccess.isBlockSolidOnSide(x - 1, y, z, ForgeDirection.SOUTH, true) || isFluid_XZNN && !renderBlocks.blockAccess.isBlockSolidOnSide(x - 1, y, z, ForgeDirection.NORTH, true))
-                                );
+                                ) {
+                            renderFluid = true;
+                        }
                         break;
                 }
             }
