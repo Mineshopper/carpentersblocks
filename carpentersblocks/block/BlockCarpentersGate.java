@@ -91,7 +91,7 @@ public class BlockCarpentersGate extends BlockBase {
 
         }
 
-        boolean[] result = { true, true };
+        boolean[] result = { true, false };
         return result;
     }
 
