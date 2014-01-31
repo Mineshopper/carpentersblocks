@@ -17,7 +17,7 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 
-@Mod(modid = "CarpentersBlocks", name = "Carpenter's Blocks", version = "v2.0.1")
+@Mod(modid = "CarpentersBlocks", name = "Carpenter's Blocks", version = "v2.0.2")
 @NetworkMod(clientSideRequired = true, serverSideRequired = false)
 public class CarpentersBlocks {
 
