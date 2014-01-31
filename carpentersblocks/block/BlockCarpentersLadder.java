@@ -76,6 +76,10 @@ public class BlockCarpentersLadder extends BlockBase {
     public boolean canPlaceBlockOnSide(World world, int x, int y, int z, int side)
     {
         switch (ForgeDirection.getOrientation(side)) {
+            case DOWN:
+                return world.isBlockSolidOnSide(x, y + 1, z, ForgeDirection.UP) || world.getBlockId(x, y + 1, z) == blockID && Ladder.isFreestanding((TEBase)world.getBlockTileEntity(x, y + 1, z));
+            case UP:
+                return world.isBlockSolidOnSide(x, y - 1, z, ForgeDirection.DOWN) || world.getBlockId(x, y - 1, z) == blockID && Ladder.isFreestanding((TEBase)world.getBlockTileEntity(x, y - 1, z));
             case NORTH:
                 return world.isBlockSolidOnSide(x, y, z + 1, ForgeDirection.SOUTH);
             case SOUTH:
@@ -85,7 +89,7 @@ public class BlockCarpentersLadder extends BlockBase {
             case EAST:
                 return world.isBlockSolidOnSide(x - 1, y, z, ForgeDirection.WEST);
             default:
-                return true;
+                return false;
         }
     }
 
@@ -129,13 +133,6 @@ public class BlockCarpentersLadder extends BlockBase {
                 BlockProperties.setData(TE, BlockProperties.getData(TE_adj));
             }
         }
-
-        /*
-         * Force ladder to check whether it can stay.
-         * This is done to correct misplacements due
-         * to ladder option to be free-standing.
-         */
-        onNeighborBlockChange(world, x, y, z, blockID);
 
         super.onBlockPlacedBy(world, x, y, z, entityLiving, itemStack);
     }
