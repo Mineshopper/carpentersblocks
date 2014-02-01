@@ -88,6 +88,30 @@ public class BlockCarpentersBlock extends BlockBase {
 
     @Override
     /**
+     * Location aware and overrideable version of the lightOpacity array,
+     * return the number to subtract from the light value when it passes through this block.
+     *
+     * This is not guaranteed to have the tile entity in place before this is called, so it is
+     * Recommended that you have your tile entity call relight after being placed if you
+     * rely on it for light info.
+     *
+     * @param world The current world
+     * @param x X Position
+     * @param y Y Position
+     * @param z Z position
+     * @return The amount of light to block, 0 for air, 255 for fully opaque.
+     */
+    public int getLightOpacity(World world, int x, int y, int z)
+    {
+        TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
+
+        int blockID = TE != null && BlockProperties.getData(TE) == Slab.BLOCK_FULL ? BlockProperties.getCoverID(TE, 6) : this.blockID;
+
+        return lightOpacity[blockID];
+    }
+
+    @Override
+    /**
      * Updates the blocks bounds based on its current state. Args: world, x, y, z
      */
     public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
@@ -96,42 +120,17 @@ public class BlockCarpentersBlock extends BlockBase {
 
         int data = BlockProperties.getData(TE);
 
-        float[] bounds = { 0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F };
+        float[][] bounds = {
+                { 0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F }, // FULL BLOCK
+                { 0.0F, 0.0F, 0.0F, 0.5F, 1.0F, 1.0F }, // SLAB WEST
+                { 0.5F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F }, // SLAB EAST
+                { 0.0F, 0.0F, 0.0F, 1.0F, 0.5F, 1.0F }, // SLAB DOWN
+                { 0.0F, 0.5F, 0.0F, 1.0F, 1.0F, 1.0F }, // SLAB UP
+                { 0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 0.5F }, // SLAB NORTH
+                { 0.0F, 0.0F, 0.5F, 1.0F, 1.0F, 1.0F }  // SLAB SOUTH
+        };
 
-        switch (data) {
-            case Slab.SLAB_X_NEG: {
-                float[] tempBounds = { 0.0F, 0.0F, 0.0F, 0.5F, 1.0F, 1.0F };
-                bounds = tempBounds;
-                break;
-            }
-            case Slab.SLAB_X_POS: {
-                float[] tempBounds = { 0.5F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F };
-                bounds = tempBounds;
-                break;
-            }
-            case Slab.SLAB_Y_NEG: {
-                float[] tempBounds = { 0.0F, 0.0F, 0.0F, 1.0F, 0.5F, 1.0F };
-                bounds = tempBounds;
-                break;
-            }
-            case Slab.SLAB_Y_POS: {
-                float[] tempBounds = { 0.0F, 0.5F, 0.0F, 1.0F, 1.0F, 1.0F };
-                bounds = tempBounds;
-                break;
-            }
-            case Slab.SLAB_Z_NEG: {
-                float[] tempBounds = { 0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 0.5F };
-                bounds = tempBounds;
-                break;
-            }
-            case Slab.SLAB_Z_POS: {
-                float[] tempBounds = { 0.0F, 0.0F, 0.5F, 1.0F, 1.0F, 1.0F };
-                bounds = tempBounds;
-                break;
-            }
-        }
-
-        setBlockBounds(bounds[0], bounds[1], bounds[2], bounds[3], bounds[4], bounds[5]);
+        setBlockBounds(bounds[data][0], bounds[data][1], bounds[data][2], bounds[data][3], bounds[data][4], bounds[data][5]);
     }
 
     @Override
