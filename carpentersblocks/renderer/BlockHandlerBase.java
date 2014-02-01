@@ -76,19 +76,28 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
         GL11.glRotatef(90.0F, 0.0F, 1.0F, 0.0F);
         GL11.glTranslatef(-0.5F, -0.5F, -0.5F);
 
+        boolean baseIcon = block instanceof BlockBase;
+
+        Icon icon_XN = baseIcon ? block.getIcon(0, EventHandler.BLOCKICON_BASE_ID) : block.getBlockTextureFromSide(0);
+        Icon icon_XP = baseIcon ? block.getIcon(1, EventHandler.BLOCKICON_BASE_ID) : block.getBlockTextureFromSide(1);
+        Icon icon_YN = baseIcon ? block.getIcon(2, EventHandler.BLOCKICON_BASE_ID) : block.getBlockTextureFromSide(2);
+        Icon icon_YP = baseIcon ? block.getIcon(3, EventHandler.BLOCKICON_BASE_ID) : block.getBlockTextureFromSide(3);
+        Icon icon_ZN = baseIcon ? block.getIcon(4, EventHandler.BLOCKICON_BASE_ID) : block.getBlockTextureFromSide(4);
+        Icon icon_ZP = baseIcon ? block.getIcon(5, EventHandler.BLOCKICON_BASE_ID) : block.getBlockTextureFromSide(5);
+
         tessellator.startDrawingQuads();
         tessellator.setNormal(0.0F, -1.0F, 0.0F);
-        renderBlocks.renderFaceYNeg(block, 0.0D, 0.0D, 0.0D, block.getIcon(0, EventHandler.BLOCKICON_BASE_ID));
+        renderBlocks.renderFaceYNeg(block, 0.0D, 0.0D, 0.0D, renderBlocks.getIconSafe(icon_XN));
         tessellator.setNormal(0.0F, 1.0F, 0.0F);
-        renderBlocks.renderFaceYPos(block, 0.0D, 0.0D, 0.0D, block.getIcon(1, EventHandler.BLOCKICON_BASE_ID));
+        renderBlocks.renderFaceYPos(block, 0.0D, 0.0D, 0.0D, renderBlocks.getIconSafe(icon_XP));
         tessellator.setNormal(0.0F, 0.0F, -1.0F);
-        renderBlocks.renderFaceZNeg(block, 0.0D, 0.0D, 0.0D, block.getIcon(2, EventHandler.BLOCKICON_BASE_ID));
+        renderBlocks.renderFaceZNeg(block, 0.0D, 0.0D, 0.0D, renderBlocks.getIconSafe(icon_YN));
         tessellator.setNormal(0.0F, 0.0F, 1.0F);
-        renderBlocks.renderFaceZPos(block, 0.0D, 0.0D, 0.0D, block.getIcon(3, EventHandler.BLOCKICON_BASE_ID));
+        renderBlocks.renderFaceZPos(block, 0.0D, 0.0D, 0.0D, renderBlocks.getIconSafe(icon_YP));
         tessellator.setNormal(-1.0F, 0.0F, 0.0F);
-        renderBlocks.renderFaceXNeg(block, 0.0D, 0.0D, 0.0D, block.getIcon(4, EventHandler.BLOCKICON_BASE_ID));
+        renderBlocks.renderFaceXNeg(block, 0.0D, 0.0D, 0.0D, renderBlocks.getIconSafe(icon_ZN));
         tessellator.setNormal(1.0F, 0.0F, 0.0F);
-        renderBlocks.renderFaceXPos(block, 0.0D, 0.0D, 0.0D, block.getIcon(5, EventHandler.BLOCKICON_BASE_ID));
+        renderBlocks.renderFaceXPos(block, 0.0D, 0.0D, 0.0D, renderBlocks.getIconSafe(icon_ZP));
         tessellator.draw();
 
         GL11.glTranslatef(0.5F, 0.5F, 0.5F);

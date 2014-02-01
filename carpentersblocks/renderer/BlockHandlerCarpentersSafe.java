@@ -75,7 +75,7 @@ public class BlockHandlerCarpentersSafe extends BlockHandlerBase {
                     break;
                 case BLOCKTYPE_PANEL:
                 case BLOCKTYPE_HANDLE:
-                    renderBlocks.setOverrideBlockTexture(renderBlocks.getIconSafe(Block.blockIron.getBlockTextureFromSide(0)));
+                    renderBlocks.setOverrideBlockTexture(Block.blockIron.getBlockTextureFromSide(2));
                     break;
                 default:
                     renderBlocks.setOverrideBlockTexture(renderBlocks.getIconSafe(IconRegistry.icon_safe_light));
