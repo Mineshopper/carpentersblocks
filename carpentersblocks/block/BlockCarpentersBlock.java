@@ -88,30 +88,6 @@ public class BlockCarpentersBlock extends BlockBase {
 
     @Override
     /**
-     * Location aware and overrideable version of the lightOpacity array,
-     * return the number to subtract from the light value when it passes through this block.
-     *
-     * This is not guaranteed to have the tile entity in place before this is called, so it is
-     * Recommended that you have your tile entity call relight after being placed if you
-     * rely on it for light info.
-     *
-     * @param world The current world
-     * @param x X Position
-     * @param y Y Position
-     * @param z Z position
-     * @return The amount of light to block, 0 for air, 255 for fully opaque.
-     */
-    public int getLightOpacity(World world, int x, int y, int z)
-    {
-        TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
-
-        int blockID = TE != null && BlockProperties.getData(TE) == Slab.BLOCK_FULL ? BlockProperties.getCoverID(TE, 6) : this.blockID;
-
-        return lightOpacity[blockID];
-    }
-
-    @Override
-    /**
      * Updates the blocks bounds based on its current state. Args: world, x, y, z
      */
     public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
@@ -195,7 +171,7 @@ public class BlockCarpentersBlock extends BlockBase {
      */
     public boolean isBlockNormalCube(World world, int x, int y, int z)
     {
-        if (extendsBlockBase(world, x, y, z)) {
+        if (isValid(world, x, y, z)) {
             TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
             return BlockProperties.getData(TE) == Slab.BLOCK_FULL;
         }
@@ -209,26 +185,31 @@ public class BlockCarpentersBlock extends BlockBase {
      */
     public boolean isBlockSolidOnSide(World world, int x, int y, int z, ForgeDirection side)
     {
-        if (isBlockSolid(world, x, y, z))
-        {
-            TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
-            int data = BlockProperties.getData(TE);
+        if (isValid(world, x, y, z)) {
 
-            if (data == Slab.BLOCK_FULL) {
-                return true;
-            } else if (data == Slab.SLAB_Y_NEG && side == ForgeDirection.DOWN) {
-                return true;
-            } else if (data == Slab.SLAB_Y_POS && side == ForgeDirection.UP) {
-                return true;
-            } else if (data == Slab.SLAB_Z_NEG && side == ForgeDirection.NORTH) {
-                return true;
-            } else if (data == Slab.SLAB_Z_POS && side == ForgeDirection.SOUTH) {
-                return true;
-            } else if (data == Slab.SLAB_X_NEG && side == ForgeDirection.WEST) {
-                return true;
-            } else if (data == Slab.SLAB_X_POS && side == ForgeDirection.EAST) {
-                return true;
+            if (isBlockSolid(world, x, y, z)) {
+
+                TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
+                int data = BlockProperties.getData(TE);
+
+                if (data == Slab.BLOCK_FULL) {
+                    return true;
+                } else if (data == Slab.SLAB_Y_NEG && side == ForgeDirection.DOWN) {
+                    return true;
+                } else if (data == Slab.SLAB_Y_POS && side == ForgeDirection.UP) {
+                    return true;
+                } else if (data == Slab.SLAB_Z_NEG && side == ForgeDirection.NORTH) {
+                    return true;
+                } else if (data == Slab.SLAB_Z_POS && side == ForgeDirection.SOUTH) {
+                    return true;
+                } else if (data == Slab.SLAB_X_NEG && side == ForgeDirection.WEST) {
+                    return true;
+                } else if (data == Slab.SLAB_X_POS && side == ForgeDirection.EAST) {
+                    return true;
+                }
+
             }
+
         }
 
         return false;

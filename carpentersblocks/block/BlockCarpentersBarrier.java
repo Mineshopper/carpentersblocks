@@ -121,7 +121,7 @@ public class BlockCarpentersBarrier extends BlockBase {
      */
     public void addCollisionBoxesToList(World world, int x, int y, int z, AxisAlignedBB axisAlignedBB, List list, Entity entity)
     {
-        TEBase TE = (TEBase)world.getBlockTileEntity(x, y, z);
+        TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
 
         boolean connect_ZN = canConnectBarrierTo(TE, world, x, y, z - 1, ForgeDirection.SOUTH);
         boolean connect_ZP = canConnectBarrierTo(TE, world, x, y, z + 1, ForgeDirection.NORTH);

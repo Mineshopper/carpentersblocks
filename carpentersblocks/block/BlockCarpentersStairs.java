@@ -157,7 +157,7 @@ public class BlockCarpentersStairs extends BlockBase {
      */
     public MovingObjectPosition collisionRayTrace(World world, int x, int y, int z, Vec3 startVec, Vec3 endVec)
     {
-        TEBase TE = (TEBase)world.getBlockTileEntity(x, y, z);
+        TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
 
         MovingObjectPosition finalTrace = null;
 
@@ -199,9 +199,9 @@ public class BlockCarpentersStairs extends BlockBase {
      */
     public void addCollisionBoxesToList(World world, int x, int y, int z, AxisAlignedBB axisAlignedBB, List list, Entity entity)
     {
-        AxisAlignedBB colBox = null;
+        TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
 
-        TEBase TE = (TEBase)world.getBlockTileEntity(x, y, z);
+        AxisAlignedBB colBox = null;
 
         Stairs stairs = Stairs.stairsList[BlockProperties.getData(TE)];
         StairsUtil stairsUtil = new StairsUtil();
@@ -225,9 +225,13 @@ public class BlockCarpentersStairs extends BlockBase {
      */
     public boolean isBlockSolidOnSide(World world, int x, int y, int z, ForgeDirection side)
     {
-        if (isBlockSolid(world, x, y, z)) {
-            TEBase TE = (TEBase)world.getBlockTileEntity(x, y, z);
-            return Stairs.stairsList[BlockProperties.getData(TE)].isFaceFull(side);
+        if (isValid(world, x, y, z)) {
+
+            if (isBlockSolid(world, x, y, z)) {
+                TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
+                return Stairs.stairsList[BlockProperties.getData(TE)].isFaceFull(side);
+            }
+
         }
 
         return false;

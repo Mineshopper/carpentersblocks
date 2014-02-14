@@ -190,10 +190,14 @@ public class BlockCarpentersButton extends BlockBase {
     {
         TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
 
-        ForgeDirection dir = Button.getFacing(TE);
+        if (TE != null) {
 
-        if (isDepressed(TE)) {
-            notifySideNeighbor(world, x, y, z, dir.ordinal());
+            ForgeDirection dir = Button.getFacing(TE);
+
+            if (isDepressed(TE)) {
+                notifySideNeighbor(world, x, y, z, dir.ordinal());
+            }
+
         }
 
         super.breakBlock(world, x, y, z, par5, metadata);

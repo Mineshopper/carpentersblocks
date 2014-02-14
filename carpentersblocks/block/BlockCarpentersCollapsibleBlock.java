@@ -160,24 +160,29 @@ public class BlockCarpentersCollapsibleBlock extends BlockBase {
      */
     public boolean isBlockSolidOnSide(World world, int x, int y, int z, ForgeDirection side)
     {
-        if (isBlockSolid(world, x, y, z))
-        {
-            TEBase TE = (TEBase)world.getBlockTileEntity(x, y, z);
+        if (isValid(world, x, y, z)) {
 
-            switch (side) {
-                case UP:
-                    return BlockProperties.getData(TE) == 0;
-                case NORTH:
-                    return Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZNN) + Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZPN) == 32;
-                case SOUTH:
-                    return Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZNP) + Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZPP) == 32;
-                case WEST:
-                    return Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZNP) + Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZNN) == 32;
-                case EAST:
-                    return Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZPN) + Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZPP) == 32;
-                default:
-                    return true;
+            if (isBlockSolid(world, x, y, z)) {
+
+                TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
+
+                switch (side) {
+                    case UP:
+                        return BlockProperties.getData(TE) == 0;
+                    case NORTH:
+                        return Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZNN) + Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZPN) == 32;
+                    case SOUTH:
+                        return Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZNP) + Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZPP) == 32;
+                    case WEST:
+                        return Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZNP) + Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZNN) == 32;
+                    case EAST:
+                        return Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZPN) + Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZPP) == 32;
+                    default:
+                        return true;
+                }
+
             }
+
         }
 
         return false;
@@ -289,9 +294,9 @@ public class BlockCarpentersCollapsibleBlock extends BlockBase {
      */
     public void addCollisionBoxesToList(World world, int x, int y, int z, AxisAlignedBB axisAlignedBB, List list, Entity entity)
     {
-        AxisAlignedBB colBox = null;
+        TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
 
-        TEBase TE = (TEBase)world.getBlockTileEntity(x, y, z);
+        AxisAlignedBB colBox = null;
 
         for (int quad = 0; quad < 4; ++quad)
         {

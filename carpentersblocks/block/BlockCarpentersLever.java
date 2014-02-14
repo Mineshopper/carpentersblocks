@@ -173,7 +173,7 @@ public class BlockCarpentersLever extends BlockBase {
      */
     public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
     {
-        TEBase TE = (TEBase)world.getBlockTileEntity(x, y, z);
+        TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
 
         ForgeDirection facing = Lever.getFacing(TE);
         Axis axis = Lever.getAxis(TE);

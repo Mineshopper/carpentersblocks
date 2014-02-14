@@ -226,10 +226,10 @@ public class BlockCarpentersFlowerPot extends BlockBase {
      */
     public boolean canPlaceBlockOnSide(World world, int x, int y, int z, int side)
     {
-        int blockID = world.getBlockId(x, y - 1, z);
-        boolean canPlaceOnTop = blockID > 0 && Block.blocksList[blockID].canPlaceTorchOnTop(world, x, y, z);
+        Block block = Block.blocksList[world.getBlockId(x, y - 1, z)];
+        boolean canPlaceOnTop = block != null && block.canPlaceTorchOnTop(world, x, y, z);
 
-        return world.isBlockSolidOnSide(x, y - 1, z, ForgeDirection.UP) || canPlaceOnTop;
+        return block.isBlockSolidOnSide(world, x, y - 1, z, ForgeDirection.UP) || canPlaceOnTop;
     }
 
     @Override
@@ -265,8 +265,8 @@ public class BlockCarpentersFlowerPot extends BlockBase {
      */
     public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int x, int y, int z)
     {
-        if (extendsBlockBase(world, x, y, z))
-        {
+        if (isValid(world, x, y, z)) {
+
             TECarpentersFlowerPot TE = (TECarpentersFlowerPot) world.getBlockTileEntity(x, y, z);
 
             AxisAlignedBB axisAlignedBB = AxisAlignedBB.getAABBPool().getAABB(x + 0.3125F, y, z + 0.3125F, x + 0.6875F, y + 0.375F, z + 0.6875F);
@@ -284,6 +284,7 @@ public class BlockCarpentersFlowerPot extends BlockBase {
             }
 
             return axisAlignedBB;
+
         }
 
         return super.getCollisionBoundingBoxFromPool(world, x, y, z);
@@ -367,30 +368,36 @@ public class BlockCarpentersFlowerPot extends BlockBase {
      */
     public void randomDisplayTick(World world, int x, int y, int z, Random random)
     {
-        if (world.getBlockId(x, y, z) == blockID)
-        {
+        if (isValid(world, x, y, z)) {
+
             TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
 
-            if (TE != null && TE instanceof TECarpentersFlowerPot)
-            {
+            if (TE != null && TE instanceof TECarpentersFlowerPot) {
+
                 /*
                  * Metadata at coordinates are for the base cover only.
                  * We need to set it for appropriate attributes in order
                  * to get accurate results.
                  */
-                if (FlowerPotProperties.hasPlant(TE))
-                {
+
+                if (FlowerPotProperties.hasPlant(TE)) {
+
                     world.setBlockMetadataWithNotify(x, y, z, FlowerPotProperties.getPlantMetadata((TECarpentersFlowerPot) TE), 4);
                     FlowerPotProperties.getPlantBlock(TE).randomDisplayTick(world, x, y, z, random);
                     world.setBlockMetadataWithNotify(x, y, z, BlockProperties.getCoverMetadata(TE, 6), 4);
+
                 }
-                if (FlowerPotProperties.hasSoil(TE))
-                {
+
+                if (FlowerPotProperties.hasSoil(TE)) {
+
                     world.setBlockMetadataWithNotify(x, y, z, FlowerPotProperties.getSoilMetadata((TECarpentersFlowerPot) TE), 4);
                     FlowerPotProperties.getSoilBlock(TE).randomDisplayTick(world, x, y, z, random);
                     world.setBlockMetadataWithNotify(x, y, z, BlockProperties.getCoverMetadata(TE, 6), 4);
+
                 }
+
             }
+
         }
 
         super.randomDisplayTick(world, x, y, z, random);

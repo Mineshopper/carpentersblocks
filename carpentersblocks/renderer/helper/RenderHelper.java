@@ -53,23 +53,6 @@ public class RenderHelper extends VertexHelper {
     }
 
     /**
-     * Takes two brightness inputs and returns average brightness.
-     */
-    public static int getAverageBrightness(int brightness1, int brightness2)
-    {
-        int section_1_1 = brightness1 >> 16 & 255;
-        int section_1_3 = brightness1 & 255;
-
-        int section_2_1 = brightness2 >> 16 & 255;
-        int section_2_3 = brightness2 & 255;
-
-        int difference1 = (int) ((section_1_1 + section_2_1) / 2.0F);
-        int difference3 = (int) ((section_1_3 + section_2_3) / 2.0F);
-
-        return difference1 << 16 | difference3;
-    }
-
-    /**
      * Sets UV coordinates for each corner based on side rotation.
      */
     private static void setCornerUV(double t_uTL, double t_vTL, double t_uBL, double t_vBL, double t_uBR, double t_vBR, double t_uTR, double t_vTR)

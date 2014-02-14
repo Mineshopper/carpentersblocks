@@ -68,10 +68,8 @@ public class BlockCarpentersTorch extends BlockBase {
      */
     public int getLightValue(IBlockAccess world, int x, int y, int z)
     {
-        Block block = blocksList[world.getBlockId(x, y, z)];
+        if (isValid(world, x, y, z)) {
 
-        if (block != null && block.blockID == blockID)
-        {
             TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
 
             int coverLight = super.getLightValue(world, x, y, z);
@@ -88,6 +86,7 @@ public class BlockCarpentersTorch extends BlockBase {
             }
 
             return coverLight > torchLight ? coverLight : torchLight;
+
         }
 
         return lightValue[blockID];
@@ -252,19 +251,23 @@ public class BlockCarpentersTorch extends BlockBase {
      */
     public void randomDisplayTick(World world, int x, int y, int z, Random random)
     {
-        TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
+        if (isValid(world, x, y, z)) {
 
-        State state = Torch.getState(TE);
+            TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
 
-        if (!state.equals(State.UNLIT))
-        {
-            double[] headCoords = Torch.getHeadCoordinates(TE);
+            State state = Torch.getState(TE);
 
-            world.spawnParticle("smoke", headCoords[0], headCoords[1], headCoords[2], 0.0D, 0.0D, 0.0D);
+            if (!state.equals(State.UNLIT))
+            {
+                double[] headCoords = Torch.getHeadCoordinates(TE);
 
-            if (state.equals(State.LIT)) {
-                world.spawnParticle("flame", headCoords[0], headCoords[1], headCoords[2], 0.0D, 0.0D, 0.0D);
+                world.spawnParticle("smoke", headCoords[0], headCoords[1], headCoords[2], 0.0D, 0.0D, 0.0D);
+
+                if (state.equals(State.LIT)) {
+                    world.spawnParticle("flame", headCoords[0], headCoords[1], headCoords[2], 0.0D, 0.0D, 0.0D);
+                }
             }
+
         }
     }
 

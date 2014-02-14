@@ -247,7 +247,7 @@ public class BlockCarpentersPressurePlate extends BlockBase {
      */
     public int isProvidingWeakPower(IBlockAccess world, int x, int y, int z, int side)
     {
-        TEBase TE = (TEBase)world.getBlockTileEntity(x, y, z);
+        TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
 
         return getPowerSupply(TE, BlockProperties.getData(TE));
     }
@@ -259,7 +259,7 @@ public class BlockCarpentersPressurePlate extends BlockBase {
      */
     public int isProvidingStrongPower(IBlockAccess world, int x, int y, int z, int side)
     {
-        TEBase TE = (TEBase)world.getBlockTileEntity(x, y, z);
+        TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
 
         return side == 1 ? getPowerSupply(TE, BlockProperties.getData(TE)) : 0;
     }

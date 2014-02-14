@@ -210,9 +210,13 @@ public class BlockCarpentersSafe extends BlockBase {
      */
     public boolean isBlockSolidOnSide(World world, int x, int y, int z, ForgeDirection side)
     {
-        if (isBlockSolid(world, x, y, z)) {
-            TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
-            return side != Safe.getFacing(TE);
+        if (isValid(world, x, y, z)) {
+
+            if (isBlockSolid(world, x, y, z)) {
+                TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
+                return side != Safe.getFacing(TE);
+            }
+
         }
 
         return false;

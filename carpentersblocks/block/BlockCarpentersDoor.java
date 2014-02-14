@@ -232,9 +232,8 @@ public class BlockCarpentersDoor extends BlockBase {
      */
     public AxisAlignedBB getSelectedBoundingBoxFromPool(World world, int x, int y, int z)
     {
-        TEBase TE = world.getBlockId(x, y, z) == blockID ? (TEBase)world.getBlockTileEntity(x, y, z) : null;
-
-        if (TE != null) {
+        if (isValid(world, x, y, z)) {
+            world.getBlockTileEntity(x, y, z);
             setBlockBoundsBasedOnState(world, x, y, z);
         }
 
@@ -248,9 +247,7 @@ public class BlockCarpentersDoor extends BlockBase {
      */
     public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int x, int y, int z)
     {
-        TEBase TE = world.getBlockId(x, y, z) == blockID ? (TEBase)world.getBlockTileEntity(x, y, z) : null;
-
-        if (TE != null) {
+        if (isValid(world, x, y, z)) {
             setBlockBoundsBasedOnState(world, x, y, z);
         }
 
@@ -469,4 +466,5 @@ public class BlockCarpentersDoor extends BlockBase {
     {
         return BlockRegistry.carpentersDoorRenderID;
     }
+
 }

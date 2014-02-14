@@ -111,10 +111,10 @@ public class BlockCarpentersGate extends BlockBase {
      */
     public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int x, int y, int z)
     {
-        TEBase TE = world.getBlockId(x, y, z) == blockID ? (TEBase)world.getBlockTileEntity(x, y, z) : null;
+        if (isValid(world, x, y, z)) {
 
-        if (TE != null)
-        {
+            TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
+
             if (Gate.getState(TE) == Gate.STATE_OPEN) {
                 return null;
             } else if (Gate.getFacing(TE) == Gate.FACING_ON_Z) {
@@ -130,6 +130,7 @@ public class BlockCarpentersGate extends BlockBase {
                     return AxisAlignedBB.getAABBPool().getAABB(x, y, z + 0.375F, x + 1.0F, y + 1.5F, z + 0.625F);
                 }
             }
+
         }
 
         return null;
@@ -141,7 +142,7 @@ public class BlockCarpentersGate extends BlockBase {
      */
     public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
     {
-        TEBase TE = (TEBase)world.getBlockTileEntity(x, y, z);
+        TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
 
         if (Gate.getFacing(TE) == Gate.FACING_ON_Z) {
             if (Gate.getType(TE) == Gate.TYPE_VANILLA || Gate.getType(TE) == Gate.TYPE_WALL) {
