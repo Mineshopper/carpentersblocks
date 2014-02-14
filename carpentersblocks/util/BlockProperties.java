@@ -5,6 +5,7 @@ import net.minecraft.block.BlockBreakable;
 import net.minecraft.block.BlockHalfSlab;
 import net.minecraft.block.BlockPane;
 import net.minecraft.block.BlockQuartz;
+import net.minecraft.block.BlockRotatedPillar;
 import net.minecraft.block.StepSound;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
@@ -134,10 +135,10 @@ public class BlockProperties {
      * The blocks that utilize this property are mostly atypical, and
      * must be added manually.
      */
-    public static boolean blockRotates(World world, Block block, int x, int y, int z)
+    public static boolean blockRotates(Block block)
     {
-        return block.isWood(world, x, y, z) ||
-                block instanceof BlockQuartz;
+        return block instanceof BlockQuartz ||
+                block instanceof BlockRotatedPillar;
     }
 
     /**
@@ -328,6 +329,7 @@ public class BlockProperties {
 
     /**
      * Set block data.
+     * Will do nothing if data is not altered.
      */
     public static void setData(TEBase TE, int data)
     {
