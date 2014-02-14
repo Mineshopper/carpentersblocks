@@ -1,15 +1,18 @@
 package carpentersblocks.util.handler;
 
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
+import net.minecraftforge.client.event.MouseEvent;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.PlaySoundAtEntityEvent;
@@ -21,6 +24,7 @@ import carpentersblocks.block.BlockBase;
 import carpentersblocks.renderer.helper.ParticleHelper;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
+import carpentersblocks.util.registry.BlockRegistry;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
@@ -28,9 +32,9 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class EventHandler {
 
-    public static double hitX;
-    public static double hitY;
-    public static double hitZ;
+    public static float hitX;
+    public static float hitY;
+    public static float hitZ;
 
     /** Stores face for onBlockClicked(). */
     public static int eventFace;
@@ -95,6 +99,36 @@ public class EventHandler {
                 }
 
             }
+        }
+    }
+
+    @SideOnly(Side.CLIENT)
+    @ForgeSubscribe
+    /**
+     * Grabs mouse scroll events for slope selection.
+     */
+    public void mouseEvent(MouseEvent event)
+    {
+        EntityPlayer entityPlayer = Minecraft.getMinecraft().thePlayer;
+
+        if (entityPlayer.isSneaking()) {
+
+            ItemStack itemStack = entityPlayer.getHeldItem();
+
+            if (itemStack != null && itemStack.getItem() instanceof ItemBlock && Block.blocksList[itemStack.itemID].equals(BlockRegistry.blockCarpentersSlope)) {
+
+                if (event.dwheel == 120) {
+                    entityPlayer.inventory.currentItem = ++entityPlayer.inventory.currentItem;
+                } else if (event.dwheel == -120) {
+                    entityPlayer.inventory.currentItem = --entityPlayer.inventory.currentItem;
+                } else {
+                    return;
+                }
+
+                PacketHandler.damageSlopeInSlot(entityPlayer.inventory.currentItem, event.dwheel == 120);
+
+            }
+
         }
     }
 

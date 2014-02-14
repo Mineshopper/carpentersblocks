@@ -13,7 +13,7 @@ public class SlopeUtil {
     {
         switch (slope.type)
         {
-            case PYRAMID:
+            case PRISM:
             case PRISM_1P:
             case PRISM_2P:
             case PRISM_3P:
@@ -37,8 +37,9 @@ public class SlopeUtil {
                 return 3;
             case WEDGE_INT:
                 return 2;
-            case PRISM_SLOPE:
+            case PRISM_WEDGE:
                 return 2;
+            case PRISM:
             case PRISM_1P:
             case PRISM_2P:
             case PRISM_3P:
@@ -260,16 +261,16 @@ public class SlopeUtil {
                         return new float[] { 0.0F, zeroOffset, 0.0F, 1.0F, 1.0F, oneOffset };
                 }
                 break;
-            case Slope.ID_PYR_HALF_POS:
+            case Slope.ID_PRISM_POS:
                 return new float[] { zeroOffset * 0.5F, 0.0F, zeroOffset * 0.5F, 1.0F - zeroOffset * 0.5F, oneOffset * 0.5F, 1.0F - zeroOffset * 0.5F };
-            case Slope.ID_PYR_HALF_NEG:
+            case Slope.ID_PRISM_NEG:
                 return new float[] { zeroOffset * 0.5F, 1.0F - oneOffset * 0.5F, zeroOffset * 0.5F, 1.0F - zeroOffset * 0.5F, 1.0F, 1.0F - zeroOffset * 0.5F };
             default: {
 
                 boolean renderPrism = getNumPasses(slope) / precision < 2.0F;
 
                 switch (slope.slopeID) {
-                    case Slope.ID_PRISM_SLOPE_N:
+                    case Slope.ID_PRISM_WEDGE_POS_N:
                         switch (pass) {
                             case 1:
                                 return new float[] { 0.0F, 0.0F, zeroOffset, 1.0F, oneOffset, 1.0F };
@@ -279,7 +280,7 @@ public class SlopeUtil {
                                 }
                         }
                         break;
-                    case Slope.ID_PRISM_SLOPE_S:
+                    case Slope.ID_PRISM_WEDGE_POS_S:
                         switch (pass) {
                             case 1:
                                 return new float[] { 0.0F, 0.0F, 0.0F, 1.0F, 1.0F - zeroOffset, oneOffset };
@@ -289,7 +290,7 @@ public class SlopeUtil {
                                 }
                         }
                         break;
-                    case Slope.ID_PRISM_SLOPE_W:
+                    case Slope.ID_PRISM_WEDGE_POS_W:
                         switch (pass) {
                             case 1:
                                 return new float[] { zeroOffset, 0.0F, 0.0F, 1.0F, oneOffset, 1.0F };
@@ -299,7 +300,7 @@ public class SlopeUtil {
                                 }
                         }
                         break;
-                    case Slope.ID_PRISM_SLOPE_E:
+                    case Slope.ID_PRISM_WEDGE_POS_E:
                         switch (pass) {
                             case 1:
                                 return new float[] { 0.0F, 0.0F, 0.0F, oneOffset, 1.0F - zeroOffset, 1.0F };
@@ -313,8 +314,8 @@ public class SlopeUtil {
 
                         switch (pass) {
                             case 1:
-                                if (!slope.equals(Slope.PRISM_4P)) {
-                                    return genBounds(Slope.PYR_HALF_POS, slice, precision, pass);
+                                if (!slope.equals(Slope.PRISM_4P_POS)) {
+                                    return genBounds(Slope.PRISM_POS, slice, precision, pass);
                                 } else {
                                     return null;
                                 }

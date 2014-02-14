@@ -15,7 +15,10 @@ public class IconRegistry {
 
     public static Icon icon_blank;
     public static Icon icon_solid;
-    public static Icon icon_slope_oblique;
+    public static Icon icon_oblique_int_pos;
+    public static Icon icon_oblique_int_neg;
+    public static Icon icon_oblique_ext_pos;
+    public static Icon icon_oblique_ext_neg;
     public static Icon icon_overlay_fast_grass_side;
     public static Icon icon_overlay_hay_side;
     public static Icon icon_overlay_snow_side;
@@ -69,7 +72,6 @@ public class IconRegistry {
         icon_solid                   = iconRegister.registerIcon("carpentersblocks:general/solid");
         icon_full_frame              = iconRegister.registerIcon("carpentersblocks:general/full_frame");
         icon_quartered_frame         = iconRegister.registerIcon("carpentersblocks:general/quartered_frame");
-
         icon_overlay_fast_grass_side = iconRegister.registerIcon("carpentersblocks:overlay/overlay_fast_grass_side");
         icon_overlay_hay_side        = iconRegister.registerIcon("carpentersblocks:overlay/overlay_hay_side");
         icon_overlay_snow_side       = iconRegister.registerIcon("carpentersblocks:overlay/overlay_snow_side");
