@@ -2,6 +2,7 @@ package carpentersblocks.util.registry;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemMultiTextureTile;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.oredict.ShapedOreRecipe;
@@ -27,7 +28,8 @@ import cpw.mods.fml.common.registry.GameRegistry;
 
 public class BlockRegistry {
 
-    // References
+    /* Block references. */
+
     public static Block blockCarpentersSlope;
     public static Block blockCarpentersStairs;
     public static Block blockCarpentersBarrier;
@@ -46,7 +48,8 @@ public class BlockRegistry {
     public static Block blockCarpentersSafe;
     public static Block blockCarpentersFlowerPot;
 
-    // Render IDs
+    /* Render IDs. */
+
     public static int carpentersSlopeRenderID;
     public static int carpentersStairsRenderID;
     public static int carpentersBarrierRenderID;
@@ -65,7 +68,8 @@ public class BlockRegistry {
     public static int carpentersSafeRenderID;
     public static int carpentersFlowerPotRenderID;
 
-    // Block IDs
+    /* Block IDs. */
+
     public static int blockCarpentersSlopeID;
     public static int blockCarpentersStairsID;
     public static int blockCarpentersBarrierID;
@@ -84,7 +88,8 @@ public class BlockRegistry {
     public static int blockCarpentersSafeID;
     public static int blockCarpentersFlowerPotID;
 
-    // Blocks enabled state
+    /* Block state. */
+
     public static boolean enableSlope            = true;
     public static boolean enableStairs           = true;
     public static boolean enableBarrier          = true;
@@ -103,10 +108,11 @@ public class BlockRegistry {
     public static boolean enableSafe             = true;
     public static boolean enableFlowerPot        = true;
 
-    // Recipe quantities
-    public static int recipeQuantitySlope            = 4;
+    /* Recipe quantities. */
+
+    public static int recipeQuantitySlope            = 6;
     public static int recipeQuantityStairs           = 4;
-    public static int recipeQuantityBarrier          = 2;
+    public static int recipeQuantityBarrier          = 4;
     public static int recipeQuantityGate             = 1;
     public static int recipeQuantityBlock            = 5;
     public static int recipeQuantityButton           = 1;
@@ -189,20 +195,20 @@ public class BlockRegistry {
      */
     public static void registerBlocks()
     {
-        if (enableBarrier) {
-            blockCarpentersBarrier = new BlockCarpentersBarrier(blockCarpentersBarrierID);
-            GameRegistry.registerBlock(blockCarpentersBarrier, "blockCarpentersBarrier");
-            GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(blockCarpentersBarrier, recipeQuantityBarrier), "X X", "XXX", 'X', "stickWood"));
-        }
-
-        if (enableBed) {
-            blockCarpentersBed = new BlockCarpentersBed(blockCarpentersBedID);
-        }
-
         if (enableBlock) {
             blockCarpentersBlock = new BlockCarpentersBlock(blockCarpentersBlockID);
             GameRegistry.registerBlock(blockCarpentersBlock, "blockCarpentersBlock");
             GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(blockCarpentersBlock, recipeQuantityBlock), "XXX", "XYX", "XXX", 'X', "stickWood", 'Y', "plankWood"));
+        }
+
+        if (enableBarrier) {
+            blockCarpentersBarrier = new BlockCarpentersBarrier(blockCarpentersBarrierID);
+            GameRegistry.registerBlock(blockCarpentersBarrier, "blockCarpentersBarrier");
+            GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(blockCarpentersBarrier, recipeQuantityBarrier), " Y ", "XYX", 'X', "stickWood", 'Y', blockCarpentersBlock));
+        }
+
+        if (enableBed) {
+            blockCarpentersBed = new BlockCarpentersBed(blockCarpentersBedID);
         }
 
         if (enableButton) {
@@ -254,7 +260,8 @@ public class BlockRegistry {
         if (enableSlope) {
             blockCarpentersSlope = new BlockCarpentersSlope(blockCarpentersSlopeID);
             GameRegistry.registerBlock(blockCarpentersSlope, "blockCarpentersSlope");
-            GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(blockCarpentersSlope, recipeQuantitySlope), "  X", " XY", "XYY", 'X', "stickWood", 'Y', "plankWood"));
+            GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(blockCarpentersSlope, recipeQuantitySlope), "  X", " XY", "XYY", 'X', "stickWood", 'Y', blockCarpentersBlock));
+            Item.itemsList[blockCarpentersSlopeID] = new ItemMultiTextureTile(blockCarpentersSlopeID - 256, blockCarpentersSlope, BlockCarpentersSlope.slopeType).setUnlocalizedName("blockCarpentersSlope");
         }
 
         if (enableStairs) {
