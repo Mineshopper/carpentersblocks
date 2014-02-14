@@ -5,6 +5,7 @@ import net.minecraftforge.common.Configuration;
 import carpentersblocks.proxy.CommonProxy;
 import carpentersblocks.util.CarpentersBlocksTab;
 import carpentersblocks.util.ModLogger;
+import carpentersblocks.util.handler.PacketHandler;
 import carpentersblocks.util.handler.TileEntityHandler;
 import carpentersblocks.util.registry.BlockRegistry;
 import carpentersblocks.util.registry.FeatureRegistry;
@@ -17,8 +18,17 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 
-@Mod(modid = "CarpentersBlocks", name = "Carpenter's Blocks", version = "v2.0.2")
-@NetworkMod(clientSideRequired = true, serverSideRequired = false)
+@Mod(
+        modid = "CarpentersBlocks",
+        name = "Carpenter's Blocks",
+        version = "v2.0.3"
+        )
+@NetworkMod(
+        clientSideRequired = true,
+        serverSideRequired = false,
+        channels = { PacketHandler.CHANNEL },
+        packetHandler = PacketHandler.class
+        )
 public class CarpentersBlocks {
 
     @Instance("CarpentersBlocks")
@@ -26,6 +36,8 @@ public class CarpentersBlocks {
 
     @SidedProxy(clientSide = "carpentersblocks.proxy.ClientProxy", serverSide = "carpentersblocks.proxy.CommonProxy")
     public static CommonProxy proxy;
+
+    public final static String CHANNEL = "CarpentersBlocks";
 
     public static CreativeTabs tabCarpentersBlocks = new CarpentersBlocksTab("carpentersBlocks");
 
