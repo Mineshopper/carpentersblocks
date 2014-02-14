@@ -237,8 +237,6 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
                 temp_x_high = 0.5625F;
             }
 
-            lightingHelper.setLightnessOffset(REDUCED_LIGHTNESS_OFFSET);
-
             // Two center pieces
             if (isBottom) {
                 renderBlocks.setRenderBounds(temp_x_low, 0.1875F, temp_z_low, temp_x_high, 0.5F, temp_z_high);
@@ -251,8 +249,6 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
                 renderBlocks.setRenderBounds(temp_x_low, 0.5F, temp_z_low, temp_x_high, 0.8125F, temp_z_high);
                 renderBlock(block, x, y, z);
             }
-
-            lightingHelper.clearLightnessOffset();
 
             temp_x_low = x_low;
             temp_x_high = x_high;
@@ -282,14 +278,10 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
                     temp_z_high -= 0.0625F;
                 }
 
-                lightingHelper.setLightnessOffset(REDUCED_LIGHTNESS_OFFSET);
-
                 renderBlocks.setRenderBounds(temp_x_low, 0.5F, temp_z_low, temp_x_high, 0.625F, temp_z_high);
                 renderBlock(block, x, y, z);
                 renderBlocks.setRenderBounds(temp_x_low, 0.9375F, temp_z_low, temp_x_high, 1.0F, temp_z_high);
                 renderBlock(block, x, y, z);
-
-                lightingHelper.clearLightnessOffset();
 
             } else {
 
@@ -304,14 +296,10 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
                     temp_z_high -= 0.0625F;
                 }
 
-                lightingHelper.setLightnessOffset(REDUCED_LIGHTNESS_OFFSET);
-
                 renderBlocks.setRenderBounds(temp_x_low, 0.0F, temp_z_low, temp_x_high, 0.0625F, temp_z_high);
                 renderBlock(block, x, y, z);
                 renderBlocks.setRenderBounds(temp_x_low, 0.375F, temp_z_low, temp_x_high, 0.5F, temp_z_high);
                 renderBlock(block, x, y, z);
-
-                lightingHelper.clearLightnessOffset();
 
             }
         }
@@ -549,12 +537,8 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
                     temp_x_high = 0.8125F;
                 }
 
-                lightingHelper.setLightnessOffset(REDUCED_LIGHTNESS_OFFSET);
-
                 renderBlocks.setRenderBounds(temp_x_low, 0.1875F, temp_z_low, temp_x_high, 1.0F, temp_z_high);
                 renderBlock(block, x, y, z);
-
-                lightingHelper.clearLightnessOffset();
 
                 temp_x_low = x_low;
                 temp_x_high = x_high;
@@ -816,8 +800,6 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
                 temp_x_high = 0.8125F;
             }
 
-            lightingHelper.setLightnessOffset(REDUCED_LIGHTNESS_OFFSET);
-
             if (isBottom) {
                 renderBlocks.setRenderBounds(temp_x_low, 0.1875F, temp_z_low, temp_x_high, 1.0F, temp_z_high);
                 renderBlock(block, x, y, z);
@@ -825,8 +807,6 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
                 renderBlocks.setRenderBounds(temp_x_low, 0.0F, temp_z_low, temp_x_high, 0.8125F, temp_z_high);
                 renderBlock(block, x, y, z);
             }
-
-            lightingHelper.clearLightnessOffset();
 
             temp_x_low = x_low;
             temp_x_high = x_high;

@@ -67,8 +67,6 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
     /** Returns whether side is sloped face. */
     public boolean           isSideSloped;
 
-    protected float          REDUCED_LIGHTNESS_OFFSET = -0.05F;
-
     @Override
     public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderBlocks)
     {
@@ -76,28 +74,35 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
         GL11.glRotatef(90.0F, 0.0F, 1.0F, 0.0F);
         GL11.glTranslatef(-0.5F, -0.5F, -0.5F);
 
-        boolean baseIcon = block instanceof BlockBase;
+        Icon icon_XN = renderBlocks.getBlockIconFromSide(block, 0);
+        Icon icon_XP = renderBlocks.getBlockIconFromSide(block, 1);
+        Icon icon_YN = renderBlocks.getBlockIconFromSide(block, 2);
+        Icon icon_YP = renderBlocks.getBlockIconFromSide(block, 3);
+        Icon icon_ZN = renderBlocks.getBlockIconFromSide(block, 4);
+        Icon icon_ZP = renderBlocks.getBlockIconFromSide(block, 5);
 
-        Icon icon_XN = baseIcon ? block.getIcon(0, EventHandler.BLOCKICON_BASE_ID) : block.getBlockTextureFromSide(0);
-        Icon icon_XP = baseIcon ? block.getIcon(1, EventHandler.BLOCKICON_BASE_ID) : block.getBlockTextureFromSide(1);
-        Icon icon_YN = baseIcon ? block.getIcon(2, EventHandler.BLOCKICON_BASE_ID) : block.getBlockTextureFromSide(2);
-        Icon icon_YP = baseIcon ? block.getIcon(3, EventHandler.BLOCKICON_BASE_ID) : block.getBlockTextureFromSide(3);
-        Icon icon_ZN = baseIcon ? block.getIcon(4, EventHandler.BLOCKICON_BASE_ID) : block.getBlockTextureFromSide(4);
-        Icon icon_ZP = baseIcon ? block.getIcon(5, EventHandler.BLOCKICON_BASE_ID) : block.getBlockTextureFromSide(5);
+        if (block instanceof BlockBase) {
+            icon_XN = renderBlocks.getBlockIconFromSideAndMetadata(block, 0, EventHandler.BLOCKICON_BASE_ID);
+            icon_XP = renderBlocks.getBlockIconFromSideAndMetadata(block, 1, EventHandler.BLOCKICON_BASE_ID);
+            icon_YN = renderBlocks.getBlockIconFromSideAndMetadata(block, 2, EventHandler.BLOCKICON_BASE_ID);
+            icon_YP = renderBlocks.getBlockIconFromSideAndMetadata(block, 3, EventHandler.BLOCKICON_BASE_ID);
+            icon_ZN = renderBlocks.getBlockIconFromSideAndMetadata(block, 4, EventHandler.BLOCKICON_BASE_ID);
+            icon_ZP = renderBlocks.getBlockIconFromSideAndMetadata(block, 5, EventHandler.BLOCKICON_BASE_ID);
+        }
 
         tessellator.startDrawingQuads();
         tessellator.setNormal(0.0F, -1.0F, 0.0F);
-        renderBlocks.renderFaceYNeg(block, 0.0D, 0.0D, 0.0D, renderBlocks.getIconSafe(icon_XN));
+        renderBlocks.renderFaceYNeg(block, 0.0D, 0.0D, 0.0D, icon_XN);
         tessellator.setNormal(0.0F, 1.0F, 0.0F);
-        renderBlocks.renderFaceYPos(block, 0.0D, 0.0D, 0.0D, renderBlocks.getIconSafe(icon_XP));
+        renderBlocks.renderFaceYPos(block, 0.0D, 0.0D, 0.0D, icon_XP);
         tessellator.setNormal(0.0F, 0.0F, -1.0F);
-        renderBlocks.renderFaceZNeg(block, 0.0D, 0.0D, 0.0D, renderBlocks.getIconSafe(icon_YN));
+        renderBlocks.renderFaceZNeg(block, 0.0D, 0.0D, 0.0D, icon_YN);
         tessellator.setNormal(0.0F, 0.0F, 1.0F);
-        renderBlocks.renderFaceZPos(block, 0.0D, 0.0D, 0.0D, renderBlocks.getIconSafe(icon_YP));
+        renderBlocks.renderFaceZPos(block, 0.0D, 0.0D, 0.0D, icon_YP);
         tessellator.setNormal(-1.0F, 0.0F, 0.0F);
-        renderBlocks.renderFaceXNeg(block, 0.0D, 0.0D, 0.0D, renderBlocks.getIconSafe(icon_ZN));
+        renderBlocks.renderFaceXNeg(block, 0.0D, 0.0D, 0.0D, icon_ZN);
         tessellator.setNormal(1.0F, 0.0F, 0.0F);
-        renderBlocks.renderFaceXPos(block, 0.0D, 0.0D, 0.0D, renderBlocks.getIconSafe(icon_ZP));
+        renderBlocks.renderFaceXPos(block, 0.0D, 0.0D, 0.0D, icon_ZP);
         tessellator.draw();
 
         GL11.glTranslatef(0.5F, 0.5F, 0.5F);
@@ -533,7 +538,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
         /* Render side */
         if (shouldRenderBlock(block))
         {
-            if (BlockProperties.blockRotates(TE.worldObj, block, x, y, z)) {
+            if (BlockProperties.blockRotates(block)) {
                 setDirectionalRotation(side);
             }
 

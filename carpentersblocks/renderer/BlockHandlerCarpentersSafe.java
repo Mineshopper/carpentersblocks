@@ -357,15 +357,12 @@ public class BlockHandlerCarpentersSafe extends BlockHandlerBase {
                     disableAO = false;
                 }
                 break;
-            case BLOCKTYPE_DOOR:
-                lightingHelper.setLightnessOffset(REDUCED_LIGHTNESS_OFFSET);
             default:
                 if (shouldRenderBlock(block)) {
                     renderBlock(block, x, y, z);
                 }
         }
 
-        lightingHelper.clearLightnessOffset();
         suppressDyeColor = false;
         suppressOverlay = false;
         suppressPattern = false;

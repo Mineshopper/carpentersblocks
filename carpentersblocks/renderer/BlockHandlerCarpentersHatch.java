@@ -368,8 +368,6 @@ public class BlockHandlerCarpentersHatch extends BlockHandlerBase {
             float temp_z_low = z_low;
             float temp_z_high = z_high;
 
-            lightingHelper.setLightnessOffset(REDUCED_LIGHTNESS_OFFSET);
-
             if (path_on_x) {
 
                 temp_z_low += 0.0625F;
@@ -404,8 +402,6 @@ public class BlockHandlerCarpentersHatch extends BlockHandlerBase {
                 renderBlock(block, x, y, z);
 
             }
-
-            lightingHelper.clearLightnessOffset();
 
         }
 
@@ -611,12 +607,8 @@ public class BlockHandlerCarpentersHatch extends BlockHandlerBase {
 
             }
 
-            lightingHelper.setLightnessOffset(REDUCED_LIGHTNESS_OFFSET);
-
             renderBlocks.setRenderBounds(temp_x_low, temp_y_low, temp_z_low, temp_x_high, temp_y_high, temp_z_high);
             renderBlock(block, x, y, z);
-
-            lightingHelper.clearLightnessOffset();
 
             temp_x_low = x_low;
             temp_x_high = x_high;
