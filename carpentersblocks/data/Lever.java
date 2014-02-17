@@ -1,31 +1,32 @@
 package carpentersblocks.data;
 
 import net.minecraft.block.material.Material;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 
 public class Lever {
-
+    
     /**
      * 16-bit data components:
      *
      * [0000000]  [0]   [0]    [0]       [0]    [000]
      * Unused     Axis  Ready  Polarity  State  Facing
      */
-
+    
     public enum Axis
     {
         X,
         Z
     }
-
+    
     public final static byte POLARITY_POSITIVE = 0;
     public final static byte POLARITY_NEGATIVE = 1;
-
+    
     public final static byte STATE_OFF = 0;
     public final static byte STATE_ON  = 1;
-
+    
     /**
      * Returns facing.
      */
@@ -33,7 +34,7 @@ public class Lever {
     {
         return ForgeDirection.getOrientation(BlockProperties.getData(TE) & 0x7);
     }
-
+    
     /**
      * Sets facing.
      */
@@ -41,10 +42,10 @@ public class Lever {
     {
         int temp = BlockProperties.getData(TE) & 0xfff8;
         temp |= side;
-
+        
         BlockProperties.setData(TE, temp);
     }
-
+    
     /**
      * Returns state.
      */
@@ -53,7 +54,7 @@ public class Lever {
         int temp = BlockProperties.getData(TE) & 0x8;
         return temp >> 3;
     }
-
+    
     /**
      * Sets state.
      */
@@ -61,19 +62,21 @@ public class Lever {
     {
         int temp = BlockProperties.getData(TE) & 0xfff7;
         temp |= state << 3;
-
+        
+        World world = TE.getWorldObj();
+        
         if (
-                !TE.worldObj.isRemote &&
-                BlockProperties.getCoverBlock(TE, 6).blockMaterial != Material.cloth &&
+                !world.isRemote &&
+                BlockProperties.getCover(TE, 6).getMaterial() != Material.cloth &&
                 playSound &&
                 getState(TE) != state
                 ) {
-            TE.worldObj.playSoundEffect(TE.xCoord + 0.5D, TE.yCoord + 0.5D, TE.zCoord + 0.5D, "random.click", 0.3F, getState(TE) == STATE_ON ? 0.5F : 0.6F);
+            world.playSoundEffect(TE.xCoord + 0.5D, TE.yCoord + 0.5D, TE.zCoord + 0.5D, "random.click", 0.3F, getState(TE) == STATE_ON ? 0.5F : 0.6F);
         }
-
+        
         BlockProperties.setData(TE, temp);
     }
-
+    
     /**
      * Returns polarity.
      */
@@ -82,7 +85,7 @@ public class Lever {
         int temp = BlockProperties.getData(TE) & 0x10;
         return temp >> 4;
     }
-
+    
     /**
      * Sets polarity.
      */
@@ -90,10 +93,10 @@ public class Lever {
     {
         int temp = BlockProperties.getData(TE) & 0xffef;
         temp |= polarity << 4;
-
+        
         BlockProperties.setData(TE, temp);
     }
-
+    
     /**
      * Returns rotation axis.
      */
@@ -102,7 +105,7 @@ public class Lever {
         int temp = BlockProperties.getData(TE) & 0x40;
         return temp > 1 ? Axis.Z : Axis.X;
     }
-
+    
     /**
      * Sets rotation axis.
      */
@@ -110,10 +113,10 @@ public class Lever {
     {
         int temp = BlockProperties.getData(TE) & 0xffbf;
         temp |= axis.ordinal() << 6;
-
+        
         BlockProperties.setData(TE, temp);
     }
-
+    
     /**
      * Returns whether block is capable of handling logic functions.
      * This is implemented because for buttons and levers the SERVER
@@ -124,7 +127,7 @@ public class Lever {
     {
         return (BlockProperties.getData(TE) & 0x20) > 1;
     }
-
+    
     /**
      * Sets block as ready.
      */
@@ -132,8 +135,8 @@ public class Lever {
     {
         int temp = BlockProperties.getData(TE) & 0xffdf;
         temp |= 1 << 5;
-
+        
         BlockProperties.setData(TE, temp);
     }
-
+    
 }

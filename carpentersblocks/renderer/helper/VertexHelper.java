@@ -3,33 +3,33 @@ package carpentersblocks.renderer.helper;
 import net.minecraft.block.BlockGrass;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class VertexHelper {
-
+    
     public final static int TOP_LEFT     = 0;
     public final static int BOTTOM_LEFT  = 1;
     public final static int BOTTOM_RIGHT = 2;
     public final static int TOP_RIGHT    = 3;
-
+    
     public final static int SOUTHEAST = TOP_LEFT;
     public final static int NORTHEAST = BOTTOM_LEFT;
     public final static int NORTHWEST = BOTTOM_RIGHT;
     public final static int SOUTHWEST = TOP_RIGHT;
-
+    
     public final static int TOP_CENTER    = 4;
     public final static int BOTTOM_CENTER = 5;
     public final static int LEFT_CENTER   = 6;
     public final static int RIGHT_CENTER  = 7;
-
+    
     /**
      * Offset used for faces.
      */
     protected static double offset = 0.0D;
-
+    
     /**
      * Sets offset for drawing face.
      */
@@ -37,7 +37,7 @@ public class VertexHelper {
     {
         offset = render_offset;
     }
-
+    
     /**
      * Clears offset.
      */
@@ -45,25 +45,25 @@ public class VertexHelper {
     {
         offset = 0.0D;
     }
-
+    
     /**
      * Returns whether icon top adjusts with render height.
      * This will set the render helpers to translate the icon
      * down with yMax.
      */
-    public static boolean iconHasFloatingHeight(Icon icon)
+    public static boolean iconHasFloatingHeight(IIcon icon)
     {
         return icon == BlockGrass.getIconSideOverlay() ||
-                icon.getIconName().contains("overlay/overlay_") && icon.getIconName().endsWith("_side");
+               icon.getIconName().contains("overlay/overlay_") && icon.getIconName().endsWith("_side");
     }
-
+    
     /**
      * Applies brightness, color, and adds vertex through tessellator
      */
     public static void setupVertex(RenderBlocks renderBlocks, double x, double y, double z, double u, double v, int vertex)
     {
         Tessellator tessellator = Tessellator.instance;
-
+        
         if (renderBlocks.enableAO)
         {
             switch(vertex) {
@@ -101,8 +101,8 @@ public class VertexHelper {
                     break;
             }
         }
-
+        
         tessellator.addVertexWithUV(x, y, z, u, v);
     }
-
+    
 }

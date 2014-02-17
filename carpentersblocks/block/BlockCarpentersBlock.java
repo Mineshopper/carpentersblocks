@@ -11,23 +11,21 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import carpentersblocks.CarpentersBlocks;
+import carpentersblocks.data.Barrier;
+import carpentersblocks.data.Gate;
 import carpentersblocks.data.Slab;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.handler.EventHandler;
 import carpentersblocks.util.registry.BlockRegistry;
 
-public class BlockCarpentersBlock extends BlockBase {
-
-    public BlockCarpentersBlock(int blockID)
+public class BlockCarpentersBlock extends BlockCoverable {
+    
+    public BlockCarpentersBlock(Material material)
     {
-        super(blockID, Material.wood);
-        setHardness(0.2F);
-        setUnlocalizedName("blockCarpentersBlock");
-        setCreativeTab(CarpentersBlocks.tabCarpentersBlocks);
-        setTextureName("carpentersblocks:general/quartered_frame");
+        super(material);
     }
 
     @Override
@@ -37,16 +35,16 @@ public class BlockCarpentersBlock extends BlockBase {
     protected boolean onHammerLeftClick(TEBase TE, EntityPlayer entityPlayer)
     {
         int data = BlockProperties.getData(TE);
-
+        
         if (++data > Slab.SLAB_Z_POS) {
             data = Slab.BLOCK_FULL;
         }
-
+        
         BlockProperties.setData(TE, data);
-
+        
         return true;
     }
-
+    
     @Override
     /**
      * Alternate between full 1m cube and slab.
@@ -54,7 +52,7 @@ public class BlockCarpentersBlock extends BlockBase {
     protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer)
     {
         int data = BlockProperties.getData(TE);
-
+        
         if (data == Slab.BLOCK_FULL) {
             switch (EventHandler.eventFace)
             {
@@ -80,22 +78,22 @@ public class BlockCarpentersBlock extends BlockBase {
         } else {
             data = Slab.BLOCK_FULL;
         }
-
+        
         BlockProperties.setData(TE, data);
-
+        
         return true;
     }
-
+    
     @Override
     /**
      * Updates the blocks bounds based on its current state. Args: world, x, y, z
      */
     public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
     {
-        TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
-
+        TEBase TE = (TEBase) world.getTileEntity(x, y, z);
+        
         int data = BlockProperties.getData(TE);
-
+        
         float[][] bounds = {
                 { 0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F }, // FULL BLOCK
                 { 0.0F, 0.0F, 0.0F, 0.5F, 1.0F, 1.0F }, // SLAB WEST
@@ -105,10 +103,10 @@ public class BlockCarpentersBlock extends BlockBase {
                 { 0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 0.5F }, // SLAB NORTH
                 { 0.0F, 0.0F, 0.5F, 1.0F, 1.0F, 1.0F }  // SLAB SOUTH
         };
-
+        
         setBlockBounds(bounds[data][0], bounds[data][1], bounds[data][2], bounds[data][3], bounds[data][4], bounds[data][5]);
     }
-
+    
     @Override
     /**
      * Adds all intersecting collision boxes to a list. (Be sure to only add boxes to the list if they intersect the
@@ -119,79 +117,75 @@ public class BlockCarpentersBlock extends BlockBase {
         setBlockBoundsBasedOnState(world, x, y, z);
         super.addCollisionBoxesToList(world, x, y, z, axisAlignedBB, list, entity);
     }
-
+    
     @Override
     /**
      * Called when the block is placed in the world.
      */
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack itemStack)
     {
-        TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
-
+        TEBase TE = (TEBase) world.getTileEntity(x, y, z);
+        
         int data = Slab.BLOCK_FULL;
 
-        // If shift key is down, skip auto-orientation
-        if (!entityLiving.isSneaking())
-        {
-            /*
-             * Match block type with adjacent type if possible
-             */
-            TEBase TE_YN = world.getBlockId(x, y - 1, z) == blockID ? (TEBase)world.getBlockTileEntity(x, y - 1, z) : null;
-            TEBase TE_YP = world.getBlockId(x, y + 1, z) == blockID ? (TEBase)world.getBlockTileEntity(x, y + 1, z) : null;
-            TEBase TE_XN = world.getBlockId(x - 1, y, z) == blockID ? (TEBase)world.getBlockTileEntity(x - 1, y, z) : null;
-            TEBase TE_XP = world.getBlockId(x + 1, y, z) == blockID ? (TEBase)world.getBlockTileEntity(x + 1, y, z) : null;
-            TEBase TE_ZN = world.getBlockId(x, y, z - 1) == blockID ? (TEBase)world.getBlockTileEntity(x, y, z - 1) : null;
-            TEBase TE_ZP = world.getBlockId(x, y, z + 1) == blockID ? (TEBase)world.getBlockTileEntity(x, y, z + 1) : null;
-
-            if (TE_YN != null) {
-                data = BlockProperties.getData(TE_YN);
-            } else if (TE_YP != null) {
-                data = BlockProperties.getData(TE_YP);
-            } else if (TE_XN != null) {
-                data = BlockProperties.getData(TE_XN);
-            } else if (TE_XP != null) {
-                data = BlockProperties.getData(TE_XP);
-            } else if (TE_ZN != null) {
-                data = BlockProperties.getData(TE_ZN);
-            } else if (TE_ZP != null) {
-                data = BlockProperties.getData(TE_ZP);
+        if (!entityLiving.isSneaking()) {
+            
+            /* Match block type with adjacent type if possible. */
+            
+            TEBase[] TE_list = getAdjacentTileEntities(world, x, y, z);
+            
+            for (TEBase TE_current : TE_list) {
+                if (TE_current != null) {
+                    if (TE_current.getBlockType().equals(this)) {
+                        data = BlockProperties.getData(TE_current);
+                    }
+                }
             }
+            
         }
-
+        
         BlockProperties.setData(TE, data);
-
+        
         super.onBlockPlacedBy(world, x, y, z, entityLiving, itemStack);
     }
-
+    
     @Override
     /**
      * Return true if the block is a normal, solid cube.  This
      * determines indirect power state, entity ejection from blocks, and a few
      * others.
      */
-    public boolean isBlockNormalCube(World world, int x, int y, int z)
+    public boolean isBlockNormalCube()
     {
-        if (isValid(world, x, y, z)) {
+        /*
+        if (getTileEntity(world, x, y, z)) {
             TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
             return BlockProperties.getData(TE) == Slab.BLOCK_FULL;
         }
-
+        */
+        
+        /*
+         * Need to implement this for the full version of Carpenter's Block
+         * THen do a partial implementation with pieces that can shrink from any direction.
+         */
+        
         return false;
     }
-
+    
     @Override
     /**
      * Checks if the block is a solid face on the given side, used by placement logic.
      */
-    public boolean isBlockSolidOnSide(World world, int x, int y, int z, ForgeDirection side)
+    public boolean isSideSolid(IBlockAccess world, int x, int y, int z, ForgeDirection side)
     {
-        if (isValid(world, x, y, z)) {
-
+        TEBase TE = getTileEntity(world, x, y, z);
+        
+        if (TE != null) {
+            
             if (isBlockSolid(world, x, y, z)) {
 
-                TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
                 int data = BlockProperties.getData(TE);
-
+                
                 if (data == Slab.BLOCK_FULL) {
                     return true;
                 } else if (data == Slab.SLAB_Y_NEG && side == ForgeDirection.DOWN) {
@@ -207,14 +201,14 @@ public class BlockCarpentersBlock extends BlockBase {
                 } else if (data == Slab.SLAB_X_POS && side == ForgeDirection.EAST) {
                     return true;
                 }
-
+                
             }
-
+            
         }
-
+        
         return false;
     }
-
+    
     @Override
     /**
      * Compares dimensions and coordinates of two opposite
@@ -224,22 +218,21 @@ public class BlockCarpentersBlock extends BlockBase {
     {
         if (TE_adj.getBlockType() == this)
         {
-            Block block_src = Block.blocksList[TE_src.worldObj.getBlockId(TE_src.xCoord, TE_src.yCoord, TE_src.zCoord)];
-
-            setBlockBoundsBasedOnState(TE_src.worldObj, TE_src.xCoord, TE_src.yCoord, TE_src.zCoord);
-
-            double[] bounds_src =
-                {
+            Block block_src = TE_src.getBlockType();
+            
+            setBlockBoundsBasedOnState(TE_src.getWorldObj(), TE_src.xCoord, TE_src.yCoord, TE_src.zCoord);
+            
+            double[] bounds_src = {
                     block_src.getBlockBoundsMinX(),
                     block_src.getBlockBoundsMinY(),
                     block_src.getBlockBoundsMinZ(),
                     block_src.getBlockBoundsMaxX(),
                     block_src.getBlockBoundsMaxY(),
                     block_src.getBlockBoundsMaxZ()
-                };
-
-            setBlockBoundsBasedOnState(TE_adj.worldObj, TE_adj.xCoord, TE_adj.yCoord, TE_adj.zCoord);
-
+            };
+            
+            setBlockBoundsBasedOnState(TE_adj.getWorldObj(), TE_adj.xCoord, TE_adj.yCoord, TE_adj.zCoord);
+            
             /*
              * Check whether faces meet and their dimensions match.
              */
@@ -297,10 +290,10 @@ public class BlockCarpentersBlock extends BlockBase {
                     return false;
             }
         }
-
+        
         return super.shareFaces(TE_adj, TE_src, side_adj, side_src);
     }
-
+    
     @Override
     /**
      * Returns whether block can support cover on side.
@@ -309,7 +302,7 @@ public class BlockCarpentersBlock extends BlockBase {
     {
         return true;
     }
-
+    
     @Override
     /**
      * The type of render function that is called for this block
@@ -318,5 +311,5 @@ public class BlockCarpentersBlock extends BlockBase {
     {
         return BlockRegistry.carpentersBlockRenderID;
     }
-
+    
 }

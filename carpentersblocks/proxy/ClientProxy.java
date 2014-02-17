@@ -1,6 +1,7 @@
 package carpentersblocks.proxy;
 
 import net.minecraftforge.common.MinecraftForge;
+import carpentersblocks.CarpentersBlocks;
 import carpentersblocks.renderer.BlockHandlerCarpentersBarrier;
 import carpentersblocks.renderer.BlockHandlerCarpentersBed;
 import carpentersblocks.renderer.BlockHandlerCarpentersBlock;
@@ -36,95 +37,95 @@ public class ClientProxy extends CommonProxy {
         MinecraftForge.EVENT_BUS.register(new IconRegistry());
         LanguageHandler.init(event);
         TileEntityHandler.registerTileEntityRenderers();
-
+        
         if (BlockRegistry.enableBarrier) {
             BlockRegistry.carpentersBarrierRenderID = RenderingRegistry.getNextAvailableRenderId();
             RenderingRegistry.registerBlockHandler(BlockRegistry.carpentersBarrierRenderID, new BlockHandlerCarpentersBarrier());
         }
-
+        
         if (BlockRegistry.enableButton) {
             BlockRegistry.carpentersButtonRenderID = RenderingRegistry.getNextAvailableRenderId();
             RenderingRegistry.registerBlockHandler(BlockRegistry.carpentersButtonRenderID, new BlockHandlerCarpentersButton());
         }
-
+        
         if (BlockRegistry.enableDaylightSensor) {
             BlockRegistry.carpentersDaylightSensorRenderID = RenderingRegistry.getNextAvailableRenderId();
             RenderingRegistry.registerBlockHandler(BlockRegistry.carpentersDaylightSensorRenderID, new BlockHandlerCarpentersDaylightSensor());
         }
-
+        
         if (BlockRegistry.enableGate) {
             BlockRegistry.carpentersGateRenderID = RenderingRegistry.getNextAvailableRenderId();
             RenderingRegistry.registerBlockHandler(BlockRegistry.carpentersGateRenderID, new BlockHandlerCarpentersGate());
         }
-
+        
         if (BlockRegistry.enableLever) {
             BlockRegistry.carpentersLeverRenderID = RenderingRegistry.getNextAvailableRenderId();
             RenderingRegistry.registerBlockHandler(BlockRegistry.carpentersLeverRenderID, new BlockHandlerCarpentersLever());
         }
-
+        
         if (BlockRegistry.enablePressurePlate) {
             BlockRegistry.carpentersPressurePlateRenderID = RenderingRegistry.getNextAvailableRenderId();
             RenderingRegistry.registerBlockHandler(BlockRegistry.carpentersPressurePlateRenderID, new BlockHandlerCarpentersPressurePlate());
         }
-
+        
         if (BlockRegistry.enableSlope) {
             BlockRegistry.carpentersSlopeRenderID = RenderingRegistry.getNextAvailableRenderId();
             RenderingRegistry.registerBlockHandler(BlockRegistry.carpentersSlopeRenderID, new BlockHandlerCarpentersSlope());
         }
-
+        
         if (BlockRegistry.enableStairs) {
             BlockRegistry.carpentersStairsRenderID = RenderingRegistry.getNextAvailableRenderId();
             RenderingRegistry.registerBlockHandler(BlockRegistry.carpentersStairsRenderID, new BlockHandlerCarpentersStairs());
         }
-
+        
         if (BlockRegistry.enableHatch) {
             BlockRegistry.carpentersHatchRenderID = RenderingRegistry.getNextAvailableRenderId();
             RenderingRegistry.registerBlockHandler(BlockRegistry.carpentersHatchRenderID, new BlockHandlerCarpentersHatch());
         }
-
+        
         if (BlockRegistry.enableDoor) {
             BlockRegistry.carpentersDoorRenderID = RenderingRegistry.getNextAvailableRenderId();
             RenderingRegistry.registerBlockHandler(BlockRegistry.carpentersDoorRenderID, new BlockHandlerCarpentersDoor());
         }
-
+        
         if (BlockRegistry.enableBed) {
             BlockRegistry.carpentersBedRenderID = RenderingRegistry.getNextAvailableRenderId();
             RenderingRegistry.registerBlockHandler(BlockRegistry.carpentersBedRenderID, new BlockHandlerCarpentersBed());
         }
-
+        
         if (BlockRegistry.enableLadder) {
             BlockRegistry.carpentersLadderRenderID = RenderingRegistry.getNextAvailableRenderId();
             RenderingRegistry.registerBlockHandler(BlockRegistry.carpentersLadderRenderID, new BlockHandlerCarpentersLadder());
         }
-
+        
         if (BlockRegistry.enableCollapsibleBlock) {
             BlockRegistry.carpentersCollapsibleBlockRenderID = RenderingRegistry.getNextAvailableRenderId();
             RenderingRegistry.registerBlockHandler(BlockRegistry.carpentersCollapsibleBlockRenderID, new BlockHandlerCarpentersCollapsibleBlock());
         }
-
+        
         if (BlockRegistry.enableTorch) {
             BlockRegistry.carpentersTorchRenderID = RenderingRegistry.getNextAvailableRenderId();
             RenderingRegistry.registerBlockHandler(BlockRegistry.carpentersTorchRenderID, new BlockHandlerCarpentersTorch());
         }
-
+        
         if (BlockRegistry.enableSafe) {
             BlockRegistry.carpentersSafeRenderID = RenderingRegistry.getNextAvailableRenderId();
             RenderingRegistry.registerBlockHandler(BlockRegistry.carpentersSafeRenderID, new BlockHandlerCarpentersSafe());
         }
-
+        
         if (BlockRegistry.enableBlock) {
             BlockRegistry.carpentersBlockRenderID = RenderingRegistry.getNextAvailableRenderId();
             RenderingRegistry.registerBlockHandler(BlockRegistry.carpentersBlockRenderID, new BlockHandlerCarpentersBlock());
         }
-
+        
         if (BlockRegistry.enableFlowerPot) {
             BlockRegistry.carpentersFlowerPotRenderID = RenderingRegistry.getNextAvailableRenderId();
             RenderingRegistry.registerBlockHandler(BlockRegistry.carpentersFlowerPotRenderID, new BlockHandlerCarpentersFlowerPot());
         }
-
+        
         if (FeatureRegistry.enableOptifineIntegration && FMLClientHandler.instance().hasOptifine()) {
             FeatureRegistry.enableOptifineIntegration = OptifineHandler.init();
         }
     }
-
+    
 }

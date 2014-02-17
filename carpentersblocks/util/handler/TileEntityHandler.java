@@ -13,20 +13,20 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class TileEntityHandler {
-
+    
     /**
      * Registers tile entities.
      */
     public static void registerTileEntities()
     {
-        GameRegistry.registerTileEntity(                    TEBase.class,     "TileEntityCarpentersSlope");
-        GameRegistry.registerTileEntity(TECarpentersDaylightSensor.class,       "TileEntityCarpentersExt");
-        GameRegistry.registerTileEntity(         TECarpentersTorch.class,     "TileEntityCarpentersTorch");
-        GameRegistry.registerTileEntity(          TECarpentersSafe.class,      "TileEntityCarpentersSafe");
-        GameRegistry.registerTileEntity(           TECarpentersBed.class,       "TileEntityCarpentersBed");
-        GameRegistry.registerTileEntity(     TECarpentersFlowerPot.class, "TileEntityCarpentersFlowerPot");
+        GameRegistry.registerTileEntity(                    TEBase.class,          "TileEntityCarpentersBlock");
+        GameRegistry.registerTileEntity(TECarpentersDaylightSensor.class, "TileEntityCarpentersDaylightSensor");
+        GameRegistry.registerTileEntity(         TECarpentersTorch.class,          "TileEntityCarpentersTorch");
+        GameRegistry.registerTileEntity(          TECarpentersSafe.class,           "TileEntityCarpentersSafe");
+        GameRegistry.registerTileEntity(           TECarpentersBed.class,            "TileEntityCarpentersBed");
+        GameRegistry.registerTileEntity(     TECarpentersFlowerPot.class,      "TileEntityCarpentersFlowerPot");
     }
-
+    
     @SideOnly(Side.CLIENT)
     /**
      * Initializes tile entity renderers.
@@ -35,5 +35,5 @@ public class TileEntityHandler {
     {
         ClientRegistry.bindTileEntitySpecialRenderer(TECarpentersBed.class, new TERendererCarpentersBed());
     }
-
+    
 }

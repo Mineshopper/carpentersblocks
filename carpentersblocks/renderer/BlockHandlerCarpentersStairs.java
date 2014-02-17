@@ -12,34 +12,34 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class BlockHandlerCarpentersStairs extends BlockHandlerBase {
-
+    
     @Override
     public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderBlocks)
     {
         renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 0.5D, 1.0D);
         super.renderInventoryBlock(block, metadata, modelID, renderBlocks);
-
+        
         renderBlocks.setRenderBounds(0.5D, 0.5D, 0.0D, 1.0D, 1.0D, 1.0D);
         super.renderInventoryBlock(block, metadata, modelID, renderBlocks);
     }
-
+    
     @Override
     /**
      * Renders stairs at the given coordinates
      */
     protected boolean renderCarpentersBlock(int x, int y, int z)
     {
-        Block block = BlockProperties.getCoverBlock(TE, 6);
-
+        Block block = BlockProperties.getCover(TE, 6);
+        
         Stairs stairs = Stairs.stairsList[BlockProperties.getData(TE)];
         StairsUtil stairsUtil = new StairsUtil();
-
+        
         BlockCarpentersStairs blockRef = (BlockCarpentersStairs) BlockRegistry.blockCarpentersStairs;
-
+        
         for (int box = 0; box < 3; ++box)
         {
             float[] bounds = stairsUtil.genBounds(box, stairs);
-
+            
             if (bounds != null)
             {
                 blockRef.setBlockBounds(bounds[0], bounds[1], bounds[2], bounds[3], bounds[4], bounds[5]);
@@ -47,10 +47,10 @@ public class BlockHandlerCarpentersStairs extends BlockHandlerBase {
                 renderBlock(block, x, y, z);
             }
         }
-
+        
         return true;
     }
-
+    
     @Override
     /**
      * Renders side covers (stair specific).
@@ -58,27 +58,27 @@ public class BlockHandlerCarpentersStairs extends BlockHandlerBase {
     protected boolean renderSideBlocks(int x, int y, int z)
     {
         renderBlocks.renderAllFaces = true;
-
+        
         Stairs stairs = Stairs.stairsList[BlockProperties.getData(TE)];
         StairsUtil stairsUtil = new StairsUtil();
-
+        
         for (int box = 0; box < 3; ++box)
         {
             float[] bounds = stairsUtil.genBounds(box, stairs);
-
+            
             if (bounds != null)
             {
                 for (int side = 0; side < 6; ++side)
                 {
-                    Block block = BlockProperties.getCoverBlock(TE, side);
-
+                    Block block = BlockProperties.getCover(TE, side);
+                    
                     coverRendering = side;
-
+                    
                     if (BlockProperties.hasCover(TE, side) && (shouldRenderBlock(block)  || shouldRenderPattern()))
                     {
                         renderBlocks.setRenderBounds(bounds[0], bounds[1], bounds[2], bounds[3], bounds[4], bounds[5]);
                         int[] renderOffset = getSideCoverRenderBounds(x, y, z, side);
-
+                        
                         if (clipSideCoverBoundsBasedOnState(stairs.stairsID, box, side)) {
                             renderBlock(block, renderOffset[0], renderOffset[1], renderOffset[2]);
                         }
@@ -86,19 +86,19 @@ public class BlockHandlerCarpentersStairs extends BlockHandlerBase {
                 }
             }
         }
-
+        
         renderBlocks.renderAllFaces = false;
         coverRendering = 6;
         return true;
     }
-
+    
     /**
      * Alters side cover render bounds to prevent it from intersecting the block mask.
      */
     private boolean clipSideCoverBoundsBasedOnState(int data, int box, int side)
     {
         ++box;
-
+        
         switch (data) {
             case Stairs.ID_NORMAL_POS_N:
                 switch (box) {
@@ -597,8 +597,8 @@ public class BlockHandlerCarpentersStairs extends BlockHandlerBase {
                 }
                 break;
         }
-
+        
         return true;
     }
-
+    
 }

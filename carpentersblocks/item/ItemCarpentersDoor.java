@@ -1,6 +1,7 @@
 package carpentersblocks.item;
 
-import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.block.Block;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -15,22 +16,20 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemCarpentersDoor extends Item {
-
-    public ItemCarpentersDoor(int itemID)
+    
+    public ItemCarpentersDoor()
     {
-        super(itemID);
-        maxStackSize = 64;
-        setUnlocalizedName("itemCarpentersDoor");
-        setCreativeTab(CarpentersBlocks.tabCarpentersBlocks);
+        setMaxStackSize(64);
+        setCreativeTab(CarpentersBlocks.creativeTab);
     }
-
+    
     @SideOnly(Side.CLIENT)
     @Override
-    public void registerIcons(IconRegister iconRegister)
+    public void registerIcons(IIconRegister iconRegister)
     {
         itemIcon = iconRegister.registerIcon("carpentersblocks:door");
     }
-
+    
     @Override
     /**
      * Callback for item usage. If the item does something special on right clicking, it will have one of these. Return
@@ -39,38 +38,38 @@ public class ItemCarpentersDoor extends Item {
     public boolean onItemUse(ItemStack itemStack, EntityPlayer entityPlayer, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
     {
         if (side == 1) {
-
+            
             ++y;
-
+            
             if (
-                    y < 255                                                                      &&
-                    entityPlayer.canPlayerEdit(x, y, z, side, itemStack)                         &&
-                    entityPlayer.canPlayerEdit(x, y + 1, z, side, itemStack)                     &&
-                    world.isAirBlock(x, y, z)                                                    &&
-                    world.isAirBlock(x, y + 1, z)                                                &&
-                    world.doesBlockHaveSolidTopSurface(x, y - 1, z)                              &&
-                    world.setBlock(x, y, z, BlockRegistry.blockCarpentersDoor.blockID, 0, 4)     &&
-                    world.setBlock(x, y + 1, z, BlockRegistry.blockCarpentersDoor.blockID, 0, 4)
+                    y < 255                                                              &&
+                    entityPlayer.canPlayerEdit(x, y, z, side, itemStack)                 &&
+                    entityPlayer.canPlayerEdit(x, y + 1, z, side, itemStack)             &&
+                    world.isAirBlock(x, y, z)                                            &&
+                    world.isAirBlock(x, y + 1, z)                                        &&
+                    world.doesBlockHaveSolidTopSurface(world, x, y - 1, z)               &&
+                    world.setBlock(x, y, z, BlockRegistry.blockCarpentersDoor, 0, 4)     &&
+                    world.setBlock(x, y + 1, z, BlockRegistry.blockCarpentersDoor, 0, 4)
                     )
             {
                 int facing = MathHelper.floor_double((entityPlayer.rotationYaw + 180.0F) * 4.0F / 360.0F - 0.5D) & 3;
-
+                
                 BlockProperties.playBlockSound(world, BlockRegistry.blockCarpentersDoor, x, y, z);
-
+                
                 /* Create bottom door piece. */
-
-                TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
+                
+                TEBase TE = (TEBase) world.getTileEntity(x, y, z);
                 Door.setFacing(TE, facing);
-                Door.setHingeSide(TE, getHingePoint(TE, BlockRegistry.blockCarpentersDoorID));
+                Door.setHingeSide(TE, getHingePoint(TE, BlockRegistry.blockCarpentersDoor));
                 Door.setPiece(TE, Door.PIECE_BOTTOM);
-
+                
                 /* Match door type and rigidity with adjacent type if possible. */
-
-                TEBase TE_XN = world.getBlockId(x - 1, y, z) == BlockRegistry.blockCarpentersDoor.blockID ? (TEBase) world.getBlockTileEntity(x - 1, y, z) : null;
-                TEBase TE_XP = world.getBlockId(x + 1, y, z) == BlockRegistry.blockCarpentersDoor.blockID ? (TEBase) world.getBlockTileEntity(x + 1, y, z) : null;
-                TEBase TE_ZN = world.getBlockId(x, y, z - 1) == BlockRegistry.blockCarpentersDoor.blockID ? (TEBase) world.getBlockTileEntity(x, y, z - 1) : null;
-                TEBase TE_ZP = world.getBlockId(x, y, z + 1) == BlockRegistry.blockCarpentersDoor.blockID ? (TEBase) world.getBlockTileEntity(x, y, z + 1) : null;
-
+                
+                TEBase TE_XN = world.getBlock(x - 1, y, z).equals(BlockRegistry.blockCarpentersDoor) ? (TEBase) world.getTileEntity(x - 1, y, z) : null;
+                TEBase TE_XP = world.getBlock(x + 1, y, z).equals(BlockRegistry.blockCarpentersDoor) ? (TEBase) world.getTileEntity(x + 1, y, z) : null;
+                TEBase TE_ZN = world.getBlock(x, y, z - 1).equals(BlockRegistry.blockCarpentersDoor) ? (TEBase) world.getTileEntity(x, y, z - 1) : null;
+                TEBase TE_ZP = world.getBlock(x, y, z + 1).equals(BlockRegistry.blockCarpentersDoor) ? (TEBase) world.getTileEntity(x, y, z + 1) : null;
+                
                 int type = 0;
                 if (TE_XN != null) {
                     Door.setType(TE, Door.getType(TE_XN));
@@ -89,82 +88,84 @@ public class ItemCarpentersDoor extends Item {
                     Door.setRigidity(TE, Door.getRigidity(TE_ZP));
                     type = Door.getType(TE_ZP);
                 }
-
+                
                 /* Create top door piece. */
-
-                TEBase TE_YP = (TEBase) world.getBlockTileEntity(x, y + 1, z);
+                
+                TEBase TE_YP = (TEBase) world.getTileEntity(x, y + 1, z);
                 Door.setFacing(TE_YP, facing);
                 Door.setType(TE_YP, type);
                 Door.setHingeSide(TE_YP, Door.getHinge(TE));
                 Door.setPiece(TE_YP, Door.PIECE_TOP);
                 Door.setRigidity(TE_YP, Door.getRigidity(TE));
-
+                
                 --itemStack.stackSize;
                 return true;
             }
-
+            
         }
-
+        
         return false;
     }
-
+    
     /**
      * Returns a hinge point allowing double-doors if a matching neighboring door is found.
      * It returns the default hinge point if no neighboring doors are found.
      */
-    private int getHingePoint(TEBase TE, int blockID)
+    private int getHingePoint(TEBase TE, Block block)
     {
         int facing = Door.getFacing(TE);
         Door.getHinge(TE);
         Door.getState(TE);
         int piece = Door.getPiece(TE);
-
-        TEBase TE_ZN = TE.worldObj.getBlockId(TE.xCoord, TE.yCoord, TE.zCoord - 1) == blockID ? (TEBase) TE.worldObj.getBlockTileEntity(TE.xCoord, TE.yCoord, TE.zCoord - 1) : null;
-        TEBase TE_ZP = TE.worldObj.getBlockId(TE.xCoord, TE.yCoord, TE.zCoord + 1) == blockID ? (TEBase) TE.worldObj.getBlockTileEntity(TE.xCoord, TE.yCoord, TE.zCoord + 1) : null;
-        TEBase TE_XN = TE.worldObj.getBlockId(TE.xCoord - 1, TE.yCoord, TE.zCoord) == blockID ? (TEBase) TE.worldObj.getBlockTileEntity(TE.xCoord - 1, TE.yCoord, TE.zCoord) : null;
-        TEBase TE_XP = TE.worldObj.getBlockId(TE.xCoord + 1, TE.yCoord, TE.zCoord) == blockID ? (TEBase) TE.worldObj.getBlockTileEntity(TE.xCoord + 1, TE.yCoord, TE.zCoord) : null;
-
+        
+        World world = TE.getWorldObj();
+        
+        TEBase TE_ZN = world.getBlock(TE.xCoord, TE.yCoord, TE.zCoord - 1).equals(block) ? (TEBase) world.getTileEntity(TE.xCoord, TE.yCoord, TE.zCoord - 1) : null;
+        TEBase TE_ZP = world.getBlock(TE.xCoord, TE.yCoord, TE.zCoord + 1).equals(block) ? (TEBase) world.getTileEntity(TE.xCoord, TE.yCoord, TE.zCoord + 1) : null;
+        TEBase TE_XN = world.getBlock(TE.xCoord - 1, TE.yCoord, TE.zCoord).equals(block) ? (TEBase) world.getTileEntity(TE.xCoord - 1, TE.yCoord, TE.zCoord) : null;
+        TEBase TE_XP = world.getBlock(TE.xCoord + 1, TE.yCoord, TE.zCoord).equals(block) ? (TEBase) world.getTileEntity(TE.xCoord + 1, TE.yCoord, TE.zCoord) : null;
+        
         switch (facing)
         {
             case Door.FACING_XN:
-
+                
                 if (TE_ZP != null) {
                     if (piece == Door.getPiece(TE_ZP) && facing == Door.getFacing(TE_ZP) && Door.getHinge(TE_ZP) == Door.HINGE_LEFT) {
                         return Door.HINGE_RIGHT;
                     }
                 }
-
+                
                 break;
             case Door.FACING_XP:
-
+                
                 if (TE_ZN != null) {
                     if (piece == Door.getPiece(TE_ZN) && facing == Door.getFacing(TE_ZN) && Door.getHinge(TE_ZN) == Door.HINGE_LEFT) {
                         return Door.HINGE_RIGHT;
                     }
                 }
-
+                
                 break;
             case Door.FACING_ZN:
-
+                
                 if (TE_XN != null) {
                     if (piece == Door.getPiece(TE_XN) && facing == Door.getFacing(TE_XN) && Door.getHinge(TE_XN) == Door.HINGE_LEFT) {
                         return Door.HINGE_RIGHT;
                     }
                 }
-
+                
                 break;
             case Door.FACING_ZP:
-
+                
                 if (TE_XP != null) {
                     if (piece == Door.getPiece(TE_XP) && facing == Door.getFacing(TE_XP) && Door.getHinge(TE_XP) == Door.HINGE_LEFT) {
                         return Door.HINGE_RIGHT;
                     }
                 }
-
+                
                 break;
         }
-
+        
         return Door.HINGE_LEFT;
     }
-
+    
 }

@@ -1,11 +1,11 @@
 package carpentersblocks.util.slope;
 
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import carpentersblocks.data.Slope;
 import carpentersblocks.util.registry.FeatureRegistry;
 
 public class SlopeUtil {
-
+    
     /**
      * Return number of boxes that need to be constructed for slope per pass.
      */
@@ -23,7 +23,7 @@ public class SlopeUtil {
                 return FeatureRegistry.slopeSmoothness;
         }
     }
-
+    
     /**
      * Return number of passes required for slope box generation.
      */
@@ -49,24 +49,24 @@ public class SlopeUtil {
                 return 1;
         }
     }
-
+    
     /**
      * Will return slope boundaries for all slopes
      */
     public float[] genBounds(Slope slope, int slice, int precision, int pass)
     {
         ++pass;
-
+        
         // For oblique exterior corners
         float zeroPassOffset = (float) (pass - 1) / getNumPasses(slope);
         float onePassOffset = (float) pass / getNumPasses(slope);
-
+        
         // Includes 0.0F -> 0.99_F
         float zeroOffset = (float) slice / (float) precision;
-
+        
         // Includes 0.01_F -> 1.0F
         float oneOffset = (float) (slice + 1) / (float) precision;
-
+        
         switch (slope.slopeID)
         {
             case Slope.ID_WEDGE_NW:
@@ -266,9 +266,9 @@ public class SlopeUtil {
             case Slope.ID_PRISM_NEG:
                 return new float[] { zeroOffset * 0.5F, 1.0F - oneOffset * 0.5F, zeroOffset * 0.5F, 1.0F - zeroOffset * 0.5F, 1.0F, 1.0F - zeroOffset * 0.5F };
             default: {
-
+                
                 boolean renderPrism = getNumPasses(slope) / precision < 2.0F;
-
+                
                 switch (slope.slopeID) {
                     case Slope.ID_PRISM_WEDGE_POS_N:
                         switch (pass) {
@@ -311,7 +311,7 @@ public class SlopeUtil {
                         }
                         break;
                     default:
-
+                        
                         switch (pass) {
                             case 1:
                                 if (!slope.equals(Slope.PRISM_4P_POS)) {
@@ -341,11 +341,11 @@ public class SlopeUtil {
                                 break;
                         }
                 }
-
+                
             }
         }
-
+        
         return null;
     }
-
+    
 }

@@ -4,14 +4,14 @@ import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 
 public class FlowerPot {
-
+    
     /**
      * 16-bit data components:
      *
      * [00000000]  [00000000]
      * Unused      Design
      */
-
+    
     /**
      * Returns design.
      */
@@ -19,7 +19,7 @@ public class FlowerPot {
     {
         return BlockProperties.getData(TE);
     }
-
+    
     /**
      * Sets design.
      */
@@ -27,5 +27,5 @@ public class FlowerPot {
     {
         BlockProperties.setData(TE, design);
     }
-
+    
 }

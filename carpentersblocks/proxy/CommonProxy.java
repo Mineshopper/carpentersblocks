@@ -1,6 +1,8 @@
 package carpentersblocks.proxy;
 
 import net.minecraftforge.common.MinecraftForge;
+import carpentersblocks.CarpentersBlocks;
+import carpentersblocks.network.ServerPacketHandler;
 import carpentersblocks.util.bed.BedDesignHandler;
 import carpentersblocks.util.flowerpot.FlowerPotDesignHandler;
 import carpentersblocks.util.flowerpot.FlowerPotHandler;
@@ -19,27 +21,28 @@ public class CommonProxy {
         if (FeatureRegistry.enableExtendedPlantSupport) {
             FeatureRegistry.enableExtendedPlantSupport = ExtendedPlantHandler.init();
         }
-
+        
         if (BlockRegistry.enableFlowerPot) {
             FlowerPotHandler.initPlantProfiles();
             FlowerPotDesignHandler.init(event);
         }
-
+        
         if (FeatureRegistry.enableOverlays) {
             OverlayHandler.init();
         }
-
+        
         if (FeatureRegistry.enablePatterns) {
             PatternHandler.init(event);
         }
-
+        
         if (BlockRegistry.enableBed) {
             BedDesignHandler.init(event);
         }
-
+        
         MinecraftForge.EVENT_BUS.register(new EventHandler());
+        CarpentersBlocks.channel.register(new ServerPacketHandler());
     }
-
+    
     public void registerRenderInformation(FMLPreInitializationEvent event) { }
-
+    
 }

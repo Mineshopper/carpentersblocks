@@ -11,28 +11,25 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeDirection;
-import carpentersblocks.CarpentersBlocks;
+import net.minecraftforge.common.util.ForgeDirection;
 import carpentersblocks.data.Stairs;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.registry.BlockRegistry;
 import carpentersblocks.util.registry.ItemRegistry;
+import carpentersblocks.util.slope.SlopeTransform;
 import carpentersblocks.util.stairs.StairsTransform;
 import carpentersblocks.util.stairs.StairsUtil;
 
-public class BlockCarpentersStairs extends BlockBase {
-
-    public BlockCarpentersStairs(int blockID)
+public class BlockCarpentersStairs extends BlockCoverable {
+    
+    public BlockCarpentersStairs(Material material)
     {
-        super(blockID, Material.wood);
-        setHardness(0.2F);
-        setUnlocalizedName("blockCarpentersStairs");
-        setCreativeTab(CarpentersBlocks.tabCarpentersBlocks);
-        setTextureName("carpentersblocks:general/quartered_frame");
+        super(material);
     }
-
+    
     @Override
     /**
      * Alters block direction.
@@ -41,18 +38,18 @@ public class BlockCarpentersStairs extends BlockBase {
     {
         int stairsID = BlockProperties.getData(TE);
         Stairs stairs = Stairs.stairsList[stairsID];
-
+        
         /* Cycle between stairs direction based on current type. */
-
+        
         switch (stairs.stairsType)
         {
-            case NORMAL_XZ:
+            case NORMAL_SIDE:
                 if (++stairsID > Stairs.ID_NORMAL_SW) {
                     stairsID = Stairs.ID_NORMAL_SE;
                 }
                 break;
-            case NORMAL_Y:
-                if (stairs.arePositive) {
+            case NORMAL:
+                if (stairs.isPositive) {
                     if (++stairsID > Stairs.ID_NORMAL_POS_E) {
                         stairsID = Stairs.ID_NORMAL_POS_N;
                     }
@@ -63,7 +60,7 @@ public class BlockCarpentersStairs extends BlockBase {
                 }
                 break;
             case NORMAL_INT:
-                if (stairs.arePositive) {
+                if (stairs.isPositive) {
                     if ((stairsID += 2) > Stairs.ID_NORMAL_INT_POS_SE) {
                         stairsID = Stairs.ID_NORMAL_INT_POS_NE;
                     }
@@ -74,7 +71,7 @@ public class BlockCarpentersStairs extends BlockBase {
                 }
                 break;
             case NORMAL_EXT:
-                if (stairs.arePositive) {
+                if (stairs.isPositive) {
                     if ((stairsID += 2) > Stairs.ID_NORMAL_EXT_POS_NW) {
                         stairsID = Stairs.ID_NORMAL_EXT_POS_SW;
                     }
@@ -85,12 +82,12 @@ public class BlockCarpentersStairs extends BlockBase {
                 }
                 break;
         }
-
+        
         BlockProperties.setData(TE, stairsID);
-
+        
         return true;
     }
-
+    
     @Override
     /**
      * Alters block type.
@@ -99,23 +96,23 @@ public class BlockCarpentersStairs extends BlockBase {
     {
         int stairsID = BlockProperties.getData(TE);
         Stairs stairs = Stairs.stairsList[stairsID];
-
+        
         /* Transform stairs to next type. */
-
+        
         switch (stairs.stairsType)
         {
-            case NORMAL_XZ:
+            case NORMAL_SIDE:
                 stairsID = Stairs.ID_NORMAL_POS_N;
                 break;
-            case NORMAL_Y:
-                if (stairs.arePositive) {
+            case NORMAL:
+                if (stairs.isPositive) {
                     stairsID -= 4;
                 } else {
                     stairsID = Stairs.ID_NORMAL_INT_POS_NE;
                 }
                 break;
             case NORMAL_INT:
-                if (stairs.arePositive) {
+                if (stairs.isPositive) {
                     stairsID += 1;
                 } else {
                     if (stairsID == Stairs.ID_NORMAL_INT_NEG_NE || stairsID == Stairs.ID_NORMAL_INT_NEG_NW) {
@@ -126,19 +123,19 @@ public class BlockCarpentersStairs extends BlockBase {
                 }
                 break;
             case NORMAL_EXT:
-                if (stairs.arePositive) {
+                if (stairs.isPositive) {
                     stairsID += 1;
                 } else {
                     stairsID = Stairs.ID_NORMAL_SE;
                 }
                 break;
         }
-
+        
         BlockProperties.setData(TE, stairsID);
-
+        
         return true;
     }
-
+    
     @Override
     /**
      * Damages hammer with a chance to not damage.
@@ -149,7 +146,7 @@ public class BlockCarpentersStairs extends BlockBase {
             super.damageItemWithChance(world, entityPlayer);
         }
     }
-
+    
     @Override
     /**
      * Ray traces through the blocks collision from start vector to end vector returning a ray trace hit. Args: world,
@@ -157,26 +154,26 @@ public class BlockCarpentersStairs extends BlockBase {
      */
     public MovingObjectPosition collisionRayTrace(World world, int x, int y, int z, Vec3 startVec, Vec3 endVec)
     {
-        TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
-
+        TEBase TE = (TEBase) world.getTileEntity(x, y, z);
+        
         MovingObjectPosition finalTrace = null;
-
+        
         Stairs stairs = Stairs.stairsList[BlockProperties.getData(TE)];
         StairsUtil stairsUtil = new StairsUtil();
-
+        
         double currDist = 0.0D;
         double maxDist = 0.0D;
-
+        
         // Determine if ray trace is a hit on stairs
         for (int box = 0; box < 3; ++box)
         {
             float[] bounds = stairsUtil.genBounds(box, stairs);
-
+            
             if (bounds != null)
             {
                 setBlockBounds(bounds[0], bounds[1], bounds[2], bounds[3], bounds[4], bounds[5]);
                 MovingObjectPosition traceResult = super.collisionRayTrace(world, x, y, z, startVec, endVec);
-
+                
                 if (traceResult != null)
                 {
                     currDist = traceResult.hitVec.squareDistanceTo(endVec);
@@ -187,11 +184,11 @@ public class BlockCarpentersStairs extends BlockBase {
                 }
             }
         }
-
+        
         setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
         return finalTrace;
     }
-
+    
     @Override
     /**
      * Adds all intersecting collision boxes to a list. (Be sure to only add boxes to the list if they intersect the
@@ -199,17 +196,17 @@ public class BlockCarpentersStairs extends BlockBase {
      */
     public void addCollisionBoxesToList(World world, int x, int y, int z, AxisAlignedBB axisAlignedBB, List list, Entity entity)
     {
-        TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
-
+        TEBase TE = (TEBase) world.getTileEntity(x, y, z);
+        
         AxisAlignedBB colBox = null;
-
+        
         Stairs stairs = Stairs.stairsList[BlockProperties.getData(TE)];
         StairsUtil stairsUtil = new StairsUtil();
-
+        
         for (int box = 0; box < 3; ++box)
         {
             float[] bounds = stairsUtil.genBounds(box, stairs);
-
+            
             if (bounds != null) {
                 colBox = AxisAlignedBB.getAABBPool().getAABB(x + bounds[0], y + bounds[1], z + bounds[2], x + bounds[3], y + bounds[4], z + bounds[5]);
             }
@@ -218,25 +215,24 @@ public class BlockCarpentersStairs extends BlockBase {
             }
         }
     }
-
+    
     @Override
     /**
      * Checks if the block is a solid face on the given side, used by placement logic.
      */
-    public boolean isBlockSolidOnSide(World world, int x, int y, int z, ForgeDirection side)
+    public boolean isSideSolid(IBlockAccess world, int x, int y, int z, ForgeDirection side)
     {
-        if (isValid(world, x, y, z)) {
-
+        TEBase TE = getTileEntity(world, x, y, z);
+        
+        if (TE != null) {
             if (isBlockSolid(world, x, y, z)) {
-                TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
                 return Stairs.stairsList[BlockProperties.getData(TE)].isFaceFull(side);
             }
-
         }
-
+        
         return false;
     }
-
+    
     @Override
     /**
      * Called when block is placed in world.
@@ -261,7 +257,7 @@ public class BlockCarpentersStairs extends BlockBase {
                 hitX = 1.0F - hitZ;
                 break;
         }
-
+        
         if (side > 1) {
             if (hitY > 0.5F && hitX > 1.0F - hitY && hitX < hitY) {
                 return side + 2;
@@ -280,7 +276,7 @@ public class BlockCarpentersStairs extends BlockBase {
             return side + 12;
         }
     }
-
+    
     @Override
     /**
      * Called when the block is placed in the world.
@@ -288,13 +284,13 @@ public class BlockCarpentersStairs extends BlockBase {
      */
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack itemStack)
     {
-        TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
-
+        TEBase TE = (TEBase) world.getTileEntity(x, y, z);
+        
         int facing = MathHelper.floor_double(entityLiving.rotationYaw * 4.0F / 360.0F + 0.5D) & 3;
-
+        
         BlockProperties.setData(TE, world.getBlockMetadata(x, y, z));
         int stairsID = BlockProperties.getData(TE);
-
+        
         if (stairsID > 11)
         {
             switch (facing) {
@@ -312,18 +308,19 @@ public class BlockCarpentersStairs extends BlockBase {
                     break;
             }
         }
-
+        
         BlockProperties.setData(TE, stairsID);
-
+        
         /* If shift key is down, skip auto-orientation. */
         if (!entityLiving.isSneaking()) {
-            StairsTransform stairsTransform = new StairsTransform(TE);
-            stairsTransform.begin();
+            stairsID = StairsTransform.transformStairs(world, stairsID, x, y, z);
+            BlockProperties.setData(TE, stairsID);
+            StairsTransform.transformAdjacentStairs(world, stairsID, x, y, z);
         }
-
+        
         super.onBlockPlacedBy(world, x, y, z, entityLiving, itemStack);
     }
-
+    
     @Override
     /**
      * Returns whether block can support cover on side.
@@ -332,7 +329,7 @@ public class BlockCarpentersStairs extends BlockBase {
     {
         return true;
     }
-
+    
     @Override
     /**
      * The type of render function that is called for this block
@@ -341,5 +338,5 @@ public class BlockCarpentersStairs extends BlockBase {
     {
         return BlockRegistry.carpentersStairsRenderID;
     }
-
+    
 }

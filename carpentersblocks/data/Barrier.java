@@ -4,14 +4,14 @@ import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 
 public class Barrier {
-
+    
     /**
      * 16-bit data components:
      *
      * [00000000000]  [0]   [0000]
      * Unused         Post  Type
      */
-
+    
     public final static byte TYPE_VANILLA        = 0;
     public final static byte TYPE_VANILLA_X1     = 1;
     public final static byte TYPE_VANILLA_X2     = 2;
@@ -19,10 +19,10 @@ public class Barrier {
     public final static byte TYPE_PICKET         = 4;
     public final static byte TYPE_PLANK_VERTICAL = 5;
     public final static byte TYPE_WALL           = 6;
-
+    
     public final static byte NO_POST  = 0;
     public final static byte HAS_POST = 1;
-
+    
     /**
      * Returns data.
      */
@@ -30,7 +30,7 @@ public class Barrier {
     {
         return BlockProperties.getData(TE) & 0xf;
     }
-
+    
     /**
      * Sets data (vanilla, picket, etc).
      */
@@ -38,10 +38,10 @@ public class Barrier {
     {
         int temp = BlockProperties.getData(TE) & 0xfff0;
         temp |= type;
-
+        
         BlockProperties.setData(TE, temp);
     }
-
+    
     /**
      * Returns post bit from data.
      */
@@ -49,7 +49,7 @@ public class Barrier {
     {
         return BlockProperties.getData(TE) >> 4;
     }
-
+    
     /**
      * Sets post bit.
      */
@@ -57,8 +57,8 @@ public class Barrier {
     {
         int temp = BlockProperties.getData(TE) & 0xffef;
         temp |= post << 4;
-
+        
         BlockProperties.setData(TE, temp);
     }
-
+    
 }

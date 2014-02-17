@@ -3,24 +3,30 @@ package carpentersblocks.tileentity;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class TECarpentersFlowerPot extends TEBase {
-
-    public short soil;
-    public short plant;
-
+    
+    public String soil;
+    public String plant;
+    public byte soil_metadata;
+    public byte plant_metadata;
+    
     @Override
     public void readFromNBT(NBTTagCompound nbt)
     {
         super.readFromNBT(nbt);
-        soil = nbt.getShort("soil");
-        plant = nbt.getShort("plant");
+        soil = nbt.getString("soil");
+        plant = nbt.getString("plant");
+        soil_metadata = nbt.getByte("soil_metadata");
+        plant_metadata = nbt.getByte("plant_metadata");
     }
-
+    
     @Override
     public void writeToNBT(NBTTagCompound nbt)
     {
         super.writeToNBT(nbt);
-        nbt.setShort("soil", soil);
-        nbt.setShort("plant", plant);
+        nbt.setString("soil", soil);
+        nbt.setString("plant", plant);
+        nbt.setByte("soil_metadata", soil_metadata);
+        nbt.setByte("plant_metadata", plant_metadata);
     }
-
+    
 }

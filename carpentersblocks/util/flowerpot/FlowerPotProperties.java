@@ -4,6 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.IShearable;
 import carpentersblocks.data.FlowerPot;
@@ -12,7 +13,7 @@ import carpentersblocks.tileentity.TECarpentersFlowerPot;
 import carpentersblocks.util.BlockProperties;
 
 public class FlowerPotProperties {
-
+    
     /**
      * Ejects an item at given coordinates.
      */
@@ -20,7 +21,7 @@ public class FlowerPotProperties {
     {
         BlockProperties.ejectEntity(TE, FlowerPotHandler.getFilteredItem(itemStack));
     }
-
+    
     /**
      * Returns whether flower pot has a design.
      */
@@ -28,153 +29,136 @@ public class FlowerPotProperties {
     {
         return FlowerPot.getDesign(TE) > 0;
     }
-
-    /**
-     * Returns soil block ID.
-     */
-    public static int getSoilID(TECarpentersFlowerPot TE)
-    {
-        return TE.soil & 0xfff;
-    }
-
+    
     /**
      * Returns soil block metadata.
      */
-    public static int getSoilMetadata(TECarpentersFlowerPot TE)
+    public static int getSoilMetadata(TEBase TE)
     {
-        return (TE.soil & 0xf000) >>> 12;
+        return ((TECarpentersFlowerPot)TE).soil_metadata;
     }
-
-    /**
-     * Returns plant block ID.
-     */
-    public static int getPlantID(TECarpentersFlowerPot TE)
-    {
-        return TE.plant & 0xfff;
-    }
-
+    
     /**
      * Returns plant block metadata.
      */
-    public static int getPlantMetadata(TECarpentersFlowerPot TE)
+    public static int getPlantMetadata(TEBase TE)
     {
-        return (TE.plant & 0xf000) >>> 12;
+        return ((TECarpentersFlowerPot)TE).plant_metadata;
     }
-
+    
     /**
      * Returns soil block.
      */
-    public final static Block getSoilBlock(TEBase TE)
+    public final static Block getSoil(TEBase TE)
     {
-        return Block.blocksList[getSoilID((TECarpentersFlowerPot)TE)];
+        return Block.getBlockFromName(((TECarpentersFlowerPot)TE).soil);
     }
-
+    
     /**
      * Returns plant block.
      */
-    public final static Block getPlantBlock(TEBase TE)
+    public final static Block getPlant(TEBase TE)
     {
-        return Block.blocksList[getPlantID((TECarpentersFlowerPot)TE)];
+        return Block.getBlockFromName(((TECarpentersFlowerPot)TE).plant);
     }
-
+    
     /**
      * Returns whether pot has soil.
      */
     public final static boolean hasSoil(TEBase TE)
     {
-        int blockID = getSoilID((TECarpentersFlowerPot)TE);
-        int metadata = getSoilMetadata((TECarpentersFlowerPot)TE);
+        Block block = getSoil(TE);
 
-        return blockID > 0 &&
-                Block.blocksList[blockID] != null &&
-                isSoil(new ItemStack(blockID, 1, metadata));
+        return block != null &&
+               isSoil(new ItemStack(block, 1, getSoilMetadata(TE)));
     }
-
+    
     /**
      * Returns whether pot has plant.
      */
     public static boolean hasPlant(TEBase TE)
     {
-        int blockID = getPlantID((TECarpentersFlowerPot)TE);
-        int metadata = getPlantMetadata((TECarpentersFlowerPot)TE);
-
-        return blockID > 0 &&
-                Block.blocksList[blockID] != null &&
-                isPlant(new ItemStack(blockID, 1, metadata));
+        Block block = getPlant(TE);
+        
+        return block != null &&
+               isPlant(new ItemStack(block, 1, getPlantMetadata(TE)));
     }
-
+    
     /**
      * Returns whether ItemStack contains soil.
      */
     public static boolean isSoil(ItemStack itemStack)
     {
-        if (itemStack.getItem() instanceof ItemBlock)
-        {
-            Block block = Block.blocksList[itemStack.itemID];
-
-            return !block.hasTileEntity(itemStack.getItemDamage()) &&
-                    (block.blockMaterial == Material.grass || block.blockMaterial == Material.ground || block.blockMaterial == Material.sand);
+        Block block = Block.getBlockFromItem(itemStack.getItem());
+        
+        if (itemStack.getItem() instanceof ItemBlock && !block.hasTileEntity(itemStack.getItemDamage())) {
+            Material material = block.getMaterial();
+            return material.equals(Material.grass) || material.equals(Material.ground) || material.equals(Material.sand);
+        } else {
+            return false;
         }
-
-        return false;
     }
-
+    
     /**
      * Returns whether ItemStack contains a plant.
      */
     public static boolean isPlant(ItemStack itemStack)
     {
         itemStack = FlowerPotHandler.getEquivalentBlock(itemStack);
-
-        if (itemStack.getItem() instanceof ItemBlock)
-        {
-            Block block = Block.blocksList[itemStack.itemID];
+        
+        Block block = Block.getBlockFromItem(itemStack.getItem());
+        
+        if (itemStack.getItem() instanceof ItemBlock && !block.hasTileEntity(itemStack.getItemDamage())) {
             return block instanceof IPlantable || block instanceof IShearable;
+        } else {
+            return false;
         }
-
-        return false;
     }
-
+    
     /**
      * Sets soil block.
      */
-    public static boolean setSoil(TECarpentersFlowerPot TE, ItemStack itemStack)
+    public static boolean setSoil(TEBase TE, ItemStack itemStack)
     {
         if (hasSoil(TE)) {
-            ejectEntity(TE, new ItemStack(getSoilID(TE), 1, getSoilMetadata(TE)));
+            ejectEntity(TE, new ItemStack(getSoil(TE), 1, getSoilMetadata(TE)));
         }
-
-        int blockID = itemStack == null ? 0 : itemStack.itemID;
+        
+        Block block = Block.getBlockFromItem(itemStack.getItem());
         int metadata = itemStack == null ? 0 : itemStack.getItemDamage();
-
-        TE.soil = (short) (blockID + (metadata << 12));
-
-        TE.worldObj.notifyBlocksOfNeighborChange(TE.xCoord, TE.yCoord, TE.zCoord, blockID);
-        TE.worldObj.markBlockForUpdate(TE.xCoord, TE.yCoord, TE.zCoord);
-
+        
+        ((TECarpentersFlowerPot)TE).soil = itemStack.getUnlocalizedName();
+        
+        World world = TE.getWorldObj();
+        
+        world.notifyBlocksOfNeighborChange(TE.xCoord, TE.yCoord, TE.zCoord, block);
+        world.markBlockForUpdate(TE.xCoord, TE.yCoord, TE.zCoord);
+        
         return true;
     }
-
+    
     /**
      * Sets plant block.
      */
-    public static boolean setPlant(TECarpentersFlowerPot TE, ItemStack itemStack)
+    public static boolean setPlant(TEBase TE, ItemStack itemStack)
     {
         if (hasPlant(TE)) {
-            ejectEntity(TE, new ItemStack(getPlantID(TE), 1, getPlantMetadata(TE)));
+            ejectEntity(TE, new ItemStack(getPlant(TE), 1, getPlantMetadata(TE)));
         }
-
+        
         itemStack = FlowerPotHandler.getEquivalentBlock(itemStack);
-
-        int blockID = itemStack == null ? 0 : itemStack.itemID;
+        
+        Block block = Block.getBlockFromItem(itemStack.getItem());
         int metadata = itemStack == null ? 0 : itemStack.getItemDamage();
-
-        TE.plant = (short) (blockID + (metadata << 12));
-
-        TE.worldObj.notifyBlocksOfNeighborChange(TE.xCoord, TE.yCoord, TE.zCoord, blockID);
-        TE.worldObj.markBlockForUpdate(TE.xCoord, TE.yCoord, TE.zCoord);
-
+        
+        ((TECarpentersFlowerPot)TE).plant = itemStack.getUnlocalizedName();
+        
+        World world = TE.getWorldObj();
+        
+        world.notifyBlocksOfNeighborChange(TE.xCoord, TE.yCoord, TE.zCoord, block);
+        world.markBlockForUpdate(TE.xCoord, TE.yCoord, TE.zCoord);
+        
         return true;
     }
-
+    
 }

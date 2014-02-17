@@ -1,7 +1,7 @@
 package carpentersblocks.block;
 
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.EnumSkyBlock;
@@ -11,36 +11,33 @@ import carpentersblocks.CarpentersBlocks;
 import carpentersblocks.data.DaylightSensor;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.tileentity.TECarpentersDaylightSensor;
+import carpentersblocks.util.handler.ChatHandler;
 import carpentersblocks.util.registry.BlockRegistry;
 import carpentersblocks.util.registry.IconRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class BlockCarpentersDaylightSensor extends BlockBase {
-
-    public BlockCarpentersDaylightSensor(int blockID)
+public class BlockCarpentersDaylightSensor extends BlockCoverable {
+    
+    public BlockCarpentersDaylightSensor(Material material)
     {
-        super(blockID, Material.wood);
-        setHardness(0.2F);
-        setUnlocalizedName("blockCarpentersDaylightSensor");
-        setCreativeTab(CarpentersBlocks.tabCarpentersBlocks);
+        super(material);
         setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.25F, 1.0F);
-        setTextureName("carpentersblocks:general/solid");
     }
-
+    
     @SideOnly(Side.CLIENT)
     @Override
     /**
      * When this method is called, your block should register all the icons it needs with the given IconRegister. This
      * is the only chance you get to register icons.
      */
-    public void registerIcons(IconRegister iconRegister)
+    public void registerBlockIcons(IIconRegister iconRegister)
     {
         IconRegistry.icon_daylight_sensor_glass_top = iconRegister.registerIcon("carpentersblocks:daylightsensor/daylight_sensor_glass_top");
-
-        super.registerIcons(iconRegister);
+        
+        super.registerBlockIcons(iconRegister);
     }
-
+    
     @Override
     /**
      * Alters polarity.
@@ -48,20 +45,20 @@ public class BlockCarpentersDaylightSensor extends BlockBase {
     protected boolean onHammerLeftClick(TEBase TE, EntityPlayer entityPlayer)
     {
         int polarity = DaylightSensor.getPolarity(TE) == DaylightSensor.POLARITY_POSITIVE ? DaylightSensor.POLARITY_NEGATIVE : DaylightSensor.POLARITY_POSITIVE;
-
+        
         DaylightSensor.setPolarity(TE, polarity);
-
+        
         switch (polarity) {
             case DaylightSensor.POLARITY_POSITIVE:
-                entityPlayer.addChatMessage("message.polarity_pos.name");
+                ChatHandler.sendMessageToPlayer("message.polarity_pos.name", entityPlayer);
                 break;
             case DaylightSensor.POLARITY_NEGATIVE:
-                entityPlayer.addChatMessage("message.polarity_neg.name");
+                ChatHandler.sendMessageToPlayer("message.polarity_neg.name", entityPlayer);
         }
-
+        
         return true;
     }
-
+    
     @Override
     /**
      * Alters polarity.
@@ -69,16 +66,16 @@ public class BlockCarpentersDaylightSensor extends BlockBase {
     protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer)
     {
         int sensitivity = DaylightSensor.setNextSensitivity(TE);
-
+        
         if (sensitivity == DaylightSensor.SENSITIVITY_SLEEP) {
-            entityPlayer.addChatMessage("message.sensitivity_sleep.name");
+            ChatHandler.sendMessageToPlayer("message.sensitivity_sleep.name", entityPlayer);
         } else {
-            entityPlayer.addChatMessage("message.sensitivity_monsters.name");
+            ChatHandler.sendMessageToPlayer("message.sensitivity_monsters.name", entityPlayer);
         }
-
+        
         return true;
     }
-
+    
     @Override
     /**
      * Returns true if the block is emitting indirect/weak redstone power on the specified side. If isBlockNormalCube
@@ -87,31 +84,35 @@ public class BlockCarpentersDaylightSensor extends BlockBase {
      */
     public int isProvidingWeakPower(IBlockAccess world, int x, int y, int z, int side)
     {
-        TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
-
-        return DaylightSensor.isActive(TE) ? 15 : 0;
+        TEBase TE = getTileEntity(world, x, y, z);
+        
+        if (TE != null) {
+            return DaylightSensor.isActive(TE) ? 15 : 0;
+        }
+        
+        return 0;
     }
-
+    
     public void updateLightLevel(World world, int x, int y, int z)
     {
         if (!world.provider.hasNoSky)
         {
-            TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
-
+            TEBase TE = (TEBase) world.getTileEntity(x, y, z);
+            
             int temp_lightValue = DaylightSensor.getLightLevel(TE);
             int lightValue = world.getSavedLightValue(EnumSkyBlock.Sky, x, y, z) - world.skylightSubtracted;
-
+            
             if (world.isThundering()) {
                 lightValue = 7;
             }
-
+            
             if (temp_lightValue != lightValue) {
                 DaylightSensor.setLightLevel(TE, lightValue);
-                world.notifyBlocksOfNeighborChange(x, y, z, blockID);
+                world.notifyBlocksOfNeighborChange(x, y, z, this);
             }
         }
     }
-
+    
     @Override
     /**
      * Can this block provide power. Only wire currently seems to have this change based on its state.
@@ -120,13 +121,13 @@ public class BlockCarpentersDaylightSensor extends BlockBase {
     {
         return true;
     }
-
+    
     @Override
-    public TileEntity createNewTileEntity(World world)
+    public TileEntity createNewTileEntity(World world, int metadata)
     {
         return new TECarpentersDaylightSensor();
     }
-
+    
     @Override
     /**
      * The type of render function that is called for this block
@@ -135,5 +136,5 @@ public class BlockCarpentersDaylightSensor extends BlockBase {
     {
         return BlockRegistry.carpentersDaylightSensorRenderID;
     }
-
+    
 }

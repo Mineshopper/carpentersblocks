@@ -1,25 +1,26 @@
 package carpentersblocks.data;
 
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 
 public class Torch {
-
+    
     /**
      * 16-bit data components:
      *
      * [0000000000]  [0]    [00]   [000]
      * Unused        Ready  State  Facing
      */
-
+    
     public enum State
     {
         LIT,
         SMOLDERING,
         UNLIT
     }
-
+    
     /**
      * Returns facing.
      */
@@ -27,7 +28,7 @@ public class Torch {
     {
         return ForgeDirection.getOrientation(BlockProperties.getData(TE) & 0x7);
     }
-
+    
     /**
      * Sets facing.
      */
@@ -35,10 +36,10 @@ public class Torch {
     {
         int temp = BlockProperties.getData(TE) & 0xfff8;
         temp |= side;
-
+        
         BlockProperties.setData(TE, temp);
     }
-
+    
     /**
      * Returns state.
      */
@@ -46,10 +47,10 @@ public class Torch {
     {
         int temp = BlockProperties.getData(TE) & 0x18;
         int val = temp >> 3;
-
+        
         return val == State.LIT.ordinal() ? State.LIT : val == State.SMOLDERING.ordinal() ? State.SMOLDERING : State.UNLIT;
     }
-
+    
     /**
      * Sets state.
      */
@@ -57,15 +58,16 @@ public class Torch {
     {
         if (state.ordinal() > getState(TE).ordinal()) {
             double[] headCoords = getHeadCoordinates(TE);
-            TE.worldObj.playSoundEffect(headCoords[0], headCoords[1], headCoords[2], "random.fizz", 0.5F, 2.6F + (TE.worldObj.rand.nextFloat() - TE.worldObj.rand.nextFloat()) * 0.8F);
+            World world = TE.getWorldObj();
+            world.playSoundEffect(headCoords[0], headCoords[1], headCoords[2], "random.fizz", 0.5F, 2.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
         }
-
+        
         int temp = BlockProperties.getData(TE) & 0xffe7;
         temp |= state.ordinal() << 3;
-
+        
         BlockProperties.setData(TE, temp);
     }
-
+    
     /**
      * Returns whether block is capable of handling logic functions.
      * This is implemented because for buttons and levers the SERVER
@@ -76,7 +78,7 @@ public class Torch {
     {
         return (BlockProperties.getData(TE) & 0x20) > 0;
     }
-
+    
     /**
      * Sets block as ready.
      */
@@ -84,25 +86,25 @@ public class Torch {
     {
         int temp = BlockProperties.getData(TE) & 0xffdf;
         temp |= 1 << 5;
-
+        
         BlockProperties.setData(TE, temp);
     }
-
+    
     /**
      * Returns location where particles and sounds originate.
      */
     public static double[] getHeadCoordinates(TEBase TE)
     {
         double[] coords;
-
+        
         double xOffset = TE.xCoord + 0.5F;
         double yOffset = TE.yCoord + 0.7F;
         double zOffset = TE.zCoord + 0.5F;
         double offset1 = 0.2199999988079071D;
         double offset2 = 0.27000001072883606D;
-
+        
         ForgeDirection facing = getFacing(TE);
-
+        
         switch (facing) {
             case NORTH:
                 coords = new double[] { xOffset, yOffset + offset1, zOffset + offset2 };
@@ -119,8 +121,8 @@ public class Torch {
             default:
                 coords = new double[] { xOffset, yOffset, zOffset };
         }
-
+        
         return coords;
     }
-
+    
 }

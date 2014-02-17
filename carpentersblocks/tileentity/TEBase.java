@@ -1,63 +1,61 @@
 package carpentersblocks.tileentity;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.INetworkManager;
-import net.minecraft.network.packet.Packet;
-import net.minecraft.network.packet.Packet132TileEntityData;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.Packet;
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 
 public class TEBase extends TileEntity {
-
-    public short[] cover  = new short[7];
-    public byte[] pattern = new byte[7];
-    public byte[] color   = new byte[7];
-    public byte[] overlay = new byte[7];
-
-    /** Holds information like direction, block type, etc. */
+    
+    public String[] cover  = { "", "", "", "", "", "", "" };
+    public byte[] metadata = new byte[7];
+    public byte[] pattern  = new byte[7];
+    public byte[] color    = new byte[7];
+    public byte[] overlay  = new byte[7];
+    
+    /** Holds specific block information like facing, states, etc. */
     public short data;
-
+    
     /** Holds name of player that created tile entity. */
     private String owner = "";
-
+    
     @Override
     public void readFromNBT(NBTTagCompound nbt)
     {
         super.readFromNBT(nbt);
 
         for (int count = 0; count < 7; ++count) {
-            cover[count] = nbt.getShort("cover_" + count);
+            cover[count] = nbt.getString("cover_" + count);
         }
-
-        pattern = nbt.getByteArray("pattern");
-        color = nbt.getByteArray("color");
-        overlay = nbt.getByteArray("overlay");
-        data = nbt.getShort("data");
-
-        /* For compatibility with versions prior to 1.9.7 */
-
-        if (nbt.hasKey("owner")) {
-            owner = nbt.getString("owner");
-        }
+        
+        metadata = nbt.getByteArray("metadata");
+        pattern  = nbt.getByteArray("pattern");
+        color    = nbt.getByteArray("color");
+        overlay  = nbt.getByteArray("overlay");
+        data     = nbt.getShort("data");
+        owner    = nbt.getString("owner");
     }
-
+    
     @Override
     public void writeToNBT(NBTTagCompound nbt)
     {
         super.writeToNBT(nbt);
-
+        
         for (int count = 0; count < 7; ++count) {
-            nbt.setShort("cover_" + count, cover[count]);
+            nbt.setString("cover_" + count, cover[count]);
         }
-
+        
+        nbt.setByteArray("metadata", metadata);
         nbt.setByteArray("pattern", pattern);
         nbt.setByteArray("color", color);
         nbt.setByteArray("overlay", overlay);
         nbt.setShort("data", data);
         nbt.setString("owner", owner);
     }
-
+    
     @Override
     /**
      * Overridden in a sign to provide the text.
@@ -66,9 +64,9 @@ public class TEBase extends TileEntity {
     {
         NBTTagCompound nbt = new NBTTagCompound();
         writeToNBT(nbt);
-        return new Packet132TileEntityData(xCoord, yCoord, zCoord, 1, nbt);
+        return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, 1, nbt);
     }
-
+    
     @Override
     /**
      * Called when you receive a TileEntityData packet for the location this
@@ -79,24 +77,24 @@ public class TEBase extends TileEntity {
      * @param net The NetworkManager the packet originated from
      * @param pkt The data packet
      */
-    public void onDataPacket(INetworkManager net, Packet132TileEntityData pkt)
+    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt)
     {
-        readFromNBT(pkt.data);
-
+        readFromNBT(pkt.func_148857_g());
+        
         if (worldObj.isRemote) {
             Minecraft.getMinecraft().renderGlobal.markBlockForRenderUpdate(xCoord, yCoord, zCoord);
-            worldObj.updateAllLightTypes(xCoord, yCoord, zCoord);
+            worldObj.func_147451_t(xCoord, yCoord, zCoord);
         }
     }
-
+    
     /**
      * Returns true if entityPlayer is owner of tile entity.
      */
-    public boolean isOwner(EntityLivingBase entityLiving)
+    public boolean isOwner(EntityPlayer entityPlayer)
     {
-        return owner.equals(entityLiving.getEntityName()) || owner.equals("");
+        return owner.equals(entityPlayer.getDisplayName()) || owner.equals("");
     }
-
+    
     /**
      * Sets owner of tile entity.
      */
@@ -104,7 +102,7 @@ public class TEBase extends TileEntity {
     {
         this.owner = owner;
     }
-
+    
     /**
      * Returns owner of tile entity.
      */
@@ -112,7 +110,7 @@ public class TEBase extends TileEntity {
     {
         return owner;
     }
-
+    
     @Override
     /**
      * Determines if this TileEntity requires update calls.
@@ -122,5 +120,5 @@ public class TEBase extends TileEntity {
     {
         return false;
     }
-
+    
 }

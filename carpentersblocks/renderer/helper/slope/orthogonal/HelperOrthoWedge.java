@@ -1,14 +1,8 @@
 package carpentersblocks.renderer.helper.slope.orthogonal;
 
-import static net.minecraftforge.common.ForgeDirection.DOWN;
-import static net.minecraftforge.common.ForgeDirection.EAST;
-import static net.minecraftforge.common.ForgeDirection.NORTH;
-import static net.minecraftforge.common.ForgeDirection.SOUTH;
-import static net.minecraftforge.common.ForgeDirection.UP;
-import static net.minecraftforge.common.ForgeDirection.WEST;
 import net.minecraft.client.renderer.RenderBlocks;
-import net.minecraft.util.Icon;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraft.util.IIcon;
+import net.minecraftforge.common.util.ForgeDirection;
 import carpentersblocks.data.Slope;
 import carpentersblocks.renderer.helper.RenderHelper;
 import cpw.mods.fml.relauncher.Side;
@@ -16,14 +10,14 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class HelperOrthoWedge extends RenderHelper {
-
+    
     /**
      * Renders the given texture to the bottom face of the block.
      */
-    public static void renderFaceYNeg(RenderBlocks renderBlocks, int slopeID, double x, double y, double z, Icon icon)
+    public static void renderFaceYNeg(RenderBlocks renderBlocks, int slopeID, double x, double y, double z, IIcon icon)
     {
-        prepareRender(renderBlocks, DOWN, x, y, z, icon);
-
+        prepareRender(renderBlocks, ForgeDirection.DOWN, x, y, z, icon);
+        
         switch (slopeID)
         {
             case Slope.ID_OBL_EXT_POS_NW:
@@ -56,14 +50,14 @@ public class HelperOrthoWedge extends RenderHelper {
                 break;
         }
     }
-
+    
     /**
      * Renders the given texture to the top face of the block.
      */
-    public static void renderFaceYPos(RenderBlocks renderBlocks, int slopeID, double x, double y, double z, Icon icon)
+    public static void renderFaceYPos(RenderBlocks renderBlocks, int slopeID, double x, double y, double z, IIcon icon)
     {
-        prepareRender(renderBlocks, UP, x, y, z, icon);
-
+        prepareRender(renderBlocks, ForgeDirection.UP, x, y, z, icon);
+        
         switch (slopeID)
         {
             case Slope.ID_OBL_EXT_NEG_NW:
@@ -96,17 +90,17 @@ public class HelperOrthoWedge extends RenderHelper {
                 break;
         }
     }
-
+    
     /**
      * Renders the given texture to the North face of the block.
      */
-    public static void renderFaceZNeg(RenderBlocks renderBlocks, int slopeID, double x, double y, double z, Icon icon)
+    public static void renderFaceZNeg(RenderBlocks renderBlocks, int slopeID, double x, double y, double z, IIcon icon)
     {
-        prepareRender(renderBlocks, NORTH, x, y, z, icon);
-
+        prepareRender(renderBlocks, ForgeDirection.NORTH, x, y, z, icon);
+        
         boolean floatingHeight = iconHasFloatingHeight(icon);
         Slope slope = Slope.slopesList[slopeID];
-
+        
         if (slope.isPositive) {
             if (slope.facings.contains(ForgeDirection.WEST)) {
                 setupVertex(renderBlocks, xMax, yMax, zMin, uTL,                        vTL, TOP_LEFT    );
@@ -129,17 +123,17 @@ public class HelperOrthoWedge extends RenderHelper {
             }
         }
     }
-
+    
     /**
      * Renders the given texture to the South face of the block.
      */
-    public static void renderFaceZPos(RenderBlocks renderBlocks, int slopeID, double x, double y, double z, Icon icon)
+    public static void renderFaceZPos(RenderBlocks renderBlocks, int slopeID, double x, double y, double z, IIcon icon)
     {
-        prepareRender(renderBlocks, SOUTH, x, y, z, icon);
-
+        prepareRender(renderBlocks, ForgeDirection.SOUTH, x, y, z, icon);
+        
         boolean floatingHeight = iconHasFloatingHeight(icon);
         Slope slope = Slope.slopesList[slopeID];
-
+        
         if (slope.isPositive) {
             if (slope.facings.contains(ForgeDirection.WEST)) {
                 setupVertex(renderBlocks, xMin, yMin, zMax, uBL, floatingHeight ? vTL : vBL, BOTTOM_LEFT );
@@ -162,17 +156,17 @@ public class HelperOrthoWedge extends RenderHelper {
             }
         }
     }
-
+    
     /**
      * Renders the given texture to the West face of the block.
      */
-    public static void renderFaceXNeg(RenderBlocks renderBlocks, int slopeID, double x, double y, double z, Icon icon)
+    public static void renderFaceXNeg(RenderBlocks renderBlocks, int slopeID, double x, double y, double z, IIcon icon)
     {
-        prepareRender(renderBlocks, WEST, x, y, z, icon);
-
+        prepareRender(renderBlocks, ForgeDirection.WEST, x, y, z, icon);
+        
         boolean floatingHeight = iconHasFloatingHeight(icon);
         Slope slope = Slope.slopesList[slopeID];
-
+        
         if (slope.isPositive) {
             if (slope.facings.contains(ForgeDirection.NORTH)) {
                 setupVertex(renderBlocks, xMin, yMin, zMin, uBL, floatingHeight ? vTL : vBL, BOTTOM_LEFT );
@@ -195,17 +189,17 @@ public class HelperOrthoWedge extends RenderHelper {
             }
         }
     }
-
+    
     /**
      * Renders the given texture to the East face of the block.
      */
-    public static void renderFaceXPos(RenderBlocks renderBlocks, int slopeID, double x, double y, double z, Icon icon)
+    public static void renderFaceXPos(RenderBlocks renderBlocks, int slopeID, double x, double y, double z, IIcon icon)
     {
-        prepareRender(renderBlocks, EAST, x, y, z, icon);
-
+        prepareRender(renderBlocks, ForgeDirection.EAST, x, y, z, icon);
+        
         boolean floatingHeight = iconHasFloatingHeight(icon);
         Slope slope = Slope.slopesList[slopeID];
-
+        
         if (slope.isPositive) {
             if (slope.facings.contains(ForgeDirection.NORTH)) {
                 setupVertex(renderBlocks, xMax, yMax, zMax, uTL,                        vTL, TOP_LEFT    );
@@ -228,5 +222,5 @@ public class HelperOrthoWedge extends RenderHelper {
             }
         }
     }
-
+    
 }
