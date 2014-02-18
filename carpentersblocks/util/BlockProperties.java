@@ -11,6 +11,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemDye;
 import net.minecraft.item.ItemStack;
@@ -141,7 +142,7 @@ public class BlockProperties {
     public static boolean blockRotates(Block block)
     {
         return block instanceof BlockQuartz ||
-                block instanceof BlockRotatedPillar;
+               block instanceof BlockRotatedPillar;
     }
     
     /**
@@ -180,7 +181,7 @@ public class BlockProperties {
         
         setDyeColor(TE, side, 0);
         setOverlay(TE, side, (ItemStack)null);
-        setCover(TE, side, 0, (ItemStack)null);
+        setCover(TE, side, (ItemStack)null);
         setPattern(TE, side, 0);
         
         suppressUpdate = false;
@@ -193,7 +194,7 @@ public class BlockProperties {
      */
     public static int getCoverMetadata(TEBase TE, int side)
     {
-        return TE.metadata[side];
+        return TE.cover[side] != null ? TE.cover[side].getItemDamage() : 0;
     }
     
     /**
@@ -206,7 +207,7 @@ public class BlockProperties {
         int metadata = getCoverMetadata(TE, side);
         
         return block != null &&
-                isCover(new ItemStack(block, 1, metadata));
+               isCover(new ItemStack(block, 1, metadata));
     }
     
     /**
@@ -229,7 +230,7 @@ public class BlockProperties {
     public static Block getCover(IBlockAccess world, int side, int x, int y, int z)
     {
         TEBase TE = (TEBase) world.getTileEntity(x, y, z);
-        
+
         return getCover(TE, side);
     }
     
@@ -238,17 +239,15 @@ public class BlockProperties {
      */
     public static Block getCover(TEBase TE, int side)
     {
-        if (TE.cover[side] == null) {
-            return TE.getBlockType();
-        } else {
-            Block block = Block.getBlockFromName(TE.cover[side]);
-            
-            if (block != null) {
-                return block;
-            } else {
-                return TE.getBlockType();
-            }
+        Block block = null;
+        
+        if (TE.cover[side] != null) {
+            block = Block.getBlockFromItem(TE.cover[side].getItem());
         }
+        
+        System.out.println("DEBUG: getCover returns " + (block == null ? "NULL" : block.getUnlocalizedName()));
+        
+        return block == null ? TE.getBlockType() : block;
     }
     
     /**
@@ -273,17 +272,22 @@ public class BlockProperties {
     }
     
     /**
-     * Converts ItemStack block metadata to correct value.
-     * Things like logs should always drop with metadata 0, even if
-     * a rotation in metadata is set.
+     * Converts ItemStack damage to correct value.
+     * Will correct log drop rotation, among other things.
      */
-    public static ItemStack getFilteredBlock(ItemStack itemStack)
+    public static ItemStack getFilteredBlock(World world, ItemStack itemStack)
     {
         if (itemStack != null)
         {
+            Item itemDropped = Block.getBlockFromItem(itemStack.getItem()).getItemDropped(itemStack.getItemDamage(), world.rand, /* Fortune */ 0);
             int damageDropped = Block.getBlockFromItem(itemStack.getItem()).damageDropped(itemStack.getItemDamage());
             
-            if (damageDropped != itemStack.getItemDamage()) {
+            /*
+             * Check if block drops itself, and, if so, correct the damage value
+             * to the block's default.
+             */
+            
+            if (itemDropped.equals(itemStack.getItem()) && damageDropped != itemStack.getItemDamage()) {
                 itemStack.setItemDamage(damageDropped);
             }
         }
@@ -294,17 +298,24 @@ public class BlockProperties {
     /**
      * Sets cover block.
      */
-    public static boolean setCover(TEBase TE, int side, int metadata, ItemStack itemStack)
+    public static boolean setCover(TEBase TE, int side, ItemStack itemStack)
     {
-        if (hasCover(TE, side)) {
-            ejectEntity(TE, getFilteredBlock(new ItemStack(getCover(TE, side), 1, getCoverMetadata(TE, side))));
-        }
-        
-        Block block = Block.getBlockFromItem(itemStack.getItem());
-        
-        TE.cover[side] = block.getUnlocalizedName();
-        
         World world = TE.getWorldObj();
+        
+        if (hasCover(TE, side)) {
+            ejectEntity(TE, getFilteredBlock(world, new ItemStack(getCover(TE, side), 1, getCoverMetadata(TE, side))));
+        }
+
+        TE.cover[side] = itemStack;
+
+        Block block = itemStack == null ? TE.getBlockType() : Block.getBlockFromItem(itemStack.getItem());
+        int metadata = itemStack == null ? 0 : itemStack.getItemDamage();
+        
+        if (block != null) {
+            System.out.println("DEBUG: Cover block registered as " + block.getUnlocalizedName());
+        } else {
+            System.out.println("DEBUG: Cover block registered as " + TE.getBlockType().getUnlocalizedName());
+        }
         
         if (side == 6) {
             world.setBlockMetadataWithNotify(TE.xCoord, TE.yCoord, TE.zCoord, metadata, 0);

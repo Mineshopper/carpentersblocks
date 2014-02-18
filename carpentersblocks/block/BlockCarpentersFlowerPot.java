@@ -104,7 +104,7 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
     protected boolean onHammerLeftClick(TEBase TE, EntityPlayer entityPlayer)
     {
         if (FlowerPotProperties.hasDesign(TE) && BlockProperties.hasCover(TE, 6)) {
-            BlockProperties.setCover(TE, 6, 0, (ItemStack)null);
+            BlockProperties.setCover(TE, 6, (ItemStack)null);
         }
         
         int design = FlowerPotDesignHandler.getPrev(FlowerPot.getDesign(TE));
@@ -120,7 +120,7 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
     protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer)
     {
         if (FlowerPotProperties.hasDesign(TE) && BlockProperties.hasCover(TE, 6)) {
-            BlockProperties.setCover(TE, 6, 0, (ItemStack)null);
+            BlockProperties.setCover(TE, 6, (ItemStack)null);
         }
         
         if (entityPlayer.isSneaking()) {

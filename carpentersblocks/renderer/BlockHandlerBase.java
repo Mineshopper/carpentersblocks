@@ -151,7 +151,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
             
         }
         
-        return result;
+        return false;
     }
     
     @Override

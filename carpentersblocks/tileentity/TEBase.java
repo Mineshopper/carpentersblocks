@@ -2,7 +2,9 @@ package carpentersblocks.tileentity;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
@@ -10,8 +12,7 @@ import net.minecraft.tileentity.TileEntity;
 
 public class TEBase extends TileEntity {
     
-    public String[] cover  = { "", "", "", "", "", "", "" };
-    public byte[] metadata = new byte[7];
+    public ItemStack[] cover = new ItemStack[7];
     public byte[] pattern  = new byte[7];
     public byte[] color    = new byte[7];
     public byte[] overlay  = new byte[7];
@@ -26,12 +27,21 @@ public class TEBase extends TileEntity {
     public void readFromNBT(NBTTagCompound nbt)
     {
         super.readFromNBT(nbt);
-        
-        for (int count = 0; count < 7; ++count) {
-            cover[count] = nbt.getString("cover_" + count);
+
+        NBTTagList nbttaglist = nbt.getTagList("covers", 10);
+        cover = new ItemStack[cover.length];
+
+        for (int i = 0; i < nbttaglist.tagCount(); ++i)
+        {
+            NBTTagCompound nbttagcompound1 = nbttaglist.getCompoundTagAt(i);
+            int j = nbttagcompound1.getByte("cover") & 255;
+
+            if (j >= 0 && j < cover.length)
+            {
+                cover[j] = ItemStack.loadItemStackFromNBT(nbttagcompound1);
+            }
         }
-        
-        metadata = nbt.getByteArray("metadata");
+
         pattern  = nbt.getByteArray("pattern");
         color    = nbt.getByteArray("color");
         overlay  = nbt.getByteArray("overlay");
@@ -43,12 +53,22 @@ public class TEBase extends TileEntity {
     public void writeToNBT(NBTTagCompound nbt)
     {
         super.writeToNBT(nbt);
+
+        NBTTagList nbttaglist = new NBTTagList();
         
-        for (int count = 0; count < 7; ++count) {
-            nbt.setString("cover_" + count, cover[count]);
+        for (int count = 0; count < cover.length; ++count)
+        {
+            if (cover[count] != null)
+            {
+                NBTTagCompound nbttagcompound1 = new NBTTagCompound();
+                nbttagcompound1.setByte("cover", (byte)count);
+                cover[count].writeToNBT(nbttagcompound1);
+                nbttaglist.appendTag(nbttagcompound1);
+            }
         }
         
-        nbt.setByteArray("metadata", metadata);
+        nbt.setTag("covers", nbttaglist);
+
         nbt.setByteArray("pattern", pattern);
         nbt.setByteArray("color", color);
         nbt.setByteArray("overlay", overlay);

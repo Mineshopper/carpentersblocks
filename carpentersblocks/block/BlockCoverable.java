@@ -102,7 +102,7 @@ public class BlockCoverable extends BlockContainer {
         TEBase TE = (TEBase) world.getTileEntity(x, y, z);
         
         int metadata = BlockProperties.hasCover(TE, 6) ? BlockProperties.getCoverMetadata(TE, 6) : EventHandler.BLOCKICON_BASE_ID;
-        
+
         return BlockProperties.getCover(TE, 6).getIcon(side, metadata);
     }
     
@@ -120,11 +120,11 @@ public class BlockCoverable extends BlockContainer {
         
         TEBase[] list = {
                 block_YN != null && block_YN instanceof BlockCoverable ? (TEBase) world.getTileEntity(x, y - 1, z) : null,
-                        block_YP != null && block_YP instanceof BlockCoverable ? (TEBase) world.getTileEntity(x, y + 1, z) : null,
-                                block_ZN != null && block_ZN instanceof BlockCoverable ? (TEBase) world.getTileEntity(x, y, z - 1) : null,
-                                        block_ZP != null && block_ZP instanceof BlockCoverable ? (TEBase) world.getTileEntity(x, y, z + 1) : null,
-                                                block_XN != null && block_XN instanceof BlockCoverable ? (TEBase) world.getTileEntity(x - 1, y, z) : null,
-                                                        block_XP != null && block_XP instanceof BlockCoverable ? (TEBase) world.getTileEntity(x + 1, y, z) : null
+                block_YP != null && block_YP instanceof BlockCoverable ? (TEBase) world.getTileEntity(x, y + 1, z) : null,
+                block_ZN != null && block_ZN instanceof BlockCoverable ? (TEBase) world.getTileEntity(x, y, z - 1) : null,
+                block_ZP != null && block_ZP instanceof BlockCoverable ? (TEBase) world.getTileEntity(x, y, z + 1) : null,
+                block_XN != null && block_XN instanceof BlockCoverable ? (TEBase) world.getTileEntity(x - 1, y, z) : null,
+                block_XP != null && block_XP instanceof BlockCoverable ? (TEBase) world.getTileEntity(x + 1, y, z) : null
         };
         
         return list;
@@ -212,7 +212,7 @@ public class BlockCoverable extends BlockContainer {
                             } else if (BlockProperties.hasDyeColor(TE, effectiveSide)) {
                                 altered.add(BlockProperties.setDyeColor(TE, effectiveSide, 0));
                             } else if (BlockProperties.hasCover(TE, effectiveSide)) {
-                                altered.add(BlockProperties.setCover(TE, effectiveSide, 0, (ItemStack)null));
+                                altered.add(BlockProperties.setCover(TE, effectiveSide, (ItemStack)null));
                                 altered.add(BlockProperties.setPattern(TE, effectiveSide, 0));
                             }
                             
@@ -318,14 +318,16 @@ public class BlockCoverable extends BlockContainer {
                                 metadata = block.onBlockPlaced(world, x, y, z, side_interpolated, hitX, hitY, hitZ, metadata);
                             }
                             
+                            itemStack.setItemDamage(metadata);
+                            
                             if (!BlockProperties.hasCover(TE, 6)) {
                                 
-                                altered.add(decInv.add(BlockProperties.setCover(TE, 6, metadata, itemStack)));
+                                altered.add(decInv.add(BlockProperties.setCover(TE, 6, itemStack)));
                                 
                             } else if (FeatureRegistry.enableSideCovers) {
                                 
                                 if (!BlockProperties.hasCover(TE, side) && canCoverSide(TE, world, x, y, z, side)) {
-                                    altered.add(decInv.add(BlockProperties.setCover(TE, side, metadata, itemStack)));
+                                    altered.add(decInv.add(BlockProperties.setCover(TE, side, itemStack)));
                                 }
                                 
                             }

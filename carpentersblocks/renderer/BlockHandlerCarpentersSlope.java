@@ -475,7 +475,7 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
         /* Render sloped faces. */
         
         isSideSloped = true;
-        
+
         switch (slope.getPrimaryType()) {
             case WEDGE_SIDE:
                 prepareHorizontalWedge(block, slope, x, y, z);
@@ -531,7 +531,7 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
         RenderHelper.startDrawing(QUADS);
         
         renderBlocks.enableAO = false;
-        return true;
+        return false;
     }
     
     /**

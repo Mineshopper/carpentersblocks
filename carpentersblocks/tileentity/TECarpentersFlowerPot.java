@@ -4,8 +4,8 @@ import net.minecraft.nbt.NBTTagCompound;
 
 public class TECarpentersFlowerPot extends TEBase {
     
-    public String soil;
-    public String plant;
+    public String soil = "";
+    public String plant = "";
     public byte soil_metadata;
     public byte plant_metadata;
     
