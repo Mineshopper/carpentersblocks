@@ -4,9 +4,6 @@ import static carpentersblocks.renderer.helper.VertexHelper.BOTTOM_LEFT;
 import static carpentersblocks.renderer.helper.VertexHelper.BOTTOM_RIGHT;
 import static carpentersblocks.renderer.helper.VertexHelper.TOP_LEFT;
 import static carpentersblocks.renderer.helper.VertexHelper.TOP_RIGHT;
-
-import javax.swing.Icon;
-
 import net.minecraft.block.Block;
 import net.minecraft.util.IIcon;
 import carpentersblocks.renderer.helper.VertexHelper;

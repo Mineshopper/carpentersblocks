@@ -1,7 +1,6 @@
 package carpentersblocks.proxy;
 
 import net.minecraftforge.common.MinecraftForge;
-import carpentersblocks.CarpentersBlocks;
 import carpentersblocks.renderer.BlockHandlerCarpentersBarrier;
 import carpentersblocks.renderer.BlockHandlerCarpentersBed;
 import carpentersblocks.renderer.BlockHandlerCarpentersBlock;
@@ -19,7 +18,6 @@ import carpentersblocks.renderer.BlockHandlerCarpentersSafe;
 import carpentersblocks.renderer.BlockHandlerCarpentersSlope;
 import carpentersblocks.renderer.BlockHandlerCarpentersStairs;
 import carpentersblocks.renderer.BlockHandlerCarpentersTorch;
-import carpentersblocks.util.handler.LanguageHandler;
 import carpentersblocks.util.handler.OptifineHandler;
 import carpentersblocks.util.handler.TileEntityHandler;
 import carpentersblocks.util.registry.BlockRegistry;
@@ -30,12 +28,11 @@ import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 
 public class ClientProxy extends CommonProxy {
-
+    
     @Override
     public void registerRenderInformation(FMLPreInitializationEvent event)
     {
         MinecraftForge.EVENT_BUS.register(new IconRegistry());
-        LanguageHandler.init(event);
         TileEntityHandler.registerTileEntityRenderers();
         
         if (BlockRegistry.enableBarrier) {

@@ -4,7 +4,6 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraftforge.common.config.Configuration;
 import carpentersblocks.proxy.CommonProxy;
 import carpentersblocks.util.CarpentersBlocksTab;
-import carpentersblocks.util.ModLogger;
 import carpentersblocks.util.handler.TileEntityHandler;
 import carpentersblocks.util.registry.BlockRegistry;
 import carpentersblocks.util.registry.FeatureRegistry;
@@ -31,7 +30,7 @@ public class CarpentersBlocks {
     
     @SidedProxy(clientSide = "carpentersblocks.proxy.ClientProxy", serverSide = "carpentersblocks.proxy.CommonProxy")
     public static CommonProxy proxy;
-        
+    
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
@@ -44,7 +43,7 @@ public class CarpentersBlocks {
         FeatureRegistry.initFeatures(event, config);
         BlockRegistry.initBlocks(event, config);
         ItemRegistry.initItems(event, config);
-                
+        
         if (config.hasChanged()) {
             config.save();
         }

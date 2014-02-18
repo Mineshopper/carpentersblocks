@@ -68,9 +68,9 @@ public class FlowerPotProperties {
     public final static boolean hasSoil(TEBase TE)
     {
         Block block = getSoil(TE);
-
+        
         return block != null &&
-               isSoil(new ItemStack(block, 1, getSoilMetadata(TE)));
+                isSoil(new ItemStack(block, 1, getSoilMetadata(TE)));
     }
     
     /**
@@ -81,7 +81,7 @@ public class FlowerPotProperties {
         Block block = getPlant(TE);
         
         return block != null &&
-               isPlant(new ItemStack(block, 1, getPlantMetadata(TE)));
+                isPlant(new ItemStack(block, 1, getPlantMetadata(TE)));
     }
     
     /**
@@ -125,8 +125,6 @@ public class FlowerPotProperties {
         }
         
         Block block = Block.getBlockFromItem(itemStack.getItem());
-        int metadata = itemStack == null ? 0 : itemStack.getItemDamage();
-        
         ((TECarpentersFlowerPot)TE).soil = itemStack.getUnlocalizedName();
         
         World world = TE.getWorldObj();
@@ -149,8 +147,6 @@ public class FlowerPotProperties {
         itemStack = FlowerPotHandler.getEquivalentBlock(itemStack);
         
         Block block = Block.getBlockFromItem(itemStack.getItem());
-        int metadata = itemStack == null ? 0 : itemStack.getItemDamage();
-        
         ((TECarpentersFlowerPot)TE).plant = itemStack.getUnlocalizedName();
         
         World world = TE.getWorldObj();

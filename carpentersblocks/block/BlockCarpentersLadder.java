@@ -89,7 +89,7 @@ public class BlockCarpentersLadder extends BlockCoverable {
                 if (block != null) {
                     return block.isSideSolid(world, x, y - 1, z, ForgeDirection.DOWN) || block.equals(this) && Ladder.isFreestanding((TEBase) world.getTileEntity(x, y - 1, z));
                 }
-                                
+                
             case NORTH:
                 
                 block = world.getBlock(x, y, z + 1);
@@ -215,7 +215,7 @@ public class BlockCarpentersLadder extends BlockCoverable {
                 dropBlockAsItem(world, x, y, z, data, 0);
                 world.setBlockToAir(x, y, z);
             }
-
+            
         }
         
         super.onNeighborBlockChange(world, x, y, z, block);

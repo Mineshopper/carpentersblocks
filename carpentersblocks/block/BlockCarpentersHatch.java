@@ -345,8 +345,8 @@ public class BlockCarpentersHatch extends BlockCoverable {
         TEBase TE = (TEBase) world.getTileEntity(x, y, z);
         
         return Hatch.getType(TE) == Hatch.TYPE_HIDDEN &&
-               Hatch.getPos(TE) == Hatch.POSITION_HIGH &&
-               Hatch.getState(TE) == Hatch.STATE_OPEN;
+                Hatch.getPos(TE) == Hatch.POSITION_HIGH &&
+                Hatch.getState(TE) == Hatch.STATE_OPEN;
     }
     
     /**
@@ -356,10 +356,10 @@ public class BlockCarpentersHatch extends BlockCoverable {
     private boolean isValidSupportBlock(World world, int x, int y, int z, Block block)
     {
         return block == Blocks.glowstone ||
-               block instanceof BlockCarpentersStairs ||
-               block instanceof BlockCarpentersBlock ||
-               block instanceof BlockSlab ||
-               block instanceof BlockStairs;
+                block instanceof BlockCarpentersStairs ||
+                block instanceof BlockCarpentersBlock ||
+                block instanceof BlockSlab ||
+                block instanceof BlockStairs;
     }
     
     @Override

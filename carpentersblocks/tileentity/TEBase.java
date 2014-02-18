@@ -26,7 +26,7 @@ public class TEBase extends TileEntity {
     public void readFromNBT(NBTTagCompound nbt)
     {
         super.readFromNBT(nbt);
-
+        
         for (int count = 0; count < 7; ++count) {
             cover[count] = nbt.getString("cover_" + count);
         }

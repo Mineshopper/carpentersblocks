@@ -89,7 +89,7 @@ public class BlockCarpentersBarrier extends BlockCoverable {
         for (TEBase TE_current : TE_list) {
             
             if (TE_current != null) {
-
+                
                 Block block = TE_current.getBlockType();
                 
                 if (block.equals(this)) {
@@ -97,7 +97,7 @@ public class BlockCarpentersBarrier extends BlockCoverable {
                 } else if (block.equals(BlockRegistry.blockCarpentersGate)) {
                     Barrier.setType(TE, Gate.getType(TE_current));
                 }
-            
+                
             }
             
         }

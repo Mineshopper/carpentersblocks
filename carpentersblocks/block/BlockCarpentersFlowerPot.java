@@ -2,8 +2,6 @@ package carpentersblocks.block;
 
 import java.util.Random;
 
-import javax.swing.Icon;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -16,7 +14,6 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-import carpentersblocks.CarpentersBlocks;
 import carpentersblocks.data.FlowerPot;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.tileentity.TECarpentersFlowerPot;
@@ -84,13 +81,13 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
             if (EventHandler.hitY > 0.375F) {
                 
                 if (FlowerPotProperties.hasPlant(TE)) {
-                    return FlowerPotProperties.setPlant((TECarpentersFlowerPot)TE, (ItemStack)null);
+                    return FlowerPotProperties.setPlant(TE, (ItemStack)null);
                 }
                 
             } else if (FlowerPotProperties.hasSoil(TE)) {
                 
                 if (EventHandler.eventFace == 1 && EventHandler.hitX > 0.375F && EventHandler.hitX < 0.625F && EventHandler.hitZ > 0.375F && EventHandler.hitZ < 0.625F) {
-                    return FlowerPotProperties.setSoil((TECarpentersFlowerPot)TE, (ItemStack)null);
+                    return FlowerPotProperties.setSoil(TE, (ItemStack)null);
                 }
                 
             }
@@ -172,7 +169,7 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
                 {
                     if (FlowerPotProperties.isPlant(itemStack))
                     {
-                        FlowerPotProperties.setPlant((TECarpentersFlowerPot)TE, itemStack);
+                        FlowerPotProperties.setPlant(TE, itemStack);
                         result[ALTERED] = true;
                         result[DEC_INV] = true;
                     }
@@ -184,7 +181,7 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
                 {
                     if (hasCover || soilAreaClicked)
                     {
-                        FlowerPotProperties.setSoil((TECarpentersFlowerPot)TE, itemStack);
+                        FlowerPotProperties.setSoil(TE, itemStack);
                         result[ALTERED] = true;
                         result[DEC_INV] = true;
                     }
@@ -287,9 +284,9 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
             
             AxisAlignedBB axisAlignedBB = AxisAlignedBB.getAABBPool().getAABB(x + 0.3125F, y, z + 0.3125F, x + 0.6875F, y + 0.375F, z + 0.6875F);
             
-            if (FlowerPotProperties.hasPlant((TECarpentersFlowerPot)TE)) {
+            if (FlowerPotProperties.hasPlant(TE)) {
                 
-                switch (FlowerPotHandler.getPlantProfile((TECarpentersFlowerPot)TE)) {
+                switch (FlowerPotHandler.getPlantProfile(TE)) {
                     case CACTUS:
                     case LEAVES:
                         axisAlignedBB = AxisAlignedBB.getAABBPool().getAABB(x + 0.3125F, y, z + 0.3125F, x + 0.6875F, y + 0.99F, z + 0.6875F);
@@ -352,7 +349,7 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
             
             if (FlowerPotProperties.hasPlant(TE))
             {
-                world.setBlockMetadataWithNotify(x, y, z, FlowerPotProperties.getPlantMetadata((TECarpentersFlowerPot)TE), 4);
+                world.setBlockMetadataWithNotify(x, y, z, FlowerPotProperties.getPlantMetadata(TE), 4);
                 FlowerPotProperties.getPlant(TE).onEntityCollidedWithBlock(world, x, y, z, entity);
                 world.setBlockMetadataWithNotify(x, y, z, BlockProperties.getCoverMetadata(TE, 6), 4);
             }
@@ -396,7 +393,7 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
             
             if (FlowerPotProperties.hasPlant(TE)) {
                 
-                world.setBlockMetadataWithNotify(x, y, z, FlowerPotProperties.getPlantMetadata((TECarpentersFlowerPot) TE), 4);
+                world.setBlockMetadataWithNotify(x, y, z, FlowerPotProperties.getPlantMetadata(TE), 4);
                 FlowerPotProperties.getPlant(TE).randomDisplayTick(world, x, y, z, random);
                 world.setBlockMetadataWithNotify(x, y, z, BlockProperties.getCoverMetadata(TE, 6), 4);
                 
@@ -404,7 +401,7 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
             
             if (FlowerPotProperties.hasSoil(TE)) {
                 
-                world.setBlockMetadataWithNotify(x, y, z, FlowerPotProperties.getSoilMetadata((TECarpentersFlowerPot) TE), 4);
+                world.setBlockMetadataWithNotify(x, y, z, FlowerPotProperties.getSoilMetadata(TE), 4);
                 FlowerPotProperties.getSoil(TE).randomDisplayTick(world, x, y, z, random);
                 world.setBlockMetadataWithNotify(x, y, z, BlockProperties.getCoverMetadata(TE, 6), 4);
                 
@@ -425,10 +422,10 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
         
         if (TE != null && TE instanceof TECarpentersFlowerPot) {
             if (FlowerPotProperties.hasPlant(TE)) {
-                FlowerPotProperties.setPlant((TECarpentersFlowerPot)TE, (ItemStack)null);
+                FlowerPotProperties.setPlant(TE, (ItemStack)null);
             }
             if (FlowerPotProperties.hasSoil(TE)) {
-                FlowerPotProperties.setSoil((TECarpentersFlowerPot)TE, (ItemStack)null);
+                FlowerPotProperties.setSoil(TE, (ItemStack)null);
             }
         }
         

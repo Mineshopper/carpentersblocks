@@ -1,36 +1,9 @@
 package carpentersblocks.util.registry;
 
-import java.util.Iterator;
-
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockDirt;
-import net.minecraft.block.BlockDoublePlant;
-import net.minecraft.block.BlockFlower;
-import net.minecraft.block.BlockNewLog;
-import net.minecraft.block.BlockOldLog;
-import net.minecraft.block.BlockQuartz;
-import net.minecraft.block.BlockSand;
-import net.minecraft.block.BlockSandStone;
-import net.minecraft.block.BlockSapling;
-import net.minecraft.block.BlockSilverfish;
-import net.minecraft.block.BlockStoneBrick;
-import net.minecraft.block.BlockWall;
-import net.minecraft.block.BlockWood;
 import net.minecraft.block.material.Material;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemAnvilBlock;
-import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemCloth;
-import net.minecraft.item.ItemColored;
-import net.minecraft.item.ItemDoublePlant;
-import net.minecraft.item.ItemLeaves;
-import net.minecraft.item.ItemLilyPad;
-import net.minecraft.item.ItemMultiTexture;
-import net.minecraft.item.ItemPiston;
-import net.minecraft.item.ItemSlab;
-import net.minecraft.item.ItemSnow;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.oredict.ShapedOreRecipe;
@@ -52,6 +25,7 @@ import carpentersblocks.block.BlockCarpentersSafe;
 import carpentersblocks.block.BlockCarpentersSlope;
 import carpentersblocks.block.BlockCarpentersStairs;
 import carpentersblocks.block.BlockCarpentersTorch;
+import carpentersblocks.block.ItemBlockCarpentersSlope;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
 
@@ -248,12 +222,8 @@ public class BlockRegistry {
         
         if (enableSlope) {
             blockCarpentersSlope = new BlockCarpentersSlope(Material.wood).setBlockName("blockCarpentersSlope").setBlockTextureName(CarpentersBlocks.MODID + ":" + "general/full_frame");
-            GameRegistry.registerBlock(blockCarpentersSlope, "blockCarpentersSlope");
+            GameRegistry.registerBlock(blockCarpentersSlope, ItemBlockCarpentersSlope.class, "blockCarpentersSlope");
             GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(blockCarpentersSlope, recipeQuantitySlope), "  X", " XY", "XYY", 'X', "stickWood", 'Y', blockCarpentersBlock));
-            
-            // Add subblocks
-            Object object = (new ItemMultiTexture(blockCarpentersSlope, blockCarpentersSlope, BlockCarpentersSlope.slopeType)).setUnlocalizedName("blockCarpentersSlope");
-            Item.itemRegistry.addObject(Block.getIdFromBlock(blockCarpentersSlope), "blockCarpentersSlope", object);            
         }
         
         if (enableStairs) {

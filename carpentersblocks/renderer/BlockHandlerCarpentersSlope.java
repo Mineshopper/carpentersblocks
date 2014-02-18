@@ -125,13 +125,13 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
         
         switch (metadata) {
             case BlockCarpentersSlope.META_PRISM_SLOPE:
-
+                
                 tessellator.startDrawing(TRIANGLES);
                 tessellator.setNormal(-1.0F, 0.0F, 0.0F);
                 renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 0.5D, 0.5D);
-                HelperTriangle.renderFaceXNegZNeg(renderBlocks, 0.0D, 0.0D, 0.0D, block.getIcon(4, EventHandler.BLOCKICON_BASE_ID));
+                HelperTriangle.renderFaceXNegZNeg(renderBlocks, 0.0D, 0.0D, 0.0D, IconRegistry.icon_quartered_frame);
                 renderBlocks.setRenderBounds(0.0D, 0.0D, 0.5D, 1.0D, 0.5D, 1.0D);
-                HelperTriangle.renderFaceXNegZPos(renderBlocks, 0.0D, 0.0D, 0.0D, block.getIcon(4, EventHandler.BLOCKICON_BASE_ID));
+                HelperTriangle.renderFaceXNegZPos(renderBlocks, 0.0D, 0.0D, 0.0D, IconRegistry.icon_quartered_frame);
                 
                 
                 tessellator.setNormal(0.0F, 0.5F, -1.0F);
@@ -150,18 +150,18 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
                 
                 tessellator.startDrawing(TRIANGLES);
                 tessellator.setNormal(0.0F, 0.0F, -1.0F);
-                HelperOrthoWedge.renderFaceZNeg(renderBlocks, Slope.ID_WEDGE_POS_W, 0.0D, 0.0D, 0.0D, block.getIcon(2, EventHandler.BLOCKICON_BASE_ID));
+                HelperOrthoWedge.renderFaceZNeg(renderBlocks, Slope.ID_WEDGE_POS_W, 0.0D, 0.0D, 0.0D, IconRegistry.icon_full_frame);
                 tessellator.setNormal(0.0F, 0.0F, 1.0F);
-                HelperOrthoWedge.renderFaceZPos(renderBlocks, Slope.ID_WEDGE_POS_W, 0.0D, 0.0D, 0.0D, block.getIcon(2, EventHandler.BLOCKICON_BASE_ID));
+                HelperOrthoWedge.renderFaceZPos(renderBlocks, Slope.ID_WEDGE_POS_W, 0.0D, 0.0D, 0.0D, IconRegistry.icon_full_frame);
                 
                 tessellator.draw();
                 tessellator.startDrawingQuads();
                 tessellator.setNormal(0.0F, -1.0F, 0.0F);
-                RenderHelper.renderFaceYNeg(renderBlocks, 0.0D, 0.0D, 0.0D, block.getIcon(0, EventHandler.BLOCKICON_BASE_ID));
+                RenderHelper.renderFaceYNeg(renderBlocks, 0.0D, 0.0D, 0.0D, IconRegistry.icon_full_frame);
                 tessellator.setNormal(1.0F, 0.0F, 0.0F);
-                RenderHelper.renderFaceXPos(renderBlocks, 0.0D, 0.0D, 0.0D, block.getIcon(2, EventHandler.BLOCKICON_BASE_ID));
+                RenderHelper.renderFaceXPos(renderBlocks, 0.0D, 0.0D, 0.0D, IconRegistry.icon_full_frame);
                 tessellator.setNormal(-1.0F, 0.5F, 0.0F);
-                HelperOblWedge.renderSlopeXNeg(renderBlocks, Slope.ID_WEDGE_POS_W, 0.0D, 0.0D, 0.0D, block.getIcon(1, EventHandler.BLOCKICON_BASE_ID));
+                HelperOblWedge.renderSlopeXNeg(renderBlocks, Slope.ID_WEDGE_POS_W, 0.0D, 0.0D, 0.0D, IconRegistry.icon_full_frame);
                 
                 break;
             case BlockCarpentersSlope.META_OBLIQUE_INT:
@@ -228,6 +228,7 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
             default:
                 return;
         }
+        
         
         tessellator.draw();
         

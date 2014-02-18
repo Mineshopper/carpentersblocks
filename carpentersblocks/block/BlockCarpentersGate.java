@@ -9,7 +9,6 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import carpentersblocks.CarpentersBlocks;
 import carpentersblocks.data.Barrier;
 import carpentersblocks.data.Gate;
 import carpentersblocks.tileentity.TEBase;
@@ -205,7 +204,7 @@ public class BlockCarpentersGate extends BlockCoverable {
         for (TEBase TE_current : TE_list) {
             
             if (TE_current != null) {
-
+                
                 Block block = TE_current.getBlockType();
                 
                 if (block.equals(this)) {
@@ -213,7 +212,7 @@ public class BlockCarpentersGate extends BlockCoverable {
                 } else if (block.equals(BlockRegistry.blockCarpentersGate)) {
                     Gate.setType(TE, Barrier.getType(TE_current));
                 }
-            
+                
             }
             
         }

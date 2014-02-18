@@ -140,7 +140,7 @@ public class BlockHandlerCarpentersFlowerPot extends BlockHandlerBase {
      */
     public boolean renderSoil(Block block, int x, int y, int z)
     {
-        setMetadataOverride(FlowerPotProperties.getSoilMetadata((TECarpentersFlowerPot)TE));
+        setMetadataOverride(FlowerPotProperties.getSoilMetadata(TE));
         
         renderBlocks.setRenderBounds(0.375D, 0.0625D, 0.375D, 0.625D, 0.25D, 0.625D);
         renderBlock(block, x, y, z);
@@ -158,7 +158,7 @@ public class BlockHandlerCarpentersFlowerPot extends BlockHandlerBase {
         Tessellator tessellator = Tessellator.instance;
         tessellator.addTranslation(0.0F, 0.25F, 0.0F);
         
-        int metadata = FlowerPotProperties.getPlantMetadata((TECarpentersFlowerPot)TE);
+        int metadata = FlowerPotProperties.getPlantMetadata(TE);
         
         setMetadataOverride(metadata);
         
@@ -200,7 +200,7 @@ public class BlockHandlerCarpentersFlowerPot extends BlockHandlerBase {
     {
         World world = TE.getWorldObj();
         
-        world.setBlockMetadataWithNotify(x, y, z, FlowerPotProperties.getPlantMetadata((TECarpentersFlowerPot) TE), 4);
+        world.setBlockMetadataWithNotify(x, y, z, FlowerPotProperties.getPlantMetadata(TE), 4);
         renderBlocks.setRenderBounds(0.375F, 0.0D, 0.375F, 0.625F, 0.25D, 0.625F);
         renderBlock(block, x, y, z);
         renderBlocks.setRenderBounds(0.375F, 0.25D, 0.375F, 0.625F, 0.50D, 0.625F);

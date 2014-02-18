@@ -59,7 +59,7 @@ public class EventHandler {
         Block block = event.entity.worldObj.getBlock(event.x, event.y, event.z);
         
         if (block != null && block instanceof BlockCoverable)
-        {            
+        {
             eventFace = event.face;
             eventEntityPlayer = event.entityPlayer;
             
@@ -125,7 +125,7 @@ public class EventHandler {
                 } else {
                     return;
                 }
-
+                
                 CarpentersBlocks.channel.sendToServer(new FMLProxyPacket(new PacketSlopeSelect(event.dwheel == 120)));
                 
             }
@@ -172,7 +172,7 @@ public class EventHandler {
         int z = MathHelper.floor_double(entity.posZ);
         
         Block block = world.getBlock(x, y, z);
-
+        
         if (block != null && block instanceof BlockCoverable) {
             
             TEBase TE = (TEBase) world.getTileEntity(x, y, z);
@@ -209,7 +209,7 @@ public class EventHandler {
                     int z = MathHelper.floor_float(event.z);
                     
                     Block block = world.getBlock(x, y, z);
-
+                    
                     if (block != null && block instanceof BlockCoverable) {
                         
                         block = BlockProperties.getCover((TEBase) world.getTileEntity(x, y, z), 6);
@@ -243,7 +243,7 @@ public class EventHandler {
                 int z = MathHelper.floor_double(event.entity.posZ);
                 
                 Block block = event.entity.worldObj.getBlock(x, y, z);
-
+                
                 if (block != null && block instanceof BlockCoverable)
                 {
                     block = BlockProperties.getCover((TEBase) event.entity.worldObj.getTileEntity(x, y, z), 6);

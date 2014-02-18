@@ -53,8 +53,8 @@ public class BlockCarpentersSafe extends BlockCoverable {
         if (isOp(entityPlayer)) {
             return true;
         } else {
-            return ((EntityPlayer) entityPlayer).canPlayerEdit(TE.xCoord, TE.yCoord, TE.zCoord, EventHandler.eventFace, entityPlayer.getHeldItem()) &&
-                   TE.isOwner((EntityPlayer) entityPlayer);
+            return entityPlayer.canPlayerEdit(TE.xCoord, TE.yCoord, TE.zCoord, EventHandler.eventFace, entityPlayer.getHeldItem()) &&
+                    TE.isOwner(entityPlayer);
         }
     }
     

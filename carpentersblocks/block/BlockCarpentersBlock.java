@@ -12,9 +12,6 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-import carpentersblocks.CarpentersBlocks;
-import carpentersblocks.data.Barrier;
-import carpentersblocks.data.Gate;
 import carpentersblocks.data.Slab;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
@@ -27,7 +24,7 @@ public class BlockCarpentersBlock extends BlockCoverable {
     {
         super(material);
     }
-
+    
     @Override
     /**
      * Alter type.
@@ -127,7 +124,7 @@ public class BlockCarpentersBlock extends BlockCoverable {
         TEBase TE = (TEBase) world.getTileEntity(x, y, z);
         
         int data = Slab.BLOCK_FULL;
-
+        
         if (!entityLiving.isSneaking()) {
             
             /* Match block type with adjacent type if possible. */
@@ -162,7 +159,7 @@ public class BlockCarpentersBlock extends BlockCoverable {
             TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
             return BlockProperties.getData(TE) == Slab.BLOCK_FULL;
         }
-        */
+         */
         
         /*
          * Need to implement this for the full version of Carpenter's Block
@@ -183,7 +180,7 @@ public class BlockCarpentersBlock extends BlockCoverable {
         if (TE != null) {
             
             if (isBlockSolid(world, x, y, z)) {
-
+                
                 int data = BlockProperties.getData(TE);
                 
                 if (data == Slab.BLOCK_FULL) {

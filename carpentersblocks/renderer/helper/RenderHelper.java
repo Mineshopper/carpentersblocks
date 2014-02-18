@@ -1,11 +1,12 @@
 package carpentersblocks.renderer.helper;
 
-import javax.swing.Icon;
-
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import org.lwjgl.opengl.GL11;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -13,10 +14,10 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class RenderHelper extends VertexHelper {
     
     /** Tessellator draw mode for triangles. */
-    public final static int TRIANGLES = 4;
+    public final static int TRIANGLES = GL11.GL_TRIANGLES;
     
     /** Tessellator draw mode for quads. */
-    public final static int QUADS = 7;
+    public final static int QUADS = GL11.GL_QUADS;
     
     private static double uMin;
     private static double uMax;

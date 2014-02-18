@@ -15,7 +15,7 @@ import carpentersblocks.util.registry.FeatureRegistry;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 
 public class CommonProxy {
-
+    
     public void registerHandlers(FMLPreInitializationEvent event)
     {
         if (FeatureRegistry.enableExtendedPlantSupport) {

@@ -1,7 +1,5 @@
 package carpentersblocks.renderer.helper.slope.oblique;
 
-import javax.swing.Icon;
-
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;

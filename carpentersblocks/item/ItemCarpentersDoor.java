@@ -47,7 +47,7 @@ public class ItemCarpentersDoor extends Item {
                     entityPlayer.canPlayerEdit(x, y + 1, z, side, itemStack)             &&
                     world.isAirBlock(x, y, z)                                            &&
                     world.isAirBlock(x, y + 1, z)                                        &&
-                    world.doesBlockHaveSolidTopSurface(world, x, y - 1, z)               &&
+                    World.doesBlockHaveSolidTopSurface(world, x, y - 1, z)               &&
                     world.setBlock(x, y, z, BlockRegistry.blockCarpentersDoor, 0, 4)     &&
                     world.setBlock(x, y + 1, z, BlockRegistry.blockCarpentersDoor, 0, 4)
                     )

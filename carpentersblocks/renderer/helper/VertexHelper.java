@@ -54,7 +54,7 @@ public class VertexHelper {
     public static boolean iconHasFloatingHeight(IIcon icon)
     {
         return icon == BlockGrass.getIconSideOverlay() ||
-               icon.getIconName().contains("overlay/overlay_") && icon.getIconName().endsWith("_side");
+                icon.getIconName().contains("overlay/overlay_") && icon.getIconName().endsWith("_side");
     }
     
     /**

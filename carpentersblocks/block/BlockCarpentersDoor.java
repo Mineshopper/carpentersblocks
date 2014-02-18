@@ -378,7 +378,7 @@ public class BlockCarpentersDoor extends BlockCoverable {
                 if (!world.getBlock(x, y + 1, z).equals(this)) {
                     world.setBlockToAir(x, y, z);
                     return;
-                } else if (!world.doesBlockHaveSolidTopSurface(world, x, y - 1, z)) {
+                } else if (!World.doesBlockHaveSolidTopSurface(world, x, y - 1, z)) {
                     world.setBlockToAir(x, y + 1, z);
                     dropBlockAsItem(world, x, y, z, 0, 0);
                     return;

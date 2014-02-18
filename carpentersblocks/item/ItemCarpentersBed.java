@@ -55,8 +55,8 @@ public class ItemCarpentersBed extends Item {
                     entityPlayer.canPlayerEdit(x_offset, y, z_offset, side, itemStack)            &&
                     world.isAirBlock(x, y, z)                                                     &&
                     world.isAirBlock(x_offset, y, z_offset)                                       &&
-                    world.doesBlockHaveSolidTopSurface(world, x, y - 1, z)                        &&
-                    world.doesBlockHaveSolidTopSurface(world, x_offset, y - 1, z_offset)          &&
+                    World.doesBlockHaveSolidTopSurface(world, x, y - 1, z)                        &&
+                    World.doesBlockHaveSolidTopSurface(world, x_offset, y - 1, z_offset)          &&
                     world.setBlock(x, y, z, BlockRegistry.blockCarpentersBed, 0, 4)               &&
                     world.setBlock(x_offset, y, z_offset, BlockRegistry.blockCarpentersBed, 0, 4)
                     )

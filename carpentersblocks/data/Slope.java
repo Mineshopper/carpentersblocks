@@ -20,7 +20,7 @@ public class Slope {
      * [0000000000000000]
      * slopeID
      */
-
+    
     public final static byte ID_WEDGE_SE          = 0;
     public final static byte ID_WEDGE_NW          = 1;
     public final static byte ID_WEDGE_NE          = 2;

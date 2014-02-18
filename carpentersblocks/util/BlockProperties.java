@@ -141,7 +141,7 @@ public class BlockProperties {
     public static boolean blockRotates(Block block)
     {
         return block instanceof BlockQuartz ||
-               block instanceof BlockRotatedPillar;
+                block instanceof BlockRotatedPillar;
     }
     
     /**
@@ -167,8 +167,8 @@ public class BlockProperties {
     public static boolean hasAttribute(TEBase TE, int side)
     {
         return hasCover(TE, side) ||
-               hasDyeColor(TE, side) ||
-               hasOverlay(TE, side);
+                hasDyeColor(TE, side) ||
+                hasOverlay(TE, side);
     }
     
     /**
@@ -206,7 +206,7 @@ public class BlockProperties {
         int metadata = getCoverMetadata(TE, side);
         
         return block != null &&
-               isCover(new ItemStack(block, 1, metadata));
+                isCover(new ItemStack(block, 1, metadata));
     }
     
     /**

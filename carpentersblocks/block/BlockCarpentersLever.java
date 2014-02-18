@@ -256,7 +256,7 @@ public class BlockCarpentersLever extends BlockCoverable {
     {
         TEBase TE = getTileEntity(world, x, y, z);
         
-        if (TE != null) {        
+        if (TE != null) {
             return Lever.getFacing(TE).ordinal() == side ? getPowerSupply(TE) : 0;
         } else {
             return 0;

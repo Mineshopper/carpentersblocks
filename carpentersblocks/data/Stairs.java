@@ -20,7 +20,7 @@ public class Stairs {
      * [0000000000000000]
      * stairsID
      */
-
+    
     public final static byte ID_NORMAL_SE         = 0;
     public final static byte ID_NORMAL_NW         = 1;
     public final static byte ID_NORMAL_NE         = 2;

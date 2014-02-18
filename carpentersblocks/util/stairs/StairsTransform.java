@@ -5,11 +5,9 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import carpentersblocks.block.BlockCarpentersStairs;
 import carpentersblocks.data.Stairs;
-import carpentersblocks.data.Stairs;
 import carpentersblocks.data.Stairs.Type;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
-import carpentersblocks.util.registry.BlockRegistry;
 
 public class StairsTransform {
     

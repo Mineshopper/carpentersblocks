@@ -108,7 +108,7 @@ public class BlockCarpentersTorch extends BlockCoverable {
         {
             ForgeDirection dir = ForgeDirection.getOrientation(side);
             Block block = world.getBlock(x, y - 1, z);
-
+            
             return world.getBlock(x - dir.offsetX, y - dir.offsetY, z - dir.offsetZ).isSideSolid(world, x - dir.offsetX, y - dir.offsetY, z - dir.offsetZ, dir) || side == 1 && block != null && block.canPlaceTorchOnTop(world, x, y, z);
         }
         
@@ -246,7 +246,7 @@ public class BlockCarpentersTorch extends BlockCoverable {
         TEBase TE = getTileEntity(world, x, y, z);
         
         if (TE != null) {
-
+            
             State state = Torch.getState(TE);
             
             if (!state.equals(State.UNLIT))

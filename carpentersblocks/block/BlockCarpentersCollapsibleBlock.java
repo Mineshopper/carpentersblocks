@@ -13,7 +13,6 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-import carpentersblocks.CarpentersBlocks;
 import carpentersblocks.data.Collapsible;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
@@ -163,7 +162,7 @@ public class BlockCarpentersCollapsibleBlock extends BlockCoverable {
         if (TE != null) {
             
             if (isBlockSolid(world, x, y, z)) {
-
+                
                 switch (side) {
                     case UP:
                         return BlockProperties.getData(TE) == 0;
@@ -193,7 +192,7 @@ public class BlockCarpentersCollapsibleBlock extends BlockCoverable {
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack itemStack)
     {
         /* If shift key is down, skip auto-setting quadrant heights. */
-
+        
         if (!entityLiving.isSneaking()) {
             
             TEBase TE = (TEBase) world.getTileEntity(x, y, z);

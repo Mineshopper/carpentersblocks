@@ -38,17 +38,12 @@ import net.minecraftforge.common.util.ForgeDirection;
 import carpentersblocks.CarpentersBlocks;
 import carpentersblocks.api.ICarpentersChisel;
 import carpentersblocks.api.ICarpentersHammer;
-import carpentersblocks.data.Barrier;
-import carpentersblocks.data.Gate;
 import carpentersblocks.renderer.helper.ParticleHelper;
 import carpentersblocks.tileentity.TEBase;
-import carpentersblocks.tileentity.TECarpentersFlowerPot;
 import carpentersblocks.util.BlockProperties;
-import carpentersblocks.util.flowerpot.FlowerPotProperties;
 import carpentersblocks.util.handler.EventHandler;
 import carpentersblocks.util.handler.OverlayHandler;
 import carpentersblocks.util.handler.PatternHandler;
-import carpentersblocks.util.registry.BlockRegistry;
 import carpentersblocks.util.registry.FeatureRegistry;
 import carpentersblocks.util.registry.IconRegistry;
 import carpentersblocks.util.registry.ItemRegistry;
@@ -115,24 +110,24 @@ public class BlockCoverable extends BlockContainer {
      * Returns an array of adjacent TEBase tile entities.
      */
     protected TEBase[] getAdjacentTileEntities(World world, int x, int y, int z)
-    {        
+    {
         Block block_YN = world.getBlock(x, y - 1, z);
         Block block_YP = world.getBlock(x, y + 1, z);
         Block block_ZN = world.getBlock(x, y, z - 1);
         Block block_ZP = world.getBlock(x, y, z + 1);
         Block block_XN = world.getBlock(x - 1, y, z);
         Block block_XP = world.getBlock(x + 1, y, z);
-
+        
         TEBase[] list = {
                 block_YN != null && block_YN instanceof BlockCoverable ? (TEBase) world.getTileEntity(x, y - 1, z) : null,
-                block_YP != null && block_YP instanceof BlockCoverable ? (TEBase) world.getTileEntity(x, y + 1, z) : null,
-                block_ZN != null && block_ZN instanceof BlockCoverable ? (TEBase) world.getTileEntity(x, y, z - 1) : null,
-                block_ZP != null && block_ZP instanceof BlockCoverable ? (TEBase) world.getTileEntity(x, y, z + 1) : null,
-                block_XN != null && block_XN instanceof BlockCoverable ? (TEBase) world.getTileEntity(x - 1, y, z) : null,
-                block_XP != null && block_XP instanceof BlockCoverable ? (TEBase) world.getTileEntity(x + 1, y, z) : null
+                        block_YP != null && block_YP instanceof BlockCoverable ? (TEBase) world.getTileEntity(x, y + 1, z) : null,
+                                block_ZN != null && block_ZN instanceof BlockCoverable ? (TEBase) world.getTileEntity(x, y, z - 1) : null,
+                                        block_ZP != null && block_ZP instanceof BlockCoverable ? (TEBase) world.getTileEntity(x, y, z + 1) : null,
+                                                block_XN != null && block_XN instanceof BlockCoverable ? (TEBase) world.getTileEntity(x - 1, y, z) : null,
+                                                        block_XP != null && block_XP instanceof BlockCoverable ? (TEBase) world.getTileEntity(x + 1, y, z) : null
         };
         
-        return list;        
+        return list;
     }
     
     /**
@@ -171,9 +166,9 @@ public class BlockCoverable extends BlockContainer {
         if (isOp(entityPlayer)) {
             return true;
         } else if (FeatureRegistry.enableBlockOwnership) {
-            return TE.isOwner((EntityPlayer) entityPlayer);
+            return TE.isOwner(entityPlayer);
         } else {
-            return ((EntityPlayer) entityPlayer).canPlayerEdit(TE.xCoord, TE.yCoord, TE.zCoord, EventHandler.eventFace, entityPlayer.getHeldItem());
+            return entityPlayer.canPlayerEdit(TE.xCoord, TE.yCoord, TE.zCoord, EventHandler.eventFace, entityPlayer.getHeldItem());
         }
     }
     
@@ -399,14 +394,14 @@ public class BlockCoverable extends BlockContainer {
             for (TEBase TE_current : TE_list) {
                 
                 if (TE_current != null) {
-
-                    Block block = TE_current.getBlockType();
+                    
+                    TE_current.getBlockType();
                     
                     if (BlockProperties.hasPattern(TE_current, side)) {
                         pattern = BlockProperties.getPattern(TE_current, side);
                         neighbor_pattern = pattern;
                     }
-                
+                    
                 }
                 
             }
@@ -700,34 +695,34 @@ public class BlockCoverable extends BlockContainer {
      */
     public int getLightValue(IBlockAccess world, int x, int y, int z)
     {
-    	TEBase TE = getTileEntity(world, x, y, z);
-    	
+        TEBase TE = getTileEntity(world, x, y, z);
+        
         if (TE != null) {
-
+            
             if (BlockProperties.hasCover(TE, 6)) {
-
+                
                 int lightOutput = getLightValue();
-
+                
                 for (int side = 0; side < 7; ++side)
                 {
                     if (BlockProperties.hasCover(TE, side))
                     {
                         int tempLightOutput = BlockProperties.getCover(TE, side).getLightValue();
-
+                        
                         if (tempLightOutput > lightOutput) {
                             lightOutput = tempLightOutput;
                         }
                     }
                 }
-
+                
                 int auxLightValue = auxiliaryGetLightValue(TE, world, x, y, z);
-
+                
                 if (auxLightValue > lightOutput) {
                     lightOutput = auxLightValue;
                 }
-
+                
                 return lightOutput;
-                                
+                
             }
             
         }

@@ -12,7 +12,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.common.IShearable;
 import carpentersblocks.tileentity.TEBase;
-import carpentersblocks.tileentity.TECarpentersFlowerPot;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.GameRegistry.UniqueIdentifier;
 
@@ -105,7 +104,7 @@ public class FlowerPotHandler {
     public static Profile getPlantProfile(TEBase TE)
     {
         Block block = FlowerPotProperties.getPlant(TE);
-        int metadata = FlowerPotProperties.getPlantMetadata((TECarpentersFlowerPot)TE);
+        int metadata = FlowerPotProperties.getPlantMetadata(TE);
         
         String name = getFullUnlocalizedName(new ItemStack(block, 1, metadata));
         

@@ -5,7 +5,6 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
-import carpentersblocks.CarpentersBlocks;
 import carpentersblocks.item.ItemCarpentersBed;
 import carpentersblocks.item.ItemCarpentersChisel;
 import carpentersblocks.item.ItemCarpentersDoor;

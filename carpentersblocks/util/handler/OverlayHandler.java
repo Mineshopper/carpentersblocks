@@ -13,7 +13,7 @@ import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 
 public class OverlayHandler {
-
+    
     public final static byte NO_OVERLAY       = 0;
     public final static byte OVERLAY_GRASS    = 1;
     public final static byte OVERLAY_SNOW     = 2;
@@ -22,21 +22,19 @@ public class OverlayHandler {
     public final static byte OVERLAY_HAY      = 5;
     public final static byte OVERLAY_MYCELIUM = 6;
     
-    public static Map overlayMap;
+    public static Map overlayMap = new HashMap();
     
     /**
      * Initializes overlays.
      */
     public static void init()
     {
-        overlayMap = new HashMap();
-        overlayMap.put(0, 0                                         );
-        overlayMap.put(1, Item.getIdFromItem(Items.wheat_seeds)     );
-        overlayMap.put(2, Item.getIdFromItem(Items.snowball)        );
-        overlayMap.put(3, Item.getIdFromItem(Items.string)          );
-        overlayMap.put(4, Block.getIdFromBlock(Blocks.vine)         );
-        overlayMap.put(5, Item.getIdFromItem(Items.wheat)           );
-        overlayMap.put(6, Block.getIdFromBlock(Blocks.brown_mushroom));
+        overlayMap.put(   OVERLAY_GRASS, new ItemStack(Items.wheat_seeds)    );
+        overlayMap.put(    OVERLAY_SNOW, new ItemStack(Items.snowball)       );
+        overlayMap.put(     OVERLAY_WEB, new ItemStack(Items.string)         );
+        overlayMap.put(    OVERLAY_VINE, new ItemStack(Blocks.vine)          );
+        overlayMap.put(     OVERLAY_HAY, new ItemStack(Items.wheat)          );
+        overlayMap.put(OVERLAY_MYCELIUM, new ItemStack(Blocks.brown_mushroom));
     }
     
     /**
@@ -65,12 +63,14 @@ public class OverlayHandler {
      */
     public static ItemStack getItemStack(int overlay)
     {
-        return new ItemStack(Item.getItemById((Integer) overlayMap.get(overlay)), 1, 0);
+        return (ItemStack) overlayMap.get(overlay);
     }
     
     /**
      * Returns block with considerations for the overlay and side of block
      * being interacted with.
+     * 
+     * Used for interaction only; never for drops.
      */
     public static Block getBlockFromOverlay(TEBase TE, int coverSide, Block block)
     {

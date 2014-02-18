@@ -127,7 +127,7 @@ public class BlockCarpentersPressurePlate extends BlockCoverable {
      */
     public boolean canPlaceBlockAt(World world, int x, int y, int z)
     {
-        return world.doesBlockHaveSolidTopSurface(world, x, y - 1, z);
+        return World.doesBlockHaveSolidTopSurface(world, x, y - 1, z);
     }
     
     @Override
@@ -140,7 +140,7 @@ public class BlockCarpentersPressurePlate extends BlockCoverable {
         TEBase TE = getTileEntity(world, x, y, z);
         
         if (!world.isRemote && TE != null) {
-            if (!world.doesBlockHaveSolidTopSurface(world, x, y - 1, z)) {
+            if (!World.doesBlockHaveSolidTopSurface(world, x, y - 1, z)) {
                 dropBlockAsItem(world, x, y, z, 0, 0);
                 world.setBlockToAir(x, y, z);
             }
@@ -242,7 +242,7 @@ public class BlockCarpentersPressurePlate extends BlockCoverable {
     {
         TEBase TE = getTileEntity(world, x, y, z);
         
-        if (TE != null) {        
+        if (TE != null) {
             return getPowerSupply(TE, BlockProperties.getData(TE));
         } else {
             return 0;
@@ -258,7 +258,7 @@ public class BlockCarpentersPressurePlate extends BlockCoverable {
     {
         TEBase TE = getTileEntity(world, x, y, z);
         
-        if (TE != null) {        
+        if (TE != null) {
             return side == 1 ? getPowerSupply(TE, BlockProperties.getData(TE)) : 0;
         } else {
             return 0;
