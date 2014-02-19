@@ -28,18 +28,13 @@ public class TEBase extends TileEntity {
     {
         super.readFromNBT(nbt);
 
-        NBTTagList nbttaglist = nbt.getTagList("covers", 10);
-        cover = new ItemStack[cover.length];
+        //cover = new ItemStack[cover.length];
+        NBTTagList list = nbt.getTagList("covers", 10);
 
-        for (int i = 0; i < nbttaglist.tagCount(); ++i)
+        for (int idx = 0; idx < list.tagCount(); ++idx)
         {
-            NBTTagCompound nbttagcompound1 = nbttaglist.getCompoundTagAt(i);
-            int j = nbttagcompound1.getByte("cover") & 255;
-
-            if (j >= 0 && j < cover.length)
-            {
-                cover[j] = ItemStack.loadItemStackFromNBT(nbttagcompound1);
-            }
+            NBTTagCompound nbt1 = list.getCompoundTagAt(idx);
+            cover[nbt1.getByte("cover") & 255] = ItemStack.loadItemStackFromNBT(nbt1);
         }
 
         pattern  = nbt.getByteArray("pattern");
@@ -54,21 +49,20 @@ public class TEBase extends TileEntity {
     {
         super.writeToNBT(nbt);
 
-        NBTTagList nbttaglist = new NBTTagList();
+        NBTTagList coverList = new NBTTagList();
         
-        for (int count = 0; count < cover.length; ++count)
+        for (int side = 0; side < cover.length; ++side)
         {
-            if (cover[count] != null)
+            if (cover[side] != null)
             {
-                NBTTagCompound nbttagcompound1 = new NBTTagCompound();
-                nbttagcompound1.setByte("cover", (byte)count);
-                cover[count].writeToNBT(nbttagcompound1);
-                nbttaglist.appendTag(nbttagcompound1);
+                NBTTagCompound nbt1 = new NBTTagCompound();
+                nbt1.setByte("cover", (byte) side);
+                cover[side].writeToNBT(nbt1);
+                coverList.appendTag(nbt1);
             }
         }
         
-        nbt.setTag("covers", nbttaglist);
-
+        nbt.setTag("covers", coverList);
         nbt.setByteArray("pattern", pattern);
         nbt.setByteArray("color", color);
         nbt.setByteArray("overlay", overlay);

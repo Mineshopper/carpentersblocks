@@ -137,7 +137,9 @@ public class BlockCoverable extends BlockContainer {
      */
     protected TEBase getTileEntity(IBlockAccess world, int x, int y, int z)
     {
-        if (world.getBlock(x, y, z).equals(this)) {
+        TileEntity TE = world.getTileEntity(x, y, z);
+        
+        if (world.getBlock(x, y, z).equals(this) || TE != null && TE instanceof TEBase) {
             return (TEBase) world.getTileEntity(x, y, z);
         } else {
             return null;
@@ -314,7 +316,7 @@ public class BlockCoverable extends BlockContainer {
                             /* Will handle blocks that save directions using all axes (logs, quartz) */
                             if (BlockProperties.blockRotates(block)) {
                                 int facing = BlockProperties.getOppositeFacing(EventHandler.eventEntityPlayer);
-                                int side_interpolated =    entityPlayer.rotationPitch < -45.0F ? 0 : entityPlayer.rotationPitch > 45 ? 1 : facing == 0 ? 3 : facing == 1 ? 4 : facing == 2 ? 2 : 5;
+                                int side_interpolated = entityPlayer.rotationPitch < -45.0F ? 0 : entityPlayer.rotationPitch > 45 ? 1 : facing == 0 ? 3 : facing == 1 ? 4 : facing == 2 ? 2 : 5;
                                 metadata = block.onBlockPlaced(world, x, y, z, side_interpolated, hitX, hitY, hitZ, metadata);
                             }
                             
@@ -870,7 +872,7 @@ public class BlockCoverable extends BlockContainer {
     {
         TEBase TE = getTileEntity(world, x, y, z);
         
-        if (TE != null) {
+        if (!world.isRemote && TE != null) {
             for (int side = 0; side < 7; ++side) {
                 BlockProperties.clearAttributes(TE, side);
             }
@@ -1077,17 +1079,17 @@ public class BlockCoverable extends BlockContainer {
      */
     public boolean canRenderInPass(int pass)
     {
-        ForgeHooksClient.setRenderPass(pass);
-        
-        return true;
+       ForgeHooksClient.setRenderPass(pass);
+
+       return true;
     }
     
     @Override
     @SideOnly(Side.CLIENT)
     /**
-     * Returns which pass this block be rendered on. 0 for solids and 1 for alpha.
+     * Returns which pass should this block be rendered on. 0 for solids and 1 for alpha
      */
-    public int getRenderBlockPass()
+    public final int getRenderBlockPass()
     {
         return 1;
     }

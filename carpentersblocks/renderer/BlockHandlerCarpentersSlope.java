@@ -16,6 +16,7 @@ import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDirectional;
+import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.IIcon;
@@ -228,8 +229,7 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
             default:
                 return;
         }
-        
-        
+                
         tessellator.draw();
         
         GL11.glTranslatef(0.5F, 0.5F, 0.5F);
@@ -248,8 +248,8 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
             
             /* Replace sloped icons with specific ones. */
             
-            if (!BlockProperties.hasCover(TE, 6))
-            {
+            if (!BlockProperties.hasCover(TE, 6)) {
+                
                 switch (slope.type) {
                     case OBLIQUE_EXT:
                         icon = slope.isPositive ? IconRegistry.icon_oblique_ext_pos : IconRegistry.icon_oblique_ext_neg;
@@ -268,17 +268,29 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
                     default:
                         break;
                 }
-            }
+                
+            } else {
             
-            /* For directional blocks, make sure sloped icons match regardless of side. */
-            if (BlockProperties.blockRotates(block)) {
-                if (metadata % 8 == 0) {
-                    icon = block.getIcon(slope.isPositive ? 1 : 0, metadata);
-                } else {
-                    icon = block.getIcon(2, metadata);
+                /* For directional blocks, make sure sloped icons match regardless of side. */
+                
+                if (BlockProperties.blockRotates(block)) {
+                    if (metadata % 8 == 0) {
+                        icon = block.getIcon(slope.isPositive ? 1 : 0, metadata);
+                    } else {
+                        icon = block.getIcon(2, metadata);
+                    }
+                } else if (block instanceof BlockDirectional && !slope.type.equals(Type.WEDGE)) {
+                    icon = block.getBlockTextureFromSide(1);
                 }
-            } else if (block instanceof BlockDirectional && !slope.type.equals(Type.WEDGE)) {
-                icon = block.getBlockTextureFromSide(1);
+                
+                /* Grass-type blocks have unique top faces that we must force on positive sloped sides. */
+                
+                if (slope.isPositive) {
+                    if (block.getMaterial().equals(Material.grass) || icon.getIconName().equals("dirt_podzol_side")) {
+                        icon = block.getIcon(1, metadata);
+                    }
+                }
+                
             }
         }
         

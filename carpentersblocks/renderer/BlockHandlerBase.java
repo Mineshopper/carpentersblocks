@@ -111,12 +111,10 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
     }
     
     @Override
-    public boolean renderWorldBlock(IBlockAccess blockAccess, int x, int y, int z, Block srcBlock, int modelID, RenderBlocks renderBlocks)
+    public boolean renderWorldBlock(IBlockAccess blockAccess, int x, int y, int z, Block block, int modelID, RenderBlocks renderBlocks)
     {
         TE = (TEBase) blockAccess.getTileEntity(x, y, z);
-        
-        boolean result = false;
-        
+
         /*
          * A catch-all for bad render calls.  Could happen if tile entities aren't
          * properly loaded when chunks are created, or with multi-block entities
@@ -127,31 +125,35 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
             
             this.renderBlocks = renderBlocks;
             renderPass = MinecraftForgeClient.getRenderPass();
-            this.srcBlock = srcBlock;
-            
+            this.srcBlock = block;
+
             lightingHelper.bind(this);
             
-            if (renderCarpentersBlock(x, y, z)) {
-                result = true;
-            }
-            
-            if (renderSideBlocks(x, y, z)) {
-                result = true;
-            }
+            renderCarpentersBlock(x, y, z);
+            renderSideBlocks(x, y, z);
             
             /* Will render a fluid block in this space if valid. */
             
             if (FeatureRegistry.enableFancyFluids) {
                 if (renderPass >= 0 && Minecraft.isFancyGraphicsEnabled() && BlockProperties.hasCover(TE, 6)) {
-                    if (FancyFluidsHelper.render(TE, lightingHelper, renderBlocks, x, y, z, renderPass)) {
-                        result = true;
-                    }
+                    FancyFluidsHelper.render(TE, lightingHelper, renderBlocks, x, y, z, renderPass);
                 }
             }
             
         }
-        
-        return false;
+
+       
+        /*
+         * MC 1.7.2 is sensitive to the return value of this method.
+         * 
+         * If this is alpha pass, we must return true otherwise the blocks
+         * may be invisible if no translucent blocks are nearby.
+         * 
+         * If this is opaque pass, return false or else the tessellator
+         * will crash.
+         */
+       
+        return renderPass == 1;
     }
     
     @Override
