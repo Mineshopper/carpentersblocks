@@ -14,14 +14,16 @@ import carpentersblocks.util.BlockProperties;
 
 public class OverlayHandler {
     
-    public final static byte NO_OVERLAY       = 0;
-    public final static byte OVERLAY_GRASS    = 1;
-    public final static byte OVERLAY_SNOW     = 2;
-    public final static byte OVERLAY_WEB      = 3;
-    public final static byte OVERLAY_VINE     = 4;
-    public final static byte OVERLAY_HAY      = 5;
-    public final static byte OVERLAY_MYCELIUM = 6;
-    
+    public enum Overlay {
+        NONE,
+        GRASS,
+        SNOW,
+        WEB,
+        VINE,
+        HAY,
+        MYCELIUM
+    }
+
     public static Map overlayMap = new HashMap();
     
     /**
@@ -29,41 +31,25 @@ public class OverlayHandler {
      */
     public static void init()
     {
-        overlayMap.put(   OVERLAY_GRASS, new ItemStack(Items.wheat_seeds)    );
-        overlayMap.put(    OVERLAY_SNOW, new ItemStack(Items.snowball)       );
-        overlayMap.put(     OVERLAY_WEB, new ItemStack(Items.string)         );
-        overlayMap.put(    OVERLAY_VINE, new ItemStack(Blocks.vine)          );
-        overlayMap.put(     OVERLAY_HAY, new ItemStack(Items.wheat)          );
-        overlayMap.put(OVERLAY_MYCELIUM, new ItemStack(Blocks.brown_mushroom));
+        overlayMap.put(Items.wheat_seeds.getUnlocalizedName()    , Overlay.GRASS   );
+        overlayMap.put(Items.snowball.getUnlocalizedName()       , Overlay.SNOW    );
+        overlayMap.put(Items.string.getUnlocalizedName()         , Overlay.WEB     );
+        overlayMap.put(Blocks.vine.getUnlocalizedName()          , Overlay.VINE    );
+        overlayMap.put(Items.wheat.getUnlocalizedName()          , Overlay.HAY     );
+        overlayMap.put(Blocks.brown_mushroom.getUnlocalizedName(), Overlay.MYCELIUM);
+        overlayMap.put(Blocks.red_mushroom.getUnlocalizedName()  , Overlay.MYCELIUM);
     }
     
     /**
-     * Returns overlay key value of item or block in ItemStack.
+     * Returns overlay from ItemStack.
      */
-    public static int getKey(ItemStack itemStack)
+    public static Overlay getOverlay(ItemStack itemStack)
     {
-        if (itemStack != null)
-        {
-            Iterator iterator = overlayMap.entrySet().iterator();
-            
-            while (iterator.hasNext())
-            {
-                Map.Entry mEntry = (Map.Entry) iterator.next();
-                if (mEntry.getValue().equals(Item.getIdFromItem(itemStack.getItem()))) {
-                    return (Integer) mEntry.getKey();
-                }
-            }
+        if (itemStack != null) {
+            return (Overlay) overlayMap.get(itemStack.getUnlocalizedName());
         }
         
-        return 0;
-    }
-    
-    /**
-     * Returns item or block of overlay wrapped in an ItemStack.
-     */
-    public static ItemStack getItemStack(int overlay)
-    {
-        return (ItemStack) overlayMap.get(overlay);
+        return Overlay.NONE;
     }
     
     /**
@@ -72,30 +58,26 @@ public class OverlayHandler {
      * 
      * Used for interaction only; never for drops.
      */
-    public static Block getBlockFromOverlay(TEBase TE, int coverSide, Block block)
+    public static Block getHostBlockFromOverlay(TEBase TE, int side, Block block)
     {
-        if (BlockProperties.hasOverlay(TE, coverSide))
+        if (BlockProperties.hasOverlay(TE, side))
         {
-            switch (BlockProperties.getOverlay(TE, coverSide)) {
-                case OverlayHandler.OVERLAY_GRASS:
-                    block = Blocks.grass;
+            switch (getOverlay(BlockProperties.getOverlay(TE, side))) {
+                case GRASS:
+                    return Blocks.grass;
+                case SNOW:
+                    return Blocks.snow;
+                case WEB:
+                    return Blocks.web;
+                case VINE:
+                    return Blocks.vine;
+                case HAY:
+                    return Blocks.hay_block;
+                case MYCELIUM:
+                    return Blocks.mycelium;
+                default:
                     break;
-                case OverlayHandler.OVERLAY_HAY:
-                    block = Blocks.hay_block;
-                    break;
-                case OverlayHandler.OVERLAY_MYCELIUM:
-                    block = Blocks.mycelium;
-                    break;
-                case OverlayHandler.OVERLAY_SNOW:
-                    block = Blocks.snow;
-                    break;
-                case OverlayHandler.OVERLAY_VINE:
-                    block = Blocks.vine;
-                    break;
-                case OverlayHandler.OVERLAY_WEB:
-                    block = Blocks.web;
-                    break;
-            }
+            }     
         }
         
         return block;

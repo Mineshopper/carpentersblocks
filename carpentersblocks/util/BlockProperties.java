@@ -10,32 +10,39 @@ import net.minecraft.block.BlockSlab;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemDye;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+import carpentersblocks.CarpentersBlocks;
 import carpentersblocks.tileentity.TEBase;
+import carpentersblocks.util.handler.DyeHandler;
 import carpentersblocks.util.handler.OverlayHandler;
 
 public class BlockProperties {
     
-    public final static SoundType stepSound = new SoundType("carpentersblock", 1.0F, 1.0F);
+    public final static SoundType stepSound = new SoundType(CarpentersBlocks.MODID, 1.0F, 1.0F);
     
     /**
      * Returns depth of side cover.
      */
     public static float getSideCoverDepth(TEBase TE, int side)
     {
-        if (getOverlay(TE, side) == OverlayHandler.OVERLAY_SNOW) {
-            return 0.125F;
-        } else {
-            return 0.0625F;
+        if (side == 1 && hasCover(TE, side)) {
+            
+            Block block = getCover(TE, side);
+            
+            if (block.equals(Blocks.snow) || block.equals(Blocks.snow_layer)) {
+                return 0.125F;
+            }
+            
         }
+        
+        return 0.0625F;
     }
     
     /**
@@ -65,23 +72,7 @@ public class BlockProperties {
                 return ForgeDirection.UNKNOWN;
         }
     }
-    
-    /**
-     * Returns RGB of dye metadata.
-     */
-    public static float[] getDyeRGB(int metadata)
-    {
-        int color = ItemDye.field_150922_c[15 - metadata];
         
-        float red = (color >> 16 & 255) / 255.0F;
-        float green = (color >> 8 & 255) / 255.0F;
-        float blue = (color & 255) / 255.0F;
-        
-        float[] rgb = { red, green, blue };
-        
-        return rgb;
-    }
-    
     /**
      * Will suppress block updates.
      */
@@ -171,7 +162,7 @@ public class BlockProperties {
     public static boolean hasAttribute(TEBase TE, int side)
     {
         return hasCover(TE, side) ||
-               hasDyeColor(TE, side) ||
+               hasDye(TE, side) ||
                hasOverlay(TE, side);
     }
     
@@ -183,7 +174,7 @@ public class BlockProperties {
         suppressUpdate = true;
         
         setCover(TE, side, (ItemStack)null);
-        setDyeColor(TE, side, 0);
+        setDye(TE, side, (ItemStack)null);
         setOverlay(TE, side, (ItemStack)null);
         setPattern(TE, side, 0);
         
@@ -227,7 +218,7 @@ public class BlockProperties {
     /**
      * Returns cover block.
      */
-    public static Block getCover(IBlockAccess world, int side, int x, int y, int z)
+    public static Block getCover(IBlockAccess world, int x, int y, int z, int side)
     {
         TEBase TE = (TEBase) world.getTileEntity(x, y, z);
 
@@ -326,21 +317,22 @@ public class BlockProperties {
      * Get block data.
      * Will handle signed data types automatically.
      */
-    public final static int getData(TEBase TE)
+    public final static int getMetadata(TEBase TE)
     {
-        return TE.data & 0xffff;
+        return TE.metadata & 0xffff;
     }
     
     /**
      * Set block data.
      * Will do nothing if data is not altered.
      */
-    public static void setData(TEBase TE, int data)
+    public static void setMetadata(TEBase TE, int data)
     {
         /* No need to update if data hasn't changed. */
-        if (data != getData(TE))
+        
+        if (data != getMetadata(TE))
         {
-            TE.data = (short) data;
+            TE.metadata = (short) data;
             
             if (!suppressUpdate) {
                 TE.getWorldObj().markBlockForUpdate(TE.xCoord, TE.yCoord, TE.zCoord);
@@ -349,23 +341,31 @@ public class BlockProperties {
     }
     
     /**
+     * Returns true if ItemStack is a dye.
+     */
+    public static boolean isDye(ItemStack itemStack)
+    {
+        return DyeHandler.dyeMap.containsKey(itemStack.getUnlocalizedName());
+    }
+    
+    /**
      * Returns whether side has cover.
      */
-    public static boolean hasDyeColor(TEBase TE, int side)
+    public static boolean hasDye(TEBase TE, int side)
     {
-        return TE.color[side] > 0;
+        return TE.dye[side] != null;
     }
     
     /**
      * Sets color for side.
      */
-    public static boolean setDyeColor(TEBase TE, int side, int metadata)
+    public static boolean setDye(TEBase TE, int side, ItemStack itemStack)
     {
-        if (TE.color[side] > 0) {
-            ejectEntity(TE, new ItemStack(Items.dye, 1, 15 - TE.color[side]));
+        if (TE.dye[side] != null) {
+            ejectEntity(TE, TE.dye[side]);
         }
         
-        TE.color[side] = (byte) metadata;
+        TE.dye[side] = itemStack;
         
         if (!suppressUpdate) {
             TE.getWorldObj().markBlockForUpdate(TE.xCoord, TE.yCoord, TE.zCoord);
@@ -377,9 +377,9 @@ public class BlockProperties {
     /**
      * Returns dye color for side.
      */
-    public static int getDyeColor(TEBase TE, int side)
+    public static ItemStack getDye(TEBase TE, int side)
     {
-        return TE.color[side];
+        return TE.dye[side];
     }
     
     /**
@@ -388,10 +388,10 @@ public class BlockProperties {
     public static boolean setOverlay(TEBase TE, int side, ItemStack itemStack)
     {
         if (hasOverlay(TE, side)) {
-            ejectEntity(TE, OverlayHandler.getItemStack(TE.overlay[side]));
+            ejectEntity(TE, TE.overlay[side]);
         }
         
-        TE.overlay[side] = (byte) OverlayHandler.getKey(itemStack);
+        TE.overlay[side] = itemStack;
         
         if (!suppressUpdate) {
             TE.getWorldObj().markBlockForUpdate(TE.xCoord, TE.yCoord, TE.zCoord);
@@ -403,7 +403,7 @@ public class BlockProperties {
     /**
      * Returns overlay.
      */
-    public static int getOverlay(TEBase TE, int side)
+    public static ItemStack getOverlay(TEBase TE, int side)
     {
         return TE.overlay[side];
     }
@@ -413,7 +413,7 @@ public class BlockProperties {
      */
     public static boolean hasOverlay(TEBase TE, int side)
     {
-        return TE.overlay[side] > 0;
+        return TE.overlay[side] != null;
     }
     
     /**
@@ -421,7 +421,7 @@ public class BlockProperties {
      */
     public static boolean isOverlay(ItemStack itemStack)
     {
-        return OverlayHandler.overlayMap.containsValue(itemStack.getItem());
+        return OverlayHandler.overlayMap.containsKey(itemStack.getUnlocalizedName());
     }
     
     /**

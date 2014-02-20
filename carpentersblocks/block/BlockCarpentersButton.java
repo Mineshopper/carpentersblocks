@@ -21,7 +21,6 @@ public class BlockCarpentersButton extends BlockCoverable {
     public BlockCarpentersButton(Material material)
     {
         super(material);
-        setTickRandomly(true);
     }
     
     @Override

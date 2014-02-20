@@ -74,15 +74,11 @@ public class BlockHandlerCarpentersHatch extends BlockHandlerBase {
      */
     private void renderHiddenHatch(Block block, int x, int y, int z)
     {
-        if (shouldRenderBlock(block)) {
-            BlockCarpentersHatch blockRef = (BlockCarpentersHatch) BlockRegistry.blockCarpentersHatch;
-            blockRef.setBlockBoundsBasedOnState(renderBlocks.blockAccess, x, y, z);
-            renderBlock(block, x, y, z);
-        }
+        BlockCarpentersHatch blockRef = (BlockCarpentersHatch) BlockRegistry.blockCarpentersHatch;
+        blockRef.setBlockBoundsBasedOnState(renderBlocks.blockAccess, x, y, z);
+        renderBlock(block, x, y, z);
         
-        if (shouldRenderOpaque()) {
-            renderHandle(Blocks.iron_block, x, y, z, true, false);
-        }
+        renderHandle(Blocks.iron_block, x, y, z, true, false);
     }
     
     /**
@@ -141,127 +137,120 @@ public class BlockHandlerCarpentersHatch extends BlockHandlerBase {
             }
         }
         
-        if (shouldRenderBlock(block)) {
+        /* Draw sides */
+        
+        if (path_on_x) {
             
-            /* Draw sides */
+            renderBlocks.setRenderBounds(0.0F, y_low, z_low, 0.1875F, y_high, z_high);
+            renderBlock(block, x, y, z);
+            renderBlocks.setRenderBounds(0.8125F, y_low, z_low, 1.0F, y_high, z_high);
+            renderBlock(block, x, y, z);
+            renderBlocks.setRenderBounds(0.1875F, 0.0F, z_low, 0.8125F, 0.1875F, z_high);
+            renderBlock(block, x, y, z);
+            renderBlocks.setRenderBounds(0.1875F, 0.8125F, z_low, 0.8125F, 1.0F, z_high);
+            renderBlock(block, x, y, z);
             
-            if (path_on_x) {
+        } else if (path_on_y) {
+            
+            renderBlocks.setRenderBounds(0.0F, y_low, z_low, 0.1875F, y_high, z_high);
+            renderBlock(block, x, y, z);
+            renderBlocks.setRenderBounds(0.8125F, y_low, z_low, 1.0F, y_high, z_high);
+            renderBlock(block, x, y, z);
+            renderBlocks.setRenderBounds(0.1875F, y_low, 0.0F, 0.8125F, y_high, 0.1875F);
+            renderBlock(block, x, y, z);
+            renderBlocks.setRenderBounds(0.1875F, y_low, 0.8125F, 0.8125F, y_high, 1.0F);
+            renderBlock(block, x, y, z);
+            
+        } else {
+            
+            renderBlocks.setRenderBounds(x_low, y_low, 0.0F, x_high, y_high, 0.1875F);
+            renderBlock(block, x, y, z);
+            renderBlocks.setRenderBounds(x_low, y_low, 0.8125F, x_high, y_high, 1.0F);
+            renderBlock(block, x, y, z);
+            renderBlocks.setRenderBounds(x_low, 0.0F, 0.1875F, x_high, 0.1875F, 0.8125F);
+            renderBlock(block, x, y, z);
+            renderBlocks.setRenderBounds(x_low, 0.8125F, 0.1875F, x_high, 1.0F, 0.8125F);
+            renderBlock(block, x, y, z);
+            
+        }
+        
+        IIcon icon;
+        
+        if (Hatch.getType(TE) == Hatch.TYPE_SCREEN) {
+            icon = IconRegistry.icon_hatch_screen;
+        } else {
+            icon = IconRegistry.icon_hatch_glass;
+        }
+        
+        suppressDyeColor = true;
+        
+        if (path_on_x) {
+            
+            renderBlocks.setRenderBounds(0.1875F, 0.1875F, 0.0F, 0.8125F, 0.8125F, 1.0F);
+            
+            lightingHelper.setLightingZPos(Blocks.glass, x, y, z);
+            lightingHelper.colorSide(Blocks.glass, x, y, z, 3, null);
+            VertexHelper.setOffset(-path_offset);
+            RenderHelper.renderFaceZPos(renderBlocks, x, y, z, icon);
+            
+            if (!renderAlphaOverride) {
+                lightingHelper.setLightingZNeg(Blocks.glass, x, y, z);
+                lightingHelper.colorSide(Blocks.glass, x, y, z, 2, null);
+                VertexHelper.setOffset(-(1 - path_offset));
+                RenderHelper.renderFaceZNeg(renderBlocks, x, y, z, icon);
+            }
+            
+        } else if (path_on_y) {
+            
+            renderBlocks.setRenderBounds(0.1875F, 0.0F, 0.1875F, 0.8125F, 1.0F, 0.8125F);
+            
+            if (renderAlphaOverride) {
                 
-                renderBlocks.setRenderBounds(0.0F, y_low, z_low, 0.1875F, y_high, z_high);
-                renderBlock(block, x, y, z);
-                renderBlocks.setRenderBounds(0.8125F, y_low, z_low, 1.0F, y_high, z_high);
-                renderBlock(block, x, y, z);
-                renderBlocks.setRenderBounds(0.1875F, 0.0F, z_low, 0.8125F, 0.1875F, z_high);
-                renderBlock(block, x, y, z);
-                renderBlocks.setRenderBounds(0.1875F, 0.8125F, z_low, 0.8125F, 1.0F, z_high);
-                renderBlock(block, x, y, z);
+                /* On alpha pass, YNeg face is drawn on both sides. */
                 
-            } else if (path_on_y) {
-                
-                renderBlocks.setRenderBounds(0.0F, y_low, z_low, 0.1875F, y_high, z_high);
-                renderBlock(block, x, y, z);
-                renderBlocks.setRenderBounds(0.8125F, y_low, z_low, 1.0F, y_high, z_high);
-                renderBlock(block, x, y, z);
-                renderBlocks.setRenderBounds(0.1875F, y_low, 0.0F, 0.8125F, y_high, 0.1875F);
-                renderBlock(block, x, y, z);
-                renderBlocks.setRenderBounds(0.1875F, y_low, 0.8125F, 0.8125F, y_high, 1.0F);
-                renderBlock(block, x, y, z);
+                lightingHelper.setLightingYPos(Blocks.glass, x, y, z);
+                lightingHelper.colorSide(Blocks.glass, x, y, z, 0, null);
+                VertexHelper.setOffset(-path_offset);
+                RenderHelper.renderFaceYNeg(renderBlocks, x, y, z, icon);
                 
             } else {
                 
-                renderBlocks.setRenderBounds(x_low, y_low, 0.0F, x_high, y_high, 0.1875F);
-                renderBlock(block, x, y, z);
-                renderBlocks.setRenderBounds(x_low, y_low, 0.8125F, x_high, y_high, 1.0F);
-                renderBlock(block, x, y, z);
-                renderBlocks.setRenderBounds(x_low, 0.0F, 0.1875F, x_high, 0.1875F, 0.8125F);
-                renderBlock(block, x, y, z);
-                renderBlocks.setRenderBounds(x_low, 0.8125F, 0.1875F, x_high, 1.0F, 0.8125F);
-                renderBlock(block, x, y, z);
+                lightingHelper.setLightingYNeg(Blocks.glass, x, y, z);
+                lightingHelper.colorSide(Blocks.glass, x, y, z, 0, null);
+                VertexHelper.setOffset(-path_offset);
+                RenderHelper.renderFaceYNeg(renderBlocks, x, y, z, icon);
                 
+                if (!renderAlphaOverride) {
+                    lightingHelper.setLightingYPos(Blocks.glass, x, y, z);
+                    lightingHelper.colorSide(Blocks.glass, x, y, z, 1, null);
+                    VertexHelper.setOffset(-(1 - path_offset));
+                    RenderHelper.renderFaceYPos(renderBlocks, x, y, z, icon);
+                }
+                
+            }
+            
+        } else {
+            
+            renderBlocks.setRenderBounds(0.0F, 0.1875F, 0.1875F, 1.0F, 0.8125F, 0.8125F);
+            
+            lightingHelper.setLightingXPos(Blocks.glass, x, y, z);
+            lightingHelper.colorSide(Blocks.glass, x, y, z, 5, null);
+            VertexHelper.setOffset(-path_offset);
+            RenderHelper.renderFaceXPos(renderBlocks, x, y, z, icon);
+            
+            if (!renderAlphaOverride) {
+                lightingHelper.setLightingXNeg(Blocks.glass, x, y, z);
+                lightingHelper.colorSide(Blocks.glass, x, y, z, 4, null);
+                VertexHelper.setOffset(-(1 - path_offset));
+                RenderHelper.renderFaceXNeg(renderBlocks, x, y, z, icon);
             }
             
         }
         
-        if (shouldRenderOpaque()) {
-            
-            IIcon icon;
-            
-            if (Hatch.getType(TE) == Hatch.TYPE_SCREEN) {
-                icon = IconRegistry.icon_hatch_screen;
-            } else {
-                icon = IconRegistry.icon_hatch_glass;
-            }
-            
-            suppressDyeColor = true;
-            
-            if (path_on_x) {
-                
-                renderBlocks.setRenderBounds(0.1875F, 0.1875F, 0.0F, 0.8125F, 0.8125F, 1.0F);
-                
-                lightingHelper.setLightingZPos(Blocks.glass, x, y, z);
-                lightingHelper.colorSide(Blocks.glass, x, y, z, 3, null);
-                VertexHelper.setOffset(-path_offset);
-                RenderHelper.renderFaceZPos(renderBlocks, x, y, z, icon);
-                
-                if (!renderAlphaOverride) {
-                    lightingHelper.setLightingZNeg(Blocks.glass, x, y, z);
-                    lightingHelper.colorSide(Blocks.glass, x, y, z, 2, null);
-                    VertexHelper.setOffset(-(1 - path_offset));
-                    RenderHelper.renderFaceZNeg(renderBlocks, x, y, z, icon);
-                }
-                
-            } else if (path_on_y) {
-                
-                renderBlocks.setRenderBounds(0.1875F, 0.0F, 0.1875F, 0.8125F, 1.0F, 0.8125F);
-                
-                if (renderAlphaOverride) {
-                    
-                    /* On alpha pass, YNeg face is drawn on both sides. */
-                    
-                    lightingHelper.setLightingYPos(Blocks.glass, x, y, z);
-                    lightingHelper.colorSide(Blocks.glass, x, y, z, 0, null);
-                    VertexHelper.setOffset(-path_offset);
-                    RenderHelper.renderFaceYNeg(renderBlocks, x, y, z, icon);
-                    
-                } else {
-                    
-                    lightingHelper.setLightingYNeg(Blocks.glass, x, y, z);
-                    lightingHelper.colorSide(Blocks.glass, x, y, z, 0, null);
-                    VertexHelper.setOffset(-path_offset);
-                    RenderHelper.renderFaceYNeg(renderBlocks, x, y, z, icon);
-                    
-                    if (!renderAlphaOverride) {
-                        lightingHelper.setLightingYPos(Blocks.glass, x, y, z);
-                        lightingHelper.colorSide(Blocks.glass, x, y, z, 1, null);
-                        VertexHelper.setOffset(-(1 - path_offset));
-                        RenderHelper.renderFaceYPos(renderBlocks, x, y, z, icon);
-                    }
-                    
-                }
-                
-            } else {
-                
-                renderBlocks.setRenderBounds(0.0F, 0.1875F, 0.1875F, 1.0F, 0.8125F, 0.8125F);
-                
-                lightingHelper.setLightingXPos(Blocks.glass, x, y, z);
-                lightingHelper.colorSide(Blocks.glass, x, y, z, 5, null);
-                VertexHelper.setOffset(-path_offset);
-                RenderHelper.renderFaceXPos(renderBlocks, x, y, z, icon);
-                
-                if (!renderAlphaOverride) {
-                    lightingHelper.setLightingXNeg(Blocks.glass, x, y, z);
-                    lightingHelper.colorSide(Blocks.glass, x, y, z, 4, null);
-                    VertexHelper.setOffset(-(1 - path_offset));
-                    RenderHelper.renderFaceXNeg(renderBlocks, x, y, z, icon);
-                }
-                
-            }
-            
-            VertexHelper.clearOffset();
-            suppressDyeColor = false;
-            
-            renderHandle(Blocks.iron_block, x, y, z, true, true);
-        }
+        VertexHelper.clearOffset();
+        suppressDyeColor = false;
+        
+        renderHandle(Blocks.iron_block, x, y, z, true, true);
     }
     
     /**
@@ -323,161 +312,154 @@ public class BlockHandlerCarpentersHatch extends BlockHandlerBase {
             
         }
         
-        if (shouldRenderBlock(block)) {
+        /* Draw sides */
+        
+        if (path_on_x) {
             
-            /* Draw sides */
+            renderBlocks.setRenderBounds(0.0F, y_low, z_low, 0.1875F, y_high, z_high);
+            renderBlock(block, x, y, z);
+            renderBlocks.setRenderBounds(0.8125F, y_low, z_low, 1.0F, y_high, z_high);
+            renderBlock(block, x, y, z);
+            renderBlocks.setRenderBounds(0.1875F, 0.0F, z_low, 0.8125F, 0.1875F, z_high);
+            renderBlock(block, x, y, z);
+            renderBlocks.setRenderBounds(0.1875F, 0.8125F, z_low, 0.8125F, 1.0F, z_high);
+            renderBlock(block, x, y, z);
             
-            if (path_on_x) {
+        } else if (path_on_y) {
+            
+            renderBlocks.setRenderBounds(0.0F, y_low, z_low, 0.1875F, y_high, z_high);
+            renderBlock(block, x, y, z);
+            renderBlocks.setRenderBounds(0.8125F, y_low, z_low, 1.0F, y_high, z_high);
+            renderBlock(block, x, y, z);
+            renderBlocks.setRenderBounds(0.1875F, y_low, 0.0F, 0.8125F, y_high, 0.1875F);
+            renderBlock(block, x, y, z);
+            renderBlocks.setRenderBounds(0.1875F, y_low, 0.8125F, 0.8125F, y_high, 1.0F);
+            renderBlock(block, x, y, z);
+            
+        } else {
+            
+            renderBlocks.setRenderBounds(x_low, y_low, 0.0F, x_high, y_high, 0.1875F);
+            renderBlock(block, x, y, z);
+            renderBlocks.setRenderBounds(x_low, y_low, 0.8125F, x_high, y_high, 1.0F);
+            renderBlock(block, x, y, z);
+            renderBlocks.setRenderBounds(x_low, 0.0F, 0.1875F, x_high, 0.1875F, 0.8125F);
+            renderBlock(block, x, y, z);
+            renderBlocks.setRenderBounds(x_low, 0.8125F, 0.1875F, x_high, 1.0F, 0.8125F);
+            renderBlock(block, x, y, z);
+            
+        }
+        
+        float temp_x_low = x_low;
+        float temp_x_high = x_high;
+        float temp_y_low = y_low;
+        float temp_y_high = y_high;
+        float temp_z_low = z_low;
+        float temp_z_high = z_high;
+        
+        if (path_on_x) {
+            
+            temp_z_low += 0.0625F;
+            temp_z_high -= 0.0625F;
+            renderBlocks.setRenderBounds(0.1875F, 0.4375F, temp_z_low, 0.8125F, 0.5625F, temp_z_high);
+            renderBlock(block, x, y, z);
+            renderBlocks.setRenderBounds(0.4375F, 0.1875F, temp_z_low, 0.5625F, 0.4375F, temp_z_high);
+            renderBlock(block, x, y, z);
+            renderBlocks.setRenderBounds(0.4375F, 0.5625F, temp_z_low, 0.5625F, 0.8125F, temp_z_high);
+            renderBlock(block, x, y, z);
+            
+        } else if (path_on_y) {
+            
+            temp_y_low += 0.0625F;
+            temp_y_high -= 0.0625F;
+            renderBlocks.setRenderBounds(0.1875F, temp_y_low, 0.4375F, 0.8125F, temp_y_high, 0.5625F);
+            renderBlock(block, x, y, z);
+            renderBlocks.setRenderBounds(0.4375F, temp_y_low, 0.1875F, 0.5625F, temp_y_high, 0.4375F);
+            renderBlock(block, x, y, z);
+            renderBlocks.setRenderBounds(0.4375F, temp_y_low, 0.5625F, 0.5625F, temp_y_high, 0.8125F);
+            renderBlock(block, x, y, z);
+            
+        } else {
+            
+            temp_x_low += 0.0625F;
+            temp_x_high -= 0.0625F;
+            renderBlocks.setRenderBounds(temp_x_low, 0.4375F, 0.1875F, temp_x_high, 0.5625F, 0.8125F);
+            renderBlock(block, x, y, z);
+            renderBlocks.setRenderBounds(temp_x_low, 0.1875F, 0.4375F, temp_x_high, 0.4375F, 0.5625F);
+            renderBlock(block, x, y, z);
+            renderBlocks.setRenderBounds(temp_x_low, 0.5625F, 0.4375F, temp_x_high, 0.8125F, 0.5625F);
+            renderBlock(block, x, y, z);
+            
+        }
+        
+        suppressDyeColor = true;
+        
+        if (path_on_x) {
+            
+            renderBlocks.setRenderBounds(0.1875F, 0.1875F, 0.0F, 0.8125F, 0.8125F, 1.0F);
+            
+            lightingHelper.setLightingZPos(Blocks.glass, x, y, z);
+            lightingHelper.colorSide(Blocks.glass, x, y, z, 3, null);
+            VertexHelper.setOffset(-path_offset);
+            RenderHelper.renderFaceZPos(renderBlocks, x, y, z, IconRegistry.icon_hatch_french_glass);
+            
+            if (!renderAlphaOverride) {
+                lightingHelper.setLightingZNeg(Blocks.glass, x, y, z);
+                lightingHelper.colorSide(Blocks.glass, x, y, z, 2, null);
+                VertexHelper.setOffset(-(1 - path_offset));
+                RenderHelper.renderFaceZNeg(renderBlocks, x, y, z, IconRegistry.icon_hatch_french_glass);
+            }
+            
+        } else if (path_on_y) {
+            
+            renderBlocks.setRenderBounds(0.1875F, 0.0F, 0.1875F, 0.8125F, 1.0F, 0.8125F);
+            
+            if (renderAlphaOverride) {
                 
-                renderBlocks.setRenderBounds(0.0F, y_low, z_low, 0.1875F, y_high, z_high);
-                renderBlock(block, x, y, z);
-                renderBlocks.setRenderBounds(0.8125F, y_low, z_low, 1.0F, y_high, z_high);
-                renderBlock(block, x, y, z);
-                renderBlocks.setRenderBounds(0.1875F, 0.0F, z_low, 0.8125F, 0.1875F, z_high);
-                renderBlock(block, x, y, z);
-                renderBlocks.setRenderBounds(0.1875F, 0.8125F, z_low, 0.8125F, 1.0F, z_high);
-                renderBlock(block, x, y, z);
+                /* On alpha pass, YNeg face is drawn on both sides. */
                 
-            } else if (path_on_y) {
-                
-                renderBlocks.setRenderBounds(0.0F, y_low, z_low, 0.1875F, y_high, z_high);
-                renderBlock(block, x, y, z);
-                renderBlocks.setRenderBounds(0.8125F, y_low, z_low, 1.0F, y_high, z_high);
-                renderBlock(block, x, y, z);
-                renderBlocks.setRenderBounds(0.1875F, y_low, 0.0F, 0.8125F, y_high, 0.1875F);
-                renderBlock(block, x, y, z);
-                renderBlocks.setRenderBounds(0.1875F, y_low, 0.8125F, 0.8125F, y_high, 1.0F);
-                renderBlock(block, x, y, z);
+                lightingHelper.setLightingYPos(Blocks.glass, x, y, z);
+                lightingHelper.colorSide(Blocks.glass, x, y, z, 0, null);
+                VertexHelper.setOffset(-path_offset);
+                RenderHelper.renderFaceYNeg(renderBlocks, x, y, z, IconRegistry.icon_hatch_french_glass);
                 
             } else {
                 
-                renderBlocks.setRenderBounds(x_low, y_low, 0.0F, x_high, y_high, 0.1875F);
-                renderBlock(block, x, y, z);
-                renderBlocks.setRenderBounds(x_low, y_low, 0.8125F, x_high, y_high, 1.0F);
-                renderBlock(block, x, y, z);
-                renderBlocks.setRenderBounds(x_low, 0.0F, 0.1875F, x_high, 0.1875F, 0.8125F);
-                renderBlock(block, x, y, z);
-                renderBlocks.setRenderBounds(x_low, 0.8125F, 0.1875F, x_high, 1.0F, 0.8125F);
-                renderBlock(block, x, y, z);
+                lightingHelper.setLightingYNeg(Blocks.glass, x, y, z);
+                lightingHelper.colorSide(Blocks.glass, x, y, z, 0, null);
+                VertexHelper.setOffset(-path_offset);
+                RenderHelper.renderFaceYNeg(renderBlocks, x, y, z, IconRegistry.icon_hatch_french_glass);
+                
+                if (!renderAlphaOverride) {
+                    lightingHelper.setLightingYPos(Blocks.glass, x, y, z);
+                    lightingHelper.colorSide(Blocks.glass, x, y, z, 1, null);
+                    VertexHelper.setOffset(-(1 - path_offset));
+                    RenderHelper.renderFaceYPos(renderBlocks, x, y, z, IconRegistry.icon_hatch_french_glass);
+                }
                 
             }
             
-            float temp_x_low = x_low;
-            float temp_x_high = x_high;
-            float temp_y_low = y_low;
-            float temp_y_high = y_high;
-            float temp_z_low = z_low;
-            float temp_z_high = z_high;
+        } else {
             
-            if (path_on_x) {
-                
-                temp_z_low += 0.0625F;
-                temp_z_high -= 0.0625F;
-                renderBlocks.setRenderBounds(0.1875F, 0.4375F, temp_z_low, 0.8125F, 0.5625F, temp_z_high);
-                renderBlock(block, x, y, z);
-                renderBlocks.setRenderBounds(0.4375F, 0.1875F, temp_z_low, 0.5625F, 0.4375F, temp_z_high);
-                renderBlock(block, x, y, z);
-                renderBlocks.setRenderBounds(0.4375F, 0.5625F, temp_z_low, 0.5625F, 0.8125F, temp_z_high);
-                renderBlock(block, x, y, z);
-                
-            } else if (path_on_y) {
-                
-                temp_y_low += 0.0625F;
-                temp_y_high -= 0.0625F;
-                renderBlocks.setRenderBounds(0.1875F, temp_y_low, 0.4375F, 0.8125F, temp_y_high, 0.5625F);
-                renderBlock(block, x, y, z);
-                renderBlocks.setRenderBounds(0.4375F, temp_y_low, 0.1875F, 0.5625F, temp_y_high, 0.4375F);
-                renderBlock(block, x, y, z);
-                renderBlocks.setRenderBounds(0.4375F, temp_y_low, 0.5625F, 0.5625F, temp_y_high, 0.8125F);
-                renderBlock(block, x, y, z);
-                
-            } else {
-                
-                temp_x_low += 0.0625F;
-                temp_x_high -= 0.0625F;
-                renderBlocks.setRenderBounds(temp_x_low, 0.4375F, 0.1875F, temp_x_high, 0.5625F, 0.8125F);
-                renderBlock(block, x, y, z);
-                renderBlocks.setRenderBounds(temp_x_low, 0.1875F, 0.4375F, temp_x_high, 0.4375F, 0.5625F);
-                renderBlock(block, x, y, z);
-                renderBlocks.setRenderBounds(temp_x_low, 0.5625F, 0.4375F, temp_x_high, 0.8125F, 0.5625F);
-                renderBlock(block, x, y, z);
-                
+            renderBlocks.setRenderBounds(0.0F, 0.1875F, 0.1875F, 1.0F, 0.8125F, 0.8125F);
+            
+            lightingHelper.setLightingXPos(Blocks.glass, x, y, z);
+            lightingHelper.colorSide(Blocks.glass, x, y, z, 5, null);
+            VertexHelper.setOffset(-path_offset);
+            RenderHelper.renderFaceXPos(renderBlocks, x, y, z, IconRegistry.icon_hatch_french_glass);
+            
+            if (!renderAlphaOverride) {
+                lightingHelper.setLightingXNeg(Blocks.glass, x, y, z);
+                lightingHelper.colorSide(Blocks.glass, x, y, z, 4, null);
+                VertexHelper.setOffset(-(1 - path_offset));
+                RenderHelper.renderFaceXNeg(renderBlocks, x, y, z, IconRegistry.icon_hatch_french_glass);
             }
             
         }
         
-        if (shouldRenderOpaque()) {
-            
-            suppressDyeColor = true;
-            
-            if (path_on_x) {
-                
-                renderBlocks.setRenderBounds(0.1875F, 0.1875F, 0.0F, 0.8125F, 0.8125F, 1.0F);
-                
-                lightingHelper.setLightingZPos(Blocks.glass, x, y, z);
-                lightingHelper.colorSide(Blocks.glass, x, y, z, 3, null);
-                VertexHelper.setOffset(-path_offset);
-                RenderHelper.renderFaceZPos(renderBlocks, x, y, z, IconRegistry.icon_hatch_french_glass);
-                
-                if (!renderAlphaOverride) {
-                    lightingHelper.setLightingZNeg(Blocks.glass, x, y, z);
-                    lightingHelper.colorSide(Blocks.glass, x, y, z, 2, null);
-                    VertexHelper.setOffset(-(1 - path_offset));
-                    RenderHelper.renderFaceZNeg(renderBlocks, x, y, z, IconRegistry.icon_hatch_french_glass);
-                }
-                
-            } else if (path_on_y) {
-                
-                renderBlocks.setRenderBounds(0.1875F, 0.0F, 0.1875F, 0.8125F, 1.0F, 0.8125F);
-                
-                if (renderAlphaOverride) {
-                    
-                    /* On alpha pass, YNeg face is drawn on both sides. */
-                    
-                    lightingHelper.setLightingYPos(Blocks.glass, x, y, z);
-                    lightingHelper.colorSide(Blocks.glass, x, y, z, 0, null);
-                    VertexHelper.setOffset(-path_offset);
-                    RenderHelper.renderFaceYNeg(renderBlocks, x, y, z, IconRegistry.icon_hatch_french_glass);
-                    
-                } else {
-                    
-                    lightingHelper.setLightingYNeg(Blocks.glass, x, y, z);
-                    lightingHelper.colorSide(Blocks.glass, x, y, z, 0, null);
-                    VertexHelper.setOffset(-path_offset);
-                    RenderHelper.renderFaceYNeg(renderBlocks, x, y, z, IconRegistry.icon_hatch_french_glass);
-                    
-                    if (!renderAlphaOverride) {
-                        lightingHelper.setLightingYPos(Blocks.glass, x, y, z);
-                        lightingHelper.colorSide(Blocks.glass, x, y, z, 1, null);
-                        VertexHelper.setOffset(-(1 - path_offset));
-                        RenderHelper.renderFaceYPos(renderBlocks, x, y, z, IconRegistry.icon_hatch_french_glass);
-                    }
-                    
-                }
-                
-            } else {
-                
-                renderBlocks.setRenderBounds(0.0F, 0.1875F, 0.1875F, 1.0F, 0.8125F, 0.8125F);
-                
-                lightingHelper.setLightingXPos(Blocks.glass, x, y, z);
-                lightingHelper.colorSide(Blocks.glass, x, y, z, 5, null);
-                VertexHelper.setOffset(-path_offset);
-                RenderHelper.renderFaceXPos(renderBlocks, x, y, z, IconRegistry.icon_hatch_french_glass);
-                
-                if (!renderAlphaOverride) {
-                    lightingHelper.setLightingXNeg(Blocks.glass, x, y, z);
-                    lightingHelper.colorSide(Blocks.glass, x, y, z, 4, null);
-                    VertexHelper.setOffset(-(1 - path_offset));
-                    RenderHelper.renderFaceXNeg(renderBlocks, x, y, z, IconRegistry.icon_hatch_french_glass);
-                }
-                
-            }
-            
-            VertexHelper.clearOffset();
-            suppressDyeColor = false;
-            
-            renderHandle(Blocks.iron_block, x, y, z, true, true);
-        }
+        VertexHelper.clearOffset();
+        suppressDyeColor = false;
+        
+        renderHandle(Blocks.iron_block, x, y, z, true, true);
     }
     
     /**
@@ -531,126 +513,120 @@ public class BlockHandlerCarpentersHatch extends BlockHandlerBase {
             
         }
         
-        if (shouldRenderBlock(block)) {
+        /* Draw sides */
+        
+        if (path_on_x) {
             
-            /* Draw sides */
-            
-            if (path_on_x) {
-                
-                renderBlocks.setRenderBounds(0.0F, y_low, z_low, 0.1875F, y_high, z_high);
-                renderBlock(block, x, y, z);
-                renderBlocks.setRenderBounds(0.8125F, y_low, z_low, 1.0F, y_high, z_high);
-                renderBlock(block, x, y, z);
-                renderBlocks.setRenderBounds(0.1875F, 0.0F, z_low, 0.8125F, 0.1875F, z_high);
-                renderBlock(block, x, y, z);
-                renderBlocks.setRenderBounds(0.1875F, 0.8125F, z_low, 0.8125F, 1.0F, z_high);
-                renderBlock(block, x, y, z);
-                
-            } else if (path_on_y) {
-                
-                renderBlocks.setRenderBounds(0.0F, y_low, z_low, 0.1875F, y_high, z_high);
-                renderBlock(block, x, y, z);
-                renderBlocks.setRenderBounds(0.8125F, y_low, z_low, 1.0F, y_high, z_high);
-                renderBlock(block, x, y, z);
-                renderBlocks.setRenderBounds(0.1875F, y_low, 0.0F, 0.8125F, y_high, 0.1875F);
-                renderBlock(block, x, y, z);
-                renderBlocks.setRenderBounds(0.1875F, y_low, 0.8125F, 0.8125F, y_high, 1.0F);
-                renderBlock(block, x, y, z);
-                
-            } else {
-                
-                renderBlocks.setRenderBounds(x_low, y_low, 0.0F, x_high, y_high, 0.1875F);
-                renderBlock(block, x, y, z);
-                renderBlocks.setRenderBounds(x_low, y_low, 0.8125F, x_high, y_high, 1.0F);
-                renderBlock(block, x, y, z);
-                renderBlocks.setRenderBounds(x_low, 0.0F, 0.1875F, x_high, 0.1875F, 0.8125F);
-                renderBlock(block, x, y, z);
-                renderBlocks.setRenderBounds(x_low, 0.8125F, 0.1875F, x_high, 1.0F, 0.8125F);
-                renderBlock(block, x, y, z);
-                
-            }
-            
-            float temp_x_low = x_low;
-            float temp_x_high = x_high;
-            float temp_y_low = y_low;
-            float temp_y_high = y_high;
-            float temp_z_low = z_low;
-            float temp_z_high = z_high;
-            
-            /* Draw thin center panel */
-            
-            if (path_on_x) {
-                
-                temp_x_low = 0.1875F;
-                temp_x_high = 0.8125F;
-                temp_y_low = 0.1875F;
-                temp_y_high = 0.8125F;
-                temp_z_low += 0.0625F;
-                temp_z_high -= 0.0625F;
-                
-            } else if (path_on_y) {
-                
-                temp_x_low = 0.1875F;
-                temp_x_high = 0.8125F;
-                temp_y_low += 0.0625F;
-                temp_y_high -= 0.0625F;
-                temp_z_low = 0.1875F;
-                temp_z_high = 0.8125F;
-                
-            } else {
-                
-                temp_x_low += 0.0625F;
-                temp_x_high -= 0.0625F;
-                temp_y_low = 0.1875F;
-                temp_y_high = 0.8125F;
-                temp_z_low = 0.1875F;
-                temp_z_high = 0.8125F;
-                
-            }
-            
-            renderBlocks.setRenderBounds(temp_x_low, temp_y_low, temp_z_low, temp_x_high, temp_y_high, temp_z_high);
+            renderBlocks.setRenderBounds(0.0F, y_low, z_low, 0.1875F, y_high, z_high);
+            renderBlock(block, x, y, z);
+            renderBlocks.setRenderBounds(0.8125F, y_low, z_low, 1.0F, y_high, z_high);
+            renderBlock(block, x, y, z);
+            renderBlocks.setRenderBounds(0.1875F, 0.0F, z_low, 0.8125F, 0.1875F, z_high);
+            renderBlock(block, x, y, z);
+            renderBlocks.setRenderBounds(0.1875F, 0.8125F, z_low, 0.8125F, 1.0F, z_high);
             renderBlock(block, x, y, z);
             
-            temp_x_low = x_low;
-            temp_x_high = x_high;
-            temp_y_low = y_low;
-            temp_y_high = y_high;
-            temp_z_low = z_low;
-            temp_z_high = z_high;
+        } else if (path_on_y) {
             
-            /* Draw center panel */
+            renderBlocks.setRenderBounds(0.0F, y_low, z_low, 0.1875F, y_high, z_high);
+            renderBlock(block, x, y, z);
+            renderBlocks.setRenderBounds(0.8125F, y_low, z_low, 1.0F, y_high, z_high);
+            renderBlock(block, x, y, z);
+            renderBlocks.setRenderBounds(0.1875F, y_low, 0.0F, 0.8125F, y_high, 0.1875F);
+            renderBlock(block, x, y, z);
+            renderBlocks.setRenderBounds(0.1875F, y_low, 0.8125F, 0.8125F, y_high, 1.0F);
+            renderBlock(block, x, y, z);
             
-            if (path_on_x) {
-                
-                temp_x_low = 0.3125F;
-                temp_x_high = 0.6875F;
-                temp_y_low = 0.3125F;
-                temp_y_high = 0.6875F;
-                
-            } else if (path_on_y) {
-                
-                temp_x_low = 0.3125F;
-                temp_x_high = 0.6875F;
-                temp_z_low = 0.3125F;
-                temp_z_high = 0.6875F;
-                
-            } else {
-                
-                temp_y_low = 0.3125F;
-                temp_y_high = 0.6875F;
-                temp_z_low = 0.3125F;
-                temp_z_high = 0.6875F;
-                
-            }
+        } else {
             
-            renderBlocks.setRenderBounds(temp_x_low, temp_y_low, temp_z_low, temp_x_high, temp_y_high, temp_z_high);
+            renderBlocks.setRenderBounds(x_low, y_low, 0.0F, x_high, y_high, 0.1875F);
+            renderBlock(block, x, y, z);
+            renderBlocks.setRenderBounds(x_low, y_low, 0.8125F, x_high, y_high, 1.0F);
+            renderBlock(block, x, y, z);
+            renderBlocks.setRenderBounds(x_low, 0.0F, 0.1875F, x_high, 0.1875F, 0.8125F);
+            renderBlock(block, x, y, z);
+            renderBlocks.setRenderBounds(x_low, 0.8125F, 0.1875F, x_high, 1.0F, 0.8125F);
             renderBlock(block, x, y, z);
             
         }
         
-        if (shouldRenderOpaque()) {
-            renderHandle(Blocks.iron_block, x, y, z, true, true);
+        float temp_x_low = x_low;
+        float temp_x_high = x_high;
+        float temp_y_low = y_low;
+        float temp_y_high = y_high;
+        float temp_z_low = z_low;
+        float temp_z_high = z_high;
+        
+        /* Draw thin center panel */
+        
+        if (path_on_x) {
+            
+            temp_x_low = 0.1875F;
+            temp_x_high = 0.8125F;
+            temp_y_low = 0.1875F;
+            temp_y_high = 0.8125F;
+            temp_z_low += 0.0625F;
+            temp_z_high -= 0.0625F;
+            
+        } else if (path_on_y) {
+            
+            temp_x_low = 0.1875F;
+            temp_x_high = 0.8125F;
+            temp_y_low += 0.0625F;
+            temp_y_high -= 0.0625F;
+            temp_z_low = 0.1875F;
+            temp_z_high = 0.8125F;
+            
+        } else {
+            
+            temp_x_low += 0.0625F;
+            temp_x_high -= 0.0625F;
+            temp_y_low = 0.1875F;
+            temp_y_high = 0.8125F;
+            temp_z_low = 0.1875F;
+            temp_z_high = 0.8125F;
+            
         }
+        
+        renderBlocks.setRenderBounds(temp_x_low, temp_y_low, temp_z_low, temp_x_high, temp_y_high, temp_z_high);
+        renderBlock(block, x, y, z);
+        
+        temp_x_low = x_low;
+        temp_x_high = x_high;
+        temp_y_low = y_low;
+        temp_y_high = y_high;
+        temp_z_low = z_low;
+        temp_z_high = z_high;
+        
+        /* Draw center panel */
+        
+        if (path_on_x) {
+            
+            temp_x_low = 0.3125F;
+            temp_x_high = 0.6875F;
+            temp_y_low = 0.3125F;
+            temp_y_high = 0.6875F;
+            
+        } else if (path_on_y) {
+            
+            temp_x_low = 0.3125F;
+            temp_x_high = 0.6875F;
+            temp_z_low = 0.3125F;
+            temp_z_high = 0.6875F;
+            
+        } else {
+            
+            temp_y_low = 0.3125F;
+            temp_y_high = 0.6875F;
+            temp_z_low = 0.3125F;
+            temp_z_high = 0.6875F;
+            
+        }
+        
+        renderBlocks.setRenderBounds(temp_x_low, temp_y_low, temp_z_low, temp_x_high, temp_y_high, temp_z_high);
+        renderBlock(block, x, y, z);
+        
+        renderHandle(Blocks.iron_block, x, y, z, true, true);
     }
     
     /**

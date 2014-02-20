@@ -24,7 +24,6 @@ public class BlockCarpentersPressurePlate extends BlockCoverable {
     public BlockCarpentersPressurePlate(Material material)
     {
         super(material);
-        setTickRandomly(true);
     }
     
     @Override
@@ -243,7 +242,7 @@ public class BlockCarpentersPressurePlate extends BlockCoverable {
         TEBase TE = getTileEntity(world, x, y, z);
         
         if (TE != null) {
-            return getPowerSupply(TE, BlockProperties.getData(TE));
+            return getPowerSupply(TE, BlockProperties.getMetadata(TE));
         } else {
             return 0;
         }
@@ -259,7 +258,7 @@ public class BlockCarpentersPressurePlate extends BlockCoverable {
         TEBase TE = getTileEntity(world, x, y, z);
         
         if (TE != null) {
-            return side == 1 ? getPowerSupply(TE, BlockProperties.getData(TE)) : 0;
+            return side == 1 ? getPowerSupply(TE, BlockProperties.getMetadata(TE)) : 0;
         } else {
             return 0;
         }

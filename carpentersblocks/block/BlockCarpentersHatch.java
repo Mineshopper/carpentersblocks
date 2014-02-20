@@ -55,7 +55,7 @@ public class BlockCarpentersHatch extends BlockCoverable {
      */
     protected boolean onHammerLeftClick(TEBase TE, EntityPlayer entityPlayer)
     {
-        BlockProperties.getData(TE);
+        BlockProperties.getMetadata(TE);
         
         if (!TE.getWorldObj().isRemote) {
             findNextSideSupportBlock(TE, TE.getWorldObj(), TE.xCoord, TE.yCoord, TE.zCoord);

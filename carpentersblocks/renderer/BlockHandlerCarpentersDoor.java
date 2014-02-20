@@ -212,151 +212,144 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
                 break;
         }
         
-        if (shouldRenderBlock(block)) {
-            
-            /* Draw vertical pieces. */
-            
-            renderBlocks.setRenderBounds(x_low, y_low, z_low, x_high_offset, y_high, z_high_offset);
+        /* Draw vertical pieces. */
+        
+        renderBlocks.setRenderBounds(x_low, y_low, z_low, x_high_offset, y_high, z_high_offset);
+        renderBlock(block, x, y, z);
+        renderBlocks.setRenderBounds(x_low_offset, y_low, z_low_offset, x_high, y_high, z_high);
+        renderBlock(block, x, y, z);
+        
+        float temp_x_low = x_low;
+        float temp_x_high = x_high;
+        float temp_z_low = z_low;
+        float temp_z_high = z_high;
+        
+        if (path_on_x) {
+            temp_x_low += 0.0625F;
+            temp_x_high -= 0.0625F;
+            temp_z_low = 0.4375F;
+            temp_z_high = 0.5625F;
+        } else {
+            temp_z_low += 0.0625F;
+            temp_z_high -= 0.0625F;
+            temp_x_low = 0.4375F;
+            temp_x_high = 0.5625F;
+        }
+        
+        // Two center pieces
+        if (isBottom) {
+            renderBlocks.setRenderBounds(temp_x_low, 0.1875F, temp_z_low, temp_x_high, 0.5F, temp_z_high);
             renderBlock(block, x, y, z);
-            renderBlocks.setRenderBounds(x_low_offset, y_low, z_low_offset, x_high, y_high, z_high);
+            renderBlocks.setRenderBounds(temp_x_low, 0.625F, temp_z_low, temp_x_high, 0.9375F, temp_z_high);
             renderBlock(block, x, y, z);
+        } else {
+            renderBlocks.setRenderBounds(temp_x_low, 0.0625F, temp_z_low, temp_x_high, 0.375F, temp_z_high);
+            renderBlock(block, x, y, z);
+            renderBlocks.setRenderBounds(temp_x_low, 0.5F, temp_z_low, temp_x_high, 0.8125F, temp_z_high);
+            renderBlock(block, x, y, z);
+        }
+        
+        temp_x_low = x_low;
+        temp_x_high = x_high;
+        temp_z_low = z_low;
+        temp_z_high = z_high;
+        
+        /* Draw horizontal pieces. */
+        
+        if (path_on_x) {
+            temp_z_low = 0.1875F;
+            temp_z_high = 0.8125F;
+        } else {
+            temp_x_low = 0.1875F;
+            temp_x_high = 0.8125F;
+        }
+        
+        if (isBottom) {
             
-            float temp_x_low = x_low;
-            float temp_x_high = x_high;
-            float temp_z_low = z_low;
-            float temp_z_high = z_high;
+            renderBlocks.setRenderBounds(temp_x_low, 0.0F, temp_z_low, temp_x_high, 0.1875F, temp_z_high);
+            renderBlock(block, x, y, z);
             
             if (path_on_x) {
                 temp_x_low += 0.0625F;
                 temp_x_high -= 0.0625F;
-                temp_z_low = 0.4375F;
-                temp_z_high = 0.5625F;
             } else {
                 temp_z_low += 0.0625F;
                 temp_z_high -= 0.0625F;
-                temp_x_low = 0.4375F;
-                temp_x_high = 0.5625F;
             }
             
-            // Two center pieces
-            if (isBottom) {
-                renderBlocks.setRenderBounds(temp_x_low, 0.1875F, temp_z_low, temp_x_high, 0.5F, temp_z_high);
-                renderBlock(block, x, y, z);
-                renderBlocks.setRenderBounds(temp_x_low, 0.625F, temp_z_low, temp_x_high, 0.9375F, temp_z_high);
-                renderBlock(block, x, y, z);
-            } else {
-                renderBlocks.setRenderBounds(temp_x_low, 0.0625F, temp_z_low, temp_x_high, 0.375F, temp_z_high);
-                renderBlock(block, x, y, z);
-                renderBlocks.setRenderBounds(temp_x_low, 0.5F, temp_z_low, temp_x_high, 0.8125F, temp_z_high);
-                renderBlock(block, x, y, z);
-            }
+            renderBlocks.setRenderBounds(temp_x_low, 0.5F, temp_z_low, temp_x_high, 0.625F, temp_z_high);
+            renderBlock(block, x, y, z);
+            renderBlocks.setRenderBounds(temp_x_low, 0.9375F, temp_z_low, temp_x_high, 1.0F, temp_z_high);
+            renderBlock(block, x, y, z);
             
-            temp_x_low = x_low;
-            temp_x_high = x_high;
-            temp_z_low = z_low;
-            temp_z_high = z_high;
+        } else {
             
-            /* Draw horizontal pieces. */
+            renderBlocks.setRenderBounds(temp_x_low, 0.8125F, temp_z_low, temp_x_high, 1.0F, temp_z_high);
+            renderBlock(block, x, y, z);
             
             if (path_on_x) {
-                temp_z_low = 0.1875F;
-                temp_z_high = 0.8125F;
+                temp_x_low += 0.0625F;
+                temp_x_high -= 0.0625F;
             } else {
-                temp_x_low = 0.1875F;
-                temp_x_high = 0.8125F;
+                temp_z_low += 0.0625F;
+                temp_z_high -= 0.0625F;
             }
             
-            if (isBottom) {
-                
-                renderBlocks.setRenderBounds(temp_x_low, 0.0F, temp_z_low, temp_x_high, 0.1875F, temp_z_high);
-                renderBlock(block, x, y, z);
-                
-                if (path_on_x) {
-                    temp_x_low += 0.0625F;
-                    temp_x_high -= 0.0625F;
-                } else {
-                    temp_z_low += 0.0625F;
-                    temp_z_high -= 0.0625F;
-                }
-                
-                renderBlocks.setRenderBounds(temp_x_low, 0.5F, temp_z_low, temp_x_high, 0.625F, temp_z_high);
-                renderBlock(block, x, y, z);
-                renderBlocks.setRenderBounds(temp_x_low, 0.9375F, temp_z_low, temp_x_high, 1.0F, temp_z_high);
-                renderBlock(block, x, y, z);
-                
-            } else {
-                
-                renderBlocks.setRenderBounds(temp_x_low, 0.8125F, temp_z_low, temp_x_high, 1.0F, temp_z_high);
-                renderBlock(block, x, y, z);
-                
-                if (path_on_x) {
-                    temp_x_low += 0.0625F;
-                    temp_x_high -= 0.0625F;
-                } else {
-                    temp_z_low += 0.0625F;
-                    temp_z_high -= 0.0625F;
-                }
-                
-                renderBlocks.setRenderBounds(temp_x_low, 0.0F, temp_z_low, temp_x_high, 0.0625F, temp_z_high);
-                renderBlock(block, x, y, z);
-                renderBlocks.setRenderBounds(temp_x_low, 0.375F, temp_z_low, temp_x_high, 0.5F, temp_z_high);
-                renderBlock(block, x, y, z);
-                
-            }
+            renderBlocks.setRenderBounds(temp_x_low, 0.0F, temp_z_low, temp_x_high, 0.0625F, temp_z_high);
+            renderBlock(block, x, y, z);
+            renderBlocks.setRenderBounds(temp_x_low, 0.375F, temp_z_low, temp_x_high, 0.5F, temp_z_high);
+            renderBlock(block, x, y, z);
+            
         }
         
-        if (shouldRenderOpaque()) {
+        IIcon icon;
+        
+        if (isBottom) {
+            icon = IconRegistry.icon_door_french_glass_bottom;
+        } else {
+            icon = IconRegistry.icon_door_french_glass_top;
+        }
+        
+        suppressDyeColor = true;
+        VertexHelper.setOffset(-(1 - path_offset));
+        Tessellator.instance.setBrightness(Blocks.glass.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y, z));
+        
+        if (path_on_x) {
             
-            IIcon icon;
+            renderBlocks.setRenderBounds(0.0F, isBottom ? 0.1875F : 0.0F, 0.1875F, 1.0F, isBottom ? 1.0F : 0.8125F, 0.8125F);
             
-            if (isBottom) {
-                icon = IconRegistry.icon_door_french_glass_bottom;
-            } else {
-                icon = IconRegistry.icon_door_french_glass_top;
+            lightingHelper.setLightingXNeg(Blocks.glass, x, y, z);
+            lightingHelper.colorSide(Blocks.glass, x, y, z, 4, null);
+            RenderHelper.renderFaceXNeg(renderBlocks, x, y, z, icon);
+            
+            if (!renderAlphaOverride) {
+                lightingHelper.setLightingXPos(Blocks.glass, x, y, z);
+                lightingHelper.colorSide(Blocks.glass, x, y, z, 5, null);
+                VertexHelper.setOffset(-path_offset);
+                RenderHelper.renderFaceXPos(renderBlocks, x, y, z, icon);
             }
             
-            suppressDyeColor = true;
-            VertexHelper.setOffset(-(1 - path_offset));
-            Tessellator.instance.setBrightness(Blocks.glass.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y, z));
+        } else {
             
-            if (path_on_x) {
-                
-                renderBlocks.setRenderBounds(0.0F, isBottom ? 0.1875F : 0.0F, 0.1875F, 1.0F, isBottom ? 1.0F : 0.8125F, 0.8125F);
-                
-                lightingHelper.setLightingXNeg(Blocks.glass, x, y, z);
-                lightingHelper.colorSide(Blocks.glass, x, y, z, 4, null);
-                RenderHelper.renderFaceXNeg(renderBlocks, x, y, z, icon);
-                
-                if (!renderAlphaOverride) {
-                    lightingHelper.setLightingXPos(Blocks.glass, x, y, z);
-                    lightingHelper.colorSide(Blocks.glass, x, y, z, 5, null);
-                    VertexHelper.setOffset(-path_offset);
-                    RenderHelper.renderFaceXPos(renderBlocks, x, y, z, icon);
-                }
-                
-            } else {
-                
-                renderBlocks.setRenderBounds(0.1875F, isBottom ? 0.1875F : 0.0F, 0.0F, 0.8125F, isBottom ? 1.0F : 0.8125F, 1.0F);
-                
-                lightingHelper.setLightingZNeg(Blocks.glass, x, y, z);
-                lightingHelper.colorSide(Blocks.glass, x, y, z, 2, null);
-                RenderHelper.renderFaceZNeg(renderBlocks, x, y, z, icon);
-                
-                if (!renderAlphaOverride) {
-                    lightingHelper.setLightingZPos(Blocks.glass, x, y, z);
-                    lightingHelper.colorSide(Blocks.glass, x, y, z, 3, null);
-                    VertexHelper.setOffset(-path_offset);
-                    RenderHelper.renderFaceZPos(renderBlocks, x, y, z, icon);
-                }
-                
+            renderBlocks.setRenderBounds(0.1875F, isBottom ? 0.1875F : 0.0F, 0.0F, 0.8125F, isBottom ? 1.0F : 0.8125F, 1.0F);
+            
+            lightingHelper.setLightingZNeg(Blocks.glass, x, y, z);
+            lightingHelper.colorSide(Blocks.glass, x, y, z, 2, null);
+            RenderHelper.renderFaceZNeg(renderBlocks, x, y, z, icon);
+            
+            if (!renderAlphaOverride) {
+                lightingHelper.setLightingZPos(Blocks.glass, x, y, z);
+                lightingHelper.colorSide(Blocks.glass, x, y, z, 3, null);
+                VertexHelper.setOffset(-path_offset);
+                RenderHelper.renderFaceZPos(renderBlocks, x, y, z, icon);
             }
-            
-            VertexHelper.clearOffset();
-            suppressDyeColor = false;
-            
-            renderHandle(Blocks.iron_block, x, y, z, true, true);
             
         }
+        
+        VertexHelper.clearOffset();
+        suppressDyeColor = false;
+        
+        renderHandle(Blocks.iron_block, x, y, z, true, true);
     }
     
     /**
@@ -510,132 +503,125 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
                 break;
         }
         
-        if (shouldRenderBlock(block)) {
-            
-            renderBlocks.setRenderBounds(x_low, y_low, z_low, x_high_offset, y_high, z_high_offset);
-            renderBlock(block, x, y, z);
-            renderBlocks.setRenderBounds(x_low_offset, y_low, z_low_offset, x_high, y_high, z_high);
-            renderBlock(block, x, y, z);
-            
-            float temp_x_low = x_low;
-            float temp_x_high = x_high;
-            float temp_z_low = z_low;
-            float temp_z_high = z_high;
-            
-            /* Render interior sheet on bottom */
-            
-            if (isBottom)
-            {
-                if (path_on_x) {
-                    temp_x_low += 0.0625F;
-                    temp_x_high -= 0.0625F;
-                    temp_z_low = 0.1875F;
-                    temp_z_high = 0.8125F;
-                } else {
-                    temp_z_low += 0.0625F;
-                    temp_z_high -= 0.0625F;
-                    temp_x_low = 0.1875F;
-                    temp_x_high = 0.8125F;
-                }
-                
-                renderBlocks.setRenderBounds(temp_x_low, 0.1875F, temp_z_low, temp_x_high, 1.0F, temp_z_high);
-                renderBlock(block, x, y, z);
-                
-                temp_x_low = x_low;
-                temp_x_high = x_high;
-                temp_z_low = z_low;
-                temp_z_high = z_high;
-            }
-            
-            /* Render horizontal pieces */
-            
+        renderBlocks.setRenderBounds(x_low, y_low, z_low, x_high_offset, y_high, z_high_offset);
+        renderBlock(block, x, y, z);
+        renderBlocks.setRenderBounds(x_low_offset, y_low, z_low_offset, x_high, y_high, z_high);
+        renderBlock(block, x, y, z);
+        
+        float temp_x_low = x_low;
+        float temp_x_high = x_high;
+        float temp_z_low = z_low;
+        float temp_z_high = z_high;
+        
+        /* Render interior sheet on bottom */
+        
+        if (isBottom)
+        {
             if (path_on_x) {
+                temp_x_low += 0.0625F;
+                temp_x_high -= 0.0625F;
                 temp_z_low = 0.1875F;
                 temp_z_high = 0.8125F;
             } else {
+                temp_z_low += 0.0625F;
+                temp_z_high -= 0.0625F;
                 temp_x_low = 0.1875F;
                 temp_x_high = 0.8125F;
             }
             
-            if (isBottom) {
-                renderBlocks.setRenderBounds(temp_x_low, 0.0F, temp_z_low, temp_x_high, 0.1875F, temp_z_high);
-                renderBlock(block, x, y, z);
-            } else {
-                renderBlocks.setRenderBounds(temp_x_low, 0.8125F, temp_z_low, temp_x_high, 1.0F, temp_z_high);
-                renderBlock(block, x, y, z);
-                renderBlocks.setRenderBounds(temp_x_low, 0.0F, temp_z_low, temp_x_high, 0.1875F, temp_z_high);
-                renderBlock(block, x, y, z);
-            }
+            renderBlocks.setRenderBounds(temp_x_low, 0.1875F, temp_z_low, temp_x_high, 1.0F, temp_z_high);
+            renderBlock(block, x, y, z);
             
             temp_x_low = x_low;
             temp_x_high = x_high;
             temp_z_low = z_low;
             temp_z_high = z_high;
-            
-            /* Render interior panel on bottom */
-            
-            if (isBottom)
-            {
-                if (path_on_x) {
-                    temp_z_low = 0.3125F;
-                    temp_z_high = 0.6875F;
-                } else {
-                    temp_x_low = 0.3125F;
-                    temp_x_high = 0.6875F;
-                }
-                
-                renderBlocks.setRenderBounds(temp_x_low, 0.3125F, temp_z_low, temp_x_high, 0.875F, temp_z_high);
-                renderBlock(block, x, y, z);
-            }
         }
         
-        if (shouldRenderOpaque()) {
+        /* Render horizontal pieces */
+        
+        if (path_on_x) {
+            temp_z_low = 0.1875F;
+            temp_z_high = 0.8125F;
+        } else {
+            temp_x_low = 0.1875F;
+            temp_x_high = 0.8125F;
+        }
+        
+        if (isBottom) {
+            renderBlocks.setRenderBounds(temp_x_low, 0.0F, temp_z_low, temp_x_high, 0.1875F, temp_z_high);
+            renderBlock(block, x, y, z);
+        } else {
+            renderBlocks.setRenderBounds(temp_x_low, 0.8125F, temp_z_low, temp_x_high, 1.0F, temp_z_high);
+            renderBlock(block, x, y, z);
+            renderBlocks.setRenderBounds(temp_x_low, 0.0F, temp_z_low, temp_x_high, 0.1875F, temp_z_high);
+            renderBlock(block, x, y, z);
+        }
+        
+        temp_x_low = x_low;
+        temp_x_high = x_high;
+        temp_z_low = z_low;
+        temp_z_high = z_high;
+        
+        /* Render interior panel on bottom */
+        
+        if (isBottom)
+        {
+            if (path_on_x) {
+                temp_z_low = 0.3125F;
+                temp_z_high = 0.6875F;
+            } else {
+                temp_x_low = 0.3125F;
+                temp_x_high = 0.6875F;
+            }
             
-            if (!isBottom) {
+            renderBlocks.setRenderBounds(temp_x_low, 0.3125F, temp_z_low, temp_x_high, 0.875F, temp_z_high);
+            renderBlock(block, x, y, z);
+        }
+        
+        if (!isBottom) {
+            
+            suppressDyeColor = true;
+            VertexHelper.setOffset(-(1 - path_offset));
+            
+            if (path_on_x) {
                 
-                suppressDyeColor = true;
-                VertexHelper.setOffset(-(1 - path_offset));
+                renderBlocks.setRenderBounds(0.0F, 0.1875F, 0.1875F, 1.0F, 0.8125F, 0.8125F);
                 
-                if (path_on_x) {
-                    
-                    renderBlocks.setRenderBounds(0.0F, 0.1875F, 0.1875F, 1.0F, 0.8125F, 0.8125F);
-                    
-                    lightingHelper.setLightingXNeg(Blocks.glass, x, y, z);
-                    lightingHelper.colorSide(Blocks.glass, x, y, z, 4, null);
-                    RenderHelper.renderFaceXNeg(renderBlocks, x, y, z, IconRegistry.icon_door_glass_top);
-                    
-                    if (!renderAlphaOverride) {
-                        lightingHelper.setLightingXPos(Blocks.glass, x, y, z);
-                        lightingHelper.colorSide(Blocks.glass, x, y, z, 5, null);
-                        VertexHelper.setOffset(-path_offset);
-                        RenderHelper.renderFaceXPos(renderBlocks, x, y, z, IconRegistry.icon_door_glass_top);
-                    }
-                    
-                } else {
-                    
-                    renderBlocks.setRenderBounds(0.1875F, 0.1875F, 0.0F, 0.8125F, 0.8125F, 1.0F);
-                    
-                    lightingHelper.setLightingZNeg(Blocks.glass, x, y, z);
-                    lightingHelper.colorSide(Blocks.glass, x, y, z, 2, null);
-                    RenderHelper.renderFaceZNeg(renderBlocks, x, y, z, IconRegistry.icon_door_glass_top);
-                    
-                    if (!renderAlphaOverride) {
-                        lightingHelper.setLightingZPos(Blocks.glass, x, y, z);
-                        lightingHelper.colorSide(Blocks.glass, x, y, z, 3, null);
-                        VertexHelper.setOffset(-path_offset);
-                        RenderHelper.renderFaceZPos(renderBlocks, x, y, z, IconRegistry.icon_door_glass_top);
-                    }
-                    
+                lightingHelper.setLightingXNeg(Blocks.glass, x, y, z);
+                lightingHelper.colorSide(Blocks.glass, x, y, z, 4, null);
+                RenderHelper.renderFaceXNeg(renderBlocks, x, y, z, IconRegistry.icon_door_glass_top);
+                
+                if (!renderAlphaOverride) {
+                    lightingHelper.setLightingXPos(Blocks.glass, x, y, z);
+                    lightingHelper.colorSide(Blocks.glass, x, y, z, 5, null);
+                    VertexHelper.setOffset(-path_offset);
+                    RenderHelper.renderFaceXPos(renderBlocks, x, y, z, IconRegistry.icon_door_glass_top);
                 }
                 
-                VertexHelper.clearOffset();
-                suppressDyeColor = false;
+            } else {
+                
+                renderBlocks.setRenderBounds(0.1875F, 0.1875F, 0.0F, 0.8125F, 0.8125F, 1.0F);
+                
+                lightingHelper.setLightingZNeg(Blocks.glass, x, y, z);
+                lightingHelper.colorSide(Blocks.glass, x, y, z, 2, null);
+                RenderHelper.renderFaceZNeg(renderBlocks, x, y, z, IconRegistry.icon_door_glass_top);
+                
+                if (!renderAlphaOverride) {
+                    lightingHelper.setLightingZPos(Blocks.glass, x, y, z);
+                    lightingHelper.colorSide(Blocks.glass, x, y, z, 3, null);
+                    VertexHelper.setOffset(-path_offset);
+                    RenderHelper.renderFaceZPos(renderBlocks, x, y, z, IconRegistry.icon_door_glass_top);
+                }
                 
             }
             
-            renderHandle(Blocks.iron_block, x, y, z, true, true);
+            VertexHelper.clearOffset();
+            suppressDyeColor = false;
             
         }
+        
+        renderHandle(Blocks.iron_block, x, y, z, true, true);
     }
     
     /**
@@ -775,93 +761,87 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
                 break;
         }
         
-        if (shouldRenderBlock(block)) {
-            
-            renderBlocks.setRenderBounds(x_low, y_low, z_low, x_high_offset, y_high, z_high_offset);
-            renderBlock(block, x, y, z);
-            renderBlocks.setRenderBounds(x_low_offset, y_low, z_low_offset, x_high, y_high, z_high);
-            renderBlock(block, x, y, z);
-            
-            float temp_x_low = x_low;
-            float temp_x_high = x_high;
-            float temp_z_low = z_low;
-            float temp_z_high = z_high;
-            
-            /* Render interior sheet */
-            
-            if (path_on_x) {
-                temp_x_low += 0.0625F;
-                temp_x_high -= 0.0625F;
-                temp_z_low = 0.1875F;
-                temp_z_high = 0.8125F;
-            } else {
-                temp_z_low += 0.0625F;
-                temp_z_high -= 0.0625F;
-                temp_x_low = 0.1875F;
-                temp_x_high = 0.8125F;
-            }
-            
-            if (isBottom) {
-                renderBlocks.setRenderBounds(temp_x_low, 0.1875F, temp_z_low, temp_x_high, 1.0F, temp_z_high);
-                renderBlock(block, x, y, z);
-            } else {
-                renderBlocks.setRenderBounds(temp_x_low, 0.0F, temp_z_low, temp_x_high, 0.8125F, temp_z_high);
-                renderBlock(block, x, y, z);
-            }
-            
-            temp_x_low = x_low;
-            temp_x_high = x_high;
-            temp_z_low = z_low;
-            temp_z_high = z_high;
-            
-            /* Render horizontal pieces */
-            
-            if (path_on_x) {
-                temp_z_low = 0.1875F;
-                temp_z_high = 0.8125F;
-            } else {
-                temp_x_low = 0.1875F;
-                temp_x_high = 0.8125F;
-            }
-            
-            if (isBottom) {
-                renderBlocks.setRenderBounds(temp_x_low, y_low, temp_z_low, temp_x_high, 0.1875F, temp_z_high);
-                renderBlock(block, x, y, z);
-            } else {
-                renderBlocks.setRenderBounds(temp_x_low, 0.8125F, temp_z_low, temp_x_high, y_high, temp_z_high);
-                renderBlock(block, x, y, z);
-                renderBlocks.setRenderBounds(temp_x_low, 0.0625F, temp_z_low, temp_x_high, 0.25F, temp_z_high);
-                renderBlock(block, x, y, z);
-            }
-            
-            temp_x_low = x_low;
-            temp_x_high = x_high;
-            temp_z_low = z_low;
-            temp_z_high = z_high;
-            
-            /* Render interior panel */
-            
-            if (path_on_x) {
-                temp_z_low = 0.3125F;
-                temp_z_high = 0.6875F;
-            } else {
-                temp_x_low = 0.3125F;
-                temp_x_high = 0.6875F;
-            }
-            
-            if (isBottom) {
-                renderBlocks.setRenderBounds(temp_x_low, 0.3125F, temp_z_low, temp_x_high, 0.9375F, temp_z_high);
-                renderBlock(block, x, y, z);
-            } else {
-                renderBlocks.setRenderBounds(temp_x_low, 0.375F, temp_z_low, temp_x_high, 0.6875F, temp_z_high);
-                renderBlock(block, x, y, z);
-            }
-            
+        renderBlocks.setRenderBounds(x_low, y_low, z_low, x_high_offset, y_high, z_high_offset);
+        renderBlock(block, x, y, z);
+        renderBlocks.setRenderBounds(x_low_offset, y_low, z_low_offset, x_high, y_high, z_high);
+        renderBlock(block, x, y, z);
+        
+        float temp_x_low = x_low;
+        float temp_x_high = x_high;
+        float temp_z_low = z_low;
+        float temp_z_high = z_high;
+        
+        /* Render interior sheet */
+        
+        if (path_on_x) {
+            temp_x_low += 0.0625F;
+            temp_x_high -= 0.0625F;
+            temp_z_low = 0.1875F;
+            temp_z_high = 0.8125F;
+        } else {
+            temp_z_low += 0.0625F;
+            temp_z_high -= 0.0625F;
+            temp_x_low = 0.1875F;
+            temp_x_high = 0.8125F;
         }
         
-        if (shouldRenderOpaque()) {
-            renderHandle(Blocks.iron_block, x, y, z, true, true);
+        if (isBottom) {
+            renderBlocks.setRenderBounds(temp_x_low, 0.1875F, temp_z_low, temp_x_high, 1.0F, temp_z_high);
+            renderBlock(block, x, y, z);
+        } else {
+            renderBlocks.setRenderBounds(temp_x_low, 0.0F, temp_z_low, temp_x_high, 0.8125F, temp_z_high);
+            renderBlock(block, x, y, z);
         }
+        
+        temp_x_low = x_low;
+        temp_x_high = x_high;
+        temp_z_low = z_low;
+        temp_z_high = z_high;
+        
+        /* Render horizontal pieces */
+        
+        if (path_on_x) {
+            temp_z_low = 0.1875F;
+            temp_z_high = 0.8125F;
+        } else {
+            temp_x_low = 0.1875F;
+            temp_x_high = 0.8125F;
+        }
+        
+        if (isBottom) {
+            renderBlocks.setRenderBounds(temp_x_low, y_low, temp_z_low, temp_x_high, 0.1875F, temp_z_high);
+            renderBlock(block, x, y, z);
+        } else {
+            renderBlocks.setRenderBounds(temp_x_low, 0.8125F, temp_z_low, temp_x_high, y_high, temp_z_high);
+            renderBlock(block, x, y, z);
+            renderBlocks.setRenderBounds(temp_x_low, 0.0625F, temp_z_low, temp_x_high, 0.25F, temp_z_high);
+            renderBlock(block, x, y, z);
+        }
+        
+        temp_x_low = x_low;
+        temp_x_high = x_high;
+        temp_z_low = z_low;
+        temp_z_high = z_high;
+        
+        /* Render interior panel */
+        
+        if (path_on_x) {
+            temp_z_low = 0.3125F;
+            temp_z_high = 0.6875F;
+        } else {
+            temp_x_low = 0.3125F;
+            temp_x_high = 0.6875F;
+        }
+        
+        if (isBottom) {
+            renderBlocks.setRenderBounds(temp_x_low, 0.3125F, temp_z_low, temp_x_high, 0.9375F, temp_z_high);
+            renderBlock(block, x, y, z);
+        } else {
+            renderBlocks.setRenderBounds(temp_x_low, 0.375F, temp_z_low, temp_x_high, 0.6875F, temp_z_high);
+            renderBlock(block, x, y, z);
+        }
+        
+        renderHandle(Blocks.iron_block, x, y, z, true, true);
     }
     
     /**
@@ -1015,73 +995,66 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
                 break;
         }
         
-        if (shouldRenderBlock(block)) {
-            
-            renderBlocks.setRenderBounds(x_low, y_low, z_low, x_high_offset, y_high, z_high_offset);
+        renderBlocks.setRenderBounds(x_low, y_low, z_low, x_high_offset, y_high, z_high_offset);
+        renderBlock(block, x, y, z);
+        renderBlocks.setRenderBounds(x_low_offset, y_low, z_low_offset, x_high, y_high, z_high);
+        renderBlock(block, x, y, z);
+        
+        if (path_on_x) {
+            z_low = 0.1875F;
+            z_high = 0.8125F;
+        } else {
+            x_low = 0.1875F;
+            x_high = 0.8125F;
+        }
+        
+        if (isBottom) {
+            renderBlocks.setRenderBounds(x_low, y_low, z_low, x_high, 0.1875F, z_high);
             renderBlock(block, x, y, z);
-            renderBlocks.setRenderBounds(x_low_offset, y_low, z_low_offset, x_high, y_high, z_high);
+        } else {
+            renderBlocks.setRenderBounds(x_low, 0.8125F, z_low, x_high, y_high, z_high);
             renderBlock(block, x, y, z);
+        }
+        
+        int type = Door.getType(TE);
+        IIcon icon;
+        
+        if (isBottom) {
+            icon = type == Door.TYPE_SCREEN_TALL ? IconRegistry.icon_door_screen_tall : IconRegistry.icon_door_glass_tall_bottom;
+        } else {
+            icon = type == Door.TYPE_SCREEN_TALL ? IconRegistry.icon_door_screen_tall : IconRegistry.icon_door_glass_tall_top;
+        }
+        
+        VertexHelper.setOffset(-(1 - path_offset));
+        Tessellator.instance.setBrightness(Blocks.glass.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y, z));
+        
+        if (path_on_x) {
             
-            if (path_on_x) {
-                z_low = 0.1875F;
-                z_high = 0.8125F;
-            } else {
-                x_low = 0.1875F;
-                x_high = 0.8125F;
+            Tessellator.instance.setColorOpaque_F(0.6F, 0.6F, 0.6F);
+            renderBlocks.setRenderBounds(0.0F, isBottom ? 0.1875F : 0.0F, 0.1875F, 1.0F, isBottom ? 1.0F : 0.8125F, 0.8125F);
+            RenderHelper.renderFaceXNeg(renderBlocks, x, y, z, icon);
+            
+            if (!renderAlphaOverride) {
+                VertexHelper.setOffset(-path_offset);
+                RenderHelper.renderFaceXPos(renderBlocks, x, y, z, icon);
             }
             
-            if (isBottom) {
-                renderBlocks.setRenderBounds(x_low, y_low, z_low, x_high, 0.1875F, z_high);
-                renderBlock(block, x, y, z);
-            } else {
-                renderBlocks.setRenderBounds(x_low, 0.8125F, z_low, x_high, y_high, z_high);
-                renderBlock(block, x, y, z);
+        } else {
+            
+            Tessellator.instance.setColorOpaque_F(0.8F, 0.8F, 0.8F);
+            renderBlocks.setRenderBounds(0.1875F, isBottom ? 0.1875F : 0.0F, 0.0F, 0.8125F, isBottom ? 1.0F : 0.8125F, 1.0F);
+            RenderHelper.renderFaceZNeg(renderBlocks, x, y, z, icon);
+            
+            if (!renderAlphaOverride) {
+                VertexHelper.setOffset(-path_offset);
+                RenderHelper.renderFaceZPos(renderBlocks, x, y, z, icon);
             }
             
         }
         
-        if (shouldRenderOpaque()) {
-            
-            int type = Door.getType(TE);
-            IIcon icon;
-            
-            if (isBottom) {
-                icon = type == Door.TYPE_SCREEN_TALL ? IconRegistry.icon_door_screen_tall : IconRegistry.icon_door_glass_tall_bottom;
-            } else {
-                icon = type == Door.TYPE_SCREEN_TALL ? IconRegistry.icon_door_screen_tall : IconRegistry.icon_door_glass_tall_top;
-            }
-            
-            VertexHelper.setOffset(-(1 - path_offset));
-            Tessellator.instance.setBrightness(Blocks.glass.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y, z));
-            
-            if (path_on_x) {
-                
-                Tessellator.instance.setColorOpaque_F(0.6F, 0.6F, 0.6F);
-                renderBlocks.setRenderBounds(0.0F, isBottom ? 0.1875F : 0.0F, 0.1875F, 1.0F, isBottom ? 1.0F : 0.8125F, 0.8125F);
-                RenderHelper.renderFaceXNeg(renderBlocks, x, y, z, icon);
-                
-                if (!renderAlphaOverride) {
-                    VertexHelper.setOffset(-path_offset);
-                    RenderHelper.renderFaceXPos(renderBlocks, x, y, z, icon);
-                }
-                
-            } else {
-                
-                Tessellator.instance.setColorOpaque_F(0.8F, 0.8F, 0.8F);
-                renderBlocks.setRenderBounds(0.1875F, isBottom ? 0.1875F : 0.0F, 0.0F, 0.8125F, isBottom ? 1.0F : 0.8125F, 1.0F);
-                RenderHelper.renderFaceZNeg(renderBlocks, x, y, z, icon);
-                
-                if (!renderAlphaOverride) {
-                    VertexHelper.setOffset(-path_offset);
-                    RenderHelper.renderFaceZPos(renderBlocks, x, y, z, icon);
-                }
-                
-            }
-            
-            VertexHelper.clearOffset();
-            
-            renderHandle(Blocks.iron_block, x, y, z, true, true);
-        }
+        VertexHelper.clearOffset();
+        
+        renderHandle(Blocks.iron_block, x, y, z, true, true);
     }
     
     /**
@@ -1089,15 +1062,11 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
      */
     private void renderHiddenDoor(Block block, int x, int y, int z)
     {
-        if (shouldRenderBlock(block)) {
-            BlockCarpentersDoor blockRef = (BlockCarpentersDoor) BlockRegistry.blockCarpentersDoor;
-            blockRef.setBlockBoundsBasedOnState(renderBlocks.blockAccess, x, y, z);
-            renderBlock(block, x, y, z);
-        }
+        BlockCarpentersDoor blockRef = (BlockCarpentersDoor) BlockRegistry.blockCarpentersDoor;
+        blockRef.setBlockBoundsBasedOnState(renderBlocks.blockAccess, x, y, z);
+        renderBlock(block, x, y, z);
         
-        if (shouldRenderOpaque()) {
-            renderHandle(Blocks.iron_block, x, y, z, true, false);
-        }
+        renderHandle(Blocks.iron_block, x, y, z, true, false);
     }
     
     /**

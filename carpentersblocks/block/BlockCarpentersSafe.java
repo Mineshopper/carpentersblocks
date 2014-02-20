@@ -27,7 +27,6 @@ public class BlockCarpentersSafe extends BlockCoverable {
     public BlockCarpentersSafe(Material material)
     {
         super(material);
-        setHardness(2.5F);
     }
     
     @SideOnly(Side.CLIENT)

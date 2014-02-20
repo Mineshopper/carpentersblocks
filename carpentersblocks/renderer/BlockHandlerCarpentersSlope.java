@@ -243,7 +243,7 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
     {
         if (isSideSloped)
         {
-            Slope slope = Slope.slopesList[BlockProperties.getData(TE)];
+            Slope slope = Slope.slopesList[BlockProperties.getMetadata(TE)];
             int metadata = BlockProperties.getCoverMetadata(TE, coverRendering);
             
             /* Replace sloped icons with specific ones. */
@@ -303,7 +303,7 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
      */
     protected void renderBaseSide(int x, int y, int z, int side, IIcon icon)
     {
-        int slopeID = BlockProperties.getData(TE);
+        int slopeID = BlockProperties.getMetadata(TE);
         
         switch (renderID)
         {
@@ -478,7 +478,7 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
      */
     public boolean renderBaseBlock(Block block, int x, int y, int z)
     {
-        Slope slope = Slope.slopesList[BlockProperties.getData(TE)];
+        Slope slope = Slope.slopesList[BlockProperties.getMetadata(TE)];
         
         renderBlocks.enableAO = getEnableAO(block);
         

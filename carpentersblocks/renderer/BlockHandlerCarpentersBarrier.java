@@ -166,7 +166,7 @@ public class BlockHandlerCarpentersBarrier extends BlockHandlerBase {
      */
     private void renderPicketFence(Block block, int x, int y, int z)
     {
-        BlockProperties.getData(TE);
+        BlockProperties.getMetadata(TE);
         BlockCarpentersBarrier blockRef = (BlockCarpentersBarrier) BlockRegistry.blockCarpentersBarrier;
         float x_Low = 0.0F;
         float x_High = 0.0F;
@@ -401,7 +401,7 @@ public class BlockHandlerCarpentersBarrier extends BlockHandlerBase {
      */
     private void renderWall(Block block, int x, int y, int z)
     {
-        BlockProperties.getData(TE);
+        BlockProperties.getMetadata(TE);
         BlockCarpentersBarrier blockRef = (BlockCarpentersBarrier) BlockRegistry.blockCarpentersBarrier;
         
         boolean connect_XN = blockRef.canConnectBarrierTo(TE, renderBlocks.blockAccess, x - 1, y, z, ForgeDirection.EAST);
@@ -453,7 +453,7 @@ public class BlockHandlerCarpentersBarrier extends BlockHandlerBase {
      */
     private void renderVerticalPlankFence(Block block, int x, int y, int z)
     {
-        BlockProperties.getData(TE);
+        BlockProperties.getMetadata(TE);
         BlockCarpentersBarrier blockRef = (BlockCarpentersBarrier) BlockRegistry.blockCarpentersBarrier;
         
         float x_Low = 0.0F;

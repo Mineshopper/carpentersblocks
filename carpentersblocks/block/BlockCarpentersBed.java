@@ -33,7 +33,6 @@ public class BlockCarpentersBed extends BlockCoverable {
     public BlockCarpentersBed(Material material)
     {
         super(material);
-        setHardness(0.4F);
         setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.625F, 1.0F);
     }
     

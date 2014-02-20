@@ -17,7 +17,7 @@ public class FlowerPot {
      */
     public static int getDesign(TEBase TE)
     {
-        return BlockProperties.getData(TE);
+        return BlockProperties.getMetadata(TE);
     }
     
     /**
@@ -25,7 +25,7 @@ public class FlowerPot {
      */
     public static void setDesign(TEBase TE, int design)
     {
-        BlockProperties.setData(TE, design);
+        BlockProperties.setMetadata(TE, design);
     }
     
 }

@@ -1,6 +1,7 @@
 package carpentersblocks;
 
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.init.Blocks;
 import net.minecraftforge.common.config.Configuration;
 import carpentersblocks.proxy.CommonProxy;
 import carpentersblocks.util.CarpentersBlocksTab;

@@ -50,7 +50,7 @@ public class BlockHandlerCarpentersLadder extends BlockHandlerBase {
         disableAO = true;
         
         Block block = BlockProperties.getCover(TE, 6);
-        int data = BlockProperties.getData(TE);
+        int data = BlockProperties.getMetadata(TE);
         
         double xLow = 0.0D;
         double xHigh = 1.0D;
@@ -61,10 +61,10 @@ public class BlockHandlerCarpentersLadder extends BlockHandlerBase {
         
         World world = TE.getWorldObj();
         
-        boolean connects_XN = world.getBlock(x - 1, y, z).equals(srcBlock) && BlockProperties.getData((TEBase) world.getTileEntity(x - 1, y, z)) == data;
-        boolean connects_XP = world.getBlock(x + 1, y, z).equals(srcBlock) && BlockProperties.getData((TEBase) world.getTileEntity(x + 1, y, z)) == data;
-        boolean connects_ZN = world.getBlock(x, y, z - 1).equals(srcBlock) && BlockProperties.getData((TEBase) world.getTileEntity(x, y, z - 1)) == data;
-        boolean connects_ZP = world.getBlock(x, y, z + 1).equals(srcBlock) && BlockProperties.getData((TEBase) world.getTileEntity(x, y, z + 1)) == data;
+        boolean connects_XN = world.getBlock(x - 1, y, z).equals(srcBlock) && BlockProperties.getMetadata((TEBase) world.getTileEntity(x - 1, y, z)) == data;
+        boolean connects_XP = world.getBlock(x + 1, y, z).equals(srcBlock) && BlockProperties.getMetadata((TEBase) world.getTileEntity(x + 1, y, z)) == data;
+        boolean connects_ZN = world.getBlock(x, y, z - 1).equals(srcBlock) && BlockProperties.getMetadata((TEBase) world.getTileEntity(x, y, z - 1)) == data;
+        boolean connects_ZP = world.getBlock(x, y, z + 1).equals(srcBlock) && BlockProperties.getMetadata((TEBase) world.getTileEntity(x, y, z + 1)) == data;
         
         switch (data) {
             case Ladder.FACING_ON_X:

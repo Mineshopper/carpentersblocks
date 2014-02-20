@@ -31,13 +31,13 @@ public class BlockCarpentersBlock extends BlockCoverable {
      */
     protected boolean onHammerLeftClick(TEBase TE, EntityPlayer entityPlayer)
     {
-        int data = BlockProperties.getData(TE);
+        int data = BlockProperties.getMetadata(TE);
         
         if (++data > Slab.SLAB_Z_POS) {
             data = Slab.BLOCK_FULL;
         }
         
-        BlockProperties.setData(TE, data);
+        BlockProperties.setMetadata(TE, data);
         
         return true;
     }
@@ -48,7 +48,7 @@ public class BlockCarpentersBlock extends BlockCoverable {
      */
     protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer)
     {
-        int data = BlockProperties.getData(TE);
+        int data = BlockProperties.getMetadata(TE);
         
         if (data == Slab.BLOCK_FULL) {
             switch (EventHandler.eventFace)
@@ -76,7 +76,7 @@ public class BlockCarpentersBlock extends BlockCoverable {
             data = Slab.BLOCK_FULL;
         }
         
-        BlockProperties.setData(TE, data);
+        BlockProperties.setMetadata(TE, data);
         
         return true;
     }
@@ -89,7 +89,7 @@ public class BlockCarpentersBlock extends BlockCoverable {
     {
         TEBase TE = (TEBase) world.getTileEntity(x, y, z);
         
-        int data = BlockProperties.getData(TE);
+        int data = BlockProperties.getMetadata(TE);
         
         float[][] bounds = {
                 { 0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F }, // FULL BLOCK
@@ -134,14 +134,14 @@ public class BlockCarpentersBlock extends BlockCoverable {
             for (TEBase TE_current : TE_list) {
                 if (TE_current != null) {
                     if (TE_current.getBlockType().equals(this)) {
-                        data = BlockProperties.getData(TE_current);
+                        data = BlockProperties.getMetadata(TE_current);
                     }
                 }
             }
             
         }
         
-        BlockProperties.setData(TE, data);
+        BlockProperties.setMetadata(TE, data);
         
         super.onBlockPlacedBy(world, x, y, z, entityLiving, itemStack);
     }
@@ -181,7 +181,7 @@ public class BlockCarpentersBlock extends BlockCoverable {
             
             if (isBlockSolid(world, x, y, z)) {
                 
-                int data = BlockProperties.getData(TE);
+                int data = BlockProperties.getMetadata(TE);
                 
                 if (data == Slab.BLOCK_FULL) {
                     return true;

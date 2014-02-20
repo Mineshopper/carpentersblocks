@@ -244,47 +244,44 @@ public class BlockHandlerCarpentersSafe extends BlockHandlerBase {
         
         /* Begin drawing the capacity light strip. */
         
-        if (shouldRenderAlpha())
+        setIconOverride(6, IconRegistry.icon_safe_light);
+        
+        double yMin = 0.125D;
+        double yMax = 0.1875D;
+        int capacity = getCapacityIlluminated();
+        
+        suppressDyeColor = true;
+        suppressOverlay = true;
+        suppressPattern = true;
+        disableAO = true;
+        
+        for (int box = 0; box < numCapacity; ++box)
         {
-            setIconOverride(6, IconRegistry.icon_safe_light);
-            
-            double yMin = 0.125D;
-            double yMax = 0.1875D;
-            int capacity = getCapacityIlluminated();
-            
-            suppressDyeColor = true;
-            suppressOverlay = true;
-            suppressPattern = true;
-            disableAO = true;
-            
-            for (int box = 0; box < numCapacity; ++box)
-            {
-                if (box + 1 <= capacity) {
-                    lightingHelper.setLightnessOverride(1.0F);
-                    lightingHelper.setBrightnessOverride(lightingHelper.MAX_BRIGHTNESS);
-                    lightingHelper.setColorOverride(LIGHT_BLUE_ACTIVE);
-                } else {
-                    lightingHelper.setColorOverride(LIGHT_BLUE_INACTIVE);
-                }
-                
-                renderBlocks.setRenderBounds(0.125D, yMin, 0.9375D, 0.25D, yMax, 1.0D);
-                rotateBounds(renderBlocks, facing);
-                renderBlock(Blocks.ice, x, y, z);
-                lightingHelper.clearColorOverride();
-                lightingHelper.clearBrightnessOverride();
-                lightingHelper.clearLightnessOverride();
-                
-                yMin += 0.0625D;
-                yMax += 0.0625D;
+            if (box + 1 <= capacity) {
+                lightingHelper.setLightnessOverride(1.0F);
+                lightingHelper.setBrightnessOverride(lightingHelper.MAX_BRIGHTNESS);
+                lightingHelper.setColorOverride(LIGHT_BLUE_ACTIVE);
+            } else {
+                lightingHelper.setColorOverride(LIGHT_BLUE_INACTIVE);
             }
             
-            disableAO = false;
-            suppressDyeColor = false;
-            suppressOverlay = false;
-            suppressPattern = false;
+            renderBlocks.setRenderBounds(0.125D, yMin, 0.9375D, 0.25D, yMax, 1.0D);
+            rotateBounds(renderBlocks, facing);
+            renderBlock(Blocks.ice, x, y, z);
+            lightingHelper.clearColorOverride();
+            lightingHelper.clearBrightnessOverride();
+            lightingHelper.clearLightnessOverride();
             
-            clearIconOverride(6);
+            yMin += 0.0625D;
+            yMax += 0.0625D;
         }
+        
+        disableAO = false;
+        suppressDyeColor = false;
+        suppressOverlay = false;
+        suppressPattern = false;
+        
+        clearIconOverride(6);
         
         renderBlocks.renderAllFaces = false;
         
@@ -305,63 +302,62 @@ public class BlockHandlerCarpentersSafe extends BlockHandlerBase {
         
         switch (type) {
             case BLOCKTYPE_PANEL:
-                if (shouldRenderOpaque()) {
-                    renderBlock(getMetalBlock(), x, y, z);
-                }
+                
+                renderBlock(getMetalBlock(), x, y, z);
+                
                 break;
             case BLOCKTYPE_HANDLE:
-                if (shouldRenderOpaque()) {
-                    renderBlock(Blocks.iron_block, x, y, z);
-                }
+                
+                renderBlock(Blocks.iron_block, x, y, z);
+                
                 break;
             case BLOCKTYPE_GREEN_LIGHT:
-                if (shouldRenderAlpha())
-                {
-                    disableAO = true;
-                    setIconOverride(6, IconRegistry.icon_safe_light);
-                    
-                    if (isLocked) {
-                        lightingHelper.setColorOverride(LIGHT_GREEN_INACTIVE);
-                    } else {
-                        lightingHelper.setLightnessOverride(1.0F);
-                        lightingHelper.setBrightnessOverride(lightingHelper.MAX_BRIGHTNESS);
-                        lightingHelper.setColorOverride(LIGHT_GREEN_ACTIVE);
-                    }
-                    
-                    renderBlock(Blocks.ice, x, y, z);
-                    lightingHelper.clearColorOverride();
-                    lightingHelper.clearBrightnessOverride();
-                    lightingHelper.clearLightnessOverride();
-                    clearIconOverride(6);
-                    disableAO = false;
+                
+                disableAO = true;
+                setIconOverride(6, IconRegistry.icon_safe_light);
+                
+                if (isLocked) {
+                    lightingHelper.setColorOverride(LIGHT_GREEN_INACTIVE);
+                } else {
+                    lightingHelper.setLightnessOverride(1.0F);
+                    lightingHelper.setBrightnessOverride(lightingHelper.MAX_BRIGHTNESS);
+                    lightingHelper.setColorOverride(LIGHT_GREEN_ACTIVE);
                 }
+                
+                renderBlock(Blocks.ice, x, y, z);
+                lightingHelper.clearColorOverride();
+                lightingHelper.clearBrightnessOverride();
+                lightingHelper.clearLightnessOverride();
+                clearIconOverride(6);
+                disableAO = false;
+                
                 break;
             case BLOCKTYPE_RED_LIGHT:
-                if (shouldRenderAlpha())
-                {
-                    disableAO = true;
-                    setIconOverride(6, IconRegistry.icon_safe_light);
-                    
-                    if (isLocked) {
-                        lightingHelper.setLightnessOverride(1.0F);
-                        lightingHelper.setBrightnessOverride(lightingHelper.MAX_BRIGHTNESS);
-                        lightingHelper.setColorOverride(LIGHT_RED_ACTIVE);
-                    } else {
-                        lightingHelper.setColorOverride(LIGHT_RED_INACTIVE);
-                    }
-                    
-                    renderBlock(Blocks.ice, x, y, z);
-                    lightingHelper.clearColorOverride();
-                    lightingHelper.clearBrightnessOverride();
-                    lightingHelper.clearLightnessOverride();
-                    clearIconOverride(6);
-                    disableAO = false;
+                
+                disableAO = true;
+                setIconOverride(6, IconRegistry.icon_safe_light);
+                
+                if (isLocked) {
+                    lightingHelper.setLightnessOverride(1.0F);
+                    lightingHelper.setBrightnessOverride(lightingHelper.MAX_BRIGHTNESS);
+                    lightingHelper.setColorOverride(LIGHT_RED_ACTIVE);
+                } else {
+                    lightingHelper.setColorOverride(LIGHT_RED_INACTIVE);
                 }
+                
+                renderBlock(Blocks.ice, x, y, z);
+                lightingHelper.clearColorOverride();
+                lightingHelper.clearBrightnessOverride();
+                lightingHelper.clearLightnessOverride();
+                clearIconOverride(6);
+                disableAO = false;
+                
                 break;
             default:
-                if (shouldRenderBlock(block)) {
-                    renderBlock(block, x, y, z);
-                }
+                
+                renderBlock(block, x, y, z);
+                
+                break;
         }
         
         suppressDyeColor = false;

@@ -68,7 +68,7 @@ public class BlockCarpentersSlope extends BlockCoverable {
      */
     protected boolean onHammerLeftClick(TEBase TE, EntityPlayer entityPlayer)
     {
-        int slopeID = BlockProperties.getData(TE);
+        int slopeID = BlockProperties.getMetadata(TE);
         Slope slope = Slope.slopesList[slopeID];
         
         /* Cycle between slope types based on current slope. */
@@ -164,7 +164,7 @@ public class BlockCarpentersSlope extends BlockCoverable {
             default: {}
         }
         
-        BlockProperties.setData(TE, slopeID);
+        BlockProperties.setMetadata(TE, slopeID);
         
         return true;
     }
@@ -175,7 +175,7 @@ public class BlockCarpentersSlope extends BlockCoverable {
      */
     protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer)
     {
-        int slopeID = BlockProperties.getData(TE);
+        int slopeID = BlockProperties.getMetadata(TE);
         Slope slope = Slope.slopesList[slopeID];
         
         /* Transform slope to next type. */
@@ -261,7 +261,7 @@ public class BlockCarpentersSlope extends BlockCoverable {
             default: {}
         }
         
-        BlockProperties.setData(TE, slopeID);
+        BlockProperties.setMetadata(TE, slopeID);
         
         return true;
     }
@@ -301,7 +301,7 @@ public class BlockCarpentersSlope extends BlockCoverable {
             
             TEBase TE = (TEBase) world.getTileEntity(x, y, z);
             
-            int slopeID = BlockProperties.getData(TE);
+            int slopeID = BlockProperties.getMetadata(TE);
             Slope slope = Slope.slopesList[slopeID];
             
             switch (slope.getPrimaryType()) {
@@ -335,7 +335,7 @@ public class BlockCarpentersSlope extends BlockCoverable {
         
         MovingObjectPosition finalTrace = null;
         
-        Slope slope = Slope.slopesList[BlockProperties.getData(TE)];
+        Slope slope = Slope.slopesList[BlockProperties.getMetadata(TE)];
         SlopeUtil slopeUtil = new SlopeUtil();
         
         int numPasses = slopeUtil.getNumPasses(slope);
@@ -383,7 +383,7 @@ public class BlockCarpentersSlope extends BlockCoverable {
         
         AxisAlignedBB box = null;
         
-        Slope slope = Slope.slopesList[BlockProperties.getData(TE)];
+        Slope slope = Slope.slopesList[BlockProperties.getMetadata(TE)];
         SlopeUtil slopeUtil = new SlopeUtil();
         
         int precision = slopeUtil.getNumBoxesPerPass(slope);
@@ -420,7 +420,7 @@ public class BlockCarpentersSlope extends BlockCoverable {
         
         if (TE != null) {
             if (isBlockSolid(world, x, y, z)) {
-                return Slope.slopesList[BlockProperties.getData(TE)].isFaceFull(side);
+                return Slope.slopesList[BlockProperties.getMetadata(TE)].isFaceFull(side);
             }
         }
         
@@ -435,8 +435,8 @@ public class BlockCarpentersSlope extends BlockCoverable {
     {
         if (TE_adj.getBlockType() == this)
         {
-            Slope slope_src = Slope.slopesList[BlockProperties.getData(TE_src)];
-            Slope slope_adj = Slope.slopesList[BlockProperties.getData(TE_adj)];
+            Slope slope_src = Slope.slopesList[BlockProperties.getMetadata(TE_src)];
+            Slope slope_adj = Slope.slopesList[BlockProperties.getMetadata(TE_adj)];
             
             if (!slope_adj.hasSide(side_adj)) {
                 return false;
@@ -569,7 +569,7 @@ public class BlockCarpentersSlope extends BlockCoverable {
                 
                 if (!entityLiving.isSneaking()) {
                     slopeID = SlopeTransform.transformWedge(world, slopeID, x, y, z);
-                    BlockProperties.setData(TE, slopeID);
+                    BlockProperties.setMetadata(TE, slopeID);
                     SlopeTransform.transformAdjacentWedges(world, slopeID, x, y, z);
                 }
                 
@@ -618,7 +618,7 @@ public class BlockCarpentersSlope extends BlockCoverable {
                     
                     if (!entityLiving.isSneaking()) {
                         slopeID = SlopeTransform.transformPrism(world, slopeID, x, y, z);
-                        BlockProperties.setData(TE, slopeID);
+                        BlockProperties.setMetadata(TE, slopeID);
                         SlopeTransform.transformAdjacentPrisms(world, x, y, z);
                     }
                     
@@ -650,7 +650,7 @@ public class BlockCarpentersSlope extends BlockCoverable {
                 break;
         }
         
-        BlockProperties.setData(TE, slopeID);
+        BlockProperties.setMetadata(TE, slopeID);
         
         super.onBlockPlacedBy(world, x, y, z, entityLiving, itemStack);
     }

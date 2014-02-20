@@ -62,9 +62,7 @@ public class BlockHandlerCarpentersDaylightSensor extends BlockHandlerBase {
         Block block = BlockProperties.getCover(TE, 6);
         
         renderBlocks.renderAllFaces = true;
-        
-        if (shouldRenderOpaque())
-        {
+
             suppressDyeColor = true;
             suppressOverlay = true;
             suppressPattern = true;
@@ -112,7 +110,6 @@ public class BlockHandlerCarpentersDaylightSensor extends BlockHandlerBase {
             suppressDyeColor = false;
             suppressOverlay = false;
             suppressPattern = false;
-        }
         
         /* Render coverBlock walls and bottom */
         

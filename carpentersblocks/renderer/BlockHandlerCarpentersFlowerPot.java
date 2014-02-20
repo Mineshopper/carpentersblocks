@@ -59,30 +59,18 @@ public class BlockHandlerCarpentersFlowerPot extends BlockHandlerBase {
             suppressDyeColor = true;
         }
         
-        if (shouldRenderBlock(block)) {
-            renderPot(block, x, y, z);
-        }
+        renderPot(block, x, y, z);
         
         suppressOverlay = true;
         suppressPattern = true;
         suppressDyeColor = true;
         
-        if (FlowerPotProperties.hasSoil(TE))
-        {
-            block = FlowerPotProperties.getSoil(TE);
-            
-            if (shouldRenderBlock(block)) {
-                renderSoil(block, x, y, z);
-            }
+        if (FlowerPotProperties.hasSoil(TE)) {
+            renderSoil(FlowerPotProperties.getSoil(TE), x, y, z);
         }
         
-        if (FlowerPotProperties.hasPlant(TE))
-        {
-            block = FlowerPotProperties.getPlant(TE);
-            
-            if (shouldRenderOpaque()) {
-                renderPlant(block, x, y, z);
-            }
+        if (FlowerPotProperties.hasPlant(TE)) {
+            renderPlant(FlowerPotProperties.getPlant(TE), x, y, z);
         }
         
         suppressOverlay = false;

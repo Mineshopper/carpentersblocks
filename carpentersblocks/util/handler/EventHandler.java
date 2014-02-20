@@ -183,12 +183,12 @@ public class EventHandler {
             
             if (world.isRemote && entity.isSprinting() && !entity.isInWater()) {
                 int metadata = block instanceof BlockCoverable ? BLOCKICON_BASE_ID : BlockProperties.getCoverMetadata(TE, effectiveSide);
-                ParticleHelper.spawnTileParticleAt(world, entity, OverlayHandler.getBlockFromOverlay(TE, effectiveSide, block), metadata);
+                ParticleHelper.spawnTileParticleAt(world, entity, OverlayHandler.getHostBlockFromOverlay(TE, effectiveSide, block), metadata);
             }
             
             /* Adjust block slipperiness according to cover. */
             
-            TE.getBlockType().slipperiness = !BlockProperties.hasCover(TE, effectiveSide) ? Blocks.planks.slipperiness : OverlayHandler.getBlockFromOverlay(TE, effectiveSide, block).slipperiness;
+            TE.getBlockType().slipperiness = !BlockProperties.hasCover(TE, effectiveSide) ? Blocks.planks.slipperiness : OverlayHandler.getHostBlockFromOverlay(TE, effectiveSide, block).slipperiness;
             
         }
     }

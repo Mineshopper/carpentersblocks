@@ -17,7 +17,7 @@ public class Ladder {
      */
     public static boolean isFreestanding(TEBase TE)
     {
-        return BlockProperties.getData(TE) < FACING_NORTH;
+        return BlockProperties.getMetadata(TE) < FACING_NORTH;
     }
     
 }

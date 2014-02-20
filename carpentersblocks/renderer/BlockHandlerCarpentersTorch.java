@@ -67,13 +67,8 @@ public class BlockHandlerCarpentersTorch extends BlockHandlerBase {
      */
     private void renderTorch(Block block, int x, int y, int z)
     {
-        if (shouldRenderOpaque()) {
-            renderTorchHead(x, y, z);
-        }
-        
-        if (shouldRenderBlock(block)) {
-            renderTorchHandle(block, x, y, z);
-        }
+        renderTorchHead(x, y, z);
+        renderTorchHandle(block, x, y, z);
     }
     
     /**

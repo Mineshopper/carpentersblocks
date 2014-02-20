@@ -23,7 +23,7 @@ public class DaylightSensor {
      */
     public static int getLightLevel(TEBase TE)
     {
-        return BlockProperties.getData(TE) & 0xf;
+        return BlockProperties.getMetadata(TE) & 0xf;
     }
     
     /**
@@ -31,10 +31,10 @@ public class DaylightSensor {
      */
     public static void setLightLevel(TEBase TE, int lightLevel)
     {
-        int temp = BlockProperties.getData(TE) & 0xfff0;
+        int temp = BlockProperties.getMetadata(TE) & 0xfff0;
         temp |= lightLevel;
         
-        BlockProperties.setData(TE, temp);
+        BlockProperties.setMetadata(TE, temp);
     }
     
     /**
@@ -42,7 +42,7 @@ public class DaylightSensor {
      */
     public static int getPolarity(TEBase TE)
     {
-        int temp = BlockProperties.getData(TE) & 0x10;
+        int temp = BlockProperties.getMetadata(TE) & 0x10;
         return temp >> 4;
     }
     
@@ -51,10 +51,10 @@ public class DaylightSensor {
      */
     public static void setPolarity(TEBase TE, int state)
     {
-        int temp = BlockProperties.getData(TE) & 0xffef;
+        int temp = BlockProperties.getMetadata(TE) & 0xffef;
         temp |= state << 4;
         
-        BlockProperties.setData(TE, temp);
+        BlockProperties.setMetadata(TE, temp);
     }
     
     /**
@@ -62,7 +62,7 @@ public class DaylightSensor {
      */
     public static int getSensitivity(TEBase TE)
     {
-        int temp = BlockProperties.getData(TE) & 0x60;
+        int temp = BlockProperties.getMetadata(TE) & 0x60;
         return temp >> 5;
     }
     
@@ -71,10 +71,10 @@ public class DaylightSensor {
      */
     private static void setSensitivity(TEBase TE, int sensitivity)
     {
-        int temp = BlockProperties.getData(TE) & 0xff9f;
+        int temp = BlockProperties.getMetadata(TE) & 0xff9f;
         temp |= sensitivity << 5;
         
-        BlockProperties.setData(TE, temp);
+        BlockProperties.setMetadata(TE, temp);
     }
     
     /**

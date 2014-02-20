@@ -32,7 +32,6 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
     public BlockCarpentersFlowerPot(Material material)
     {
         super(material);
-        setHardness(0.5F);
     }
     
     @SideOnly(Side.CLIENT)

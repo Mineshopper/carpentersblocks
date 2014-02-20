@@ -14,6 +14,7 @@ import net.minecraft.util.IIcon;
 import carpentersblocks.data.Slope;
 import carpentersblocks.renderer.BlockHandlerBase;
 import carpentersblocks.util.BlockProperties;
+import carpentersblocks.util.handler.DyeHandler;
 import carpentersblocks.util.handler.OptifineHandler;
 import carpentersblocks.util.registry.FeatureRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -173,10 +174,7 @@ public class LightingHelper {
         float[] dyeRGB = { 1.0F, 1.0F, 1.0F };
         
         if (!blockHandler.suppressDyeColor && !(block.equals(Blocks.grass) && side == 1)) {
-            if (BlockProperties.hasDyeColor(blockHandler.TE, blockHandler.coverRendering) || blockHandler.hasDyeColorOverride) {
-                int dyeColor = blockHandler.hasDyeColorOverride ? blockHandler.dyeColorOverride : BlockProperties.getDyeColor(blockHandler.TE, blockHandler.coverRendering);
-                dyeRGB = BlockProperties.getDyeRGB(dyeColor);
-            }
+            dyeRGB = blockHandler.hasDyeOverride ? DyeHandler.getRGB(blockHandler.dyeOverride) : DyeHandler.getRGB(DyeHandler.getColor(BlockProperties.getDye(blockHandler.TE, blockHandler.coverRendering)));
         }
         
         float[] blockRGB = getBlockRGB(block, x, y, z);
@@ -185,7 +183,7 @@ public class LightingHelper {
         
         if (block.equals(Blocks.grass)) {
             
-            boolean posSlopedSide = blockHandler.isSideSloped ? Slope.slopesList[BlockProperties.getData(blockHandler.TE)].isPositive : false;
+            boolean posSlopedSide = blockHandler.isSideSloped ? Slope.slopesList[BlockProperties.getMetadata(blockHandler.TE)].isPositive : false;
             boolean useGrassColor = block.equals(Blocks.grass) && (side == 1 || icon.equals(BlockGrass.getIconSideOverlay()) || posSlopedSide);
             
             if (!useGrassColor) {

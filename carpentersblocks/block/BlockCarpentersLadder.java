@@ -23,7 +23,6 @@ public class BlockCarpentersLadder extends BlockCoverable {
     public BlockCarpentersLadder(Material material)
     {
         super(material);
-        setStepSound(Blocks.ladder.stepSound);
     }
     
     @Override
@@ -33,7 +32,7 @@ public class BlockCarpentersLadder extends BlockCoverable {
     public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
     {
         TEBase TE = (TEBase) world.getTileEntity(x, y, z);
-        int data = BlockProperties.getData(TE);
+        int data = BlockProperties.getMetadata(TE);
         
         switch (data) {
             case Ladder.FACING_NORTH: // Ladder on +Z
@@ -148,9 +147,9 @@ public class BlockCarpentersLadder extends BlockCoverable {
         
         if (metadata < 2) {
             int facing = MathHelper.floor_double(entityLiving.rotationYaw * 4.0F / 360.0F + 0.5D) & 3;
-            BlockProperties.setData(TE, facing % 2 == 0 ? Ladder.FACING_ON_X : Ladder.FACING_ON_Z);
+            BlockProperties.setMetadata(TE, facing % 2 == 0 ? Ladder.FACING_ON_X : Ladder.FACING_ON_Z);
         } else {
-            BlockProperties.setData(TE, metadata);
+            BlockProperties.setMetadata(TE, metadata);
         }
         
         if (!entityLiving.isSneaking())
@@ -167,7 +166,7 @@ public class BlockCarpentersLadder extends BlockCoverable {
             }
             
             if (TE_adj != null) {
-                BlockProperties.setData(TE, BlockProperties.getData(TE_adj));
+                BlockProperties.setMetadata(TE, BlockProperties.getMetadata(TE_adj));
             }
         }
         
@@ -185,7 +184,7 @@ public class BlockCarpentersLadder extends BlockCoverable {
         
         if (!world.isRemote && TE != null) {
             
-            int data = BlockProperties.getData(TE);
+            int data = BlockProperties.getMetadata(TE);
             boolean dropBlock = false;
             
             switch (data) {

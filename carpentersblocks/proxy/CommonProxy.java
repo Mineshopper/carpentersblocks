@@ -6,6 +6,7 @@ import carpentersblocks.network.ServerPacketHandler;
 import carpentersblocks.util.bed.BedDesignHandler;
 import carpentersblocks.util.flowerpot.FlowerPotDesignHandler;
 import carpentersblocks.util.flowerpot.FlowerPotHandler;
+import carpentersblocks.util.handler.DyeHandler;
 import carpentersblocks.util.handler.EventHandler;
 import carpentersblocks.util.handler.ExtendedPlantHandler;
 import carpentersblocks.util.handler.OverlayHandler;
@@ -25,6 +26,10 @@ public class CommonProxy {
         if (BlockRegistry.enableFlowerPot) {
             FlowerPotHandler.initPlantProfiles();
             FlowerPotDesignHandler.init(event);
+        }
+        
+        if (FeatureRegistry.enableDyeColors) {
+            DyeHandler.init();
         }
         
         if (FeatureRegistry.enableOverlays) {

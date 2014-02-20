@@ -43,7 +43,7 @@ public class Door {
      */
     public static int getType(TEBase TE)
     {
-        return BlockProperties.getData(TE) & 0x7;
+        return BlockProperties.getMetadata(TE) & 0x7;
     }
     
     /**
@@ -51,10 +51,10 @@ public class Door {
      */
     public static void setType(TEBase TE, int type)
     {
-        int temp = BlockProperties.getData(TE) & 0xfff8;
+        int temp = BlockProperties.getMetadata(TE) & 0xfff8;
         temp |= type;
         
-        BlockProperties.setData(TE, temp);
+        BlockProperties.setMetadata(TE, temp);
     }
     
     /**
@@ -62,7 +62,7 @@ public class Door {
      */
     public static int getHinge(TEBase TE)
     {
-        int temp = BlockProperties.getData(TE) & 0x8;
+        int temp = BlockProperties.getMetadata(TE) & 0x8;
         return temp >> 3;
     }
     
@@ -71,10 +71,10 @@ public class Door {
      */
     public static void setHingeSide(TEBase TE, int hingeSide)
     {
-        int temp = BlockProperties.getData(TE) & 0xfff7;
+        int temp = BlockProperties.getMetadata(TE) & 0xfff7;
         temp |= hingeSide << 3;
         
-        BlockProperties.setData(TE, temp);
+        BlockProperties.setMetadata(TE, temp);
     }
     
     /**
@@ -82,7 +82,7 @@ public class Door {
      */
     public static int getFacing(TEBase TE)
     {
-        int temp = BlockProperties.getData(TE) & 0x30;
+        int temp = BlockProperties.getMetadata(TE) & 0x30;
         return temp >> 4;
     }
     
@@ -91,10 +91,10 @@ public class Door {
      */
     public static void setFacing(TEBase TE, int facing)
     {
-        int temp = BlockProperties.getData(TE) & 0xffcf;
+        int temp = BlockProperties.getMetadata(TE) & 0xffcf;
         temp |= facing << 4;
         
-        BlockProperties.setData(TE, temp);
+        BlockProperties.setMetadata(TE, temp);
     }
     
     /**
@@ -102,7 +102,7 @@ public class Door {
      */
     public static int getState(TEBase TE)
     {
-        int temp = BlockProperties.getData(TE) & 0x40;
+        int temp = BlockProperties.getMetadata(TE) & 0x40;
         return temp >> 6;
     }
     
@@ -111,7 +111,7 @@ public class Door {
      */
     public static void setState(TEBase TE, int state, boolean playSound)
     {
-        int temp = BlockProperties.getData(TE) & 0xffbf;
+        int temp = BlockProperties.getMetadata(TE) & 0xffbf;
         temp |= state << 6;
         
         World world = TE.getWorldObj();
@@ -120,7 +120,7 @@ public class Door {
             world.playAuxSFXAtEntity((EntityPlayer)null, 1003, TE.xCoord, TE.yCoord, TE.zCoord, 0);
         }
         
-        BlockProperties.setData(TE, temp);
+        BlockProperties.setMetadata(TE, temp);
     }
     
     /**
@@ -128,7 +128,7 @@ public class Door {
      */
     public static int getPiece(TEBase TE)
     {
-        int temp = BlockProperties.getData(TE) & 0x80;
+        int temp = BlockProperties.getMetadata(TE) & 0x80;
         return temp >> 7;
     }
     
@@ -137,10 +137,10 @@ public class Door {
      */
     public static void setPiece(TEBase TE, int piece)
     {
-        int temp = BlockProperties.getData(TE) & 0xff7f;
+        int temp = BlockProperties.getMetadata(TE) & 0xff7f;
         temp |= piece << 7;
         
-        BlockProperties.setData(TE, temp);
+        BlockProperties.setMetadata(TE, temp);
     }
     
     /**
@@ -148,7 +148,7 @@ public class Door {
      */
     public static int getRigidity(TEBase TE)
     {
-        int temp = BlockProperties.getData(TE) & 0x100;
+        int temp = BlockProperties.getMetadata(TE) & 0x100;
         return temp >> 8;
     }
     
@@ -157,10 +157,10 @@ public class Door {
      */
     public static void setRigidity(TEBase TE, int rigid)
     {
-        int temp = BlockProperties.getData(TE) & 0xfeff;
+        int temp = BlockProperties.getMetadata(TE) & 0xfeff;
         temp |= rigid << 8;
         
-        BlockProperties.setData(TE, temp);
+        BlockProperties.setMetadata(TE, temp);
     }
     
 }

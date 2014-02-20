@@ -30,7 +30,6 @@ public class BlockCarpentersTorch extends BlockCoverable {
     public BlockCarpentersTorch(Material material)
     {
         super(material);
-        setTickRandomly(true);
     }
     
     @SideOnly(Side.CLIENT)

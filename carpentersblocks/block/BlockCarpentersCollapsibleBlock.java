@@ -165,7 +165,7 @@ public class BlockCarpentersCollapsibleBlock extends BlockCoverable {
                 
                 switch (side) {
                     case UP:
-                        return BlockProperties.getData(TE) == 0;
+                        return BlockProperties.getMetadata(TE) == 0;
                     case NORTH:
                         return Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZNN) + Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZPN) == 32;
                     case SOUTH:

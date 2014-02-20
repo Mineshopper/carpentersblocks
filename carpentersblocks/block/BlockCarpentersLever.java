@@ -58,7 +58,7 @@ public class BlockCarpentersLever extends BlockCoverable {
      */
     protected boolean onHammerLeftClick(TEBase TE, EntityPlayer entityPlayer)
     {
-        BlockProperties.getData(TE);
+        BlockProperties.getMetadata(TE);
         int polarity = Lever.getPolarity(TE) == Lever.POLARITY_POSITIVE ? Lever.POLARITY_NEGATIVE : Lever.POLARITY_POSITIVE;
         
         Lever.setPolarity(TE, polarity);
