@@ -3,7 +3,7 @@ package carpentersblocks.renderer;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.Icon;
-import carpentersblocks.block.BlockBase;
+import carpentersblocks.block.BlockCoverable;
 import carpentersblocks.data.FlowerPot;
 import carpentersblocks.renderer.helper.RenderHelperFlowerPot;
 import carpentersblocks.tileentity.TECarpentersFlowerPot;
@@ -29,7 +29,7 @@ public class BlockHandlerCarpentersFlowerPot extends BlockHandlerBase {
      */
     protected Icon getUniqueIcon(Block block, int side, Icon icon)
     {
-        if (block instanceof BlockBase) {
+        if (block instanceof BlockCoverable) {
             return IconRegistry.icon_solid;
         } else if (block.equals(Block.glass)) {
             return IconRegistry.icon_flower_pot_glass;

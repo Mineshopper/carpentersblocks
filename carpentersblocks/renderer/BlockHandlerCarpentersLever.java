@@ -5,7 +5,7 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.Icon;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.common.ForgeDirection;
-import carpentersblocks.block.BlockBase;
+import carpentersblocks.block.BlockCoverable;
 import carpentersblocks.block.BlockCarpentersLever;
 import carpentersblocks.data.Lever;
 import carpentersblocks.data.Lever.Axis;
@@ -30,7 +30,7 @@ public class BlockHandlerCarpentersLever extends BlockHandlerBase {
      */
     protected Icon getUniqueIcon(Block block, int side, Icon icon)
     {
-        if (block instanceof BlockBase) {
+        if (block instanceof BlockCoverable) {
             return IconRegistry.icon_solid;
         } else {
             return icon;

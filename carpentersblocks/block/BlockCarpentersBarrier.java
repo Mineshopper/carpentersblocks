@@ -20,7 +20,7 @@ import carpentersblocks.util.registry.BlockRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class BlockCarpentersBarrier extends BlockBase {
+public class BlockCarpentersBarrier extends BlockCoverable {
 
     public BlockCarpentersBarrier(int blockID)
     {

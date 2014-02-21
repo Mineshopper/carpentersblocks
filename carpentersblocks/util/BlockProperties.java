@@ -17,12 +17,13 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
+import carpentersblocks.CarpentersBlocks;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.handler.OverlayHandler;
 
 public class BlockProperties {
 
-    public final static StepSound stepSound = new StepSound("carpentersblock", 1.0F, 1.0F);
+    public final static StepSound stepSound = new StepSound(CarpentersBlocks.MODID, 1.0F, 1.0F);
 
     /**
      * Returns depth of side cover.
@@ -277,21 +278,28 @@ public class BlockProperties {
     }
 
     /**
-     * Converts ItemStack block metadata to correct value.
-     * Things like logs should always drop with metadata 0, even if
-     * a rotation in metadata is set.
+     * Converts ItemStack damage to correct value.
+     * Will correct log drop rotation, among other things.
      */
-    public static ItemStack getFilteredBlock(ItemStack itemStack)
+    public static ItemStack getFilteredBlock(World world, ItemStack itemStack)
     {
         if (itemStack != null)
         {
-            int damageDropped = Block.blocksList[itemStack.itemID].damageDropped(itemStack.getItemDamage());
-
-            if (damageDropped != itemStack.getItemDamage()) {
+            Block block = Block.blocksList[itemStack.itemID];
+            
+            int itemDropped = block.idDropped(itemStack.getItemDamage(), world.rand, /* Fortune */ 0);
+            int damageDropped = block.damageDropped(itemStack.getItemDamage());
+            
+            /*
+             * Check if block drops itself, and, if so, correct the damage value
+             * to the block's default.
+             */
+            
+            if (itemStack.itemID == itemDropped && damageDropped != itemStack.getItemDamage()) {
                 itemStack.setItemDamage(damageDropped);
             }
         }
-
+        
         return itemStack;
     }
 
@@ -301,7 +309,7 @@ public class BlockProperties {
     public static boolean setCover(TEBase TE, int side, int metadata, ItemStack itemStack)
     {
         if (hasCover(TE, side)) {
-            ejectEntity(TE, getFilteredBlock(new ItemStack(getCoverID(TE, side), 1, getCoverMetadata(TE, side))));
+            ejectEntity(TE, getFilteredBlock(TE.worldObj, new ItemStack(getCoverID(TE, side), 1, getCoverMetadata(TE, side))));
         }
 
         int blockID = itemStack == null ? 0 : itemStack.itemID;

@@ -15,7 +15,7 @@ import carpentersblocks.data.Button;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.registry.BlockRegistry;
 
-public class BlockCarpentersButton extends BlockBase {
+public class BlockCarpentersButton extends BlockCoverable {
 
     public BlockCarpentersButton(int blockID)
     {

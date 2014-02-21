@@ -21,7 +21,7 @@ import carpentersblocks.util.handler.EventHandler;
 import carpentersblocks.util.registry.BlockRegistry;
 import carpentersblocks.util.registry.ItemRegistry;
 
-public class BlockCarpentersCollapsibleBlock extends BlockBase {
+public class BlockCarpentersCollapsibleBlock extends BlockCoverable {
 
     public BlockCarpentersCollapsibleBlock(int blockID)
     {

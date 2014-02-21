@@ -22,7 +22,7 @@ import carpentersblocks.util.registry.IconRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class BlockCarpentersLever extends BlockBase {
+public class BlockCarpentersLever extends BlockCoverable {
 
     public BlockCarpentersLever(int blockID)
     {

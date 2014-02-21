@@ -29,7 +29,7 @@ import carpentersblocks.util.slope.SlopeUtil;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class BlockCarpentersSlope extends BlockBase {
+public class BlockCarpentersSlope extends BlockCoverable {
 
     public final static String slopeType[] = { "wedge", "obliqueInterior", "obliqueExterior", "prism", "prismWedge" };
 

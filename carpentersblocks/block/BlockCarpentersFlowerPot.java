@@ -28,7 +28,7 @@ import carpentersblocks.util.registry.IconRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class BlockCarpentersFlowerPot extends BlockBase {
+public class BlockCarpentersFlowerPot extends BlockCoverable {
 
     public BlockCarpentersFlowerPot(int blockID)
     {
@@ -211,7 +211,7 @@ public class BlockCarpentersFlowerPot extends BlockBase {
     {
         if (!world.isRemote)
         {
-            if (!canPlaceBlockOnSide(world, x, y, z, 1)) {
+            if (!canPlaceBlockOnSide(world, x, y - 1, z, 1)) {
                 dropBlockAsItem(world, x, y, z, world.getBlockMetadata(x, y, z), 0);
                 world.setBlockToAir(x, y, z);
             }
@@ -222,14 +222,30 @@ public class BlockCarpentersFlowerPot extends BlockBase {
 
     @Override
     /**
+     * Checks to see if its valid to put this block at the specified coordinates. Args: world, x, y, z
+     */
+    public boolean canPlaceBlockAt(World world, int x, int y, int z)
+    {
+        Block block_YN = Block.blocksList[world.getBlockId(x, y - 1, z)];
+
+        if (block_YN != null) {
+            return block_YN.isBlockSolidOnSide(world, x, y - 1, z, ForgeDirection.UP) || block_YN.canPlaceTorchOnTop(world, x, y - 1, z);
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    /**
      * checks to see if you can place this block can be placed on that side of a block: BlockLever overrides
      */
     public boolean canPlaceBlockOnSide(World world, int x, int y, int z, int side)
     {
-        Block block = Block.blocksList[world.getBlockId(x, y - 1, z)];
-        boolean canPlaceOnTop = block != null && block.canPlaceTorchOnTop(world, x, y, z);
-
-        return block.isBlockSolidOnSide(world, x, y - 1, z, ForgeDirection.UP) || canPlaceOnTop;
+        if (side == 1) {
+            return canPlaceBlockAt(world, x, y, z);
+        } else {
+            return false;
+        }
     }
 
     @Override
@@ -403,10 +419,10 @@ public class BlockCarpentersFlowerPot extends BlockBase {
         super.randomDisplayTick(world, x, y, z, random);
     }
 
+    @Override
     /**
      * Ejects contained items into the world, and notifies neighbors of an update, as appropriate
      */
-    @Override
     public void breakBlock(World world, int x, int y, int z, int var5, int metadata)
     {
         TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);

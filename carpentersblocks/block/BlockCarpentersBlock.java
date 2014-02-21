@@ -19,7 +19,7 @@ import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.handler.EventHandler;
 import carpentersblocks.util.registry.BlockRegistry;
 
-public class BlockCarpentersBlock extends BlockBase {
+public class BlockCarpentersBlock extends BlockCoverable {
 
     public BlockCarpentersBlock(int blockID)
     {

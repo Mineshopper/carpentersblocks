@@ -11,7 +11,7 @@ import net.minecraftforge.client.MinecraftForgeClient;
 
 import org.lwjgl.opengl.GL11;
 
-import carpentersblocks.block.BlockBase;
+import carpentersblocks.block.BlockCoverable;
 import carpentersblocks.data.Slope;
 import carpentersblocks.renderer.helper.FancyFluidsHelper;
 import carpentersblocks.renderer.helper.LightingHelper;
@@ -81,7 +81,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
         Icon icon_ZN = renderBlocks.getBlockIconFromSide(block, 4);
         Icon icon_ZP = renderBlocks.getBlockIconFromSide(block, 5);
 
-        if (block instanceof BlockBase) {
+        if (block instanceof BlockCoverable) {
             icon_XN = renderBlocks.getBlockIconFromSideAndMetadata(block, 0, EventHandler.BLOCKICON_BASE_ID);
             icon_XP = renderBlocks.getBlockIconFromSideAndMetadata(block, 1, EventHandler.BLOCKICON_BASE_ID);
             icon_YN = renderBlocks.getBlockIconFromSideAndMetadata(block, 2, EventHandler.BLOCKICON_BASE_ID);
@@ -141,7 +141,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
             /* Will render a fluid block in this space if valid. */
 
             if (FeatureRegistry.enableFancyFluids) {
-                if (renderPass >= 0 && minecraft.isFancyGraphicsEnabled() && BlockProperties.hasCover(TE, 6)) {
+                if (renderPass >= 0 && Minecraft.isFancyGraphicsEnabled() && BlockProperties.hasCover(TE, 6)) {
                     if (FancyFluidsHelper.render(TE, lightingHelper, renderBlocks, x, y, z, renderPass)) {
                         result = true;
                     }
@@ -314,7 +314,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
             return renderPass == PASS_ALPHA;
         } else {
             return  block.getRenderBlockPass() == renderPass ||
-                    block instanceof BlockBase && renderPass == PASS_OPAQUE;
+                    block instanceof BlockCoverable && renderPass == PASS_OPAQUE;
         }
     }
 
@@ -349,7 +349,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
                 if (renderAlphaOverride) {
                     return renderPass == PASS_ALPHA;
                 } else {
-                    if (block instanceof BlockBase) {
+                    if (block instanceof BlockCoverable) {
                         return true;
                     } else if (coverPass == PASS_ALPHA) {
                         return true;
@@ -770,7 +770,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
      */
     protected boolean getEnableAO(Block block)
     {
-        return minecraft.isAmbientOcclusionEnabled() && !disableAO && Block.lightValue[block.blockID] == 0;
+        return Minecraft.isAmbientOcclusionEnabled() && !disableAO && Block.lightValue[block.blockID] == 0;
     }
 
     /**

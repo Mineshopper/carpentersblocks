@@ -20,7 +20,7 @@ import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import carpentersblocks.api.ICarpentersChisel;
 import carpentersblocks.api.ICarpentersHammer;
-import carpentersblocks.block.BlockBase;
+import carpentersblocks.block.BlockCoverable;
 import carpentersblocks.renderer.helper.ParticleHelper;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
@@ -55,9 +55,9 @@ public class EventHandler {
     {
         int blockID = event.entity.worldObj.getBlockId(event.x, event.y, event.z);
 
-        if (blockID > 0 && Block.blocksList[blockID] instanceof BlockBase)
+        if (blockID > 0 && Block.blocksList[blockID] instanceof BlockCoverable)
         {
-            BlockBase block = (BlockBase) Block.blocksList[blockID];
+            BlockCoverable block = (BlockCoverable) Block.blocksList[blockID];
 
             eventFace = event.face;
             eventEntityPlayer = event.entityPlayer;
@@ -172,7 +172,7 @@ public class EventHandler {
 
         int blockId = world.getBlockId(x, y, z);
 
-        if (blockId > 0 && Block.blocksList[blockId] instanceof BlockBase) {
+        if (blockId > 0 && Block.blocksList[blockId] instanceof BlockCoverable) {
 
             TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
             int effectiveSide = BlockProperties.hasCover(TE, 1) ? 1 : 6;
@@ -181,7 +181,7 @@ public class EventHandler {
             /* Spawn sprint particles client-side. */
 
             if (world.isRemote && entity.isSprinting() && !entity.isInWater()) {
-                int metadata = block instanceof BlockBase ? BLOCKICON_BASE_ID : BlockProperties.getCoverMetadata(TE, effectiveSide);
+                int metadata = block instanceof BlockCoverable ? BLOCKICON_BASE_ID : BlockProperties.getCoverMetadata(TE, effectiveSide);
                 ParticleHelper.spawnTileParticleAt(world, entity, OverlayHandler.getBlockFromOverlay(TE, effectiveSide, block).blockID, metadata);
             }
 
@@ -208,11 +208,11 @@ public class EventHandler {
                     int z = MathHelper.floor_float(event.z);
                     int blockID = world.getBlockId(x, y, z);
 
-                    if (blockID > 0 && Block.blocksList[blockID] instanceof BlockBase) {
+                    if (blockID > 0 && Block.blocksList[blockID] instanceof BlockCoverable) {
 
                         Block block = BlockProperties.getCoverBlock((TEBase)world.getBlockTileEntity(x, y, z), 6);
 
-                        if (block instanceof BlockBase) {
+                        if (block instanceof BlockCoverable) {
                             event.result = event.manager.soundPoolSounds.getRandomSoundFromSoundPool(event.name.startsWith("dig.") ? Block.soundWoodFootstep.getBreakSound() : event.name.startsWith("place.") ? Block.soundWoodFootstep.getPlaceSound() : Block.soundWoodFootstep.getStepSound());
                         } else {
                             event.result = event.manager.soundPoolSounds.getRandomSoundFromSoundPool(event.name.startsWith("dig.") ? block.stepSound.getBreakSound() : event.name.startsWith("place.") ? block.stepSound.getPlaceSound() : block.stepSound.getStepSound());
@@ -246,7 +246,7 @@ public class EventHandler {
                 {
                     Block block = BlockProperties.getCoverBlock((TEBase) TE, 6);
 
-                    if (block instanceof BlockBase) {
+                    if (block instanceof BlockCoverable) {
                         event.name = Block.soundWoodFootstep.getStepSound();
                     } else if (block.stepSound != null) {
                         event.name = block.stepSound.getStepSound();

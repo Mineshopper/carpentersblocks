@@ -20,7 +20,7 @@ import carpentersblocks.util.registry.IconRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class BlockCarpentersSafe extends BlockBase {
+public class BlockCarpentersSafe extends BlockCoverable {
 
     public BlockCarpentersSafe(int blockID)
     {

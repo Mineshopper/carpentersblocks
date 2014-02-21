@@ -26,7 +26,7 @@ import carpentersblocks.util.registry.IconRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class BlockCarpentersTorch extends BlockBase {
+public class BlockCarpentersTorch extends BlockCoverable {
 
     public BlockCarpentersTorch(int blockID)
     {

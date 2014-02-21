@@ -18,7 +18,7 @@ import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.registry.BlockRegistry;
 
-public class BlockCarpentersLadder extends BlockBase {
+public class BlockCarpentersLadder extends BlockCoverable {
 
     public BlockCarpentersLadder(int blockID)
     {

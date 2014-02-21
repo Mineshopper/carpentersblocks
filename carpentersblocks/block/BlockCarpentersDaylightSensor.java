@@ -16,7 +16,7 @@ import carpentersblocks.util.registry.IconRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class BlockCarpentersDaylightSensor extends BlockBase {
+public class BlockCarpentersDaylightSensor extends BlockCoverable {
 
     public BlockCarpentersDaylightSensor(int blockID)
     {

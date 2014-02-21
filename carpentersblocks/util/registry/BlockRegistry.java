@@ -2,7 +2,6 @@ package carpentersblocks.util.registry;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemMultiTextureTile;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.oredict.ShapedOreRecipe;
@@ -23,6 +22,7 @@ import carpentersblocks.block.BlockCarpentersSafe;
 import carpentersblocks.block.BlockCarpentersSlope;
 import carpentersblocks.block.BlockCarpentersStairs;
 import carpentersblocks.block.BlockCarpentersTorch;
+import carpentersblocks.block.ItemBlockCarpentersSlope;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
 
@@ -259,9 +259,8 @@ public class BlockRegistry {
 
         if (enableSlope) {
             blockCarpentersSlope = new BlockCarpentersSlope(blockCarpentersSlopeID);
-            GameRegistry.registerBlock(blockCarpentersSlope, "blockCarpentersSlope");
+            GameRegistry.registerBlock(blockCarpentersSlope, ItemBlockCarpentersSlope.class, "blockCarpentersSlope");
             GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(blockCarpentersSlope, recipeQuantitySlope), "  X", " XY", "XYY", 'X', "stickWood", 'Y', blockCarpentersBlock));
-            Item.itemsList[blockCarpentersSlopeID] = new ItemMultiTextureTile(blockCarpentersSlopeID - 256, blockCarpentersSlope, BlockCarpentersSlope.slopeType).setUnlocalizedName("blockCarpentersSlope");
         }
 
         if (enableStairs) {

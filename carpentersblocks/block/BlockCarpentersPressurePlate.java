@@ -18,7 +18,7 @@ import carpentersblocks.util.registry.BlockRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class BlockCarpentersPressurePlate extends BlockBase {
+public class BlockCarpentersPressurePlate extends BlockCoverable {
 
     public BlockCarpentersPressurePlate(int blockID)
     {

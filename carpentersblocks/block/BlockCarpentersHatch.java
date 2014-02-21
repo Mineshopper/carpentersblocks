@@ -26,7 +26,7 @@ import carpentersblocks.util.registry.IconRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class BlockCarpentersHatch extends BlockBase {
+public class BlockCarpentersHatch extends BlockCoverable {
 
     public BlockCarpentersHatch(int blockID)
     {

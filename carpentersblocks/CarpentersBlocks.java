@@ -19,27 +19,28 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 
 @Mod(
-        modid = "CarpentersBlocks",
+        modid = CarpentersBlocks.MODID,
         name = "Carpenter's Blocks",
-        version = "v2.0.3"
+        version = CarpentersBlocks.VERSION
         )
 @NetworkMod(
         clientSideRequired = true,
         serverSideRequired = false,
-        channels = { PacketHandler.CHANNEL },
+        channels = { CarpentersBlocks.MODID },
         packetHandler = PacketHandler.class
         )
 public class CarpentersBlocks {
 
-    @Instance("CarpentersBlocks")
+	public final static String MODID = "CarpentersBlocks";
+	public final static String VERSION = "2.0.3";
+	
+    @Instance(MODID)
     public static CarpentersBlocks instance;
 
     @SidedProxy(clientSide = "carpentersblocks.proxy.ClientProxy", serverSide = "carpentersblocks.proxy.CommonProxy")
     public static CommonProxy proxy;
 
-    public final static String CHANNEL = "CarpentersBlocks";
-
-    public static CreativeTabs tabCarpentersBlocks = new CarpentersBlocksTab("carpentersBlocks");
+    public static CreativeTabs tabCarpentersBlocks = new CarpentersBlocksTab(MODID);
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)

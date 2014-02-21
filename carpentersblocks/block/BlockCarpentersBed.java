@@ -24,7 +24,7 @@ import carpentersblocks.util.registry.ItemRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class BlockCarpentersBed extends BlockBase {
+public class BlockCarpentersBed extends BlockCoverable {
 
     public BlockCarpentersBed(int blockID)
     {

@@ -22,7 +22,7 @@ import carpentersblocks.util.registry.ItemRegistry;
 import carpentersblocks.util.stairs.StairsTransform;
 import carpentersblocks.util.stairs.StairsUtil;
 
-public class BlockCarpentersStairs extends BlockBase {
+public class BlockCarpentersStairs extends BlockCoverable {
 
     public BlockCarpentersStairs(int blockID)
     {
@@ -46,13 +46,13 @@ public class BlockCarpentersStairs extends BlockBase {
 
         switch (stairs.stairsType)
         {
-            case NORMAL_XZ:
+            case NORMAL_SIDE:
                 if (++stairsID > Stairs.ID_NORMAL_SW) {
                     stairsID = Stairs.ID_NORMAL_SE;
                 }
                 break;
-            case NORMAL_Y:
-                if (stairs.arePositive) {
+            case NORMAL:
+                if (stairs.isPositive) {
                     if (++stairsID > Stairs.ID_NORMAL_POS_E) {
                         stairsID = Stairs.ID_NORMAL_POS_N;
                     }
@@ -63,7 +63,7 @@ public class BlockCarpentersStairs extends BlockBase {
                 }
                 break;
             case NORMAL_INT:
-                if (stairs.arePositive) {
+                if (stairs.isPositive) {
                     if ((stairsID += 2) > Stairs.ID_NORMAL_INT_POS_SE) {
                         stairsID = Stairs.ID_NORMAL_INT_POS_NE;
                     }
@@ -74,7 +74,7 @@ public class BlockCarpentersStairs extends BlockBase {
                 }
                 break;
             case NORMAL_EXT:
-                if (stairs.arePositive) {
+                if (stairs.isPositive) {
                     if ((stairsID += 2) > Stairs.ID_NORMAL_EXT_POS_NW) {
                         stairsID = Stairs.ID_NORMAL_EXT_POS_SW;
                     }
@@ -104,18 +104,18 @@ public class BlockCarpentersStairs extends BlockBase {
 
         switch (stairs.stairsType)
         {
-            case NORMAL_XZ:
+            case NORMAL_SIDE:
                 stairsID = Stairs.ID_NORMAL_POS_N;
                 break;
-            case NORMAL_Y:
-                if (stairs.arePositive) {
+            case NORMAL:
+                if (stairs.isPositive) {
                     stairsID -= 4;
                 } else {
                     stairsID = Stairs.ID_NORMAL_INT_POS_NE;
                 }
                 break;
             case NORMAL_INT:
-                if (stairs.arePositive) {
+                if (stairs.isPositive) {
                     stairsID += 1;
                 } else {
                     if (stairsID == Stairs.ID_NORMAL_INT_NEG_NE || stairsID == Stairs.ID_NORMAL_INT_NEG_NW) {
@@ -126,7 +126,7 @@ public class BlockCarpentersStairs extends BlockBase {
                 }
                 break;
             case NORMAL_EXT:
-                if (stairs.arePositive) {
+                if (stairs.isPositive) {
                     stairsID += 1;
                 } else {
                     stairsID = Stairs.ID_NORMAL_SE;
@@ -317,8 +317,9 @@ public class BlockCarpentersStairs extends BlockBase {
 
         /* If shift key is down, skip auto-orientation. */
         if (!entityLiving.isSneaking()) {
-            StairsTransform stairsTransform = new StairsTransform(TE);
-            stairsTransform.begin();
+            stairsID = StairsTransform.transformStairs(world, stairsID, x, y, z);
+            BlockProperties.setData(TE, stairsID);
+            StairsTransform.transformAdjacentStairs(world, stairsID, x, y, z);
         }
 
         super.onBlockPlacedBy(world, x, y, z, entityLiving, itemStack);

@@ -11,6 +11,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet250CustomPayload;
+import carpentersblocks.CarpentersBlocks;
 import carpentersblocks.block.BlockCarpentersSlope;
 import cpw.mods.fml.common.network.IPacketHandler;
 import cpw.mods.fml.common.network.Player;
@@ -19,14 +20,12 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class PacketHandler implements IPacketHandler {
 
-    public final static String CHANNEL = "CarpentersBlocks";
-
     public final static int PACKET_DAMAGE_SLOPE_IN_SLOT = 0;
 
     @Override
     public void onPacketData(INetworkManager manager, Packet250CustomPayload packet, Player player)
     {
-        if (packet.channel.equals(CHANNEL)) {
+        if (packet.channel.equals(CarpentersBlocks.MODID)) {
 
             DataInputStream inputStream = new DataInputStream(new ByteArrayInputStream(packet.data));
 
@@ -115,7 +114,7 @@ public class PacketHandler implements IPacketHandler {
             ex.printStackTrace();
         }
 
-        packet.channel = CHANNEL;
+        packet.channel = CarpentersBlocks.MODID;
         packet.data = bos.toByteArray();
         packet.length = bos.size();
 
