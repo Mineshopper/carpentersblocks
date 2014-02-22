@@ -675,29 +675,34 @@ public class BlockCoverable extends BlockContainer {
 
             TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
 
-            if (BlockProperties.hasCover(TE, 6)) {
+            if (TE != null) {
 
-                int lightOutput = Block.lightValue[blockID];
-
-                for (int side = 0; side < 7; ++side)
-                {
-                    if (BlockProperties.hasCover(TE, side))
+                if (BlockProperties.hasCover(TE, 6)) {
+    
+                    int lightOutput = Block.lightValue[blockID];
+    
+                    for (int side = 0; side < 7; ++side)
                     {
-                        int tempLightOutput = lightValue[BlockProperties.getCoverID(TE, side)];
-
-                        if (tempLightOutput > lightOutput) {
-                            lightOutput = tempLightOutput;
+                        if (BlockProperties.hasCover(TE, side))
+                        {
+                            int tempLightOutput = lightValue[BlockProperties.getCoverID(TE, side)];
+    
+                            if (tempLightOutput > lightOutput) {
+                                lightOutput = tempLightOutput;
+                            }
                         }
                     }
+    
+                    int auxLightValue = auxiliaryGetLightValue(TE, world, x, y, z);
+    
+                    if (auxLightValue > lightOutput) {
+                        lightOutput = auxLightValue;
+                    }
+    
+                    return lightOutput;
+                    
                 }
-
-                int auxLightValue = auxiliaryGetLightValue(TE, world, x, y, z);
-
-                if (auxLightValue > lightOutput) {
-                    lightOutput = auxLightValue;
-                }
-
-                return lightOutput;
+                
             }
         }
 
