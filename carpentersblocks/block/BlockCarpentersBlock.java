@@ -226,7 +226,7 @@ public class BlockCarpentersBlock extends BlockCoverable {
         {
             Block block_src = Block.blocksList[TE_src.worldObj.getBlockId(TE_src.xCoord, TE_src.yCoord, TE_src.zCoord)];
 
-            setBlockBoundsBasedOnState(TE_src.worldObj, TE_src.xCoord, TE_src.yCoord, TE_src.zCoord);
+            block_src.setBlockBoundsBasedOnState(TE_src.worldObj, TE_src.xCoord, TE_src.yCoord, TE_src.zCoord);
 
             double[] bounds_src =
                 {
