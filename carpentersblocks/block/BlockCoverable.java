@@ -679,7 +679,7 @@ public class BlockCoverable extends BlockContainer {
 
                 if (BlockProperties.hasCover(TE, 6)) {
     
-                    int lightOutput = Block.lightValue[blockID];
+                    int lightOutput = lightValue[blockID];
     
                     for (int side = 0; side < 7; ++side)
                     {
@@ -691,12 +691,6 @@ public class BlockCoverable extends BlockContainer {
                                 lightOutput = tempLightOutput;
                             }
                         }
-                    }
-    
-                    int auxLightValue = auxiliaryGetLightValue(TE, world, x, y, z);
-    
-                    if (auxLightValue > lightOutput) {
-                        lightOutput = auxLightValue;
                     }
     
                     return lightOutput;
@@ -1193,11 +1187,6 @@ public class BlockCoverable extends BlockContainer {
     protected boolean canCoverSide(TEBase TE, World world, int x, int y, int z, int side)
     {
         return false;
-    }
-
-    protected int auxiliaryGetLightValue(TEBase TE, IBlockAccess blockAccess, int x, int y, int z)
-    {
-        return 0;
     }
 
 }

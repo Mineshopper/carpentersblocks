@@ -72,21 +72,25 @@ public class BlockCarpentersTorch extends BlockCoverable {
 
             TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
 
-            int coverLight = super.getLightValue(world, x, y, z);
-            int torchLight = 0;
+            if (TE != null) {
 
-            switch (Torch.getState(TE)) {
-                case LIT:
-                    torchLight = 15;
-                    break;
-                case SMOLDERING:
-                    torchLight = 10;
-                    break;
-                default: {}
+                int coverLight = super.getLightValue(world, x, y, z);
+                int torchLight = lightValue[blockID];
+    
+                switch (Torch.getState(TE)) {
+                    case LIT:
+                        torchLight = 15;
+                        break;
+                    case SMOLDERING:
+                        torchLight = 10;
+                        break;
+                    default: {}
+                }
+    
+                return coverLight > torchLight ? coverLight : torchLight;
+    
             }
-
-            return coverLight > torchLight ? coverLight : torchLight;
-
+            
         }
 
         return lightValue[blockID];

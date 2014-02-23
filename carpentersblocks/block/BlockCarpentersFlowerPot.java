@@ -310,34 +310,42 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
     /**
      * Returns light value based on plant and soil in pot.
      */
-    public int auxiliaryGetLightValue(TEBase TE_base, IBlockAccess blockAccess, int x, int y, int z)
+    public int getLightValue(IBlockAccess world, int x, int y, int z)
     {
-        if (TE_base != null && TE_base instanceof TECarpentersFlowerPot)
-        {
-            int temp_lightValue = lightValue[blockID];
+        if (isValid(world, x, y, z)) {
 
-            if (FlowerPotProperties.hasSoil(TE_base))
-            {
-                int soil_lightValue = lightValue[FlowerPotProperties.getSoilBlock(TE_base).blockID];
+            TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
 
-                if (soil_lightValue > temp_lightValue) {
-                    temp_lightValue = soil_lightValue;
+            if (TE != null && TE instanceof TECarpentersFlowerPot) {
+
+                int coverLight = super.getLightValue(world, x, y, z);
+                int potLight = lightValue[blockID];
+    
+                if (FlowerPotProperties.hasSoil(TE))
+                {
+                    int soil_lightValue = lightValue[FlowerPotProperties.getSoilBlock(TE).blockID];
+    
+                    if (soil_lightValue > potLight) {
+                        potLight = soil_lightValue;
+                    }
                 }
-            }
-
-            if (FlowerPotProperties.hasPlant(TE_base))
-            {
-                int plant_lightValue = lightValue[FlowerPotProperties.getPlantBlock(TE_base).blockID];
-
-                if (plant_lightValue > temp_lightValue) {
-                    temp_lightValue = plant_lightValue;
+    
+                if (FlowerPotProperties.hasPlant(TE))
+                {
+                    int plant_lightValue = lightValue[FlowerPotProperties.getPlantBlock(TE).blockID];
+    
+                    if (plant_lightValue > potLight) {
+                        potLight = plant_lightValue;
+                    }
                 }
-            }
+    
+                return coverLight > potLight ? coverLight : potLight;
 
-            return temp_lightValue;
+            }
+            
         }
 
-        return 0;
+        return lightValue[blockID];
     }
 
     @Override
