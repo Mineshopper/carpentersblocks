@@ -97,7 +97,7 @@ public class BlockCoverable extends BlockContainer {
         TEBase TE = (TEBase) world.getTileEntity(x, y, z);
         
         int metadata = BlockProperties.hasCover(TE, 6) ? BlockProperties.getCoverMetadata(TE, 6) : EventHandler.BLOCKICON_BASE_ID;
-
+        
         return BlockProperties.getCover(TE, 6).getIcon(side, metadata);
     }
     
@@ -114,12 +114,12 @@ public class BlockCoverable extends BlockContainer {
         Block block_XP = world.getBlock(x + 1, y, z);
         
         TEBase[] list = {
-                block_YN != null && block_YN instanceof BlockCoverable ? (TEBase) world.getTileEntity(x, y - 1, z) : null,
-                block_YP != null && block_YP instanceof BlockCoverable ? (TEBase) world.getTileEntity(x, y + 1, z) : null,
-                block_ZN != null && block_ZN instanceof BlockCoverable ? (TEBase) world.getTileEntity(x, y, z - 1) : null,
-                block_ZP != null && block_ZP instanceof BlockCoverable ? (TEBase) world.getTileEntity(x, y, z + 1) : null,
-                block_XN != null && block_XN instanceof BlockCoverable ? (TEBase) world.getTileEntity(x - 1, y, z) : null,
-                block_XP != null && block_XP instanceof BlockCoverable ? (TEBase) world.getTileEntity(x + 1, y, z) : null
+            block_YN != null && block_YN instanceof BlockCoverable ? (TEBase) world.getTileEntity(x, y - 1, z) : null,
+            block_YP != null && block_YP instanceof BlockCoverable ? (TEBase) world.getTileEntity(x, y + 1, z) : null,
+            block_ZN != null && block_ZN instanceof BlockCoverable ? (TEBase) world.getTileEntity(x, y, z - 1) : null,
+            block_ZP != null && block_ZP instanceof BlockCoverable ? (TEBase) world.getTileEntity(x, y, z + 1) : null,
+            block_XN != null && block_XN instanceof BlockCoverable ? (TEBase) world.getTileEntity(x - 1, y, z) : null,
+            block_XP != null && block_XP instanceof BlockCoverable ? (TEBase) world.getTileEntity(x + 1, y, z) : null
         };
         
         return list;
@@ -336,7 +336,7 @@ public class BlockCoverable extends BlockContainer {
                                 }
                                 
                             }
-
+                            
                         } else if (FeatureRegistry.enableOverlays && BlockProperties.isOverlay(itemStack)) {
                             
                             if (!BlockProperties.hasOverlay(TE, effectiveSide) && (effectiveSide < 6 && BlockProperties.hasCover(TE, effectiveSide) || effectiveSide == 6)) {
@@ -722,12 +722,6 @@ public class BlockCoverable extends BlockContainer {
                     }
                 }
                 
-                int auxLightValue = auxiliaryGetLightValue(TE, world, x, y, z);
-                
-                if (auxLightValue > lightOutput) {
-                    lightOutput = auxLightValue;
-                }
-                
                 return lightOutput;
                 
             }
@@ -948,7 +942,7 @@ public class BlockCoverable extends BlockContainer {
                 }
                 
                 if (BlockProperties.hasOverlay(TE, side)) {
-
+                    
                     switch (OverlayHandler.getOverlay(BlockProperties.getOverlay(TE, side))) {
                         case GRASS:
                             blocks.add(Blocks.grass);
@@ -1077,7 +1071,7 @@ public class BlockCoverable extends BlockContainer {
     protected boolean shareFaces(TEBase TE_adj, TEBase TE_src, ForgeDirection side_adj, ForgeDirection side_src)
     {
         return TE_adj.getBlockType().isSideSolid(TE_adj.getWorldObj(), TE_adj.xCoord, TE_adj.yCoord, TE_adj.zCoord, side_adj) &&
-               TE_src.getBlockType().isSideSolid(TE_src.getWorldObj(), TE_src.xCoord, TE_src.yCoord, TE_src.zCoord, side_src);
+                TE_src.getBlockType().isSideSolid(TE_src.getWorldObj(), TE_src.xCoord, TE_src.yCoord, TE_src.zCoord, side_src);
     }
     
     @Override
@@ -1086,9 +1080,9 @@ public class BlockCoverable extends BlockContainer {
      */
     public boolean canRenderInPass(int pass)
     {
-       ForgeHooksClient.setRenderPass(pass);
-
-       return true;
+        ForgeHooksClient.setRenderPass(pass);
+        
+        return true;
     }
     
     @Override
@@ -1205,11 +1199,6 @@ public class BlockCoverable extends BlockContainer {
     protected boolean canCoverSide(TEBase TE, World world, int x, int y, int z, int side)
     {
         return false;
-    }
-    
-    protected int auxiliaryGetLightValue(TEBase TE, IBlockAccess blockAccess, int x, int y, int z)
-    {
-        return 0;
     }
     
 }

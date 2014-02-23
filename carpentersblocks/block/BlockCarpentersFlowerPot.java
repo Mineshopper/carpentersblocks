@@ -306,34 +306,38 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
     /**
      * Returns light value based on plant and soil in pot.
      */
-    public int auxiliaryGetLightValue(TEBase TE_base, IBlockAccess blockAccess, int x, int y, int z)
+    public int getLightValue(IBlockAccess world, int x, int y, int z)
     {
-        if (TE_base instanceof TECarpentersFlowerPot) {
+        TEBase TE = getTileEntity(world, x, y, z);
+        
+        if (TE != null && TE instanceof TECarpentersFlowerPot) {
             
-            int temp_lightValue = getLightValue();
+            int coverLight = super.getLightValue(world, x, y, z);
+            int potLight = getLightValue();
             
-            if (FlowerPotProperties.hasSoil(TE_base))
+            if (FlowerPotProperties.hasSoil(TE))
             {
-                int soil_lightValue = FlowerPotProperties.getSoil(TE_base).getLightValue();
+                int soil_lightValue = FlowerPotProperties.getSoil(TE).getLightValue();
                 
-                if (soil_lightValue > temp_lightValue) {
-                    temp_lightValue = soil_lightValue;
+                if (soil_lightValue > potLight) {
+                    potLight = soil_lightValue;
                 }
             }
             
-            if (FlowerPotProperties.hasPlant(TE_base))
+            if (FlowerPotProperties.hasPlant(TE))
             {
-                int plant_lightValue = FlowerPotProperties.getPlant(TE_base).getLightValue();
+                int plant_lightValue = FlowerPotProperties.getPlant(TE).getLightValue();
                 
-                if (plant_lightValue > temp_lightValue) {
-                    temp_lightValue = plant_lightValue;
+                if (plant_lightValue > potLight) {
+                    potLight = plant_lightValue;
                 }
             }
             
-            return temp_lightValue;
+            return coverLight > potLight ? coverLight : potLight;
+            
         }
         
-        return 0;
+        return getLightValue();
     }
     
     @Override
