@@ -15,6 +15,7 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+import carpentersblocks.CarpentersBlocks;
 import carpentersblocks.data.Torch;
 import carpentersblocks.data.Torch.State;
 import carpentersblocks.tileentity.TEBase;
@@ -40,9 +41,9 @@ public class BlockCarpentersTorch extends BlockCoverable {
      */
     public void registerBlockIcons(IIconRegister iconRegister)
     {
-        IconRegistry.icon_torch_lit = iconRegister.registerIcon("carpentersblocks:torch/torch_lit");
-        IconRegistry.icon_torch_head_smoldering = iconRegister.registerIcon("carpentersblocks:torch/torch_head_smoldering");
-        IconRegistry.icon_torch_head_unlit = iconRegister.registerIcon("carpentersblocks:torch/torch_head_unlit");
+        IconRegistry.icon_torch_lit             = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "torch/torch_lit");
+        IconRegistry.icon_torch_head_smoldering = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "torch/torch_head_smoldering");
+        IconRegistry.icon_torch_head_unlit      = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "torch/torch_head_unlit");
         
         super.registerBlockIcons(iconRegister);
     }

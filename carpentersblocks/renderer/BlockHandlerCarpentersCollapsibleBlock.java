@@ -80,7 +80,7 @@ public class BlockHandlerCarpentersCollapsibleBlock extends BlockAdvancedLightin
     /**
      * Renders base block.
      */
-    protected boolean renderBaseBlock(Block block, int x, int y, int z)
+    protected void renderBaseBlock(Block block, int x, int y, int z)
     {
         renderBlocks.enableAO = getEnableAO(block);
         CollapsibleUtil.computeOffsets(TE);
@@ -126,7 +126,6 @@ public class BlockHandlerCarpentersCollapsibleBlock extends BlockAdvancedLightin
         }
         
         renderBlocks.enableAO = false;
-        return true;
     }
     
     /**

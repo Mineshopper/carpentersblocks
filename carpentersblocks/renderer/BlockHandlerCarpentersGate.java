@@ -29,7 +29,7 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
     /**
      * Renders gate
      */
-    protected boolean renderCarpentersBlock(int x, int y, int z)
+    protected void renderCarpentersBlock(int x, int y, int z)
     {
         renderBlocks.renderAllFaces = true;
         
@@ -52,8 +52,6 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
         }
         
         renderBlocks.renderAllFaces = false;
-        
-        return true;
     }
     
     /**

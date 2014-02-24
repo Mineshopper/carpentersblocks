@@ -14,6 +14,7 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+import carpentersblocks.CarpentersBlocks;
 import carpentersblocks.data.FlowerPot;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.tileentity.TECarpentersFlowerPot;
@@ -40,12 +41,12 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
     {
         for (int numIcon = 0; numIcon < FlowerPotDesignHandler.maxNum; ++numIcon) {
             if (FlowerPotDesignHandler.hasDesign[numIcon]) {
-                IconRegistry.icon_flower_pot_design[numIcon] = iconRegister.registerIcon("carpentersblocks:flowerpot/design/design_" + numIcon);
+                IconRegistry.icon_flower_pot_design[numIcon] = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "flowerpot/design/design_" + numIcon);
             }
         }
         
-        IconRegistry.icon_flower_pot       = iconRegister.registerIcon("carpentersblocks:flowerpot/flower_pot");
-        IconRegistry.icon_flower_pot_glass = iconRegister.registerIcon("carpentersblocks:flowerpot/flower_pot_glass");
+        IconRegistry.icon_flower_pot       = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "flowerpot/flower_pot");
+        IconRegistry.icon_flower_pot_glass = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "flowerpot/flower_pot_glass");
         
         super.registerBlockIcons(iconRegister);
     }

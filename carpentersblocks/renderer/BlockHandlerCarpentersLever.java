@@ -10,6 +10,7 @@ import carpentersblocks.block.BlockCarpentersLever;
 import carpentersblocks.block.BlockCoverable;
 import carpentersblocks.data.Lever;
 import carpentersblocks.data.Lever.Axis;
+import carpentersblocks.renderer.helper.VertexHelper;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.registry.BlockRegistry;
 import carpentersblocks.util.registry.IconRegistry;
@@ -42,7 +43,7 @@ public class BlockHandlerCarpentersLever extends BlockHandlerBase {
     /**
      * Renders block
      */
-    protected boolean renderCarpentersBlock(int x, int y, int z)
+    protected void renderCarpentersBlock(int x, int y, int z)
     {
         renderBlocks.renderAllFaces = true;
         
@@ -51,14 +52,12 @@ public class BlockHandlerCarpentersLever extends BlockHandlerBase {
         renderLever(block, x, y, z);
         
         renderBlocks.renderAllFaces = false;
-        
-        return true;
     }
     
     /**
      * Renders lever.
      */
-    private boolean renderLever(Block block, int x, int y, int z)
+    private void renderLever(Block block, int x, int y, int z)
     {
         /* Set block bounds and render lever base. */
         
@@ -71,14 +70,12 @@ public class BlockHandlerCarpentersLever extends BlockHandlerBase {
         /* Render lever handle. */
         
         renderLeverHandle(x, y, z);
-        
-        return true;
     }
     
     /**
      * Renders the lever handle.
      */
-    private boolean renderLeverHandle(int x, int y, int z)
+    private void renderLeverHandle(int x, int y, int z)
     {
         Tessellator tessellator = Tessellator.instance;
         tessellator.setBrightness(Blocks.dirt.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y, z));
@@ -234,9 +231,9 @@ public class BlockHandlerCarpentersLever extends BlockHandlerBase {
             tessellator.addVertexWithUV(vertex2.xCoord, vertex2.yCoord, vertex2.zCoord, uMax, vMax);
             tessellator.addVertexWithUV(vertex3.xCoord, vertex3.yCoord, vertex3.zCoord, uMax, vMin);
             tessellator.addVertexWithUV(vertex4.xCoord, vertex4.yCoord, vertex4.zCoord, uMin, vMin);
+            
+            VertexHelper.drawCount += 4;
         }
-        
-        return true;
     }
     
 }

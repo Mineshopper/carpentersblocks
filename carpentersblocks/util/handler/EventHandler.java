@@ -1,5 +1,7 @@
 package carpentersblocks.util.handler;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;
@@ -8,6 +10,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.play.client.C17PacketCustomPayload;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
@@ -21,7 +24,6 @@ import carpentersblocks.CarpentersBlocks;
 import carpentersblocks.api.ICarpentersChisel;
 import carpentersblocks.api.ICarpentersHammer;
 import carpentersblocks.block.BlockCoverable;
-import carpentersblocks.network.packet.PacketSlopeSelect;
 import carpentersblocks.renderer.helper.ParticleHelper;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
@@ -125,9 +127,9 @@ public class EventHandler {
                 } else {
                     return;
                 }
-                
-                CarpentersBlocks.channel.sendToServer(new FMLProxyPacket(new PacketSlopeSelect(event.dwheel == 120)));
-                
+
+                PacketHandler.sendPacketToServer(PacketHandler.PACKET_SLOPE_SELECT, event.dwheel == 120);
+
             }
             
         }

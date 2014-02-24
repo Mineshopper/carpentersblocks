@@ -11,6 +11,7 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+import carpentersblocks.CarpentersBlocks;
 import carpentersblocks.data.Lever;
 import carpentersblocks.data.Lever.Axis;
 import carpentersblocks.tileentity.TEBase;
@@ -36,7 +37,7 @@ public class BlockCarpentersLever extends BlockCoverable {
      */
     public void registerBlockIcons(IIconRegister iconRegister)
     {
-        IconRegistry.icon_lever = iconRegister.registerIcon("carpentersblocks:lever/lever");
+        IconRegistry.icon_lever = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "lever/lever");
         
         super.registerBlockIcons(iconRegister);
     }

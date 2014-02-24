@@ -18,6 +18,7 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+import carpentersblocks.CarpentersBlocks;
 import carpentersblocks.data.Hatch;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
@@ -42,9 +43,9 @@ public class BlockCarpentersHatch extends BlockCoverable {
      */
     public void registerBlockIcons(IIconRegister iconRegister)
     {
-        IconRegistry.icon_hatch_glass        = iconRegister.registerIcon("carpentersblocks:hatch/hatch_glass");
-        IconRegistry.icon_hatch_french_glass = iconRegister.registerIcon("carpentersblocks:hatch/hatch_french_glass");
-        IconRegistry.icon_hatch_screen       = iconRegister.registerIcon("carpentersblocks:hatch/hatch_screen");
+        IconRegistry.icon_hatch_glass        = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "hatch/hatch_glass");
+        IconRegistry.icon_hatch_french_glass = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "hatch/hatch_french_glass");
+        IconRegistry.icon_hatch_screen       = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "hatch/hatch_screen");
         
         super.registerBlockIcons(iconRegister);
     }

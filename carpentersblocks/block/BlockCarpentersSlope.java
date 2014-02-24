@@ -16,6 +16,7 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+import carpentersblocks.CarpentersBlocks;
 import carpentersblocks.data.Slope;
 import carpentersblocks.data.Slope.Type;
 import carpentersblocks.tileentity.TEBase;
@@ -54,10 +55,10 @@ public class BlockCarpentersSlope extends BlockCoverable {
      */
     public void registerBlockIcons(IIconRegister iconRegister)
     {
-        IconRegistry.icon_oblique_int_pos = iconRegister.registerIcon("carpentersblocks:slope/oblique_int_pos");
-        IconRegistry.icon_oblique_int_neg = iconRegister.registerIcon("carpentersblocks:slope/oblique_int_neg");
-        IconRegistry.icon_oblique_ext_pos = iconRegister.registerIcon("carpentersblocks:slope/oblique_ext_pos");
-        IconRegistry.icon_oblique_ext_neg = iconRegister.registerIcon("carpentersblocks:slope/oblique_ext_neg");
+        IconRegistry.icon_oblique_int_pos = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "slope/oblique_int_pos");
+        IconRegistry.icon_oblique_int_neg = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "slope/oblique_int_neg");
+        IconRegistry.icon_oblique_ext_pos = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "slope/oblique_ext_pos");
+        IconRegistry.icon_oblique_ext_neg = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "slope/oblique_ext_neg");
         
         super.registerBlockIcons(iconRegister);
     }

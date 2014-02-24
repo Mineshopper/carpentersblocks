@@ -216,35 +216,30 @@ public class BlockAdvancedLighting extends BlockHandlerBase {
     /**
      * Renders side.
      */
-    protected final void renderSide(int x, int y, int z, int side, double offset, IIcon icon)
+    protected final void renderSide(int x, int y, int z, int side, IIcon icon)
     {
         if (coverRendering != 6) {
-            super.renderSide(x, y, z, side, offset, icon);
+            super.renderSide(x, y, z, side, icon);
         } else {
-            VertexHelper.setOffset(offset);
             renderBaseSide(x, y, z, side, icon);
-            VertexHelper.clearOffset();
         }
     }
     
     /**
      * Renders the base cover block.
      */
-    protected boolean renderBaseBlock(Block block, int x, int y, int z)
-    {
-        return false;
-    }
+    protected void renderBaseBlock(Block block, int x, int y, int z) { }
     
     @Override
     /**
      * Renders the block.
      */
-    protected final boolean renderBlock(Block block, int x, int y, int z)
+    protected final void renderBlock(Block block, int x, int y, int z)
     {
         if (coverRendering != 6) {
-            return super.renderBlock(block, x, y, z);
+            super.renderBlock(block, x, y, z);
         } else {
-            return renderBaseBlock(block, x, y, z);
+            renderBaseBlock(block, x, y, z);
         }
     }
     

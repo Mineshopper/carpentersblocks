@@ -55,8 +55,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
     protected LightingHelper lightingHelper = LightingHelper.instance;
     public Block             srcBlock;
     public TEBase            TE;
-    
-    protected boolean        renderAlphaOverride = FeatureRegistry.enableZFightingFix;
+
     protected boolean        hasMetadataOverride;
     protected boolean        suppressOverlay;
     protected boolean        suppressPattern;
@@ -120,8 +119,10 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
     @Override
     public boolean renderWorldBlock(IBlockAccess blockAccess, int x, int y, int z, Block block, int modelID, RenderBlocks renderBlocks)
     {
-        TE = (TEBase) blockAccess.getTileEntity(x, y, z);
+        VertexHelper.drawCount = 0;
         
+        TE = (TEBase) blockAccess.getTileEntity(x, y, z);
+
         /*
          * A catch-all for bad render calls.  Could happen if tile entities aren't
          * properly loaded when chunks are created, or with multi-block entities
@@ -133,42 +134,25 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
             this.renderBlocks = renderBlocks;
             srcBlock = block;
             lightingHelper.bind(this);
-            
-            List<Boolean> result = new ArrayList<Boolean>();
-            
-            int renderPass = MinecraftForgeClient.getRenderPass();
 
-            // DEBUG ADDED TO ADDRESS RENDER CRASHES, NEED TO KEEP TRACK OF RENDERING PERFECTLY.
-            
-            for (int cover = 0; cover < 7; ++cover) {
-                if (BlockProperties.hasCover(TE, cover)) {
-                    if (BlockProperties.getCover(TE, cover).getRenderBlockPass() == renderPass) {
-                        result.add(true);
-                    } else if (BlockProperties.hasOverlay(TE, cover) || BlockProperties.hasPattern(TE, cover)) {
-                        result.add(renderPass == 1);
-                    }
-                } else {
-                    if (cover == 6) {
-                        result.add(renderPass == 1);
-                    }
-                }
-            }
-       
             renderCarpentersBlock(x, y, z);
             renderSideBlocks(x, y, z);
             
             /* Will render a fluid block in this space if valid. */
 
             if (FeatureRegistry.enableFancyFluids) {
+                
+                int renderPass = MinecraftForgeClient.getRenderPass();
+                
                 if (renderPass >= 0 && Minecraft.isFancyGraphicsEnabled() && BlockProperties.hasCover(TE, 6)) {
-                    result.add(FancyFluidsHelper.render(TE, lightingHelper, renderBlocks, x, y, z, renderPass));
+                    FancyFluidsHelper.render(TE, lightingHelper, renderBlocks, x, y, z, renderPass);
                 }
+                
             }
             
-            return result.contains(true);
         }
 
-        return false;
+        return VertexHelper.drawCount > 0;
     }
     
     @Override
@@ -320,31 +304,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
             hasIconOverride[side] = false;
         }
     }
-    
-    /**
-     * Returns whether overlay should render.
-     */
-    protected boolean shouldRenderOverlay(Block block)
-    {
-        if (!suppressOverlay) {
-            return BlockProperties.hasOverlay(TE, coverRendering);
-        } else {
-            return false;
-        }
-    }
-    
-    /**
-     * Returns whether pattern should render.
-     */
-    protected boolean shouldRenderPattern()
-    {
-        if (!suppressPattern) {
-            return BlockProperties.hasPattern(TE, coverRendering);
-        } else {
-            return false;
-        }
-    }
-    
+
     /**
      * Sets up side cover rendering bounds.
      * Will return block location where side cover should be rendered.
@@ -438,9 +398,8 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
     /**
      * Renders side covers.
      */
-    protected boolean renderSideBlocks(int x, int y, int z)
+    protected void renderSideBlocks(int x, int y, int z)
     {
-        boolean side_rendered = false;
         renderBlocks.renderAllFaces = true;
         
         srcBlock.setBlockBoundsBasedOnState(renderBlocks.blockAccess, x, y, z);
@@ -460,7 +419,6 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
         
         renderBlocks.renderAllFaces = false;
         coverRendering = 6;
-        return side_rendered;
     }
     
     /**
@@ -494,43 +452,60 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
     protected void renderMultiTexturedSide(Block block, int x, int y, int z, int side, IIcon icon)
     {
         int renderPass = MinecraftForgeClient.getRenderPass();
+        int blockRenderPass = block.getRenderBlockPass();
         
-        if (renderPass == block.getRenderBlockPass()) {
+        /* Render base block texture. */
+        
+        if (renderPass == blockRenderPass) {
             
             if (BlockProperties.blockRotates(block)) {
                 setDirectionalRotation(side);
             }
 
+            /* Render side */
+            
             lightingHelper.colorSide(block, x, y, z, side, icon);
-            renderSide(x, y, z, side, 0.0D, icon);
+            renderSide(x, y, z, side, icon);
             
             clearRotation(side);
             
-        }// else if (renderPass == 1) {
-            
-            /* Render side */
-            
-            boolean temp_dye_state = suppressDyeColor;
-            suppressDyeColor = true;
-            
             /* Grass sides are a special case. */
+            
             if (block.equals(Blocks.grass)) {
                 renderGrassSideOverlay(x, y, z, side);
             }
             
-            /* Render pattern on side. */
-            if (BlockProperties.hasPattern(TE, coverRendering)) {
-                renderPattern(x, y, z, side);
+        }
+        
+        boolean temp_dye_state = suppressDyeColor;
+        suppressDyeColor = true;
+        
+        /*
+         * Render decorations.
+         * 
+         * Decorations should always render on the alpha pass.
+         * When the base cover renders on alpha as well, we
+         * need to adjust rendering depths of decorations to
+         * prevent overlapping artifacts.
+         */
+        
+        if (!suppressPattern && BlockProperties.hasPattern(TE, coverRendering)) {
+            if (block.getRenderBlockPass() == 1) {
+                VertexHelper.setOffset(0.0001D);
             }
-            
-            /* Render overlay on side. */
-            if (BlockProperties.hasOverlay(TE, coverRendering)) {
-                renderOverlay(block, x, y, z, side, icon);
+            renderPattern(x, y, z, side);
+            VertexHelper.clearOffset();
+        }
+        
+        if (!suppressOverlay && BlockProperties.hasOverlay(TE, coverRendering)) {
+            if (blockRenderPass == 1) {
+                VertexHelper.setOffset(0.0002D);
             }
-            
-            suppressDyeColor = temp_dye_state;
-            
-        //}
+            renderOverlay(block, x, y, z, side, icon);
+            VertexHelper.clearOffset();
+        }
+        
+        suppressDyeColor = temp_dye_state;
     }
     
     /**
@@ -546,7 +521,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
          */
         if (renderBlocks.hasOverrideBlockTexture()) {
             lightingHelper.colorSide(block, x, y, z, side, renderBlocks.overrideBlockTexture);
-            renderSide(x, y, z, side, 0.0D, renderBlocks.overrideBlockTexture);
+            renderSide(x, y, z, side, renderBlocks.overrideBlockTexture);
         } else {
             renderMultiTexturedSide(block, x, y, z, side, getIcon(block, side));
         }
@@ -561,7 +536,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
         {
             IIcon icon = getGrassOverlayIcon(side);
             lightingHelper.colorSide(Blocks.grass, x, y, z, side, icon);
-            renderSide(x, y, z, side, 0.0D, icon);
+            renderSide(x, y, z, side, icon);
         }
     }
     
@@ -588,8 +563,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
                         break;
                 }
                 lightingHelper.colorSide(Blocks.snow, x, y, z, side, icon);
-                renderSide(x, y, z, side, 0.0D, icon);
-
+                
                 break;
             }
             case HAY: {
@@ -605,7 +579,6 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
                         break;
                 }
                 lightingHelper.colorSide(Blocks.hay_block, x, y, z, side, icon);
-                renderSide(x, y, z, side, 0.0D, icon);
                 
                 break;
             }
@@ -613,7 +586,6 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
                 
                 icon = Blocks.web.getBlockTextureFromSide(side);
                 lightingHelper.colorSide(Blocks.web, x, y, z, side, icon);
-                renderSide(x, y, z, side, 0.0D, icon);
                 
                 break;
             }
@@ -621,7 +593,6 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
                 
                 icon = Blocks.vine.getBlockTextureFromSide(side);
                 lightingHelper.colorSide(Blocks.vine, x, y, z, side, icon);
-                renderSide(x, y, z, side, 0.0D, icon);
                 
                 break;
             }
@@ -638,17 +609,14 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
                         break;
                 }
                 lightingHelper.colorSide(Blocks.mycelium, x, y, z, side, icon);
-                renderSide(x, y, z, side, 0.0D, icon);
                 
                 break;
             }
             case GRASS: {
                 
-                if (block != Blocks.grass && side > DOWN)
-                {
+                if (block != Blocks.grass && side > DOWN) {
                     icon = getGrassOverlayIcon(side);
                     lightingHelper.colorSide(Blocks.grass, x, y, z, side, icon);
-                    renderSide(x, y, z, side, 0.0D, icon);
                 }
 
                 break;
@@ -656,6 +624,8 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
             default:
                 break;
         }
+        
+        renderSide(x, y, z, side, icon);
     }
     
     /**
@@ -697,18 +667,14 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
         IIcon icon = renderBlocks.getIconSafe(IconRegistry.icon_pattern[pattern]);
         
         lightingHelper.colorSide(Blocks.glass, x, y, z, side, icon);
-        renderSide(x, y, z, side, 0.0D, icon);
+        renderSide(x, y, z, side, icon);
     }
     
     /**
      * Renders side.
      */
-    protected void renderSide(int x, int y, int z, int side, double offset, IIcon icon)
+    protected void renderSide(int x, int y, int z, int side, IIcon icon)
     {
-        VertexHelper.setOffset(offset);
-        
-        System.out.println("DEBUG: Rendering icon " + icon.getIconName());
-        
         switch (side) {
             case DOWN:
                 RenderHelper.renderFaceYNeg(renderBlocks, x, y, z, icon);
@@ -729,16 +695,14 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
                 RenderHelper.renderFaceXPos(renderBlocks, x, y, z, icon);
                 break;
         }
-        
-        VertexHelper.clearOffset();
     }
     
     /**
      * Blocks override this in order to render everything they need.
      */
-    protected boolean renderCarpentersBlock(int x, int y, int z)
+    protected void renderCarpentersBlock(int x, int y, int z)
     {
-        return renderBlock(BlockProperties.getCover(TE, 6), x, y, z);
+        renderBlock(BlockProperties.getCover(TE, 6), x, y, z);
     }
     
     /**
@@ -754,55 +718,47 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
      * Renders block.
      * Coordinates may change since side covers render here.
      */
-    protected boolean renderBlock(Block block, int x, int y, int z)
+    protected void renderBlock(Block block, int x, int y, int z)
     {
-        boolean side_rendered = false;
         renderBlocks.enableAO = getEnableAO(block);
         
         if (renderBlocks.renderAllFaces || srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x, y - 1, z, DOWN) || renderBlocks.renderMinY > 0.0D)
         {
             lightingHelper.setLightingYNeg(block, x, y, z);
             delegateSideRender(block, x, y, z, DOWN);
-            side_rendered = true;
         }
         
         if (renderBlocks.renderAllFaces || srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x, y + 1, z, UP) || renderBlocks.renderMaxY < 1.0D)
         {
             lightingHelper.setLightingYPos(block, x, y, z);
             delegateSideRender(block, x, y, z, UP);
-            side_rendered = true;
         }
         
         if (renderBlocks.renderAllFaces || srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x, y, z - 1, NORTH) || renderBlocks.renderMinZ > 0.0D)
         {
             lightingHelper.setLightingZNeg(block, x, y, z);
             delegateSideRender(block, x, y, z, NORTH);
-            side_rendered = true;
         }
         
         if (renderBlocks.renderAllFaces || srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x, y, z + 1, SOUTH) || renderBlocks.renderMaxZ < 1.0D)
         {
             lightingHelper.setLightingZPos(block, x, y, z);
             delegateSideRender(block, x, y, z, SOUTH);
-            side_rendered = true;
         }
         
         if (renderBlocks.renderAllFaces || srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x - 1, y, z, WEST) || renderBlocks.renderMinX > 0.0D)
         {
             lightingHelper.setLightingXNeg(block, x, y, z);
             delegateSideRender(block, x, y, z, WEST);
-            side_rendered = true;
         }
         
         if (renderBlocks.renderAllFaces || srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x + 1, y, z, EAST) || renderBlocks.renderMaxX < 1.0D)
         {
             lightingHelper.setLightingXPos(block, x, y, z);
             delegateSideRender(block, x, y, z, EAST);
-            side_rendered = true;
         }
         
         renderBlocks.enableAO = false;
-        return side_rendered;
     }
     
 }

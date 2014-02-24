@@ -57,7 +57,7 @@ public class BlockHandlerCarpentersDaylightSensor extends BlockHandlerBase {
     /**
      * Renders block
      */
-    protected boolean renderCarpentersBlock(int x, int y, int z)
+    protected void renderCarpentersBlock(int x, int y, int z)
     {
         Block block = BlockProperties.getCover(TE, 6);
         
@@ -125,7 +125,6 @@ public class BlockHandlerCarpentersDaylightSensor extends BlockHandlerBase {
         renderBlock(block, x, y, z);
         
         renderBlocks.renderAllFaces = false;
-        return true;
     }
     
 }

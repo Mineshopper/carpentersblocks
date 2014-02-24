@@ -16,7 +16,6 @@ public class FeatureRegistry {
     public static boolean enableBlockOwnership         = true;
     public static boolean enableMCPatcherCompatibility = false;
     public static boolean enablePlantColorOverride     = true;
-    public static boolean enableZFightingFix           = false;
     public static boolean enableOptifineIntegration    = true;
     public static boolean enableExtendedPlantSupport   = true;
     
@@ -40,11 +39,7 @@ public class FeatureRegistry {
         Property blockOwnershipProp = config.get("features", "Enable Block Ownership", enableBlockOwnership);
         blockOwnershipProp.comment = "This will prevent players besides you and server operators from editing your blocks.\nNote: this does not protect blocks against destruction (intentional), and may allow activation if appropriate. Also, the Carpenter's Safe is not affected by this.";
         enableBlockOwnership = blockOwnershipProp.getBoolean(enableBlockOwnership);
-        
-        Property ZFightingFixProp = config.get("rendering", "Enable Z-Fighting Fix", enableZFightingFix);
-        ZFightingFixProp.comment = "This resolves z-fighting with chiseled patterns that may occur with Optifine or other client-side performance mods.\nNote: this will likely cause all Carpenter's Blocks to be invisible behind ice or water.";
-        enableZFightingFix = ZFightingFixProp.getBoolean(enableZFightingFix);
-        
+
         Property optifineIntegrationProp = config.get("rendering", "Enable Optifine Integration", enableOptifineIntegration);
         optifineIntegrationProp.comment = "Provides integration with Optifine's block coloring methods.\nNote: this is needed to support Custom Colors.";
         enableOptifineIntegration = optifineIntegrationProp.getBoolean(enableOptifineIntegration);

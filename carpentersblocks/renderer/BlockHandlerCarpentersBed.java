@@ -26,12 +26,10 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase {
     /**
      * Renders bed
      */
-    protected boolean renderCarpentersBlock(int x, int y, int z)
+    protected void renderCarpentersBlock(int x, int y, int z)
     {
         Block block = BlockProperties.getCover(TE, 6);
         renderNormalBed(block, x, y, z);
-        
-        return true;
     }
     
     private void renderNormalBed(Block block, int x, int y, int z)

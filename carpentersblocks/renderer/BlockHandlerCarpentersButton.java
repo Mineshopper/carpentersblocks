@@ -20,13 +20,11 @@ public class BlockHandlerCarpentersButton extends BlockHandlerBase {
     /**
      * Renders block
      */
-    protected boolean renderCarpentersBlock(int x, int y, int z)
+    protected void renderCarpentersBlock(int x, int y, int z)
     {
         renderBlocks.renderAllFaces = true;
         renderBlock(BlockProperties.getCover(TE, 6), x, y, z);
         renderBlocks.renderAllFaces = false;
-        
-        return true;
     }
     
 }

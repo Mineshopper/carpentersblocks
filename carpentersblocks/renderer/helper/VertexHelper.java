@@ -4,6 +4,7 @@ import net.minecraft.block.BlockGrass;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.IIcon;
+import carpentersblocks.renderer.BlockHandlerBase;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -24,6 +25,9 @@ public class VertexHelper {
     public final static int BOTTOM_CENTER = 5;
     public final static int LEFT_CENTER   = 6;
     public final static int RIGHT_CENTER  = 7;
+    
+    /** Keeps track of vertices drawn per pass. */
+    public static int drawCount = 0;
     
     /**
      * Offset used for faces.
@@ -103,6 +107,7 @@ public class VertexHelper {
         }
         
         tessellator.addVertexWithUV(x, y, z, u, v);
+        ++drawCount;
     }
     
 }

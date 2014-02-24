@@ -11,6 +11,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+import carpentersblocks.CarpentersBlocks;
 import carpentersblocks.data.Safe;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.tileentity.TECarpentersSafe;
@@ -37,7 +38,7 @@ public class BlockCarpentersSafe extends BlockCoverable {
      */
     public void registerBlockIcons(IIconRegister iconRegister)
     {
-        IconRegistry.icon_safe_light = iconRegister.registerIcon("carpentersblocks:safe/safe_light");
+        IconRegistry.icon_safe_light = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "safe/safe_light");
         
         super.registerBlockIcons(iconRegister);
     }

@@ -1,7 +1,6 @@
 package carpentersblocks;
 
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.init.Blocks;
 import net.minecraftforge.common.config.Configuration;
 import carpentersblocks.proxy.CommonProxy;
 import carpentersblocks.util.CarpentersBlocksTab;
@@ -22,7 +21,7 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 public class CarpentersBlocks {
     
     public static final String MODID   = "CarpentersBlocks";
-    public static final String VERSION = "2.0.3";
+    public static final String VERSION = "2.0.4";
     public static FMLEventChannel channel;
     public static CreativeTabs creativeTab = new CarpentersBlocksTab(MODID);
     
@@ -61,5 +60,5 @@ public class CarpentersBlocks {
     {
         TileEntityHandler.registerTileEntities();
     }
-    
+
 }

@@ -34,7 +34,7 @@ public class BlockHandlerCarpentersBarrier extends BlockHandlerBase {
     /**
      * Renders barrier
      */
-    protected boolean renderCarpentersBlock(int x, int y, int z)
+    protected void renderCarpentersBlock(int x, int y, int z)
     {
         int type = Barrier.getType(TE);
         Block block = BlockProperties.getCover(TE, 6);
@@ -52,8 +52,6 @@ public class BlockHandlerCarpentersBarrier extends BlockHandlerBase {
             default:
                 renderFence(block, x, y, z);
         }
-        
-        return true;
     }
     
     /**

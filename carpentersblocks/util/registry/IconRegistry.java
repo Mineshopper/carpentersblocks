@@ -6,6 +6,7 @@ import net.minecraftforge.client.event.TextureStitchEvent;
 
 import org.apache.logging.log4j.Level;
 
+import carpentersblocks.CarpentersBlocks;
 import carpentersblocks.util.ModLogger;
 import carpentersblocks.util.bed.BedDesignHandler;
 import carpentersblocks.util.flowerpot.FlowerPotDesignHandler;
@@ -69,19 +70,19 @@ public class IconRegistry {
      */
     public static void registerIcons(IIconRegister iconRegister)
     {
-        icon_blank                   = iconRegister.registerIcon("carpentersblocks:general/blank");
-        icon_solid                   = iconRegister.registerIcon("carpentersblocks:general/solid");
-        icon_full_frame              = iconRegister.registerIcon("carpentersblocks:general/full_frame");
-        icon_quartered_frame         = iconRegister.registerIcon("carpentersblocks:general/quartered_frame");
-        icon_overlay_fast_grass_side = iconRegister.registerIcon("carpentersblocks:overlay/overlay_fast_grass_side");
-        icon_overlay_hay_side        = iconRegister.registerIcon("carpentersblocks:overlay/overlay_hay_side");
-        icon_overlay_snow_side       = iconRegister.registerIcon("carpentersblocks:overlay/overlay_snow_side");
-        icon_overlay_mycelium_side   = iconRegister.registerIcon("carpentersblocks:overlay/overlay_mycelium_side");
+        icon_blank                   = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "general/blank");
+        icon_solid                   = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "general/solid");
+        icon_full_frame              = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "general/full_frame");
+        icon_quartered_frame         = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "general/quartered_frame");
+        icon_overlay_fast_grass_side = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "overlay/overlay_fast_grass_side");
+        icon_overlay_hay_side        = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "overlay/overlay_hay_side");
+        icon_overlay_snow_side       = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "overlay/overlay_snow_side");
+        icon_overlay_mycelium_side   = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "overlay/overlay_mycelium_side");
         
         // Pattern icons
         for (int numIcon = 0; numIcon < PatternHandler.maxNum; ++numIcon) {
             if (PatternHandler.hasPattern[numIcon]) {
-                icon_pattern[numIcon] = iconRegister.registerIcon("carpentersblocks:pattern/pattern_" + numIcon);
+                icon_pattern[numIcon] = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "pattern/pattern_" + numIcon);
             }
         }
     }

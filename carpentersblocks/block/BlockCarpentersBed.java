@@ -17,6 +17,7 @@ import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
+import carpentersblocks.CarpentersBlocks;
 import carpentersblocks.data.Bed;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.tileentity.TECarpentersBed;
@@ -47,11 +48,11 @@ public class BlockCarpentersBed extends BlockCoverable {
         // Bed design icons
         for (int numIcon = 0; numIcon < BedDesignHandler.maxNum; ++numIcon) {
             if (BedDesignHandler.hasPillow[numIcon]) {
-                IconRegistry.icon_bed_pillow_custom[numIcon] = iconRegister.registerIcon("carpentersblocks:bed/design_" + numIcon + "/pillow");
+                IconRegistry.icon_bed_pillow_custom[numIcon] = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "bed/design_" + numIcon + "/pillow");
             }
         }
         
-        IconRegistry.icon_bed_pillow = iconRegister.registerIcon("carpentersblocks:bed/bed_pillow");
+        IconRegistry.icon_bed_pillow = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "bed/bed_pillow");
         
         super.registerBlockIcons(iconRegister);
     }
