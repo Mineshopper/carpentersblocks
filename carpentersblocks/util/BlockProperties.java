@@ -345,7 +345,7 @@ public class BlockProperties {
      */
     public static boolean isDye(ItemStack itemStack)
     {
-        return DyeHandler.dyeMap.containsKey(itemStack.getUnlocalizedName());
+        return DyeHandler.getDyeObject(itemStack) != null;
     }
     
     /**
