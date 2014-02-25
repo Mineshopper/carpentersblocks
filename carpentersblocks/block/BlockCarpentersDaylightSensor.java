@@ -57,6 +57,7 @@ public class BlockCarpentersDaylightSensor extends BlockCoverable {
                 break;
             case DaylightSensor.POLARITY_NEGATIVE:
                 entityPlayer.addChatMessage("message.polarity_neg.name");
+                break;
         }
 
         return true;
