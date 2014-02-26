@@ -1,5 +1,6 @@
 package carpentersblocks.data;
 
+import net.minecraft.item.ItemStack;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 
@@ -25,6 +26,10 @@ public class FlowerPot {
      */
     public static void setDesign(TEBase TE, int design)
     {
+        if (design > 0 && BlockProperties.hasCover(TE, 6)) {
+            BlockProperties.setCover(TE, 6, 0, (ItemStack)null);
+        }
+        
         BlockProperties.setData(TE, design);
     }
 
