@@ -1,25 +1,13 @@
 package carpentersblocks.renderer;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockGrass;
-import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.Blocks;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
-import net.minecraft.util.MathHelper;
-import net.minecraft.world.ChunkCache;
 import net.minecraft.world.IBlockAccess;
-import net.minecraft.world.chunk.Chunk;
-import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.MinecraftForgeClient;
 
 import org.lwjgl.opengl.GL11;
@@ -36,7 +24,6 @@ import carpentersblocks.util.handler.EventHandler;
 import carpentersblocks.util.handler.OverlayHandler;
 import carpentersblocks.util.registry.FeatureRegistry;
 import carpentersblocks.util.registry.IconRegistry;
-import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -119,40 +106,43 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
     @Override
     public boolean renderWorldBlock(IBlockAccess blockAccess, int x, int y, int z, Block block, int modelID, RenderBlocks renderBlocks)
     {
-        VertexHelper.drawCount = 0;
+        VertexHelper.vertexCount = 0;
         
+        int renderPass = MinecraftForgeClient.getRenderPass();
+                
         TE = (TEBase) blockAccess.getTileEntity(x, y, z);
 
-        /*
-         * A catch-all for bad render calls.  Could happen if tile entities aren't
-         * properly loaded when chunks are created, or with multi-block entities
-         * like the door or bed when created or destroyed, when TE does not yet exist
-         * or has already been removed.
-         */
-        if (TE != null) {
-            
-            this.renderBlocks = renderBlocks;
-            srcBlock = block;
-            lightingHelper.bind(this);
-
-            renderCarpentersBlock(x, y, z);
-            renderSideBlocks(x, y, z);
-            
-            /* Will render a fluid block in this space if valid. */
-
-            if (FeatureRegistry.enableFancyFluids) {
+        // Until render bug is fixed.
+        if (renderPass == 0) {
+        
+            /*
+             * A catch-all for bad render calls.  Could happen if tile entities aren't
+             * properly loaded when chunks are created, or with multi-block entities
+             * like the door or bed when created or destroyed, when TE does not yet exist
+             * or has already been removed.
+             */
+            if (TE != null) {
                 
-                int renderPass = MinecraftForgeClient.getRenderPass();
+                this.renderBlocks = renderBlocks;
+                srcBlock = block;
+                lightingHelper.bind(this);
+    
+                renderCarpentersBlock(x, y, z);
+                renderSideBlocks(x, y, z);
                 
-                if (renderPass >= 0 && Minecraft.isFancyGraphicsEnabled() && BlockProperties.hasCover(TE, 6)) {
-                    FancyFluidsHelper.render(TE, lightingHelper, renderBlocks, x, y, z, renderPass);
+                /* Will render a fluid block in this space if valid. */
+    
+                if (FeatureRegistry.enableFancyFluids) {
+                    if (renderPass >= 0 && Minecraft.isFancyGraphicsEnabled() && BlockProperties.hasCover(TE, 6)) {
+                        FancyFluidsHelper.render(TE, lightingHelper, renderBlocks, x, y, z, renderPass);
+                    }
                 }
                 
             }
-            
+        
         }
 
-        return VertexHelper.drawCount > 0;
+        return VertexHelper.vertexCount > 0;
     }
     
     @Override

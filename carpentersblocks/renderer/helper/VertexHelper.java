@@ -4,7 +4,6 @@ import net.minecraft.block.BlockGrass;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.IIcon;
-import carpentersblocks.renderer.BlockHandlerBase;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -27,7 +26,7 @@ public class VertexHelper {
     public final static int RIGHT_CENTER  = 7;
     
     /** Keeps track of vertices drawn per pass. */
-    public static int drawCount = 0;
+    public static int vertexCount = 0;
     
     /**
      * Offset used for faces.
@@ -58,7 +57,7 @@ public class VertexHelper {
     public static boolean iconHasFloatingHeight(IIcon icon)
     {
         return icon == BlockGrass.getIconSideOverlay() ||
-                icon.getIconName().contains("overlay/overlay_") && icon.getIconName().endsWith("_side");
+               icon.getIconName().contains("overlay/overlay_") && icon.getIconName().endsWith("_side");
     }
     
     /**
@@ -107,7 +106,7 @@ public class VertexHelper {
         }
         
         tessellator.addVertexWithUV(x, y, z, u, v);
-        ++drawCount;
+        ++vertexCount;
     }
     
 }

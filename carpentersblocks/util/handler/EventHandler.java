@@ -1,7 +1,5 @@
 package carpentersblocks.util.handler;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;
@@ -10,7 +8,6 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.play.client.C17PacketCustomPayload;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
@@ -31,7 +28,6 @@ import carpentersblocks.util.registry.BlockRegistry;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.network.internal.FMLProxyPacket;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -201,7 +197,7 @@ public class EventHandler {
     {
         if (event != null && event.name != null)
         {
-            if (event.name.contains("carpentersblock"))
+            if (event.name.contains(CarpentersBlocks.MODID))
             {
                 if (FMLCommonHandler.instance().getSide() == Side.CLIENT)
                 {

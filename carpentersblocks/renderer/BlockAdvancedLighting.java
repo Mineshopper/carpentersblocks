@@ -6,7 +6,6 @@ import static carpentersblocks.renderer.helper.VertexHelper.TOP_LEFT;
 import static carpentersblocks.renderer.helper.VertexHelper.TOP_RIGHT;
 import net.minecraft.block.Block;
 import net.minecraft.util.IIcon;
-import carpentersblocks.renderer.helper.VertexHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 

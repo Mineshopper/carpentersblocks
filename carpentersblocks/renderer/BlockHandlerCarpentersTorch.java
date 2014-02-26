@@ -265,7 +265,7 @@ public class BlockHandlerCarpentersTorch extends BlockHandlerBase {
         tessellator.addVertexWithUV(vertex3.xCoord, vertex3.yCoord, vertex3.zCoord, uMax, vMin);
         tessellator.addVertexWithUV(vertex4.xCoord, vertex4.yCoord, vertex4.zCoord, uMin, vMin);
         
-        VertexHelper.drawCount += 4;
+        VertexHelper.vertexCount += 4;
     }
     
 }

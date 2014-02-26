@@ -103,10 +103,6 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
      */
     protected boolean onHammerLeftClick(TEBase TE, EntityPlayer entityPlayer)
     {
-        if (FlowerPotProperties.hasDesign(TE) && BlockProperties.hasCover(TE, 6)) {
-            BlockProperties.setCover(TE, 6, (ItemStack)null);
-        }
-        
         int design = FlowerPotDesignHandler.getPrev(FlowerPot.getDesign(TE));
         FlowerPot.setDesign(TE, design);
         
@@ -119,10 +115,6 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
      */
     protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer)
     {
-        if (FlowerPotProperties.hasDesign(TE) && BlockProperties.hasCover(TE, 6)) {
-            BlockProperties.setCover(TE, 6, (ItemStack)null);
-        }
-        
         if (entityPlayer.isSneaking()) {
             FlowerPot.setDesign(TE, 0);
         } else {
@@ -207,7 +199,7 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
         TEBase TE = getTileEntity(world, x, y, z);
         
         if (!world.isRemote && TE != null) {
-            if (!canPlaceBlockOnSide(world, x, y - 1, z, 1)) {
+            if (!canPlaceBlockOnSide(world, x, y, z, 1)) {
                 dropBlockAsItem(world, x, y, z, world.getBlockMetadata(x, y, z), 0);
                 world.setBlockToAir(x, y, z);
             }
@@ -226,20 +218,6 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
         
         if (block_YN != null) {
             return block_YN.isSideSolid(world, x, y - 1, z, ForgeDirection.UP) || block_YN.canPlaceTorchOnTop(world, x, y - 1, z);
-        } else {
-            return false;
-        }
-    }
-    
-    //@Override
-    /**
-     * checks to see if you can place this block can be placed on that side of a block: BlockLever overrides
-     */
-    @Override
-    public boolean canPlaceBlockOnSide(World world, int x, int y, int z, int side)
-    {
-        if (side == 1) {
-            return canPlaceBlockAt(world, x, y, z);
         } else {
             return false;
         }
