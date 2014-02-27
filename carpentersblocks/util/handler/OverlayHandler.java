@@ -3,12 +3,9 @@ package carpentersblocks.util.handler;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import carpentersblocks.tileentity.TEBase;
-import carpentersblocks.util.BlockProperties;
 
 public class OverlayHandler {
     
@@ -49,36 +46,5 @@ public class OverlayHandler {
         
         return Overlay.NONE;
     }
-    
-    /**
-     * Returns block with considerations for the overlay and side of block
-     * being interacted with.
-     * 
-     * Used for interaction only; never for drops.
-     */
-    public static Block getHostBlockFromOverlay(TEBase TE, int side, Block block)
-    {
-        if (BlockProperties.hasOverlay(TE, side))
-        {
-            switch (getOverlay(BlockProperties.getOverlay(TE, side))) {
-                case GRASS:
-                    return Blocks.grass;
-                case SNOW:
-                    return Blocks.snow;
-                case WEB:
-                    return Blocks.web;
-                case VINE:
-                    return Blocks.vine;
-                case HAY:
-                    return Blocks.hay_block;
-                case MYCELIUM:
-                    return Blocks.mycelium;
-                default:
-                    break;
-            }     
-        }
         
-        return block;
-    }
-    
 }

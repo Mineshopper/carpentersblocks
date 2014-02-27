@@ -602,16 +602,13 @@ public class BlockCoverable extends BlockContainer {
     {
         TEBase TE = (TEBase) world.getTileEntity(target.blockX, target.blockY, target.blockZ);
         
-        int effectiveSide = BlockProperties.hasCover(TE, EventHandler.eventFace) ? EventHandler.eventFace : 6;
+        int effectiveSide = BlockProperties.hasCover(TE, target.sideHit) ? target.sideHit : 6;
         
-        Block block = BlockProperties.getCover(TE, effectiveSide);
+        ItemStack itemStack = ParticleHelper.getParticleBlock(TE, effectiveSide, target.sideHit);
         
-        /* Check for overlays that influence particles */
-        if (EventHandler.eventFace == 1) {
-            block = OverlayHandler.getHostBlockFromOverlay(TE, effectiveSide, block);
-        }
-        
-        int metadata = block instanceof BlockCoverable ? EventHandler.BLOCKICON_BASE_ID : BlockProperties.getCoverMetadata(TE, effectiveSide);
+        Block block = BlockProperties.getBlockFromItemStack(itemStack);
+
+        int metadata = block instanceof BlockCoverable ? EventHandler.BLOCKICON_BASE_ID : itemStack.getItemDamage();
         
         double xOffset = target.blockX + world.rand.nextDouble() * (block.getBlockBoundsMaxX() - block.getBlockBoundsMinX() - 0.1F * 2.0F) + 0.1F + block.getBlockBoundsMinX();
         double yOffset = target.blockY + world.rand.nextDouble() * (block.getBlockBoundsMaxY() - block.getBlockBoundsMinY() - 0.1F * 2.0F) + 0.1F + block.getBlockBoundsMinY();

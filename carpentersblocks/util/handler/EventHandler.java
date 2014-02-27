@@ -2,7 +2,7 @@ package carpentersblocks.util.handler;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
@@ -52,7 +52,7 @@ public class EventHandler {
      * event when entityPlayer is sneaking and activates block with the
      * Carpenter's Hammer.
      */
-    public void playerInteractEvent(PlayerInteractEvent event)
+    public void onPlayerInteractEvent(PlayerInteractEvent event)
     {
         Block block = event.entity.worldObj.getBlock(event.x, event.y, event.z);
         
@@ -106,7 +106,7 @@ public class EventHandler {
     /**
      * Grabs mouse scroll events for slope selection.
      */
-    public void mouseEvent(MouseEvent event)
+    public void onMouseEvent(MouseEvent event)
     {
         EntityPlayer entityPlayer = Minecraft.getMinecraft().thePlayer;
         
@@ -160,9 +160,9 @@ public class EventHandler {
     }
     
     @SubscribeEvent
-    public void livingUpdateEvent(LivingUpdateEvent event)
+    public void onLivingUpdateEvent(LivingUpdateEvent event)
     {
-        EntityLivingBase entity = event.entityLiving;
+        Entity entity = event.entityLiving;
         World world = entity.worldObj;
         
         int x = MathHelper.floor_double(entity.posX);
@@ -172,35 +172,41 @@ public class EventHandler {
         Block block = world.getBlock(x, y, z);
         
         if (block != null && block instanceof BlockCoverable) {
-            
+
             TEBase TE = (TEBase) world.getTileEntity(x, y, z);
             int effectiveSide = BlockProperties.hasCover(TE, 1) ? 1 : 6;
-            block = BlockProperties.getCover(TE, effectiveSide);
+            
+            ItemStack itemStack = ParticleHelper.getParticleBlock(TE, effectiveSide, 1);
             
             /* Spawn sprint particles client-side. */
             
             if (world.isRemote && entity.isSprinting() && !entity.isInWater()) {
-                int metadata = block instanceof BlockCoverable ? BLOCKICON_BASE_ID : BlockProperties.getCoverMetadata(TE, effectiveSide);
-                ParticleHelper.spawnTileParticleAt(world, entity, OverlayHandler.getHostBlockFromOverlay(TE, effectiveSide, block), metadata);
+                ParticleHelper.spawnTileParticleAt(entity, itemStack);
             }
             
             /* Adjust block slipperiness according to cover. */
             
-            TE.getBlockType().slipperiness = !BlockProperties.hasCover(TE, effectiveSide) ? Blocks.planks.slipperiness : OverlayHandler.getHostBlockFromOverlay(TE, effectiveSide, block).slipperiness;
+            TE.getBlockType().slipperiness = BlockProperties.getBlockFromItemStack(itemStack).slipperiness;
             
         }
     }
     
     @SideOnly(Side.CLIENT)
     @SubscribeEvent
-    public void SoundEvent(PlaySoundEvent event)
+    /**
+     * NOT WORKING
+     * Waiting for Forge to reimplement this functionality.
+     */
+    public void onPlaySoundEvent(PlaySoundEvent event)
     {
-        if (event != null && event.name != null)
-        {
-            if (event.name.contains(CarpentersBlocks.MODID))
-            {
-                if (FMLCommonHandler.instance().getSide() == Side.CLIENT)
-                {
+        System.out.println("DEBUG: SoundEvent() called.");
+        
+        if (event != null && event.name != null) {
+
+            if (event.name.contains(CarpentersBlocks.MODID)) {
+
+                if (FMLCommonHandler.instance().getSide() == Side.CLIENT) {
+                    
                     World world = FMLClientHandler.instance().getClient().theWorld;
                     int x = MathHelper.floor_float(event.x);
                     int y = MathHelper.floor_float(event.y);
@@ -211,9 +217,9 @@ public class EventHandler {
                     if (block != null && block instanceof BlockCoverable) {
                         
                         block = BlockProperties.getCover((TEBase) world.getTileEntity(x, y, z), 6);
-                        
+
                         if (block instanceof BlockCoverable) {
-                            //event.result = event.manager.soundPoolSounds.getRandomSoundFromSoundPool(event.name.startsWith("dig.") ? Block.soundWoodFootstep.getBreakSound() : event.name.startsWith("place.") ? Block.soundWoodFootstep.getPlaceSound() : Block.soundWoodFootstep.getStepSound());
+                            //event.result = event.manager.soundPoolSounds.getRandomSoundFromSoundPool(event.name.startsWith("Minecraft:dig.") ? Block.soundWoodFootstep.getBreakSound() : event.name.startsWith("place.") ? Block.soundWoodFootstep.getPlaceSound() : Block.soundWoodFootstep.getStepSound());
                         } else {
                             //event.result = event.manager.soundPoolSounds.getRandomSoundFromSoundPool(event.name.startsWith("dig.") ? block.stepSound.getBreakSound() : event.name.startsWith("place.") ? block.stepSound.getPlaceSound() : block.stepSound.getStepSound());
                         }
@@ -223,36 +229,41 @@ public class EventHandler {
                         //event.result = event.manager.soundPoolSounds.getRandomSoundFromSoundPool(Block.soundWoodFootstep.getBreakSound());
                         
                     }
+                    
                 }
+                
             }
-        }
+            
+        }        
     }
     
     @SideOnly(Side.CLIENT)
     @SubscribeEvent
-    public void StepSoundInterrupt(PlaySoundAtEntityEvent event)
-    {
-        if (event != null && event.name != null)
-        {
-            if (event.name.startsWith("step.carpentersblock"))
-            {
+    public void onPlaySoundAtEntityEvent(PlaySoundAtEntityEvent event)
+    {        
+        if (event != null && event.name != null) {
+
+            if (event.name.equals("step." + CarpentersBlocks.MODID)) {
+                
                 int x = MathHelper.floor_double(event.entity.posX);
                 int y = MathHelper.floor_double(event.entity.posY - 0.20000000298023224D - event.entity.yOffset);
                 int z = MathHelper.floor_double(event.entity.posZ);
                 
                 Block block = event.entity.worldObj.getBlock(x, y, z);
                 
-                if (block != null && block instanceof BlockCoverable)
-                {
+                if (block != null && block instanceof BlockCoverable) {
+                    
                     block = BlockProperties.getCover((TEBase) event.entity.worldObj.getTileEntity(x, y, z), 6);
                     
                     if (block instanceof BlockCoverable) {
-                        event.name = Blocks.planks.stepSound.soundName;
+                        event.name = "step." + Blocks.planks.stepSound.soundName;
                     } else if (block.stepSound != null) {
-                        event.name = block.stepSound.soundName;
+                        event.name = "step." + block.stepSound.soundName;
                     }
+                    
                 }
             }
+            
         }
     }
     

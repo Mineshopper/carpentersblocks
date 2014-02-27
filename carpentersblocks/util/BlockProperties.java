@@ -28,6 +28,33 @@ public class BlockProperties {
     public final static SoundType stepSound = new SoundType(CarpentersBlocks.MODID, 1.0F, 1.0F);
     
     /**
+     * Returns cover ItemStack for side.
+     */
+    public static ItemStack getCoverItemStack(TEBase TE, int side)
+    {
+        if (hasCover(TE, side)) {
+            return TE.cover[side];
+        } else if (side == 6) {
+            return new ItemStack(TE.getBlockType());
+        } else {
+            return null;
+        }
+    }
+    
+    /**
+     * Takes an ItemStack and returns block, or null if ItemStack
+     * does not contain a block.
+     */
+    public static Block getBlockFromItemStack(ItemStack itemStack)
+    {
+        if (itemStack != null && itemStack.getItem() instanceof ItemBlock) {
+            return Block.getBlockFromItem(itemStack.getItem());
+        } else {
+            return null;
+        }
+    }
+    
+    /**
      * Returns depth of side cover.
      */
     public static float getSideCoverDepth(TEBase TE, int side)
@@ -148,11 +175,11 @@ public class BlockProperties {
     }
     
     /**
-     * Plays block sound.
+     * Plays block break sound.
      */
     public static void playBlockSound(World world, Block block, int x, int y, int z)
     {
-        world.playSoundEffect(x + 0.5F, y + 0.5F, z + 0.5F, block.stepSound.func_150496_b(), block.stepSound.getVolume() + 1.0F / 2.0F, block.stepSound.getPitch() * 0.8F);
+        world.playSoundEffect(x + 0.5F, y + 0.5F, z + 0.5F, block.stepSound.func_150496_b(), (block.stepSound.getVolume() + 1.0F) / 2.0F, block.stepSound.getPitch() * 0.8F);
     }
     
     /**

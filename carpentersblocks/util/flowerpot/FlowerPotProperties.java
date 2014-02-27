@@ -119,14 +119,15 @@ public class FlowerPotProperties {
     public static boolean setSoil(TEBase TE, ItemStack itemStack)
     {
         if (hasSoil(TE)) {
-            ejectEntity(TE, new ItemStack(getSoil(TE), 1, getSoilMetadata(TE)));
+            ejectEntity(TE, ((TECarpentersFlowerPot)TE).soil);
         }
 
         ((TECarpentersFlowerPot)TE).soil = itemStack;
         
         World world = TE.getWorldObj();
+        Block block = itemStack == null ? null : Block.getBlockFromItem(itemStack.getItem());
         
-        world.notifyBlocksOfNeighborChange(TE.xCoord, TE.yCoord, TE.zCoord, Block.getBlockFromItem(itemStack.getItem()));
+        world.notifyBlocksOfNeighborChange(TE.xCoord, TE.yCoord, TE.zCoord, block);
         world.markBlockForUpdate(TE.xCoord, TE.yCoord, TE.zCoord);
         
         return true;
@@ -138,7 +139,7 @@ public class FlowerPotProperties {
     public static boolean setPlant(TEBase TE, ItemStack itemStack)
     {
         if (hasPlant(TE)) {
-            ejectEntity(TE, new ItemStack(getPlant(TE), 1, getPlantMetadata(TE)));
+            ejectEntity(TE, ((TECarpentersFlowerPot)TE).plant);
         }
         
         itemStack = FlowerPotHandler.getEquivalentBlock(itemStack);
@@ -146,8 +147,9 @@ public class FlowerPotProperties {
         ((TECarpentersFlowerPot)TE).plant = itemStack;
         
         World world = TE.getWorldObj();
+        Block block = itemStack == null ? null : Block.getBlockFromItem(itemStack.getItem());
         
-        world.notifyBlocksOfNeighborChange(TE.xCoord, TE.yCoord, TE.zCoord, Block.getBlockFromItem(itemStack.getItem()));
+        world.notifyBlocksOfNeighborChange(TE.xCoord, TE.yCoord, TE.zCoord, block);
         world.markBlockForUpdate(TE.xCoord, TE.yCoord, TE.zCoord);
         
         return true;
