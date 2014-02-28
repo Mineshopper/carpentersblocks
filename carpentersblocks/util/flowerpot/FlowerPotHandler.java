@@ -3,17 +3,10 @@ package carpentersblocks.util.flowerpot;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
-import net.minecraftforge.common.IShearable;
 import carpentersblocks.tileentity.TEBase;
-import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.common.registry.GameRegistry.UniqueIdentifier;
+import carpentersblocks.util.BlockProperties;
 
 public class FlowerPotHandler {
     
@@ -36,66 +29,83 @@ public class FlowerPotHandler {
     {
         /* Vanilla */
         
-        plantProfile.put("unknown:tile.tallgrass.grass", Profile.THIN_YP);
-        plantProfile.put("unknown:tile.tallgrass.fern", Profile.REDUCED_SCALE_YP);
-        plantProfile.put("unknown:tile.deadbush", Profile.REDUCED_SCALE_YP);
-        plantProfile.put("unknown:tile.cactus", Profile.CACTUS);
-        plantProfile.put("unknown:tile.mushroom", Profile.TRUE_SCALE);
-        plantProfile.put("unknown:tile.flower", Profile.TRUE_SCALE);
-        plantProfile.put("unknown:tile.rose", Profile.TRUE_SCALE);
-        plantProfile.put("unknown:tile.reeds", Profile.THIN_YP);
-        plantProfile.put("unknown:tile.carrots", Profile.THIN_YP);
-        plantProfile.put("unknown:tile.potatoes", Profile.THIN_YP);
-        plantProfile.put("unknown:tile.crops", Profile.THIN_YP);
+        plantProfile.put("tile.tallgrass.grass", Profile.THIN_YP         );
+        plantProfile.put("tile.tallgrass.fern" , Profile.REDUCED_SCALE_YP);
+        plantProfile.put("tile.deadbush"       , Profile.REDUCED_SCALE_YP);
+        plantProfile.put("tile.cactus"         , Profile.CACTUS          );
+        plantProfile.put("tile.mushroom"       , Profile.TRUE_SCALE      );
+        plantProfile.put("tile.reeds"          , Profile.THIN_YP         );
+        plantProfile.put("tile.carrots"        , Profile.THIN_YP         );
+        plantProfile.put("tile.potatoes"       , Profile.THIN_YP         );
+        plantProfile.put("tile.crops"          , Profile.THIN_YP         );
+        
+        plantProfile.put("tile.crops"          , Profile.THIN_YP         );
+        plantProfile.put("tile.crops"          , Profile.THIN_YP         );
+        
+        //tile.flower1.dandelion, Profile.TRUE_SCALE
+        //tile.flower2.houstonia, Profile.TRUE_SCALE
+        //tile.doublePlant.sunflower *NEEDS TOP ICON*
+        //tile.doublePlant.grass *NEEDS BIOME COLORING, TWO-TALL CONFIGURATION, REDUCED_SCALE_YP
+        //tile.doublePlant.fern *NEEDS BIOME COLORING, TWO-TALL CONFIGURATION, REDUCED_SCALE_YP
+        //tile.doublePlant.paeonia *NEEDS TWO-TALL CONFIGURATION, REDUCED_SCALE_YP
         
         /* Weee! Flowers */
         
-        plantProfile.put("unknown:orangeflower", Profile.TRUE_SCALE);
-        plantProfile.put("unknown:orangemoonflower", Profile.TRUE_SCALE);
-        plantProfile.put("unknown:purpleflower", Profile.THIN_YP);
-        plantProfile.put("unknown:yellowmoonflower", Profile.THIN_YP);
-        plantProfile.put("unknown:pinkmoonflower", Profile.THIN_YP);
-        plantProfile.put("unknown:darkgreymoonflower", Profile.THIN_YP);
-        plantProfile.put("unknown:lightgreymoonflower", Profile.THIN_YP);
-        plantProfile.put("unknown:purplemoonflower", Profile.THIN_YP);
-        plantProfile.put("unknown:brownmoonflower", Profile.THIN_YP);
-        plantProfile.put("unknown:redmoonflower", Profile.THIN_YP);
+        plantProfile.put("orangeflower"       , Profile.TRUE_SCALE);
+        plantProfile.put("orangemoonflower"   , Profile.TRUE_SCALE);
+        plantProfile.put("purpleflower"       , Profile.THIN_YP   );
+        plantProfile.put("yellowmoonflower"   , Profile.THIN_YP   );
+        plantProfile.put("pinkmoonflower"     , Profile.THIN_YP   );
+        plantProfile.put("darkgreymoonflower" , Profile.THIN_YP   );
+        plantProfile.put("lightgreymoonflower", Profile.THIN_YP   );
+        plantProfile.put("purplemoonflower"   , Profile.THIN_YP   );
+        plantProfile.put("brownmoonflower"    , Profile.THIN_YP   );
+        plantProfile.put("redmoonflower"      , Profile.THIN_YP   );
         
         /* Harvestcraft */
         
-        plantProfile.put("unknown:tile.PamHarvestCraft:strawberrycrop_2", Profile.THIN_YP);
-        plantProfile.put("unknown:tile.PamHarvestCraft:cranberrycrop_2", Profile.THIN_YP);
-        plantProfile.put("unknown:tile.PamHarvestCraft:whitemushroomcrop_2", Profile.THIN_YP);
+        plantProfile.put("tile.PamHarvestCraft:strawberrycrop_2"   , Profile.THIN_YP);
+        plantProfile.put("tile.PamHarvestCraft:cranberrycrop_2"    , Profile.THIN_YP);
+        plantProfile.put("tile.PamHarvestCraft:whitemushroomcrop_2", Profile.THIN_YP);
         
         /* Biomes O' Plenty */
         
-        plantProfile.put("BiomesOPlenty:tile.bop.foliage.poisonivy", Profile.REDUCED_SCALE_YP);
-        plantProfile.put("BiomesOPlenty:tile.bop.flowers.swampflower", Profile.THIN_YP);
-        plantProfile.put("BiomesOPlenty:tile.bop.flowers.violet", Profile.THIN_YP);
-        plantProfile.put("BiomesOPlenty:tile.bop.flowers.anemone", Profile.THIN_YP);
-        plantProfile.put("BiomesOPlenty:tile.bop.flowers2.bluebells", Profile.THIN_YP);
-        plantProfile.put("BiomesOPlenty:tile.bop.coral.bluecoral", Profile.THIN_YP);
-        plantProfile.put("BiomesOPlenty:tile.bop.plants.thorn", Profile.REDUCED_SCALE_YP);
-        plantProfile.put("BiomesOPlenty:tile.bop.treeMoss", Profile.REDUCED_SCALE_YP);
-        plantProfile.put("BiomesOPlenty:tile.bop.mushrooms.portobello", Profile.TRUE_SCALE);
-        plantProfile.put("BiomesOPlenty:tile.bop.mushrooms.bluemilk", Profile.TRUE_SCALE);
-        plantProfile.put("BiomesOPlenty:tile.bop.mushrooms.flatmushroom", Profile.TRUE_SCALE);
-        plantProfile.put("BiomesOPlenty:tile.bop.stoneFormations.stalactite", Profile.THIN_YN);
+        plantProfile.put("tile.bop.foliage.poisonivy"         , Profile.REDUCED_SCALE_YP);
+        plantProfile.put("tile.bop.flowers.swampflower"       , Profile.THIN_YP         );
+        plantProfile.put("tile.bop.flowers.violet"            , Profile.THIN_YP         );
+        plantProfile.put("tile.bop.flowers.anemone"           , Profile.THIN_YP         );
+        plantProfile.put("tile.bop.flowers2.bluebells"        , Profile.THIN_YP         );
+        plantProfile.put("tile.bop.coral.bluecoral"           , Profile.THIN_YP         );
+        plantProfile.put("tile.bop.plants.thorn"              , Profile.REDUCED_SCALE_YP);
+        plantProfile.put("tile.bop.treeMoss"                  , Profile.REDUCED_SCALE_YP);
+        plantProfile.put("tile.bop.mushrooms.portobello"      , Profile.TRUE_SCALE      );
+        plantProfile.put("tile.bop.mushrooms.bluemilk"        , Profile.TRUE_SCALE      );
+        plantProfile.put("tile.bop.mushrooms.flatmushroom"    , Profile.TRUE_SCALE      );
+        plantProfile.put("tile.bop.stoneFormations.stalactite", Profile.THIN_YN         );
         
         /* Natura */
         
-        plantProfile.put("Natura:block.sapling.blood", Profile.REDUCED_SCALE_YN);
-        plantProfile.put("Natura:block.glowshroom.green", Profile.TRUE_SCALE);
-        plantProfile.put("Natura:block.glowshroom.blue", Profile.TRUE_SCALE);
-        plantProfile.put("Natura:block.glowshroom.purple", Profile.TRUE_SCALE);
+        plantProfile.put("block.sapling.blood"    , Profile.REDUCED_SCALE_YN);
+        plantProfile.put("block.glowshroom.green" , Profile.TRUE_SCALE      );
+        plantProfile.put("block.glowshroom.blue"  , Profile.TRUE_SCALE      );
+        plantProfile.put("block.glowshroom.purple", Profile.TRUE_SCALE      );
         
         /* ExtraBiomesXL */
         
-        plantProfile.put("ExtrabiomesXL:tile.extrabiomes.cattail", Profile.THIN_YP);
-        plantProfile.put("ExtrabiomesXL:tile.extrabiomes.flower.2", Profile.THIN_YP);
-        plantProfile.put("ExtrabiomesXL:tile.extrabiomes.flower.5", Profile.THIN_YP);
-        plantProfile.put("ExtrabiomesXL:tile.extrabiomes.flower.6", Profile.THIN_YP);
-        plantProfile.put("ExtrabiomesXL:tile.extrabiomes.flower.7", Profile.THIN_YP);
+        plantProfile.put("tile.extrabiomes.cattail" , Profile.THIN_YP);
+        plantProfile.put("tile.extrabiomes.flower.2", Profile.THIN_YP);
+        plantProfile.put("tile.extrabiomes.flower.5", Profile.THIN_YP);
+        plantProfile.put("tile.extrabiomes.flower.6", Profile.THIN_YP);
+        plantProfile.put("tile.extrabiomes.flower.7", Profile.THIN_YP);
+    }
+    
+    /**
+     * Enables an ItemStack to be treated as a plant.
+     * Covers items such as reeds and crops.
+     */
+    public static boolean isPlantException(ItemStack itemStack)
+    {
+        return true;
     }
     
     /**
@@ -103,12 +113,11 @@ public class FlowerPotHandler {
      */
     public static Profile getPlantProfile(TEBase TE)
     {
-        Block block = FlowerPotProperties.getPlant(TE);
-        int metadata = FlowerPotProperties.getPlantMetadata(TE);
+        ItemStack itemStack = FlowerPotProperties.getPlant(TE);
+
+        String name = itemStack.getUnlocalizedName();
         
-        String name = getFullUnlocalizedName(new ItemStack(block, 1, metadata));
-        
-        Material material = block.getMaterial();
+        Material material = BlockProperties.toBlock(itemStack).getMaterial();
         
         if (plantProfile.containsKey(name)) {
             return plantProfile.get(name);
@@ -119,85 +128,6 @@ public class FlowerPotHandler {
         } else {
             return Profile.REDUCED_SCALE_YP;
         }
-    }
-    
-    public static IIcon getPlantIcon(ItemStack itemStack)
-    {
-        int metadata = itemStack.getItemDamage();
-        
-        // Override BoP's sunflower metadata so it uses the top of the flower.
-        if (getFullUnlocalizedName(itemStack).equals("BiomesOPlenty:tile.bop.flowers.sunflowerbottom")) {
-            metadata = 14;
-        }
-        
-        return Block.getBlockFromItem(itemStack.getItem()).getIcon(2, metadata);
-    }
-    
-    /**
-     * Returns an unabridged, unlocalized name for item prefixed with
-     * a modId, if applicable.
-     */
-    public static String getFullUnlocalizedName(ItemStack itemStack)
-    {
-        UniqueIdentifier uId = GameRegistry.findUniqueIdentifierFor(Block.getBlockFromItem(itemStack.getItem()));
-        
-        StringBuilder string = new StringBuilder();
-        string.append(uId == null ? "unknown" : uId.modId);
-        string.append(":");
-        string.append(itemStack.getItem().getUnlocalizedNameInefficiently(itemStack));
-        
-        return string.toString();
-    }
-    
-    /**
-     * Returns equivalent block that represents item.
-     * If no equivalent exists, returns original ItemStack.
-     */
-    public static ItemStack getEquivalentBlock(ItemStack itemStack)
-    {
-        if (itemStack != null)
-        {
-            Item item = itemStack.getItem();
-            
-            if (item.equals(Items.reeds)) {
-                return new ItemStack(Blocks.reeds, 1, 0);
-            } else if (item.equals(Items.wheat)) {
-                return new ItemStack(Blocks.wheat, 1, 7);
-            } else if (item.equals(Items.carrot)) {
-                return new ItemStack(Blocks.carrots, 1, 7);
-            } else if (item.equals(Items.potato)) {
-                return new ItemStack(Blocks.potatoes, 1, 7);
-            }
-        }
-        
-        return itemStack;
-    }
-    
-    /**
-     * Converts ItemStack block into appropriate Item where necessary.
-     */
-    public static ItemStack getFilteredItem(ItemStack itemStack)
-    {
-        if (itemStack != null)
-        {
-            Block block = Block.getBlockFromItem(itemStack.getItem());
-            
-            if (block instanceof IShearable) {
-                
-                return itemStack;
-                
-            } else {
-                
-                Item itemDropped = block.getItemDropped(itemStack.getItemDamage(), null, 0);
-                
-                if (itemDropped != null) {
-                    return new ItemStack(itemDropped, 1, itemStack.getItemDamage());
-                }
-                
-            }
-        }
-        
-        return itemStack;
     }
     
 }

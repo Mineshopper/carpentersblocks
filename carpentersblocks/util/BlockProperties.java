@@ -15,7 +15,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
-import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import carpentersblocks.CarpentersBlocks;
@@ -26,26 +25,12 @@ import carpentersblocks.util.handler.OverlayHandler;
 public class BlockProperties {
     
     public final static SoundType stepSound = new SoundType(CarpentersBlocks.MODID, 1.0F, 1.0F);
-    
-    /**
-     * Returns cover ItemStack for side.
-     */
-    public static ItemStack getCoverItemStack(TEBase TE, int side)
-    {
-        if (hasCover(TE, side)) {
-            return TE.cover[side];
-        } else if (side == 6) {
-            return new ItemStack(TE.getBlockType());
-        } else {
-            return null;
-        }
-    }
-    
+        
     /**
      * Takes an ItemStack and returns block, or null if ItemStack
      * does not contain a block.
      */
-    public static Block getBlockFromItemStack(ItemStack itemStack)
+    public static Block toBlock(ItemStack itemStack)
     {
         if (itemStack != null && itemStack.getItem() instanceof ItemBlock) {
             return Block.getBlockFromItem(itemStack.getItem());
@@ -61,7 +46,7 @@ public class BlockProperties {
     {
         if (side == 1 && hasCover(TE, side)) {
             
-            Block block = getCover(TE, side);
+            Block block = toBlock(getCover(TE, side));
             
             if (block.equals(Blocks.snow) || block.equals(Blocks.snow_layer)) {
                 return 0.125F;
@@ -160,8 +145,10 @@ public class BlockProperties {
      * The blocks that utilize this property are mostly atypical, and
      * must be added manually.
      */
-    public static boolean blockRotates(Block block)
+    public static boolean blockRotates(ItemStack itemStack)
     {
+        Block block = toBlock(itemStack);
+        
         return block instanceof BlockQuartz ||
                block instanceof BlockRotatedPillar;
     }
@@ -169,16 +156,18 @@ public class BlockProperties {
     /**
      * Plays block sound.
      */
-    public static void playBlockSound(TEBase TE, Block block)
+    public static void playBlockSound(TEBase TE, ItemStack itemStack)
     {
-        playBlockSound(TE.getWorldObj(), block, TE.xCoord, TE.yCoord, TE.zCoord);
+        playBlockSound(TE.getWorldObj(), itemStack, TE.xCoord, TE.yCoord, TE.zCoord);
     }
     
     /**
      * Plays block break sound.
      */
-    public static void playBlockSound(World world, Block block, int x, int y, int z)
+    public static void playBlockSound(World world, ItemStack itemStack, int x, int y, int z)
     {
+        Block block = toBlock(itemStack);
+        
         world.playSoundEffect(x + 0.5F, y + 0.5F, z + 0.5F, block.stepSound.func_150496_b(), (block.stepSound.getVolume() + 1.0F) / 2.0F, block.stepSound.getPitch() * 0.8F);
     }
     
@@ -196,7 +185,7 @@ public class BlockProperties {
     /**
      * Strips side of all properties.
      */
-    public static void clearAttributes(TEBase TE, int side)
+    public static void ejectAttributes(TEBase TE, int side)
     {
         suppressUpdate = true;
         
@@ -208,14 +197,6 @@ public class BlockProperties {
         suppressUpdate = false;
         
         TE.getWorldObj().markBlockForUpdate(TE.xCoord, TE.yCoord, TE.zCoord);
-    }
-    
-    /**
-     * Returns cover block metadata.
-     */
-    public static int getCoverMetadata(TEBase TE, int side)
-    {
-        return TE.cover[side] != null ? TE.cover[side].getItemDamage() : 0;
     }
     
     /**
@@ -241,29 +222,19 @@ public class BlockProperties {
         
         return false;
     }
-    
-    /**
-     * Returns cover block.
-     */
-    public static Block getCover(IBlockAccess world, int x, int y, int z, int side)
-    {
-        TEBase TE = (TEBase) world.getTileEntity(x, y, z);
 
-        return getCover(TE, side);
-    }
-    
     /**
-     * Returns cover block.
+     * Returns cover ItemStack for side.
      */
-    public static Block getCover(TEBase TE, int side)
+    public static ItemStack getCover(TEBase TE, int side)
     {
-        Block block = null;
+        ItemStack itemStack = new ItemStack(TE.getBlockType());
         
         if (TE.cover[side] != null) {
-            block = Block.getBlockFromItem(TE.cover[side].getItem());
+            itemStack = TE.cover[side];
         }
 
-        return block == null ? TE.getBlockType() : block;
+        return itemStack;
     }
     
     /**
@@ -487,8 +458,8 @@ public class BlockProperties {
      */
     public static boolean shouldRenderSharedFaceBasedOnCovers(TEBase TE_adj, TEBase TE_src)
     {
-        Block block_adj= BlockProperties.getCover(TE_adj, 6);
-        Block block_src = BlockProperties.getCover(TE_src, 6);
+        Block block_adj = toBlock(BlockProperties.getCover(TE_adj, 6));
+        Block block_src = toBlock(BlockProperties.getCover(TE_src, 6));
         
         if (!BlockProperties.hasCover(TE_adj, 6)) {
             return BlockProperties.hasCover(TE_src, 6);

@@ -19,6 +19,7 @@ import net.minecraft.block.BlockDirectional;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -239,12 +240,12 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
     /**
      * Override to provide custom icons.
      */
-    protected IIcon getUniqueIcon(Block block, int side, IIcon icon)
+    protected IIcon getUniqueIcon(ItemStack itemStack, int side, IIcon icon)
     {
         if (isSideSloped)
         {
+            Block block = BlockProperties.toBlock(itemStack);
             Slope slope = Slope.slopesList[BlockProperties.getMetadata(TE)];
-            int metadata = BlockProperties.getCoverMetadata(TE, coverRendering);
             
             /* Replace sloped icons with specific ones. */
             
@@ -273,11 +274,11 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
             
                 /* For directional blocks, make sure sloped icons match regardless of side. */
                 
-                if (BlockProperties.blockRotates(block)) {
-                    if (metadata % 8 == 0) {
-                        icon = block.getIcon(slope.isPositive ? 1 : 0, metadata);
+                if (BlockProperties.blockRotates(itemStack)) {
+                    if (itemStack.getItemDamage() % 8 == 0) {
+                        icon = block.getIcon(slope.isPositive ? 1 : 0, itemStack.getItemDamage());
                     } else {
-                        icon = block.getIcon(2, metadata);
+                        icon = block.getIcon(2, itemStack.getItemDamage());
                     }
                 } else if (block instanceof BlockDirectional && !slope.type.equals(Type.WEDGE)) {
                     icon = block.getBlockTextureFromSide(1);
@@ -287,7 +288,7 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
                 
                 if (slope.isPositive) {
                     if (block.getMaterial().equals(Material.grass) || icon.getIconName().equals("dirt_podzol_side")) {
-                        icon = block.getIcon(1, metadata);
+                        icon = block.getIcon(1, itemStack.getItemDamage());
                     }
                 }
                 
@@ -476,13 +477,13 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
     /**
      * Renders slope.
      */
-    public void renderBaseBlock(Block block, int x, int y, int z)
+    public void renderBaseBlock(ItemStack itemStack, int x, int y, int z)
     {
         Slope slope = Slope.slopesList[BlockProperties.getMetadata(TE)];
         
-        renderBlocks.enableAO = getEnableAO(block);
+        renderBlocks.enableAO = getEnableAO(itemStack);
         
-        prepareLighting(block);
+        prepareLighting(itemStack);
         
         /* Render sloped faces. */
         
@@ -490,28 +491,28 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
 
         switch (slope.getPrimaryType()) {
             case WEDGE_SIDE:
-                prepareHorizontalWedge(block, slope, x, y, z);
+                prepareHorizontalWedge(itemStack, slope, x, y, z);
                 break;
             case WEDGE:
-                prepareVerticalWedge(block, slope, x, y, z);
+                prepareVerticalWedge(itemStack, slope, x, y, z);
                 break;
             case WEDGE_INT:
-                prepareWedgeIntCorner(block, slope, x, y, z);
+                prepareWedgeIntCorner(itemStack, slope, x, y, z);
                 break;
             case WEDGE_EXT:
-                prepareWedgeExtCorner(block, slope, x, y, z);
+                prepareWedgeExtCorner(itemStack, slope, x, y, z);
                 break;
             case OBLIQUE_INT:
-                prepareObliqueIntCorner(block, slope, x, y, z);
+                prepareObliqueIntCorner(itemStack, slope, x, y, z);
                 break;
             case OBLIQUE_EXT:
-                prepareObliqueExtCorner(block, slope, x, y, z);
+                prepareObliqueExtCorner(itemStack, slope, x, y, z);
                 break;
             case PRISM:
-                preparePrism(block, slope, x, y, z);
+                preparePrism(itemStack, slope, x, y, z);
                 break;
             case PRISM_WEDGE:
-                preparePrismWedge(block, slope, x, y, z);
+                preparePrismWedge(itemStack, slope, x, y, z);
                 break;
             default:
                 break;
@@ -522,22 +523,22 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
         /* Render non-sloped faces. */
         
         if (slope.hasSide(ForgeDirection.DOWN) && srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x, y - 1, z, DOWN)) {
-            prepareFaceYNeg(block, slope, x, y, z);
+            prepareFaceYNeg(itemStack, slope, x, y, z);
         }
         if (slope.hasSide(ForgeDirection.UP) && srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x, y + 1, z, UP)) {
-            prepareFaceYPos(block, slope, x, y, z);
+            prepareFaceYPos(itemStack, slope, x, y, z);
         }
         if (slope.hasSide(ForgeDirection.NORTH) && srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x, y, z - 1, NORTH)) {
-            prepareFaceZNeg(block, slope, x, y, z);
+            prepareFaceZNeg(itemStack, slope, x, y, z);
         }
         if (slope.hasSide(ForgeDirection.SOUTH) && srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x, y, z + 1, SOUTH)) {
-            prepareFaceZPos(block, slope, x, y, z);
+            prepareFaceZPos(itemStack, slope, x, y, z);
         }
         if (slope.hasSide(ForgeDirection.WEST) && srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x - 1, y, z, WEST)) {
-            prepareFaceXNeg(block, slope, x, y, z);
+            prepareFaceXNeg(itemStack, slope, x, y, z);
         }
         if (slope.hasSide(ForgeDirection.EAST) && srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x + 1, y, z, EAST)) {
-            prepareFaceXPos(block, slope, x, y, z);
+            prepareFaceXPos(itemStack, slope, x, y, z);
         }
         
         RenderHelper.startDrawing(QUADS);
@@ -548,7 +549,7 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
     /**
      * Will set lighting and render prism sloped faces.
      */
-    private void preparePrism(Block block, Slope slope, int x, int y, int z)
+    private void preparePrism(ItemStack itemStack, Slope slope, int x, int y, int z)
     {
         int POINT_N     = 0;
         int POINT_S     = 1;
@@ -579,22 +580,22 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
         if (pieceList.contains(POINT_N)) {
             
             renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 0.5D, 0.5D, 0.5D);
-            setWedgeLighting(block, Slope.WEDGE_POS_W);
-            setIDAndRender(block, PRISM_NORTH_XN, x, y, z, WEST);
+            setWedgeLighting(itemStack, Slope.WEDGE_POS_W);
+            setIDAndRender(itemStack, PRISM_NORTH_XN, x, y, z, WEST);
             renderBlocks.setRenderBounds(0.5D, 0.0D, 0.0D, 1.0D, 0.5D, 0.5D);
-            setWedgeLighting(block, Slope.WEDGE_POS_E);
-            setIDAndRender(block, PRISM_NORTH_XP, x, y, z, EAST);
+            setWedgeLighting(itemStack, Slope.WEDGE_POS_E);
+            setIDAndRender(itemStack, PRISM_NORTH_XP, x, y, z, EAST);
             
         } else {
             
             if (slope.isPositive) {
                 renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 0.5D, 0.5D);
-                setWedgeLighting(block, Slope.WEDGE_POS_N);
-                setIDAndRender(block, PRISM_YZPN, x, y, z, NORTH);
+                setWedgeLighting(itemStack, Slope.WEDGE_POS_N);
+                setIDAndRender(itemStack, PRISM_YZPN, x, y, z, NORTH);
             } else {
                 renderBlocks.setRenderBounds(0.0D, 0.5D, 0.0D, 1.0D, 1.0D, 0.5D);
-                setWedgeLighting(block, Slope.WEDGE_NEG_N);
-                setIDAndRender(block, PRISM_YZNN, x, y, z, NORTH);
+                setWedgeLighting(itemStack, Slope.WEDGE_NEG_N);
+                setIDAndRender(itemStack, PRISM_YZNN, x, y, z, NORTH);
             }
             
         }
@@ -602,22 +603,22 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
         if (pieceList.contains(POINT_S)) {
             
             renderBlocks.setRenderBounds(0.0D, 0.0D, 0.5D, 0.5D, 0.5D, 1.0D);
-            setWedgeLighting(block, Slope.WEDGE_POS_W);
-            setIDAndRender(block, PRISM_SOUTH_XN, x, y, z, WEST);
+            setWedgeLighting(itemStack, Slope.WEDGE_POS_W);
+            setIDAndRender(itemStack, PRISM_SOUTH_XN, x, y, z, WEST);
             renderBlocks.setRenderBounds(0.5D, 0.0D, 0.5D, 1.0D, 0.5D, 1.0D);
-            setWedgeLighting(block, Slope.WEDGE_POS_E);
-            setIDAndRender(block, PRISM_SOUTH_XP, x, y, z, EAST);
+            setWedgeLighting(itemStack, Slope.WEDGE_POS_E);
+            setIDAndRender(itemStack, PRISM_SOUTH_XP, x, y, z, EAST);
             
         } else {
             
             if (slope.isPositive) {
                 renderBlocks.setRenderBounds(0.0D, 0.0D, 0.5D, 1.0D, 0.5D, 1.0D);
-                setWedgeLighting(block, Slope.WEDGE_POS_S);
-                setIDAndRender(block, PRISM_YZPP, x, y, z, SOUTH);
+                setWedgeLighting(itemStack, Slope.WEDGE_POS_S);
+                setIDAndRender(itemStack, PRISM_YZPP, x, y, z, SOUTH);
             } else {
                 renderBlocks.setRenderBounds(0.0D, 0.5D, 0.5D, 1.0D, 1.0D, 1.0D);
-                setWedgeLighting(block, Slope.WEDGE_NEG_S);
-                setIDAndRender(block, PRISM_YZNP, x, y, z, SOUTH);
+                setWedgeLighting(itemStack, Slope.WEDGE_NEG_S);
+                setIDAndRender(itemStack, PRISM_YZNP, x, y, z, SOUTH);
             }
             
         }
@@ -625,22 +626,22 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
         if (pieceList.contains(POINT_W)) {
             
             renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 0.5D, 0.5D, 0.5D);
-            setWedgeLighting(block, Slope.WEDGE_POS_N);
-            setIDAndRender(block, PRISM_WEST_ZN, x, y, z, NORTH);
+            setWedgeLighting(itemStack, Slope.WEDGE_POS_N);
+            setIDAndRender(itemStack, PRISM_WEST_ZN, x, y, z, NORTH);
             renderBlocks.setRenderBounds(0.0D, 0.0D, 0.5D, 0.5D, 0.5D, 1.0D);
-            setWedgeLighting(block, Slope.WEDGE_POS_S);
-            setIDAndRender(block, PRISM_WEST_ZP, x, y, z, SOUTH);
+            setWedgeLighting(itemStack, Slope.WEDGE_POS_S);
+            setIDAndRender(itemStack, PRISM_WEST_ZP, x, y, z, SOUTH);
             
         } else {
             
             if (slope.isPositive) {
                 renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 0.5D, 0.5D, 1.0D);
-                setWedgeLighting(block, Slope.WEDGE_POS_W);
-                setIDAndRender(block, PRISM_YXPN, x, y, z, WEST);
+                setWedgeLighting(itemStack, Slope.WEDGE_POS_W);
+                setIDAndRender(itemStack, PRISM_YXPN, x, y, z, WEST);
             } else {
                 renderBlocks.setRenderBounds(0.0D, 0.5D, 0.0D, 0.5D, 1.0D, 1.0D);
-                setWedgeLighting(block, Slope.WEDGE_NEG_W);
-                setIDAndRender(block, PRISM_YXNN, x, y, z, WEST);
+                setWedgeLighting(itemStack, Slope.WEDGE_NEG_W);
+                setIDAndRender(itemStack, PRISM_YXNN, x, y, z, WEST);
             }
             
         }
@@ -648,22 +649,22 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
         if (pieceList.contains(POINT_E)) {
             
             renderBlocks.setRenderBounds(0.5D, 0.0D, 0.0D, 1.0D, 0.5D, 0.5D);
-            setWedgeLighting(block, Slope.WEDGE_POS_N);
-            setIDAndRender(block, PRISM_EAST_ZN, x, y, z, NORTH);
+            setWedgeLighting(itemStack, Slope.WEDGE_POS_N);
+            setIDAndRender(itemStack, PRISM_EAST_ZN, x, y, z, NORTH);
             renderBlocks.setRenderBounds(0.5D, 0.0D, 0.5D, 1.0D, 0.5D, 1.0D);
-            setWedgeLighting(block, Slope.WEDGE_POS_S);
-            setIDAndRender(block, PRISM_EAST_ZP, x, y, z, SOUTH);
+            setWedgeLighting(itemStack, Slope.WEDGE_POS_S);
+            setIDAndRender(itemStack, PRISM_EAST_ZP, x, y, z, SOUTH);
             
         } else {
             
             if (slope.isPositive) {
                 renderBlocks.setRenderBounds(0.5D, 0.0D, 0.0D, 1.0D, 0.5D, 1.0D);
-                setWedgeLighting(block, Slope.WEDGE_POS_E);
-                setIDAndRender(block, PRISM_YXPP, x, y, z, EAST);
+                setWedgeLighting(itemStack, Slope.WEDGE_POS_E);
+                setIDAndRender(itemStack, PRISM_YXPP, x, y, z, EAST);
             } else {
                 renderBlocks.setRenderBounds(0.5D, 0.5D, 0.0D, 1.0D, 1.0D, 1.0D);
-                setWedgeLighting(block, Slope.WEDGE_NEG_E);
-                setIDAndRender(block, PRISM_YXNP, x, y, z, EAST);
+                setWedgeLighting(itemStack, Slope.WEDGE_NEG_E);
+                setIDAndRender(itemStack, PRISM_YXNP, x, y, z, EAST);
             }
             
         }
@@ -672,7 +673,7 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
     /**
      * Will set lighting and render prism wedge sloped faces.
      */
-    private void preparePrismWedge(Block block, Slope slope, int x, int y, int z)
+    private void preparePrismWedge(ItemStack itemStack, Slope slope, int x, int y, int z)
     {
         switch (slope.slopeID) {
             case Slope.ID_PRISM_WEDGE_POS_N:
@@ -680,17 +681,17 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
                 RenderHelper.startDrawing(TRIANGLES);
                 
                 renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 0.5D, 0.5D, 0.5D);
-                setWedgeLighting(block, Slope.WEDGE_POS_W);
-                setIDAndRender(block, PRISM_NORTH_XN, x, y, z, WEST);
+                setWedgeLighting(itemStack, Slope.WEDGE_POS_W);
+                setIDAndRender(itemStack, PRISM_NORTH_XN, x, y, z, WEST);
                 renderBlocks.setRenderBounds(0.5D, 0.0D, 0.0D, 1.0D, 0.5D, 0.5D);
-                setWedgeLighting(block, Slope.WEDGE_POS_E);
-                setIDAndRender(block, PRISM_NORTH_XP, x, y, z, EAST);
+                setWedgeLighting(itemStack, Slope.WEDGE_POS_E);
+                setIDAndRender(itemStack, PRISM_NORTH_XP, x, y, z, EAST);
                 
                 RenderHelper.startDrawing(QUADS);
                 
                 renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
-                setWedgeLighting(block, Slope.WEDGE_POS_N);
-                setIDAndRender(block, PRISM_WEDGE_ZN, x, y, z, NORTH);
+                setWedgeLighting(itemStack, Slope.WEDGE_POS_N);
+                setIDAndRender(itemStack, PRISM_WEDGE_ZN, x, y, z, NORTH);
                 
                 break;
             case Slope.ID_PRISM_WEDGE_POS_S:
@@ -698,17 +699,17 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
                 RenderHelper.startDrawing(TRIANGLES);
                 
                 renderBlocks.setRenderBounds(0.0D, 0.0D, 0.5D, 0.5D, 0.5D, 1.0D);
-                setWedgeLighting(block, Slope.WEDGE_POS_W);
-                setIDAndRender(block, PRISM_SOUTH_XN, x, y, z, WEST);
+                setWedgeLighting(itemStack, Slope.WEDGE_POS_W);
+                setIDAndRender(itemStack, PRISM_SOUTH_XN, x, y, z, WEST);
                 renderBlocks.setRenderBounds(0.5D, 0.0D, 0.5D, 1.0D, 0.5D, 1.0D);
-                setWedgeLighting(block, Slope.WEDGE_POS_E);
-                setIDAndRender(block, PRISM_SOUTH_XP, x, y, z, EAST);
+                setWedgeLighting(itemStack, Slope.WEDGE_POS_E);
+                setIDAndRender(itemStack, PRISM_SOUTH_XP, x, y, z, EAST);
                 
                 RenderHelper.startDrawing(QUADS);
                 
                 renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
-                setWedgeLighting(block, Slope.WEDGE_POS_S);
-                setIDAndRender(block, PRISM_WEDGE_ZP, x, y, z, SOUTH);
+                setWedgeLighting(itemStack, Slope.WEDGE_POS_S);
+                setIDAndRender(itemStack, PRISM_WEDGE_ZP, x, y, z, SOUTH);
                 
                 break;
             case Slope.ID_PRISM_WEDGE_POS_W:
@@ -716,17 +717,17 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
                 RenderHelper.startDrawing(TRIANGLES);
                 
                 renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 0.5D, 0.5D, 0.5D);
-                setWedgeLighting(block, Slope.WEDGE_POS_N);
-                setIDAndRender(block, PRISM_WEST_ZN, x, y, z, NORTH);
+                setWedgeLighting(itemStack, Slope.WEDGE_POS_N);
+                setIDAndRender(itemStack, PRISM_WEST_ZN, x, y, z, NORTH);
                 renderBlocks.setRenderBounds(0.0D, 0.0D, 0.5D, 0.5D, 0.5D, 1.0D);
-                setWedgeLighting(block, Slope.WEDGE_POS_S);
-                setIDAndRender(block, PRISM_WEST_ZP, x, y, z, SOUTH);
+                setWedgeLighting(itemStack, Slope.WEDGE_POS_S);
+                setIDAndRender(itemStack, PRISM_WEST_ZP, x, y, z, SOUTH);
                 
                 RenderHelper.startDrawing(QUADS);
                 
                 renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
-                setWedgeLighting(block, Slope.WEDGE_POS_W);
-                setIDAndRender(block, PRISM_WEDGE_XN, x, y, z, WEST);
+                setWedgeLighting(itemStack, Slope.WEDGE_POS_W);
+                setIDAndRender(itemStack, PRISM_WEDGE_XN, x, y, z, WEST);
                 
                 break;
             case Slope.ID_PRISM_WEDGE_POS_E:
@@ -734,17 +735,17 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
                 RenderHelper.startDrawing(TRIANGLES);
                 
                 renderBlocks.setRenderBounds(0.5D, 0.0D, 0.0D, 1.0D, 0.5D, 0.5D);
-                setWedgeLighting(block, Slope.WEDGE_POS_N);
-                setIDAndRender(block, PRISM_EAST_ZN, x, y, z, NORTH);
+                setWedgeLighting(itemStack, Slope.WEDGE_POS_N);
+                setIDAndRender(itemStack, PRISM_EAST_ZN, x, y, z, NORTH);
                 renderBlocks.setRenderBounds(0.5D, 0.0D, 0.5D, 1.0D, 0.5D, 1.0D);
-                setWedgeLighting(block, Slope.WEDGE_POS_S);
-                setIDAndRender(block, PRISM_EAST_ZP, x, y, z, SOUTH);
+                setWedgeLighting(itemStack, Slope.WEDGE_POS_S);
+                setIDAndRender(itemStack, PRISM_EAST_ZP, x, y, z, SOUTH);
                 
                 RenderHelper.startDrawing(QUADS);
                 
                 renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
-                setWedgeLighting(block, Slope.WEDGE_POS_E);
-                setIDAndRender(block, PRISM_WEDGE_XP, x, y, z, EAST);
+                setWedgeLighting(itemStack, Slope.WEDGE_POS_E);
+                setIDAndRender(itemStack, PRISM_WEDGE_XP, x, y, z, EAST);
                 
                 break;
         }
@@ -754,7 +755,7 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
      * Will set lighting for wedge sloped faces.  Many slope types
      * make use of these lighting parameters in addition to wedges.
      */
-    private void setWedgeLighting(Block block, Slope slope)
+    private void setWedgeLighting(ItemStack itemStack, Slope slope)
     {
         switch (slope.slopeID) {
             case Slope.ID_WEDGE_NW:
@@ -988,87 +989,87 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
         }
     }
     
-    private void prepareHorizontalWedge(Block block, Slope slope, int x, int y, int z)
+    private void prepareHorizontalWedge(ItemStack itemStack, Slope slope, int x, int y, int z)
     {
         RenderHelper.startDrawing(QUADS);
         
-        setWedgeLighting(block, slope);
+        setWedgeLighting(itemStack, slope);
         
         if (slope.facings.contains(ForgeDirection.NORTH)) {
-            setIDAndRender(block, WEDGE_SLOPED_ZN, x, y, z, EAST);
+            setIDAndRender(itemStack, WEDGE_SLOPED_ZN, x, y, z, EAST);
         } else {
-            setIDAndRender(block, WEDGE_SLOPED_ZP, x, y, z, WEST);
+            setIDAndRender(itemStack, WEDGE_SLOPED_ZP, x, y, z, WEST);
         }
     }
     
-    private void prepareVerticalWedge(Block block, Slope slope, int x, int y, int z)
+    private void prepareVerticalWedge(ItemStack itemStack, Slope slope, int x, int y, int z)
     {
         RenderHelper.startDrawing(QUADS);
         
-        setWedgeLighting(block, slope);
+        setWedgeLighting(itemStack, slope);
         
         if (slope.facings.contains(ForgeDirection.NORTH)) {
-            setIDAndRender(block, WEDGE_SLOPED_ZN, x, y, z, NORTH);
+            setIDAndRender(itemStack, WEDGE_SLOPED_ZN, x, y, z, NORTH);
         } else if (slope.facings.contains(ForgeDirection.SOUTH)) {
-            setIDAndRender(block, WEDGE_SLOPED_ZP, x, y, z, SOUTH);
+            setIDAndRender(itemStack, WEDGE_SLOPED_ZP, x, y, z, SOUTH);
         } else if (slope.facings.contains(ForgeDirection.WEST)) {
-            setIDAndRender(block, WEDGE_SLOPED_XN, x, y, z, WEST);
+            setIDAndRender(itemStack, WEDGE_SLOPED_XN, x, y, z, WEST);
         } else { // ForgeDirection.EAST
-            setIDAndRender(block, WEDGE_SLOPED_XP, x, y, z, EAST);
+            setIDAndRender(itemStack, WEDGE_SLOPED_XP, x, y, z, EAST);
         }
     }
     
-    private void prepareWedgeIntCorner(Block block, Slope slope, int x, int y, int z)
+    private void prepareWedgeIntCorner(ItemStack itemStack, Slope slope, int x, int y, int z)
     {
         RenderHelper.startDrawing(TRIANGLES);
         
         Slope slopeX = slope.facings.contains(ForgeDirection.WEST) ? slope.isPositive ? Slope.WEDGE_POS_W : Slope.WEDGE_NEG_W : slope.isPositive ? Slope.WEDGE_POS_E : Slope.WEDGE_NEG_E;
         
-        setWedgeLighting(block, slopeX);
+        setWedgeLighting(itemStack, slopeX);
         
         if (slopeX.facings.contains(ForgeDirection.WEST)) {
-            setIDAndRender(block, WEDGE_CORNER_SLOPED_XN, x, y, z, WEST);
+            setIDAndRender(itemStack, WEDGE_CORNER_SLOPED_XN, x, y, z, WEST);
         } else { // ForgeDirection.EAST
-            setIDAndRender(block, WEDGE_CORNER_SLOPED_XP, x, y, z, EAST);
+            setIDAndRender(itemStack, WEDGE_CORNER_SLOPED_XP, x, y, z, EAST);
         }
         
         Slope slopeZ = slope.facings.contains(ForgeDirection.NORTH) ? slope.isPositive ? Slope.WEDGE_POS_N : Slope.WEDGE_NEG_N : slope.isPositive ? Slope.WEDGE_POS_S : Slope.WEDGE_NEG_S;
         
-        setWedgeLighting(block, slopeZ);
+        setWedgeLighting(itemStack, slopeZ);
         
         if (slope.facings.contains(ForgeDirection.NORTH)) {
-            setIDAndRender(block, WEDGE_CORNER_SLOPED_ZN, x, y, z, NORTH);
+            setIDAndRender(itemStack, WEDGE_CORNER_SLOPED_ZN, x, y, z, NORTH);
         } else {
-            setIDAndRender(block, WEDGE_CORNER_SLOPED_ZP, x, y, z, SOUTH);
+            setIDAndRender(itemStack, WEDGE_CORNER_SLOPED_ZP, x, y, z, SOUTH);
         }
     }
     
-    private void prepareWedgeExtCorner(Block block, Slope slope, int x, int y, int z)
+    private void prepareWedgeExtCorner(ItemStack itemStack, Slope slope, int x, int y, int z)
     {
         RenderHelper.startDrawing(TRIANGLES);
         
         Slope slopeX = slope.facings.contains(ForgeDirection.WEST) ? slope.isPositive ? Slope.WEDGE_POS_W : Slope.WEDGE_NEG_W : slope.isPositive ? Slope.WEDGE_POS_E : Slope.WEDGE_NEG_E;
         
-        setWedgeLighting(block, slopeX);
+        setWedgeLighting(itemStack, slopeX);
         
         if (slopeX.facings.contains(ForgeDirection.WEST)) {
-            setIDAndRender(block, WEDGE_CORNER_SLOPED_XN, x, y, z, WEST);
+            setIDAndRender(itemStack, WEDGE_CORNER_SLOPED_XN, x, y, z, WEST);
         } else { // ForgeDirection.EAST
-            setIDAndRender(block, WEDGE_CORNER_SLOPED_XP, x, y, z, EAST);
+            setIDAndRender(itemStack, WEDGE_CORNER_SLOPED_XP, x, y, z, EAST);
         }
         
         Slope slopeZ = slope.facings.contains(ForgeDirection.NORTH) ? slope.isPositive ? Slope.WEDGE_POS_N : Slope.WEDGE_NEG_N : slope.isPositive ? Slope.WEDGE_POS_S : Slope.WEDGE_NEG_S;
         
-        setWedgeLighting(block, slopeZ);
+        setWedgeLighting(itemStack, slopeZ);
         
         if (slope.facings.contains(ForgeDirection.NORTH)) {
-            setIDAndRender(block, WEDGE_CORNER_SLOPED_ZN, x, y, z, NORTH);
+            setIDAndRender(itemStack, WEDGE_CORNER_SLOPED_ZN, x, y, z, NORTH);
         } else {
-            setIDAndRender(block, WEDGE_CORNER_SLOPED_ZP, x, y, z, SOUTH);
+            setIDAndRender(itemStack, WEDGE_CORNER_SLOPED_ZP, x, y, z, SOUTH);
         }
     }
     
-    private void prepareObliqueIntCorner(Block block, Slope slope, int x, int y, int z)
+    private void prepareObliqueIntCorner(ItemStack itemStack, Slope slope, int x, int y, int z)
     {
         RenderHelper.startDrawing(TRIANGLES);
         
@@ -1169,14 +1170,14 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
         
         if (slope.isPositive) {
             lightingHelper.setLightness(LIGHTNESS_POS_OBL);
-            setIDAndRender(block, OBL_INT_YP, x, y, z, NORTH);
+            setIDAndRender(itemStack, OBL_INT_YP, x, y, z, NORTH);
         } else {
             lightingHelper.setLightness(LIGHTNESS_NEG_OBL);
-            setIDAndRender(block, OBL_INT_YN, x, y, z, NORTH);
+            setIDAndRender(itemStack, OBL_INT_YN, x, y, z, NORTH);
         }
     }
     
-    private void prepareObliqueExtCorner(Block block, Slope slope, int x, int y, int z)
+    private void prepareObliqueExtCorner(ItemStack itemStack, Slope slope, int x, int y, int z)
     {
         RenderHelper.startDrawing(TRIANGLES);
         
@@ -1282,31 +1283,31 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
         
         if (slope.isPositive) {
             lightingHelper.setLightness(LIGHTNESS_POS_OBL);
-            setIDAndRender(block, OBL_EXT_LEFT_YP, x, y, z, NORTH);
-            setIDAndRender(block, OBL_EXT_RIGHT_YP, x, y, z, NORTH);
+            setIDAndRender(itemStack, OBL_EXT_LEFT_YP, x, y, z, NORTH);
+            setIDAndRender(itemStack, OBL_EXT_RIGHT_YP, x, y, z, NORTH);
         } else {
             lightingHelper.setLightness(LIGHTNESS_NEG_OBL);
-            setIDAndRender(block, OBL_EXT_LEFT_YN, x, y, z, NORTH);
-            setIDAndRender(block, OBL_EXT_RIGHT_YN, x, y, z, NORTH);
+            setIDAndRender(itemStack, OBL_EXT_LEFT_YN, x, y, z, NORTH);
+            setIDAndRender(itemStack, OBL_EXT_RIGHT_YN, x, y, z, NORTH);
         }
     }
     
     /**
      * Prepare bottom face.
      */
-    private void prepareFaceYNeg(Block block, Slope slope, int x, int y, int z)
+    private void prepareFaceYNeg(ItemStack itemStack, Slope slope, int x, int y, int z)
     {
         renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
-        lightingHelper.setLightingYNeg(block, x, y, z);
+        lightingHelper.setLightingYNeg(itemStack, x, y, z);
         
         switch (slope.getFace(ForgeDirection.DOWN)) {
             case WEDGE:
                 RenderHelper.startDrawing(TRIANGLES);
-                setIDAndRender(block, WEDGE_YN, x, y, z, DOWN);
+                setIDAndRender(itemStack, WEDGE_YN, x, y, z, DOWN);
                 break;
             default:
                 RenderHelper.startDrawing(QUADS);
-                setIDAndRender(block, NORMAL_YN, x, y, z, DOWN);
+                setIDAndRender(itemStack, NORMAL_YN, x, y, z, DOWN);
                 break;
         }
     }
@@ -1314,19 +1315,19 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
     /**
      * Prepare top face.
      */
-    private void prepareFaceYPos(Block block, Slope slope, int x, int y, int z)
+    private void prepareFaceYPos(ItemStack itemStack, Slope slope, int x, int y, int z)
     {
         renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
-        lightingHelper.setLightingYPos(block, x, y, z);
+        lightingHelper.setLightingYPos(itemStack, x, y, z);
         
         switch (slope.getFace(ForgeDirection.UP)) {
             case WEDGE:
                 RenderHelper.startDrawing(TRIANGLES);
-                setIDAndRender(block, WEDGE_YP, x, y, z, UP);
+                setIDAndRender(itemStack, WEDGE_YP, x, y, z, UP);
                 break;
             default:
                 RenderHelper.startDrawing(QUADS);
-                setIDAndRender(block, NORMAL_YP, x, y, z, UP);
+                setIDAndRender(itemStack, NORMAL_YP, x, y, z, UP);
                 break;
         }
     }
@@ -1334,31 +1335,31 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
     /**
      * Prepare North face.
      */
-    private void prepareFaceZNeg(Block block, Slope slope, int x, int y, int z)
+    private void prepareFaceZNeg(ItemStack itemStack, Slope slope, int x, int y, int z)
     {
         renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
-        lightingHelper.setLightingZNeg(block, x, y, z);
+        lightingHelper.setLightingZNeg(itemStack, x, y, z);
         
         switch (slope.getFace(ForgeDirection.NORTH)) {
             case WEDGE:
                 RenderHelper.startDrawing(TRIANGLES);
-                setIDAndRender(block, WEDGE_ZN, x, y, z, NORTH);
+                setIDAndRender(itemStack, WEDGE_ZN, x, y, z, NORTH);
                 break;
             case TRIANGLE:
                 RenderHelper.startDrawing(TRIANGLES);
                 
                 renderBlocks.setRenderBounds(0.5D, 0.0D, 0.0D, 1.0D, 0.5D, 1.0D);
-                lightingHelper.setLightingZNeg(block, x, y, z);
-                setIDAndRender(block, TRIANGLE_ZXNP, x, y, z, NORTH);
+                lightingHelper.setLightingZNeg(itemStack, x, y, z);
+                setIDAndRender(itemStack, TRIANGLE_ZXNP, x, y, z, NORTH);
                 
                 renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 0.5D, 0.5D, 1.0D);
-                lightingHelper.setLightingZNeg(block, x, y, z);
-                setIDAndRender(block, TRIANGLE_ZXNN, x, y, z, NORTH);
+                lightingHelper.setLightingZNeg(itemStack, x, y, z);
+                setIDAndRender(itemStack, TRIANGLE_ZXNN, x, y, z, NORTH);
                 
                 break;
             default:
                 RenderHelper.startDrawing(QUADS);
-                setIDAndRender(block, NORMAL_ZN, x, y, z, NORTH);
+                setIDAndRender(itemStack, NORMAL_ZN, x, y, z, NORTH);
                 break;
         }
     }
@@ -1366,31 +1367,31 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
     /**
      * Prepare South face.
      */
-    private void prepareFaceZPos(Block block, Slope slope, int x, int y, int z)
+    private void prepareFaceZPos(ItemStack itemStack, Slope slope, int x, int y, int z)
     {
         renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
-        lightingHelper.setLightingZPos(block, x, y, z);
+        lightingHelper.setLightingZPos(itemStack, x, y, z);
         
         switch (slope.getFace(ForgeDirection.SOUTH)) {
             case WEDGE:
                 RenderHelper.startDrawing(TRIANGLES);
-                setIDAndRender(block, WEDGE_ZP, x, y, z, SOUTH);
+                setIDAndRender(itemStack, WEDGE_ZP, x, y, z, SOUTH);
                 break;
             case TRIANGLE:
                 RenderHelper.startDrawing(TRIANGLES);
                 
                 renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 0.5D, 0.5D, 1.0D);
-                lightingHelper.setLightingZPos(block, x, y, z);
-                setIDAndRender(block, TRIANGLE_ZXPN, x, y, z, SOUTH);
+                lightingHelper.setLightingZPos(itemStack, x, y, z);
+                setIDAndRender(itemStack, TRIANGLE_ZXPN, x, y, z, SOUTH);
                 
                 renderBlocks.setRenderBounds(0.5D, 0.0D, 0.0D, 1.0D, 0.5D, 1.0D);
-                lightingHelper.setLightingZPos(block, x, y, z);
-                setIDAndRender(block, TRIANGLE_ZXPP, x, y, z, SOUTH);
+                lightingHelper.setLightingZPos(itemStack, x, y, z);
+                setIDAndRender(itemStack, TRIANGLE_ZXPP, x, y, z, SOUTH);
                 
                 break;
             default:
                 RenderHelper.startDrawing(QUADS);
-                setIDAndRender(block, NORMAL_ZP, x, y, z, SOUTH);
+                setIDAndRender(itemStack, NORMAL_ZP, x, y, z, SOUTH);
                 break;
         }
     }
@@ -1398,31 +1399,31 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
     /**
      * Prepare West face.
      */
-    private void prepareFaceXNeg(Block block, Slope slope, int x, int y, int z)
+    private void prepareFaceXNeg(ItemStack itemStack, Slope slope, int x, int y, int z)
     {
         renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
-        lightingHelper.setLightingXNeg(block, x, y, z);
+        lightingHelper.setLightingXNeg(itemStack, x, y, z);
         
         switch (slope.getFace(ForgeDirection.WEST)) {
             case WEDGE:
                 RenderHelper.startDrawing(TRIANGLES);
-                setIDAndRender(block, WEDGE_XN, x, y, z, WEST);
+                setIDAndRender(itemStack, WEDGE_XN, x, y, z, WEST);
                 break;
             case TRIANGLE:
                 RenderHelper.startDrawing(TRIANGLES);
                 
                 renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 0.5D, 0.5D);
-                lightingHelper.setLightingXNeg(block, x, y, z);
-                setIDAndRender(block, TRIANGLE_XZNN, x, y, z, WEST);
+                lightingHelper.setLightingXNeg(itemStack, x, y, z);
+                setIDAndRender(itemStack, TRIANGLE_XZNN, x, y, z, WEST);
                 
                 renderBlocks.setRenderBounds(0.0D, 0.0D, 0.5D, 1.0D, 0.5D, 1.0D);
-                lightingHelper.setLightingXNeg(block, x, y, z);
-                setIDAndRender(block, TRIANGLE_XZNP, x, y, z, WEST);
+                lightingHelper.setLightingXNeg(itemStack, x, y, z);
+                setIDAndRender(itemStack, TRIANGLE_XZNP, x, y, z, WEST);
                 
                 break;
             default:
                 RenderHelper.startDrawing(QUADS);
-                setIDAndRender(block, NORMAL_XN, x, y, z, WEST);
+                setIDAndRender(itemStack, NORMAL_XN, x, y, z, WEST);
                 break;
         }
     }
@@ -1430,31 +1431,31 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
     /**
      * Prepare East face.
      */
-    private void prepareFaceXPos(Block block, Slope slope, int x, int y, int z)
+    private void prepareFaceXPos(ItemStack itemStack, Slope slope, int x, int y, int z)
     {
         renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
-        lightingHelper.setLightingXPos(block, x, y, z);
+        lightingHelper.setLightingXPos(itemStack, x, y, z);
         
         switch (slope.getFace(ForgeDirection.EAST)) {
             case WEDGE:
                 RenderHelper.startDrawing(TRIANGLES);
-                setIDAndRender(block, WEDGE_XP, x, y, z, EAST);
+                setIDAndRender(itemStack, WEDGE_XP, x, y, z, EAST);
                 break;
             case TRIANGLE:
                 RenderHelper.startDrawing(TRIANGLES);
                 
                 renderBlocks.setRenderBounds(0.0D, 0.0D, 0.5D, 1.0D, 0.5D, 1.0D);
-                lightingHelper.setLightingXPos(block, x, y, z);
-                setIDAndRender(block, TRIANGLE_XZPP, x, y, z, EAST);
+                lightingHelper.setLightingXPos(itemStack, x, y, z);
+                setIDAndRender(itemStack, TRIANGLE_XZPP, x, y, z, EAST);
                 
                 renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 0.5D, 0.5D);
-                lightingHelper.setLightingXPos(block, x, y, z);
-                setIDAndRender(block, TRIANGLE_XZPN, x, y, z, EAST);
+                lightingHelper.setLightingXPos(itemStack, x, y, z);
+                setIDAndRender(itemStack, TRIANGLE_XZPN, x, y, z, EAST);
                 
                 break;
             default:
                 RenderHelper.startDrawing(QUADS);
-                setIDAndRender(block, NORMAL_XP, x, y, z, EAST);
+                setIDAndRender(itemStack, NORMAL_XP, x, y, z, EAST);
                 break;
         }
     }

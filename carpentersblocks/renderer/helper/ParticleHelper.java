@@ -37,7 +37,7 @@ public class ParticleHelper {
      */
     public static ItemStack getParticleBlock(TEBase TE, int effectiveSide, int face)
     {
-        ItemStack itemStack = BlockProperties.getCoverItemStack(TE, effectiveSide);
+        ItemStack itemStack = BlockProperties.getCover(TE, effectiveSide);
         
         if (itemStack != null) {
 
@@ -125,8 +125,6 @@ public class ParticleHelper {
      */
     public static void spawnTileParticleAt(Entity entity, ItemStack itemStack)
     {
-        System.out.println("DEBUG: Attempted to spawn particle for block " + itemStack.getUnlocalizedName());
-        
         entity.worldObj.spawnParticle
         (
                 "blockcrack_" + Item.getIdFromItem(itemStack.getItem()) + "_" + itemStack.getItemDamage(),
@@ -141,7 +139,7 @@ public class ParticleHelper {
     /**
      * Produces block destruction particles at coordinates.
      */
-    public static void addDestroyEffect(World world, int x, int y, int z, Block block, int metadata, EffectRenderer effectRenderer)
+    public static void addDestroyEffect(World world, int x, int y, int z, ItemStack itemStack, EffectRenderer effectRenderer)
     {
         byte factor = 4;
         
@@ -155,7 +153,7 @@ public class ParticleHelper {
                     double dirY = y + (posY + 0.5D) / factor;
                     double dirZ = z + (posZ + 0.5D) / factor;
                     
-                    EntityDiggingFX particle = new EntityDiggingFX(world, dirX, dirY, dirZ, dirX - x - 0.5D, dirY - y - 0.5D, dirZ - z - 0.5D, block, metadata);
+                    EntityDiggingFX particle = new EntityDiggingFX(world, dirX, dirY, dirZ, dirX - x - 0.5D, dirY - y - 0.5D, dirZ - z - 0.5D, BlockProperties.toBlock(itemStack), itemStack.getItemDamage());
                     effectRenderer.addEffect(particle.applyColourMultiplier(x, y, z));
                 }
             }

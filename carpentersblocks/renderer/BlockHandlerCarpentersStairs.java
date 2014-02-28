@@ -2,6 +2,7 @@ package carpentersblocks.renderer;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraft.item.ItemStack;
 import carpentersblocks.block.BlockCarpentersStairs;
 import carpentersblocks.data.Stairs;
 import carpentersblocks.util.BlockProperties;
@@ -29,7 +30,7 @@ public class BlockHandlerCarpentersStairs extends BlockHandlerBase {
      */
     protected void renderCarpentersBlock(int x, int y, int z)
     {
-        Block block = BlockProperties.getCover(TE, 6);
+        ItemStack itemStack = BlockProperties.getCover(TE, 6);
         
         Stairs stairs = Stairs.stairsList[BlockProperties.getMetadata(TE)];
         StairsUtil stairsUtil = new StairsUtil();
@@ -44,7 +45,7 @@ public class BlockHandlerCarpentersStairs extends BlockHandlerBase {
             {
                 blockRef.setBlockBounds(bounds[0], bounds[1], bounds[2], bounds[3], bounds[4], bounds[5]);
                 renderBlocks.setRenderBounds(bounds[0], bounds[1], bounds[2], bounds[3], bounds[4], bounds[5]);
-                renderBlock(block, x, y, z);
+                renderBlock(itemStack, x, y, z);
             }
         }
     }
@@ -68,7 +69,7 @@ public class BlockHandlerCarpentersStairs extends BlockHandlerBase {
             {
                 for (int side = 0; side < 6; ++side)
                 {
-                    Block block = BlockProperties.getCover(TE, side);
+                    ItemStack itemStack = BlockProperties.getCover(TE, side);
                     
                     coverRendering = side;
                     
@@ -78,7 +79,7 @@ public class BlockHandlerCarpentersStairs extends BlockHandlerBase {
                         int[] renderOffset = getSideCoverRenderBounds(x, y, z, side);
                         
                         if (clipSideCoverBoundsBasedOnState(stairs.stairsID, box, side)) {
-                            renderBlock(block, renderOffset[0], renderOffset[1], renderOffset[2]);
+                            renderBlock(itemStack, renderOffset[0], renderOffset[1], renderOffset[2]);
                         }
                     }
                 }

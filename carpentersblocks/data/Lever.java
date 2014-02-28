@@ -67,7 +67,7 @@ public class Lever {
         
         if (
                 !world.isRemote &&
-                BlockProperties.getCover(TE, 6).getMaterial() != Material.cloth &&
+                BlockProperties.toBlock(BlockProperties.getCover(TE, 6)).getMaterial() != Material.cloth &&
                 playSound &&
                 getState(TE) != state
                 ) {

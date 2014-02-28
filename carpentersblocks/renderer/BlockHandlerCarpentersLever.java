@@ -3,6 +3,7 @@ package carpentersblocks.renderer;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -30,8 +31,10 @@ public class BlockHandlerCarpentersLever extends BlockHandlerBase {
     /**
      * Override to provide custom icons.
      */
-    protected IIcon getUniqueIcon(Block block, int side, IIcon icon)
+    protected IIcon getUniqueIcon(ItemStack itemStack, int side, IIcon icon)
     {
+        Block block = BlockProperties.toBlock(itemStack);
+        
         if (block instanceof BlockCoverable) {
             return IconRegistry.icon_solid;
         } else {
@@ -46,10 +49,8 @@ public class BlockHandlerCarpentersLever extends BlockHandlerBase {
     protected void renderCarpentersBlock(int x, int y, int z)
     {
         renderBlocks.renderAllFaces = true;
-        
-        Block block = BlockProperties.getCover(TE, 6);
-        
-        renderLever(block, x, y, z);
+
+        renderLever(BlockProperties.getCover(TE, 6), x, y, z);
         
         renderBlocks.renderAllFaces = false;
     }
@@ -57,7 +58,7 @@ public class BlockHandlerCarpentersLever extends BlockHandlerBase {
     /**
      * Renders lever.
      */
-    private void renderLever(Block block, int x, int y, int z)
+    private void renderLever(ItemStack itemStack, int x, int y, int z)
     {
         /* Set block bounds and render lever base. */
         
@@ -65,7 +66,7 @@ public class BlockHandlerCarpentersLever extends BlockHandlerBase {
         blockRef.setBlockBoundsBasedOnState(renderBlocks.blockAccess, x, y, z);
         
         renderBlocks.setRenderBoundsFromBlock(blockRef);
-        renderBlock(block, x, y, z);
+        renderBlock(itemStack, x, y, z);
         
         /* Render lever handle. */
         

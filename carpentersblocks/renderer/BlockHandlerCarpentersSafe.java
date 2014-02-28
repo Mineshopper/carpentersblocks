@@ -3,6 +3,7 @@ package carpentersblocks.renderer;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
 import carpentersblocks.data.Safe;
 import carpentersblocks.tileentity.TECarpentersSafe;
@@ -232,14 +233,14 @@ public class BlockHandlerCarpentersSafe extends BlockHandlerBase {
         
         /* Begin drawing everything but the capacity light strip. */
         
-        Block block = BlockProperties.getCover(TE, 6);
+        ItemStack itemStack = BlockProperties.getCover(TE, 6);
         ForgeDirection facing = Safe.getFacing(TE);
         
         for (int box = 0; box < numBoxes; ++box)
         {
             setBounds(renderBlocks, box);
             rotateBounds(renderBlocks, facing);
-            drawBox(block, x, y, z, box);
+            drawBox(itemStack, x, y, z, box);
         }
         
         /* Begin drawing the capacity light strip. */
@@ -267,7 +268,7 @@ public class BlockHandlerCarpentersSafe extends BlockHandlerBase {
             
             renderBlocks.setRenderBounds(0.125D, yMin, 0.9375D, 0.25D, yMax, 1.0D);
             rotateBounds(renderBlocks, facing);
-            renderBlock(Blocks.ice, x, y, z);
+            renderBlock(new ItemStack(Blocks.ice), x, y, z);
             lightingHelper.clearColorOverride();
             lightingHelper.clearBrightnessOverride();
             lightingHelper.clearLightnessOverride();
@@ -286,7 +287,7 @@ public class BlockHandlerCarpentersSafe extends BlockHandlerBase {
         renderBlocks.renderAllFaces = false;
     }
     
-    private void drawBox(Block block, int x, int y, int z, int box)
+    private void drawBox(ItemStack itemStack, int x, int y, int z, int box)
     {
         boolean isLocked = Safe.isLocked(TE);
         int type = getBlockType(box);
@@ -306,7 +307,7 @@ public class BlockHandlerCarpentersSafe extends BlockHandlerBase {
                 break;
             case BLOCKTYPE_HANDLE:
                 
-                renderBlock(Blocks.iron_block, x, y, z);
+                renderBlock(new ItemStack(Blocks.iron_block), x, y, z);
                 
                 break;
             case BLOCKTYPE_GREEN_LIGHT:
@@ -322,7 +323,7 @@ public class BlockHandlerCarpentersSafe extends BlockHandlerBase {
                     lightingHelper.setColorOverride(LIGHT_GREEN_ACTIVE);
                 }
                 
-                renderBlock(Blocks.ice, x, y, z);
+                renderBlock(new ItemStack(Blocks.ice), x, y, z);
                 lightingHelper.clearColorOverride();
                 lightingHelper.clearBrightnessOverride();
                 lightingHelper.clearLightnessOverride();
@@ -343,7 +344,7 @@ public class BlockHandlerCarpentersSafe extends BlockHandlerBase {
                     lightingHelper.setColorOverride(LIGHT_RED_INACTIVE);
                 }
                 
-                renderBlock(Blocks.ice, x, y, z);
+                renderBlock(new ItemStack(Blocks.ice), x, y, z);
                 lightingHelper.clearColorOverride();
                 lightingHelper.clearBrightnessOverride();
                 lightingHelper.clearLightnessOverride();
@@ -353,7 +354,7 @@ public class BlockHandlerCarpentersSafe extends BlockHandlerBase {
                 break;
             default:
                 
-                renderBlock(block, x, y, z);
+                renderBlock(itemStack, x, y, z);
                 
                 break;
         }
@@ -366,11 +367,11 @@ public class BlockHandlerCarpentersSafe extends BlockHandlerBase {
     /**
      * Returns metal block used for safe panel.
      */
-    private Block getMetalBlock()
+    private ItemStack getMetalBlock()
     {
         TECarpentersSafe TE_safe = (TECarpentersSafe) TE;
         
-        return TE_safe.hasUpgrade() ? Blocks.gold_block : Blocks.iron_block;
+        return TE_safe.hasUpgrade() ? new ItemStack(Blocks.gold_block) : new ItemStack(Blocks.iron_block);
     }
     
     /**

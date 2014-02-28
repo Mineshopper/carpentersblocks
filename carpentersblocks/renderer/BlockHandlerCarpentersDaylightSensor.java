@@ -3,6 +3,7 @@ package carpentersblocks.renderer;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemStack;
 import carpentersblocks.data.DaylightSensor;
 import carpentersblocks.renderer.helper.RenderHelper;
 import carpentersblocks.util.BlockProperties;
@@ -58,9 +59,7 @@ public class BlockHandlerCarpentersDaylightSensor extends BlockHandlerBase {
      * Renders block
      */
     protected void renderCarpentersBlock(int x, int y, int z)
-    {
-        Block block = BlockProperties.getCover(TE, 6);
-        
+    {        
         renderBlocks.renderAllFaces = true;
 
             suppressDyeColor = true;
@@ -69,11 +68,13 @@ public class BlockHandlerCarpentersDaylightSensor extends BlockHandlerBase {
             
             /* Render glass inlay */
             
-            renderBlocks.enableAO = getEnableAO(Blocks.glass);
+            ItemStack glass = new ItemStack(Blocks.glass);
+            
+            renderBlocks.enableAO = getEnableAO(glass);
             
             renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 0.25D, 1.0D);
-            lightingHelper.setLightingYPos(Blocks.glass, x, y, z);
-            lightingHelper.colorSide(Blocks.glass, x, y, z, 1, null);
+            lightingHelper.setLightingYPos(glass, x, y, z);
+            lightingHelper.colorSide(glass, x, y, z, 1, null);
             RenderHelper.renderFaceYPos(renderBlocks, x, y, z, IconRegistry.icon_daylight_sensor_glass_top);
             
             renderBlocks.enableAO = false;
@@ -81,7 +82,7 @@ public class BlockHandlerCarpentersDaylightSensor extends BlockHandlerBase {
             /* Render lapis inlay */
             
             renderBlocks.setRenderBounds(0.125D, 0.0625D, 0.125D, 0.875D, 0.1875D, 0.875D);
-            renderBlock(Blocks.lapis_block, x, y, z);
+            renderBlock(new ItemStack(Blocks.lapis_block), x, y, z);
             
             /* Render bordering redstone inlay */
             
@@ -94,14 +95,16 @@ public class BlockHandlerCarpentersDaylightSensor extends BlockHandlerBase {
                 lightingHelper.setLightnessOverride(0.5F);
             }
             
+            ItemStack redstone = new ItemStack(Blocks.redstone_block);
+            
             renderBlocks.setRenderBounds(0.0625D, 0.0625D, 0.0625D, 0.125D, 0.1875D, 0.9375D);
-            renderBlock(Blocks.redstone_block, x, y, z);
+            renderBlock(redstone, x, y, z);
             renderBlocks.setRenderBounds(0.875D, 0.0625D, 0.0625D, 0.9375D, 0.1875D, 0.9375D);
-            renderBlock(Blocks.redstone_block, x, y, z);
+            renderBlock(redstone, x, y, z);
             renderBlocks.setRenderBounds(0.0625D, 0.0625D, 0.0625D, 0.9375D, 0.1875D, 0.125D);
-            renderBlock(Blocks.redstone_block, x, y, z);
+            renderBlock(redstone, x, y, z);
             renderBlocks.setRenderBounds(0.0625D, 0.0625D, 0.875D, 0.9375D, 0.1875D, 0.9375D);
-            renderBlock(Blocks.redstone_block, x, y, z);
+            renderBlock(redstone, x, y, z);
             
             lightingHelper.clearLightnessOverride();
             lightingHelper.clearBrightnessOverride();
@@ -113,16 +116,18 @@ public class BlockHandlerCarpentersDaylightSensor extends BlockHandlerBase {
         
         /* Render coverBlock walls and bottom */
         
+        ItemStack itemStack = BlockProperties.getCover(TE, 6);
+            
         renderBlocks.setRenderBounds(0.0625D, 0.0D, 0.0625D, 0.9375D, 0.0625D, 0.9375D);
-        renderBlock(block, x, y, z);
+        renderBlock(itemStack, x, y, z);
         renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 0.0625D, 0.25D, 1.0D);
-        renderBlock(block, x, y, z);
+        renderBlock(itemStack, x, y, z);
         renderBlocks.setRenderBounds(0.9375D, 0.0D, 0.0D, 1.0D, 0.25D, 1.0D);
-        renderBlock(block, x, y, z);
+        renderBlock(itemStack, x, y, z);
         renderBlocks.setRenderBounds(0.0625D, 0.0D, 0.0D, 0.9375D, 0.25D, 0.0625D);
-        renderBlock(block, x, y, z);
+        renderBlock(itemStack, x, y, z);
         renderBlocks.setRenderBounds(0.0625D, 0.0D, 0.9375D, 0.9375D, 0.25D, 1.0D);
-        renderBlock(block, x, y, z);
+        renderBlock(itemStack, x, y, z);
         
         renderBlocks.renderAllFaces = false;
     }

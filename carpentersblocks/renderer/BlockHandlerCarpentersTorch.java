@@ -2,6 +2,7 @@ package carpentersblocks.renderer;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -27,8 +28,10 @@ public class BlockHandlerCarpentersTorch extends BlockHandlerBase {
     /**
      * Override to provide custom icons.
      */
-    protected IIcon getUniqueIcon(Block block, int side, IIcon icon)
+    protected IIcon getUniqueIcon(ItemStack itemStack, int side, IIcon icon)
     {
+        Block block = BlockProperties.toBlock(itemStack);
+        
         if (BlockProperties.hasCover(TE, 6)) {
             return block.getIcon(2, renderBlocks.blockAccess.getBlockMetadata(TE.xCoord, TE.yCoord, TE.zCoord));
         } else {
@@ -44,9 +47,8 @@ public class BlockHandlerCarpentersTorch extends BlockHandlerBase {
     {
         renderBlocks.renderAllFaces = true;
         disableAO = true;
-        
-        Block block = BlockProperties.getCover(TE, 6);
-        renderTorch(block, x, y, z);
+
+        renderTorch(BlockProperties.getCover(TE, 6), x, y, z);
         
         disableAO = false;
         renderBlocks.renderAllFaces = false;
@@ -64,10 +66,10 @@ public class BlockHandlerCarpentersTorch extends BlockHandlerBase {
     /**
      * Renders a torch at the given coordinates
      */
-    private void renderTorch(Block block, int x, int y, int z)
+    private void renderTorch(ItemStack itemStack, int x, int y, int z)
     {
         renderTorchHead(x, y, z);
-        renderTorchHandle(block, x, y, z);
+        renderTorchHandle(itemStack, x, y, z);
     }
     
     /**
@@ -116,7 +118,7 @@ public class BlockHandlerCarpentersTorch extends BlockHandlerBase {
     /**
      * Renders a torch handle at the given coordinates.
      */
-    private void renderTorchHandle(Block block, int x, int y, int z)
+    private void renderTorchHandle(ItemStack itemStack, int x, int y, int z)
     {
         float vecX = 0.0625F;
         float vecY = 0.5F;
@@ -137,23 +139,23 @@ public class BlockHandlerCarpentersTorch extends BlockHandlerBase {
         
         renderBlocks.setRenderBounds(0.1D, 0.1D, 0.1D, 0.9D, 0.9D, 0.9D);
         
-        lightingHelper.setLightingYNeg(block, x, y, z);
-        delegateSideRender(block, x, y, z, DOWN);
+        lightingHelper.setLightingYNeg(itemStack, x, y, z);
+        delegateSideRender(itemStack, x, y, z, DOWN);
         
-        lightingHelper.setLightingYPos(block, x, y, z);
-        delegateSideRender(block, x, y, z, UP);
+        lightingHelper.setLightingYPos(itemStack, x, y, z);
+        delegateSideRender(itemStack, x, y, z, UP);
         
-        lightingHelper.setLightingZNeg(block, x, y, z);
-        delegateSideRender(block, x, y, z, NORTH);
+        lightingHelper.setLightingZNeg(itemStack, x, y, z);
+        delegateSideRender(itemStack, x, y, z, NORTH);
         
-        lightingHelper.setLightingZPos(block, x, y, z);
-        delegateSideRender(block, x, y, z, SOUTH);
+        lightingHelper.setLightingZPos(itemStack, x, y, z);
+        delegateSideRender(itemStack, x, y, z, SOUTH);
         
-        lightingHelper.setLightingXNeg(block, x, y, z);
-        delegateSideRender(block, x, y, z, WEST);
+        lightingHelper.setLightingXNeg(itemStack, x, y, z);
+        delegateSideRender(itemStack, x, y, z, WEST);
         
-        lightingHelper.setLightingXPos(block, x, y, z);
-        delegateSideRender(block, x, y, z, EAST);
+        lightingHelper.setLightingXPos(itemStack, x, y, z);
+        delegateSideRender(itemStack, x, y, z, EAST);
     }
     
     private void setRotations(ForgeDirection facing, int x, int y, int z)

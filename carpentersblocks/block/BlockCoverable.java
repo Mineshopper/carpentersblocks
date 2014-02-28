@@ -95,9 +95,13 @@ public class BlockCoverable extends BlockContainer {
     {
         TEBase TE = (TEBase) world.getTileEntity(x, y, z);
         
-        int metadata = BlockProperties.hasCover(TE, 6) ? BlockProperties.getCoverMetadata(TE, 6) : EventHandler.BLOCKICON_BASE_ID;
+        ItemStack itemStack = BlockProperties.getCover(TE, 6);
         
-        return BlockProperties.getCover(TE, 6).getIcon(side, metadata);
+        if (!BlockProperties.hasCover(TE, 6)) {
+            itemStack.setItemDamage(EventHandler.BLOCKICON_BASE_ID);
+        }
+
+        return BlockProperties.toBlock(itemStack).getIcon(side, itemStack.getItemDamage());
     }
     
     /**
@@ -232,7 +236,7 @@ public class BlockCoverable extends BlockContainer {
                             BlockProperties.setPattern(TE, effectiveSide, 0);
                         }
                         
-                    } else if (BlockProperties.hasCover(TE, effectiveSide) && BlockProperties.getCover(TE, effectiveSide).isOpaqueCube()) {
+                    } else if (BlockProperties.hasCover(TE, effectiveSide) && BlockProperties.toBlock(BlockProperties.getCover(TE, effectiveSide)).isOpaqueCube()) {
                         
                         onChiselClick(TE, effectiveSide, true);
                         
@@ -294,14 +298,14 @@ public class BlockCoverable extends BlockContainer {
                                 }
                                 
                             } else if (FeatureRegistry.enableCovers && canCoverBase(TE, world, x, y, z) && BlockProperties.isCover(itemStack)) {
-                                
+
                                 Block block = Block.getBlockFromItem(itemStack.getItem());
                                 
                                 /* Will handle blocks that save directions using only x and y axes (pumpkin) */
                                 int metadata = block instanceof BlockDirectional ? MathHelper.floor_double(entityPlayer.rotationYaw * 4.0F / 360.0F + 2.5D) & 3 : itemStack.getItemDamage();
                                 
                                 /* Will handle blocks that save directions using all axes (logs, quartz) */
-                                if (BlockProperties.blockRotates(block)) {
+                                if (BlockProperties.blockRotates(itemStack)) {
                                     int facing = BlockProperties.getOppositeFacing(EventHandler.eventEntityPlayer);
                                     int side_interpolated = entityPlayer.rotationPitch < -45.0F ? 0 : entityPlayer.rotationPitch > 45 ? 1 : facing == 0 ? 3 : facing == 1 ? 4 : facing == 2 ? 2 : 5;
                                     metadata = block.onBlockPlaced(world, x, y, z, side_interpolated, hitX, hitY, hitZ, metadata);
@@ -439,7 +443,7 @@ public class BlockCoverable extends BlockContainer {
                          */
                         if (!canCoverSide(TE, world, x, y, z, side))
                         {
-                            BlockProperties.clearAttributes(TE, side);
+                            BlockProperties.ejectAttributes(TE, side);
                             return;
                         }
                         
@@ -464,32 +468,32 @@ public class BlockCoverable extends BlockContainer {
                                 switch (adj_side) {
                                     case DOWN:
                                         if (adjBlock.getBlockBoundsMinY() < sideCoverDepth) {
-                                            BlockProperties.clearAttributes(TE, side);
+                                            BlockProperties.ejectAttributes(TE, side);
                                         }
                                         break;
                                     case UP:
                                         if (adjBlock.getBlockBoundsMaxY() > 1.0F - sideCoverDepth) {
-                                            BlockProperties.clearAttributes(TE, side);
+                                            BlockProperties.ejectAttributes(TE, side);
                                         }
                                         break;
                                     case NORTH:
                                         if (adjBlock.getBlockBoundsMinZ() < sideCoverDepth) {
-                                            BlockProperties.clearAttributes(TE, side);
+                                            BlockProperties.ejectAttributes(TE, side);
                                         }
                                         break;
                                     case SOUTH:
                                         if (adjBlock.getBlockBoundsMaxZ() > 1.0F - sideCoverDepth) {
-                                            BlockProperties.clearAttributes(TE, side);
+                                            BlockProperties.ejectAttributes(TE, side);
                                         }
                                         break;
                                     case WEST:
                                         if (adjBlock.getBlockBoundsMinX() < sideCoverDepth) {
-                                            BlockProperties.clearAttributes(TE, side);
+                                            BlockProperties.ejectAttributes(TE, side);
                                         }
                                         break;
                                     case EAST:
                                         if (adjBlock.getBlockBoundsMaxX() > 1.0F - sideCoverDepth) {
-                                            BlockProperties.clearAttributes(TE, side);
+                                            BlockProperties.ejectAttributes(TE, side);
                                         }
                                         break;
                                     default: {}
@@ -517,8 +521,8 @@ public class BlockCoverable extends BlockContainer {
             if (BlockProperties.hasCover(TE, 6)) {
                 
                 int effectiveSide = ForgeDirection.OPPOSITES[side];
-                int power = BlockProperties.getCover(world, x, y, z, 6).isProvidingWeakPower(world, x, y, z, side);
-                int power_side = BlockProperties.hasCover(TE, effectiveSide) ? BlockProperties.getCover(TE, effectiveSide).isProvidingWeakPower(world, x, y, z, side) : 0;
+                int power = BlockProperties.toBlock(BlockProperties.getCover(TE, 6)).isProvidingWeakPower(world, x, y, z, side);
+                int power_side = BlockProperties.hasCover(TE, effectiveSide) ? BlockProperties.toBlock(BlockProperties.getCover(TE, effectiveSide)).isProvidingWeakPower(world, x, y, z, side) : 0;
                 
                 return power_side > power ? power_side : power;
                 
@@ -543,8 +547,8 @@ public class BlockCoverable extends BlockContainer {
             if (BlockProperties.hasCover(TE, 6)) {
                 
                 int effectiveSide = ForgeDirection.OPPOSITES[side];
-                int power = BlockProperties.getCover(world, x, y, z, 6).isProvidingStrongPower(world, x, y, z, side);
-                int power_side = BlockProperties.hasCover(TE, effectiveSide) ? BlockProperties.getCover(TE, effectiveSide).isProvidingStrongPower(world, x, y, z, side) : 0;
+                int power = BlockProperties.toBlock(BlockProperties.getCover(TE, 6)).isProvidingStrongPower(world, x, y, z, side);
+                int power_side = BlockProperties.hasCover(TE, effectiveSide) ? BlockProperties.toBlock(BlockProperties.getCover(TE, effectiveSide)).isProvidingStrongPower(world, x, y, z, side) : 0;
                 
                 return power_side > power ? power_side : power;
                 
@@ -606,7 +610,7 @@ public class BlockCoverable extends BlockContainer {
         
         ItemStack itemStack = ParticleHelper.getParticleBlock(TE, effectiveSide, target.sideHit);
         
-        Block block = BlockProperties.getBlockFromItemStack(itemStack);
+        Block block = BlockProperties.toBlock(itemStack);
 
         int metadata = block instanceof BlockCoverable ? EventHandler.BLOCKICON_BASE_ID : itemStack.getItemDamage();
         
@@ -666,8 +670,13 @@ public class BlockCoverable extends BlockContainer {
                 
                 if (!suppressDestroyBlock(entityPlayer)) {
                     
-                    metadata = BlockProperties.hasCover(TE, 6) ? BlockProperties.getCoverMetadata(TE, 6) : EventHandler.BLOCKICON_BASE_ID;
-                    ParticleHelper.addDestroyEffect(world, x, y, z, BlockProperties.getCover(TE, 6), metadata, effectRenderer);
+                    ItemStack itemStack = BlockProperties.getCover(TE, 6);
+
+                    if (!BlockProperties.hasCover(TE, 6)) {
+                        itemStack.setItemDamage(EventHandler.BLOCKICON_BASE_ID);
+                    }
+                    
+                    ParticleHelper.addDestroyEffect(world, x, y, z, itemStack, effectRenderer);
                     
                 } else {
                     
@@ -699,7 +708,7 @@ public class BlockCoverable extends BlockContainer {
                 {
                     if (BlockProperties.hasCover(TE, side))
                     {
-                        int tempLightOutput = BlockProperties.getCover(TE, side).getLightValue();
+                        int tempLightOutput = BlockProperties.toBlock(BlockProperties.getCover(TE, side)).getLightValue();
                         
                         if (tempLightOutput > lightOutput) {
                             lightOutput = tempLightOutput;
@@ -726,7 +735,7 @@ public class BlockCoverable extends BlockContainer {
         
         if (TE != null) {
             if (BlockProperties.hasCover(TE, 6)) {
-                return BlockProperties.getCover(world, x, y, z, 6).getBlockHardness(world,  x,  y,  z);
+                return BlockProperties.toBlock(BlockProperties.getCover(TE, 6)).getBlockHardness(world, x, y, z);
             }
         }
         
@@ -739,7 +748,13 @@ public class BlockCoverable extends BlockContainer {
      */
     public int getFlammability(IBlockAccess world, int x, int y, int z, ForgeDirection face)
     {
-        return Blocks.fire.getFlammability(BlockProperties.getCover(world, x, y, z, 6));
+        TEBase TE = getTileEntity(world, x, y, z);
+        
+        if (TE != null) {
+            return Blocks.fire.getFlammability(BlockProperties.toBlock(BlockProperties.getCover(TE, 6)));
+        }
+        
+        return super.getFlammability(world, x, y, z, face);
     }
     
     @Override
@@ -748,7 +763,13 @@ public class BlockCoverable extends BlockContainer {
      */
     public int getFireSpreadSpeed(IBlockAccess world, int x, int y, int z, ForgeDirection face)
     {
-        return Blocks.fire.getEncouragement(BlockProperties.getCover(world, x, y, z, 6));
+        TEBase TE = getTileEntity(world, x, y, z);
+        
+        if (TE != null) {
+            return Blocks.fire.getEncouragement(BlockProperties.toBlock(BlockProperties.getCover(TE, 6)));
+        }
+        
+        return super.getFireSpreadSpeed(world, x, y, z, face);
     }
     
     @Override
@@ -763,7 +784,7 @@ public class BlockCoverable extends BlockContainer {
         
         if (TE != null) {
             if (BlockProperties.hasCover(TE, 6)) {
-                return BlockProperties.getCover(TE, 6).isFireSource(world, x, y, z, side);
+                return BlockProperties.toBlock(BlockProperties.getCover(TE, 6)).isFireSource(world, x, y, z, side);
             }
         }
         
@@ -780,7 +801,7 @@ public class BlockCoverable extends BlockContainer {
         
         if (TE != null) {
             if (BlockProperties.hasCover(TE, 6)) {
-                return BlockProperties.getCover(world, x, y, z, 6).getExplosionResistance(entity);
+                return BlockProperties.toBlock(BlockProperties.getCover(TE, 6)).getExplosionResistance(entity);
             }
         }
         
@@ -797,11 +818,11 @@ public class BlockCoverable extends BlockContainer {
         
         if (TE != null) {
             if (BlockProperties.hasCover(TE, 6)) {
-                return BlockProperties.getCover(world, x, y, z, 6).isWood(world,  x,  y,  z);
+                return BlockProperties.toBlock(BlockProperties.getCover(TE, 6)).isWood(world,  x,  y,  z);
             }
         }
         
-        return false;
+        return super.isWood(world, x, y, z);
     }
     
     /**
@@ -816,7 +837,7 @@ public class BlockCoverable extends BlockContainer {
             
             if (BlockProperties.hasCover(TE, 6)) {
                 
-                Block block = BlockProperties.getCover(TE, 6);
+                Block block = BlockProperties.toBlock(BlockProperties.getCover(TE, 6));
                 
                 if (entity instanceof EntityWither) {
                     return !block.equals(Blocks.bedrock) && !block.equals(Blocks.end_portal) && !block.equals(Blocks.end_portal_frame) && !block.equals(Blocks.command_block);
@@ -828,7 +849,7 @@ public class BlockCoverable extends BlockContainer {
             
         }
         
-        return true;
+        return super.canEntityDestroy(world, x, y, z, entity);
     }
     
     @Override
@@ -841,7 +862,7 @@ public class BlockCoverable extends BlockContainer {
         
         if (TE != null) {
             if (BlockProperties.hasCover(TE, 6)) {
-                BlockProperties.getCover(TE, 6).onEntityCollidedWithBlock(world, x, y, z, entity);
+                BlockProperties.toBlock(BlockProperties.getCover(TE, 6)).onEntityCollidedWithBlock(world, x, y, z, entity);
             }
         }
     }
@@ -856,7 +877,7 @@ public class BlockCoverable extends BlockContainer {
         
         if (!world.isRemote && TE != null) {
             for (int side = 0; side < 7; ++side) {
-                BlockProperties.clearAttributes(TE, side);
+                BlockProperties.ejectAttributes(TE, side);
             }
         }
         
@@ -875,7 +896,7 @@ public class BlockCoverable extends BlockContainer {
         if (TE != null) {
             
             if (BlockProperties.hasCover(TE, 6)) {
-                BlockProperties.getCover(world, x, y, z, 6).randomDisplayTick(world, x, y, z, random);
+                BlockProperties.toBlock(BlockProperties.getCover(TE, 6)).randomDisplayTick(world, x, y, z, random);
             }
             
             if (BlockProperties.hasOverlay(TE, 6)) {
@@ -923,7 +944,7 @@ public class BlockCoverable extends BlockContainer {
             for (int side = 1; side < 6; side += 5) {
                 
                 if (BlockProperties.hasCover(TE, side)) {
-                    blocks.add(BlockProperties.getCover(TE, side));
+                    blocks.add(BlockProperties.toBlock(BlockProperties.getCover(TE, side)));
                 }
                 
                 if (BlockProperties.hasOverlay(TE, side)) {
@@ -961,9 +982,9 @@ public class BlockCoverable extends BlockContainer {
                 case Beach:
                     boolean isBeach = blocks.contains(Blocks.grass) || blocks.contains(Blocks.dirt) || blocks.contains(Blocks.sand);
                     boolean hasWater = world.getBlock(x - 1, y, z    ).getMaterial() == Material.water ||
-                            world.getBlock(x + 1, y, z    ).getMaterial() == Material.water ||
-                            world.getBlock(x,     y, z - 1).getMaterial() == Material.water ||
-                            world.getBlock(x,     y, z + 1).getMaterial() == Material.water;
+                                       world.getBlock(x + 1, y, z    ).getMaterial() == Material.water ||
+                                       world.getBlock(x,     y, z - 1).getMaterial() == Material.water ||
+                                       world.getBlock(x,     y, z + 1).getMaterial() == Material.water;
                     return isBeach && hasWater;
                 default:
                     break;
@@ -981,7 +1002,7 @@ public class BlockCoverable extends BlockContainer {
         TEBase TE = getTileEntity(world, x, y, z);
         
         if (TE != null) {
-            return !BlockProperties.hasCover(TE, 6) || BlockProperties.getCover(TE, 6).isOpaqueCube();
+            return !BlockProperties.hasCover(TE, 6) || BlockProperties.toBlock(BlockProperties.getCover(TE, 6)).isOpaqueCube();
         } else {
             return false;
         }
@@ -1014,7 +1035,7 @@ public class BlockCoverable extends BlockContainer {
         TEBase TE = getTileEntity(world, x, y, z);
         
         if (TE != null) {
-            return ForgeHooks.blockStrength(BlockProperties.getCover(TE, 6), entityPlayer, world, x, y, z);
+            return ForgeHooks.blockStrength(BlockProperties.toBlock(BlockProperties.getCover(TE, 6)), entityPlayer, world, x, y, z);
         } else {
             return super.getPlayerRelativeBlockHardness(entityPlayer, world, x, y, z);
         }
@@ -1077,7 +1098,8 @@ public class BlockCoverable extends BlockContainer {
      */
     public final int getRenderBlockPass()
     {
-        return 1;
+        // TODO: Change to 1 when alpha renderpass bugs are sorted out.
+        return 0;
     }
     
     @Override

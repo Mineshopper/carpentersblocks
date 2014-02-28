@@ -3,6 +3,7 @@ package carpentersblocks.renderer;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import carpentersblocks.block.BlockCoverable;
@@ -29,8 +30,10 @@ public class BlockHandlerCarpentersFlowerPot extends BlockHandlerBase {
     /**
      * Override to provide custom icons.
      */
-    protected IIcon getUniqueIcon(Block block, int side, IIcon icon)
+    protected IIcon getUniqueIcon(ItemStack itemStack, int side, IIcon icon)
     {
+        Block block = BlockProperties.toBlock(itemStack);
+        
         if (block instanceof BlockCoverable) {
             return IconRegistry.icon_solid;
         } else if (block.equals(Blocks.glass)) {
@@ -50,7 +53,7 @@ public class BlockHandlerCarpentersFlowerPot extends BlockHandlerBase {
         
         renderBlocks.renderAllFaces = true;
         
-        Block block = BlockProperties.getCover(TE, 6);
+        ItemStack itemStack = BlockProperties.getCover(TE, 6);
         
         if (FlowerPot.getDesign(TE) > 0)
         {
@@ -59,7 +62,7 @@ public class BlockHandlerCarpentersFlowerPot extends BlockHandlerBase {
             suppressDyeColor = true;
         }
         
-        renderPot(block, x, y, z);
+        renderPot(itemStack, x, y, z);
         
         suppressOverlay = true;
         suppressPattern = true;
@@ -83,38 +86,37 @@ public class BlockHandlerCarpentersFlowerPot extends BlockHandlerBase {
     /**
      * Renders flower pot
      */
-    public boolean renderPot(Block block, int x, int y, int z)
+    public boolean renderPot(ItemStack itemStack, int x, int y, int z)
     {
         if (FlowerPot.getDesign(TE) > 0) {
             IIcon designIcon = IconRegistry.icon_flower_pot_design[FlowerPot.getDesign(TE)];
             setIconOverride(6, designIcon);
-            block = srcBlock;
         }
         
         /* BOTTOM BOX */
         
         renderBlocks.setRenderBounds(0.375D, 0.0D, 0.375D, 0.625D, 0.0625D, 0.625D);
-        renderBlock(block, x, y, z);
+        renderBlock(itemStack, x, y, z);
         
         /* NORTH BOX */
         
         renderBlocks.setRenderBounds(0.375D, 0.0D, 0.3125D, 0.625D, 0.375D, 0.375D);
-        renderBlock(block, x, y, z);
+        renderBlock(itemStack, x, y, z);
         
         /* SOUTH BOX */
         
         renderBlocks.setRenderBounds(0.375D, 0.0D, 0.625D, 0.625D, 0.375D, 0.6875D);
-        renderBlock(block, x, y, z);
+        renderBlock(itemStack, x, y, z);
         
         /* WEST BOX */
         
         renderBlocks.setRenderBounds(0.3125D, 0.0D, 0.3125D, 0.375D, 0.375D, 0.6875D);
-        renderBlock(block, x, y, z);
+        renderBlock(itemStack, x, y, z);
         
         /* EAST BOX */
         
         renderBlocks.setRenderBounds(0.625D, 0.0D, 0.3125D, 0.6875D, 0.375D, 0.6875D);
-        renderBlock(block, x, y, z);
+        renderBlock(itemStack, x, y, z);
         
         clearIconOverride(6);
         
@@ -124,14 +126,10 @@ public class BlockHandlerCarpentersFlowerPot extends BlockHandlerBase {
     /**
      * Renders soil
      */
-    public boolean renderSoil(Block block, int x, int y, int z)
+    public boolean renderSoil(ItemStack itemStack, int x, int y, int z)
     {
-        setMetadataOverride(FlowerPotProperties.getSoilMetadata(TE));
-        
         renderBlocks.setRenderBounds(0.375D, 0.0625D, 0.375D, 0.625D, 0.25D, 0.625D);
-        renderBlock(block, x, y, z);
-        
-        clearMetadataOverride();
+        renderBlock(itemStack, x, y, z);
         
         return true;
     }
@@ -139,40 +137,34 @@ public class BlockHandlerCarpentersFlowerPot extends BlockHandlerBase {
     /**
      * Renders plant
      */
-    public boolean renderPlant(Block block, int x, int y, int z)
+    public boolean renderPlant(ItemStack itemStack, int x, int y, int z)
     {
         Tessellator tessellator = Tessellator.instance;
         tessellator.addTranslation(0.0F, 0.25F, 0.0F);
-        
-        int metadata = FlowerPotProperties.getPlantMetadata(TE);
-        
-        setMetadataOverride(metadata);
-        
+
         switch (FlowerPotHandler.getPlantProfile(TE)) {
             case REDUCED_SCALE_YP:
-                RenderHelperFlowerPot.renderPlantCrossedSquares(renderBlocks, block, metadata, x, y, z, 0.75F, false);
+                RenderHelperFlowerPot.renderPlantCrossedSquares(renderBlocks, itemStack, x, y, z, 0.75F, false);
                 break;
             case REDUCED_SCALE_YN:
-                RenderHelperFlowerPot.renderPlantCrossedSquares(renderBlocks, block, metadata, x, y, z, 0.75F, true);
+                RenderHelperFlowerPot.renderPlantCrossedSquares(renderBlocks, itemStack, x, y, z, 0.75F, true);
                 break;
             case TRUE_SCALE:
-                RenderHelperFlowerPot.renderPlantCrossedSquares(renderBlocks, block, metadata, x, y, z, 1.0F, false);
+                RenderHelperFlowerPot.renderPlantCrossedSquares(renderBlocks, itemStack, x, y, z, 1.0F, false);
                 break;
             case THIN_YP:
-                RenderHelperFlowerPot.renderPlantThinCrossedSquares(renderBlocks, block, metadata, x, y, z, false);
+                RenderHelperFlowerPot.renderPlantThinCrossedSquares(renderBlocks, itemStack, x, y, z, false);
                 break;
             case THIN_YN:
-                RenderHelperFlowerPot.renderPlantThinCrossedSquares(renderBlocks, block, metadata, x, y, z, true);
+                RenderHelperFlowerPot.renderPlantThinCrossedSquares(renderBlocks, itemStack, x, y, z, true);
                 break;
             case CACTUS:
-                RenderHelperFlowerPot.drawPlantCactus(renderBlocks, block, x, y, z);
+                RenderHelperFlowerPot.drawPlantCactus(renderBlocks, itemStack, x, y, z);
                 break;
             case LEAVES:
-                drawStackedBlocks(block, x, y, z);
+                drawStackedBlocks(itemStack, x, y, z);
                 break;
         }
-        
-        clearMetadataOverride();
         
         tessellator.addTranslation(0.0F, -0.25F, 0.0F);
         
@@ -182,19 +174,19 @@ public class BlockHandlerCarpentersFlowerPot extends BlockHandlerBase {
     /**
      * Draws stacked blocks for leaves or mod cacti.
      */
-    private void drawStackedBlocks(Block block, int x, int y, int z)
+    private void drawStackedBlocks(ItemStack itemStack, int x, int y, int z)
     {
         World world = TE.getWorldObj();
-        
-        world.setBlockMetadataWithNotify(x, y, z, FlowerPotProperties.getPlantMetadata(TE), 4);
+
+        world.setBlockMetadataWithNotify(x, y, z, itemStack.getItemDamage(), 4);
         renderBlocks.setRenderBounds(0.375F, 0.0D, 0.375F, 0.625F, 0.25D, 0.625F);
-        renderBlock(block, x, y, z);
+        renderBlock(itemStack, x, y, z);
         renderBlocks.setRenderBounds(0.375F, 0.25D, 0.375F, 0.625F, 0.50D, 0.625F);
-        renderBlock(block, x, y, z);
+        renderBlock(itemStack, x, y, z);
         renderBlocks.setRenderBounds(0.375F, 0.50D, 0.375F, 0.625F, 0.75D, 0.625F);
-        renderBlock(block, x, y, z);
+        renderBlock(itemStack, x, y, z);
         renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
-        world.setBlockMetadataWithNotify(x, y, z, BlockProperties.getCoverMetadata(TE, 6), 4);
+        world.setBlockMetadataWithNotify(x, y, z, BlockProperties.getCover(TE, 6).getItemDamage(), 4);
     }
     
 }

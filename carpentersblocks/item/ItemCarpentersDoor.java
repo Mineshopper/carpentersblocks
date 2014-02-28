@@ -54,7 +54,7 @@ public class ItemCarpentersDoor extends Item {
             {
                 int facing = MathHelper.floor_double((entityPlayer.rotationYaw + 180.0F) * 4.0F / 360.0F - 0.5D) & 3;
                 
-                BlockProperties.playBlockSound(world, BlockRegistry.blockCarpentersDoor, x, y, z);
+                BlockProperties.playBlockSound(world, new ItemStack(BlockRegistry.blockCarpentersDoor), x, y, z);
                 
                 /* Create bottom door piece. */
                 

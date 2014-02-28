@@ -1,8 +1,8 @@
 package carpentersblocks.renderer;
 
-import net.minecraft.block.Block;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import carpentersblocks.block.BlockCarpentersDoor;
 import carpentersblocks.data.Door;
@@ -31,27 +31,27 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
     {
         renderBlocks.renderAllFaces = true;
         
-        Block block = BlockProperties.getCover(TE, 6);
+        ItemStack itemStack = BlockProperties.getCover(TE, 6);
         int type = Door.getType(TE);
         
         switch (type) {
             case Door.TYPE_GLASS_TOP:
-                renderGlassTopDoor(block, x, y, z);
+                renderGlassTopDoor(itemStack, x, y, z);
                 break;
             case Door.TYPE_GLASS_TALL:
-                renderTallDoor(block, x, y, z);
+                renderTallDoor(itemStack, x, y, z);
                 break;
             case Door.TYPE_PANELS:
-                renderPanelsDoor(block, x, y, z);
+                renderPanelsDoor(itemStack, x, y, z);
                 break;
             case Door.TYPE_SCREEN_TALL:
-                renderTallDoor(block, x, y, z);
+                renderTallDoor(itemStack, x, y, z);
                 break;
             case Door.TYPE_FRENCH_GLASS:
-                renderFrenchGlassDoor(block, x, y, z);
+                renderFrenchGlassDoor(itemStack, x, y, z);
                 break;
             case Door.TYPE_HIDDEN:
-                renderHiddenDoor(block, x, y, z);
+                renderHiddenDoor(itemStack, x, y, z);
                 break;
         }
         
@@ -61,7 +61,7 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
     /**
      * Renders a French glass door at the given coordinates
      */
-    private void renderFrenchGlassDoor(Block block, int x, int y, int z)
+    private void renderFrenchGlassDoor(ItemStack itemStack, int x, int y, int z)
     {
         int hinge = Door.getHinge(TE);
         int facing = Door.getFacing(TE);
@@ -213,9 +213,9 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
         /* Draw vertical pieces. */
         
         renderBlocks.setRenderBounds(x_low, y_low, z_low, x_high_offset, y_high, z_high_offset);
-        renderBlock(block, x, y, z);
+        renderBlock(itemStack, x, y, z);
         renderBlocks.setRenderBounds(x_low_offset, y_low, z_low_offset, x_high, y_high, z_high);
-        renderBlock(block, x, y, z);
+        renderBlock(itemStack, x, y, z);
         
         float temp_x_low = x_low;
         float temp_x_high = x_high;
@@ -237,14 +237,14 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
         // Two center pieces
         if (isBottom) {
             renderBlocks.setRenderBounds(temp_x_low, 0.1875F, temp_z_low, temp_x_high, 0.5F, temp_z_high);
-            renderBlock(block, x, y, z);
+            renderBlock(itemStack, x, y, z);
             renderBlocks.setRenderBounds(temp_x_low, 0.625F, temp_z_low, temp_x_high, 0.9375F, temp_z_high);
-            renderBlock(block, x, y, z);
+            renderBlock(itemStack, x, y, z);
         } else {
             renderBlocks.setRenderBounds(temp_x_low, 0.0625F, temp_z_low, temp_x_high, 0.375F, temp_z_high);
-            renderBlock(block, x, y, z);
+            renderBlock(itemStack, x, y, z);
             renderBlocks.setRenderBounds(temp_x_low, 0.5F, temp_z_low, temp_x_high, 0.8125F, temp_z_high);
-            renderBlock(block, x, y, z);
+            renderBlock(itemStack, x, y, z);
         }
         
         temp_x_low = x_low;
@@ -265,7 +265,7 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
         if (isBottom) {
             
             renderBlocks.setRenderBounds(temp_x_low, 0.0F, temp_z_low, temp_x_high, 0.1875F, temp_z_high);
-            renderBlock(block, x, y, z);
+            renderBlock(itemStack, x, y, z);
             
             if (path_on_x) {
                 temp_x_low += 0.0625F;
@@ -276,14 +276,14 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
             }
             
             renderBlocks.setRenderBounds(temp_x_low, 0.5F, temp_z_low, temp_x_high, 0.625F, temp_z_high);
-            renderBlock(block, x, y, z);
+            renderBlock(itemStack, x, y, z);
             renderBlocks.setRenderBounds(temp_x_low, 0.9375F, temp_z_low, temp_x_high, 1.0F, temp_z_high);
-            renderBlock(block, x, y, z);
+            renderBlock(itemStack, x, y, z);
             
         } else {
             
             renderBlocks.setRenderBounds(temp_x_low, 0.8125F, temp_z_low, temp_x_high, 1.0F, temp_z_high);
-            renderBlock(block, x, y, z);
+            renderBlock(itemStack, x, y, z);
             
             if (path_on_x) {
                 temp_x_low += 0.0625F;
@@ -294,9 +294,9 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
             }
             
             renderBlocks.setRenderBounds(temp_x_low, 0.0F, temp_z_low, temp_x_high, 0.0625F, temp_z_high);
-            renderBlock(block, x, y, z);
+            renderBlock(itemStack, x, y, z);
             renderBlocks.setRenderBounds(temp_x_low, 0.375F, temp_z_low, temp_x_high, 0.5F, temp_z_high);
-            renderBlock(block, x, y, z);
+            renderBlock(itemStack, x, y, z);
             
         }
         
@@ -312,17 +312,19 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
         VertexHelper.setOffset(-(1 - path_offset));
         Tessellator.instance.setBrightness(Blocks.glass.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y, z));
         
+        ItemStack glass = new ItemStack(Blocks.glass);
+        
         if (path_on_x) {
             
             renderBlocks.setRenderBounds(0.0F, isBottom ? 0.1875F : 0.0F, 0.1875F, 1.0F, isBottom ? 1.0F : 0.8125F, 0.8125F);
             
-            lightingHelper.setLightingXNeg(Blocks.glass, x, y, z);
-            lightingHelper.colorSide(Blocks.glass, x, y, z, 4, null);
+            lightingHelper.setLightingXNeg(glass, x, y, z);
+            lightingHelper.colorSide(glass, x, y, z, 4, null);
             RenderHelper.renderFaceXNeg(renderBlocks, x, y, z, icon);
             
             //if (!renderAlphaOverride) {
-                lightingHelper.setLightingXPos(Blocks.glass, x, y, z);
-                lightingHelper.colorSide(Blocks.glass, x, y, z, 5, null);
+                lightingHelper.setLightingXPos(glass, x, y, z);
+                lightingHelper.colorSide(glass, x, y, z, 5, null);
                 VertexHelper.setOffset(-path_offset);
                 RenderHelper.renderFaceXPos(renderBlocks, x, y, z, icon);
             //}
@@ -331,13 +333,13 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
             
             renderBlocks.setRenderBounds(0.1875F, isBottom ? 0.1875F : 0.0F, 0.0F, 0.8125F, isBottom ? 1.0F : 0.8125F, 1.0F);
             
-            lightingHelper.setLightingZNeg(Blocks.glass, x, y, z);
-            lightingHelper.colorSide(Blocks.glass, x, y, z, 2, null);
+            lightingHelper.setLightingZNeg(glass, x, y, z);
+            lightingHelper.colorSide(glass, x, y, z, 2, null);
             RenderHelper.renderFaceZNeg(renderBlocks, x, y, z, icon);
             
             //if (!renderAlphaOverride) {
-                lightingHelper.setLightingZPos(Blocks.glass, x, y, z);
-                lightingHelper.colorSide(Blocks.glass, x, y, z, 3, null);
+                lightingHelper.setLightingZPos(glass, x, y, z);
+                lightingHelper.colorSide(glass, x, y, z, 3, null);
                 VertexHelper.setOffset(-path_offset);
                 RenderHelper.renderFaceZPos(renderBlocks, x, y, z, icon);
             //}
@@ -347,13 +349,13 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
         VertexHelper.clearOffset();
         suppressDyeColor = false;
         
-        renderHandle(Blocks.iron_block, x, y, z, true, true);
+        renderHandle(new ItemStack(Blocks.iron_block), x, y, z, true, true);
     }
     
     /**
      * Renders a glass top door at the given coordinates
      */
-    private void renderGlassTopDoor(Block block, int x, int y, int z)
+    private void renderGlassTopDoor(ItemStack itemStack, int x, int y, int z)
     {
         int hinge = Door.getHinge(TE);
         boolean isOpen = Door.getState(TE) == Door.STATE_OPEN;
@@ -502,9 +504,9 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
         }
         
         renderBlocks.setRenderBounds(x_low, y_low, z_low, x_high_offset, y_high, z_high_offset);
-        renderBlock(block, x, y, z);
+        renderBlock(itemStack, x, y, z);
         renderBlocks.setRenderBounds(x_low_offset, y_low, z_low_offset, x_high, y_high, z_high);
-        renderBlock(block, x, y, z);
+        renderBlock(itemStack, x, y, z);
         
         float temp_x_low = x_low;
         float temp_x_high = x_high;
@@ -528,7 +530,7 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
             }
             
             renderBlocks.setRenderBounds(temp_x_low, 0.1875F, temp_z_low, temp_x_high, 1.0F, temp_z_high);
-            renderBlock(block, x, y, z);
+            renderBlock(itemStack, x, y, z);
             
             temp_x_low = x_low;
             temp_x_high = x_high;
@@ -548,12 +550,12 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
         
         if (isBottom) {
             renderBlocks.setRenderBounds(temp_x_low, 0.0F, temp_z_low, temp_x_high, 0.1875F, temp_z_high);
-            renderBlock(block, x, y, z);
+            renderBlock(itemStack, x, y, z);
         } else {
             renderBlocks.setRenderBounds(temp_x_low, 0.8125F, temp_z_low, temp_x_high, 1.0F, temp_z_high);
-            renderBlock(block, x, y, z);
+            renderBlock(itemStack, x, y, z);
             renderBlocks.setRenderBounds(temp_x_low, 0.0F, temp_z_low, temp_x_high, 0.1875F, temp_z_high);
-            renderBlock(block, x, y, z);
+            renderBlock(itemStack, x, y, z);
         }
         
         temp_x_low = x_low;
@@ -574,7 +576,7 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
             }
             
             renderBlocks.setRenderBounds(temp_x_low, 0.3125F, temp_z_low, temp_x_high, 0.875F, temp_z_high);
-            renderBlock(block, x, y, z);
+            renderBlock(itemStack, x, y, z);
         }
         
         if (!isBottom) {
@@ -582,17 +584,19 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
             suppressDyeColor = true;
             VertexHelper.setOffset(-(1 - path_offset));
             
+            ItemStack glass = new ItemStack(Blocks.glass);
+            
             if (path_on_x) {
                 
                 renderBlocks.setRenderBounds(0.0F, 0.1875F, 0.1875F, 1.0F, 0.8125F, 0.8125F);
                 
-                lightingHelper.setLightingXNeg(Blocks.glass, x, y, z);
-                lightingHelper.colorSide(Blocks.glass, x, y, z, 4, null);
+                lightingHelper.setLightingXNeg(glass, x, y, z);
+                lightingHelper.colorSide(glass, x, y, z, 4, null);
                 RenderHelper.renderFaceXNeg(renderBlocks, x, y, z, IconRegistry.icon_door_glass_top);
                 
                 //if (!renderAlphaOverride) {
-                    lightingHelper.setLightingXPos(Blocks.glass, x, y, z);
-                    lightingHelper.colorSide(Blocks.glass, x, y, z, 5, null);
+                    lightingHelper.setLightingXPos(glass, x, y, z);
+                    lightingHelper.colorSide(glass, x, y, z, 5, null);
                     VertexHelper.setOffset(-path_offset);
                     RenderHelper.renderFaceXPos(renderBlocks, x, y, z, IconRegistry.icon_door_glass_top);
                 //}
@@ -601,13 +605,13 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
                 
                 renderBlocks.setRenderBounds(0.1875F, 0.1875F, 0.0F, 0.8125F, 0.8125F, 1.0F);
                 
-                lightingHelper.setLightingZNeg(Blocks.glass, x, y, z);
-                lightingHelper.colorSide(Blocks.glass, x, y, z, 2, null);
+                lightingHelper.setLightingZNeg(glass, x, y, z);
+                lightingHelper.colorSide(glass, x, y, z, 2, null);
                 RenderHelper.renderFaceZNeg(renderBlocks, x, y, z, IconRegistry.icon_door_glass_top);
                 
                 //if (!renderAlphaOverride) {
-                    lightingHelper.setLightingZPos(Blocks.glass, x, y, z);
-                    lightingHelper.colorSide(Blocks.glass, x, y, z, 3, null);
+                    lightingHelper.setLightingZPos(glass, x, y, z);
+                    lightingHelper.colorSide(glass, x, y, z, 3, null);
                     VertexHelper.setOffset(-path_offset);
                     RenderHelper.renderFaceZPos(renderBlocks, x, y, z, IconRegistry.icon_door_glass_top);
                 //}
@@ -619,13 +623,13 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
             
         }
         
-        renderHandle(Blocks.iron_block, x, y, z, true, true);
+        renderHandle(new ItemStack(Blocks.iron_block), x, y, z, true, true);
     }
     
     /**
      * Renders a panels door at the given coordinates
      */
-    private void renderPanelsDoor(Block block, int x, int y, int z)
+    private void renderPanelsDoor(ItemStack itemStack, int x, int y, int z)
     {
         int hinge = Door.getHinge(TE);
         boolean isOpen = Door.getState(TE) == Door.STATE_OPEN;
@@ -760,9 +764,9 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
         }
         
         renderBlocks.setRenderBounds(x_low, y_low, z_low, x_high_offset, y_high, z_high_offset);
-        renderBlock(block, x, y, z);
+        renderBlock(itemStack, x, y, z);
         renderBlocks.setRenderBounds(x_low_offset, y_low, z_low_offset, x_high, y_high, z_high);
-        renderBlock(block, x, y, z);
+        renderBlock(itemStack, x, y, z);
         
         float temp_x_low = x_low;
         float temp_x_high = x_high;
@@ -785,10 +789,10 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
         
         if (isBottom) {
             renderBlocks.setRenderBounds(temp_x_low, 0.1875F, temp_z_low, temp_x_high, 1.0F, temp_z_high);
-            renderBlock(block, x, y, z);
+            renderBlock(itemStack, x, y, z);
         } else {
             renderBlocks.setRenderBounds(temp_x_low, 0.0F, temp_z_low, temp_x_high, 0.8125F, temp_z_high);
-            renderBlock(block, x, y, z);
+            renderBlock(itemStack, x, y, z);
         }
         
         temp_x_low = x_low;
@@ -808,12 +812,12 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
         
         if (isBottom) {
             renderBlocks.setRenderBounds(temp_x_low, y_low, temp_z_low, temp_x_high, 0.1875F, temp_z_high);
-            renderBlock(block, x, y, z);
+            renderBlock(itemStack, x, y, z);
         } else {
             renderBlocks.setRenderBounds(temp_x_low, 0.8125F, temp_z_low, temp_x_high, y_high, temp_z_high);
-            renderBlock(block, x, y, z);
+            renderBlock(itemStack, x, y, z);
             renderBlocks.setRenderBounds(temp_x_low, 0.0625F, temp_z_low, temp_x_high, 0.25F, temp_z_high);
-            renderBlock(block, x, y, z);
+            renderBlock(itemStack, x, y, z);
         }
         
         temp_x_low = x_low;
@@ -833,19 +837,19 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
         
         if (isBottom) {
             renderBlocks.setRenderBounds(temp_x_low, 0.3125F, temp_z_low, temp_x_high, 0.9375F, temp_z_high);
-            renderBlock(block, x, y, z);
+            renderBlock(itemStack, x, y, z);
         } else {
             renderBlocks.setRenderBounds(temp_x_low, 0.375F, temp_z_low, temp_x_high, 0.6875F, temp_z_high);
-            renderBlock(block, x, y, z);
+            renderBlock(itemStack, x, y, z);
         }
         
-        renderHandle(Blocks.iron_block, x, y, z, true, true);
+        renderHandle(new ItemStack(Blocks.iron_block), x, y, z, true, true);
     }
     
     /**
      * Renders a tall glass or screen door at the given coordinates
      */
-    private void renderTallDoor(Block block, int x, int y, int z)
+    private void renderTallDoor(ItemStack itemStack, int x, int y, int z)
     {
         int hinge = Door.getHinge(TE);
         boolean isOpen = Door.getState(TE) == Door.STATE_OPEN;
@@ -994,9 +998,9 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
         }
         
         renderBlocks.setRenderBounds(x_low, y_low, z_low, x_high_offset, y_high, z_high_offset);
-        renderBlock(block, x, y, z);
+        renderBlock(itemStack, x, y, z);
         renderBlocks.setRenderBounds(x_low_offset, y_low, z_low_offset, x_high, y_high, z_high);
-        renderBlock(block, x, y, z);
+        renderBlock(itemStack, x, y, z);
         
         if (path_on_x) {
             z_low = 0.1875F;
@@ -1008,10 +1012,10 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
         
         if (isBottom) {
             renderBlocks.setRenderBounds(x_low, y_low, z_low, x_high, 0.1875F, z_high);
-            renderBlock(block, x, y, z);
+            renderBlock(itemStack, x, y, z);
         } else {
             renderBlocks.setRenderBounds(x_low, 0.8125F, z_low, x_high, y_high, z_high);
-            renderBlock(block, x, y, z);
+            renderBlock(itemStack, x, y, z);
         }
         
         int type = Door.getType(TE);
@@ -1052,25 +1056,25 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
         
         VertexHelper.clearOffset();
         
-        renderHandle(Blocks.iron_block, x, y, z, true, true);
+        renderHandle(new ItemStack(Blocks.iron_block), x, y, z, true, true);
     }
     
     /**
      * Renders a hidden door at the given coordinates
      */
-    private void renderHiddenDoor(Block block, int x, int y, int z)
+    private void renderHiddenDoor(ItemStack itemStack, int x, int y, int z)
     {
         BlockCarpentersDoor blockRef = (BlockCarpentersDoor) BlockRegistry.blockCarpentersDoor;
         blockRef.setBlockBoundsBasedOnState(renderBlocks.blockAccess, x, y, z);
-        renderBlock(block, x, y, z);
+        renderBlock(itemStack, x, y, z);
         
-        renderHandle(Blocks.iron_block, x, y, z, true, false);
+        renderHandle(new ItemStack(Blocks.iron_block), x, y, z, true, false);
     }
     
     /**
      * Renders a door handle for the given coordinates
      */
-    private void renderHandle(Block handleBlock, int x, int y, int z, boolean render_inside_handle, boolean render_outside_handle)
+    private void renderHandle(ItemStack itemStack, int x, int y, int z, boolean render_inside_handle, boolean render_outside_handle)
     {
         if (!render_inside_handle && !render_outside_handle) {
             return;
@@ -1098,17 +1102,17 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
                     if (render_inside_handle)
                     {
                         renderBlocks.setRenderBounds(0.75F, y_low, z_low, 0.8125F, y_high, z_low + 0.0625F);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                         renderBlocks.setRenderBounds(0.6875F, y_low_offset, z_low, 0.75F, y_high_offset, z_low + 0.0625F);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                     }
                     
                     if (render_outside_handle)
                     {
                         renderBlocks.setRenderBounds(0.0F, y_low, z_low, 0.0625F, y_high, z_low + 0.0625F);
-                        renderBlocks.renderStandardBlock(handleBlock, x + 1, y, z);
+                        renderBlock(itemStack, x + 1, y, z);
                         renderBlocks.setRenderBounds(0.0625F, y_low_offset, z_low, 0.125F, y_high_offset, z_low + 0.0625F);
-                        renderBlocks.renderStandardBlock(handleBlock, x + 1, y, z);
+                        renderBlock(itemStack, x + 1, y, z);
                     }
                     
                 } else if (hinge == Door.HINGE_RIGHT) {
@@ -1116,17 +1120,17 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
                     if (render_outside_handle)
                     {
                         renderBlocks.setRenderBounds(0.0625F, y_low, 0.1875F, 0.0625F + 0.0625F, y_high, 0.25F);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                         renderBlocks.setRenderBounds(0.0625F, y_low_offset, 0.25F, 0.0625F + 0.0625F, y_high_offset, 0.3125F);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                     }
                     
                     if (render_inside_handle)
                     {
                         renderBlocks.setRenderBounds(0.0625F, y_low, 0.9375F, 0.0625F + 0.0625F, y_high, 1.0F);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z - 1);
+                        renderBlock(itemStack, x, y, z - 1);
                         renderBlocks.setRenderBounds(0.0625F, y_low_offset, 0.875F, 0.0625F + 0.0625F, y_high_offset, 0.9375F);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z - 1);
+                        renderBlock(itemStack, x, y, z - 1);
                     }
                     
                 } else {
@@ -1134,17 +1138,17 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
                     if (render_outside_handle)
                     {
                         renderBlocks.setRenderBounds(0.0625F, y_low, 0.75F, 0.0625F + 0.0625F, y_high, 0.8125F);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                         renderBlocks.setRenderBounds(0.0625F, y_low_offset, 0.6875F, 0.0625F + 0.0625F, y_high_offset, 0.75F);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                     }
                     
                     if (render_inside_handle)
                     {
                         renderBlocks.setRenderBounds(0.0625F, y_low, 0.0F, 0.0625F + 0.0625F, y_high, 0.0625F);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z + 1);
+                        renderBlock(itemStack, x, y, z + 1);
                         renderBlocks.setRenderBounds(0.0625F, y_low_offset, 0.0625F, 0.0625F + 0.0625F, y_high_offset, 0.125F);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z + 1);
+                        renderBlock(itemStack, x, y, z + 1);
                     }
                     
                 }
@@ -1159,17 +1163,17 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
                     if (render_inside_handle)
                     {
                         renderBlocks.setRenderBounds(0.1875F, y_low, z_low, 0.25F, y_high, z_low + 0.0625F);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                         renderBlocks.setRenderBounds(0.25F, y_low_offset, z_low, 0.3125F, y_high_offset, z_low + 0.0625F);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                     }
                     
                     if (render_outside_handle)
                     {
                         renderBlocks.setRenderBounds(0.9375F, y_low, z_low, 1.0F, y_high, z_low + 0.0625F);
-                        renderBlocks.renderStandardBlock(handleBlock, x - 1, y, z);
+                        renderBlock(itemStack, x - 1, y, z);
                         renderBlocks.setRenderBounds(0.875F, y_low_offset, z_low, 0.9375F, y_high_offset, z_low + 0.0625F);
-                        renderBlocks.renderStandardBlock(handleBlock, x - 1, y, z);
+                        renderBlock(itemStack, x - 1, y, z);
                     }
                     
                 } else if (hinge == Door.HINGE_RIGHT) {
@@ -1177,17 +1181,17 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
                     if (render_outside_handle)
                     {
                         renderBlocks.setRenderBounds(0.875F, y_low, 0.75F, 0.875F + 0.0625F, y_high, 0.8125F);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                         renderBlocks.setRenderBounds(0.875F, y_low_offset, 0.6875F, 0.875F + 0.0625F, y_high_offset, 0.75F);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                     }
                     
                     if (render_inside_handle)
                     {
                         renderBlocks.setRenderBounds(0.875F, y_low, 0.0F, 0.875F + 0.0625F, y_high, 0.0625F);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z + 1);
+                        renderBlock(itemStack, x, y, z + 1);
                         renderBlocks.setRenderBounds(0.875F, y_low_offset, 0.0625F, 0.875F + 0.0625F, y_high_offset, 0.125F);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z + 1);
+                        renderBlock(itemStack, x, y, z + 1);
                     }
                     
                 } else {
@@ -1195,17 +1199,17 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
                     if (render_outside_handle)
                     {
                         renderBlocks.setRenderBounds(0.875F, y_low, 0.1875F, 0.875F + 0.0625F, y_high, 0.25F);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                         renderBlocks.setRenderBounds(0.875F, y_low_offset, 0.25F, 0.875F + 0.0625F, y_high_offset, 0.3125F);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                     }
                     
                     if (render_inside_handle)
                     {
                         renderBlocks.setRenderBounds(0.875F, y_low, 0.9375F, 0.875F + 0.0625F, y_high, 1.0F);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z - 1);
+                        renderBlock(itemStack, x, y, z - 1);
                         renderBlocks.setRenderBounds(0.875F, y_low_offset, 0.875F, 0.875F + 0.0625F, y_high_offset, 0.9375F);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z - 1);
+                        renderBlock(itemStack, x, y, z - 1);
                     }
                     
                 }
@@ -1220,17 +1224,17 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
                     if (render_inside_handle)
                     {
                         renderBlocks.setRenderBounds(x_low, y_low, 0.75F, x_low + 0.0625F, y_high, 0.8125F);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                         renderBlocks.setRenderBounds(x_low, y_low_offset, 0.6875F, x_low + 0.0625F, y_high_offset, 0.75F);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                     }
                     
                     if (render_outside_handle)
                     {
                         renderBlocks.setRenderBounds(x_low, y_low, 0.0F, x_low + 0.0625F, y_high, 0.0625F);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z + 1);
+                        renderBlock(itemStack, x, y, z + 1);
                         renderBlocks.setRenderBounds(x_low, y_low_offset, 0.0625F, x_low + 0.0625F, y_high_offset, 0.125F);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z + 1);
+                        renderBlock(itemStack, x, y, z + 1);
                     }
                     
                 } else if (hinge == Door.HINGE_RIGHT) {
@@ -1238,17 +1242,17 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
                     if (render_outside_handle)
                     {
                         renderBlocks.setRenderBounds(0.75F, y_low, 0.0625F, 0.8125F, y_high, 0.0625F + 0.0625F);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                         renderBlocks.setRenderBounds(0.6875F, y_low_offset, 0.0625F, 0.75F, y_high_offset, 0.0625F + 0.0625F);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                     }
                     
                     if (render_inside_handle)
                     {
                         renderBlocks.setRenderBounds(0.0F, y_low, 0.0625F, 0.0625F, y_high, 0.0625F + 0.0625F);
-                        renderBlocks.renderStandardBlock(handleBlock, x + 1, y, z);
+                        renderBlock(itemStack, x + 1, y, z);
                         renderBlocks.setRenderBounds(0.0625F, y_low_offset, 0.0625F, 0.125F, y_high_offset, 0.0625F + 0.0625F);
-                        renderBlocks.renderStandardBlock(handleBlock, x + 1, y, z);
+                        renderBlock(itemStack, x + 1, y, z);
                     }
                     
                 } else {
@@ -1256,17 +1260,17 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
                     if (render_outside_handle)
                     {
                         renderBlocks.setRenderBounds(0.1875F, y_low, 0.0625F, 0.25F, y_high, 0.0625F + 0.0625F);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                         renderBlocks.setRenderBounds(0.25F, y_low_offset, 0.0625F, 0.3125F, y_high_offset, 0.0625F + 0.0625F);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                     }
                     
                     if (render_inside_handle)
                     {
                         renderBlocks.setRenderBounds(0.9375F, y_low, 0.0625F, 1.0F, y_high, 0.0625F + 0.0625F);
-                        renderBlocks.renderStandardBlock(handleBlock, x - 1, y, z);
+                        renderBlock(itemStack, x - 1, y, z);
                         renderBlocks.setRenderBounds(0.875F, y_low_offset, 0.0625F, 0.9375F, y_high_offset, 0.0625F + 0.0625F);
-                        renderBlocks.renderStandardBlock(handleBlock, x - 1, y, z);
+                        renderBlock(itemStack, x - 1, y, z);
                     }
                     
                 }
@@ -1281,17 +1285,17 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
                     if (render_inside_handle)
                     {
                         renderBlocks.setRenderBounds(x_low, y_low, 0.1875F, x_low + 0.0625F, y_high, 0.25F);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                         renderBlocks.setRenderBounds(x_low, y_low_offset, 0.25F, x_low + 0.0625F, y_high_offset, 0.3125F);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                     }
                     
                     if (render_outside_handle)
                     {
                         renderBlocks.setRenderBounds(x_low, y_low, 0.9375F, x_low + 0.0625F, y_high, 1.0F);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z - 1);
+                        renderBlock(itemStack, x, y, z - 1);
                         renderBlocks.setRenderBounds(x_low, y_low_offset, 0.875F, x_low + 0.0625F, y_high_offset, 0.9375F);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z - 1);
+                        renderBlock(itemStack, x, y, z - 1);
                     }
                     
                 } else if (hinge == Door.HINGE_RIGHT) {
@@ -1299,17 +1303,17 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
                     if (render_outside_handle)
                     {
                         renderBlocks.setRenderBounds(0.1875F, y_low, 0.875F, 0.25F, y_high, 0.875F + 0.0625F);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                         renderBlocks.setRenderBounds(0.25F, y_low_offset, 0.875F, 0.3125F, y_high_offset, 0.875F + 0.0625F);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                     }
                     
                     if (render_inside_handle)
                     {
                         renderBlocks.setRenderBounds(0.9375F, y_low, 0.875F, 1.0F, y_high, 0.875F + 0.0625F);
-                        renderBlocks.renderStandardBlock(handleBlock, x - 1, y, z);
+                        renderBlock(itemStack, x - 1, y, z);
                         renderBlocks.setRenderBounds(0.875F, y_low_offset, 0.875F, 0.9375F, y_high_offset, 0.875F + 0.0625F);
-                        renderBlocks.renderStandardBlock(handleBlock, x - 1, y, z);
+                        renderBlock(itemStack, x - 1, y, z);
                     }
                     
                 } else {
@@ -1317,17 +1321,17 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
                     if (render_outside_handle)
                     {
                         renderBlocks.setRenderBounds(0.75F, y_low, 0.875F, 0.8125F, y_high, 0.875F + 0.0625F);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                         renderBlocks.setRenderBounds(0.6875F, y_low_offset, 0.875F, 0.75F, y_high_offset, 0.875F + 0.0625F);
-                        renderBlocks.renderStandardBlock(handleBlock, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                     }
                     
                     if (render_inside_handle)
                     {
                         renderBlocks.setRenderBounds(0.0F, y_low, 0.875F, 0.0625F, y_high, 0.875F + 0.0625F);
-                        renderBlocks.renderStandardBlock(handleBlock, x + 1, y, z);
+                        renderBlock(itemStack, x + 1, y, z);
                         renderBlocks.setRenderBounds(0.0625F, y_low_offset, 0.875F, 0.125F, y_high_offset, 0.875F + 0.0625F);
-                        renderBlocks.renderStandardBlock(handleBlock, x + 1, y, z);
+                        renderBlock(itemStack, x + 1, y, z);
                     }
                     
                 }

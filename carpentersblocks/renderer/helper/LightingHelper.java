@@ -10,7 +10,9 @@ import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
+import net.minecraft.world.World;
 import carpentersblocks.data.Slope;
 import carpentersblocks.renderer.BlockHandlerBase;
 import carpentersblocks.util.BlockProperties;
@@ -143,9 +145,19 @@ public class LightingHelper {
      * If using our custom render helpers, be sure to apply anaglyph filter
      * before rendering.
      */
-    public float[] getBlockRGB(Block block, int x, int y, int z)
+    public float[] getItemStackRGB(ItemStack itemStack, int x, int y, int z)
     {
+        Block block = BlockProperties.toBlock(itemStack);
+
+        World world = blockHandler.TE.getWorldObj();
+        
+        int metadata = world.getBlockMetadata(x, y, z);
+        world.setBlockMetadataWithNotify(x, y, z, itemStack.getItemDamage(), 4);
+        
         int color = FeatureRegistry.enableOptifineIntegration ? OptifineHandler.getColorMultiplier(block, renderBlocks.blockAccess, x, y, z) : block.colorMultiplier(renderBlocks.blockAccess, x, y, z);
+        
+        world.setBlockMetadataWithNotify(x, y, z, metadata, 4);
+        
         float[] rgb = { (color >> 16 & 255) / 255.0F, (color >> 8 & 255) / 255.0F, (color & 255) / 255.0F };
         
         return rgb;
@@ -169,15 +181,17 @@ public class LightingHelper {
     /**
      * Apply lightness and color to AO or tessellator.
      */
-    public void colorSide(Block block, int x, int y, int z, int side, IIcon icon)
+    public void colorSide(ItemStack itemStack, int x, int y, int z, int side, IIcon icon)
     {
+        Block block = BlockProperties.toBlock(itemStack);
+        
         float[] dyeRGB = { 1.0F, 1.0F, 1.0F };
         
         if (!blockHandler.suppressDyeColor && !(block.equals(Blocks.grass) && side == 1)) {
             dyeRGB = blockHandler.hasDyeOverride ? DyeHandler.getRGB(blockHandler.dyeOverride) : DyeHandler.getRGB(DyeHandler.getColor(BlockProperties.getDye(blockHandler.TE, blockHandler.coverRendering)));
         }
         
-        float[] blockRGB = getBlockRGB(block, x, y, z);
+        float[] blockRGB = getItemStackRGB(itemStack, x, y, z);
         
         /* If block is grass, we have to apply color selectively. */
         
@@ -275,8 +289,10 @@ public class LightingHelper {
     /**
      * Fills AO variables with lightness for bottom face.
      */
-    public LightingHelper setLightingYNeg(Block block, int x, int y, int z)
+    public LightingHelper setLightingYNeg(ItemStack itemStack, int x, int y, int z)
     {
+        Block block = BlockProperties.toBlock(itemStack);
+        
         int y_offset = renderBlocks.renderMinY > 0.0F ? y : y - 1;
         int mixedBrightness = block.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y_offset, z);
         tessellator.setBrightness(mixedBrightness);
@@ -348,8 +364,10 @@ public class LightingHelper {
     /**
      * Fills AO variables with lightness for top face.
      */
-    public LightingHelper setLightingYPos(Block block, int x, int y, int z)
+    public LightingHelper setLightingYPos(ItemStack itemStack, int x, int y, int z)
     {
+        Block block = BlockProperties.toBlock(itemStack);
+        
         int y_offset = renderBlocks.renderMaxY < 1.0F ? y : y + 1;
         int mixedBrightness = block.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y_offset, z);
         tessellator.setBrightness(mixedBrightness);
@@ -420,8 +438,10 @@ public class LightingHelper {
     /**
      * Fills AO variables with lightness for North face.
      */
-    public LightingHelper setLightingZNeg(Block block, int x, int y, int z)
+    public LightingHelper setLightingZNeg(ItemStack itemStack, int x, int y, int z)
     {
+        Block block = BlockProperties.toBlock(itemStack);
+        
         int z_offset = renderBlocks.renderMinZ > 0.0F ? z : z - 1;
         int mixedBrightness = block.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y, z_offset);
         tessellator.setBrightness(mixedBrightness);
@@ -492,8 +512,10 @@ public class LightingHelper {
     /**
      * Fills AO variables with lightness for South face.
      */
-    public LightingHelper setLightingZPos(Block block, int x, int y, int z)
+    public LightingHelper setLightingZPos(ItemStack itemStack, int x, int y, int z)
     {
+        Block block = BlockProperties.toBlock(itemStack);
+        
         int z_offset = renderBlocks.renderMaxZ < 1.0F ? z : z + 1;
         int mixedBrightness = block.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y, z_offset);
         tessellator.setBrightness(mixedBrightness);
@@ -563,8 +585,10 @@ public class LightingHelper {
     /**
      * Fills AO variables with lightness for West face.
      */
-    public LightingHelper setLightingXNeg(Block block, int x, int y, int z)
+    public LightingHelper setLightingXNeg(ItemStack itemStack, int x, int y, int z)
     {
+        Block block = BlockProperties.toBlock(itemStack);
+        
         int x_offset = renderBlocks.renderMinX > 0.0F ? x : x - 1;
         int mixedBrightness = block.getMixedBrightnessForBlock(renderBlocks.blockAccess, x_offset, y, z);
         tessellator.setBrightness(mixedBrightness);
@@ -635,8 +659,10 @@ public class LightingHelper {
     /**
      * Fills AO variables with lightness for East face.
      */
-    public LightingHelper setLightingXPos(Block block, int x, int y, int z)
+    public LightingHelper setLightingXPos(ItemStack itemStack, int x, int y, int z)
     {
+        Block block = BlockProperties.toBlock(itemStack);
+        
         int x_offset = renderBlocks.renderMaxX < 1.0F ? x : x + 1;
         int mixedBrightness = block.getMixedBrightnessForBlock(renderBlocks.blockAccess, x_offset, y, z);
         tessellator.setBrightness(mixedBrightness);

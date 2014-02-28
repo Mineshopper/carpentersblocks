@@ -186,7 +186,7 @@ public class EventHandler {
             
             /* Adjust block slipperiness according to cover. */
             
-            TE.getBlockType().slipperiness = BlockProperties.getBlockFromItemStack(itemStack).slipperiness;
+            TE.getBlockType().slipperiness = BlockProperties.toBlock(itemStack).slipperiness;
             
         }
     }
@@ -216,13 +216,13 @@ public class EventHandler {
                     
                     if (block != null && block instanceof BlockCoverable) {
                         
-                        block = BlockProperties.getCover((TEBase) world.getTileEntity(x, y, z), 6);
+                        //block = BlockProperties.getCover((TEBase) world.getTileEntity(x, y, z), 6);
 
-                        if (block instanceof BlockCoverable) {
+                        //if (block instanceof BlockCoverable) {
                             //event.result = event.manager.soundPoolSounds.getRandomSoundFromSoundPool(event.name.startsWith("Minecraft:dig.") ? Block.soundWoodFootstep.getBreakSound() : event.name.startsWith("place.") ? Block.soundWoodFootstep.getPlaceSound() : Block.soundWoodFootstep.getStepSound());
-                        } else {
+                        //} else {
                             //event.result = event.manager.soundPoolSounds.getRandomSoundFromSoundPool(event.name.startsWith("dig.") ? block.stepSound.getBreakSound() : event.name.startsWith("place.") ? block.stepSound.getPlaceSound() : block.stepSound.getStepSound());
-                        }
+                        //}
                         
                     } else {
                         
@@ -253,7 +253,7 @@ public class EventHandler {
                 
                 if (block != null && block instanceof BlockCoverable) {
                     
-                    block = BlockProperties.getCover((TEBase) event.entity.worldObj.getTileEntity(x, y, z), 6);
+                    block = BlockProperties.toBlock(BlockProperties.getCover((TEBase) event.entity.worldObj.getTileEntity(x, y, z), 6));
                     
                     if (block instanceof BlockCoverable) {
                         event.name = "step." + Blocks.planks.stepSound.soundName;

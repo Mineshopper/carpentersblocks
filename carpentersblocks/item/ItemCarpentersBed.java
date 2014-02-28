@@ -61,7 +61,7 @@ public class ItemCarpentersBed extends Item {
                     world.setBlock(x_offset, y, z_offset, BlockRegistry.blockCarpentersBed, 0, 4)
                     )
             {
-                BlockProperties.playBlockSound(world, BlockRegistry.blockCarpentersBed, x, y, z);
+                BlockProperties.playBlockSound(world, new ItemStack(BlockRegistry.blockCarpentersBed), x, y, z);
                 
                 /* Foot of bed. */
                 

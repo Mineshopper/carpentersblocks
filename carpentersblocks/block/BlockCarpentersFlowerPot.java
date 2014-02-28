@@ -294,22 +294,24 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
             int coverLight = super.getLightValue(world, x, y, z);
             int potLight = getLightValue();
             
-            if (FlowerPotProperties.hasSoil(TE))
-            {
-                int soil_lightValue = FlowerPotProperties.getSoil(TE).getLightValue();
+            if (FlowerPotProperties.hasSoil(TE)) {
+                
+                int soil_lightValue = BlockProperties.toBlock(FlowerPotProperties.getSoil(TE)).getLightValue();
                 
                 if (soil_lightValue > potLight) {
                     potLight = soil_lightValue;
                 }
+                
             }
             
-            if (FlowerPotProperties.hasPlant(TE))
-            {
-                int plant_lightValue = FlowerPotProperties.getPlant(TE).getLightValue();
+            if (FlowerPotProperties.hasPlant(TE)) {
+                
+                int plant_lightValue = BlockProperties.toBlock(FlowerPotProperties.getPlant(TE)).getLightValue();
                 
                 if (plant_lightValue > potLight) {
                     potLight = plant_lightValue;
                 }
+                
             }
             
             return coverLight > potLight ? coverLight : potLight;
@@ -329,12 +331,16 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
         
         if (TE != null && TE instanceof TECarpentersFlowerPot) {
             
-            if (FlowerPotProperties.hasPlant(TE))
-            {
-                world.setBlockMetadataWithNotify(x, y, z, FlowerPotProperties.getPlantMetadata(TE), 4);
-                FlowerPotProperties.getPlant(TE).onEntityCollidedWithBlock(world, x, y, z, entity);
-                world.setBlockMetadataWithNotify(x, y, z, BlockProperties.getCoverMetadata(TE, 6), 4);
+            if (FlowerPotProperties.hasPlant(TE)) {
+                
+                ItemStack itemStack = FlowerPotProperties.getPlant(TE);
+                
+                world.setBlockMetadataWithNotify(x, y, z, itemStack.getItemDamage(), 4);
+                BlockProperties.toBlock(itemStack).onEntityCollidedWithBlock(world, x, y, z, entity);
+                world.setBlockMetadataWithNotify(x, y, z, BlockProperties.getCover(TE, 6).getItemDamage(), 4);
+                
             }
+            
         }
         
         super.onEntityCollidedWithBlock(world, x, y, z, entity);
@@ -375,17 +381,21 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
             
             if (FlowerPotProperties.hasPlant(TE)) {
                 
-                world.setBlockMetadataWithNotify(x, y, z, FlowerPotProperties.getPlantMetadata(TE), 4);
-                FlowerPotProperties.getPlant(TE).randomDisplayTick(world, x, y, z, random);
-                world.setBlockMetadataWithNotify(x, y, z, BlockProperties.getCoverMetadata(TE, 6), 4);
+                ItemStack itemStack = FlowerPotProperties.getPlant(TE);
+                
+                world.setBlockMetadataWithNotify(x, y, z, itemStack.getItemDamage(), 4);
+                BlockProperties.toBlock(itemStack).randomDisplayTick(world, x, y, z, random);
+                world.setBlockMetadataWithNotify(x, y, z, BlockProperties.getCover(TE, 6).getItemDamage(), 4);
                 
             }
             
             if (FlowerPotProperties.hasSoil(TE)) {
                 
-                world.setBlockMetadataWithNotify(x, y, z, FlowerPotProperties.getSoilMetadata(TE), 4);
-                FlowerPotProperties.getSoil(TE).randomDisplayTick(world, x, y, z, random);
-                world.setBlockMetadataWithNotify(x, y, z, BlockProperties.getCoverMetadata(TE, 6), 4);
+                ItemStack itemStack = FlowerPotProperties.getSoil(TE);
+                
+                world.setBlockMetadataWithNotify(x, y, z, itemStack.getItemDamage(), 4);
+                BlockProperties.toBlock(itemStack).randomDisplayTick(world, x, y, z, random);
+                world.setBlockMetadataWithNotify(x, y, z, BlockProperties.getCover(TE, 6).getItemDamage(), 4);
                 
             }
             

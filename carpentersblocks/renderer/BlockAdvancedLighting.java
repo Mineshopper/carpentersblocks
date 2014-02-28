@@ -4,7 +4,7 @@ import static carpentersblocks.renderer.helper.VertexHelper.BOTTOM_LEFT;
 import static carpentersblocks.renderer.helper.VertexHelper.BOTTOM_RIGHT;
 import static carpentersblocks.renderer.helper.VertexHelper.TOP_LEFT;
 import static carpentersblocks.renderer.helper.VertexHelper.TOP_RIGHT;
-import net.minecraft.block.Block;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -31,32 +31,32 @@ public class BlockAdvancedLighting extends BlockHandlerBase {
      * Sets renderID to identify which RenderHelper to use
      * and passes control to delegateSideRender().
      */
-    protected final void setIDAndRender(Block block, int renderID, int x, int y, int z, int side)
+    protected final void setIDAndRender(ItemStack itemStack, int renderID, int x, int y, int z, int side)
     {
         this.renderID = renderID;
-        delegateSideRender(block, x, y, z, side);
+        delegateSideRender(itemStack, x, y, z, side);
     }
     
     /**
      * Prepares lighting for block and offset faces.
      */
-    protected void prepareLighting(Block block)
+    protected void prepareLighting(ItemStack itemStack)
     {
         for (int side = 0; side < 6; ++side) {
-            populateLighting(block, side);
-            populateOffsetLighting(block, side);
+            populateLighting(itemStack, side);
+            populateOffsetLighting(itemStack, side);
         }
     }
     
     /**
      * Fills ambient occlusion and brightness tables.
      */
-    private final void populateLighting(Block block, int side)
+    private final void populateLighting(ItemStack itemStack, int side)
     {
         switch (side) {
             case DOWN:
                 
-                lightingHelper.setLightingYNeg(block, TE.xCoord, TE.yCoord, TE.zCoord);
+                lightingHelper.setLightingYNeg(itemStack, TE.xCoord, TE.yCoord, TE.zCoord);
                 
                 if (renderBlocks.enableAO) {
                     ao[DOWN] = new float[] { lightingHelper.ao[TOP_LEFT], lightingHelper.ao[BOTTOM_LEFT], lightingHelper.ao[BOTTOM_RIGHT], lightingHelper.ao[TOP_RIGHT] };
@@ -66,7 +66,7 @@ public class BlockAdvancedLighting extends BlockHandlerBase {
                 break;
             case UP:
                 
-                lightingHelper.setLightingYPos(block, TE.xCoord, TE.yCoord, TE.zCoord);
+                lightingHelper.setLightingYPos(itemStack, TE.xCoord, TE.yCoord, TE.zCoord);
                 
                 if (renderBlocks.enableAO) {
                     ao[UP] = new float[] { lightingHelper.ao[TOP_LEFT], lightingHelper.ao[BOTTOM_LEFT], lightingHelper.ao[BOTTOM_RIGHT], lightingHelper.ao[TOP_RIGHT] };
@@ -76,7 +76,7 @@ public class BlockAdvancedLighting extends BlockHandlerBase {
                 break;
             case NORTH:
                 
-                lightingHelper.setLightingZNeg(block, TE.xCoord, TE.yCoord, TE.zCoord);
+                lightingHelper.setLightingZNeg(itemStack, TE.xCoord, TE.yCoord, TE.zCoord);
                 
                 if (renderBlocks.enableAO) {
                     ao[NORTH] = new float[] { lightingHelper.ao[TOP_LEFT], lightingHelper.ao[BOTTOM_LEFT], lightingHelper.ao[BOTTOM_RIGHT], lightingHelper.ao[TOP_RIGHT] };
@@ -86,7 +86,7 @@ public class BlockAdvancedLighting extends BlockHandlerBase {
                 break;
             case SOUTH:
                 
-                lightingHelper.setLightingZPos(block, TE.xCoord, TE.yCoord, TE.zCoord);
+                lightingHelper.setLightingZPos(itemStack, TE.xCoord, TE.yCoord, TE.zCoord);
                 
                 if (renderBlocks.enableAO) {
                     ao[SOUTH] = new float[] { lightingHelper.ao[TOP_LEFT], lightingHelper.ao[BOTTOM_LEFT], lightingHelper.ao[BOTTOM_RIGHT], lightingHelper.ao[TOP_RIGHT] };
@@ -96,7 +96,7 @@ public class BlockAdvancedLighting extends BlockHandlerBase {
                 break;
             case WEST:
                 
-                lightingHelper.setLightingXNeg(block, TE.xCoord, TE.yCoord, TE.zCoord);
+                lightingHelper.setLightingXNeg(itemStack, TE.xCoord, TE.yCoord, TE.zCoord);
                 
                 if (renderBlocks.enableAO) {
                     ao[WEST] = new float[] { lightingHelper.ao[TOP_LEFT], lightingHelper.ao[BOTTOM_LEFT], lightingHelper.ao[BOTTOM_RIGHT], lightingHelper.ao[TOP_RIGHT] };
@@ -106,7 +106,7 @@ public class BlockAdvancedLighting extends BlockHandlerBase {
                 break;
             case EAST:
                 
-                lightingHelper.setLightingXPos(block, TE.xCoord, TE.yCoord, TE.zCoord);
+                lightingHelper.setLightingXPos(itemStack, TE.xCoord, TE.yCoord, TE.zCoord);
                 
                 if (renderBlocks.enableAO) {
                     ao[EAST] = new float[] { lightingHelper.ao[TOP_LEFT], lightingHelper.ao[BOTTOM_LEFT], lightingHelper.ao[BOTTOM_RIGHT], lightingHelper.ao[TOP_RIGHT] };
@@ -120,7 +120,7 @@ public class BlockAdvancedLighting extends BlockHandlerBase {
     /**
      * Fills ambient occlusion and brightness tables for offset block coordinates.
      */
-    private final void populateOffsetLighting(Block block, int side)
+    private final void populateOffsetLighting(ItemStack itemStack, int side)
     {
         double renderTemp;
         
@@ -129,7 +129,7 @@ public class BlockAdvancedLighting extends BlockHandlerBase {
                 
                 renderTemp = renderBlocks.renderMinY;
                 renderBlocks.renderMinY = 0.0D;
-                lightingHelper.setLightingYNeg(block, TE.xCoord, TE.yCoord + 1, TE.zCoord);
+                lightingHelper.setLightingYNeg(itemStack, TE.xCoord, TE.yCoord + 1, TE.zCoord);
                 renderBlocks.renderMinY = renderTemp;
                 
                 if (renderBlocks.enableAO) {
@@ -142,7 +142,7 @@ public class BlockAdvancedLighting extends BlockHandlerBase {
                 
                 renderTemp = renderBlocks.renderMaxY;
                 renderBlocks.renderMaxY = 1.0D;
-                lightingHelper.setLightingYPos(block, TE.xCoord, TE.yCoord - 1, TE.zCoord);
+                lightingHelper.setLightingYPos(itemStack, TE.xCoord, TE.yCoord - 1, TE.zCoord);
                 renderBlocks.renderMaxY = renderTemp;
                 
                 if (renderBlocks.enableAO) {
@@ -155,7 +155,7 @@ public class BlockAdvancedLighting extends BlockHandlerBase {
                 
                 renderTemp = renderBlocks.renderMinZ;
                 renderBlocks.renderMinZ = 0.0D;
-                lightingHelper.setLightingZNeg(block, TE.xCoord, TE.yCoord, TE.zCoord + 1);
+                lightingHelper.setLightingZNeg(itemStack, TE.xCoord, TE.yCoord, TE.zCoord + 1);
                 renderBlocks.renderMinZ = renderTemp;
                 
                 if (renderBlocks.enableAO) {
@@ -168,7 +168,7 @@ public class BlockAdvancedLighting extends BlockHandlerBase {
                 
                 renderTemp = renderBlocks.renderMaxZ;
                 renderBlocks.renderMaxZ = 1.0D;
-                lightingHelper.setLightingZPos(block, TE.xCoord, TE.yCoord, TE.zCoord - 1);
+                lightingHelper.setLightingZPos(itemStack, TE.xCoord, TE.yCoord, TE.zCoord - 1);
                 renderBlocks.renderMaxZ = renderTemp;
                 
                 if (renderBlocks.enableAO) {
@@ -181,7 +181,7 @@ public class BlockAdvancedLighting extends BlockHandlerBase {
                 
                 renderTemp = renderBlocks.renderMinX;
                 renderBlocks.renderMinX = 0.0D;
-                lightingHelper.setLightingXNeg(block, TE.xCoord + 1, TE.yCoord, TE.zCoord);
+                lightingHelper.setLightingXNeg(itemStack, TE.xCoord + 1, TE.yCoord, TE.zCoord);
                 renderBlocks.renderMinX = renderTemp;
                 
                 if (renderBlocks.enableAO) {
@@ -194,7 +194,7 @@ public class BlockAdvancedLighting extends BlockHandlerBase {
                 
                 renderTemp = renderBlocks.renderMaxX;
                 renderBlocks.renderMaxX = 1.0D;
-                lightingHelper.setLightingXPos(block, TE.xCoord - 1, TE.yCoord, TE.zCoord);
+                lightingHelper.setLightingXPos(itemStack, TE.xCoord - 1, TE.yCoord, TE.zCoord);
                 renderBlocks.renderMaxX = renderTemp;
                 
                 if (renderBlocks.enableAO) {
@@ -227,18 +227,18 @@ public class BlockAdvancedLighting extends BlockHandlerBase {
     /**
      * Renders the base cover block.
      */
-    protected void renderBaseBlock(Block block, int x, int y, int z) { }
+    protected void renderBaseBlock(ItemStack itemStack, int x, int y, int z) { }
     
     @Override
     /**
      * Renders the block.
      */
-    protected final void renderBlock(Block block, int x, int y, int z)
+    protected final void renderBlock(ItemStack itemStack, int x, int y, int z)
     {
         if (coverRendering != 6) {
-            super.renderBlock(block, x, y, z);
+            super.renderBlock(itemStack, x, y, z);
         } else {
-            renderBaseBlock(block, x, y, z);
+            renderBaseBlock(itemStack, x, y, z);
         }
     }
     
