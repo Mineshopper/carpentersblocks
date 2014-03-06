@@ -178,7 +178,8 @@ public class BlockHandlerCarpentersFlowerPot extends BlockHandlerBase {
     {
         World world = TE.getWorldObj();
 
-        world.setBlockMetadataWithNotify(x, y, z, itemStack.getItemDamage(), 4);
+        BlockProperties.setHostMetadata(TE, itemStack.getItemDamage());
+
         renderBlocks.setRenderBounds(0.375F, 0.0D, 0.375F, 0.625F, 0.25D, 0.625F);
         renderBlock(itemStack, x, y, z);
         renderBlocks.setRenderBounds(0.375F, 0.25D, 0.375F, 0.625F, 0.50D, 0.625F);
@@ -186,7 +187,8 @@ public class BlockHandlerCarpentersFlowerPot extends BlockHandlerBase {
         renderBlocks.setRenderBounds(0.375F, 0.50D, 0.375F, 0.625F, 0.75D, 0.625F);
         renderBlock(itemStack, x, y, z);
         renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
-        world.setBlockMetadataWithNotify(x, y, z, BlockProperties.getCover(TE, 6).getItemDamage(), 4);
+        
+        BlockProperties.resetHostMetadata(TE);
     }
     
 }

@@ -24,7 +24,7 @@ public class CommonProxy {
         }
         
         if (BlockRegistry.enableFlowerPot) {
-            FlowerPotHandler.initPlantProfiles();
+            FlowerPotHandler.initPlants();
             FlowerPotDesignHandler.init(event);
         }
         

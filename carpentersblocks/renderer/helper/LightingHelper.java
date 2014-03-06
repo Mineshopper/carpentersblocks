@@ -141,22 +141,24 @@ public class LightingHelper {
     public float[] ao = new float[4];
     
     /**
+     * Returns block color as integer.
+     * Optifine integration is used here.
+     */
+    public int getIntColor(Block block, int x, int y, int z)
+    {
+        return FeatureRegistry.enableOptifineIntegration ? OptifineHandler.getColorMultiplier(block, renderBlocks.blockAccess, x, y, z) : block.colorMultiplier(renderBlocks.blockAccess, x, y, z);
+    }
+    
+    /**
      * Returns float array with RGB values for block.
      * If using our custom render helpers, be sure to apply anaglyph filter
      * before rendering.
      */
-    public float[] getItemStackRGB(ItemStack itemStack, int x, int y, int z)
+    public float[] getBlockRGB(ItemStack itemStack, Block block, int x, int y, int z)
     {
-        Block block = BlockProperties.toBlock(itemStack);
-
-        World world = blockHandler.TE.getWorldObj();
-        
-        int metadata = world.getBlockMetadata(x, y, z);
-        world.setBlockMetadataWithNotify(x, y, z, itemStack.getItemDamage(), 4);
-        
-        int color = FeatureRegistry.enableOptifineIntegration ? OptifineHandler.getColorMultiplier(block, renderBlocks.blockAccess, x, y, z) : block.colorMultiplier(renderBlocks.blockAccess, x, y, z);
-        
-        world.setBlockMetadataWithNotify(x, y, z, metadata, 4);
+        BlockProperties.setHostMetadata(blockHandler.TE, itemStack.getItemDamage());
+        int color = getIntColor(block, x, y, z);
+        BlockProperties.resetHostMetadata(blockHandler.TE);
         
         float[] rgb = { (color >> 16 & 255) / 255.0F, (color >> 8 & 255) / 255.0F, (color & 255) / 255.0F };
         
@@ -181,17 +183,15 @@ public class LightingHelper {
     /**
      * Apply lightness and color to AO or tessellator.
      */
-    public void colorSide(ItemStack itemStack, int x, int y, int z, int side, IIcon icon)
+    public void colorSide(ItemStack itemStack, Block block, int x, int y, int z, int side, IIcon icon)
     {
-        Block block = BlockProperties.toBlock(itemStack);
-        
         float[] dyeRGB = { 1.0F, 1.0F, 1.0F };
         
         if (!blockHandler.suppressDyeColor && !(block.equals(Blocks.grass) && side == 1)) {
             dyeRGB = blockHandler.hasDyeOverride ? DyeHandler.getRGB(blockHandler.dyeOverride) : DyeHandler.getRGB(DyeHandler.getColor(BlockProperties.getDye(blockHandler.TE, blockHandler.coverRendering)));
         }
         
-        float[] blockRGB = getItemStackRGB(itemStack, x, y, z);
+        float[] blockRGB = getBlockRGB(itemStack, block, x, y, z);
         
         /* If block is grass, we have to apply color selectively. */
         

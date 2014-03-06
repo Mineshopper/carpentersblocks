@@ -3,15 +3,20 @@ package carpentersblocks.util.flowerpot;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 
 public class FlowerPotHandler {
     
-    private final static Map<String, Profile> plantProfile = new HashMap<String, Profile>();
-    
+    public final static Map<String, Profile> plantProfile = new HashMap<String, Profile>();
+    public final static Map<Item, Block>     itemPlant = new HashMap<Item, Block>();
+
     public enum Profile {
         REDUCED_SCALE_YP,
         REDUCED_SCALE_YN,
@@ -25,8 +30,19 @@ public class FlowerPotHandler {
     /**
      * Initializes plant profiles.
      */
-    public static void initPlantProfiles()
+    public static void initPlants()
     {
+        /* 
+         * Map Items with Blocks.
+         * Needed because Block.getBlockFromItem() won't return an object
+         * for these ItemStacks.
+         */
+        
+        itemPlant.put(Items.carrot, Blocks.carrots );
+        itemPlant.put(Items.potato, Blocks.potatoes);
+        itemPlant.put(Items.reeds , Blocks.reeds   );
+        itemPlant.put(Items.wheat , Blocks.wheat   );
+
         /* Vanilla */
         
         plantProfile.put("tile.tallgrass.grass", Profile.THIN_YP         );
@@ -44,7 +60,7 @@ public class FlowerPotHandler {
         
         //tile.flower1.dandelion, Profile.TRUE_SCALE
         //tile.flower2.houstonia, Profile.TRUE_SCALE
-        //tile.doublePlant.sunflower *NEEDS TOP ICON*
+        //tile.doublePlant.sunflower *NEEDS SPECIAL RENDER*
         //tile.doublePlant.grass *NEEDS BIOME COLORING, TWO-TALL CONFIGURATION, REDUCED_SCALE_YP
         //tile.doublePlant.fern *NEEDS BIOME COLORING, TWO-TALL CONFIGURATION, REDUCED_SCALE_YP
         //tile.doublePlant.paeonia *NEEDS TWO-TALL CONFIGURATION, REDUCED_SCALE_YP
@@ -98,26 +114,17 @@ public class FlowerPotHandler {
         plantProfile.put("tile.extrabiomes.flower.6", Profile.THIN_YP);
         plantProfile.put("tile.extrabiomes.flower.7", Profile.THIN_YP);
     }
-    
-    /**
-     * Enables an ItemStack to be treated as a plant.
-     * Covers items such as reeds and crops.
-     */
-    public static boolean isPlantException(ItemStack itemStack)
-    {
-        return true;
-    }
-    
+        
     /**
      * Returns the plant profile to indicate which render method to use.
      */
     public static Profile getPlantProfile(TEBase TE)
     {
-        ItemStack itemStack = FlowerPotProperties.getPlant(TE);
-
-        String name = itemStack.getUnlocalizedName();
+        Block block = FlowerPotProperties.toBlock(FlowerPotProperties.getPlant(TE));
         
-        Material material = BlockProperties.toBlock(itemStack).getMaterial();
+        String name = block.getUnlocalizedName();
+        
+        Material material = block.getMaterial();
         
         if (plantProfile.containsKey(name)) {
             return plantProfile.get(name);

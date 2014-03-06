@@ -190,13 +190,13 @@ public class BlockHandlerCarpentersHatch extends BlockHandlerBase {
             renderBlocks.setRenderBounds(0.1875F, 0.1875F, 0.0F, 0.8125F, 0.8125F, 1.0F);
             
             lightingHelper.setLightingZPos(glass, x, y, z);
-            lightingHelper.colorSide(glass, x, y, z, 3, null);
+            lightingHelper.colorSide(glass, Blocks.glass, x, y, z, 3, null);
             VertexHelper.setOffset(-path_offset);
             RenderHelper.renderFaceZPos(renderBlocks, x, y, z, icon);
             
             //if (!renderAlphaOverride) {
                 lightingHelper.setLightingZNeg(glass, x, y, z);
-                lightingHelper.colorSide(glass, x, y, z, 2, null);
+                lightingHelper.colorSide(glass, Blocks.glass, x, y, z, 2, null);
                 VertexHelper.setOffset(-(1 - path_offset));
                 RenderHelper.renderFaceZNeg(renderBlocks, x, y, z, icon);
             //}
@@ -217,13 +217,13 @@ public class BlockHandlerCarpentersHatch extends BlockHandlerBase {
             //} else {
                 
                 lightingHelper.setLightingYNeg(glass, x, y, z);
-                lightingHelper.colorSide(glass, x, y, z, 0, null);
+                lightingHelper.colorSide(glass, Blocks.glass, x, y, z, 0, null);
                 VertexHelper.setOffset(-path_offset);
                 RenderHelper.renderFaceYNeg(renderBlocks, x, y, z, icon);
                 
                 //if (!renderAlphaOverride) {
                     lightingHelper.setLightingYPos(glass, x, y, z);
-                    lightingHelper.colorSide(glass, x, y, z, 1, null);
+                    lightingHelper.colorSide(glass, Blocks.glass, x, y, z, 1, null);
                     VertexHelper.setOffset(-(1 - path_offset));
                     RenderHelper.renderFaceYPos(renderBlocks, x, y, z, icon);
                 //}
@@ -235,13 +235,13 @@ public class BlockHandlerCarpentersHatch extends BlockHandlerBase {
             renderBlocks.setRenderBounds(0.0F, 0.1875F, 0.1875F, 1.0F, 0.8125F, 0.8125F);
             
             lightingHelper.setLightingXPos(glass, x, y, z);
-            lightingHelper.colorSide(glass, x, y, z, 5, null);
+            lightingHelper.colorSide(glass, Blocks.glass, x, y, z, 5, null);
             VertexHelper.setOffset(-path_offset);
             RenderHelper.renderFaceXPos(renderBlocks, x, y, z, icon);
             
             //if (!renderAlphaOverride) {
                 lightingHelper.setLightingXNeg(glass, x, y, z);
-                lightingHelper.colorSide(glass, x, y, z, 4, null);
+                lightingHelper.colorSide(glass, Blocks.glass, x, y, z, 4, null);
                 VertexHelper.setOffset(-(1 - path_offset));
                 RenderHelper.renderFaceXNeg(renderBlocks, x, y, z, icon);
             //}
@@ -401,13 +401,13 @@ public class BlockHandlerCarpentersHatch extends BlockHandlerBase {
             renderBlocks.setRenderBounds(0.1875F, 0.1875F, 0.0F, 0.8125F, 0.8125F, 1.0F);
             
             lightingHelper.setLightingZPos(glass, x, y, z);
-            lightingHelper.colorSide(glass, x, y, z, 3, null);
+            lightingHelper.colorSide(glass, Blocks.glass, x, y, z, 3, null);
             VertexHelper.setOffset(-path_offset);
             RenderHelper.renderFaceZPos(renderBlocks, x, y, z, IconRegistry.icon_hatch_french_glass);
             
             //if (!renderAlphaOverride) {
                 lightingHelper.setLightingZNeg(glass, x, y, z);
-                lightingHelper.colorSide(glass, x, y, z, 2, null);
+                lightingHelper.colorSide(glass, Blocks.glass, x, y, z, 2, null);
                 VertexHelper.setOffset(-(1 - path_offset));
                 RenderHelper.renderFaceZNeg(renderBlocks, x, y, z, IconRegistry.icon_hatch_french_glass);
             //}
@@ -428,13 +428,13 @@ public class BlockHandlerCarpentersHatch extends BlockHandlerBase {
             //} else {
                 
                 lightingHelper.setLightingYNeg(glass, x, y, z);
-                lightingHelper.colorSide(glass, x, y, z, 0, null);
+                lightingHelper.colorSide(glass, Blocks.glass, x, y, z, 0, null);
                 VertexHelper.setOffset(-path_offset);
                 RenderHelper.renderFaceYNeg(renderBlocks, x, y, z, IconRegistry.icon_hatch_french_glass);
                 
                 //if (!renderAlphaOverride) {
                     lightingHelper.setLightingYPos(glass, x, y, z);
-                    lightingHelper.colorSide(glass, x, y, z, 1, null);
+                    lightingHelper.colorSide(glass, Blocks.glass, x, y, z, 1, null);
                     VertexHelper.setOffset(-(1 - path_offset));
                     RenderHelper.renderFaceYPos(renderBlocks, x, y, z, IconRegistry.icon_hatch_french_glass);
                 //}
@@ -446,13 +446,13 @@ public class BlockHandlerCarpentersHatch extends BlockHandlerBase {
             renderBlocks.setRenderBounds(0.0F, 0.1875F, 0.1875F, 1.0F, 0.8125F, 0.8125F);
             
             lightingHelper.setLightingXPos(glass, x, y, z);
-            lightingHelper.colorSide(glass, x, y, z, 5, null);
+            lightingHelper.colorSide(glass, Blocks.glass, x, y, z, 5, null);
             VertexHelper.setOffset(-path_offset);
             RenderHelper.renderFaceXPos(renderBlocks, x, y, z, IconRegistry.icon_hatch_french_glass);
             
             //if (!renderAlphaOverride) {
                 lightingHelper.setLightingXNeg(glass, x, y, z);
-                lightingHelper.colorSide(glass, x, y, z, 4, null);
+                lightingHelper.colorSide(glass, Blocks.glass, x, y, z, 4, null);
                 VertexHelper.setOffset(-(1 - path_offset));
                 RenderHelper.renderFaceXNeg(renderBlocks, x, y, z, IconRegistry.icon_hatch_french_glass);
             //}

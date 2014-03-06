@@ -6,6 +6,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
@@ -101,12 +102,12 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
         GL11.glTranslatef(0.5F, 0.5F, 0.5F);
         GL11.glRotatef(90.0F, 0.0F, -1.0F, 0.0F);
     }
-    
+
     @Override
     public boolean renderWorldBlock(IBlockAccess blockAccess, int x, int y, int z, Block block, int modelID, RenderBlocks renderBlocks)
     {
         VertexHelper.vertexCount = 0;
-        
+
         int renderPass = MinecraftForgeClient.getRenderPass();
                 
         TE = (TEBase) blockAccess.getTileEntity(x, y, z);
@@ -435,7 +436,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
 
             /* Render side */
             
-            lightingHelper.colorSide(itemStack, x, y, z, side, icon);
+            lightingHelper.colorSide(itemStack, block, x, y, z, side, icon);
             renderSide(x, y, z, side, icon);
             
             clearRotation(side);
@@ -491,7 +492,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
          * decorations. Can also check Icon name for beginsWith("destroy_stage_").
          */
         if (renderBlocks.hasOverrideBlockTexture()) {
-            lightingHelper.colorSide(itemStack, x, y, z, side, renderBlocks.overrideBlockTexture);
+            lightingHelper.colorSide(itemStack, BlockProperties.toBlock(itemStack), x, y, z, side, renderBlocks.overrideBlockTexture);
             renderSide(x, y, z, side, renderBlocks.overrideBlockTexture);
         } else {
             renderMultiTexturedSide(itemStack, x, y, z, side, getIcon(itemStack, side));
@@ -506,7 +507,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
         if (side > UP)
         {
             IIcon icon = getGrassOverlayIcon(side);
-            lightingHelper.colorSide(new ItemStack(Blocks.grass), x, y, z, side, icon);
+            lightingHelper.colorSide(new ItemStack(Blocks.grass), Blocks.grass, x, y, z, side, icon);
             renderSide(x, y, z, side, icon);
         }
     }
@@ -533,7 +534,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
                         icon = IconRegistry.icon_overlay_snow_side;
                         break;
                 }
-                lightingHelper.colorSide(new ItemStack(Blocks.snow), x, y, z, side, icon);
+                lightingHelper.colorSide(new ItemStack(Blocks.snow), Blocks.snow, x, y, z, side, icon);
                 
                 break;
             }
@@ -549,21 +550,21 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
                         icon = IconRegistry.icon_overlay_hay_side;
                         break;
                 }
-                lightingHelper.colorSide(new ItemStack(Blocks.hay_block), x, y, z, side, icon);
+                lightingHelper.colorSide(new ItemStack(Blocks.hay_block), Blocks.hay_block, x, y, z, side, icon);
                 
                 break;
             }
             case WEB: {
                 
                 icon = Blocks.web.getBlockTextureFromSide(side);
-                lightingHelper.colorSide(new ItemStack(Blocks.web), x, y, z, side, icon);
+                lightingHelper.colorSide(new ItemStack(Blocks.web), Blocks.web, x, y, z, side, icon);
                 
                 break;
             }
             case VINE: {
                 
                 icon = Blocks.vine.getBlockTextureFromSide(side);
-                lightingHelper.colorSide(new ItemStack(Blocks.vine), x, y, z, side, icon);
+                lightingHelper.colorSide(new ItemStack(Blocks.vine), Blocks.vine, x, y, z, side, icon);
                 
                 break;
             }
@@ -579,7 +580,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
                         icon = IconRegistry.icon_overlay_mycelium_side;
                         break;
                 }
-                lightingHelper.colorSide(new ItemStack(Blocks.mycelium), x, y, z, side, icon);
+                lightingHelper.colorSide(new ItemStack(Blocks.mycelium), Blocks.mycelium, x, y, z, side, icon);
                 
                 break;
             }
@@ -587,7 +588,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
                 
                 if (block != Blocks.grass && side > DOWN) {
                     icon = getGrassOverlayIcon(side);
-                    lightingHelper.colorSide(new ItemStack(Blocks.grass), x, y, z, side, icon);
+                    lightingHelper.colorSide(new ItemStack(Blocks.grass), Blocks.grass, x, y, z, side, icon);
                 }
 
                 break;
@@ -637,7 +638,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
         int pattern = BlockProperties.getPattern(TE, coverRendering);
         IIcon icon = renderBlocks.getIconSafe(IconRegistry.icon_pattern[pattern]);
         
-        lightingHelper.colorSide(new ItemStack(Blocks.glass), x, y, z, side, icon);
+        lightingHelper.colorSide(new ItemStack(Blocks.glass), Blocks.grass, x, y, z, side, icon);
         renderSide(x, y, z, side, icon);
     }
     

@@ -313,18 +313,17 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
         Tessellator.instance.setBrightness(Blocks.glass.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y, z));
         
         ItemStack glass = new ItemStack(Blocks.glass);
-        
+
         if (path_on_x) {
             
             renderBlocks.setRenderBounds(0.0F, isBottom ? 0.1875F : 0.0F, 0.1875F, 1.0F, isBottom ? 1.0F : 0.8125F, 0.8125F);
-            
             lightingHelper.setLightingXNeg(glass, x, y, z);
-            lightingHelper.colorSide(glass, x, y, z, 4, null);
+            lightingHelper.colorSide(glass, Blocks.glass, x, y, z, 4, null);
             RenderHelper.renderFaceXNeg(renderBlocks, x, y, z, icon);
             
             //if (!renderAlphaOverride) {
                 lightingHelper.setLightingXPos(glass, x, y, z);
-                lightingHelper.colorSide(glass, x, y, z, 5, null);
+                lightingHelper.colorSide(glass, Blocks.glass, x, y, z, 5, null);
                 VertexHelper.setOffset(-path_offset);
                 RenderHelper.renderFaceXPos(renderBlocks, x, y, z, icon);
             //}
@@ -334,12 +333,12 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
             renderBlocks.setRenderBounds(0.1875F, isBottom ? 0.1875F : 0.0F, 0.0F, 0.8125F, isBottom ? 1.0F : 0.8125F, 1.0F);
             
             lightingHelper.setLightingZNeg(glass, x, y, z);
-            lightingHelper.colorSide(glass, x, y, z, 2, null);
+            lightingHelper.colorSide(glass, Blocks.glass, x, y, z, 2, null);
             RenderHelper.renderFaceZNeg(renderBlocks, x, y, z, icon);
             
             //if (!renderAlphaOverride) {
                 lightingHelper.setLightingZPos(glass, x, y, z);
-                lightingHelper.colorSide(glass, x, y, z, 3, null);
+                lightingHelper.colorSide(glass, Blocks.glass, x, y, z, 3, null);
                 VertexHelper.setOffset(-path_offset);
                 RenderHelper.renderFaceZPos(renderBlocks, x, y, z, icon);
             //}
@@ -591,12 +590,12 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
                 renderBlocks.setRenderBounds(0.0F, 0.1875F, 0.1875F, 1.0F, 0.8125F, 0.8125F);
                 
                 lightingHelper.setLightingXNeg(glass, x, y, z);
-                lightingHelper.colorSide(glass, x, y, z, 4, null);
+                lightingHelper.colorSide(glass, Blocks.glass, x, y, z, 4, null);
                 RenderHelper.renderFaceXNeg(renderBlocks, x, y, z, IconRegistry.icon_door_glass_top);
                 
                 //if (!renderAlphaOverride) {
                     lightingHelper.setLightingXPos(glass, x, y, z);
-                    lightingHelper.colorSide(glass, x, y, z, 5, null);
+                    lightingHelper.colorSide(glass, Blocks.glass, x, y, z, 5, null);
                     VertexHelper.setOffset(-path_offset);
                     RenderHelper.renderFaceXPos(renderBlocks, x, y, z, IconRegistry.icon_door_glass_top);
                 //}
@@ -606,12 +605,12 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
                 renderBlocks.setRenderBounds(0.1875F, 0.1875F, 0.0F, 0.8125F, 0.8125F, 1.0F);
                 
                 lightingHelper.setLightingZNeg(glass, x, y, z);
-                lightingHelper.colorSide(glass, x, y, z, 2, null);
+                lightingHelper.colorSide(glass, Blocks.glass, x, y, z, 2, null);
                 RenderHelper.renderFaceZNeg(renderBlocks, x, y, z, IconRegistry.icon_door_glass_top);
                 
                 //if (!renderAlphaOverride) {
                     lightingHelper.setLightingZPos(glass, x, y, z);
-                    lightingHelper.colorSide(glass, x, y, z, 3, null);
+                    lightingHelper.colorSide(glass, Blocks.glass, x, y, z, 3, null);
                     VertexHelper.setOffset(-path_offset);
                     RenderHelper.renderFaceZPos(renderBlocks, x, y, z, IconRegistry.icon_door_glass_top);
                 //}

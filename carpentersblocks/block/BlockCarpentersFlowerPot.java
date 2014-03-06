@@ -138,8 +138,8 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
         int DEC_INV = 1;
         boolean[] result = { false, false };
         
-        if (itemStack != null)
-        {
+        if (itemStack != null) {
+            
             boolean hasCover = BlockProperties.hasCover(TE, 6);
             boolean hasOverlay = BlockProperties.hasOverlay(TE, 6);
             boolean soilAreaClicked = side == 1 && hitX > 0.375F && hitX < 0.625F && hitZ > 0.375F && hitZ < 0.625F;
@@ -157,29 +157,34 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
                     }
                 }
                 
-                if (!FlowerPotProperties.hasPlant(TE))
-                {
-                    if (FlowerPotProperties.isPlant(itemStack))
-                    {
+                if (!FlowerPotProperties.hasPlant(TE)) {
+                    
+                    if (FlowerPotProperties.isPlant(itemStack)) {
+                        
                         FlowerPotProperties.setPlant(TE, itemStack);
                         result[ALTERED] = true;
                         result[DEC_INV] = true;
+                        
                     }
+                    
                 }
                 
             } else {
                 
-                if (FlowerPotProperties.isSoil(itemStack))
-                {
-                    if (hasCover || soilAreaClicked)
-                    {
+                if (FlowerPotProperties.isSoil(itemStack)) {
+                    
+                    if (hasCover || soilAreaClicked) {
+                        
                         FlowerPotProperties.setSoil(TE, itemStack);
                         result[ALTERED] = true;
                         result[DEC_INV] = true;
+                        
                     }
+                    
                 }
                 
             }
+            
         }
         
         if (result[ALTERED]) {
@@ -306,7 +311,7 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
             
             if (FlowerPotProperties.hasPlant(TE)) {
                 
-                int plant_lightValue = BlockProperties.toBlock(FlowerPotProperties.getPlant(TE)).getLightValue();
+                int plant_lightValue = FlowerPotProperties.toBlock(FlowerPotProperties.getPlant(TE)).getLightValue();
                 
                 if (plant_lightValue > potLight) {
                     potLight = plant_lightValue;
@@ -317,7 +322,7 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
             return coverLight > potLight ? coverLight : potLight;
             
         }
-        
+                
         return getLightValue();
     }
     
@@ -335,9 +340,9 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
                 
                 ItemStack itemStack = FlowerPotProperties.getPlant(TE);
                 
-                world.setBlockMetadataWithNotify(x, y, z, itemStack.getItemDamage(), 4);
-                BlockProperties.toBlock(itemStack).onEntityCollidedWithBlock(world, x, y, z, entity);
-                world.setBlockMetadataWithNotify(x, y, z, BlockProperties.getCover(TE, 6).getItemDamage(), 4);
+                BlockProperties.setHostMetadata(TE, itemStack.getItemDamage());
+                FlowerPotProperties.toBlock(itemStack).onEntityCollidedWithBlock(world, x, y, z, entity);
+                BlockProperties.resetHostMetadata(TE);
                 
             }
             
@@ -383,9 +388,9 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
                 
                 ItemStack itemStack = FlowerPotProperties.getPlant(TE);
                 
-                world.setBlockMetadataWithNotify(x, y, z, itemStack.getItemDamage(), 4);
-                BlockProperties.toBlock(itemStack).randomDisplayTick(world, x, y, z, random);
-                world.setBlockMetadataWithNotify(x, y, z, BlockProperties.getCover(TE, 6).getItemDamage(), 4);
+                BlockProperties.setHostMetadata(TE, itemStack.getItemDamage());
+                FlowerPotProperties.toBlock(itemStack).randomDisplayTick(world, x, y, z, random);
+                BlockProperties.resetHostMetadata(TE);
                 
             }
             
@@ -393,9 +398,9 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
                 
                 ItemStack itemStack = FlowerPotProperties.getSoil(TE);
                 
-                world.setBlockMetadataWithNotify(x, y, z, itemStack.getItemDamage(), 4);
+                BlockProperties.setHostMetadata(TE, itemStack.getItemDamage());
                 BlockProperties.toBlock(itemStack).randomDisplayTick(world, x, y, z, random);
-                world.setBlockMetadataWithNotify(x, y, z, BlockProperties.getCover(TE, 6).getItemDamage(), 4);
+                BlockProperties.resetHostMetadata(TE);
                 
             }
             

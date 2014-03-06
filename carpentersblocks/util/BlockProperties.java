@@ -19,13 +19,33 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import carpentersblocks.CarpentersBlocks;
 import carpentersblocks.tileentity.TEBase;
+import carpentersblocks.tileentity.TECarpentersFlowerPot;
 import carpentersblocks.util.handler.DyeHandler;
 import carpentersblocks.util.handler.OverlayHandler;
 
 public class BlockProperties {
     
     public final static SoundType stepSound = new SoundType(CarpentersBlocks.MODID, 1.0F, 1.0F);
-        
+    
+    /**
+     * Sets host metadata to match ItemStack damage value.
+     * 
+     * Most often used when retrieving properties for side covers,
+     * or any ItemStack in general besides base cover (side == 6).
+     */
+    public static void setHostMetadata(TEBase TE, int metadata)
+    {
+        TE.getWorldObj().setBlockMetadataWithNotify(TE.xCoord, TE.yCoord, TE.zCoord, metadata, 4);
+    }
+    
+    /**
+     * Resets host block metadata.
+     */
+    public static void resetHostMetadata(TEBase TE)
+    {
+        TE.getWorldObj().setBlockMetadataWithNotify(TE.xCoord, TE.yCoord, TE.zCoord, BlockProperties.getCover(TE, 6).getItemDamage(), 4);
+    }
+    
     /**
      * Takes an ItemStack and returns block, or null if ItemStack
      * does not contain a block.

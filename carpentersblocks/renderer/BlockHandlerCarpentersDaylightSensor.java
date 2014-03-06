@@ -74,7 +74,7 @@ public class BlockHandlerCarpentersDaylightSensor extends BlockHandlerBase {
             
             renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 0.25D, 1.0D);
             lightingHelper.setLightingYPos(glass, x, y, z);
-            lightingHelper.colorSide(glass, x, y, z, 1, null);
+            lightingHelper.colorSide(glass, Blocks.glass, x, y, z, 1, null);
             RenderHelper.renderFaceYPos(renderBlocks, x, y, z, IconRegistry.icon_daylight_sensor_glass_top);
             
             renderBlocks.enableAO = false;

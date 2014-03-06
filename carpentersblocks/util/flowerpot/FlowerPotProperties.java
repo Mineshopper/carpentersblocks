@@ -1,7 +1,14 @@
 package carpentersblocks.util.flowerpot;
 
+import java.util.HashSet;
+import java.util.Iterator;
+
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockWood;
 import net.minecraft.block.material.Material;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -12,50 +19,42 @@ import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.tileentity.TECarpentersFlowerPot;
 import carpentersblocks.util.BlockProperties;
 
+import com.google.common.collect.Sets;
+
+import cpw.mods.fml.common.registry.GameData;
+
 public class FlowerPotProperties {
+
+    /**
+     * Will return block from ItemStack. This is to be used for plants only.
+     */
+    public static Block toBlock(ItemStack itemStack)
+    {
+        Object plant = FlowerPotHandler.itemPlant.get(itemStack.getItem());
+        
+        if (plant != null) {
+            return (Block) plant;
+        } else {
+            return Block.getBlockFromItem(itemStack.getItem());
+        }
+    }
     
     /**
      * Returns whether flower pot has a design.
      */
-    public final static boolean hasDesign(TEBase TE)
+    public static boolean hasDesign(TEBase TE)
     {
         return FlowerPot.getDesign(TE) > 0;
     }
     
     /**
-     * Returns soil ItemStack.
-     */
-    public final static ItemStack getSoil(TEBase TE)
-    {
-        return ((TECarpentersFlowerPot)TE).soil;
-    }
-    
-    /**
-     * Returns plant ItemStack.
-     */
-    public final static ItemStack getPlant(TEBase TE)
-    {
-        return ((TECarpentersFlowerPot)TE).plant;
-    }
-    
-    /**
      * Returns whether pot has soil.
      */
-    public final static boolean hasSoil(TEBase TE)
+    public static boolean hasSoil(TEBase TE)
     {
         ItemStack itemStack = ((TECarpentersFlowerPot)TE).soil;
         
         return itemStack != null && isSoil(itemStack);
-    }
-    
-    /**
-     * Returns whether pot has plant.
-     */
-    public static boolean hasPlant(TEBase TE)
-    {
-        ItemStack itemStack = ((TECarpentersFlowerPot)TE).plant;
-        
-        return itemStack != null && isPlant(itemStack);
     }
     
     /**
@@ -74,17 +73,11 @@ public class FlowerPotProperties {
     }
     
     /**
-     * Returns whether ItemStack contains a plant.
+     * Returns soil ItemStack.
      */
-    public static boolean isPlant(ItemStack itemStack)
+    public static ItemStack getSoil(TEBase TE)
     {
-        Block block = Block.getBlockFromItem(itemStack.getItem());
-        
-        if (itemStack.getItem() instanceof ItemBlock && !block.hasTileEntity(itemStack.getItemDamage())) {
-            return block instanceof IPlantable || block instanceof IShearable;
-        } else {
-            return false;
-        }
+        return ((TECarpentersFlowerPot)TE).soil;
     }
     
     /**
@@ -108,16 +101,48 @@ public class FlowerPotProperties {
     }
     
     /**
+     * Returns whether pot has plant.
+     */
+    public static boolean hasPlant(TEBase TE)
+    {
+        ItemStack itemStack = ((TECarpentersFlowerPot)TE).plant;
+        
+        return itemStack != null && isPlant(itemStack);
+    }
+    
+    /**
+     * Returns whether ItemStack contains a plant.
+     */
+    public static boolean isPlant(ItemStack itemStack)
+    {
+        Block block = Block.getBlockFromItem(itemStack.getItem());
+
+        if (!block.equals(Blocks.air)) {
+            if (!block.hasTileEntity(itemStack.getItemDamage())) {
+                return block instanceof IPlantable || block instanceof IShearable;
+            } else {
+                return false;
+            }
+        } else {
+            return FlowerPotHandler.itemPlant.containsKey(itemStack.getItem());
+        }
+    }
+    
+    /**
+     * Returns plant block.
+     */
+    public static ItemStack getPlant(TEBase TE)
+    {
+        return ((TECarpentersFlowerPot)TE).plant;
+    }
+
+    /**
      * Sets plant block.
      */
     public static boolean setPlant(TEBase TE, ItemStack itemStack)
     {
         if (hasPlant(TE)) {
             BlockProperties.ejectEntity(TE, ((TECarpentersFlowerPot)TE).plant);
-        }
-        
-        if (itemStack != null) {
-            System.out.println("DEBUG: plant name = " + itemStack.getUnlocalizedName());
         }
 
         ((TECarpentersFlowerPot)TE).plant = itemStack;
