@@ -18,6 +18,8 @@ public class FlowerPotHandler {
     public final static Map<Item, Block>     itemPlant = new HashMap<Item, Block>();
 
     public enum Profile {
+        DOUBLEPLANT,
+        THIN_DOUBLEPLANT,
         REDUCED_SCALE_YP,
         REDUCED_SCALE_YN,
         TRUE_SCALE,
@@ -44,27 +46,25 @@ public class FlowerPotHandler {
         itemPlant.put(Items.wheat , Blocks.wheat   );
 
         /* Vanilla */
-        
-        plantProfile.put("tile.tallgrass.grass", Profile.THIN_YP         );
-        plantProfile.put("tile.tallgrass.fern" , Profile.REDUCED_SCALE_YP);
-        plantProfile.put("tile.deadbush"       , Profile.REDUCED_SCALE_YP);
-        plantProfile.put("tile.cactus"         , Profile.CACTUS          );
-        plantProfile.put("tile.mushroom"       , Profile.TRUE_SCALE      );
-        plantProfile.put("tile.reeds"          , Profile.THIN_YP         );
-        plantProfile.put("tile.carrots"        , Profile.THIN_YP         );
-        plantProfile.put("tile.potatoes"       , Profile.THIN_YP         );
-        plantProfile.put("tile.crops"          , Profile.THIN_YP         );
-        
-        plantProfile.put("tile.crops"          , Profile.THIN_YP         );
-        plantProfile.put("tile.crops"          , Profile.THIN_YP         );
-        
-        //tile.flower1.dandelion, Profile.TRUE_SCALE
-        //tile.flower2.houstonia, Profile.TRUE_SCALE
-        //tile.doublePlant.sunflower *NEEDS SPECIAL RENDER*
-        //tile.doublePlant.grass *NEEDS BIOME COLORING, TWO-TALL CONFIGURATION, REDUCED_SCALE_YP
-        //tile.doublePlant.fern *NEEDS BIOME COLORING, TWO-TALL CONFIGURATION, REDUCED_SCALE_YP
-        //tile.doublePlant.paeonia *NEEDS TWO-TALL CONFIGURATION, REDUCED_SCALE_YP
-        
+
+        plantProfile.put("tile.doublePlant.sunflower", Profile.DOUBLEPLANT     );
+        plantProfile.put("tile.doublePlant.syringa"  , Profile.DOUBLEPLANT     );
+        plantProfile.put("tile.doublePlant.grass"    , Profile.THIN_DOUBLEPLANT);
+        plantProfile.put("tile.doublePlant.fern"     , Profile.DOUBLEPLANT     );
+        plantProfile.put("tile.doublePlant.rose"     , Profile.DOUBLEPLANT     );
+        plantProfile.put("tile.doublePlant.paeonia"  , Profile.DOUBLEPLANT     );
+        plantProfile.put("tile.tallgrass.grass"      , Profile.THIN_YP         );
+        plantProfile.put("tile.tallgrass.fern"       , Profile.REDUCED_SCALE_YP);
+        plantProfile.put("tile.deadbush"             , Profile.REDUCED_SCALE_YP);
+        plantProfile.put("tile.cactus"               , Profile.CACTUS          );
+        plantProfile.put("tile.mushroom"             , Profile.TRUE_SCALE      );
+        plantProfile.put("tile.reeds"                , Profile.THIN_YP         );
+        plantProfile.put("tile.carrots"              , Profile.THIN_YP         );
+        plantProfile.put("tile.potatoes"             , Profile.THIN_YP         );
+        plantProfile.put("tile.crops"                , Profile.THIN_YP         );
+        plantProfile.put("tile.flower1.dandelion"    , Profile.TRUE_SCALE      );
+        plantProfile.put("tile.flower2.houstonia"    , Profile.TRUE_SCALE      );
+
         /* Weee! Flowers */
         
         plantProfile.put("orangeflower"       , Profile.TRUE_SCALE);
@@ -114,18 +114,26 @@ public class FlowerPotHandler {
         plantProfile.put("tile.extrabiomes.flower.6", Profile.THIN_YP);
         plantProfile.put("tile.extrabiomes.flower.7", Profile.THIN_YP);
     }
-        
+       
     /**
      * Returns the plant profile to indicate which render method to use.
      */
     public static Profile getPlantProfile(TEBase TE)
     {
-        Block block = FlowerPotProperties.toBlock(FlowerPotProperties.getPlant(TE));
+        return getPlantProfile(FlowerPotProperties.getPlant(TE));
+    }
+    
+    /**
+     * Returns the plant profile to indicate which render method to use.
+     */
+    public static Profile getPlantProfile(ItemStack itemStack)
+    {
+        Block block = FlowerPotProperties.toBlock(itemStack);
         
-        String name = block.getUnlocalizedName();
-        
+        String name = itemStack.getUnlocalizedName();
+
         Material material = block.getMaterial();
-        
+
         if (plantProfile.containsKey(name)) {
             return plantProfile.get(name);
         } else if (material.equals(Material.leaves) || material.equals(Material.cactus)) {

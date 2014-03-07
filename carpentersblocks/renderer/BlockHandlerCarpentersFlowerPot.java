@@ -1,8 +1,10 @@
 package carpentersblocks.renderer;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockCrops;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemDoublePlant;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
@@ -142,21 +144,37 @@ public class BlockHandlerCarpentersFlowerPot extends BlockHandlerBase {
         Tessellator tessellator = Tessellator.instance;
         tessellator.addTranslation(0.0F, 0.25F, 0.0F);
 
-        switch (FlowerPotHandler.getPlantProfile(TE)) {
+        Block block = FlowerPotProperties.toBlock(itemStack);
+        RenderHelperFlowerPot.setPlantColor(itemStack, block, x, y, z);
+        
+        if (block instanceof BlockCrops) {
+            /* Crop plants will use fully matured metadata. */
+            itemStack.setItemDamage(7);
+        }
+        
+        IIcon icon = block.getIcon(2, itemStack.getItemDamage());
+        
+        switch (FlowerPotHandler.getPlantProfile(itemStack)) {
+            case DOUBLEPLANT:
+                RenderHelperFlowerPot.renderBlockDoublePlant(renderBlocks, itemStack, x, y, z, false);
+                break;
+            case THIN_DOUBLEPLANT:
+                RenderHelperFlowerPot.renderBlockDoublePlant(renderBlocks, itemStack, x, y, z, true);
+                break;
             case REDUCED_SCALE_YP:
-                RenderHelperFlowerPot.renderPlantCrossedSquares(renderBlocks, itemStack, x, y, z, 0.75F, false);
+                RenderHelperFlowerPot.renderPlantCrossedSquares(renderBlocks, block, icon, x, y, z, 0.75F, false);
                 break;
             case REDUCED_SCALE_YN:
-                RenderHelperFlowerPot.renderPlantCrossedSquares(renderBlocks, itemStack, x, y, z, 0.75F, true);
+                RenderHelperFlowerPot.renderPlantCrossedSquares(renderBlocks, block, icon, x, y, z, 0.75F, true);
                 break;
             case TRUE_SCALE:
-                RenderHelperFlowerPot.renderPlantCrossedSquares(renderBlocks, itemStack, x, y, z, 1.0F, false);
+                RenderHelperFlowerPot.renderPlantCrossedSquares(renderBlocks, block, icon, x, y, z, 1.0F, false);
                 break;
             case THIN_YP:
-                RenderHelperFlowerPot.renderPlantThinCrossedSquares(renderBlocks, itemStack, x, y, z, false);
+                RenderHelperFlowerPot.renderPlantThinCrossedSquares(renderBlocks, block, icon, x, y, z, false);
                 break;
             case THIN_YN:
-                RenderHelperFlowerPot.renderPlantThinCrossedSquares(renderBlocks, itemStack, x, y, z, true);
+                RenderHelperFlowerPot.renderPlantThinCrossedSquares(renderBlocks, block, icon, x, y, z, true);
                 break;
             case CACTUS:
                 RenderHelperFlowerPot.drawPlantCactus(renderBlocks, itemStack, x, y, z);
