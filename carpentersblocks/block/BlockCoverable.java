@@ -246,6 +246,10 @@ public class BlockCoverable extends BlockContainer {
         }
     }
     
+    protected void preOnBlockActivated(TEBase TE, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ, List<Boolean> altered, List<Boolean> decInv) { }
+    
+    protected void postOnBlockActivated(TEBase TE, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ, List<Boolean> altered, List<Boolean> decInv) { }
+    
     @Override
     /**
      * Called upon block activation (right click on the block.)
@@ -253,39 +257,33 @@ public class BlockCoverable extends BlockContainer {
     public final boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ)
     {
         ItemStack itemStack = entityPlayer.getCurrentEquippedItem();
-
-        /* If item with right-click action is being held (food, etc), do not continue. */
+        TEBase TE = (TEBase) world.getTileEntity(x, y, z);
         
-        if (itemStack != null && !itemStack.getItemUseAction().equals(EnumAction.none)) {
-            return false;
-        }
-        
-        if (world.isRemote) {
-
-            return true;
-
-        } else {
-        
-            TEBase TE = (TEBase) world.getTileEntity(x, y, z);
-            List<Boolean> altered = new ArrayList<Boolean>();
+        if (canPlayerActivate(TE, entityPlayer)) {
             
-            if (canPlayerActivate(TE, entityPlayer)) {
+            if (world.isRemote) {
+
+                return true;
+
+            } else {
                 
+                if (itemStack != null && !itemStack.getItemUseAction().equals(EnumAction.none)) {
+                    return false;
+                }
+                
+                List<Boolean> altered = new ArrayList<Boolean>();
                 List<Boolean> decInv = new ArrayList<Boolean>();
                 
-                /* Sides 0-5 are side covers, and 6 is the base block. */
-                int effectiveSide = BlockProperties.hasCover(TE, side) ? side : 6;
-                
-                boolean[] result = preOnBlockActivated(TE, world, x, y, z, entityPlayer, side, hitX, hitY, hitZ);
-                
-                altered.add(result[0]);
-                decInv.add(result[1]);
-                
+                preOnBlockActivated(TE, entityPlayer, side, hitX, hitY, hitZ, altered, decInv);
+
                 if (canPlayerEdit(TE, entityPlayer)) {
                     
                     if (!altered.contains(true)) {
                         
                         if (itemStack != null) {
+                            
+                            /* Sides 0-5 are side covers, and 6 is the base block. */
+                            int effectiveSide = BlockProperties.hasCover(TE, side) ? side : 6;
                             
                             if (itemStack.getItem() instanceof ICarpentersHammer && ((ICarpentersHammer)itemStack.getItem()).canUseHammer(world, entityPlayer)) {
                                 
@@ -344,21 +342,13 @@ public class BlockCoverable extends BlockContainer {
                     }
                 }
                 
-                if (!altered.contains(true)) {
-                    
-                    if (canPlayerActivate(TE, entityPlayer)) {
-                        result = postOnBlockActivated(TE, world, x, y, z, entityPlayer, side, hitX, hitY, hitZ);
-                        altered.add(result[0]);
-                        decInv.add(result[1]);
-                    }
-                    
-                } else {
-                    
+                postOnBlockActivated(TE, entityPlayer, side, hitX, hitY, hitZ, altered, decInv);
+
+                if (altered.contains(true)) {
                     BlockProperties.playBlockSound(TE, BlockProperties.getCover(TE, 6));
                     damageItemWithChance(world, entityPlayer);
                     onNeighborBlockChange(world, x, y, z, this);
                     world.notifyBlocksOfNeighborChange(x, y, z, this);
-                    
                 }
                 
                 if (decInv.contains(true)) {
@@ -367,11 +357,12 @@ public class BlockCoverable extends BlockContainer {
                     }
                 }
                 
+                return altered.contains(true);
+                
             }
-            
-            return altered.contains(true);
-        
         }
+        
+        return false;
     }
     
     /**
@@ -1149,26 +1140,6 @@ public class BlockCoverable extends BlockContainer {
     protected boolean preOnBlockClicked(TEBase TE, World world, int x, int y, int z, EntityPlayer entityPlayer)
     {
         return false;
-    }
-    
-    /**
-     * This method is configured on as as-needed basis.
-     * It's calling order is not guaranteed.
-     */
-    protected boolean[] preOnBlockActivated(TEBase TE, World world, int x, int y, int z, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ)
-    {
-        boolean[] result = { false, false };
-        
-        return result;
-    }
-    
-    /**
-     * This method is configured on as as-needed basis.
-     * It's calling order is not guaranteed.
-     */
-    protected boolean[] postOnBlockActivated(TEBase TE, World world, int x, int y, int z, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ)
-    {
-        return new boolean[] { false, false };
     }
     
     protected boolean onHammerLeftClick(TEBase TE, EntityPlayer entityPlayer)

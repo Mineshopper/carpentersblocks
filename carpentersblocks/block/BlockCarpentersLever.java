@@ -1,5 +1,7 @@
 package carpentersblocks.block;
 
+import java.util.List;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -210,17 +212,18 @@ public class BlockCarpentersLever extends BlockCoverable {
     /**
      * Called upon block activation.
      */
-    public boolean[] postOnBlockActivated(TEBase TE, World world, int x, int y, int z, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ)
+    protected void postOnBlockActivated(TEBase TE, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ, List<Boolean> altered, List<Boolean> decInv)
     {
         ForgeDirection facing = Lever.getFacing(TE);
         
         Lever.setState(TE, isActive(TE) ? Lever.STATE_OFF : Lever.STATE_ON, true);
         
-        world.notifyBlocksOfNeighborChange(x, y, z, this);
-        notifySideNeighbor(world, x, y, z, facing.ordinal());
+        World world = TE.getWorldObj();
         
-        boolean[] result = { true, false };
-        return result;
+        world.notifyBlocksOfNeighborChange(TE.xCoord, TE.yCoord, TE.zCoord, this);
+        notifySideNeighbor(world, TE.xCoord, TE.yCoord, TE.zCoord, facing.ordinal());
+        
+        altered.add(true);
     }
     
     /**

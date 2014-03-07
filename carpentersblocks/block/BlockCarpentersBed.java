@@ -1,6 +1,7 @@
 package carpentersblocks.block;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.Random;
 
 import net.minecraft.block.Block;
@@ -12,6 +13,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayer.EnumStatus;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.IBlockAccess;
@@ -109,8 +111,10 @@ public class BlockCarpentersBed extends BlockCoverable {
     /**
      * Called upon block activation (right click on the block.)
      */
-    public boolean[] postOnBlockActivated(TEBase TE, World world, int x, int y, int z, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ)
+    protected void postOnBlockActivated(TEBase TE, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ, List<Boolean> altered, List<Boolean> decInv)
     {
+        World world = TE.getWorldObj();
+
         if (!world.isRemote) {
             
             if (!Bed.isHeadOfBed(TE)) {
@@ -118,54 +122,55 @@ public class BlockCarpentersBed extends BlockCoverable {
                 TEBase TE_opp = Bed.getOppositeTE(TE);
                 
                 if (TE_opp != null) {
-                    x = TE_opp.xCoord;
-                    z = TE_opp.zCoord;
+                    TE.xCoord = TE_opp.xCoord;
+                    TE.zCoord = TE_opp.zCoord;
                 } else {
-                    boolean[] result = { true, false };
-                    return result;
+                    altered.add(true);
+                    return;
                 }
                 
             }
             
-            if (world.provider.canRespawnHere() && world.getBiomeGenForCoords(x, z) != BiomeGenBase.hell) {
+            if (world.provider.canRespawnHere() && world.getBiomeGenForCoords(TE.xCoord, TE.zCoord) != BiomeGenBase.hell) {
                 
                 if (Bed.isOccupied(TE)) {
                     
                     EntityPlayer entityPlayer1 = null;
                     Iterator iterator = world.playerEntities.iterator();
                     
-                    while (iterator.hasNext())
-                    {
+                    while (iterator.hasNext()) {
+                        
                         EntityPlayer entityPlayer2 = (EntityPlayer)iterator.next();
                         
-                        if (entityPlayer2.isPlayerSleeping())
-                        {
+                        if (entityPlayer2.isPlayerSleeping()) {
+                            
                             ChunkCoordinates chunkCoordinates = entityPlayer2.playerLocation;
                             
-                            if (chunkCoordinates.posX == x && chunkCoordinates.posY == y && chunkCoordinates.posZ == z) {
+                            if (chunkCoordinates.posX == TE.xCoord && chunkCoordinates.posY == TE.yCoord && chunkCoordinates.posZ == TE.zCoord) {
                                 entityPlayer1 = entityPlayer2;
                             }
+                            
                         }
+                        
                     }
                     
-                    if (entityPlayer1 != null)
-                    {
+                    if (entityPlayer1 != null) {
+                        
                         ChatHandler.sendMessageToPlayer("tile.bed.occupied", entityPlayer);
-                        boolean[] result = { true, false };
-                        return result;
+                        altered.add(true);
+                        return;
+                        
                     }
                     
-                    setBedOccupied(world, x, y, z, entityPlayer, false);
+                    setBedOccupied(world, TE.xCoord, TE.yCoord, TE.zCoord, entityPlayer, false);
                     
                 }
                 
-                EnumStatus enumstatus = entityPlayer.sleepInBedAt(x, y, z);
+                EnumStatus enumstatus = entityPlayer.sleepInBedAt(TE.xCoord, TE.yCoord, TE.zCoord);
                 
                 if (enumstatus == EnumStatus.OK) {
                     
-                    setBedOccupied(world, x, y, z, entityPlayer, true);
-                    boolean[] result = { true, false };
-                    return result;
+                    setBedOccupied(world, TE.xCoord, TE.yCoord, TE.zCoord, entityPlayer, true);
                     
                 } else {
                     
@@ -175,24 +180,18 @@ public class BlockCarpentersBed extends BlockCoverable {
                         ChatHandler.sendMessageToPlayer("tile.bed.notSafe", entityPlayer);
                     }
                     
-                    boolean[] result = { true, false };
-                    return result;
-                    
                 }
                 
             } else {
                 
-                world.setBlockToAir(x, y, z);
-                world.newExplosion((Entity)null, x + 0.5F, y + 0.5F, z + 0.5F, 5.0F, true, true);
-                boolean[] result = { true, false };
-                return result;
+                world.setBlockToAir(TE.xCoord, TE.yCoord, TE.zCoord);
+                world.newExplosion((Entity)null, TE.xCoord + 0.5F, TE.yCoord + 0.5F, TE.zCoord + 0.5F, 5.0F, true, true);
                 
             }
             
         }
         
-        boolean[] result = { true, false };
-        return result;
+        altered.add(true);
     }
     
     @Override

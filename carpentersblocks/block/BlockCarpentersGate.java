@@ -1,5 +1,7 @@
 package carpentersblocks.block;
 
+import java.util.List;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityLivingBase;
@@ -64,12 +66,12 @@ public class BlockCarpentersGate extends BlockCoverable {
     /**
      * Opens or closes gate on right click.
      */
-    public boolean[] postOnBlockActivated(TEBase TE, World world, int x, int y, int z, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ)
+    protected void postOnBlockActivated(TEBase TE, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ, List<Boolean> altered, List<Boolean> decInv)
     {
         if (Gate.getState(TE) == Gate.STATE_OPEN) {
             
             Gate.setState(TE, Gate.STATE_CLOSED, true);
-            cycleNeighborGate(TE, world, x, y, z);
+            cycleNeighborGate(TE, TE.getWorldObj(), TE.xCoord, TE.yCoord, TE.zCoord);
             
         } else {
             
@@ -82,12 +84,11 @@ public class BlockCarpentersGate extends BlockCoverable {
                 Gate.setDirOpen(TE, facing == 3 ? Gate.DIR_POS : Gate.DIR_NEG);
             }
             
-            cycleNeighborGate(TE, world, x, y, z);
+            cycleNeighborGate(TE, TE.getWorldObj(), TE.xCoord, TE.yCoord, TE.zCoord);
             
         }
         
-        boolean[] result = { true, false };
-        return result;
+        altered.add(true);
     }
     
     @Override

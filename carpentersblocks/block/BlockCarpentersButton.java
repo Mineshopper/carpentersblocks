@@ -1,5 +1,6 @@
 package carpentersblocks.block;
 
+import java.util.List;
 import java.util.Random;
 
 import net.minecraft.block.Block;
@@ -156,23 +157,18 @@ public class BlockCarpentersButton extends BlockCoverable {
     /**
      * Called upon block activation (right click on the block.)
      */
-    public boolean[] postOnBlockActivated(TEBase TE, World world, int x, int y, int z, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ)
+    protected void postOnBlockActivated(TEBase TE, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ, List<Boolean> altered, List<Boolean> decInv)
     {
-        int ALTERED = 0;
-        boolean[] result = { false, false };
-        
-        if (!isDepressed(TE))
-        {
+        if (!isDepressed(TE)) {
+            
+            World world = TE.getWorldObj();
             ForgeDirection facing = Button.getFacing(TE);
             Button.setState(TE, Button.STATE_ON, true);
-            notifySideNeighbor(world, x, y, z, facing.ordinal());
-            world.scheduleBlockUpdate(x, y, z, this, tickRate(world));
+            notifySideNeighbor(world, TE.xCoord, TE.yCoord, TE.zCoord, facing.ordinal());
+            world.scheduleBlockUpdate(TE.xCoord, TE.yCoord, TE.zCoord, this, tickRate(world));
+            altered.add(true);
             
-            result[ALTERED] = true;
-            return result;
         }
-        
-        return result;
     }
     
     @Override

@@ -1,5 +1,6 @@
 package carpentersblocks.block;
 
+import java.util.List;
 import java.util.Random;
 
 import net.minecraft.block.Block;
@@ -130,13 +131,9 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
      * Everything contained in this will run before default onBlockActivated events take place,
      * but after the player has been verified to have permission to edit block.
      */
-    protected boolean[] preOnBlockActivated(TEBase TE, World world, int x, int y, int z, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ)
+    protected void preOnBlockActivated(TEBase TE, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ, List<Boolean> altered, List<Boolean> decInv)
     {
-        ItemStack itemStack = entityPlayer.getCurrentEquippedItem();
-        
-        int ALTERED = 0;
-        int DEC_INV = 1;
-        boolean[] result = { false, false };
+        ItemStack itemStack = entityPlayer.getHeldItem();
         
         if (itemStack != null) {
             
@@ -153,7 +150,7 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
                  */
                 if (!soilAreaClicked) {
                     if (!hasCover && BlockProperties.isCover(itemStack) || !hasOverlay && BlockProperties.isOverlay(itemStack)) {
-                        return super.preOnBlockActivated(TE, world, x, y, z, entityPlayer, side, hitX, hitY, hitZ);
+                        return;
                     }
                 }
                 
@@ -162,8 +159,7 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
                     if (FlowerPotProperties.isPlant(itemStack)) {
                         
                         FlowerPotProperties.setPlant(TE, itemStack);
-                        result[ALTERED] = true;
-                        result[DEC_INV] = true;
+                        altered.add(decInv.add(true));
                         
                     }
                     
@@ -176,8 +172,7 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
                     if (hasCover || soilAreaClicked) {
                         
                         FlowerPotProperties.setSoil(TE, itemStack);
-                        result[ALTERED] = true;
-                        result[DEC_INV] = true;
+                        altered.add(decInv.add(true));
                         
                     }
                     
@@ -186,12 +181,6 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
             }
             
         }
-        
-        if (result[ALTERED]) {
-            BlockProperties.playBlockSound(TE, BlockProperties.getCover(TE, 6));
-        }
-        
-        return result;
     }
     
     @Override

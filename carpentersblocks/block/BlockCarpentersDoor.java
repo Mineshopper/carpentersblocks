@@ -9,6 +9,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -99,15 +100,14 @@ public class BlockCarpentersDoor extends BlockCoverable {
     /**
      * Opens or closes door on right click.
      */
-    public boolean[] postOnBlockActivated(TEBase TE, World world, int x, int y, int z, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ)
+    protected void postOnBlockActivated(TEBase TE, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ, List<Boolean> altered, List<Boolean> decInv)
     {
         if (!activationRequiresRedstone(TE)) {
+            
             setDoorState(TE, Door.getState(TE) == Door.STATE_OPEN ? Door.STATE_CLOSED : Door.STATE_OPEN);
-            boolean[] result = { true, false };
-            return result;
+            altered.add(true);
+            
         }
-        
-        return super.postOnBlockActivated(TE, world, x, y, z, entityPlayer, side, hitX, hitY, hitZ);
     }
     
     /**

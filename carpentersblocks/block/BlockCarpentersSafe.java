@@ -1,5 +1,7 @@
 package carpentersblocks.block;
 
+import java.util.List;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -157,32 +159,27 @@ public class BlockCarpentersSafe extends BlockCoverable {
     /**
      * Called upon block activation (right click on the block.)
      */
-    protected boolean[] postOnBlockActivated(TEBase TE, World world, int x, int y, int z, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ)
+    protected void postOnBlockActivated(TEBase TE, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ, List<Boolean> altered, List<Boolean> decInv)
     {
-        int DEC_INV = 1;
-        boolean[] result = { true, false };
-        
         if (!Safe.isOpen(TE) && canPlayerActivate(TE, entityPlayer)) {
             
             TECarpentersSafe TE_safe = (TECarpentersSafe) TE;
             ItemStack itemStack = entityPlayer.getHeldItem();
             
-            if (itemStack != null && itemStack.getItem().equals(Items.gold_ingot))
-            {
-                if (!TE_safe.hasUpgrade())
-                {
+            if (itemStack != null && itemStack.getItem().equals(Items.gold_ingot)) {
+                if (!TE_safe.hasUpgrade()) {
                     if (TE_safe.incSizeInventory()) {
-                        world.markBlockForUpdate(x, y, z);
-                        result[DEC_INV] = true;
-                        return result;
+                        TE.getWorldObj().markBlockForUpdate(TE.xCoord, TE.yCoord, TE.zCoord);
+                        decInv.add(true);
+                        return;
                     }
                 }
             }
-            
-            if (!result[DEC_INV]) {
+
+            if (!decInv.contains(true)) {
                 entityPlayer.displayGUIChest((TECarpentersSafe)TE);
             }
-            
+
         } else {
             
             ChatHandler.sendMessageToPlayer("message.block_lock.name", entityPlayer);
@@ -193,7 +190,7 @@ public class BlockCarpentersSafe extends BlockCoverable {
          * Safe should always return true because it either warns the player
          * that it is locked, or it returns the GUI.
          */
-        return result;
+        altered.add(true);
     }
     
     @Override
