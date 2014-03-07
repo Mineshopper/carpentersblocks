@@ -15,7 +15,6 @@ public class FeatureRegistry {
     public static boolean enableTorchWeatherEffects    = true;
     public static boolean enableBlockOwnership         = true;
     public static boolean enableMCPatcherCompatibility = false;
-    public static boolean enablePlantColorOverride     = true;
     public static boolean enableOptifineIntegration    = true;
     public static boolean enableExtendedPlantSupport   = true;
     
@@ -55,14 +54,6 @@ public class FeatureRegistry {
         Property MCPatcherProp = config.get("rendering", "Enable MCPatcher Compatibility", enableMCPatcherCompatibility);
         MCPatcherProp.comment = "This will fix block texture issues caused by MCPatcher.";
         enableMCPatcherCompatibility = MCPatcherProp.getBoolean(enableMCPatcherCompatibility);
-        
-        Property extendedPlantSupportProp = config.get("features", "Extended Plant Support", enableExtendedPlantSupport);
-        extendedPlantSupportProp.comment = "This enables most plants to be planted on covered or overlaid Carpenter's blocks.";
-        enableExtendedPlantSupport = extendedPlantSupportProp.getBoolean(enableExtendedPlantSupport);
-        
-        Property plantColorOverrideProp = config.get("flower pot", "Override Biome Coloring", enablePlantColorOverride);
-        plantColorOverrideProp.comment = "Set to true to override biome-colored plants to a lively green.";
-        enablePlantColorOverride = plantColorOverrideProp.getBoolean(enablePlantColorOverride);
     }
     
 }
