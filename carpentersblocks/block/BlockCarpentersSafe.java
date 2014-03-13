@@ -1,7 +1,9 @@
 package carpentersblocks.block;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -230,7 +232,7 @@ public class BlockCarpentersSafe extends BlockCoverable {
     {
         TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
 
-        if (TE != null && !Safe.isOpen(TE)) {
+        if (TE != null) {
 
             TECarpentersSafe TE_safe = (TECarpentersSafe) TE;
 
@@ -266,6 +268,24 @@ public class BlockCarpentersSafe extends BlockCoverable {
         } else {
             return super.getPlayerRelativeBlockHardness(entityPlayer, world, x, y, z);
         }
+    }
+    
+    /**
+     * Location sensitive version of getExplosionRestance
+     *
+     * @param par1Entity The entity that caused the explosion
+     * @param world The current world
+     * @param x X Position
+     * @param y Y Position
+     * @param z Z Position
+     * @param explosionX Explosion source X Position
+     * @param explosionY Explosion source X Position
+     * @param explosionZ Explosion source X Position
+     * @return The amount of the explosion absorbed.
+     */
+    public float getExplosionResistance(Entity entity, World world, int x, int y, int z, double explosionX, double explosionY, double explosionZ)
+    {
+        return Block.bedrock.getExplosionResistance(entity);
     }
 
     @Override
