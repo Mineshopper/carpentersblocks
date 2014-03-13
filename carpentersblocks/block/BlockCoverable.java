@@ -342,7 +342,7 @@ public class BlockCoverable extends BlockContainer {
      * Cycles through chisel patterns.
      */
     public boolean onChiselClick(TEBase TE, int side, boolean leftClick)
-    {
+    {        
         int pattern = BlockProperties.getPattern(TE, side);
 
         /*
@@ -384,7 +384,7 @@ public class BlockCoverable extends BlockContainer {
         }
 
         BlockProperties.setPattern(TE, side, pattern);
-
+        
         return true;
     }
 

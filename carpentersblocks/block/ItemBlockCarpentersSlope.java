@@ -21,7 +21,7 @@ public class ItemBlockCarpentersSlope extends ItemBlock {
     @Override
     public String getUnlocalizedName(ItemStack itemStack)
     {
-        if (itemStack.getItemDamage() > BlockCarpentersSlope.slopeType.length) {
+        if (itemStack.getItemDamage() >= BlockCarpentersSlope.slopeType.length) {
             return this.getUnlocalizedName();
         } else {
             return getUnlocalizedName() + "." + BlockCarpentersSlope.slopeType[itemStack.getItemDamage()];
