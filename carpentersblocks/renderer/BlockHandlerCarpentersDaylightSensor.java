@@ -91,33 +91,20 @@ public class BlockHandlerCarpentersDaylightSensor extends BlockHandlerBase {
             if (isActive) {
                 disableAO = true;
                 lightingHelper.setBrightnessOverride(lightingHelper.MAX_BRIGHTNESS);
-            }
-            
-            for (int box = 0; box < 4; ++box) {
-                
-                switch (box) {
-                    case 0:
-                        renderBlocks.setRenderBounds(0.0625D, 0.0625D, 0.0625D, 0.125D, 0.1875D, 0.9375D);
-                        break;
-                    case 1:
-                        renderBlocks.setRenderBounds(0.875D, 0.0625D, 0.0625D, 0.9375D, 0.1875D, 0.9375D);
-                        break;
-                    case 2:
-                        renderBlocks.setRenderBounds(0.0625D, 0.0625D, 0.0625D, 0.9375D, 0.1875D, 0.125D);
-                        break;
-                    case 3:
-                        renderBlocks.setRenderBounds(0.0625D, 0.0625D, 0.875D, 0.9375D, 0.1875D, 0.9375D);
-                        break;
-                }
-                
-                if (!isActive) {
-                    lightingHelper.setTempFaceLightness(0.5F);
-                }
-                
-                renderBlock(Block.blockRedstone, x, y, z);
-                
+            } else {
+                lightingHelper.setLightnessOverride(0.5F);
             }
 
+            renderBlocks.setRenderBounds(0.0625D, 0.0625D, 0.0625D, 0.125D, 0.1875D, 0.9375D);
+            renderBlock(Block.blockRedstone, x, y, z);
+            renderBlocks.setRenderBounds(0.875D, 0.0625D, 0.0625D, 0.9375D, 0.1875D, 0.9375D);
+            renderBlock(Block.blockRedstone, x, y, z);
+            renderBlocks.setRenderBounds(0.0625D, 0.0625D, 0.0625D, 0.9375D, 0.1875D, 0.125D);
+            renderBlock(Block.blockRedstone, x, y, z);
+            renderBlocks.setRenderBounds(0.0625D, 0.0625D, 0.875D, 0.9375D, 0.1875D, 0.9375D);
+            renderBlock(Block.blockRedstone, x, y, z);
+
+            lightingHelper.clearLightnessOverride();
             lightingHelper.clearBrightnessOverride();
             disableAO = false;
 

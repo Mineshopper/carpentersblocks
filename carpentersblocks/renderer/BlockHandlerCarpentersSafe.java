@@ -259,7 +259,7 @@ public class BlockHandlerCarpentersSafe extends BlockHandlerBase {
             for (int box = 0; box < numCapacity; ++box)
             {
                 if (box + 1 <= capacity) {
-                    lightingHelper.setTempFaceLightness(1.0F);
+                    lightingHelper.setLightnessOverride(1.0F);
                     lightingHelper.setBrightnessOverride(lightingHelper.MAX_BRIGHTNESS);
                     lightingHelper.setColorOverride(LIGHT_BLUE_ACTIVE);
                 } else {
@@ -270,6 +270,7 @@ public class BlockHandlerCarpentersSafe extends BlockHandlerBase {
                 rotateBounds(renderBlocks, facing);
                 renderBlock(Block.ice, x, y, z);
                 lightingHelper.clearColorOverride();
+                lightingHelper.clearLightnessOverride();
                 lightingHelper.clearBrightnessOverride();
 
                 yMin += 0.0625D;
@@ -321,13 +322,14 @@ public class BlockHandlerCarpentersSafe extends BlockHandlerBase {
                     if (isLocked) {
                         lightingHelper.setColorOverride(LIGHT_GREEN_INACTIVE);
                     } else {
-                        lightingHelper.setTempFaceLightness(1.0F);
+                        lightingHelper.setLightnessOverride(1.0F);
                         lightingHelper.setBrightnessOverride(lightingHelper.MAX_BRIGHTNESS);
                         lightingHelper.setColorOverride(LIGHT_GREEN_ACTIVE);
                     }
 
                     renderBlock(Block.ice, x, y, z);
                     lightingHelper.clearColorOverride();
+                    lightingHelper.clearLightnessOverride();
                     lightingHelper.clearBrightnessOverride();
                     clearIconOverride(6);
                     disableAO = false;
@@ -340,7 +342,7 @@ public class BlockHandlerCarpentersSafe extends BlockHandlerBase {
                     setIconOverride(6, IconRegistry.icon_safe_light);
 
                     if (isLocked) {
-                        lightingHelper.setTempFaceLightness(1.0F);
+                        lightingHelper.setLightnessOverride(1.0F);
                         lightingHelper.setBrightnessOverride(lightingHelper.MAX_BRIGHTNESS);
                         lightingHelper.setColorOverride(LIGHT_RED_ACTIVE);
                     } else {
@@ -349,6 +351,7 @@ public class BlockHandlerCarpentersSafe extends BlockHandlerBase {
 
                     renderBlock(Block.ice, x, y, z);
                     lightingHelper.clearColorOverride();
+                    lightingHelper.clearLightnessOverride();
                     lightingHelper.clearBrightnessOverride();
                     clearIconOverride(6);
                     disableAO = false;

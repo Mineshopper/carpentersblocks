@@ -754,7 +754,7 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
         switch (slope.slopeID) {
             case Slope.ID_WEDGE_NW:
 
-                lightingHelper.setTempFaceLightness(LIGHTNESS_SIDE_WEDGE);
+                lightingHelper.setLightnessOverride(LIGHTNESS_SIDE_WEDGE);
 
                 if (renderBlocks.enableAO) {
 
@@ -773,7 +773,7 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
                 break;
             case Slope.ID_WEDGE_NE:
 
-                lightingHelper.setTempFaceLightness(LIGHTNESS_SIDE_WEDGE);
+                lightingHelper.setLightnessOverride(LIGHTNESS_SIDE_WEDGE);
 
                 if (renderBlocks.enableAO) {
 
@@ -792,7 +792,7 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
                 break;
             case Slope.ID_WEDGE_SW:
 
-                lightingHelper.setTempFaceLightness(LIGHTNESS_SIDE_WEDGE);
+                lightingHelper.setLightnessOverride(LIGHTNESS_SIDE_WEDGE);
 
                 if (renderBlocks.enableAO) {
 
@@ -811,7 +811,7 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
                 break;
             case Slope.ID_WEDGE_SE:
 
-                lightingHelper.setTempFaceLightness(LIGHTNESS_SIDE_WEDGE);
+                lightingHelper.setLightnessOverride(LIGHTNESS_SIDE_WEDGE);
 
                 if (renderBlocks.enableAO) {
 
@@ -830,7 +830,7 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
                 break;
             case Slope.ID_WEDGE_NEG_N:
 
-                lightingHelper.setTempFaceLightness(LIGHTNESS_ZYNN);
+                lightingHelper.setLightnessOverride(LIGHTNESS_ZYNN);
 
                 if (renderBlocks.enableAO) {
 
@@ -849,7 +849,7 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
                 break;
             case Slope.ID_WEDGE_POS_N:
 
-                lightingHelper.setTempFaceLightness(LIGHTNESS_ZYNP);
+                lightingHelper.setLightnessOverride(LIGHTNESS_ZYNP);
 
                 if (renderBlocks.enableAO) {
 
@@ -868,7 +868,7 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
                 break;
             case Slope.ID_WEDGE_NEG_S:
 
-                lightingHelper.setTempFaceLightness(LIGHTNESS_ZYPN);
+                lightingHelper.setLightnessOverride(LIGHTNESS_ZYPN);
 
                 if (renderBlocks.enableAO) {
 
@@ -887,7 +887,7 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
                 break;
             case Slope.ID_WEDGE_POS_S:
 
-                lightingHelper.setTempFaceLightness(LIGHTNESS_ZYPP);
+                lightingHelper.setLightnessOverride(LIGHTNESS_ZYPP);
 
                 if (renderBlocks.enableAO) {
 
@@ -906,7 +906,7 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
                 break;
             case Slope.ID_WEDGE_NEG_W:
 
-                lightingHelper.setTempFaceLightness(LIGHTNESS_XYNN);
+                lightingHelper.setLightnessOverride(LIGHTNESS_XYNN);
 
                 if (renderBlocks.enableAO) {
 
@@ -925,7 +925,7 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
                 break;
             case Slope.ID_WEDGE_POS_W:
 
-                lightingHelper.setTempFaceLightness(LIGHTNESS_XYNP);
+                lightingHelper.setLightnessOverride(LIGHTNESS_XYNP);
 
                 if (renderBlocks.enableAO) {
 
@@ -944,7 +944,7 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
                 break;
             case Slope.ID_WEDGE_NEG_E:
 
-                lightingHelper.setTempFaceLightness(LIGHTNESS_XYPN);
+                lightingHelper.setLightnessOverride(LIGHTNESS_XYPN);
 
                 if (renderBlocks.enableAO) {
 
@@ -963,7 +963,7 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
                 break;
             case Slope.ID_WEDGE_POS_E:
 
-                lightingHelper.setTempFaceLightness(LIGHTNESS_XYPP);
+                lightingHelper.setLightnessOverride(LIGHTNESS_XYPP);
 
                 if (renderBlocks.enableAO) {
 
@@ -994,6 +994,8 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
         } else {
             setIDAndRender(block, WEDGE_SLOPED_ZP, x, y, z, WEST);
         }
+        
+        lightingHelper.clearLightnessOverride();
     }
 
     private void prepareVerticalWedge(Block block, Slope slope, int x, int y, int z)
@@ -1011,6 +1013,8 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
         } else { // ForgeDirection.EAST
             setIDAndRender(block, WEDGE_SLOPED_XP, x, y, z, EAST);
         }
+        
+        lightingHelper.clearLightnessOverride();
     }
 
     private void prepareWedgeIntCorner(Block block, Slope slope, int x, int y, int z)
@@ -1026,6 +1030,8 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
         } else { // ForgeDirection.EAST
             setIDAndRender(block, WEDGE_CORNER_SLOPED_XP, x, y, z, EAST);
         }
+        
+        lightingHelper.clearLightnessOverride();
 
         Slope slopeZ = slope.facings.contains(ForgeDirection.NORTH) ? slope.isPositive ? Slope.WEDGE_POS_N : Slope.WEDGE_NEG_N : slope.isPositive ? Slope.WEDGE_POS_S : Slope.WEDGE_NEG_S;
 
@@ -1036,6 +1042,8 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
         } else {
             setIDAndRender(block, WEDGE_CORNER_SLOPED_ZP, x, y, z, SOUTH);
         }
+        
+        lightingHelper.clearLightnessOverride();
     }
 
     private void prepareWedgeExtCorner(Block block, Slope slope, int x, int y, int z)
@@ -1051,6 +1059,8 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
         } else { // ForgeDirection.EAST
             setIDAndRender(block, WEDGE_CORNER_SLOPED_XP, x, y, z, EAST);
         }
+        
+        lightingHelper.clearLightnessOverride();
 
         Slope slopeZ = slope.facings.contains(ForgeDirection.NORTH) ? slope.isPositive ? Slope.WEDGE_POS_N : Slope.WEDGE_NEG_N : slope.isPositive ? Slope.WEDGE_POS_S : Slope.WEDGE_NEG_S;
 
@@ -1061,6 +1071,8 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
         } else {
             setIDAndRender(block, WEDGE_CORNER_SLOPED_ZP, x, y, z, SOUTH);
         }
+        
+        lightingHelper.clearLightnessOverride();
     }
 
     private void prepareObliqueIntCorner(Block block, Slope slope, int x, int y, int z)
@@ -1166,12 +1178,14 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
         }
 
         if (slope.isPositive) {
-            lightingHelper.setTempFaceLightness(LIGHTNESS_POS_OBL);
+            lightingHelper.setLightnessOverride(LIGHTNESS_POS_OBL);
             setIDAndRender(block, OBL_INT_YP, x, y, z, NORTH);
         } else {
-            lightingHelper.setTempFaceLightness(LIGHTNESS_NEG_OBL);
+            lightingHelper.setLightnessOverride(LIGHTNESS_NEG_OBL);
             setIDAndRender(block, OBL_INT_YN, x, y, z, NORTH);
         }
+        
+        lightingHelper.clearLightnessOverride();
     }
 
     private void prepareObliqueExtCorner(Block block, Slope slope, int x, int y, int z)
@@ -1277,16 +1291,16 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
         }
 
         if (slope.isPositive) {
-            lightingHelper.setTempFaceLightness(LIGHTNESS_POS_OBL);
+            lightingHelper.setLightnessOverride(LIGHTNESS_POS_OBL);
             setIDAndRender(block, OBL_EXT_LEFT_YP, x, y, z, NORTH);
-            lightingHelper.setTempFaceLightness(LIGHTNESS_POS_OBL);
             setIDAndRender(block, OBL_EXT_RIGHT_YP, x, y, z, NORTH);
         } else {
-            lightingHelper.setTempFaceLightness(LIGHTNESS_NEG_OBL);
+            lightingHelper.setLightnessOverride(LIGHTNESS_NEG_OBL);
             setIDAndRender(block, OBL_EXT_LEFT_YN, x, y, z, NORTH);
-            lightingHelper.setTempFaceLightness(LIGHTNESS_NEG_OBL);
             setIDAndRender(block, OBL_EXT_RIGHT_YN, x, y, z, NORTH);
         }
+        
+        lightingHelper.clearLightnessOverride();
     }
 
     /**

@@ -62,7 +62,7 @@ public class LightingHelper {
     
     public LightingHelper bind(BlockHandlerBase blockHandler)
     {
-        clearTempFaceLightness();
+        clearLightnessOverride();
         clearBrightnessOverride();
         clearColorOverride();
         this.blockHandler = blockHandler;
@@ -72,9 +72,8 @@ public class LightingHelper {
 
     /**
      * Sets lightness override.
-     * Will clear itself automatically after coloring side.
      */
-    public LightingHelper setTempFaceLightness(float lightness)
+    public LightingHelper setLightnessOverride(float lightness)
     {
         hasLightnessOverride = true;
         lightnessOverride = lightness;
@@ -84,7 +83,7 @@ public class LightingHelper {
     /**
      * Clears lightness override.
      */
-    private void clearTempFaceLightness()
+    public void clearLightnessOverride()
     {
         hasLightnessOverride = false;
     }
@@ -227,8 +226,6 @@ public class LightingHelper {
             tessellator.setColorOpaque_F(finalRGB[RED] * lightness, finalRGB[GREEN] * lightness, finalRGB[BLUE] * lightness);
 
         }
-        
-        clearTempFaceLightness();
     }
 
     /**
