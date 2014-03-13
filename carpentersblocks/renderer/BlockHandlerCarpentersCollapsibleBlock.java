@@ -172,25 +172,25 @@ public class BlockHandlerCarpentersCollapsibleBlock extends BlockAdvancedLightin
         /* Top North triangle. */
 
         renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 0.5D);
-        lightingHelper.setLightingYPos(block, x, y, z).setLightness(getInterpolatedLightness(ForgeDirection.NORTH));
+        lightingHelper.setLightingYPos(block, x, y, z).setTempFaceLightness(getInterpolatedLightness(ForgeDirection.NORTH));
         setIDAndRender(block, SLOPE_YZPN, x, y, z, UP);
 
         /* Top South triangle. */
 
         renderBlocks.setRenderBounds(0.0D, 0.0D, 0.5D, 1.0D, 1.0D, 1.0D);
-        lightingHelper.setLightingYPos(block, x, y, z).setLightness(getInterpolatedLightness(ForgeDirection.SOUTH));
+        lightingHelper.setLightingYPos(block, x, y, z).setTempFaceLightness(getInterpolatedLightness(ForgeDirection.SOUTH));
         setIDAndRender(block, SLOPE_YZPP, x, y, z, UP);
 
         /* Top West triangle. */
 
         renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 0.5D, 1.0D, 1.0D);
-        lightingHelper.setLightingYPos(block, x, y, z).setLightness(getInterpolatedLightness(ForgeDirection.WEST));
+        lightingHelper.setLightingYPos(block, x, y, z).setTempFaceLightness(getInterpolatedLightness(ForgeDirection.WEST));
         setIDAndRender(block, SLOPE_XYNP, x, y, z, UP);
 
         /* Top East triangle. */
 
         renderBlocks.setRenderBounds(0.5D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
-        lightingHelper.setLightingYPos(block, x, y, z).setLightness(getInterpolatedLightness(ForgeDirection.EAST));
+        lightingHelper.setLightingYPos(block, x, y, z).setTempFaceLightness(getInterpolatedLightness(ForgeDirection.EAST));
         setIDAndRender(block, SLOPE_XYPP, x, y, z, UP);
     }
 

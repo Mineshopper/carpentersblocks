@@ -609,32 +609,32 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase {
                     {
                         case NORTH: // -Z
                             renderBlocks.setRenderBounds(0.0D, isOccupied ? 0.4375D : 0.3125D, 0.0D, 1.0D, isOccupied ? 0.875D : 0.625D, 0.5D);
-                            lightingHelper.setLightness(lightingHelper.LIGHTNESS_Z);
+                            lightingHelper.setTempFaceLightness(lightingHelper.LIGHTNESS_Z);
                             delegateSideRender(Block.cloth, x, y, z, SOUTH);
                             break;
                         case SOUTH: // +Z
                             renderBlocks.setRenderBounds(0.0D, isOccupied ? 0.4375D : 0.3125D, 0.5D, 1.0D, isOccupied ? 0.875D : 0.625D, 1.0D);
-                            lightingHelper.setLightness(lightingHelper.LIGHTNESS_Z);
+                            lightingHelper.setTempFaceLightness(lightingHelper.LIGHTNESS_Z);
                             delegateSideRender(Block.cloth, x, y, z, NORTH);
                             break;
                         case WEST:     // -X
                             renderBlocks.setRenderBounds(0.0D, isOccupied ? 0.4375D : 0.3125D, 0.0D, 0.5D, isOccupied ? 0.875D : 0.625D, 1.0D);
-                            lightingHelper.setLightness(lightingHelper.LIGHTNESS_X);
+                            lightingHelper.setTempFaceLightness(lightingHelper.LIGHTNESS_X);
                             delegateSideRender(Block.cloth, x, y, z, EAST);
                             break;
                         default:     // EAST +X
                             renderBlocks.setRenderBounds(0.5D, isOccupied ? 0.4375D : 0.3125D, 0.0D, 1.0D, isOccupied ? 0.875D : 0.625D, 1.0D);
-                            lightingHelper.setLightness(lightingHelper.LIGHTNESS_X);
+                            lightingHelper.setTempFaceLightness(lightingHelper.LIGHTNESS_X);
                             delegateSideRender(Block.cloth, x, y, z, WEST);
                             break;
                     }
 
-                    lightingHelper.setLightness(lightingHelper.LIGHTNESS_YN);
+                    lightingHelper.setTempFaceLightness(lightingHelper.LIGHTNESS_YN);
                     delegateSideRender(Block.cloth, x, y, z, DOWN);
 
                 } else {
 
-                    lightingHelper.setLightness(lightingHelper.LIGHTNESS_YN);
+                    lightingHelper.setTempFaceLightness(lightingHelper.LIGHTNESS_YN);
                     delegateSideRender(Block.cloth, x, y, z, DOWN);
 
                 }

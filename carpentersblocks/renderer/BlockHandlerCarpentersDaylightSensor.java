@@ -92,7 +92,7 @@ public class BlockHandlerCarpentersDaylightSensor extends BlockHandlerBase {
                 disableAO = true;
                 lightingHelper.setBrightnessOverride(lightingHelper.MAX_BRIGHTNESS);
             } else {
-                lightingHelper.setLightnessOverride(0.5F);
+                lightingHelper.setTempFaceLightness(0.5F);
             }
 
             renderBlocks.setRenderBounds(0.0625D, 0.0625D, 0.0625D, 0.125D, 0.1875D, 0.9375D);
@@ -104,7 +104,6 @@ public class BlockHandlerCarpentersDaylightSensor extends BlockHandlerBase {
             renderBlocks.setRenderBounds(0.0625D, 0.0625D, 0.875D, 0.9375D, 0.1875D, 0.9375D);
             renderBlock(Block.blockRedstone, x, y, z);
 
-            lightingHelper.clearLightnessOverride();
             lightingHelper.clearBrightnessOverride();
             disableAO = false;
 

@@ -478,8 +478,6 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
 
         renderBlocks.enableAO = getEnableAO(block);
 
-        prepareLighting(block);
-
         /* Render sloped faces. */
 
         isSideSloped = true;
@@ -758,7 +756,7 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
         switch (slope.slopeID) {
             case Slope.ID_WEDGE_NW:
 
-                lightingHelper.setLightness(LIGHTNESS_SIDE_WEDGE);
+                lightingHelper.setTempFaceLightness(LIGHTNESS_SIDE_WEDGE);
 
                 if (renderBlocks.enableAO) {
 
@@ -777,7 +775,7 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
                 break;
             case Slope.ID_WEDGE_NE:
 
-                lightingHelper.setLightness(LIGHTNESS_SIDE_WEDGE);
+                lightingHelper.setTempFaceLightness(LIGHTNESS_SIDE_WEDGE);
 
                 if (renderBlocks.enableAO) {
 
@@ -796,7 +794,7 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
                 break;
             case Slope.ID_WEDGE_SW:
 
-                lightingHelper.setLightness(LIGHTNESS_SIDE_WEDGE);
+                lightingHelper.setTempFaceLightness(LIGHTNESS_SIDE_WEDGE);
 
                 if (renderBlocks.enableAO) {
 
@@ -815,7 +813,7 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
                 break;
             case Slope.ID_WEDGE_SE:
 
-                lightingHelper.setLightness(LIGHTNESS_SIDE_WEDGE);
+                lightingHelper.setTempFaceLightness(LIGHTNESS_SIDE_WEDGE);
 
                 if (renderBlocks.enableAO) {
 
@@ -834,7 +832,7 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
                 break;
             case Slope.ID_WEDGE_NEG_N:
 
-                lightingHelper.setLightness(LIGHTNESS_ZYNN);
+                lightingHelper.setTempFaceLightness(LIGHTNESS_ZYNN);
 
                 if (renderBlocks.enableAO) {
 
@@ -853,7 +851,7 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
                 break;
             case Slope.ID_WEDGE_POS_N:
 
-                lightingHelper.setLightness(LIGHTNESS_ZYNP);
+                lightingHelper.setTempFaceLightness(LIGHTNESS_ZYNP);
 
                 if (renderBlocks.enableAO) {
 
@@ -872,7 +870,7 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
                 break;
             case Slope.ID_WEDGE_NEG_S:
 
-                lightingHelper.setLightness(LIGHTNESS_ZYPN);
+                lightingHelper.setTempFaceLightness(LIGHTNESS_ZYPN);
 
                 if (renderBlocks.enableAO) {
 
@@ -891,7 +889,7 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
                 break;
             case Slope.ID_WEDGE_POS_S:
 
-                lightingHelper.setLightness(LIGHTNESS_ZYPP);
+                lightingHelper.setTempFaceLightness(LIGHTNESS_ZYPP);
 
                 if (renderBlocks.enableAO) {
 
@@ -910,7 +908,7 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
                 break;
             case Slope.ID_WEDGE_NEG_W:
 
-                lightingHelper.setLightness(LIGHTNESS_XYNN);
+                lightingHelper.setTempFaceLightness(LIGHTNESS_XYNN);
 
                 if (renderBlocks.enableAO) {
 
@@ -929,7 +927,7 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
                 break;
             case Slope.ID_WEDGE_POS_W:
 
-                lightingHelper.setLightness(LIGHTNESS_XYNP);
+                lightingHelper.setTempFaceLightness(LIGHTNESS_XYNP);
 
                 if (renderBlocks.enableAO) {
 
@@ -948,7 +946,7 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
                 break;
             case Slope.ID_WEDGE_NEG_E:
 
-                lightingHelper.setLightness(LIGHTNESS_XYPN);
+                lightingHelper.setTempFaceLightness(LIGHTNESS_XYPN);
 
                 if (renderBlocks.enableAO) {
 
@@ -967,7 +965,7 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
                 break;
             case Slope.ID_WEDGE_POS_E:
 
-                lightingHelper.setLightness(LIGHTNESS_XYPP);
+                lightingHelper.setTempFaceLightness(LIGHTNESS_XYPP);
 
                 if (renderBlocks.enableAO) {
 
@@ -1167,10 +1165,10 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
         }
 
         if (slope.isPositive) {
-            lightingHelper.setLightness(LIGHTNESS_POS_OBL);
+            lightingHelper.setTempFaceLightness(LIGHTNESS_POS_OBL);
             setIDAndRender(block, OBL_INT_YP, x, y, z, NORTH);
         } else {
-            lightingHelper.setLightness(LIGHTNESS_NEG_OBL);
+            lightingHelper.setTempFaceLightness(LIGHTNESS_NEG_OBL);
             setIDAndRender(block, OBL_INT_YN, x, y, z, NORTH);
         }
     }
@@ -1278,11 +1276,11 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
         }
 
         if (slope.isPositive) {
-            lightingHelper.setLightness(LIGHTNESS_POS_OBL);
+            lightingHelper.setTempFaceLightness(LIGHTNESS_POS_OBL);
             setIDAndRender(block, OBL_EXT_LEFT_YP, x, y, z, NORTH);
             setIDAndRender(block, OBL_EXT_RIGHT_YP, x, y, z, NORTH);
         } else {
-            lightingHelper.setLightness(LIGHTNESS_NEG_OBL);
+            lightingHelper.setTempFaceLightness(LIGHTNESS_NEG_OBL);
             setIDAndRender(block, OBL_EXT_LEFT_YN, x, y, z, NORTH);
             setIDAndRender(block, OBL_EXT_RIGHT_YN, x, y, z, NORTH);
         }

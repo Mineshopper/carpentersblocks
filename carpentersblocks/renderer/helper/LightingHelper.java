@@ -29,7 +29,6 @@ public class LightingHelper {
 
     private boolean          hasLightnessOverride;
     private float            lightnessOverride;
-    private float            lightness;
 
     private boolean          hasBrightnessOverride;
     private int              brightnessOverride;
@@ -48,6 +47,8 @@ public class LightingHelper {
     public final float       LIGHTNESS_YP      = 1.0F;
     public final float       LIGHTNESS_Z       = 0.8F;
     public final float       LIGHTNESS_X       = 0.6F;
+    
+    public final float[]     LIGHTNESS         = new float[] { 0.5F, 1.0F, 0.8F, 0.8F, 0.6F, 0.6F };
 
     /**
      * Stores uncolored, ambient occlusion values for each corner of every face.
@@ -68,8 +69,9 @@ public class LightingHelper {
 
     /**
      * Sets lightness override.
+     * Will clear itself automatically after coloring side.
      */
-    public LightingHelper setLightnessOverride(float lightness)
+    public LightingHelper setTempFaceLightness(float lightness)
     {
         hasLightnessOverride = true;
         lightnessOverride = lightness;
@@ -79,7 +81,7 @@ public class LightingHelper {
     /**
      * Clears lightness override.
      */
-    public void clearLightnessOverride()
+    private void clearTempFaceLightness()
     {
         hasLightnessOverride = false;
     }
@@ -100,18 +102,6 @@ public class LightingHelper {
     public void clearBrightnessOverride()
     {
         hasBrightnessOverride = false;
-    }
-
-    /**
-     * Sets lightness.  Can be applied at any time before actually
-     * rendering the side, but must happen after setting side
-     * lighting.  It takes effect when
-     * BlockHandlerBase.delegateSideRender() is called.
-     */
-    public LightingHelper setLightness(float lightness)
-    {
-        this.lightness = lightness;
-        return this;
     }
 
     /**
@@ -195,6 +185,8 @@ public class LightingHelper {
             }
 
         }
+        
+        float lightness = LIGHTNESS[side];
 
         /* Apply color. */
 
@@ -204,17 +196,19 @@ public class LightingHelper {
         if (hasLightnessOverride) {
             lightness = lightnessOverride;
         }
+        
+        System.out.println("DEBUG: Using lightness " + lightness + " on side " + side);
 
         if (hasBrightnessOverride) {
             tessellator.setBrightness(brightnessOverride);
+        } else {
+            tessellator.setBrightness(brightness[side]);
         }
 
         if (hasColorOverride) {
             finalRGB = colorOverride;
         }
 
-        tessellator.setBrightness(brightness[side]);
-        
         if (renderBlocks.enableAO) {
 
             if (renderBlocks.hasOverrideBlockTexture()) {
@@ -248,6 +242,8 @@ public class LightingHelper {
             tessellator.setColorOpaque_F(finalRGB[RED] * lightness, finalRGB[GREEN] * lightness, finalRGB[BLUE] * lightness);
 
         }
+        
+        clearTempFaceLightness();
     }
 
     /**
@@ -294,7 +290,6 @@ public class LightingHelper {
         int y_offset = renderBlocks.renderMinY > 0.0F ? y : y - 1;
         int mixedBrightness = block.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y_offset, z);
         brightness[0] = mixedBrightness;
-        this.lightness = lightness;
 
         if (renderBlocks.enableAO) {
 
@@ -375,7 +370,6 @@ public class LightingHelper {
         int y_offset = renderBlocks.renderMaxY < 1.0F ? y : y + 1;
         int mixedBrightness = block.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y_offset, z);
         brightness[1] = mixedBrightness;
-        this.lightness = lightness;
 
         if (renderBlocks.enableAO) {
 
@@ -455,7 +449,6 @@ public class LightingHelper {
         int z_offset = renderBlocks.renderMinZ > 0.0F ? z : z - 1;
         int mixedBrightness = block.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y, z_offset);
         brightness[2] = mixedBrightness;
-        this.lightness = lightness;
 
         if (renderBlocks.enableAO) {
 
@@ -535,7 +528,6 @@ public class LightingHelper {
         int z_offset = renderBlocks.renderMaxZ < 1.0F ? z : z + 1;
         int mixedBrightness = block.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y, z_offset);
         brightness[3] = mixedBrightness;
-        this.lightness = lightness;
 
         if (renderBlocks.enableAO) {
 
@@ -614,7 +606,6 @@ public class LightingHelper {
         int x_offset = renderBlocks.renderMinX > 0.0F ? x : x - 1;
         int mixedBrightness = block.getMixedBrightnessForBlock(renderBlocks.blockAccess, x_offset, y, z);
         brightness[4] = mixedBrightness;
-        this.lightness = lightness;
 
         if (renderBlocks.enableAO) {
 
