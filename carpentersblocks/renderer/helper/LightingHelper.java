@@ -196,8 +196,6 @@ public class LightingHelper {
         if (hasLightnessOverride) {
             lightness = lightnessOverride;
         }
-        
-        System.out.println("DEBUG: Using lightness " + lightness + " on side " + side);
 
         if (hasBrightnessOverride) {
             tessellator.setBrightness(brightnessOverride);
