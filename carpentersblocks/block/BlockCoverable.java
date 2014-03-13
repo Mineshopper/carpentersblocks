@@ -204,7 +204,7 @@ public class BlockCoverable extends BlockContainer {
                             BlockProperties.setPattern(TE, effectiveSide, 0);
                         }
 
-                    } else if (BlockProperties.hasCover(TE, effectiveSide) && BlockProperties.getCoverBlock(TE, effectiveSide).isOpaqueCube()) {
+                    } else if (BlockProperties.hasCover(TE, effectiveSide)) {
 
                         onChiselClick(TE, effectiveSide, true);
 
@@ -224,7 +224,7 @@ public class BlockCoverable extends BlockContainer {
 
         /* If item with right-click action is being held (food, etc), do not continue. */
         
-        if (itemStack != null && !itemStack.getItemUseAction().equals(EnumAction.none)) {
+        if (itemStack != null && itemStack.getItem() != null && !itemStack.getItemUseAction().equals(EnumAction.none)) {
             return false;
         }
         
@@ -686,7 +686,7 @@ public class BlockCoverable extends BlockContainer {
                             }
                         }
                     }
-    
+                    
                     return lightOutput;
                     
                 }
