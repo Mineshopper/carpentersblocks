@@ -15,10 +15,8 @@ public class IconRegistry {
 
     public static Icon icon_blank;
     public static Icon icon_solid;
-    public static Icon icon_oblique_int_pos;
-    public static Icon icon_oblique_int_neg;
-    public static Icon icon_oblique_ext_pos;
-    public static Icon icon_oblique_ext_neg;
+    public static Icon icon_oblique_pos;
+    public static Icon icon_oblique_neg;
     public static Icon icon_overlay_fast_grass_side;
     public static Icon icon_overlay_hay_side;
     public static Icon icon_overlay_snow_side;
