@@ -213,6 +213,8 @@ public class LightingHelper {
             finalRGB = colorOverride;
         }
 
+        tessellator.setBrightness(brightness[side]);
+        
         if (renderBlocks.enableAO) {
 
             if (renderBlocks.hasOverrideBlockTexture()) {
@@ -243,7 +245,6 @@ public class LightingHelper {
 
         } else {
 
-            tessellator.setBrightness(brightness[side]);
             tessellator.setColorOpaque_F(finalRGB[RED] * lightness, finalRGB[GREEN] * lightness, finalRGB[BLUE] * lightness);
 
         }
