@@ -458,26 +458,4 @@ public class BlockProperties {
         return true;
     }
 
-    /**
-     * Returns whether side should render based on cover blocks
-     * of both source and adjacent block.
-     */
-    public static boolean shouldRenderSharedFaceBasedOnCovers(TEBase TE_adj, TEBase TE_src)
-    {
-        Block block_adj= BlockProperties.getCoverBlock(TE_adj, 6);
-        Block block_src = BlockProperties.getCoverBlock(TE_src, 6);
-
-        if (!BlockProperties.hasCover(TE_adj, 6)) {
-            return BlockProperties.hasCover(TE_src, 6);
-        } else {
-            if (!BlockProperties.hasCover(TE_src, 6) && block_adj.getRenderBlockPass() == 0) {
-                return !block_adj.isOpaqueCube();
-            } else if (BlockProperties.hasCover(TE_src, 6) && block_src.isOpaqueCube() == block_adj.isOpaqueCube() && block_src.getRenderBlockPass() == block_adj.getRenderBlockPass()) {
-                return false;
-            } else {
-                return true;
-            }
-        }
-    }
-
 }

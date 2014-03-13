@@ -109,7 +109,7 @@ public class BlockCoverable extends BlockContainer {
     {
         Block block = Block.blocksList[world.getBlockId(x, y, z)];
 
-        return block != null && block.equals(this);
+        return block != null && (block.equals(this) || block instanceof BlockCoverable);
     }
 
     /**
@@ -1035,10 +1035,23 @@ public class BlockCoverable extends BlockContainer {
             TEBase TE_adj = (TEBase) world.getBlockTileEntity(x, y, z);
             TEBase TE_src = (TEBase) world.getBlockTileEntity(x + side_adj.offsetX, y + side_adj.offsetY, z + side_adj.offsetZ);
 
-            if (TE_adj.getBlockType().isBlockSolidOnSide(TE_adj.worldObj, x, y, z, side_adj) == TE_src.getBlockType().isBlockSolidOnSide(TE_src.worldObj, x + side_adj.offsetX, y + side_adj.offsetY, z + side_adj.offsetZ, ForgeDirection.getOrientation(side))) {
-                if (shareFaces(TE_adj, TE_src, side_adj, side_src)) {
-                    return BlockProperties.shouldRenderSharedFaceBasedOnCovers(TE_adj, TE_src);
+            if (shareFaces(TE_adj, TE_src, side_adj, side_src)) {
+
+                Block block_adj = BlockProperties.getCoverBlock(TE_adj, 6);
+                Block block_src = BlockProperties.getCoverBlock(TE_src, 6);
+
+                if (!BlockProperties.hasCover(TE_adj, 6)) {
+                    return BlockProperties.hasCover(TE_src, 6);
+                } else {
+                    if (!BlockProperties.hasCover(TE_src, 6) && block_adj.getRenderBlockPass() == 0) {
+                        return !block_adj.isOpaqueCube();
+                    } else if (BlockProperties.hasCover(TE_src, 6) && block_src.isOpaqueCube() == block_adj.isOpaqueCube() && block_src.getRenderBlockPass() == block_adj.getRenderBlockPass()) {
+                        return false;
+                    } else {
+                        return true;
+                    }
                 }
+                
             }
 
         }
@@ -1053,7 +1066,7 @@ public class BlockCoverable extends BlockContainer {
     protected boolean shareFaces(TEBase TE_adj, TEBase TE_src, ForgeDirection side_adj, ForgeDirection side_src)
     {
         return TE_adj.getBlockType().isBlockSolidOnSide(TE_adj.worldObj, TE_adj.xCoord, TE_adj.yCoord, TE_adj.zCoord, side_adj) &&
-                TE_src.getBlockType().isBlockSolidOnSide(TE_src.worldObj, TE_src.xCoord, TE_src.yCoord, TE_src.zCoord, side_src);
+               TE_src.getBlockType().isBlockSolidOnSide(TE_src.worldObj, TE_src.xCoord, TE_src.yCoord, TE_src.zCoord, side_src);
     }
 
     @Override

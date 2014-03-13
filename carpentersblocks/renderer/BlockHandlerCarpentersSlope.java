@@ -173,7 +173,7 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
                 tessellator.setNormal(-1.0F, 0.0F, 0.0F);
                 HelperOrthoWedge.renderFaceXNeg(renderBlocks, Slope.ID_OBL_INT_POS_SW, 0.0D, 0.0D, 0.0D, block.getIcon(2, EventHandler.BLOCKICON_BASE_ID));
                 tessellator.setNormal(-1.0F, 0.5F, 1.0F);
-                HelperOblique.renderIntObliqueYPos(renderBlocks, Slope.ID_OBL_INT_POS_SW, 0.0D, 0.0D, 0.0D, IconRegistry.icon_oblique_int_pos);
+                HelperOblique.renderIntObliqueYPos(renderBlocks, Slope.ID_OBL_INT_POS_SW, 0.0D, 0.0D, 0.0D, IconRegistry.icon_oblique_pos);
 
                 tessellator.draw();
                 tessellator.startDrawingQuads();
@@ -195,8 +195,8 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
                 tessellator.setNormal(1.0F, 0.0F, 0.0F);
                 HelperOrthoWedge.renderFaceXPos(renderBlocks, Slope.ID_OBL_EXT_POS_SW, 0.0D, 0.0D, 0.0D, block.getIcon(2, EventHandler.BLOCKICON_BASE_ID));
                 tessellator.setNormal(-1.0F, 0.5F, 1.0F);
-                HelperOblique.renderExtObliqueYPosLeft(renderBlocks, Slope.ID_OBL_EXT_POS_SW, 0.0D, 0.0D, 0.0D, IconRegistry.icon_oblique_ext_pos);
-                HelperOblique.renderExtObliqueYPosRight(renderBlocks, Slope.ID_OBL_EXT_POS_SW, 0.0D, 0.0D, 0.0D, IconRegistry.icon_oblique_ext_pos);
+                HelperOblique.renderExtObliqueYPosLeft(renderBlocks, Slope.ID_OBL_EXT_POS_SW, 0.0D, 0.0D, 0.0D, IconRegistry.icon_oblique_pos);
+                HelperOblique.renderExtObliqueYPosRight(renderBlocks, Slope.ID_OBL_EXT_POS_SW, 0.0D, 0.0D, 0.0D, IconRegistry.icon_oblique_pos);
 
                 break;
             case BlockCarpentersSlope.META_PRISM:
@@ -248,10 +248,8 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
                 
                 switch (slope.type) {
                     case OBLIQUE_EXT:
-                        icon = slope.isPositive ? IconRegistry.icon_oblique_ext_pos : IconRegistry.icon_oblique_ext_neg;
-                        break;
                     case OBLIQUE_INT:
-                        icon = slope.isPositive ? IconRegistry.icon_oblique_int_pos : IconRegistry.icon_oblique_int_neg;
+                        icon = slope.isPositive ? IconRegistry.icon_oblique_pos : IconRegistry.icon_oblique_neg;
                         break;
                     case PRISM:
                     case PRISM_1P:
@@ -512,7 +510,7 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
         }
 
         isSideSloped = false;
-
+        
         /* Render non-sloped faces. */
 
         if (slope.hasSide(ForgeDirection.DOWN) && srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x, y - 1, z, DOWN)) {
@@ -1069,6 +1067,9 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
     {
         RenderHelper.startDrawing(TRIANGLES);
 
+        renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
+        prepareLighting(block);
+        
         if (renderBlocks.enableAO) {
 
             switch (slope.slopeID) {
@@ -1101,8 +1102,8 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
                     lightingHelper.ao[SOUTHWEST] = offset_ao[DOWN][SOUTHWEST];
 
                     renderBlocks.brightnessTopLeft     = brightness[DOWN][SOUTHEAST];
-                    renderBlocks.brightnessBottomRight = offset_brightness[DOWN][NORTHWEST];
-                    renderBlocks.brightnessTopRight    = brightness[DOWN][SOUTHWEST];
+                    renderBlocks.brightnessBottomRight = brightness[DOWN][NORTHWEST];
+                    renderBlocks.brightnessTopRight    = offset_brightness[DOWN][SOUTHWEST];
 
                     break;
                 case Slope.ID_OBL_INT_NEG_SE:
@@ -1111,8 +1112,8 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
                     lightingHelper.ao[NORTHEAST] = ao[DOWN][NORTHEAST];
                     lightingHelper.ao[SOUTHWEST] = ao[DOWN][SOUTHWEST];
 
-                    renderBlocks.brightnessTopLeft    = brightness[DOWN][SOUTHEAST];
-                    renderBlocks.brightnessBottomLeft = offset_brightness[DOWN][NORTHEAST];
+                    renderBlocks.brightnessTopLeft    = offset_brightness[DOWN][SOUTHEAST];
+                    renderBlocks.brightnessBottomLeft = brightness[DOWN][NORTHEAST];
                     renderBlocks.brightnessTopRight   = brightness[DOWN][SOUTHWEST];
 
                     break;
@@ -1145,8 +1146,8 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
                     lightingHelper.ao[SOUTHWEST] = offset_ao[UP][SOUTHWEST];
 
                     renderBlocks.brightnessTopLeft     = brightness[UP][SOUTHEAST];
-                    renderBlocks.brightnessBottomRight = offset_brightness[UP][NORTHWEST];
-                    renderBlocks.brightnessTopRight    = brightness[UP][SOUTHWEST];
+                    renderBlocks.brightnessBottomRight = brightness[UP][NORTHWEST];
+                    renderBlocks.brightnessTopRight    = offset_brightness[UP][SOUTHWEST];
 
                     break;
                 case Slope.ID_OBL_INT_POS_SE:
@@ -1155,8 +1156,8 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
                     lightingHelper.ao[NORTHEAST] = ao[UP][NORTHEAST];
                     lightingHelper.ao[SOUTHWEST] = ao[UP][SOUTHWEST];
 
-                    renderBlocks.brightnessTopLeft    = brightness[UP][SOUTHEAST];
-                    renderBlocks.brightnessBottomLeft = offset_brightness[UP][NORTHEAST];
+                    renderBlocks.brightnessTopLeft    = offset_brightness[UP][SOUTHEAST];
+                    renderBlocks.brightnessBottomLeft = brightness[UP][NORTHEAST];
                     renderBlocks.brightnessTopRight   = brightness[UP][SOUTHWEST];
 
                     break;
@@ -1177,10 +1178,10 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
     {
         RenderHelper.startDrawing(TRIANGLES);
 
+        renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
+        prepareLighting(block);
+        
         if (renderBlocks.enableAO) {
-
-            TE.worldObj.isBlockSolidOnSide(TE.xCoord, TE.yCoord + 1, TE.zCoord, ForgeDirection.DOWN);
-            TE.worldObj.isBlockSolidOnSide(TE.xCoord, TE.yCoord - 1, TE.zCoord, ForgeDirection.UP);
 
             switch (slope.slopeID) {
                 case Slope.ID_OBL_EXT_NEG_NW:
@@ -1278,10 +1279,12 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
         if (slope.isPositive) {
             lightingHelper.setTempFaceLightness(LIGHTNESS_POS_OBL);
             setIDAndRender(block, OBL_EXT_LEFT_YP, x, y, z, NORTH);
+            lightingHelper.setTempFaceLightness(LIGHTNESS_POS_OBL);
             setIDAndRender(block, OBL_EXT_RIGHT_YP, x, y, z, NORTH);
         } else {
             lightingHelper.setTempFaceLightness(LIGHTNESS_NEG_OBL);
             setIDAndRender(block, OBL_EXT_LEFT_YN, x, y, z, NORTH);
+            lightingHelper.setTempFaceLightness(LIGHTNESS_NEG_OBL);
             setIDAndRender(block, OBL_EXT_RIGHT_YN, x, y, z, NORTH);
         }
     }
