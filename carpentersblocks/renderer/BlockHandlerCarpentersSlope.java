@@ -547,10 +547,10 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
      */
     private void preparePrism(Block block, Slope slope, int x, int y, int z)
     {
-        int POINT_N     = 0;
-        int POINT_S     = 1;
-        int POINT_W     = 2;
-        int POINT_E     = 3;
+        int POINT_N = 0;
+        int POINT_S = 1;
+        int POINT_W = 2;
+        int POINT_E = 3;
 
         List<Integer> pieceList = new ArrayList<Integer>();
 
@@ -753,6 +753,8 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
      */
     private void setWedgeLighting(Block block, Slope slope)
     {
+        prepareLighting(block);       
+        
         switch (slope.slopeID) {
             case Slope.ID_WEDGE_NW:
 
