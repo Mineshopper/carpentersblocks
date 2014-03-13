@@ -26,10 +26,10 @@ public class LightingHelper {
     private Tessellator      tessellator = Tessellator.instance;
     private BlockHandlerBase blockHandler;
     private RenderBlocks     renderBlocks;
-    private float            lightness;
 
     private boolean          hasLightnessOverride;
     private float            lightnessOverride;
+    private float            lightness;
 
     private boolean          hasBrightnessOverride;
     private int              brightnessOverride;
@@ -40,17 +40,25 @@ public class LightingHelper {
     public final int         NORMAL_BRIGHTNESS = 0xff00ff;
     public final int         MAX_BRIGHTNESS    = 0xf000f0;
 
-    public final float       LIGHTNESS_YN      = 0.5F;
-    public final float       LIGHTNESS_YP      = 1.0F;
-    public final float       LIGHTNESS_ZN      = 0.8F;
-    public final float       LIGHTNESS_ZP      = 0.8F;
-    public final float       LIGHTNESS_XN      = 0.6F;
-    public final float       LIGHTNESS_XP      = 0.6F;
-
     private final int        RED               = 0;
     private final int        GREEN             = 1;
     private final int        BLUE              = 2;
+    
+    public final float       LIGHTNESS_YN      = 0.5F;
+    public final float       LIGHTNESS_YP      = 1.0F;
+    public final float       LIGHTNESS_Z       = 0.8F;
+    public final float       LIGHTNESS_X       = 0.6F;
 
+    /**
+     * Stores uncolored, ambient occlusion values for each corner of every face.
+     */
+    public float[] ao = new float[4];
+    
+    /**
+     * Stores brightness for all six faces.
+     */
+    public int[] brightness = new int[6];
+    
     public LightingHelper bind(BlockHandlerBase blockHandler)
     {
         this.blockHandler = blockHandler;
@@ -130,11 +138,6 @@ public class LightingHelper {
     {
         hasColorOverride = false;
     }
-
-    /**
-     * Stores uncolored, ambient occlusion values for each corner of every face.
-     */
-    public float[] ao = new float[4];
 
     /**
      * Returns float array with RGB values for block.
@@ -240,6 +243,7 @@ public class LightingHelper {
 
         } else {
 
+            tessellator.setBrightness(brightness[side]);
             tessellator.setColorOpaque_F(finalRGB[RED] * lightness, finalRGB[GREEN] * lightness, finalRGB[BLUE] * lightness);
 
         }
@@ -278,10 +282,18 @@ public class LightingHelper {
      */
     public LightingHelper setLightingYNeg(Block block, int x, int y, int z)
     {
+        return setLightingYNeg(block, x, y, z, LIGHTNESS_YN);
+    }
+    
+    /**
+     * Fills AO variables with lightness for bottom face.
+     */
+    public LightingHelper setLightingYNeg(Block block, int x, int y, int z, float lightness)
+    {
         int y_offset = renderBlocks.renderMinY > 0.0F ? y : y - 1;
         int mixedBrightness = block.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y_offset, z);
-        tessellator.setBrightness(mixedBrightness);
-        lightness = LIGHTNESS_YN;
+        brightness[0] = mixedBrightness;
+        this.lightness = lightness;
 
         if (renderBlocks.enableAO) {
 
@@ -351,10 +363,18 @@ public class LightingHelper {
      */
     public LightingHelper setLightingYPos(Block block, int x, int y, int z)
     {
+        return setLightingYPos(block, x, y, z, LIGHTNESS_YP);
+    }
+    
+    /**
+     * Fills AO variables with lightness for top face.
+     */
+    public LightingHelper setLightingYPos(Block block, int x, int y, int z, float lightness)
+    {
         int y_offset = renderBlocks.renderMaxY < 1.0F ? y : y + 1;
         int mixedBrightness = block.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y_offset, z);
-        tessellator.setBrightness(mixedBrightness);
-        lightness = LIGHTNESS_YP;
+        brightness[1] = mixedBrightness;
+        this.lightness = lightness;
 
         if (renderBlocks.enableAO) {
 
@@ -417,16 +437,24 @@ public class LightingHelper {
 
         return this;
     }
-
+    
     /**
      * Fills AO variables with lightness for North face.
      */
     public LightingHelper setLightingZNeg(Block block, int x, int y, int z)
     {
+        return setLightingZNeg(block, x, y, z, LIGHTNESS_Z);
+    }
+
+    /**
+     * Fills AO variables with lightness for North face.
+     */
+    public LightingHelper setLightingZNeg(Block block, int x, int y, int z, float lightness)
+    {
         int z_offset = renderBlocks.renderMinZ > 0.0F ? z : z - 1;
         int mixedBrightness = block.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y, z_offset);
-        tessellator.setBrightness(mixedBrightness);
-        lightness = LIGHTNESS_ZN;
+        brightness[2] = mixedBrightness;
+        this.lightness = lightness;
 
         if (renderBlocks.enableAO) {
 
@@ -495,10 +523,18 @@ public class LightingHelper {
      */
     public LightingHelper setLightingZPos(Block block, int x, int y, int z)
     {
+        return setLightingZPos(block, x, y, z, LIGHTNESS_Z);
+    }
+    
+    /**
+     * Fills AO variables with lightness for South face.
+     */
+    public LightingHelper setLightingZPos(Block block, int x, int y, int z, float lightness)
+    {
         int z_offset = renderBlocks.renderMaxZ < 1.0F ? z : z + 1;
         int mixedBrightness = block.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y, z_offset);
-        tessellator.setBrightness(mixedBrightness);
-        lightness = LIGHTNESS_ZP;
+        brightness[3] = mixedBrightness;
+        this.lightness = lightness;
 
         if (renderBlocks.enableAO) {
 
@@ -566,10 +602,18 @@ public class LightingHelper {
      */
     public LightingHelper setLightingXNeg(Block block, int x, int y, int z)
     {
+        return setLightingXNeg(block, x, y, z, LIGHTNESS_X);
+    }
+    
+    /**
+     * Fills AO variables with lightness for West face.
+     */
+    public LightingHelper setLightingXNeg(Block block, int x, int y, int z, float lightness)
+    {
         int x_offset = renderBlocks.renderMinX > 0.0F ? x : x - 1;
         int mixedBrightness = block.getMixedBrightnessForBlock(renderBlocks.blockAccess, x_offset, y, z);
-        tessellator.setBrightness(mixedBrightness);
-        lightness = LIGHTNESS_XN;
+        brightness[4] = mixedBrightness;
+        this.lightness = lightness;
 
         if (renderBlocks.enableAO) {
 
@@ -638,10 +682,17 @@ public class LightingHelper {
      */
     public LightingHelper setLightingXPos(Block block, int x, int y, int z)
     {
+        return setLightingXPos(block, x, y, z, LIGHTNESS_X);
+    }
+    
+    /**
+     * Fills AO variables with lightness for East face.
+     */
+    public LightingHelper setLightingXPos(Block block, int x, int y, int z, float lightness)
+    {
         int x_offset = renderBlocks.renderMaxX < 1.0F ? x : x + 1;
         int mixedBrightness = block.getMixedBrightnessForBlock(renderBlocks.blockAccess, x_offset, y, z);
-        tessellator.setBrightness(mixedBrightness);
-        lightness = LIGHTNESS_XP;
+        brightness[5] = mixedBrightness;
 
         if (renderBlocks.enableAO) {
 

@@ -768,7 +768,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
      * Sets renderBlocks enableAO state to true depending on
      * rendering environment and block requirements.
      */
-    protected boolean getEnableAO(Block block)
+    public boolean getEnableAO(Block block)
     {
         return Minecraft.isAmbientOcclusionEnabled() && !disableAO && Block.lightValue[block.blockID] == 0;
     }

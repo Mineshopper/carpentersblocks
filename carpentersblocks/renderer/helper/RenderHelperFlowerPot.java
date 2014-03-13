@@ -176,7 +176,7 @@ public class RenderHelperFlowerPot extends RenderHelper {
 
         /* NORTH FACE */
 
-        lightingHelper.setLightness(0.8F).setLightingZNeg(block, x, y, z);
+        lightingHelper.setLightingZNeg(block, x, y, z);
         lightingHelper.colorSide(block, x, y, z, 2, icon);
 
         // LEFT
@@ -193,7 +193,7 @@ public class RenderHelperFlowerPot extends RenderHelper {
 
         /* SOUTH FACE */
 
-        lightingHelper.setLightness(0.8F).setLightingZPos(block, x, y, z);
+        lightingHelper.setLightingZPos(block, x, y, z);
         lightingHelper.colorSide(block, x, y, z, 3, icon);
 
         // LEFT
@@ -210,7 +210,7 @@ public class RenderHelperFlowerPot extends RenderHelper {
 
         /* WEST FACE */
 
-        lightingHelper.setLightness(0.6F).setLightingXNeg(block, x, y, z);
+        lightingHelper.setLightingXNeg(block, x, y, z);
         lightingHelper.colorSide(block, x, y, z, 4, icon);
 
         // LEFT
@@ -227,7 +227,7 @@ public class RenderHelperFlowerPot extends RenderHelper {
 
         /* EAST FACE */
 
-        lightingHelper.setLightness(0.6F).setLightingXPos(block, x, y, z);
+        lightingHelper.setLightingXPos(block, x, y, z);
         lightingHelper.colorSide(block, x, y, z, 5, icon);
 
         // LEFT
@@ -244,7 +244,7 @@ public class RenderHelperFlowerPot extends RenderHelper {
 
         /* UP */
 
-        lightingHelper.setLightness(1.0F).setLightingYPos(block, x, y, z);
+        lightingHelper.setLightingYPos(block, x, y, z);
         lightingHelper.colorSide(block, x, y, z, 1, icon);
 
         icon = block.getBlockTextureFromSide(1);
