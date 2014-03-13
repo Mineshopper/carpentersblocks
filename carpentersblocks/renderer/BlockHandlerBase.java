@@ -21,6 +21,7 @@ import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.handler.EventHandler;
 import carpentersblocks.util.handler.OverlayHandler;
+import carpentersblocks.util.registry.BlockRegistry;
 import carpentersblocks.util.registry.FeatureRegistry;
 import carpentersblocks.util.registry.IconRegistry;
 import cpw.mods.fml.client.FMLClientHandler;
@@ -314,6 +315,8 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
             return renderPass == PASS_ALPHA;
         } else {
             return  block.getRenderBlockPass() == renderPass ||
+                    shouldRenderPattern() ||
+                    shouldRenderOverlay(block) ||
                     block instanceof BlockCoverable && renderPass == PASS_OPAQUE;
         }
     }
@@ -370,12 +373,9 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
      */
     protected boolean shouldRenderPattern()
     {
-        if (!suppressPattern)
-        {
+        if (!suppressPattern) {
             if (renderPass == PASS_ALPHA) {
-                if (BlockProperties.hasPattern(TE, coverRendering)) {
-                    return true;
-                }
+                return BlockProperties.hasPattern(TE, coverRendering);
             }
         }
 
@@ -555,11 +555,13 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
         }
 
         /* Render pattern on side. */
+
         if (shouldRenderPattern()) {
             renderPattern(x, y, z, side);
         }
 
         /* Render overlay on side. */
+        
         if (shouldRenderOverlay(block)) {
             renderOverlay(block, x, y, z, side, icon);
         }
