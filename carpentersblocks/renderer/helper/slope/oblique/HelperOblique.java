@@ -1,8 +1,8 @@
 package carpentersblocks.renderer.helper.slope.oblique;
 
-import static net.minecraftforge.common.ForgeDirection.NORTH;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.util.Icon;
+import net.minecraftforge.common.ForgeDirection;
 import carpentersblocks.data.Slope;
 import carpentersblocks.renderer.helper.RenderHelper;
 import cpw.mods.fml.relauncher.Side;
@@ -16,7 +16,7 @@ public class HelperOblique extends RenderHelper {
      */
     public static void renderIntObliqueYNeg(RenderBlocks renderBlocks, int slopeID, double x, double y, double z, Icon icon)
     {
-        prepareRender(renderBlocks, NORTH, x, y, z, icon);
+        prepareRender(renderBlocks, ForgeDirection.NORTH, x, y, z, icon);
 
         double uTM = uTR - (uTR - uTL) / 2;
 
@@ -49,7 +49,7 @@ public class HelperOblique extends RenderHelper {
      */
     public static void renderIntObliqueYPos(RenderBlocks renderBlocks, int slopeID, double x, double y, double z, Icon icon)
     {
-        prepareRender(renderBlocks, NORTH, x, y, z, icon);
+        prepareRender(renderBlocks, ForgeDirection.NORTH, x, y, z, icon);
 
         double uTM = uTR - (uTR - uTL) / 2;
 
@@ -82,7 +82,7 @@ public class HelperOblique extends RenderHelper {
      */
     public static void renderExtObliqueYNegLeft(RenderBlocks renderBlocks, int slopeID, double x, double y, double z, Icon icon)
     {
-        prepareRender(renderBlocks, NORTH, x, y, z, icon);
+        prepareRender(renderBlocks, ForgeDirection.NORTH, x, y, z, icon);
 
         double uTOP_MIDDLE = uTR;
         double uTOP_RIGHT_MIDDLE = uTOP_MIDDLE - (uTR - uTL) / 2;
@@ -119,7 +119,7 @@ public class HelperOblique extends RenderHelper {
      */
     public static void renderExtObliqueYNegRight(RenderBlocks renderBlocks, int slopeID, double x, double y, double z, Icon icon)
     {
-        prepareRender(renderBlocks, NORTH, x, y, z, icon);
+        prepareRender(renderBlocks, ForgeDirection.NORTH, x, y, z, icon);
 
         double uTOP_MIDDLE = uTR - (uTR - uTL) / 2;
         double uTOP_LEFT_MIDDLE = uTOP_MIDDLE - (uTR - uTL) / 2;
@@ -156,7 +156,7 @@ public class HelperOblique extends RenderHelper {
      */
     public static void renderExtObliqueYPosLeft(RenderBlocks renderBlocks, int slopeID, double x, double y, double z, Icon icon)
     {
-        prepareRender(renderBlocks, NORTH, x, y, z, icon);
+        prepareRender(renderBlocks, ForgeDirection.NORTH, x, y, z, icon);
 
         double uBOTTOM_MIDDLE = uBR;
         double uBOTTOM_RIGHT_MIDDLE = uBOTTOM_MIDDLE - (uBR - uBL) / 2;
@@ -193,7 +193,7 @@ public class HelperOblique extends RenderHelper {
      */
     public static void renderExtObliqueYPosRight(RenderBlocks renderBlocks, int slopeID, double x, double y, double z, Icon icon)
     {
-        prepareRender(renderBlocks, NORTH, x, y, z, icon);
+        prepareRender(renderBlocks, ForgeDirection.NORTH, x, y, z, icon);
 
         double uBOTTOM_MIDDLE = uBR - (uBR - uBL) / 2;
         double uBOTTOM_LEFT_MIDDLE = uBOTTOM_MIDDLE - (uBR - uBL) / 2;

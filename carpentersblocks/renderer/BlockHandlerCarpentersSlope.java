@@ -133,7 +133,6 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
                 renderBlocks.setRenderBounds(0.0D, 0.0D, 0.5D, 1.0D, 0.5D, 1.0D);
                 HelperTriangle.renderFaceXNegZPos(renderBlocks, 0.0D, 0.0D, 0.0D, block.getIcon(4, EventHandler.BLOCKICON_BASE_ID));
 
-
                 tessellator.setNormal(0.0F, 0.5F, -1.0F);
                 renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 0.5D, 0.5D, 0.5D);
                 HelperPrism.renderWestPointSlopeZNeg(renderBlocks, 0.0D, 0.0D, 0.0D, IconRegistry.icon_quartered_frame);
@@ -511,6 +510,8 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
 
         isSideSloped = false;
         
+        lightingHelper.clearLightnessOverride();
+        
         /* Render non-sloped faces. */
 
         if (slope.hasSide(ForgeDirection.DOWN) && srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x, y - 1, z, DOWN)) {
@@ -751,6 +752,9 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
     {
         prepareLighting(block);       
         
+        boolean solid_YP = TE.worldObj.isBlockSolidOnSide(TE.xCoord, TE.yCoord + 1, TE.zCoord, ForgeDirection.DOWN);
+        boolean solid_YN = TE.worldObj.isBlockSolidOnSide(TE.xCoord, TE.yCoord - 1, TE.zCoord, ForgeDirection.UP);
+        
         switch (slope.slopeID) {
             case Slope.ID_WEDGE_NW:
 
@@ -834,15 +838,15 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
 
                 if (renderBlocks.enableAO) {
 
-                    lightingHelper.ao[SOUTHEAST] = ao[DOWN][SOUTHEAST];
+                    lightingHelper.ao[SOUTHEAST] = solid_YN ? offset_ao[UP][SOUTHEAST] : ao[DOWN][SOUTHEAST];
                     lightingHelper.ao[NORTHEAST] = offset_ao[DOWN][NORTHEAST];
                     lightingHelper.ao[NORTHWEST] = offset_ao[DOWN][NORTHWEST];
-                    lightingHelper.ao[SOUTHWEST] = ao[DOWN][SOUTHWEST];
+                    lightingHelper.ao[SOUTHWEST] = solid_YN ? offset_ao[UP][SOUTHWEST] : ao[DOWN][SOUTHWEST];
 
-                    renderBlocks.brightnessTopLeft     = brightness[DOWN][SOUTHEAST];
+                    renderBlocks.brightnessTopLeft     = solid_YN ? offset_brightness[UP][SOUTHEAST] : brightness[DOWN][SOUTHEAST];
                     renderBlocks.brightnessBottomLeft  = offset_brightness[DOWN][NORTHEAST];
                     renderBlocks.brightnessBottomRight = offset_brightness[DOWN][NORTHWEST];
-                    renderBlocks.brightnessTopRight    = brightness[DOWN][SOUTHWEST];
+                    renderBlocks.brightnessTopRight    = solid_YN ? offset_brightness[UP][SOUTHWEST] : brightness[DOWN][SOUTHWEST];
 
                 }
 
@@ -853,15 +857,15 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
 
                 if (renderBlocks.enableAO) {
 
-                    lightingHelper.ao[SOUTHEAST] = ao[UP][SOUTHEAST];
+                    lightingHelper.ao[SOUTHEAST] = solid_YP ? offset_ao[DOWN][SOUTHEAST] : ao[UP][SOUTHEAST];
                     lightingHelper.ao[NORTHEAST] = offset_ao[UP][NORTHEAST];
                     lightingHelper.ao[NORTHWEST] = offset_ao[UP][NORTHWEST];
-                    lightingHelper.ao[SOUTHWEST] = ao[UP][SOUTHWEST];
+                    lightingHelper.ao[SOUTHWEST] = solid_YP ? offset_ao[DOWN][SOUTHWEST] : ao[UP][SOUTHWEST];
 
-                    renderBlocks.brightnessTopLeft     = brightness[UP][SOUTHEAST];
+                    renderBlocks.brightnessTopLeft     = solid_YP ? offset_brightness[DOWN][SOUTHEAST] : brightness[UP][SOUTHEAST];
                     renderBlocks.brightnessBottomLeft  = offset_brightness[UP][NORTHEAST];
                     renderBlocks.brightnessBottomRight = offset_brightness[UP][NORTHWEST];
-                    renderBlocks.brightnessTopRight    = brightness[UP][SOUTHWEST];
+                    renderBlocks.brightnessTopRight    = solid_YP ? offset_brightness[DOWN][SOUTHWEST] : brightness[UP][SOUTHWEST];
 
                 }
 
@@ -873,13 +877,13 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
                 if (renderBlocks.enableAO) {
 
                     lightingHelper.ao[SOUTHEAST] = offset_ao[DOWN][SOUTHEAST];
-                    lightingHelper.ao[NORTHEAST] = ao[DOWN][NORTHEAST];
-                    lightingHelper.ao[NORTHWEST] = ao[DOWN][NORTHWEST];
+                    lightingHelper.ao[NORTHEAST] = solid_YN ? offset_ao[UP][NORTHEAST] : ao[DOWN][NORTHEAST];
+                    lightingHelper.ao[NORTHWEST] = solid_YN ? offset_ao[UP][NORTHWEST] : ao[DOWN][NORTHWEST];
                     lightingHelper.ao[SOUTHWEST] = offset_ao[DOWN][SOUTHWEST];
 
                     renderBlocks.brightnessTopLeft     = offset_brightness[DOWN][SOUTHEAST];
-                    renderBlocks.brightnessBottomLeft  = brightness[DOWN][NORTHEAST];
-                    renderBlocks.brightnessBottomRight = brightness[DOWN][NORTHWEST];
+                    renderBlocks.brightnessBottomLeft  = solid_YN ? offset_brightness[UP][NORTHEAST] : brightness[DOWN][NORTHEAST];
+                    renderBlocks.brightnessBottomRight = solid_YN ? offset_brightness[UP][NORTHWEST] : brightness[DOWN][NORTHWEST];
                     renderBlocks.brightnessTopRight    = offset_brightness[DOWN][SOUTHWEST];
 
                 }
@@ -892,13 +896,13 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
                 if (renderBlocks.enableAO) {
 
                     lightingHelper.ao[SOUTHEAST] = offset_ao[UP][SOUTHEAST];
-                    lightingHelper.ao[NORTHEAST] = ao[UP][NORTHEAST];
-                    lightingHelper.ao[NORTHWEST] = ao[UP][NORTHWEST];
+                    lightingHelper.ao[NORTHEAST] = solid_YP ? offset_ao[DOWN][NORTHEAST] : ao[UP][NORTHEAST];
+                    lightingHelper.ao[NORTHWEST] = solid_YP ? offset_ao[DOWN][NORTHWEST] : ao[UP][NORTHWEST];
                     lightingHelper.ao[SOUTHWEST] = offset_ao[UP][SOUTHWEST];
 
                     renderBlocks.brightnessTopLeft     = offset_brightness[UP][SOUTHEAST];
-                    renderBlocks.brightnessBottomLeft  = brightness[UP][NORTHEAST];
-                    renderBlocks.brightnessBottomRight = brightness[UP][NORTHWEST];
+                    renderBlocks.brightnessBottomLeft  = solid_YP ? offset_brightness[DOWN][NORTHEAST] : brightness[UP][NORTHEAST];
+                    renderBlocks.brightnessBottomRight = solid_YP ? offset_brightness[DOWN][NORTHWEST] : brightness[UP][NORTHWEST];
                     renderBlocks.brightnessTopRight    = offset_brightness[UP][SOUTHWEST];
 
                 }
@@ -910,13 +914,13 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
 
                 if (renderBlocks.enableAO) {
 
-                    lightingHelper.ao[SOUTHEAST] = ao[DOWN][SOUTHEAST];
-                    lightingHelper.ao[NORTHEAST] = ao[DOWN][NORTHEAST];
+                    lightingHelper.ao[SOUTHEAST] = solid_YN ? offset_ao[UP][SOUTHEAST] : ao[DOWN][SOUTHEAST];
+                    lightingHelper.ao[NORTHEAST] = solid_YN ? offset_ao[UP][NORTHEAST] : ao[DOWN][NORTHEAST];
                     lightingHelper.ao[NORTHWEST] = offset_ao[DOWN][NORTHWEST];
                     lightingHelper.ao[SOUTHWEST] = offset_ao[DOWN][SOUTHWEST];
 
-                    renderBlocks.brightnessTopLeft     = brightness[DOWN][SOUTHEAST];
-                    renderBlocks.brightnessBottomLeft  = brightness[DOWN][NORTHEAST];
+                    renderBlocks.brightnessTopLeft     = solid_YN ? offset_brightness[UP][SOUTHEAST] : brightness[DOWN][SOUTHEAST];
+                    renderBlocks.brightnessBottomLeft  = solid_YN ? offset_brightness[UP][NORTHEAST] : brightness[DOWN][NORTHEAST];
                     renderBlocks.brightnessBottomRight = offset_brightness[DOWN][NORTHWEST];
                     renderBlocks.brightnessTopRight    = offset_brightness[DOWN][SOUTHWEST];
 
@@ -929,13 +933,13 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
 
                 if (renderBlocks.enableAO) {
 
-                    lightingHelper.ao[SOUTHEAST] = ao[UP][SOUTHEAST];
-                    lightingHelper.ao[NORTHEAST] = ao[UP][NORTHEAST];
+                    lightingHelper.ao[SOUTHEAST] = solid_YP ? offset_ao[DOWN][SOUTHEAST] : ao[UP][SOUTHEAST];
+                    lightingHelper.ao[NORTHEAST] = solid_YP ? offset_ao[DOWN][NORTHEAST] : ao[UP][NORTHEAST];
                     lightingHelper.ao[NORTHWEST] = offset_ao[UP][NORTHWEST];
                     lightingHelper.ao[SOUTHWEST] = offset_ao[UP][SOUTHWEST];
 
-                    renderBlocks.brightnessTopLeft     = brightness[UP][SOUTHEAST];
-                    renderBlocks.brightnessBottomLeft  = brightness[UP][NORTHEAST];
+                    renderBlocks.brightnessTopLeft     = solid_YP ? offset_brightness[DOWN][SOUTHEAST] : brightness[UP][SOUTHEAST];
+                    renderBlocks.brightnessBottomLeft  = solid_YP ? offset_brightness[DOWN][NORTHEAST] : brightness[UP][NORTHEAST];
                     renderBlocks.brightnessBottomRight = offset_brightness[UP][NORTHWEST];
                     renderBlocks.brightnessTopRight    = offset_brightness[UP][SOUTHWEST];
 
@@ -950,13 +954,13 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
 
                     lightingHelper.ao[SOUTHEAST] = offset_ao[DOWN][SOUTHEAST];
                     lightingHelper.ao[NORTHEAST] = offset_ao[DOWN][NORTHEAST];
-                    lightingHelper.ao[NORTHWEST] = ao[DOWN][NORTHWEST];
-                    lightingHelper.ao[SOUTHWEST] = ao[DOWN][SOUTHWEST];
+                    lightingHelper.ao[NORTHWEST] = solid_YN ? offset_ao[UP][NORTHWEST] : ao[DOWN][NORTHWEST];
+                    lightingHelper.ao[SOUTHWEST] = solid_YN ? offset_ao[UP][SOUTHWEST] : ao[DOWN][SOUTHWEST];
 
                     renderBlocks.brightnessTopLeft     = offset_brightness[DOWN][SOUTHEAST];
                     renderBlocks.brightnessBottomLeft  = offset_brightness[DOWN][NORTHEAST];
-                    renderBlocks.brightnessBottomRight = brightness[DOWN][NORTHWEST];
-                    renderBlocks.brightnessTopRight    = brightness[DOWN][SOUTHWEST];
+                    renderBlocks.brightnessBottomRight = solid_YN ? offset_brightness[UP][NORTHWEST] : brightness[DOWN][NORTHWEST];
+                    renderBlocks.brightnessTopRight    = solid_YN ? offset_brightness[UP][SOUTHWEST] : brightness[DOWN][SOUTHWEST];
 
                 }
 
@@ -969,13 +973,13 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
 
                     lightingHelper.ao[SOUTHEAST] = offset_ao[UP][SOUTHEAST];
                     lightingHelper.ao[NORTHEAST] = offset_ao[UP][NORTHEAST];
-                    lightingHelper.ao[NORTHWEST] = ao[UP][NORTHWEST];
-                    lightingHelper.ao[SOUTHWEST] = ao[UP][SOUTHWEST];
+                    lightingHelper.ao[NORTHWEST] = solid_YP ? offset_ao[DOWN][NORTHWEST] : ao[UP][NORTHWEST];
+                    lightingHelper.ao[SOUTHWEST] = solid_YP ? offset_ao[DOWN][SOUTHWEST] : ao[UP][SOUTHWEST];
 
                     renderBlocks.brightnessTopLeft     = offset_brightness[UP][SOUTHEAST];
                     renderBlocks.brightnessBottomLeft  = offset_brightness[UP][NORTHEAST];
-                    renderBlocks.brightnessBottomRight = brightness[UP][NORTHWEST];
-                    renderBlocks.brightnessTopRight    = brightness[UP][SOUTHWEST];
+                    renderBlocks.brightnessBottomRight = solid_YP ? offset_brightness[DOWN][NORTHWEST] : brightness[UP][NORTHWEST];
+                    renderBlocks.brightnessTopRight    = solid_YP ? offset_brightness[DOWN][SOUTHWEST] : brightness[UP][SOUTHWEST];
 
                 }
 
@@ -994,8 +998,6 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
         } else {
             setIDAndRender(block, WEDGE_SLOPED_ZP, x, y, z, WEST);
         }
-        
-        lightingHelper.clearLightnessOverride();
     }
 
     private void prepareVerticalWedge(Block block, Slope slope, int x, int y, int z)
@@ -1013,8 +1015,6 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
         } else { // ForgeDirection.EAST
             setIDAndRender(block, WEDGE_SLOPED_XP, x, y, z, EAST);
         }
-        
-        lightingHelper.clearLightnessOverride();
     }
 
     private void prepareWedgeIntCorner(Block block, Slope slope, int x, int y, int z)
@@ -1030,8 +1030,6 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
         } else { // ForgeDirection.EAST
             setIDAndRender(block, WEDGE_CORNER_SLOPED_XP, x, y, z, EAST);
         }
-        
-        lightingHelper.clearLightnessOverride();
 
         Slope slopeZ = slope.facings.contains(ForgeDirection.NORTH) ? slope.isPositive ? Slope.WEDGE_POS_N : Slope.WEDGE_NEG_N : slope.isPositive ? Slope.WEDGE_POS_S : Slope.WEDGE_NEG_S;
 
@@ -1042,8 +1040,6 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
         } else {
             setIDAndRender(block, WEDGE_CORNER_SLOPED_ZP, x, y, z, SOUTH);
         }
-        
-        lightingHelper.clearLightnessOverride();
     }
 
     private void prepareWedgeExtCorner(Block block, Slope slope, int x, int y, int z)
@@ -1059,8 +1055,6 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
         } else { // ForgeDirection.EAST
             setIDAndRender(block, WEDGE_CORNER_SLOPED_XP, x, y, z, EAST);
         }
-        
-        lightingHelper.clearLightnessOverride();
 
         Slope slopeZ = slope.facings.contains(ForgeDirection.NORTH) ? slope.isPositive ? Slope.WEDGE_POS_N : Slope.WEDGE_NEG_N : slope.isPositive ? Slope.WEDGE_POS_S : Slope.WEDGE_NEG_S;
 
@@ -1071,8 +1065,6 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
         } else {
             setIDAndRender(block, WEDGE_CORNER_SLOPED_ZP, x, y, z, SOUTH);
         }
-        
-        lightingHelper.clearLightnessOverride();
     }
 
     private void prepareObliqueIntCorner(Block block, Slope slope, int x, int y, int z)
@@ -1082,95 +1074,98 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
         renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
         prepareLighting(block);
         
+        boolean solid_YP = TE.worldObj.isBlockSolidOnSide(TE.xCoord, TE.yCoord + 1, TE.zCoord, ForgeDirection.DOWN);
+        boolean solid_YN = TE.worldObj.isBlockSolidOnSide(TE.xCoord, TE.yCoord - 1, TE.zCoord, ForgeDirection.UP);
+        
         if (renderBlocks.enableAO) {
 
             switch (slope.slopeID) {
                 case Slope.ID_OBL_INT_NEG_NW:
 
-                    lightingHelper.ao[NORTHEAST] = ao[DOWN][NORTHEAST];
+                    lightingHelper.ao[NORTHEAST] = solid_YN ? offset_ao[UP][NORTHEAST] : ao[DOWN][NORTHEAST];
                     lightingHelper.ao[NORTHWEST] = offset_ao[DOWN][NORTHWEST];
-                    lightingHelper.ao[SOUTHWEST] = ao[DOWN][SOUTHWEST];
+                    lightingHelper.ao[SOUTHWEST] = solid_YN ? offset_ao[UP][SOUTHWEST] : ao[DOWN][SOUTHWEST];
 
-                    renderBlocks.brightnessBottomLeft  = brightness[DOWN][NORTHEAST];
+                    renderBlocks.brightnessBottomLeft  = solid_YN ? offset_brightness[UP][NORTHEAST] : brightness[DOWN][NORTHEAST];
                     renderBlocks.brightnessBottomRight = offset_brightness[DOWN][NORTHWEST];
-                    renderBlocks.brightnessTopRight    = brightness[DOWN][SOUTHWEST];
+                    renderBlocks.brightnessTopRight    = solid_YN ? offset_brightness[UP][SOUTHWEST] : brightness[DOWN][SOUTHWEST];
 
                     break;
                 case Slope.ID_OBL_INT_NEG_NE:
 
-                    lightingHelper.ao[SOUTHEAST] = ao[DOWN][SOUTHEAST];
+                    lightingHelper.ao[SOUTHEAST] = solid_YN ? offset_ao[UP][SOUTHEAST] : ao[DOWN][SOUTHEAST];
                     lightingHelper.ao[NORTHEAST] = offset_ao[DOWN][NORTHEAST];
-                    lightingHelper.ao[NORTHWEST] = ao[DOWN][NORTHWEST];
+                    lightingHelper.ao[NORTHWEST] = solid_YN ? offset_ao[UP][NORTHWEST] : ao[DOWN][NORTHWEST];
 
-                    renderBlocks.brightnessTopLeft     = brightness[DOWN][SOUTHEAST];
+                    renderBlocks.brightnessTopLeft     = solid_YN ? offset_brightness[UP][SOUTHEAST] : brightness[DOWN][SOUTHEAST];
                     renderBlocks.brightnessBottomLeft  = offset_brightness[DOWN][NORTHEAST];
-                    renderBlocks.brightnessBottomRight = brightness[DOWN][NORTHWEST];
+                    renderBlocks.brightnessBottomRight = solid_YN ? offset_brightness[UP][NORTHWEST] : brightness[DOWN][NORTHWEST];
 
                     break;
                 case Slope.ID_OBL_INT_NEG_SW:
 
-                    lightingHelper.ao[SOUTHEAST] = ao[DOWN][SOUTHEAST];
-                    lightingHelper.ao[NORTHWEST] = ao[DOWN][NORTHWEST];
+                    lightingHelper.ao[SOUTHEAST] = solid_YN ? offset_ao[UP][SOUTHEAST] : ao[DOWN][SOUTHEAST];
+                    lightingHelper.ao[NORTHWEST] = solid_YN ? offset_ao[UP][NORTHWEST] : ao[DOWN][NORTHWEST];
                     lightingHelper.ao[SOUTHWEST] = offset_ao[DOWN][SOUTHWEST];
 
-                    renderBlocks.brightnessTopLeft     = brightness[DOWN][SOUTHEAST];
-                    renderBlocks.brightnessBottomRight = brightness[DOWN][NORTHWEST];
+                    renderBlocks.brightnessTopLeft     = solid_YN ? offset_brightness[UP][SOUTHEAST] : brightness[DOWN][SOUTHEAST];
+                    renderBlocks.brightnessBottomRight = solid_YN ? offset_brightness[UP][NORTHWEST] : brightness[DOWN][NORTHWEST];
                     renderBlocks.brightnessTopRight    = offset_brightness[DOWN][SOUTHWEST];
 
                     break;
                 case Slope.ID_OBL_INT_NEG_SE:
 
                     lightingHelper.ao[SOUTHEAST] = offset_ao[DOWN][SOUTHEAST];
-                    lightingHelper.ao[NORTHEAST] = ao[DOWN][NORTHEAST];
-                    lightingHelper.ao[SOUTHWEST] = ao[DOWN][SOUTHWEST];
+                    lightingHelper.ao[NORTHEAST] = solid_YN ? offset_ao[UP][NORTHEAST] : ao[DOWN][NORTHEAST];
+                    lightingHelper.ao[SOUTHWEST] = solid_YN ? offset_ao[UP][SOUTHWEST] : ao[DOWN][SOUTHWEST];
 
                     renderBlocks.brightnessTopLeft    = offset_brightness[DOWN][SOUTHEAST];
-                    renderBlocks.brightnessBottomLeft = brightness[DOWN][NORTHEAST];
-                    renderBlocks.brightnessTopRight   = brightness[DOWN][SOUTHWEST];
+                    renderBlocks.brightnessBottomLeft = solid_YN ? offset_brightness[UP][NORTHEAST] : brightness[DOWN][NORTHEAST];
+                    renderBlocks.brightnessTopRight   = solid_YN ? offset_brightness[UP][SOUTHWEST] : brightness[DOWN][SOUTHWEST];
 
                     break;
                 case Slope.ID_OBL_INT_POS_NW:
 
-                    lightingHelper.ao[NORTHEAST] = ao[UP][NORTHEAST];
+                    lightingHelper.ao[NORTHEAST] = solid_YP ? offset_ao[DOWN][NORTHEAST] : ao[UP][NORTHEAST];
                     lightingHelper.ao[NORTHWEST] = offset_ao[UP][NORTHWEST];
-                    lightingHelper.ao[SOUTHWEST] = ao[UP][SOUTHWEST];
+                    lightingHelper.ao[SOUTHWEST] = solid_YP ? offset_ao[DOWN][SOUTHWEST] : ao[UP][SOUTHWEST];
 
-                    renderBlocks.brightnessBottomLeft  = brightness[UP][NORTHEAST];
+                    renderBlocks.brightnessBottomLeft  = solid_YP ? offset_brightness[DOWN][NORTHEAST] : brightness[UP][NORTHEAST];
                     renderBlocks.brightnessBottomRight = offset_brightness[UP][NORTHWEST];
-                    renderBlocks.brightnessTopRight    = brightness[UP][SOUTHWEST];
+                    renderBlocks.brightnessTopRight    = solid_YP ? offset_brightness[DOWN][SOUTHWEST] : brightness[UP][SOUTHWEST];
 
                     break;
                 case Slope.ID_OBL_INT_POS_NE:
 
-                    lightingHelper.ao[SOUTHEAST] = ao[UP][SOUTHEAST];
+                    lightingHelper.ao[SOUTHEAST] = solid_YP ? offset_ao[DOWN][SOUTHEAST] : ao[UP][SOUTHEAST];
                     lightingHelper.ao[NORTHEAST] = offset_ao[UP][NORTHEAST];
-                    lightingHelper.ao[NORTHWEST] = ao[UP][NORTHWEST];
+                    lightingHelper.ao[NORTHWEST] = solid_YP ? offset_ao[DOWN][NORTHWEST] : ao[UP][NORTHWEST];
 
-                    renderBlocks.brightnessTopLeft     = brightness[UP][SOUTHEAST];
+                    renderBlocks.brightnessTopLeft     = solid_YP ? offset_brightness[DOWN][SOUTHEAST] : brightness[UP][SOUTHEAST];
                     renderBlocks.brightnessBottomLeft  = offset_brightness[UP][NORTHEAST];
-                    renderBlocks.brightnessBottomRight = brightness[UP][NORTHWEST];
+                    renderBlocks.brightnessBottomRight = solid_YP ? offset_brightness[DOWN][NORTHWEST] : brightness[UP][NORTHWEST];
 
                     break;
                 case Slope.ID_OBL_INT_POS_SW:
 
-                    lightingHelper.ao[SOUTHEAST] = ao[UP][SOUTHEAST];
-                    lightingHelper.ao[NORTHWEST] = ao[UP][NORTHWEST];
+                    lightingHelper.ao[SOUTHEAST] = solid_YP ? offset_ao[DOWN][SOUTHEAST] : ao[UP][SOUTHEAST];
+                    lightingHelper.ao[NORTHWEST] = solid_YP ? offset_ao[DOWN][NORTHWEST] : ao[UP][NORTHWEST];
                     lightingHelper.ao[SOUTHWEST] = offset_ao[UP][SOUTHWEST];
 
-                    renderBlocks.brightnessTopLeft     = brightness[UP][SOUTHEAST];
-                    renderBlocks.brightnessBottomRight = brightness[UP][NORTHWEST];
+                    renderBlocks.brightnessTopLeft     = solid_YP ? offset_brightness[DOWN][SOUTHEAST] : brightness[UP][SOUTHEAST];
+                    renderBlocks.brightnessBottomRight = solid_YP ? offset_brightness[DOWN][NORTHWEST] : brightness[UP][NORTHWEST];
                     renderBlocks.brightnessTopRight    = offset_brightness[UP][SOUTHWEST];
 
                     break;
                 case Slope.ID_OBL_INT_POS_SE:
 
                     lightingHelper.ao[SOUTHEAST] = offset_ao[UP][SOUTHEAST];
-                    lightingHelper.ao[NORTHEAST] = ao[UP][NORTHEAST];
-                    lightingHelper.ao[SOUTHWEST] = ao[UP][SOUTHWEST];
+                    lightingHelper.ao[NORTHEAST] = solid_YP ? offset_ao[DOWN][NORTHEAST] : ao[UP][NORTHEAST];
+                    lightingHelper.ao[SOUTHWEST] = solid_YP ? offset_ao[DOWN][SOUTHWEST] : ao[UP][SOUTHWEST];
 
                     renderBlocks.brightnessTopLeft    = offset_brightness[UP][SOUTHEAST];
-                    renderBlocks.brightnessBottomLeft = brightness[UP][NORTHEAST];
-                    renderBlocks.brightnessTopRight   = brightness[UP][SOUTHWEST];
+                    renderBlocks.brightnessBottomLeft = solid_YP ? offset_brightness[DOWN][NORTHEAST] : brightness[UP][NORTHEAST];
+                    renderBlocks.brightnessTopRight   = solid_YP ? offset_brightness[DOWN][SOUTHWEST] : brightness[UP][SOUTHWEST];
 
                     break;
             }
@@ -1184,8 +1179,6 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
             lightingHelper.setLightnessOverride(LIGHTNESS_NEG_OBL);
             setIDAndRender(block, OBL_INT_YN, x, y, z, NORTH);
         }
-        
-        lightingHelper.clearLightnessOverride();
     }
 
     private void prepareObliqueExtCorner(Block block, Slope slope, int x, int y, int z)
@@ -1195,93 +1188,96 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
         renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
         prepareLighting(block);
         
+        boolean solid_YP = TE.worldObj.isBlockSolidOnSide(TE.xCoord, TE.yCoord + 1, TE.zCoord, ForgeDirection.DOWN);
+        boolean solid_YN = TE.worldObj.isBlockSolidOnSide(TE.xCoord, TE.yCoord - 1, TE.zCoord, ForgeDirection.UP);
+        
         if (renderBlocks.enableAO) {
 
             switch (slope.slopeID) {
                 case Slope.ID_OBL_EXT_NEG_NW:
 
                     lightingHelper.ao[TOP_LEFT]    = offset_ao[DOWN][NORTHEAST];
-                    lightingHelper.ao[BOTTOM_LEFT] = ao[DOWN][SOUTHEAST];
+                    lightingHelper.ao[BOTTOM_LEFT] = solid_YN ? offset_ao[UP][SOUTHEAST] : ao[DOWN][SOUTHEAST];
                     lightingHelper.ao[TOP_RIGHT]   = offset_ao[DOWN][SOUTHWEST];
 
                     renderBlocks.brightnessTopLeft    = offset_brightness[DOWN][NORTHEAST];
-                    renderBlocks.brightnessBottomLeft = brightness[DOWN][SOUTHEAST];
+                    renderBlocks.brightnessBottomLeft = solid_YN ? offset_brightness[UP][SOUTHEAST] : brightness[DOWN][SOUTHEAST];
                     renderBlocks.brightnessTopRight   = offset_brightness[DOWN][SOUTHWEST];
 
                     break;
                 case Slope.ID_OBL_EXT_NEG_NE:
-
+                    
                     lightingHelper.ao[TOP_LEFT]    = offset_ao[DOWN][SOUTHEAST];
-                    lightingHelper.ao[BOTTOM_LEFT] = ao[DOWN][SOUTHWEST];
+                    lightingHelper.ao[BOTTOM_LEFT] = solid_YN ? offset_ao[UP][SOUTHWEST] : ao[DOWN][SOUTHWEST];
                     lightingHelper.ao[TOP_RIGHT]   = offset_ao[DOWN][NORTHWEST];
 
                     renderBlocks.brightnessTopLeft    = offset_brightness[DOWN][SOUTHEAST];
-                    renderBlocks.brightnessBottomLeft = brightness[DOWN][SOUTHWEST];
+                    renderBlocks.brightnessBottomLeft = solid_YN ? offset_brightness[UP][SOUTHWEST] : brightness[DOWN][SOUTHWEST];
                     renderBlocks.brightnessTopRight   = offset_brightness[DOWN][NORTHWEST];
 
                     break;
                 case Slope.ID_OBL_EXT_NEG_SW:
 
                     lightingHelper.ao[TOP_LEFT]    = offset_ao[DOWN][NORTHWEST];
-                    lightingHelper.ao[BOTTOM_LEFT] = ao[DOWN][NORTHEAST];
+                    lightingHelper.ao[BOTTOM_LEFT] = solid_YN ? offset_ao[UP][NORTHEAST] : ao[DOWN][NORTHEAST];
                     lightingHelper.ao[TOP_RIGHT]   = offset_ao[DOWN][SOUTHEAST];
 
                     renderBlocks.brightnessTopLeft    = offset_brightness[DOWN][NORTHWEST];
-                    renderBlocks.brightnessBottomLeft = brightness[DOWN][NORTHEAST];
+                    renderBlocks.brightnessBottomLeft = solid_YN ? offset_brightness[UP][NORTHEAST] : brightness[DOWN][NORTHEAST];
                     renderBlocks.brightnessTopRight   = offset_brightness[DOWN][SOUTHEAST];
 
                     break;
                 case Slope.ID_OBL_EXT_NEG_SE:
 
                     lightingHelper.ao[TOP_LEFT]    = offset_ao[DOWN][SOUTHWEST];
-                    lightingHelper.ao[BOTTOM_LEFT] = ao[DOWN][NORTHWEST];
+                    lightingHelper.ao[BOTTOM_LEFT] = solid_YN ? offset_ao[UP][NORTHWEST] : ao[DOWN][NORTHWEST];
                     lightingHelper.ao[TOP_RIGHT]   = offset_ao[DOWN][NORTHEAST];
 
                     renderBlocks.brightnessTopLeft    = offset_brightness[DOWN][SOUTHWEST];
-                    renderBlocks.brightnessBottomLeft = brightness[DOWN][NORTHWEST];
+                    renderBlocks.brightnessBottomLeft = solid_YN ? offset_brightness[UP][NORTHWEST] : brightness[DOWN][NORTHWEST];
                     renderBlocks.brightnessTopRight   = offset_brightness[DOWN][NORTHEAST];
 
                     break;
                 case Slope.ID_OBL_EXT_POS_NW:
 
-                    lightingHelper.ao[TOP_LEFT]     = ao[UP][TOP_LEFT];
+                    lightingHelper.ao[TOP_LEFT]     = solid_YP ? offset_ao[DOWN][SOUTHEAST] : ao[UP][SOUTHEAST];
                     lightingHelper.ao[BOTTOM_LEFT]  = offset_ao[UP][NORTHEAST];
                     lightingHelper.ao[BOTTOM_RIGHT] = offset_ao[UP][SOUTHWEST];
 
-                    renderBlocks.brightnessTopLeft     = brightness[UP][SOUTHEAST];
+                    renderBlocks.brightnessTopLeft     = solid_YP ? offset_brightness[DOWN][SOUTHEAST] : brightness[UP][SOUTHEAST];
                     renderBlocks.brightnessBottomLeft  = offset_brightness[UP][NORTHEAST];
                     renderBlocks.brightnessBottomRight = offset_brightness[UP][SOUTHWEST];
 
                     break;
                 case Slope.ID_OBL_EXT_POS_NE:
 
-                    lightingHelper.ao[TOP_LEFT]     = ao[UP][SOUTHWEST];
+                    lightingHelper.ao[TOP_LEFT]     = solid_YP ? offset_ao[DOWN][SOUTHWEST] : ao[UP][SOUTHWEST];
                     lightingHelper.ao[BOTTOM_LEFT]  = offset_ao[UP][SOUTHEAST];
                     lightingHelper.ao[BOTTOM_RIGHT] = offset_ao[UP][NORTHWEST];
 
-                    renderBlocks.brightnessTopLeft     = brightness[UP][SOUTHWEST];
+                    renderBlocks.brightnessTopLeft     = solid_YP ? offset_brightness[DOWN][SOUTHWEST] : brightness[UP][SOUTHWEST];
                     renderBlocks.brightnessBottomLeft  = offset_brightness[UP][SOUTHEAST];
                     renderBlocks.brightnessBottomRight = offset_brightness[UP][NORTHWEST];
 
                     break;
                 case Slope.ID_OBL_EXT_POS_SW:
 
-                    lightingHelper.ao[TOP_LEFT]     = ao[UP][NORTHEAST];
+                    lightingHelper.ao[TOP_LEFT]     = solid_YP ? offset_ao[DOWN][NORTHEAST] : ao[UP][NORTHEAST];
                     lightingHelper.ao[BOTTOM_LEFT]  = offset_ao[UP][NORTHWEST];
                     lightingHelper.ao[BOTTOM_RIGHT] = offset_ao[UP][SOUTHEAST];
 
-                    renderBlocks.brightnessTopLeft     = brightness[UP][NORTHEAST];
+                    renderBlocks.brightnessTopLeft     = solid_YP ? offset_brightness[DOWN][NORTHEAST] : brightness[UP][NORTHEAST];
                     renderBlocks.brightnessBottomLeft  = offset_brightness[UP][NORTHWEST];
                     renderBlocks.brightnessBottomRight = offset_brightness[UP][SOUTHEAST];
 
                     break;
                 case Slope.ID_OBL_EXT_POS_SE:
 
-                    lightingHelper.ao[TOP_LEFT]     = ao[UP][NORTHWEST];
+                    lightingHelper.ao[TOP_LEFT]     = solid_YP ? offset_ao[DOWN][NORTHWEST] : ao[UP][NORTHWEST];
                     lightingHelper.ao[BOTTOM_LEFT]  = offset_ao[UP][SOUTHWEST];
                     lightingHelper.ao[BOTTOM_RIGHT] = offset_ao[UP][NORTHEAST];
 
-                    renderBlocks.brightnessTopLeft     = brightness[UP][NORTHWEST];
+                    renderBlocks.brightnessTopLeft     = solid_YP ? offset_brightness[DOWN][NORTHWEST] : brightness[UP][NORTHWEST];
                     renderBlocks.brightnessBottomLeft  = offset_brightness[UP][SOUTHWEST];
                     renderBlocks.brightnessBottomRight = offset_brightness[UP][NORTHEAST];
 
@@ -1299,8 +1295,6 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
             setIDAndRender(block, OBL_EXT_LEFT_YN, x, y, z, NORTH);
             setIDAndRender(block, OBL_EXT_RIGHT_YN, x, y, z, NORTH);
         }
-        
-        lightingHelper.clearLightnessOverride();
     }
 
     /**
