@@ -82,7 +82,8 @@ public class EventHandler {
                  * Creative mode won't call onBlockClicked() because it will try to destroy the block.
                  * We'll invoke it here when a Carpenter's tool is being held.
                  */
-                if (eventEntityPlayer.capabilities.isCreativeMode && toolEquipped) {
+                
+                if (toolEquipped && eventEntityPlayer.capabilities.isCreativeMode) {
                     block.onBlockClicked(eventEntityPlayer.worldObj, event.x, event.y, event.z, eventEntityPlayer);
                 }
 
@@ -94,6 +95,7 @@ public class EventHandler {
                  * inventory for operations such as decrementing an itemstack,
                  * so we're limiting it to tool actions only.
                  */
+                
                 if (eventEntityPlayer.isSneaking()) {
                     block.onBlockActivated(eventEntityPlayer.worldObj, event.x, event.y, event.z, eventEntityPlayer, eventFace, 1.0F, 1.0F, 1.0F);
                 }
