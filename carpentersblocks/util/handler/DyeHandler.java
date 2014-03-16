@@ -31,7 +31,7 @@ public class DyeHandler {
         dyeColor.put("dyeLightBlue", ItemDye.field_150922_c[12]);
         dyeColor.put(  "dyeMagenta", ItemDye.field_150922_c[13]);
         dyeColor.put(   "dyeOrange", ItemDye.field_150922_c[14]);
-        dyeColor.put(    "dyeWhite", ItemDye.field_150922_c[15]);
+        //dyeColor.put(    "dyeWhite", ItemDye.field_150922_c[15]);
   
     }
     
