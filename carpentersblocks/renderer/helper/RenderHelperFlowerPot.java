@@ -1,16 +1,15 @@
 package carpentersblocks.renderer.helper;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockCrops;
 import net.minecraft.block.BlockDoublePlant;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
+import carpentersblocks.data.FlowerPot;
+import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.flowerpot.FlowerPotProperties;
-import carpentersblocks.util.registry.FeatureRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -20,7 +19,7 @@ public class RenderHelperFlowerPot extends RenderHelper {
     /**
      * Applies plant color to tessellator.
      */
-    public static void setPlantColor(ItemStack itemStack, Block block, int x, int y, int z)
+    public static void setPlantColor(TEBase TE, ItemStack itemStack, Block block, int x, int y, int z)
     {
         Tessellator tessellator = Tessellator.instance;
         LightingHelper lightingHelper = LightingHelper.instance;
@@ -28,37 +27,34 @@ public class RenderHelperFlowerPot extends RenderHelper {
         float[] rgb = lightingHelper.applyAnaglyphFilter(lightingHelper.getBlockRGB(itemStack, block, x, y, z));
         
         tessellator.setColorOpaque_F(rgb[0], rgb[1], rgb[2]);
-        
-        // Replace recolor with selectable hammer option.
-        
-        //if (FeatureRegistry.enablePlantColorOverride) {
-        //    if (block.getBlockColor() != 16777215) {
-        //        tessellator.setColorOpaque_F(0.45F, 0.80F, 0.30F);
-        //    }
-        //}
+
+        if (FlowerPot.isEnriched(TE)) {
+
+            BlockProperties.setHostMetadata(TE, itemStack.getItemDamage());
+            
+            if (block.getBlockColor() != 16777215 || !itemStack.hasTagCompound() && block.colorMultiplier(TE.getWorldObj(), x, y, z) != 16777215) {
+                tessellator.setColorOpaque_F(0.45F, 0.80F, 0.30F);
+            }
+            
+            BlockProperties.resetHostMetadata(TE);
+            
+        }
     }
         
     /**
      * Renders a vanilla double tall plant.
      */
-    public static boolean renderBlockDoublePlant(RenderBlocks renderBlocks, ItemStack itemStack, int x, int y, int z, boolean thin)
+    public static boolean renderBlockDoublePlant(TEBase TE, RenderBlocks renderBlocks, ItemStack itemStack, int x, int y, int z, boolean thin)
     {
         BlockDoublePlant block = (BlockDoublePlant) FlowerPotProperties.toBlock(itemStack);
         
         Tessellator tessellator = Tessellator.instance;
         tessellator.setBrightness(block.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y, z));
         
-        setPlantColor(itemStack, block, x, y, z);
+        setPlantColor(TE, itemStack, block, x, y, z);
         
         boolean thinPlant = itemStack.getUnlocalizedName().equals("tile.doublePlant.grass");
 
-        long factor = x * 3129871 ^ z * 116129781L;
-        factor = factor * factor * 42317861L + factor * 11L;
-        double x_temp = x;
-        double y_temp = y;
-        double z_temp = z;
-        x_temp += ((factor >> 16 & 15L) / 15.0F - 0.5D) * 0.3D;
-        z_temp += ((factor >> 24 & 15L) / 15.0F - 0.5D) * 0.3D;
         int metadata = itemStack.getItemDamage();
 
         /* Render bottom stem. */
@@ -87,39 +83,41 @@ public class RenderHelperFlowerPot extends RenderHelper {
 
         if (metadata == 0) {
             
-            tessellator.addTranslation(-0.1F, -0.15F, -0.15F);
+            tessellator.addTranslation(0.0F, -0.15F, 0.0F);
             
             IIcon icon_sunflower_top_front = block.sunflowerIcons[0];
-            double angle = Math.cos(factor * 0.8D) * Math.PI * 0.1D;
+            double angle = FlowerPot.getAngle(TE) / 16.0D * 2 * Math.PI + Math.PI / 2;
+
             double cos = Math.cos(angle);
             double sin = Math.sin(angle);
             double uMin = icon_sunflower_top_front.getMinU();
             double vMin = icon_sunflower_top_front.getMinV();
             double uMax = icon_sunflower_top_front.getMaxU();
             double vMax = icon_sunflower_top_front.getMaxV();
-            double d11 = 0.5D + 0.3D * cos - 0.5D * sin;
-            double d12 = 0.5D + 0.5D * cos + 0.3D * sin;
-            double d13 = 0.5D + 0.3D * cos + 0.5D * sin;
-            double d14 = 0.5D + -0.5D * cos + 0.3D * sin;
-            double d15 = 0.5D + -0.05D * cos + 0.5D * sin;
-            double d16 = 0.5D + -0.5D * cos + -0.05D * sin;
-            double d17 = 0.5D + -0.05D * cos - 0.5D * sin;
-            double d18 = 0.5D + 0.5D * cos + -0.05D * sin;
-            tessellator.addVertexWithUV(x_temp + d15, y_temp + 1.0D, z_temp + d16, uMin, vMax);
-            tessellator.addVertexWithUV(x_temp + d17, y_temp + 1.0D, z_temp + d18, uMax, vMax);
-            tessellator.addVertexWithUV(x_temp + d11, y_temp + 0.0D, z_temp + d12, uMax, vMin);
-            tessellator.addVertexWithUV(x_temp + d13, y_temp + 0.0D, z_temp + d14, uMin, vMin);
+            double d11 = 0.5D + 0.25D * cos - 0.45D * sin;
+            double d12 = 0.5D + 0.45D * cos + 0.25D * sin;
+            double d13 = 0.5D + 0.25D * cos + 0.45D * sin;
+            double d14 = 0.5D + -0.45D * cos + 0.25D * sin;
+            double d15 = 0.5D + -0.05D * cos + 0.45D * sin;
+            double d16 = 0.5D + -0.45D * cos + -0.05D * sin;
+            double d17 = 0.5D + -0.05D * cos - 0.45D * sin;
+            double d18 = 0.5D + 0.45D * cos + -0.05D * sin;
+            tessellator.addVertexWithUV(x + d15, y + 1.0D, z + d16, uMin, vMax);
+            tessellator.addVertexWithUV(x + d17, y + 1.0D, z + d18, uMax, vMax);
+            tessellator.addVertexWithUV(x + d11, y + 0.0D, z + d12, uMax, vMin);
+            tessellator.addVertexWithUV(x + d13, y + 0.0D, z + d14, uMin, vMin);
             IIcon icon_sunflower_top_back = block.sunflowerIcons[1];
             uMin = icon_sunflower_top_back.getMinU();
             vMin = icon_sunflower_top_back.getMinV();
             uMax = icon_sunflower_top_back.getMaxU();
             vMax = icon_sunflower_top_back.getMaxV();
-            tessellator.addVertexWithUV(x_temp + d17, y_temp + 1.0D, z_temp + d18, uMin, vMax);
-            tessellator.addVertexWithUV(x_temp + d15, y_temp + 1.0D, z_temp + d16, uMax, vMax);
-            tessellator.addVertexWithUV(x_temp + d13, y_temp + 0.0D, z_temp + d14, uMax, vMin);
-            tessellator.addVertexWithUV(x_temp + d11, y_temp + 0.0D, z_temp + d12, uMin, vMin);
+            tessellator.addVertexWithUV(x + d17, y + 1.0D, z + d18, uMin, vMax);
+            tessellator.addVertexWithUV(x + d15, y + 1.0D, z + d16, uMax, vMax);
+            tessellator.addVertexWithUV(x + d13, y + 0.0D, z + d14, uMax, vMin);
+            tessellator.addVertexWithUV(x + d11, y + 0.0D, z + d12, uMin, vMin);
             
-            tessellator.addTranslation(0.1F, 0.15F, 0.15F);
+            tessellator.addTranslation(0.0F, 0.15F, 0.0F);
+            
         }
         
         tessellator.addTranslation(0.0F, -0.75F, 0.0F);

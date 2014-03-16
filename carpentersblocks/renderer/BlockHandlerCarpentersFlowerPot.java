@@ -145,7 +145,7 @@ public class BlockHandlerCarpentersFlowerPot extends BlockHandlerBase {
         tessellator.addTranslation(0.0F, 0.25F, 0.0F);
 
         Block block = FlowerPotProperties.toBlock(itemStack);
-        RenderHelperFlowerPot.setPlantColor(itemStack, block, x, y, z);
+        RenderHelperFlowerPot.setPlantColor(TE, itemStack, block, x, y, z);
         
         if (block instanceof BlockCrops) {
             /* Crop plants will use fully matured metadata. */
@@ -153,13 +153,13 @@ public class BlockHandlerCarpentersFlowerPot extends BlockHandlerBase {
         }
         
         IIcon icon = block.getIcon(2, itemStack.getItemDamage());
-        
+
         switch (FlowerPotHandler.getPlantProfile(itemStack)) {
             case DOUBLEPLANT:
-                RenderHelperFlowerPot.renderBlockDoublePlant(renderBlocks, itemStack, x, y, z, false);
+                RenderHelperFlowerPot.renderBlockDoublePlant(TE, renderBlocks, itemStack, x, y, z, false);
                 break;
             case THIN_DOUBLEPLANT:
-                RenderHelperFlowerPot.renderBlockDoublePlant(renderBlocks, itemStack, x, y, z, true);
+                RenderHelperFlowerPot.renderBlockDoublePlant(TE, renderBlocks, itemStack, x, y, z, true);
                 break;
             case REDUCED_SCALE_YP:
                 RenderHelperFlowerPot.renderPlantCrossedSquares(renderBlocks, block, icon, x, y, z, 0.75F, false);
@@ -183,7 +183,7 @@ public class BlockHandlerCarpentersFlowerPot extends BlockHandlerBase {
                 drawStackedBlocks(itemStack, x, y, z);
                 break;
         }
-        
+
         tessellator.addTranslation(0.0F, -0.25F, 0.0F);
         
         return true;

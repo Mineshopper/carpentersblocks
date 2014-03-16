@@ -7,11 +7,14 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.IIcon;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -80,6 +83,11 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
         if (entityPlayer.isSneaking()) {
             
             if (EventHandler.hitY > 0.375F) {
+                
+                if (FlowerPot.isEnriched(TE)) {
+                    FlowerPot.setEnrichment(TE, false);
+                    return true;
+                }
                 
                 if (FlowerPotProperties.hasPlant(TE)) {
                     return FlowerPotProperties.setPlant(TE, (ItemStack)null);
@@ -157,10 +165,23 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
                 if (!FlowerPotProperties.hasPlant(TE)) {
                     
                     if (FlowerPotProperties.isPlant(itemStack)) {
-                        
+
+                        int angle = MathHelper.floor_double((double)((entityPlayer.rotationYaw + 180.0F) * 16.0F / 360.0F) + 0.5D) & 15;
+
+                        FlowerPot.setAngle(TE, angle);
                         FlowerPotProperties.setPlant(TE, itemStack);
                         altered.add(decInv.add(true));
-                        
+                    }
+                    
+                } else {
+
+                    if (itemStack.getItem().equals(Items.dye) && itemStack.getItemDamage() == 15) {
+
+                        if (!FlowerPot.isEnriched(TE)) {
+                            FlowerPot.setEnrichment(TE, true);
+                            altered.add(decInv.add(true));
+                        }
+
                     }
                     
                 }
@@ -170,10 +191,8 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
                 if (FlowerPotProperties.isSoil(itemStack)) {
                     
                     if (hasCover || soilAreaClicked) {
-                        
                         FlowerPotProperties.setSoil(TE, itemStack);
                         altered.add(decInv.add(true));
-                        
                     }
                     
                 }
@@ -397,7 +416,7 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
         
         super.randomDisplayTick(world, x, y, z, random);
     }
-    
+
     @Override
     /**
      * Ejects contained items into the world, and notifies neighbors of an update, as appropriate
@@ -407,6 +426,9 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
         TEBase TE = getTileEntity(world, x, y, z);
         
         if (TE != null && TE instanceof TECarpentersFlowerPot) {
+            if (FlowerPot.isEnriched(TE)) {
+                FlowerPot.setEnrichment(TE, false);
+            }
             if (FlowerPotProperties.hasPlant(TE)) {
                 FlowerPotProperties.setPlant(TE, (ItemStack)null);
             }
