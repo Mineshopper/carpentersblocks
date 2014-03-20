@@ -1,5 +1,8 @@
 package carpentersblocks.util.registry;
 
+import carpentersblocks.util.handler.OverlayHandler.Overlay;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
@@ -17,6 +20,8 @@ public class FeatureRegistry {
     public static boolean enableMCPatcherCompatibility = false;
     public static boolean enableOptifineIntegration    = true;
     public static boolean enableExtendedPlantSupport   = true;
+
+    public static String[] overlay_list;
     
     public static int slopeSmoothness = 2;
     
@@ -26,7 +31,7 @@ public class FeatureRegistry {
     public static void initFeatures(FMLPreInitializationEvent event, Configuration config)
     {
         enableCovers     = config.get("features",      "Enable Covers",     enableCovers).getBoolean(enableCovers);
-        enableOverlays   = config.get("features",    "Enable Overlays",   enableOverlays).getBoolean(enableOverlays);
+        enableOverlays   = config.get("overlays",    "Enable Overlays",   enableOverlays).getBoolean(enableOverlays);
         enableSideCovers = config.get("features", "Enable Side Covers", enableSideCovers).getBoolean(enableSideCovers);
         enableDyeColors  = config.get("features",  "Enable Dye Colors",  enableDyeColors).getBoolean(enableDyeColors);
         enablePatterns   = config.get("features",    "Enable Patterns",   enablePatterns).getBoolean(enablePatterns);
@@ -54,6 +59,10 @@ public class FeatureRegistry {
         Property MCPatcherProp = config.get("rendering", "Enable MCPatcher Compatibility", enableMCPatcherCompatibility);
         MCPatcherProp.comment = "This will fix block texture issues caused by MCPatcher.";
         enableMCPatcherCompatibility = MCPatcherProp.getBoolean(enableMCPatcherCompatibility);
+
+        Property overlayList = config.get("overlays", "Overlay Items", new String[] { "item.seeds:grass", "item.snowball:snow", "item.string:web", "tile.vine:vine", "item.wheat:hay", "tile.mushroom:mycelium" });
+        overlayList.comment = "This maps items that can be used as overlays.\nItems are prefixed with unlocalized names (get these from en_US.lang from resource jar)\nOverlay prefixes are :grass, :snow, :web, :vine, :hay, :mycelium";
+        overlay_list = overlayList.getStringList();
     }
     
 }
