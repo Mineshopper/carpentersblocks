@@ -19,6 +19,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
@@ -222,15 +223,13 @@ public class BlockCoverable extends BlockContainer {
     {
         ItemStack itemStack = entityPlayer.getCurrentEquippedItem();
 
-        /* If item with right-click action is being held (food, etc), do not continue. */
-        
-        if (itemStack != null && itemStack.getItem() != null && !itemStack.getItemUseAction().equals(EnumAction.none)) {
-            return false;
-        }
-        
         if (world.isRemote) {
 
-            return true;
+            if (itemStack == null) {
+                return true;
+            } else {
+                return itemStack.getItem() != null && itemStack.getItem() instanceof ItemBlock;
+            }
 
         } else {
 
