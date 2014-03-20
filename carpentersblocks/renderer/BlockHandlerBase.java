@@ -24,6 +24,7 @@ import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.handler.EventHandler;
 import carpentersblocks.util.handler.OverlayHandler;
+import carpentersblocks.util.registry.BlockRegistry;
 import carpentersblocks.util.registry.FeatureRegistry;
 import carpentersblocks.util.registry.IconRegistry;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
@@ -60,7 +61,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
     
     /** Returns whether side is sloped face. */
     public boolean           isSideSloped;
-    
+
     @Override
     public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderBlocks)
     {
@@ -107,39 +108,36 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
     public boolean renderWorldBlock(IBlockAccess blockAccess, int x, int y, int z, Block block, int modelID, RenderBlocks renderBlocks)
     {
         VertexHelper.vertexCount = 0;
-
-        int renderPass = MinecraftForgeClient.getRenderPass();
-                
+  
         TE = (TEBase) blockAccess.getTileEntity(x, y, z);
 
-        // Until render bug is fixed.
-        if (renderPass == 0) {
-        
-            /*
-             * A catch-all for bad render calls.  Could happen if tile entities aren't
-             * properly loaded when chunks are created, or with multi-block entities
-             * like the door or bed when created or destroyed, when TE does not yet exist
-             * or has already been removed.
-             */
-            if (TE != null) {
+        /*
+         * A catch-all for bad render calls.  Could happen if tile entities aren't
+         * properly loaded when chunks are created, or with multi-block entities
+         * like the door or bed when created or destroyed, when TE does not yet exist
+         * or has already been removed.
+         */
+        if (TE != null) {
+            
+            this.renderBlocks = renderBlocks;
+            srcBlock = block;
+            lightingHelper.bind(this);
+            
+            renderCarpentersBlock(x, y, z);
+            renderSideBlocks(x, y, z);
+            
+            /* Will render a fluid block in this space if valid. */
+            
+            if (FeatureRegistry.enableFancyFluids) {
                 
-                this.renderBlocks = renderBlocks;
-                srcBlock = block;
-                lightingHelper.bind(this);
-    
-                renderCarpentersBlock(x, y, z);
-                renderSideBlocks(x, y, z);
+                int renderPass = MinecraftForgeClient.getRenderPass();
                 
-                /* Will render a fluid block in this space if valid. */
-    
-                if (FeatureRegistry.enableFancyFluids) {
-                    if (renderPass >= 0 && Minecraft.isFancyGraphicsEnabled() && BlockProperties.hasCover(TE, 6)) {
-                        FancyFluidsHelper.render(TE, lightingHelper, renderBlocks, x, y, z, renderPass);
-                    }
+                if (renderPass >= 0 && Minecraft.isFancyGraphicsEnabled() && BlockProperties.hasCover(TE, 6)) {
+                    FancyFluidsHelper.render(TE, lightingHelper, renderBlocks, x, y, z, renderPass);
                 }
                 
             }
-        
+            
         }
 
         return VertexHelper.vertexCount > 0;
@@ -407,7 +405,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
      */
     protected IIcon getIcon(ItemStack itemStack, int side)
     {
-        IIcon icon = renderBlocks.getIconSafe(getUniqueIcon(itemStack, side, BlockProperties.toBlock(itemStack).getIcon(side, itemStack.getItemDamage())));
+        IIcon icon = renderBlocks.getIconSafe(getUniqueIcon(itemStack, side, BlockProperties.toBlock(itemStack).getIcon(TE.getWorldObj(), TE.xCoord, TE.yCoord, TE.zCoord, side)));
         
         if (hasIconOverride[side]) {
             icon = renderBlocks.getIconSafe(iconOverride[side]);
@@ -422,13 +420,14 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
     protected void renderMultiTexturedSide(ItemStack itemStack, int x, int y, int z, int side, IIcon icon)
     {
         Block block = BlockProperties.toBlock(itemStack);
-        
+
         int renderPass = MinecraftForgeClient.getRenderPass();
         int blockRenderPass = block.getRenderBlockPass();
         
-        /* Render base block texture. */
-        
-        if (renderPass == blockRenderPass) {
+        /* Render base block. */
+
+        // TODO: Uncomment when alpha render pass bugs are fixed.
+        //if (renderPass == blockRenderPass) {
             
             if (BlockProperties.blockRotates(itemStack)) {
                 setDirectionalRotation(side);
@@ -447,21 +446,15 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
                 renderGrassSideOverlay(x, y, z, side);
             }
             
-        }
+        //}
         
         boolean temp_dye_state = suppressDyeColor;
         suppressDyeColor = true;
         
-        /*
-         * Render decorations.
-         * 
-         * Decorations should always render on the alpha pass.
-         * When the base cover renders on alpha as well, we
-         * need to adjust rendering depths of decorations to
-         * prevent overlapping artifacts.
-         */
+        /* Render decorations. */
         
         if (!suppressPattern && BlockProperties.hasPattern(TE, coverRendering)) {
+            // TODO: Revisit when alpha render pass bug is fixed
             if (block.getRenderBlockPass() == 1) {
                 VertexHelper.setOffset(0.0001D);
             }
@@ -470,6 +463,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
         }
         
         if (!suppressOverlay && BlockProperties.hasOverlay(TE, coverRendering)) {
+            // TODO: Revisit when alpha render pass bug is fixed
             if (blockRenderPass == 1) {
                 VertexHelper.setOffset(0.0002D);
             }
@@ -523,7 +517,6 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
 
         switch (OverlayHandler.getOverlay(BlockProperties.getOverlay(TE, coverRendering))) {
             case SNOW: {
-                
                 switch (side) {
                     case DOWN:
                         return;
@@ -534,12 +527,10 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
                         icon = IconRegistry.icon_overlay_snow_side;
                         break;
                 }
-                lightingHelper.colorSide(new ItemStack(Blocks.snow), Blocks.snow, x, y, z, side, icon);
-                
+                block = Blocks.snow;
                 break;
             }
             case HAY: {
-                
                 switch (side) {
                     case DOWN:
                         return;
@@ -550,26 +541,20 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
                         icon = IconRegistry.icon_overlay_hay_side;
                         break;
                 }
-                lightingHelper.colorSide(new ItemStack(Blocks.hay_block), Blocks.hay_block, x, y, z, side, icon);
-                
+                block = Blocks.hay_block;
                 break;
             }
             case WEB: {
-                
                 icon = Blocks.web.getBlockTextureFromSide(side);
-                lightingHelper.colorSide(new ItemStack(Blocks.web), Blocks.web, x, y, z, side, icon);
-                
+                block = Blocks.web;
                 break;
             }
             case VINE: {
-                
                 icon = Blocks.vine.getBlockTextureFromSide(side);
-                lightingHelper.colorSide(new ItemStack(Blocks.vine), Blocks.vine, x, y, z, side, icon);
-                
+                block = Blocks.vine;
                 break;
             }
             case MYCELIUM: {
-                
                 switch (side) {
                     case DOWN:
                         return;
@@ -580,23 +565,22 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
                         icon = IconRegistry.icon_overlay_mycelium_side;
                         break;
                 }
-                lightingHelper.colorSide(new ItemStack(Blocks.mycelium), Blocks.mycelium, x, y, z, side, icon);
-                
+                block = Blocks.mycelium;
                 break;
             }
             case GRASS: {
-                
                 if (block != Blocks.grass && side > DOWN) {
                     icon = getGrassOverlayIcon(side);
-                    lightingHelper.colorSide(new ItemStack(Blocks.grass), Blocks.grass, x, y, z, side, icon);
+                } else {
+                    return;
                 }
-
                 break;
             }
             default:
                 break;
         }
         
+        lightingHelper.colorSide(new ItemStack(block), block, x, y, z, side, icon);
         renderSide(x, y, z, side, icon);
     }
     
@@ -681,7 +665,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
      * Sets renderBlocks enableAO state to true depending on
      * rendering environment and block requirements.
      */
-    protected boolean getEnableAO(ItemStack itemStack)
+    public boolean getEnableAO(ItemStack itemStack)
     {
         return Minecraft.isAmbientOcclusionEnabled() && !disableAO && BlockProperties.toBlock(itemStack).getLightValue() == 0;
     }

@@ -5,8 +5,10 @@ import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -193,6 +195,24 @@ public class BlockCarpentersSafe extends BlockCoverable {
         altered.add(true);
     }
     
+    /**
+     * Location sensitive version of getExplosionRestance
+     *
+     * @param par1Entity The entity that caused the explosion
+     * @param world The current world
+     * @param x X Position
+     * @param y Y Position
+     * @param z Z Position
+     * @param explosionX Explosion source X Position
+     * @param explosionY Explosion source X Position
+     * @param explosionZ Explosion source X Position
+     * @return The amount of the explosion absorbed.
+     */
+    public float getExplosionResistance(Entity entity, World world, int x, int y, int z, double explosionX, double explosionY, double explosionZ)
+    {
+        return Blocks.bedrock.getExplosionResistance(entity);
+    }
+    
     @Override
     /**
      * Checks if the block is a solid face on the given side, used by placement logic.
@@ -225,7 +245,7 @@ public class BlockCarpentersSafe extends BlockCoverable {
     {
         TEBase TE = getTileEntity(world, x, y, z);
         
-        if (TE != null && !Safe.isOpen(TE)) {
+        if (TE != null) {
             
             TECarpentersSafe TE_safe = (TECarpentersSafe) TE;
             

@@ -25,7 +25,8 @@ import carpentersblocks.util.handler.OverlayHandler;
 
 public class BlockProperties {
     
-    public final static SoundType stepSound = new SoundType(CarpentersBlocks.MODID, 1.0F, 1.0F);
+    // TODO: Change to custom sound for PlaySoundEvent overrides when available
+    public final static SoundType stepSound = Blocks.planks.stepSound;//new SoundType(CarpentersBlocks.MODID, 1.0F, 1.0F);
     
     /**
      * Sets host metadata to match ItemStack damage value.
@@ -470,28 +471,6 @@ public class BlockProperties {
         }
         
         return true;
-    }
-    
-    /**
-     * Returns whether side should render based on cover blocks
-     * of both source and adjacent block.
-     */
-    public static boolean shouldRenderSharedFaceBasedOnCovers(TEBase TE_adj, TEBase TE_src)
-    {
-        Block block_adj = toBlock(BlockProperties.getCover(TE_adj, 6));
-        Block block_src = toBlock(BlockProperties.getCover(TE_src, 6));
-        
-        if (!BlockProperties.hasCover(TE_adj, 6)) {
-            return BlockProperties.hasCover(TE_src, 6);
-        } else {
-            if (!BlockProperties.hasCover(TE_src, 6) && block_adj.getRenderBlockPass() == 0) {
-                return !block_adj.isOpaqueCube();
-            } else if (BlockProperties.hasCover(TE_src, 6) && block_src.isOpaqueCube() == block_adj.isOpaqueCube() && block_src.getRenderBlockPass() == block_adj.getRenderBlockPass()) {
-                return false;
-            } else {
-                return true;
-            }
-        }
     }
     
 }

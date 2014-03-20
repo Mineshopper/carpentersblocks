@@ -1,5 +1,6 @@
 package carpentersblocks.block;
 
+import static net.minecraftforge.common.util.ForgeDirection.DOWN;
 import static net.minecraftforge.common.util.ForgeDirection.UP;
 
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
@@ -29,10 +31,12 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.client.ForgeHooksClient;
+import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.EnumPlantType;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.common.util.RotationHelper;
 import carpentersblocks.api.ICarpentersChisel;
 import carpentersblocks.api.ICarpentersHammer;
 import carpentersblocks.renderer.helper.ParticleHelper;
@@ -236,7 +240,7 @@ public class BlockCoverable extends BlockContainer {
                             BlockProperties.setPattern(TE, effectiveSide, 0);
                         }
                         
-                    } else if (BlockProperties.hasCover(TE, effectiveSide) && BlockProperties.toBlock(BlockProperties.getCover(TE, effectiveSide)).isOpaqueCube()) {
+                    } else if (BlockProperties.hasCover(TE, effectiveSide)) {
                         
                         onChiselClick(TE, effectiveSide, true);
                         
@@ -262,14 +266,14 @@ public class BlockCoverable extends BlockContainer {
         if (canPlayerActivate(TE, entityPlayer)) {
             
             if (world.isRemote) {
-
-                return true;
+                
+                if (itemStack == null) {
+                    return true;
+                } else {
+                    return itemStack.getItem() != null && itemStack.getItem() instanceof ItemBlock;
+                }
 
             } else {
-                
-                if (itemStack != null && !itemStack.getItemUseAction().equals(EnumAction.none)) {
-                    return false;
-                }
                 
                 List<Boolean> altered = new ArrayList<Boolean>();
                 List<Boolean> decInv = new ArrayList<Boolean>();
@@ -1032,6 +1036,20 @@ public class BlockCoverable extends BlockContainer {
         }
     }
     
+    /**
+     * Get the rotations that can apply to the block at the specified coordinates. Null means no rotations are possible.
+     * Note, this is up to the block to decide. It may not be accurate or representative.
+     * @param worldObj The world
+     * @param x X position
+     * @param y Y position
+     * @param z Z position
+     * @return An array of valid axes to rotate around, or null for none or unknown
+     */
+    public ForgeDirection[] getValidRotations(World worldObj, int x, int y, int z)
+    {
+        return new ForgeDirection[] { UP, DOWN };
+    }
+    
     @Override
     @SideOnly(Side.CLIENT)
     /**
@@ -1051,11 +1069,31 @@ public class BlockCoverable extends BlockContainer {
             TEBase TE_src = (TEBase) world.getTileEntity(x + side_adj.offsetX, y + side_adj.offsetY, z + side_adj.offsetZ);
             
             if (TE_adj.getBlockType().isSideSolid(world, x, y, z, side_adj) == TE_src.getBlockType().isSideSolid(world, x + side_adj.offsetX, y + side_adj.offsetY, z + side_adj.offsetZ, ForgeDirection.getOrientation(side))) {
+                
                 if (shareFaces(TE_adj, TE_src, side_adj, side_src)) {
-                    return BlockProperties.shouldRenderSharedFaceBasedOnCovers(TE_adj, TE_src);
+
+                    if (shareFaces(TE_adj, TE_src, side_adj, side_src)) {
+                        
+                        Block block_adj = BlockProperties.toBlock(BlockProperties.getCover(TE_adj, 6));
+                        Block block_src = BlockProperties.toBlock(BlockProperties.getCover(TE_src, 6));
+
+                        if (!BlockProperties.hasCover(TE_adj, 6)) {
+                            return BlockProperties.hasCover(TE_src, 6);
+                        } else {
+                            if (!BlockProperties.hasCover(TE_src, 6) && block_adj.getRenderBlockPass() == 0) {
+                                return !block_adj.isOpaqueCube();
+                            } else if (BlockProperties.hasCover(TE_src, 6) && block_src.isOpaqueCube() == block_adj.isOpaqueCube() && block_src.getRenderBlockPass() == block_adj.getRenderBlockPass()) {
+                                return false;
+                            } else {
+                                return true;
+                            }
+                        }
+                    }
+                    
                 }
+                
             }
-            
+                
         }
         
         return super.shouldSideBeRendered(world, x, y, z, side);
@@ -1068,7 +1106,7 @@ public class BlockCoverable extends BlockContainer {
     protected boolean shareFaces(TEBase TE_adj, TEBase TE_src, ForgeDirection side_adj, ForgeDirection side_src)
     {
         return TE_adj.getBlockType().isSideSolid(TE_adj.getWorldObj(), TE_adj.xCoord, TE_adj.yCoord, TE_adj.zCoord, side_adj) &&
-                TE_src.getBlockType().isSideSolid(TE_src.getWorldObj(), TE_src.xCoord, TE_src.yCoord, TE_src.zCoord, side_src);
+               TE_src.getBlockType().isSideSolid(TE_src.getWorldObj(), TE_src.xCoord, TE_src.yCoord, TE_src.zCoord, side_src);
     }
     
     @Override
@@ -1077,9 +1115,12 @@ public class BlockCoverable extends BlockContainer {
      */
     public boolean canRenderInPass(int pass)
     {
-        ForgeHooksClient.setRenderPass(pass);
+        // TODO: Uncomment code when alpha bugs are fixed.
         
-        return true;
+        //ForgeHooksClient.setRenderPass(pass);
+        //return true;
+        
+        return super.canRenderInPass(pass);
     }
     
     @Override

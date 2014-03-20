@@ -17,10 +17,8 @@ public class IconRegistry {
     
     public static IIcon icon_blank;
     public static IIcon icon_solid;
-    public static IIcon icon_oblique_int_pos;
-    public static IIcon icon_oblique_int_neg;
-    public static IIcon icon_oblique_ext_pos;
-    public static IIcon icon_oblique_ext_neg;
+    public static IIcon icon_oblique_pos;
+    public static IIcon icon_oblique_neg;
     public static IIcon icon_overlay_fast_grass_side;
     public static IIcon icon_overlay_hay_side;
     public static IIcon icon_overlay_snow_side;

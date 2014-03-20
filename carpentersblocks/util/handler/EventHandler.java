@@ -81,7 +81,7 @@ public class EventHandler {
                  * Creative mode won't call onBlockClicked() because it will try to destroy the block.
                  * We'll invoke it here when a Carpenter's tool is being held.
                  */
-                if (eventEntityPlayer.capabilities.isCreativeMode && toolEquipped) {
+                if (toolEquipped && eventEntityPlayer.capabilities.isCreativeMode) {
                     block.onBlockClicked(eventEntityPlayer.worldObj, event.x, event.y, event.z, eventEntityPlayer);
                 }
                 
@@ -199,8 +199,6 @@ public class EventHandler {
      */
     public void onPlaySoundEvent(PlaySoundEvent event)
     {
-        System.out.println("DEBUG: SoundEvent() called.");
-        
         if (event != null && event.name != null) {
 
             if (event.name.contains(CarpentersBlocks.MODID)) {

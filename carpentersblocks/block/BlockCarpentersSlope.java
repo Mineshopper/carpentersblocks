@@ -55,10 +55,8 @@ public class BlockCarpentersSlope extends BlockCoverable {
      */
     public void registerBlockIcons(IIconRegister iconRegister)
     {
-        IconRegistry.icon_oblique_int_pos = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "slope/oblique_int_pos");
-        IconRegistry.icon_oblique_int_neg = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "slope/oblique_int_neg");
-        IconRegistry.icon_oblique_ext_pos = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "slope/oblique_ext_pos");
-        IconRegistry.icon_oblique_ext_neg = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "slope/oblique_ext_neg");
+        IconRegistry.icon_oblique_pos = iconRegister.registerIcon("carpentersblocks:slope/oblique_pos");
+        IconRegistry.icon_oblique_neg = iconRegister.registerIcon("carpentersblocks:slope/oblique_neg");
         
         super.registerBlockIcons(iconRegister);
     }
@@ -434,8 +432,8 @@ public class BlockCarpentersSlope extends BlockCoverable {
      */
     protected boolean shareFaces(TEBase TE_adj, TEBase TE_src, ForgeDirection side_adj, ForgeDirection side_src)
     {
-        if (TE_adj.getBlockType() == this)
-        {
+        if (TE_adj.getBlockType() == this) {
+            
             Slope slope_src = Slope.slopesList[BlockProperties.getMetadata(TE_src)];
             Slope slope_adj = Slope.slopesList[BlockProperties.getMetadata(TE_adj)];
             
@@ -446,6 +444,7 @@ public class BlockCarpentersSlope extends BlockCoverable {
             } else {
                 return false;
             }
+            
         }
         
         return super.shareFaces(TE_adj, TE_src, side_adj, side_src);
