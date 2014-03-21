@@ -141,7 +141,7 @@ public class BlockCarpentersLadder extends BlockCoverable {
      */
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack itemStack)
     {
-        TEBase TE = (TEBase) world.getTileEntity(x, y, z);
+        TEBase TE = getTileEntity(world, x, y, z);
         int metadata = world.getBlockMetadata(x, y, z);
         
         if (metadata < 2) {

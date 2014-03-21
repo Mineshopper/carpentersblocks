@@ -48,11 +48,10 @@ public class BlockHandlerCarpentersLadder extends BlockHandlerBase {
     protected void renderCarpentersBlock(int x, int y, int z)
     {
         renderBlocks.renderAllFaces = true;
-        disableAO = true;
         
         ItemStack itemStack = BlockProperties.getCover(TE, 6);
         int data = BlockProperties.getMetadata(TE);
-        
+
         double xLow = 0.0D;
         double xHigh = 1.0D;
         double zLow = 0.0D;
@@ -225,8 +224,7 @@ public class BlockHandlerCarpentersLadder extends BlockHandlerBase {
                 
                 break;
         }
-        
-        disableAO = false;
+
         renderBlocks.renderAllFaces = false;
     }
     

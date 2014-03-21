@@ -380,7 +380,6 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
             if (BlockProperties.hasCover(TE, side))
             {
                 coverRendering = side;
-                
                 int[] renderOffset = getSideCoverRenderBounds(x, y, z, side);
                 renderBlock(BlockProperties.getCover(TE, side), renderOffset[0], renderOffset[1], renderOffset[2]);
                 renderBlocks.setRenderBoundsFromBlock(srcBlock);
@@ -405,12 +404,15 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
      */
     protected IIcon getIcon(ItemStack itemStack, int side)
     {
-        IIcon icon = renderBlocks.getIconSafe(getUniqueIcon(itemStack, side, BlockProperties.toBlock(itemStack).getIcon(TE.getWorldObj(), TE.xCoord, TE.yCoord, TE.zCoord, side)));
-        
+        Block block = BlockProperties.toBlock(itemStack);
+        int metadata = BlockProperties.hasCover(TE, coverRendering) ? itemStack.getItemDamage() : EventHandler.BLOCKICON_BASE_ID;
+
+        IIcon icon = renderBlocks.getIconSafe(getUniqueIcon(itemStack, side, block.getIcon(side, metadata)));
+
         if (hasIconOverride[side]) {
             icon = renderBlocks.getIconSafe(iconOverride[side]);
         }
-        
+
         return icon;
     }
     
@@ -570,6 +572,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
             }
             case GRASS: {
                 if (block != Blocks.grass && side > DOWN) {
+                    block = Blocks.grass;
                     icon = getGrassOverlayIcon(side);
                 } else {
                     return;

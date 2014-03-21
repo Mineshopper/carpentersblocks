@@ -105,7 +105,7 @@ public class TEBase extends TileEntity {
     {
         NBTTagCompound nbt = new NBTTagCompound();
         writeToNBT(nbt);
-        return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, 1, nbt);
+        return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, 0, nbt);
     }
     
     @Override
@@ -123,7 +123,7 @@ public class TEBase extends TileEntity {
         readFromNBT(pkt.func_148857_g());
         
         if (worldObj.isRemote) {
-            Minecraft.getMinecraft().renderGlobal.markBlockForRenderUpdate(xCoord, yCoord, zCoord);
+            worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
             worldObj.func_147451_t(xCoord, yCoord, zCoord);
         }
     }

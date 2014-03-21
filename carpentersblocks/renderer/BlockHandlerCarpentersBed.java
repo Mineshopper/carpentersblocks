@@ -34,9 +34,7 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase {
     private void renderNormalBed(ItemStack itemStack, int x, int y, int z)
     {
         ForgeDirection dir = Bed.getDirection(TE);
-        
-        disableAO = true;
-        
+
         boolean isHead = Bed.isHeadOfBed(TE);
         
         TEBase TE_opp = Bed.getOppositeTE(TE);
@@ -102,7 +100,8 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase {
             
         }
         
-        ItemStack cloth = new ItemStack(Blocks.wool);
+        ItemStack cloth = new ItemStack(Blocks.wool, 1, 15);
+        BlockProperties.setHostMetadata(TE, 15);
         
         switch (dir)
         {
@@ -143,7 +142,6 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase {
                     // Render blanket
                     if (!hasCustomBlanket)
                     {
-                        disableAO = false;
                         cloth.setItemDamage(blanketColor);
                         renderBlocks.setRenderBounds(0.0D, isOccupied ? 0.4375D : 0.3125D, 0.0D, 0.0625D, isOccupied ? 0.8125D : 0.5625D, 0.5D);
                         renderBlock(cloth, x, y, z);
@@ -151,8 +149,7 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase {
                         renderBlock(cloth, x, y, z);
                         renderBlocks.setRenderBounds(0.9375D, isOccupied ? 0.4375D : 0.3125D, 0.0D, 1.0D, isOccupied ? 0.8125D : 0.5625D, 0.5D);
                         renderBlock(cloth, x, y, z);
-                        cloth.setItemDamage(0);
-                        disableAO = true;
+                        cloth.setItemDamage(15);
                     }
                     
                     suppressDyeColor = false;
@@ -190,7 +187,6 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase {
                     // Render blanket
                     if (!hasCustomBlanket)
                     {
-                        disableAO = false;
                         cloth.setItemDamage(blanketColor);
                         renderBlocks.setRenderBounds(0.0D, isOccupied ? 0.4375D : 0.3125D, 0.0D, 0.0625D, isOccupied ? 0.8125D : 0.5625D, 1.0D);
                         renderBlock(cloth, x, y, z);
@@ -200,8 +196,7 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase {
                         renderBlock(cloth, x, y, z);
                         renderBlocks.setRenderBounds(0.0625D, isOccupied ? 0.4375D : 0.3125D, 0.0D, 0.9375D, isOccupied ? 0.8125D : 0.5625D, 0.0625D);
                         renderBlock(cloth, x, y, z);
-                        cloth.setItemDamage(0);
-                        disableAO = true;
+                        cloth.setItemDamage(15);
                     }
                     
                     suppressDyeColor = false;
@@ -247,7 +242,6 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase {
                     // Render blanket
                     if (!hasCustomBlanket)
                     {
-                        disableAO = false;
                         cloth.setItemDamage(blanketColor);
                         renderBlocks.setRenderBounds(0.0D, isOccupied ? 0.4375D : 0.3125D, 0.5D, 0.0625D, isOccupied ? 0.8125D : 0.5625D, 1.0D);
                         renderBlock(cloth, x, y, z);
@@ -255,8 +249,7 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase {
                         renderBlock(cloth, x, y, z);
                         renderBlocks.setRenderBounds(0.9375D, isOccupied ? 0.4375D : 0.3125D, 0.5D, 1.0D, isOccupied ? 0.8125D : 0.5625D, 1.0D);
                         renderBlock(cloth, x, y, z);
-                        cloth.setItemDamage(0);
-                        disableAO = true;
+                        cloth.setItemDamage(15);
                     }
                     
                     suppressDyeColor = false;
@@ -294,7 +287,6 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase {
                     // Render blanket
                     if (!hasCustomBlanket)
                     {
-                        disableAO = false;
                         cloth.setItemDamage(blanketColor);
                         renderBlocks.setRenderBounds(0.0D, isOccupied ? 0.4375D : 0.3125D, 0.0D, 0.0625D, isOccupied ? 0.8125D : 0.5625D, 1.0D);
                         renderBlock(cloth, x, y, z);
@@ -304,8 +296,7 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase {
                         renderBlock(cloth, x, y, z);
                         renderBlocks.setRenderBounds(0.0625D, isOccupied ? 0.4375D : 0.3125D, 0.9375D, 0.9375D, isOccupied ? 0.8125D : 0.5625D, 1.0D);
                         renderBlock(cloth, x, y, z);
-                        cloth.setItemDamage(0);
-                        disableAO = true;
+                        cloth.setItemDamage(15);
                     }
                     
                     suppressDyeColor = false;
@@ -352,7 +343,6 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase {
                     // Render blanket
                     if (!hasCustomBlanket)
                     {
-                        disableAO = false;
                         cloth.setItemDamage(blanketColor);
                         renderBlocks.setRenderBounds(0.0D, isOccupied ? 0.4375D : 0.3125D, 0.0D, 0.5D, isOccupied ? 0.8125D : 0.5625D, 0.0625D);
                         renderBlock(cloth, x, y, z);
@@ -360,8 +350,7 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase {
                         renderBlock(cloth, x, y, z);
                         renderBlocks.setRenderBounds(0.0D, isOccupied ? 0.4375D : 0.3125D, 0.9375D, 0.5D, isOccupied ? 0.8125D : 0.5625D, 1.0D);
                         renderBlock(cloth, x, y, z);
-                        cloth.setItemDamage(0);
-                        disableAO = true;
+                        cloth.setItemDamage(15);
                     }
                     
                     suppressDyeColor = false;
@@ -399,7 +388,6 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase {
                     // Render blanket
                     if (!hasCustomBlanket)
                     {
-                        disableAO = false;
                         cloth.setItemDamage(blanketColor);
                         renderBlocks.setRenderBounds(0.0D, isOccupied ? 0.4375D : 0.3125D, 0.0D, 1.0D, isOccupied ? 0.8125D : 0.5625D, 0.0625D);
                         renderBlock(cloth, x, y, z);
@@ -409,8 +397,7 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase {
                         renderBlock(cloth, x, y, z);
                         renderBlocks.setRenderBounds(0.0D, isOccupied ? 0.4375D : 0.3125D, 0.0625D, 0.0625D, isOccupied ? 0.8125D : 0.5625D, 0.9375D);
                         renderBlock(cloth, x, y, z);
-                        cloth.setItemDamage(0);
-                        disableAO = true;
+                        cloth.setItemDamage(15);
                     }
                     
                     suppressDyeColor = false;
@@ -457,7 +444,6 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase {
                     // Render blanket
                     if (!hasCustomBlanket)
                     {
-                        disableAO = false;
                         cloth.setItemDamage(blanketColor);
                         renderBlocks.setRenderBounds(0.5D, isOccupied ? 0.4375D : 0.3125D, 0.0D, 1.0D, isOccupied ? 0.8125D : 0.5625D, 0.0625D);
                         renderBlock(cloth, x, y, z);
@@ -465,8 +451,7 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase {
                         renderBlock(cloth, x, y, z);
                         renderBlocks.setRenderBounds(0.5D, isOccupied ? 0.4375D : 0.3125D, 0.9375D, 1.0D, isOccupied ? 0.8125D : 0.5625D, 1.0D);
                         renderBlock(cloth, x, y, z);
-                        cloth.setItemDamage(0);
-                        disableAO = true;
+                        cloth.setItemDamage(15);
                     }
                     
                     suppressDyeColor = false;
@@ -504,7 +489,6 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase {
                     // Render blanket
                     if (!hasCustomBlanket)
                     {
-                        disableAO = false;
                         cloth.setItemDamage(blanketColor);
                         renderBlocks.setRenderBounds(0.0D, isOccupied ? 0.4375D : 0.3125D, 0.0D, 1.0D, isOccupied ? 0.8125D : 0.5625D, 0.0625D);
                         renderBlock(cloth, x, y, z);
@@ -514,8 +498,7 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase {
                         renderBlock(cloth, x, y, z);
                         renderBlocks.setRenderBounds(0.9375D, isOccupied ? 0.4375D : 0.3125D, 0.0625D, 1.0D, isOccupied ? 0.8125D : 0.5625D, 0.9375D);
                         renderBlock(cloth, x, y, z);
-                        cloth.setItemDamage(0);
-                        disableAO = true;
+                        cloth.setItemDamage(15);
                     }
                     
                     suppressDyeColor = false;
@@ -526,9 +509,7 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase {
                 break;
             }
         }
-        
-        disableAO = false;
-        
+
         /*
          * If this bed has a blanket design, we'll render part of the blanket
          * here to fill in the gaps (face at head of bed, bottom side).
@@ -580,8 +561,10 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase {
             suppressDyeColor = false;
             suppressOverlay = false;
             suppressPattern = false;
-            cloth.setItemDamage(0);
+            cloth.setItemDamage(15);
         }
+        
+        BlockProperties.resetHostMetadata(TE);
     }
     
 }

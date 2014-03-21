@@ -619,7 +619,6 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
             
             VertexHelper.clearOffset();
             suppressDyeColor = false;
-            
         }
         
         renderHandle(new ItemStack(Blocks.iron_block), x, y, z, true, true);
@@ -1066,7 +1065,6 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
         BlockCarpentersDoor blockRef = (BlockCarpentersDoor) BlockRegistry.blockCarpentersDoor;
         blockRef.setBlockBoundsBasedOnState(renderBlocks.blockAccess, x, y, z);
         renderBlock(itemStack, x, y, z);
-        
         renderHandle(new ItemStack(Blocks.iron_block), x, y, z, true, false);
     }
     
@@ -1078,6 +1076,10 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
         if (!render_inside_handle && !render_outside_handle) {
             return;
         }
+        
+        suppressDyeColor = true;
+        suppressPattern = true;
+        suppressOverlay = true;
         
         int hinge = Door.getHinge(TE);
         boolean isOpen = Door.getState(TE) == Door.STATE_OPEN;
@@ -1337,6 +1339,10 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
                 
                 break;
         }
+        
+        suppressDyeColor = false;
+        suppressPattern = false;
+        suppressOverlay = false;
     }
     
 }

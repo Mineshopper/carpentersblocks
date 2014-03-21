@@ -77,7 +77,7 @@ public class BlockHandlerCarpentersHatch extends BlockHandlerBase {
         blockRef.setBlockBoundsBasedOnState(renderBlocks.blockAccess, x, y, z);
         renderBlock(itemStack, x, y, z);
         
-        renderHandle(itemStack, x, y, z, true, false);
+        renderHandle(new ItemStack(Blocks.iron_block), x, y, z, true, false);
     }
     
     /**
@@ -251,7 +251,7 @@ public class BlockHandlerCarpentersHatch extends BlockHandlerBase {
         VertexHelper.clearOffset();
         suppressDyeColor = false;
         
-        renderHandle(itemStack, x, y, z, true, true);
+        renderHandle(new ItemStack(Blocks.iron_block), x, y, z, true, true);
     }
     
     /**
@@ -462,7 +462,7 @@ public class BlockHandlerCarpentersHatch extends BlockHandlerBase {
         VertexHelper.clearOffset();
         suppressDyeColor = false;
         
-        renderHandle(itemStack, x, y, z, true, true);
+        renderHandle(new ItemStack(Blocks.iron_block), x, y, z, true, true);
     }
     
     /**
@@ -629,7 +629,7 @@ public class BlockHandlerCarpentersHatch extends BlockHandlerBase {
         renderBlocks.setRenderBounds(temp_x_low, temp_y_low, temp_z_low, temp_x_high, temp_y_high, temp_z_high);
         renderBlock(itemStack, x, y, z);
         
-        renderHandle(itemStack, x, y, z, true, true);
+        renderHandle(new ItemStack(Blocks.iron_block), x, y, z, true, true);
     }
     
     /**
@@ -640,6 +640,10 @@ public class BlockHandlerCarpentersHatch extends BlockHandlerBase {
         if (!render_inside_handle && !render_outside_handle) {
             return;
         }
+        
+        suppressDyeColor = true;
+        suppressPattern = true;
+        suppressOverlay = true;
         
         int dir = Hatch.getDir(TE);
         int pos = Hatch.getPos(TE);
@@ -1045,6 +1049,10 @@ public class BlockHandlerCarpentersHatch extends BlockHandlerBase {
                 }
             }
         }
+        
+        suppressDyeColor = false;
+        suppressPattern = false;
+        suppressOverlay = false;
     }
     
 }
