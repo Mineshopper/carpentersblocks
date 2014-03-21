@@ -277,11 +277,11 @@ public class BlockCoverable extends BlockContainer {
                 
                 List<Boolean> altered = new ArrayList<Boolean>();
                 List<Boolean> decInv = new ArrayList<Boolean>();
-                
-                preOnBlockActivated(TE, entityPlayer, side, hitX, hitY, hitZ, altered, decInv);
 
                 if (canPlayerEdit(TE, entityPlayer)) {
                     
+                	preOnBlockActivated(TE, entityPlayer, side, hitX, hitY, hitZ, altered, decInv);
+                	
                     if (!altered.contains(true)) {
                         
                         if (itemStack != null) {
@@ -344,9 +344,11 @@ public class BlockCoverable extends BlockContainer {
                             }
                         }
                     }
+                    
+                    if (!altered.contains(true)) {
+                    	postOnBlockActivated(TE, entityPlayer, side, hitX, hitY, hitZ, altered, decInv);
+                    }
                 }
-                
-                postOnBlockActivated(TE, entityPlayer, side, hitX, hitY, hitZ, altered, decInv);
 
                 if (altered.contains(true)) {
                     BlockProperties.playBlockSound(TE, BlockProperties.getCover(TE, 6));
