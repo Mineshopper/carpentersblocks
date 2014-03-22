@@ -154,27 +154,31 @@ public class BlockCarpentersPressurePlate extends BlockCoverable {
      */
     public void updateTick(World world, int x, int y, int z, Random random)
     {
-        TEBase TE = getTileEntity(world, x, y, z);
+        if (!world.isRemote) {
+ 
+            TEBase TE = getTileEntity(world, x, y, z);
         
-        if (TE != null) {
-            
-            List entityList = world.getEntitiesWithinAABB(Entity.class, getSensitiveAABB(x, y, z));
-            
-            boolean shouldActivate = false;
-            if (!entityList.isEmpty()) {
-                for (int count = 0; count < entityList.size() && !shouldActivate; ++count) {
-                    if (shouldTrigger(TE, (Entity)entityList.get(count), world, x, y, z)) {
-                        shouldActivate = true;
+            if (TE != null) {
+                
+                List entityList = world.getEntitiesWithinAABB(Entity.class, getSensitiveAABB(x, y, z));
+                
+                boolean shouldActivate = false;
+                if (!entityList.isEmpty()) {
+                    for (int count = 0; count < entityList.size() && !shouldActivate; ++count) {
+                        if (shouldTrigger(TE, (Entity)entityList.get(count), world, x, y, z)) {
+                            shouldActivate = true;
+                        }
                     }
                 }
+                
+                if (!shouldActivate && isDepressed(TE)) {
+                    toggleOff(TE, world, x, y, z);
+                } else {
+                    world.scheduleBlockUpdate(x, y, z, this, tickRate(world));
+                }
+                
             }
-            
-            if (!shouldActivate && isDepressed(TE)) {
-                toggleOff(TE, world, x, y, z);
-            } else {
-                world.scheduleBlockUpdate(x, y, z, this, tickRate(world));
-            }
-            
+        
         }
     }
     
@@ -184,12 +188,16 @@ public class BlockCarpentersPressurePlate extends BlockCoverable {
      */
     public void onEntityCollidedWithBlock(World world, int x, int y, int z, Entity entity)
     {
-        TEBase TE = getTileEntity(world, x, y, z);
-        
-        if (TE != null) {
-            if (shouldTrigger(TE, entity, world, x, y, z) && !isDepressed(TE)) {
-                toggleOn(TE, world, x, y, z);
+        if (!world.isRemote) {
+            
+            TEBase TE = getTileEntity(world, x, y, z);
+            
+            if (TE != null) {
+                if (shouldTrigger(TE, entity, world, x, y, z) && !isDepressed(TE)) {
+                    toggleOn(TE, world, x, y, z);
+                }
             }
+            
         }
     }
     
