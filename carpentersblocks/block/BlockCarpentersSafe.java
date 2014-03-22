@@ -208,6 +208,7 @@ public class BlockCarpentersSafe extends BlockCoverable {
      * @param explosionZ Explosion source X Position
      * @return The amount of the explosion absorbed.
      */
+    @Override
     public float getExplosionResistance(Entity entity, World world, int x, int y, int z, double explosionX, double explosionY, double explosionZ)
     {
         return Blocks.bedrock.getExplosionResistance(entity);

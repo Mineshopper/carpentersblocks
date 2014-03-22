@@ -1,29 +1,17 @@
 package carpentersblocks.util.flowerpot;
 
-import java.util.HashSet;
-import java.util.Iterator;
-
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockWood;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.IShearable;
 import carpentersblocks.data.FlowerPot;
-import carpentersblocks.renderer.helper.LightingHelper;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.tileentity.TECarpentersFlowerPot;
 import carpentersblocks.util.BlockProperties;
-
-import com.google.common.collect.Sets;
-
-import cpw.mods.fml.common.registry.GameData;
 
 public class FlowerPotProperties {
 

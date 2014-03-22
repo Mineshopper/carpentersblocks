@@ -173,7 +173,7 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
                     
                     if (FlowerPotProperties.isPlant(itemStack)) {
 
-                        int angle = MathHelper.floor_double((double)((entityPlayer.rotationYaw + 180.0F) * 16.0F / 360.0F) + 0.5D) & 15;
+                        int angle = MathHelper.floor_double((entityPlayer.rotationYaw + 180.0F) * 16.0F / 360.0F + 0.5D) & 15;
 
                         FlowerPot.setAngle(TE, angle);
                         FlowerPotProperties.setPlant(TE, itemStack);

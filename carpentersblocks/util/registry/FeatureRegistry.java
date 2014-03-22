@@ -1,8 +1,5 @@
 package carpentersblocks.util.registry;
 
-import carpentersblocks.util.handler.OverlayHandler.Overlay;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;

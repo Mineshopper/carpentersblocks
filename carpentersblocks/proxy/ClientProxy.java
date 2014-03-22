@@ -21,7 +21,6 @@ import carpentersblocks.renderer.BlockHandlerCarpentersTorch;
 import carpentersblocks.util.handler.OptifineHandler;
 import carpentersblocks.util.handler.TileEntityHandler;
 import carpentersblocks.util.registry.BlockRegistry;
-import carpentersblocks.util.registry.FeatureRegistry;
 import carpentersblocks.util.registry.IconRegistry;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.client.registry.RenderingRegistry;

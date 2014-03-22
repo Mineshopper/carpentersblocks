@@ -3,15 +3,8 @@ package carpentersblocks.util.handler;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.minecraft.block.Block;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
-import org.apache.logging.log4j.Level;
-
-import carpentersblocks.util.ModLogger;
 import carpentersblocks.util.registry.FeatureRegistry;
 
 public class OverlayHandler {

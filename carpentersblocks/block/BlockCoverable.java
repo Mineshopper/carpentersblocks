@@ -20,7 +20,6 @@ import net.minecraft.entity.boss.EntityWither;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -1044,6 +1043,7 @@ public class BlockCoverable extends BlockContainer {
      * @param z Z position
      * @return An array of valid axes to rotate around, or null for none or unknown
      */
+    @Override
     public ForgeDirection[] getValidRotations(World worldObj, int x, int y, int z)
     {
         return new ForgeDirection[] { UP, DOWN };

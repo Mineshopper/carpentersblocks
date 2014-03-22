@@ -1,7 +1,6 @@
 package carpentersblocks.renderer.helper;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
 import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.client.particle.EntityDiggingFX;
 import net.minecraft.entity.Entity;

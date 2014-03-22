@@ -1,7 +1,6 @@
 package carpentersblocks.tileentity;
 
 import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -144,6 +143,7 @@ public class TEBase extends TileEntity {
      * @param z Z Position
      * @return True to remove the old tile entity, false to keep it in tact {and create a new one if the new values specify to}
      */
+    @Override
     public boolean shouldRefresh(Block oldBlock, Block newBlock, int oldMeta, int newMeta, World world, int x, int y, int z)
     {
         return oldBlock != newBlock;

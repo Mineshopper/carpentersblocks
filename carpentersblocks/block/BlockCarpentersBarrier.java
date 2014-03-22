@@ -295,6 +295,7 @@ public class BlockCarpentersBarrier extends BlockCoverable {
      * @param axis The axis to rotate around
      * @return True if the rotation was successful, False if the rotation failed, or is not possible
      */
+    @Override
     public boolean rotateBlock(World world, int x, int y, int z, ForgeDirection axis)
     {
         return RotationHelper.rotateVanillaBlock(this, world, x, y, z, axis);

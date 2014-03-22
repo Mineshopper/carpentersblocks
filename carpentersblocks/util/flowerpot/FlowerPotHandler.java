@@ -10,7 +10,6 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import carpentersblocks.tileentity.TEBase;
-import carpentersblocks.util.BlockProperties;
 
 public class FlowerPotHandler {
     

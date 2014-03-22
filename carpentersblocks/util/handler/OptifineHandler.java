@@ -1,6 +1,5 @@
 package carpentersblocks.util.handler;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import net.minecraft.block.Block;
@@ -9,7 +8,6 @@ import net.minecraft.world.IBlockAccess;
 import org.apache.logging.log4j.Level;
 
 import carpentersblocks.util.ModLogger;
-import carpentersblocks.util.registry.FeatureRegistry;
 
 public class OptifineHandler {
     

@@ -16,7 +16,6 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-import carpentersblocks.CarpentersBlocks;
 import carpentersblocks.data.Slope;
 import carpentersblocks.data.Slope.Type;
 import carpentersblocks.tileentity.TEBase;

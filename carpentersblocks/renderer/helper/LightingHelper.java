@@ -17,8 +17,6 @@ import carpentersblocks.renderer.BlockHandlerBase;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.handler.DyeHandler;
 import carpentersblocks.util.handler.OptifineHandler;
-import carpentersblocks.util.registry.BlockRegistry;
-import carpentersblocks.util.registry.FeatureRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 

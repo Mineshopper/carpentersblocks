@@ -5,7 +5,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import carpentersblocks.CarpentersBlocks;
-import cpw.mods.fml.common.FMLLog;
 
 public class ModLogger {
     

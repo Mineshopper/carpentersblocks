@@ -17,7 +17,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-import carpentersblocks.renderer.helper.LightingHelper;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.handler.DyeHandler;
 import carpentersblocks.util.handler.OverlayHandler;
