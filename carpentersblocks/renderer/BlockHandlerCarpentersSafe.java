@@ -15,7 +15,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class BlockHandlerCarpentersSafe extends BlockHandlerBase {
     
-    private final int   numBoxes    = 22;
+    private final int   numBoxes    = 21;
     private final int   numCapacity = 9;
     private final float LIGHT_MAX   = 1.0F;
     private final float LIGHT_MIN   = 0.15F;
@@ -48,7 +48,6 @@ public class BlockHandlerCarpentersSafe extends BlockHandlerBase {
     private final byte HANDLE                     = 18;
     private final byte GREEN_LIGHT                = 19;
     private final byte RED_LIGHT                  = 20;
-    private final byte CAPACITY_STRIP             = 21;
     
     private final float[] LIGHT_RED_ACTIVE        = {        LIGHT_MAX,             0.0F,             0.0F };
     private final float[] LIGHT_RED_INACTIVE      = { LIGHT_MAX / 3.0F,        LIGHT_MIN,        LIGHT_MIN };
@@ -64,14 +63,7 @@ public class BlockHandlerCarpentersSafe extends BlockHandlerBase {
         
         for (int box = 0; box < numBoxes; ++box)
         {
-            /* Render the door closed. */
-            
-            if (box == SLIDING_DOOR) {
-                renderBlocks.setRenderBounds(0.375D, 0.0625D, 0.875F, 0.9375D, 0.9375D, 0.9375D);
-            } else {
-                setBounds(renderBlocks, box);
-            }
-            
+            setBounds(renderBlocks, box, true);
             rotateBounds(renderBlocks, ForgeDirection.WEST);
             int type = getBlockType(box);
             switch (type) {
@@ -89,6 +81,11 @@ public class BlockHandlerCarpentersSafe extends BlockHandlerBase {
             
             super.renderInventoryBlock(tempBlock, metadata, modelID, renderBlocks);
         }
+        
+        /* Light strip */
+        
+        renderBlocks.setRenderBounds(0.125D, 0.125D, 0.9375D, 0.25D, 0.6875D, 1.0D);
+        super.renderInventoryBlock(Blocks.obsidian, metadata, modelID, renderBlocks);
     }
     
     /**
@@ -155,9 +152,9 @@ public class BlockHandlerCarpentersSafe extends BlockHandlerBase {
      * All bounds are set relative to NORTH facing safe.
      * Rotate them after this using rotateBounds().
      */
-    private void setBounds(RenderBlocks renderBlocks, int box)
+    private void setBounds(RenderBlocks renderBlocks, int box, boolean isInventory)
     {
-        boolean isOpen = TE == null ? false : Safe.getState(TE) == Safe.STATE_OPEN;
+        boolean isOpen = isInventory ? false : Safe.getState(TE) == Safe.STATE_OPEN;
         
         switch (box) {
             case WOOD_XLOW_WALL:
@@ -223,9 +220,6 @@ public class BlockHandlerCarpentersSafe extends BlockHandlerBase {
             case RED_LIGHT:
                 renderBlocks.setRenderBounds(0.125D, 0.75D, 0.9375D, 0.25D, 0.8125D, 1.0D);
                 break;
-            case CAPACITY_STRIP:
-                renderBlocks.setRenderBounds(0.125D, 0.125D, 0.9375D, 0.25D, 0.6875D, 1.0D);
-                break;
         }
     }
     
@@ -244,7 +238,7 @@ public class BlockHandlerCarpentersSafe extends BlockHandlerBase {
         
         for (int box = 0; box < numBoxes; ++box)
         {
-            setBounds(renderBlocks, box);
+            setBounds(renderBlocks, box, false);
             rotateBounds(renderBlocks, facing);
             drawBox(itemStack, x, y, z, box);
         }
