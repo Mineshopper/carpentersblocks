@@ -144,6 +144,12 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
     {
         ItemStack itemStack = entityPlayer.getHeldItem();
 
+        World world = TE.getWorldObj();
+        
+        int x = TE.xCoord;
+        int y = TE.yCoord;
+        int z = TE.zCoord;
+        
         if (itemStack != null) {
             
             boolean hasCover = BlockProperties.hasCover(TE, 6);
@@ -178,19 +184,16 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
 
                     if (itemStack.getItem().equals(Items.dye) && itemStack.getItemDamage() == 15) {
 
-                        if (!FlowerPot.isEnriched(TE)) {
+                        if (!FlowerPot.isEnriched(TE) && FlowerPotProperties.isPlantColorable(TE)) {
                             
                             FlowerPot.setEnrichment(TE, true);
                             altered.add(decInv.add(true));
 
                             /* Play fertilize sound. */
-                            if (!TE.getWorldObj().isRemote){ 
-                                System.out.println("DEBUG: Trying to play fertilize sound.");
-                                TE.getWorldObj().playAuxSFX(2005, TE.xCoord, TE.yCoord, TE.zCoord, 0);
-                            }
+                            world.playAuxSFX(2005, x, y, z, 0);
                             
                             /* Spawn fertilize effect. */
-                            ItemDye.func_150918_a(TE.getWorldObj(), TE.xCoord, TE.yCoord, TE.zCoord, 15);                            
+                            ItemDye.func_150918_a(world, x, y, z, 15);                            
                             
                         }
 

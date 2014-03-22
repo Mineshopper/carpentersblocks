@@ -59,9 +59,9 @@ public class FlowerPotHandler {
         plantProfile.put("tile.cactus"               , Profile.CACTUS          );
         plantProfile.put("tile.mushroom"             , Profile.TRUE_SCALE      );
         plantProfile.put("item.reeds"                , Profile.THIN_YP         );
-        plantProfile.put("tile.carrots"              , Profile.THIN_YP         );
-        plantProfile.put("tile.potatoes"             , Profile.THIN_YP         );
-        plantProfile.put("tile.crops"                , Profile.THIN_YP         );
+        plantProfile.put("item.carrots"              , Profile.THIN_YP         );
+        plantProfile.put("item.potato"               , Profile.THIN_YP         );
+        plantProfile.put("item.wheat"                , Profile.THIN_YP         );
         plantProfile.put("tile.flower1.dandelion"    , Profile.TRUE_SCALE      );
         plantProfile.put("tile.flower2.houstonia"    , Profile.TRUE_SCALE      );
 

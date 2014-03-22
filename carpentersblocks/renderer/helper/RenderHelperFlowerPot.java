@@ -29,15 +29,9 @@ public class RenderHelperFlowerPot extends RenderHelper {
         tessellator.setColorOpaque_F(rgb[0], rgb[1], rgb[2]);
 
         if (FlowerPot.isEnriched(TE)) {
-
-            BlockProperties.setHostMetadata(TE, itemStack.getItemDamage());
-            
-            if (block.getBlockColor() != 16777215 || !itemStack.hasTagCompound() && block.colorMultiplier(TE.getWorldObj(), x, y, z) != 16777215) {
+            if (FlowerPotProperties.getPlantColor(TE) != 16777215) {
                 tessellator.setColorOpaque_F(0.45F, 0.80F, 0.30F);
             }
-            
-            BlockProperties.resetHostMetadata(TE);
-            
         }
     }
         

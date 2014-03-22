@@ -6,6 +6,7 @@ import java.util.Iterator;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockWood;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -15,6 +16,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.IShearable;
 import carpentersblocks.data.FlowerPot;
+import carpentersblocks.renderer.helper.LightingHelper;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.tileentity.TECarpentersFlowerPot;
 import carpentersblocks.util.BlockProperties;
@@ -37,6 +39,32 @@ public class FlowerPotProperties {
         } else {
             return Block.getBlockFromItem(itemStack.getItem());
         }
+    }
+    
+    /**
+     * Returns plant color.
+     */
+    public static int getPlantColor(TEBase TE)
+    {
+        ItemStack itemStack = getPlant(TE);
+        Block block = toBlock(itemStack);
+        
+        BlockProperties.setHostMetadata(TE, itemStack.getItemDamage());
+
+        int color1 = block.getBlockColor();
+        int color2 = block.colorMultiplier(TE.getWorldObj(), TE.xCoord, TE.yCoord, TE.zCoord);
+        
+        BlockProperties.resetHostMetadata(TE);
+        
+        return color1 < color2 ? color1 : color2;
+    }
+    
+    /**
+     * Returns whether plant can be colored - leaves, grass, etc.
+     */
+    public static boolean isPlantColorable(TEBase TE)
+    {
+        return FlowerPotProperties.getPlantColor(TE) != 16777215;
     }
     
     /**
