@@ -25,6 +25,7 @@ import carpentersblocks.tileentity.TECarpentersFlowerPot;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.flowerpot.FlowerPotDesignHandler;
 import carpentersblocks.util.flowerpot.FlowerPotHandler;
+import carpentersblocks.util.flowerpot.FlowerPotHandler.Profile;
 import carpentersblocks.util.flowerpot.FlowerPotProperties;
 import carpentersblocks.util.handler.EventHandler;
 import carpentersblocks.util.registry.BlockRegistry;
@@ -223,10 +224,26 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
         TEBase TE = getTileEntity(world, x, y, z);
         
         if (!world.isRemote && TE != null) {
+            
             if (!canPlaceBlockOnSide(world, x, y, z, 1)) {
                 dropBlockAsItem(world, x, y, z, world.getBlockMetadata(x, y, z), 0);
                 world.setBlockToAir(x, y, z);
             }
+            
+            /* Eject double tall plant if obstructed. */
+            
+            if (FlowerPotProperties.hasPlant(TE)) {
+                
+                Profile profile = FlowerPotHandler.getPlantProfile(TE);
+                
+                if (profile.equals(Profile.DOUBLEPLANT) || profile.equals(Profile.THIN_DOUBLEPLANT)) {
+                    if (world.getBlock(x, y + 1, z).isSideSolid(world, x, y + 1, z, ForgeDirection.DOWN)) {
+                        FlowerPotProperties.setPlant(TE, (ItemStack)null);
+                    }
+                }
+                
+            }
+            
         }
         
         super.onNeighborBlockChange(world, x, y, z, block);
