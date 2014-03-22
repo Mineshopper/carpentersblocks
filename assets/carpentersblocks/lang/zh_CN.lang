@@ -29,22 +29,22 @@ tile.blockCarpentersSafe.name=木匠保险箱
 tile.blockCarpentersFlowerPot.name=木匠花盆
 
 # MESSAGES
-message.polarity_pos.name=\u00a76输出相: \u00a7f标准红石信号输出.
-message.polarity_neg.name=\u00a76输出相: \u00a7f反相红石信号输出.
-message.activation_day.name=\u00a76激活条件: \u00a7f白昼时激活.
-message.activation_night.name=\u00a76激活条件: \u00a7f夜晚时激活.
-message.activation_iron.name=\u00a76激活条件: \u00a7f类似铁门需要信号控制.
-message.activation_wood.name=\u00a76激活条件: \u00a7f类似木门不需要信号控制.
-message.trigger_player.name=\u00a76触发条件: \u00a7f只能由玩家触发.
-message.trigger_monster.name=\u00a76触发条件: \u00a7f只能由怪物触发.
-message.trigger_animal.name=\u00a76触发条件: \u00a7f只能由动物触发.
-message.trigger_all.name=\u00a76触发条件: \u00a7f任何实体均可触发.
-message.safe_lock.name=\u00a76控制: \u00a7f保险箱已锁.
-message.safe_unlock.name=\u00a76控制: \u00a7f保险箱已解锁.
-message.automation_all.name=\u00a76自动: \u00a7f可以放入取出物品.
-message.automation_disabled.name=\u00a76自动: \u00a7f禁用.
-message.automation_insert.name=\u00a76自动: \u00a7f仅能放入物品.
-message.automation_extract.name=\u00a76自动: \u00a7f仅能取出物品.
-message.block_lock.name=\u00a76控制: \u00a7f该方块已锁.
+message.polarity_pos.name=输出相: 标准红石信号输出.
+message.polarity_neg.name=输出相: 反相红石信号输出.
+message.activation_day.name=激活条件: 白昼时激活.
+message.activation_night.name=激活条件: 夜晚时激活.
+message.activation_iron.name=激活条件: 类似铁门需要信号控制.
+message.activation_wood.name=激活条件: 类似木门不需要信号控制.
+message.trigger_player.name=触发条件: 只能由玩家触发.
+message.trigger_monster.name=触发条件: 只能由怪物触发.
+message.trigger_animal.name=触发条件: 只能由动物触发.
+message.trigger_all.name=触发条件: 任何实体均可触发.
+message.safe_lock.name=控制: 保险箱已锁.
+message.safe_unlock.name=控制: 保险箱已解锁.
+message.automation_all.name=自动: 可以放入取出物品.
+message.automation_disabled.name=自动: 禁用.
+message.automation_insert.name=自动: 仅能放入物品.
+message.automation_extract.name=自动: 仅能取出物品.
+message.block_lock.name=控制: 该方块已锁.
 
 # </file>

@@ -29,22 +29,22 @@ tile.blockCarpentersSafe.name=Сейф плотника
 tile.blockCarpentersFlowerPot.name=Цветочный горшок плотника
 
 # MESSAGES
-message.polarity_pos.name=\u00a76ПОЛЯРНОСТЬ: \u00a7fНормальный выходной сингнал красного камня.
-message.polarity_neg.name=\u00a76ПОЛЯРНОСТЬ: \u00a7fИнвертированный выходной сингнал красного камня.
-message.activation_iron.name=\u00a76АКТИВАЦИЯ: \u00a7fБудет вести себя как железная дверь.
-message.activation_wood.name=\u00a76АКТИВАЦИЯ: \u00a7fБудет вести себя как деревянная дверь.
-message.trigger_player.name=\u00a76ТРИГГЕР: \u00a7fАктивируется только игроками.
-message.trigger_monster.name=\u00a76ТРИГГЕР: \u00a7fАктивируется только монстрами.
-message.trigger_animal.name=\u00a76ТРИГГЕР: \u00a7fАктивируется только животными.
-message.trigger_all.name=\u00a76ТРИГГЕР: \u00a7fАктивируется всеми сущностями.
-message.safe_lock.name=\u00a76КОНТРОЛЬ: \u00a7fСейф закрыт.
-message.safe_unlock.name=\u00a76КОНТРОЛЬ: \u00a7fСейф открыт.
-message.automation_all.name=\u00a76АВТОМАТИЗАЦИЯ: \u00a7fПредметы могут вставляться и извлекаться.
-message.automation_disabled.name=\u00a76АВТОМАТИЗАЦИЯ: \u00a7fОтключена.
-message.automation_insert.name=\u00a76АВТОМАТИЗАЦИЯ: \u00a7fПредметы могут только вставляться.
-message.automation_extract.name=\u00a76АВТОМАТИЗАЦИЯ: \u00a7fПредметы могут только извлекаться.
-message.block_lock.name=\u00a76КОНТРОЛЬ: \u00a7fЭтот блок закрыт.
-message.sensitivity_sleep.name=\u00a76ЧУВСТВИТЕЛЬНОСТЬ: \u00a7fПереключение состояния на пороге сна игрока (восхода и захода солнца).
-message.sensitivity_monsters.name=\u00a76ЧУВСТВИТЕЛЬНОСТЬ: \u00a7fПереключение состояния на пороге появления монстров (включая штормы).
+message.polarity_pos.name=ПОЛЯРНОСТЬ: Нормальный выходной сингнал красного камня.
+message.polarity_neg.name=ПОЛЯРНОСТЬ: Инвертированный выходной сингнал красного камня.
+message.activation_iron.name=АКТИВАЦИЯ: Будет вести себя как железная дверь.
+message.activation_wood.name=АКТИВАЦИЯ: Будет вести себя как деревянная дверь.
+message.trigger_player.name=ТРИГГЕР: Активируется только игроками.
+message.trigger_monster.name=ТРИГГЕР: Активируется только монстрами.
+message.trigger_animal.name=ТРИГГЕР: Активируется только животными.
+message.trigger_all.name=ТРИГГЕР: Активируется всеми сущностями.
+message.safe_lock.name=КОНТРОЛЬ: Сейф закрыт.
+message.safe_unlock.name=КОНТРОЛЬ: Сейф открыт.
+message.automation_all.name=АВТОМАТИЗАЦИЯ: Предметы могут вставляться и извлекаться.
+message.automation_disabled.name=АВТОМАТИЗАЦИЯ: Отключена.
+message.automation_insert.name=АВТОМАТИЗАЦИЯ: Предметы могут только вставляться.
+message.automation_extract.name=АВТОМАТИЗАЦИЯ: Предметы могут только извлекаться.
+message.block_lock.name=КОНТРОЛЬ: Этот блок закрыт.
+message.sensitivity_sleep.name=ЧУВСТВИТЕЛЬНОСТЬ: Переключение состояния на пороге сна игрока (восхода и захода солнца).
+message.sensitivity_monsters.name=ЧУВСТВИТЕЛЬНОСТЬ: Переключение состояния на пороге появления монстров (включая штормы).
 
 # </file>

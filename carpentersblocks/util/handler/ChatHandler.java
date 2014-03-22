@@ -2,6 +2,7 @@ package carpentersblocks.util.handler;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.EnumChatFormatting;
 
 public class ChatHandler {
     
@@ -10,7 +11,9 @@ public class ChatHandler {
      */
     public static void sendMessageToPlayer(String string, EntityPlayer entityPlayer)
     {
-        entityPlayer.addChatMessage(new ChatComponentTranslation(string, new Object[0]));
+        ChatComponentTranslation chat = new ChatComponentTranslation(string, new Object[0]);
+        chat.getChatStyle().setColor(EnumChatFormatting.GOLD);
+        entityPlayer.addChatMessage(chat);
     }
     
 }
