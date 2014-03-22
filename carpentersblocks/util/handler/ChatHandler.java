@@ -11,8 +11,20 @@ public class ChatHandler {
      */
     public static void sendMessageToPlayer(String string, EntityPlayer entityPlayer)
     {
+        sendMessageToPlayer(string, entityPlayer, true);
+    }
+    
+    /**
+     * Sends a chat message to a player with style override.
+     */
+    public static void sendMessageToPlayer(String string, EntityPlayer entityPlayer, boolean styled)
+    {
         ChatComponentTranslation chat = new ChatComponentTranslation(string, new Object[0]);
-        chat.getChatStyle().setColor(EnumChatFormatting.GOLD);
+        
+        if (styled) {
+            chat.getChatStyle().setColor(EnumChatFormatting.GOLD);
+        }
+        
         entityPlayer.addChatMessage(chat);
     }
     

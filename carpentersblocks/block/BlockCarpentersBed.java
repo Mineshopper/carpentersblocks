@@ -159,7 +159,7 @@ public class BlockCarpentersBed extends BlockCoverable {
                     
                     if (entityPlayer1 != null) {
                         
-                        ChatHandler.sendMessageToPlayer("tile.bed.occupied", entityPlayer);
+                        ChatHandler.sendMessageToPlayer("tile.bed.occupied", entityPlayer, false);
                         altered.add(true);
                         return;
                         
@@ -178,9 +178,9 @@ public class BlockCarpentersBed extends BlockCoverable {
                 } else {
                     
                     if (enumstatus == EnumStatus.NOT_POSSIBLE_NOW) {
-                        ChatHandler.sendMessageToPlayer("tile.bed.noSleep", entityPlayer);
+                        ChatHandler.sendMessageToPlayer("tile.bed.noSleep", entityPlayer, false);
                     } else if (enumstatus == EnumStatus.NOT_SAFE) {
-                        ChatHandler.sendMessageToPlayer("tile.bed.notSafe", entityPlayer);
+                        ChatHandler.sendMessageToPlayer("tile.bed.notSafe", entityPlayer, false);
                     }
                     
                 }
