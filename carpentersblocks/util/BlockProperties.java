@@ -355,6 +355,7 @@ public class BlockProperties {
             
             if (!suppressUpdate) {
                 TE.getWorldObj().markBlockForUpdate(TE.xCoord, TE.yCoord, TE.zCoord);
+                TE.markDirty();
             }
         }
     }

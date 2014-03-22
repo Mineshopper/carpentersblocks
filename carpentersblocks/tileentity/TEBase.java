@@ -1,5 +1,6 @@
 package carpentersblocks.tileentity;
 
+import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -123,9 +124,29 @@ public class TEBase extends TileEntity {
         readFromNBT(pkt.func_148857_g());
         
         if (worldObj.isRemote) {
-            worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
+            worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+            // TODO: Rename to updateAllLightByTypes
             worldObj.func_147451_t(xCoord, yCoord, zCoord);
         }
+    }
+    
+    /**
+     * Called from Chunk.setBlockIDWithMetadata, determines if this tile entity should be re-created when the ID, or Metadata changes.
+     * Use with caution as this will leave straggler TileEntities, or create conflicts with other TileEntities if not used properly.
+     *
+     * @param oldID The old ID of the block
+     * @param newID The new ID of the block (May be the same)
+     * @param oldMeta The old metadata of the block
+     * @param newMeta The new metadata of the block (May be the same)
+     * @param world Current world
+     * @param x X Position
+     * @param y Y Position
+     * @param z Z Position
+     * @return True to remove the old tile entity, false to keep it in tact {and create a new one if the new values specify to}
+     */
+    public boolean shouldRefresh(Block oldBlock, Block newBlock, int oldMeta, int newMeta, World world, int x, int y, int z)
+    {
+        return oldBlock != newBlock;
     }
     
     /**

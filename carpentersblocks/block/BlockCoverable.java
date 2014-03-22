@@ -222,6 +222,7 @@ public class BlockCoverable extends BlockContainer {
                             altered.add(onHammerLeftClick(TE, entityPlayer));
                             
                         }
+                        
                     }
                     
                     if (altered.contains(true)) {
