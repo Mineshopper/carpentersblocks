@@ -17,9 +17,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-import carpentersblocks.CarpentersBlocks;
 import carpentersblocks.tileentity.TEBase;
-import carpentersblocks.tileentity.TECarpentersFlowerPot;
 import carpentersblocks.util.handler.DyeHandler;
 import carpentersblocks.util.handler.OverlayHandler;
 
@@ -188,8 +186,9 @@ public class BlockProperties {
     public static void playBlockSound(World world, ItemStack itemStack, int x, int y, int z)
     {
         Block block = toBlock(itemStack);
+        SoundType soundType = block != null ? block.stepSound : Blocks.sand.stepSound;
         
-        world.playSoundEffect(x + 0.5F, y + 0.5F, z + 0.5F, block.stepSound.func_150496_b(), (block.stepSound.getVolume() + 1.0F) / 2.0F, block.stepSound.getPitch() * 0.8F);
+        world.playSoundEffect(x + 0.5F, y + 0.5F, z + 0.5F, soundType.func_150496_b(), (soundType.getVolume() + 1.0F) / 2.0F, soundType.getPitch() * 0.8F);
     }
     
     /**

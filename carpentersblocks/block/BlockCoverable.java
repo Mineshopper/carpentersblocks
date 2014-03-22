@@ -348,7 +348,7 @@ public class BlockCoverable extends BlockContainer {
     
                 } else {
     
-                    BlockProperties.playBlockSound(TE, BlockProperties.getCover(TE, 6));
+                    BlockProperties.playBlockSound(TE, itemStack);
                     damageItemWithChance(world, entityPlayer);
                     onNeighborBlockChange(world, x, y, z, this);
                     world.notifyBlocksOfNeighborChange(x, y, z, this);
