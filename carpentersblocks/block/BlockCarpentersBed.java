@@ -115,6 +115,10 @@ public class BlockCarpentersBed extends BlockCoverable {
     {
         World world = TE.getWorldObj();
 
+        int x = TE.xCoord;
+        int y = TE.yCoord;
+        int z = TE.zCoord;
+        
         if (!world.isRemote) {
             
             if (!Bed.isHeadOfBed(TE)) {
@@ -122,8 +126,8 @@ public class BlockCarpentersBed extends BlockCoverable {
                 TEBase TE_opp = Bed.getOppositeTE(TE);
                 
                 if (TE_opp != null) {
-                    TE.xCoord = TE_opp.xCoord;
-                    TE.zCoord = TE_opp.zCoord;
+                    x = TE_opp.xCoord;
+                    z = TE_opp.zCoord;
                 } else {
                     altered.add(true);
                     return;
@@ -131,7 +135,7 @@ public class BlockCarpentersBed extends BlockCoverable {
                 
             }
             
-            if (world.provider.canRespawnHere() && world.getBiomeGenForCoords(TE.xCoord, TE.zCoord) != BiomeGenBase.hell) {
+            if (world.provider.canRespawnHere() && world.getBiomeGenForCoords(x, z) != BiomeGenBase.hell) {
                 
                 if (Bed.isOccupied(TE)) {
                     
@@ -146,7 +150,7 @@ public class BlockCarpentersBed extends BlockCoverable {
                             
                             ChunkCoordinates chunkCoordinates = entityPlayer2.playerLocation;
                             
-                            if (chunkCoordinates.posX == TE.xCoord && chunkCoordinates.posY == TE.yCoord && chunkCoordinates.posZ == TE.zCoord) {
+                            if (chunkCoordinates.posX == x && chunkCoordinates.posY == y && chunkCoordinates.posZ == z) {
                                 entityPlayer1 = entityPlayer2;
                             }
                             
@@ -162,15 +166,15 @@ public class BlockCarpentersBed extends BlockCoverable {
                         
                     }
                     
-                    setBedOccupied(world, TE.xCoord, TE.yCoord, TE.zCoord, entityPlayer, false);
+                    setBedOccupied(world, x, y, z, entityPlayer, false);
                     
                 }
                 
-                EnumStatus enumstatus = entityPlayer.sleepInBedAt(TE.xCoord, TE.yCoord, TE.zCoord);
+                EnumStatus enumstatus = entityPlayer.sleepInBedAt(x, y, z);
                 
                 if (enumstatus == EnumStatus.OK) {
                     
-                    setBedOccupied(world, TE.xCoord, TE.yCoord, TE.zCoord, entityPlayer, true);
+                    setBedOccupied(world, x, y, z, entityPlayer, true);
                     
                 } else {
                     
@@ -184,8 +188,8 @@ public class BlockCarpentersBed extends BlockCoverable {
                 
             } else {
                 
-                world.setBlockToAir(TE.xCoord, TE.yCoord, TE.zCoord);
-                world.newExplosion((Entity)null, TE.xCoord + 0.5F, TE.yCoord + 0.5F, TE.zCoord + 0.5F, 5.0F, true, true);
+                world.setBlockToAir(x, y, z);
+                world.newExplosion((Entity)null, x + 0.5F, y + 0.5F, z + 0.5F, 5.0F, true, true);
                 
             }
             
