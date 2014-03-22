@@ -7,9 +7,9 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
+import net.minecraft.item.ItemDye;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
@@ -79,7 +79,7 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
      * Sneak-click removes plant and/or soil.
      */
     protected boolean preOnBlockClicked(TEBase TE, World world, int x, int y, int z, EntityPlayer entityPlayer)
-    {
+    {        
         if (entityPlayer.isSneaking()) {
             
             if (EventHandler.hitY > 0.375F) {
@@ -142,7 +142,7 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
     protected void preOnBlockActivated(TEBase TE, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ, List<Boolean> altered, List<Boolean> decInv)
     {
         ItemStack itemStack = entityPlayer.getHeldItem();
-        
+
         if (itemStack != null) {
             
             boolean hasCover = BlockProperties.hasCover(TE, 6);
@@ -178,8 +178,19 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
                     if (itemStack.getItem().equals(Items.dye) && itemStack.getItemDamage() == 15) {
 
                         if (!FlowerPot.isEnriched(TE)) {
+                            
                             FlowerPot.setEnrichment(TE, true);
                             altered.add(decInv.add(true));
+
+                            /* Play fertilize sound. */
+                            if (!TE.getWorldObj().isRemote){ 
+                                System.out.println("DEBUG: Trying to play fertilize sound.");
+                                TE.getWorldObj().playAuxSFX(2005, TE.xCoord, TE.yCoord, TE.zCoord, 0);
+                            }
+                            
+                            /* Spawn fertilize effect. */
+                            ItemDye.func_150918_a(TE.getWorldObj(), TE.xCoord, TE.yCoord, TE.zCoord, 15);                            
+                            
                         }
 
                     }
