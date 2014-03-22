@@ -935,7 +935,7 @@ public class BlockCoverable extends BlockContainer {
              * overlays to judge whether plants can be supported on block.
              */
             
-            for (int side = 1; side < 6; side += 5) {
+            for (int side = 1; side < 7; side += 5) {
                 
                 if (BlockProperties.hasCover(TE, side)) {
                     blocks.add(BlockProperties.toBlock(BlockProperties.getCover(TE, side)));
@@ -965,7 +965,7 @@ public class BlockCoverable extends BlockContainer {
             }
             
             EnumPlantType plantType = plantable.getPlantType(world, x, y + 1, z);
-            
+
             switch (plantType)
             {
                 case Desert: return blocks.contains(Blocks.sand);
@@ -984,7 +984,7 @@ public class BlockCoverable extends BlockContainer {
                     break;
             }
         }
-        
+
         return super.canSustainPlant(world, x, y, z, direction, plantable);
     }
     
