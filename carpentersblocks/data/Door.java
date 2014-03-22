@@ -116,7 +116,7 @@ public class Door {
         
         World world = TE.getWorldObj();
         
-        if (world.isRemote && playSound) {
+        if (!world.isRemote && playSound) {
             world.playAuxSFXAtEntity((EntityPlayer)null, 1003, TE.xCoord, TE.yCoord, TE.zCoord, 0);
         }
         
