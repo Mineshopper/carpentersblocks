@@ -7,6 +7,7 @@ import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.Packet132TileEntityData;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 
 public class TEBase extends TileEntity {
 
@@ -87,6 +88,27 @@ public class TEBase extends TileEntity {
             Minecraft.getMinecraft().renderGlobal.markBlockForRenderUpdate(xCoord, yCoord, zCoord);
             worldObj.updateAllLightTypes(xCoord, yCoord, zCoord);
         }
+    }
+    
+    private boolean isVanilla = getClass().getName().startsWith("net.minecraft.tileentity");
+    /**
+     * Called from Chunk.setBlockIDWithMetadata, determines if this tile entity should be re-created when the ID, or Metadata changes.
+     * Use with caution as this will leave straggler TileEntities, or create conflicts with other TileEntities if not used properly.
+     *
+     * @param oldID The old ID of the block
+     * @param newID The new ID of the block (May be the same)
+     * @param oldMeta The old metadata of the block
+     * @param newMeta The new metadata of the block (May be the same)
+     * @param world Current world
+     * @param x X Postion
+     * @param y Y Position
+     * @param z Z Position
+     * @return True to remove the old tile entity, false to keep it in tact {and create a new one if the new values specify to}
+     */
+    @Override
+    public boolean shouldRefresh(int oldID, int newID, int oldMeta, int newMeta, World world, int x, int y, int z)
+    {
+        return oldID != newID;
     }
 
     /**
