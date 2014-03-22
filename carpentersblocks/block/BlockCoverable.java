@@ -21,7 +21,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
@@ -257,11 +256,7 @@ public class BlockCoverable extends BlockContainer {
 
         if (world.isRemote) {
 
-            if (itemStack == null) {
-                return true;
-            } else {
-                return itemStack.getItem() != null && itemStack.getItem() instanceof ItemBlock;
-            }
+            return true;
 
         } else {
 
