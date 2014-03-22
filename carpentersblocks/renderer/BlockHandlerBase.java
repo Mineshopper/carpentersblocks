@@ -45,7 +45,6 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
     protected LightingHelper lightingHelper = LightingHelper.instance;
     public Block             srcBlock;
     public TEBase            TE;
-
     protected boolean        suppressOverlay;
     protected boolean        suppressPattern;
     public boolean           suppressDyeColor;
@@ -404,7 +403,14 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
      */
     protected IIcon getIcon(ItemStack itemStack, int side)
     {
-        IIcon icon = renderBlocks.getIconSafe(getUniqueIcon(itemStack, side, BlockProperties.toBlock(itemStack).getIcon(side, itemStack.getItemDamage())));
+        int metadata = itemStack.getItemDamage();
+        
+        /*  Uncovered BlockCoverable has invisible icon, correct it here. */        
+        if (Block.getBlockFromItem(itemStack.getItem()) instanceof BlockCoverable) {
+            metadata = EventHandler.BLOCKICON_BASE_ID;
+        }
+        
+        IIcon icon = renderBlocks.getIconSafe(getUniqueIcon(itemStack, side, BlockProperties.toBlock(itemStack).getIcon(side, metadata)));
 
         if (hasIconOverride[side]) {
             icon = renderBlocks.getIconSafe(iconOverride[side]);
@@ -669,17 +675,13 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
     {
         return Minecraft.isAmbientOcclusionEnabled() && !disableAO && BlockProperties.toBlock(itemStack).getLightValue() == 0;
     }
-    
+
     /**
      * Renders block.
      * Coordinates may change since side covers render here.
      */
     protected void renderBlock(ItemStack itemStack, int x, int y, int z)
     {
-        if (Block.getBlockFromItem(itemStack.getItem()) instanceof BlockCoverable) {
-            itemStack.setItemDamage(EventHandler.BLOCKICON_BASE_ID);
-        }
-        
         renderBlocks.enableAO = getEnableAO(itemStack);
         
         if (renderBlocks.renderAllFaces || srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x, y - 1, z, DOWN) || renderBlocks.renderMinY > 0.0D)

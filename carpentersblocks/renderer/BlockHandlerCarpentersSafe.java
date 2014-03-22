@@ -15,7 +15,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class BlockHandlerCarpentersSafe extends BlockHandlerBase {
     
-    private final int   numBoxes    = 21;
+    private final int   numBoxes    = 22;
     private final int   numCapacity = 9;
     private final float LIGHT_MAX   = 1.0F;
     private final float LIGHT_MIN   = 0.15F;
@@ -48,6 +48,7 @@ public class BlockHandlerCarpentersSafe extends BlockHandlerBase {
     private final byte HANDLE                     = 18;
     private final byte GREEN_LIGHT                = 19;
     private final byte RED_LIGHT                  = 20;
+    private final byte CAPACITY_STRIP             = 21;
     
     private final float[] LIGHT_RED_ACTIVE        = {        LIGHT_MAX,             0.0F,             0.0F };
     private final float[] LIGHT_RED_INACTIVE      = { LIGHT_MAX / 3.0F,        LIGHT_MIN,        LIGHT_MIN };
@@ -59,6 +60,8 @@ public class BlockHandlerCarpentersSafe extends BlockHandlerBase {
     @Override
     public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderBlocks)
     {
+        Block tempBlock = block;
+        
         for (int box = 0; box < numBoxes; ++box)
         {
             /* Render the door closed. */
@@ -74,17 +77,17 @@ public class BlockHandlerCarpentersSafe extends BlockHandlerBase {
             switch (type) {
                 case BLOCKTYPE_COVER:
                 case BLOCKTYPE_DOOR:
+                    tempBlock = block;
                     break;
                 case BLOCKTYPE_PANEL:
                 case BLOCKTYPE_HANDLE:
-                    renderBlocks.setOverrideBlockTexture(Blocks.iron_block.getBlockTextureFromSide(2));
+                    tempBlock = Blocks.iron_block;
                     break;
                 default:
-                    renderBlocks.setOverrideBlockTexture(renderBlocks.getIconSafe(IconRegistry.icon_safe_light));
+                    tempBlock = Blocks.obsidian;
             }
             
-            super.renderInventoryBlock(block, metadata, modelID, renderBlocks);
-            renderBlocks.clearOverrideBlockTexture();
+            super.renderInventoryBlock(tempBlock, metadata, modelID, renderBlocks);
         }
     }
     
@@ -219,6 +222,9 @@ public class BlockHandlerCarpentersSafe extends BlockHandlerBase {
                 break;
             case RED_LIGHT:
                 renderBlocks.setRenderBounds(0.125D, 0.75D, 0.9375D, 0.25D, 0.8125D, 1.0D);
+                break;
+            case CAPACITY_STRIP:
+                renderBlocks.setRenderBounds(0.125D, 0.125D, 0.9375D, 0.25D, 0.6875D, 1.0D);
                 break;
         }
     }

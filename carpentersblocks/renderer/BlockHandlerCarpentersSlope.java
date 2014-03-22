@@ -234,6 +234,8 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
         GL11.glTranslatef(0.5F, 0.5F, 0.5F);
     }
 
+    private boolean forceFullFrame = false;
+    
     @Override
     /**
      * Override to provide custom icons.
@@ -259,7 +261,13 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
                     case PRISM_3P:
                     case PRISM_4P:
                     case PRISM_WEDGE:
-                        icon = IconRegistry.icon_quartered_frame;
+                        
+                        if (forceFullFrame) {
+                            icon = IconRegistry.icon_full_frame;
+                        } else {
+                            icon = IconRegistry.icon_quartered_frame;
+                        }
+
                         break;
                     default:
                         break;
@@ -684,9 +692,11 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
 
                 RenderHelper.startDrawing(QUADS);
 
+                forceFullFrame = true;
                 renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
                 setWedgeLighting(itemStack, Slope.WEDGE_POS_N);
                 setIDAndRender(itemStack, PRISM_WEDGE_ZN, x, y, z, NORTH);
+                forceFullFrame = false;
 
                 break;
             case Slope.ID_PRISM_WEDGE_POS_S:
@@ -702,10 +712,12 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
 
                 RenderHelper.startDrawing(QUADS);
 
+                forceFullFrame = true;
                 renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
                 setWedgeLighting(itemStack, Slope.WEDGE_POS_S);
                 setIDAndRender(itemStack, PRISM_WEDGE_ZP, x, y, z, SOUTH);
-
+                forceFullFrame = false;
+                
                 break;
             case Slope.ID_PRISM_WEDGE_POS_W:
 
@@ -720,10 +732,12 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
 
                 RenderHelper.startDrawing(QUADS);
 
+                forceFullFrame = true;
                 renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
                 setWedgeLighting(itemStack, Slope.WEDGE_POS_W);
                 setIDAndRender(itemStack, PRISM_WEDGE_XN, x, y, z, WEST);
-
+                forceFullFrame = false;
+                
                 break;
             case Slope.ID_PRISM_WEDGE_POS_E:
 
@@ -738,10 +752,12 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
 
                 RenderHelper.startDrawing(QUADS);
 
+                forceFullFrame = true;
                 renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
                 setWedgeLighting(itemStack, Slope.WEDGE_POS_E);
                 setIDAndRender(itemStack, PRISM_WEDGE_XP, x, y, z, EAST);
-
+                forceFullFrame = false;
+                
                 break;
         }
     }

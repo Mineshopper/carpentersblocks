@@ -19,38 +19,40 @@ public class BlockHandlerCarpentersDaylightSensor extends BlockHandlerBase {
     {
         double yOffset = 0.375D;
         
+        /* Glass inset */
+        
         renderBlocks.setOverrideBlockTexture(renderBlocks.getIconSafe(IconRegistry.icon_daylight_sensor_glass_top));
-        
-        renderBlocks.setRenderBounds(0.0625D, 0.1875D + yOffset, 0.0625D, 0.9375D, 0.25D + yOffset, 0.9375D); // Glass top
+        renderBlocks.setRenderBounds(0.0625D, 0.1875D + yOffset, 0.0625D, 0.9375D, 0.25D + yOffset, 0.9375D);
         super.renderInventoryBlock(block, metadata, modelID, renderBlocks);
-        
-        renderBlocks.setOverrideBlockTexture(Blocks.lapis_block.getBlockTextureFromSide(1));
-        
-        renderBlocks.setRenderBounds(0.125D, 0.0625D + yOffset, 0.125D, 0.875D, 0.1875D + yOffset, 0.875D); // Lapis middle
-        super.renderInventoryBlock(block, metadata, modelID, renderBlocks);
-        
-        renderBlocks.setOverrideBlockTexture(Blocks.redstone_block.getBlockTextureFromSide(1));
-        
-        renderBlocks.setRenderBounds(0.0625D, 0.0625D + yOffset, 0.0625D, 0.125D, 0.1875D + yOffset, 0.9375D); // Redstone X-low wall
-        super.renderInventoryBlock(block, metadata, modelID, renderBlocks);
-        renderBlocks.setRenderBounds(0.875D, 0.0625D + yOffset, 0.0625D, 0.9375D, 0.1875D + yOffset, 0.9375D); // Redstone X-high wall
-        super.renderInventoryBlock(block, metadata, modelID, renderBlocks);
-        renderBlocks.setRenderBounds(0.0625D, 0.0625D + yOffset, 0.0625D, 0.9375D, 0.1875D + yOffset, 0.125D); // Redstone Z-low wall
-        super.renderInventoryBlock(block, metadata, modelID, renderBlocks);
-        renderBlocks.setRenderBounds(0.0625D, 0.0625D + yOffset, 0.875D, 0.9375D, 0.1875D + yOffset, 0.9375D); // Redstone Z-high wall
-        super.renderInventoryBlock(block, metadata, modelID, renderBlocks);
-        
         renderBlocks.clearOverrideBlockTexture();
         
-        renderBlocks.setRenderBounds(0.0625D, 0.0D + yOffset, 0.0625D, 0.9375D, 0.0625D + yOffset, 0.9375D); // Bottom
+        /* Lapis inset */
+        
+        renderBlocks.setRenderBounds(0.125D, 0.0625D + yOffset, 0.125D, 0.875D, 0.1875D + yOffset, 0.875D);
+        super.renderInventoryBlock(Blocks.lapis_block, metadata, modelID, renderBlocks);
+
+        /* Redstone inset */
+        
+        renderBlocks.setRenderBounds(0.0625D, 0.0625D + yOffset, 0.0625D, 0.125D, 0.1875D + yOffset, 0.9375D);
+        super.renderInventoryBlock(Blocks.redstone_block, metadata, modelID, renderBlocks);
+        renderBlocks.setRenderBounds(0.875D, 0.0625D + yOffset, 0.0625D, 0.9375D, 0.1875D + yOffset, 0.9375D);
+        super.renderInventoryBlock(Blocks.redstone_block, metadata, modelID, renderBlocks);
+        renderBlocks.setRenderBounds(0.0625D, 0.0625D + yOffset, 0.0625D, 0.9375D, 0.1875D + yOffset, 0.125D);
+        super.renderInventoryBlock(Blocks.redstone_block, metadata, modelID, renderBlocks);
+        renderBlocks.setRenderBounds(0.0625D, 0.0625D + yOffset, 0.875D, 0.9375D, 0.1875D + yOffset, 0.9375D);
+        super.renderInventoryBlock(Blocks.redstone_block, metadata, modelID, renderBlocks);
+        
+        /* Bottom */
+
+        renderBlocks.setRenderBounds(0.0625D, 0.0D + yOffset, 0.0625D, 0.9375D, 0.0625D + yOffset, 0.9375D);
         super.renderInventoryBlock(block, metadata, modelID, renderBlocks);
-        renderBlocks.setRenderBounds(0.0D, 0.0D + yOffset, 0.0D, 0.0625D, 0.25D + yOffset, 1.0D); // X-low wall
+        renderBlocks.setRenderBounds(0.0D, 0.0D + yOffset, 0.0D, 0.0625D, 0.25D + yOffset, 1.0D);
         super.renderInventoryBlock(block, metadata, modelID, renderBlocks);
-        renderBlocks.setRenderBounds(0.9375D, 0.0D + yOffset, 0.0D, 1.0D, 0.25D + yOffset, 1.0D); // X-high wall
+        renderBlocks.setRenderBounds(0.9375D, 0.0D + yOffset, 0.0D, 1.0D, 0.25D + yOffset, 1.0D);
         super.renderInventoryBlock(block, metadata, modelID, renderBlocks);
-        renderBlocks.setRenderBounds(0.0625D, 0.0D + yOffset, 0.0D, 0.9375D, 0.25D + yOffset, 0.0625D); // Z-low wall
+        renderBlocks.setRenderBounds(0.0625D, 0.0D + yOffset, 0.0D, 0.9375D, 0.25D + yOffset, 0.0625D);
         super.renderInventoryBlock(block, metadata, modelID, renderBlocks);
-        renderBlocks.setRenderBounds(0.0625D, 0.0D + yOffset, 0.9375D, 0.9375D, 0.25D + yOffset, 1.0D); // Z-high wall
+        renderBlocks.setRenderBounds(0.0625D, 0.0D + yOffset, 0.9375D, 0.9375D, 0.25D + yOffset, 1.0D);
         super.renderInventoryBlock(block, metadata, modelID, renderBlocks);
     }
     

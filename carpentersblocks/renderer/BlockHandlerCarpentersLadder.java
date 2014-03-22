@@ -16,27 +16,21 @@ public class BlockHandlerCarpentersLadder extends BlockHandlerBase {
     @Override
     public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderBlocks)
     {
-        // Left vertical support
+        /* Sides */
+        
         renderBlocks.setRenderBounds(0.0D, 0.0D, 0.375D, 0.125D, 1.0D, 0.625D);
         super.renderInventoryBlock(block, metadata, modelID, renderBlocks);
-        
-        // Right vertical support
         renderBlocks.setRenderBounds(0.875D, 0.0D, 0.375D, 1.0D, 1.0D, 0.625D);
         super.renderInventoryBlock(block, metadata, modelID, renderBlocks);
         
-        // Bottom slat
+        /* Steps */
+
         renderBlocks.setRenderBounds(0.125D, 0.125D, 0.4375D, 0.875D, 0.1875D, 0.5625D);
         super.renderInventoryBlock(block, metadata, modelID, renderBlocks);
-        
-        // Next slat
         renderBlocks.setRenderBounds(0.125D, 0.375D, 0.4375D, 0.875D, 0.4375D, 0.5625D);
         super.renderInventoryBlock(block, metadata, modelID, renderBlocks);
-        
-        // Next slat
         renderBlocks.setRenderBounds(0.125D, 0.625D, 0.4375D, 0.875D, 0.6875D, 0.5625D);
         super.renderInventoryBlock(block, metadata, modelID, renderBlocks);
-        
-        // Top slat
         renderBlocks.setRenderBounds(0.125D, 0.875D, 0.4375D, 0.875D, 0.9375D, 0.5625D);
         super.renderInventoryBlock(block, metadata, modelID, renderBlocks);
     }

@@ -21,9 +21,13 @@ public class BlockHandlerCarpentersHatch extends BlockHandlerBase {
     @Override
     public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderBlocks)
     {
+        /* Base */
+        
         renderBlocks.setRenderBounds(0.0D, 0.4375D, 0.0D, 1.0D, 0.5625D, 1.0D);
         super.renderInventoryBlock(block, metadata, modelID, renderBlocks);
-
+        
+        /* Handle */
+        
         renderBlocks.setRenderBounds(0.0625D, 0.5625D, 0.375D, 0.125D, 0.625D, 0.4375D);
         super.renderInventoryBlock(Blocks.iron_block, metadata, modelID, renderBlocks);
         renderBlocks.setRenderBounds(0.0625, 0.5625D, 0.5625D, 0.125D, 0.625D, 0.625D);

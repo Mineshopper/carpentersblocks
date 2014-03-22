@@ -19,7 +19,6 @@ public class BlockHandlerCarpentersStairs extends BlockHandlerBase {
     {
         renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 0.5D, 1.0D);
         super.renderInventoryBlock(block, metadata, modelID, renderBlocks);
-        
         renderBlocks.setRenderBounds(0.5D, 0.5D, 0.0D, 1.0D, 1.0D, 1.0D);
         super.renderInventoryBlock(block, metadata, modelID, renderBlocks);
     }

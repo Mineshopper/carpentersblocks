@@ -18,15 +18,17 @@ public class BlockHandlerCarpentersBarrier extends BlockHandlerBase {
     @Override
     public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderBlocks)
     {
+        /* Vertical posts */
+        
         renderBlocks.setRenderBounds(0.125D, 0.0D, 0.375D, 0.375D, 1.0D, 0.625D);
         super.renderInventoryBlock(block, metadata, modelID, renderBlocks);
-        
         renderBlocks.setRenderBounds(0.625D, 0.0D, 0.375D, 0.875D, 1.0D, 0.625D);
         super.renderInventoryBlock(block, metadata, modelID, renderBlocks);
         
+        /* Horizontal planks */
+        
         renderBlocks.setRenderBounds(0.0D, 0.8125D, 0.4375D, 1.0D, 0.9375D, 0.5625D);
         super.renderInventoryBlock(block, metadata, modelID, renderBlocks);
-        
         renderBlocks.setRenderBounds(0.0D, 0.4375D, 0.4375D, 1.0D, 0.5625D, 0.5625D);
         super.renderInventoryBlock(block, metadata, modelID, renderBlocks);
     }

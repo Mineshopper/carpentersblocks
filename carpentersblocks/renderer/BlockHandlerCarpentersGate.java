@@ -16,13 +16,16 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
     @Override
     public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderBlocks)
     {
+        /* Sides */        
+        
         renderBlocks.setRenderBounds(0.0D, 0.3125D, 0.4375D, 0.125D, 1.0D, 0.5625D);
         super.renderInventoryBlock(block, metadata, modelID, renderBlocks);
-        
-        renderBlocks.setRenderBounds(0.125D, 0.5D, 0.4375D, 0.875D, 0.9375D, 0.5625D);
+        renderBlocks.setRenderBounds(0.875D, 0.3125D, 0.4375D, 1.0D, 1.0D, 0.5625D);
         super.renderInventoryBlock(block, metadata, modelID, renderBlocks);
         
-        renderBlocks.setRenderBounds(0.875D, 0.3125D, 0.4375D, 1.0D, 1.0D, 0.5625D);
+        /* Center */
+        
+        renderBlocks.setRenderBounds(0.125D, 0.5D, 0.4375D, 0.875D, 0.9375D, 0.5625D);
         super.renderInventoryBlock(block, metadata, modelID, renderBlocks);
     }
     
