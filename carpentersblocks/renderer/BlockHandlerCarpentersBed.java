@@ -49,14 +49,24 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase {
             frameColor = DyeHandler.getColor(BlockProperties.getDye(TE, 6));
             
             if (TE_opp != null) {
-                blanketColor = DyeHandler.getColor(BlockProperties.getDye(TE_opp, 6));
+                
+                ItemStack dyeStack = BlockProperties.getDye(TE_opp, 6);
+                
+                if (dyeStack != null) {
+                    blanketColor = 15 - dyeStack.getItemDamage();
+                }
+
                 isOccupied |= Bed.isOccupied(TE_opp);
             }
             
         } else {
             
-            blanketColor = DyeHandler.getColor(BlockProperties.getDye(TE, 6));
+            ItemStack dyeStack = BlockProperties.getDye(TE, 6);
             
+            if (dyeStack != null) {
+                blanketColor = 15 - dyeStack.getItemDamage();
+            }
+
             if (TE_opp != null) {
                 frameColor = DyeHandler.getColor(BlockProperties.getDye(TE_opp, 6));
                 isOccupied |= Bed.isOccupied(TE_opp);
@@ -100,8 +110,7 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase {
             
         }
         
-        ItemStack cloth = new ItemStack(Blocks.wool, 1, 15);
-        BlockProperties.setHostMetadata(TE, 15);
+        ItemStack cloth = new ItemStack(Blocks.wool);
         
         switch (dir)
         {
@@ -563,8 +572,6 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase {
             suppressPattern = false;
             cloth.setItemDamage(15);
         }
-        
-        BlockProperties.resetHostMetadata(TE);
     }
     
 }

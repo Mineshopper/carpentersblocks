@@ -404,10 +404,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
      */
     protected IIcon getIcon(ItemStack itemStack, int side)
     {
-        Block block = BlockProperties.toBlock(itemStack);
-        int metadata = BlockProperties.hasCover(TE, coverRendering) ? itemStack.getItemDamage() : EventHandler.BLOCKICON_BASE_ID;
-
-        IIcon icon = renderBlocks.getIconSafe(getUniqueIcon(itemStack, side, block.getIcon(side, metadata)));
+        IIcon icon = renderBlocks.getIconSafe(getUniqueIcon(itemStack, side, BlockProperties.toBlock(itemStack).getIcon(side, itemStack.getItemDamage())));
 
         if (hasIconOverride[side]) {
             icon = renderBlocks.getIconSafe(iconOverride[side]);
@@ -679,6 +676,10 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
      */
     protected void renderBlock(ItemStack itemStack, int x, int y, int z)
     {
+        if (Block.getBlockFromItem(itemStack.getItem()) instanceof BlockCoverable) {
+            itemStack.setItemDamage(EventHandler.BLOCKICON_BASE_ID);
+        }
+        
         renderBlocks.enableAO = getEnableAO(itemStack);
         
         if (renderBlocks.renderAllFaces || srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x, y - 1, z, DOWN) || renderBlocks.renderMinY > 0.0D)

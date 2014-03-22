@@ -7,7 +7,6 @@ import carpentersblocks.util.flowerpot.FlowerPotDesignHandler;
 import carpentersblocks.util.flowerpot.FlowerPotHandler;
 import carpentersblocks.util.handler.DyeHandler;
 import carpentersblocks.util.handler.EventHandler;
-import carpentersblocks.util.handler.ExtendedPlantHandler;
 import carpentersblocks.util.handler.OverlayHandler;
 import carpentersblocks.util.handler.PacketHandler;
 import carpentersblocks.util.handler.PatternHandler;
@@ -19,10 +18,6 @@ public class CommonProxy {
     
     public void registerHandlers(FMLPreInitializationEvent event)
     {
-        if (FeatureRegistry.enableExtendedPlantSupport) {
-            FeatureRegistry.enableExtendedPlantSupport = ExtendedPlantHandler.init();
-        }
-        
         if (BlockRegistry.enableFlowerPot) {
             FlowerPotHandler.initPlants();
             FlowerPotDesignHandler.init(event);

@@ -18,8 +18,6 @@ public class FeatureRegistry {
     public static boolean enableTorchWeatherEffects    = true;
     public static boolean enableBlockOwnership         = true;
     public static boolean enableMCPatcherCompatibility = false;
-    public static boolean enableOptifineIntegration    = true;
-    public static boolean enableExtendedPlantSupport   = true;
 
     public static String[] overlay_list;
     
@@ -43,10 +41,6 @@ public class FeatureRegistry {
         Property blockOwnershipProp = config.get("features", "Enable Block Ownership", enableBlockOwnership);
         blockOwnershipProp.comment = "This will prevent players besides you and server operators from editing your blocks.\nNote: this does not protect blocks against destruction (intentional), and may allow activation if appropriate. Also, the Carpenter's Safe is not affected by this.";
         enableBlockOwnership = blockOwnershipProp.getBoolean(enableBlockOwnership);
-
-        Property optifineIntegrationProp = config.get("rendering", "Enable Optifine Integration", enableOptifineIntegration);
-        optifineIntegrationProp.comment = "Provides integration with Optifine's block coloring methods.\nNote: this is needed to support Custom Colors.";
-        enableOptifineIntegration = optifineIntegrationProp.getBoolean(enableOptifineIntegration);
         
         Property slopeSmoothnessProp = config.get("slope", "Smoothness", slopeSmoothness);
         slopeSmoothnessProp.comment = "This controls the smoothness of the slope faces.\nNote: smoothness of 2 is similar to stairs, while a value above 25 is generally fluid.";
@@ -56,7 +50,7 @@ public class FeatureRegistry {
         torchWeatherEffectsProp.comment = "This controls whether torches extinguish themselves when exposed to rain or snow.";
         enableTorchWeatherEffects = torchWeatherEffectsProp.getBoolean(enableTorchWeatherEffects);
         
-        Property MCPatcherProp = config.get("rendering", "Enable MCPatcher Compatibility", enableMCPatcherCompatibility);
+        Property MCPatcherProp = config.get("compatibility", "Enable MCPatcher Compatibility", enableMCPatcherCompatibility);
         MCPatcherProp.comment = "This will fix block texture issues caused by MCPatcher.";
         enableMCPatcherCompatibility = MCPatcherProp.getBoolean(enableMCPatcherCompatibility);
 

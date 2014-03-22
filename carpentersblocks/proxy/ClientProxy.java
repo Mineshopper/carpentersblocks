@@ -120,8 +120,8 @@ public class ClientProxy extends CommonProxy {
             RenderingRegistry.registerBlockHandler(BlockRegistry.carpentersFlowerPotRenderID, new BlockHandlerCarpentersFlowerPot());
         }
         
-        if (FeatureRegistry.enableOptifineIntegration && FMLClientHandler.instance().hasOptifine()) {
-            FeatureRegistry.enableOptifineIntegration = OptifineHandler.init();
+        if (FMLClientHandler.instance().hasOptifine()) {
+            OptifineHandler.init();
         }
     }
     

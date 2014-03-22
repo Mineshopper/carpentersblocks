@@ -23,17 +23,13 @@ public class BlockHandlerCarpentersHatch extends BlockHandlerBase {
     {
         renderBlocks.setRenderBounds(0.0D, 0.4375D, 0.0D, 1.0D, 0.5625D, 1.0D);
         super.renderInventoryBlock(block, metadata, modelID, renderBlocks);
-        
-        renderBlocks.setOverrideBlockTexture(block.getBlockTextureFromSide(2));
-        
+
         renderBlocks.setRenderBounds(0.0625D, 0.5625D, 0.375D, 0.125D, 0.625D, 0.4375D);
-        super.renderInventoryBlock(block, metadata, modelID, renderBlocks);
+        super.renderInventoryBlock(Blocks.iron_block, metadata, modelID, renderBlocks);
         renderBlocks.setRenderBounds(0.0625, 0.5625D, 0.5625D, 0.125D, 0.625D, 0.625D);
-        super.renderInventoryBlock(block, metadata, modelID, renderBlocks);
+        super.renderInventoryBlock(Blocks.iron_block, metadata, modelID, renderBlocks);
         renderBlocks.setRenderBounds(0.0625D, 0.625D, 0.375D, 0.125D, 0.6875D, 0.625D);
-        super.renderInventoryBlock(block, metadata, modelID, renderBlocks);
-        
-        renderBlocks.clearOverrideBlockTexture();
+        super.renderInventoryBlock(Blocks.iron_block, metadata, modelID, renderBlocks);
     }
     
     @Override

@@ -17,6 +17,7 @@ import carpentersblocks.renderer.BlockHandlerBase;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.handler.DyeHandler;
 import carpentersblocks.util.handler.OptifineHandler;
+import carpentersblocks.util.registry.BlockRegistry;
 import carpentersblocks.util.registry.FeatureRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -140,7 +141,11 @@ public class LightingHelper {
      */
     public int getIntColor(Block block, int x, int y, int z)
     {
-        return FeatureRegistry.enableOptifineIntegration ? OptifineHandler.getColorMultiplier(block, renderBlocks.blockAccess, x, y, z) : block.colorMultiplier(renderBlocks.blockAccess, x, y, z);
+        if (OptifineHandler.enableOptifineIntegration) {
+            return OptifineHandler.getColorMultiplier(block, renderBlocks.blockAccess, x, y, z);
+        } else {
+            return block.colorMultiplier(renderBlocks.blockAccess, x, y, z);
+        }
     }
 
     /**
@@ -149,7 +154,7 @@ public class LightingHelper {
      * before rendering.
      */
     public float[] getBlockRGB(ItemStack itemStack, Block block, int x, int y, int z)
-    {
+    {        
         BlockProperties.setHostMetadata(blockHandler.TE, itemStack.getItemDamage());
         int color = getIntColor(block, x, y, z);
         BlockProperties.resetHostMetadata(blockHandler.TE);
@@ -186,7 +191,7 @@ public class LightingHelper {
         }
 
         float[] blockRGB = getBlockRGB(itemStack, block, x, y, z);
-
+        
         /* If block is grass, we have to apply color selectively. */
 
         if (block.equals(Blocks.grass)) {
