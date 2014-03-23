@@ -4,7 +4,6 @@ import net.minecraft.block.Block;
 import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.client.particle.EntityDiggingFX;
 import net.minecraft.entity.Entity;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MovingObjectPosition;
@@ -13,7 +12,6 @@ import carpentersblocks.data.Torch;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.tileentity.TECarpentersTorch;
 import carpentersblocks.util.BlockProperties;
-import carpentersblocks.util.handler.OverlayHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -28,93 +26,7 @@ public class ParticleHelper {
         double[] headCoords = Torch.getHeadCoordinates(TE);
         TE.getWorldObj().spawnParticle("largesmoke", headCoords[0], headCoords[1], headCoords[2], 0.0D, 0.0D, 0.0D);
     }
-    
-    /**
-     * Returns ItemStack block representation taking overlays and side covers into account.
-     * Used for particles, or sounds.
-     * 
-     * EffectiveSide is base block or side cover.  Side is block face.
-     */
-    public static ItemStack getParticleBlock(TEBase TE, int effectiveSide, int face)
-    {
-        ItemStack itemStack = BlockProperties.getCover(TE, effectiveSide);
-        
-        if (itemStack != null) {
 
-            if (BlockProperties.hasOverlay(TE, effectiveSide)) {
-                itemStack = getParticleItemStackFromOverlay(TE, effectiveSide, face, itemStack);
-            }
-
-            return itemStack;
-                    
-        } else {
-            
-            return new ItemStack(TE.getBlockType());
-            
-        }
-    }
-    
-    /**
-     * Returns block with considerations for the overlay and side of block
-     * being interacted with.
-     * 
-     * Used for interaction only; never for drops.  Only call once you verify
-     * an overlay exists on this side.
-     */
-    public static ItemStack getParticleItemStackFromOverlay(TEBase TE, int effectiveSide, int face, ItemStack itemStack)
-    {
-        if (BlockProperties.hasOverlay(TE, effectiveSide)) {
-            
-            switch (OverlayHandler.getOverlay(BlockProperties.getOverlay(TE, effectiveSide))) {
-                case GRASS:
-                    
-                    if (face == 1) {
-                        return new ItemStack(Blocks.grass);
-                    } else {
-                        return itemStack;
-                    }
-
-                case SNOW:
-                    
-                    if (face == 1) {
-                        return new ItemStack(Blocks.snow);
-                    } else {
-                        return itemStack;
-                    }
-                    
-                case WEB:
-                    
-                    return new ItemStack(Blocks.web);
-                    
-                case VINE:
-                    
-                    return new ItemStack(Blocks.vine);
-                    
-                case HAY:
-                    
-                    if (face == 1) {
-                        return new ItemStack(Blocks.hay_block);
-                    } else {
-                        return itemStack;
-                    }
-                    
-                case MYCELIUM:
-
-                    if (face == 1) {
-                        return new ItemStack(Blocks.mycelium);
-                    } else {
-                        return itemStack;
-                    }
-                    
-                default:
-                    break;
-            } 
-            
-        }
-        
-        return itemStack;
-    }
-    
     /**
      * Spawns a particle at the base of an entity
      *

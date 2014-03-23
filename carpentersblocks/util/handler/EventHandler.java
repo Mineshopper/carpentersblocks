@@ -172,21 +172,33 @@ public class EventHandler {
         Block block = world.getBlock(x, y, z);
         
         if (block != null && block instanceof BlockCoverable) {
-
+            
             TEBase TE = (TEBase) world.getTileEntity(x, y, z);
             int effectiveSide = BlockProperties.hasCover(TE, 1) ? 1 : 6;
             
-            ItemStack itemStack = ParticleHelper.getParticleBlock(TE, effectiveSide, 1);
+            ItemStack itemStack = OverlayHandler.getOverlaySideSensitive(TE, effectiveSide, 1);
             
-            /* Spawn sprint particles client-side. */
-            
-            if (world.isRemote && entity.isSprinting() && !entity.isInWater()) {
-                ParticleHelper.spawnTileParticleAt(entity, itemStack);
+            if (BlockProperties.toBlock(itemStack) instanceof BlockCoverable) {
+                itemStack.setItemDamage(BLOCKICON_BASE_ID);
             }
-            
+
+            if (world.isRemote) {
+                
+                /* Spawn sprint particles client-side. */
+
+                if (entity.isSprinting() && !entity.isInWater()) {
+                    ParticleHelper.spawnTileParticleAt(entity, itemStack);
+                }
+                
+            }
+                
             /* Adjust block slipperiness according to cover. */
             
-            TE.getBlockType().slipperiness = BlockProperties.toBlock(itemStack).slipperiness;
+            if (BlockProperties.toBlock(itemStack) instanceof BlockCoverable) {
+                TE.getBlockType().slipperiness = Blocks.dirt.slipperiness;
+            } else {
+                TE.getBlockType().slipperiness = BlockProperties.toBlock(itemStack).slipperiness;
+            }
             
         }
     }

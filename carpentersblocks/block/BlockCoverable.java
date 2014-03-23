@@ -596,7 +596,7 @@ public class BlockCoverable extends BlockContainer {
         
         int effectiveSide = BlockProperties.hasCover(TE, target.sideHit) ? target.sideHit : 6;
         
-        ItemStack itemStack = ParticleHelper.getParticleBlock(TE, effectiveSide, target.sideHit);
+        ItemStack itemStack = OverlayHandler.getOverlaySideSensitive(TE, effectiveSide, target.sideHit);
         
         Block block = BlockProperties.toBlock(itemStack);
 

@@ -23,6 +23,7 @@ import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.handler.EventHandler;
 import carpentersblocks.util.handler.OverlayHandler;
+import carpentersblocks.util.handler.OverlayHandler.Overlay;
 import carpentersblocks.util.registry.FeatureRegistry;
 import carpentersblocks.util.registry.IconRegistry;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
@@ -470,7 +471,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
             if (blockRenderPass == 1) {
                 VertexHelper.setOffset(0.0002D);
             }
-            renderOverlay(block, x, y, z, side, icon);
+            renderOverlay(block, x, y, z, side);
             VertexHelper.clearOffset();
         }
         
@@ -512,80 +513,27 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
     /**
      * Renders overlay on side.
      */
-    protected void renderOverlay(Block block, int x, int y, int z, int side, IIcon icon)
+    protected void renderOverlay(Block block, int x, int y, int z, int side)
     {
         if (isSideSloped && Slope.slopesList[BlockProperties.getMetadata(TE)].isPositive) {
             side = UP;
         }
 
-        switch (OverlayHandler.getOverlay(BlockProperties.getOverlay(TE, coverRendering))) {
-            case SNOW: {
-                switch (side) {
-                    case DOWN:
-                        return;
-                    case UP:
-                        icon = Blocks.snow.getBlockTextureFromSide(1);
-                        break;
-                    default:
-                        icon = IconRegistry.icon_overlay_snow_side;
-                        break;
-                }
-                block = Blocks.snow;
-                break;
-            }
-            case HAY: {
-                switch (side) {
-                    case DOWN:
-                        return;
-                    case UP:
-                        icon = Blocks.hay_block.getBlockTextureFromSide(1);
-                        break;
-                    default:
-                        icon = IconRegistry.icon_overlay_hay_side;
-                        break;
-                }
-                block = Blocks.hay_block;
-                break;
-            }
-            case WEB: {
-                icon = Blocks.web.getBlockTextureFromSide(side);
-                block = Blocks.web;
-                break;
-            }
-            case VINE: {
-                icon = Blocks.vine.getBlockTextureFromSide(side);
-                block = Blocks.vine;
-                break;
-            }
-            case MYCELIUM: {
-                switch (side) {
-                    case DOWN:
-                        return;
-                    case UP:
-                        icon = Blocks.mycelium.getBlockTextureFromSide(1);
-                        break;
-                    default:
-                        icon = IconRegistry.icon_overlay_mycelium_side;
-                        break;
-                }
-                block = Blocks.mycelium;
-                break;
-            }
-            case GRASS: {
-                if (block != Blocks.grass && side > DOWN) {
-                    block = Blocks.grass;
-                    icon = getGrassOverlayIcon(side);
-                } else {
-                    return;
-                }
-                break;
-            }
-            default:
-                break;
-        }
+        IIcon icon = OverlayHandler.getOverlayIcon(TE, coverRendering, side);
         
-        lightingHelper.colorSide(new ItemStack(block), block, x, y, z, side, icon);
-        renderSide(x, y, z, side, icon);
+        if (block.equals(Blocks.grass) && !BlockProperties.getOverlay(TE, coverRendering).equals(Overlay.GRASS)) {
+            if (!BlockProperties.toBlock(BlockProperties.getCover(TE, coverRendering)).equals(Blocks.grass) && side > 0) {
+                icon = getGrassOverlayIcon(side);
+            }
+        }
+
+        if (icon != null) {
+            
+            ItemStack itemStack = OverlayHandler.getOverlay(TE, coverRendering);
+            lightingHelper.colorSide(itemStack, BlockProperties.toBlock(itemStack), x, y, z, side, icon);
+            renderSide(x, y, z, side, icon);
+            
+        }
     }
     
     /**
