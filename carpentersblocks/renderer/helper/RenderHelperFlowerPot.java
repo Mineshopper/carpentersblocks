@@ -19,11 +19,10 @@ public class RenderHelperFlowerPot extends RenderHelper {
     /**
      * Applies plant color to tessellator.
      */
-    public static void setPlantColor(TEBase TE, ItemStack itemStack, Block block, int x, int y, int z)
+    public static void setPlantColor(LightingHelper lightingHelper, TEBase TE, ItemStack itemStack, Block block, int x, int y, int z)
     {
         Tessellator tessellator = Tessellator.instance;
-        LightingHelper lightingHelper = LightingHelper.instance;
-        
+
         float[] rgb = lightingHelper.applyAnaglyphFilter(lightingHelper.getBlockRGB(itemStack, block, x, y, z));
         
         tessellator.setColorOpaque_F(rgb[0], rgb[1], rgb[2]);
@@ -45,7 +44,7 @@ public class RenderHelperFlowerPot extends RenderHelper {
         Tessellator tessellator = Tessellator.instance;
         tessellator.setBrightness(block.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y, z));
         
-        setPlantColor(TE, itemStack, block, x, y, z);
+        //setPlantColor(TE, renderBlocks, itemStack, block, x, y, z);
         
         boolean thinPlant = itemStack.getUnlocalizedName().equals("tile.doublePlant.grass");
 
@@ -236,13 +235,11 @@ public class RenderHelperFlowerPot extends RenderHelper {
     /**
      * Renders vanilla cactus using "prickly" method.
      */
-    public static void drawPlantCactus(RenderBlocks renderBlocks, ItemStack itemStack, int x, int y, int z)
+    public static void drawPlantCactus(LightingHelper lightingHelper, RenderBlocks renderBlocks, ItemStack itemStack, int x, int y, int z)
     {
         Block block = BlockProperties.toBlock(itemStack);
         IIcon icon = block.getBlockTextureFromSide(2);
-        
-        LightingHelper lightingHelper = LightingHelper.instance;
-        
+
         double uMinL = icon.getInterpolatedU(0.0D);
         double uMaxL = icon.getInterpolatedU(3.0D);
         double uMinR = icon.getInterpolatedU(13.0D);

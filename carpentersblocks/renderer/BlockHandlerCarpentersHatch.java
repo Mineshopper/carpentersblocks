@@ -2,6 +2,7 @@ package carpentersblocks.renderer;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
@@ -180,76 +181,51 @@ public class BlockHandlerCarpentersHatch extends BlockHandlerBase {
         } else {
             icon = IconRegistry.icon_hatch_glass;
         }
-        
-        suppressDyeColor = true;
+
+        Tessellator.instance.setBrightness(Blocks.glass.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y, z));
         
         ItemStack glass = new ItemStack(Blocks.glass);
         
         if (path_on_x) {
             
             renderBlocks.setRenderBounds(0.1875F, 0.1875F, 0.0F, 0.8125F, 0.8125F, 1.0F);
-            
-            lightingHelper.setLightingZPos(glass, x, y, z);
-            lightingHelper.colorSide(glass, Blocks.glass, x, y, z, 3, null);
+            Tessellator.instance.setColorOpaque_F(0.8F, 0.8F, 0.8F);
             VertexHelper.setOffset(-path_offset);
+            
             RenderHelper.renderFaceZPos(renderBlocks, x, y, z, icon);
             
-            //if (!renderAlphaOverride) {
-                lightingHelper.setLightingZNeg(glass, x, y, z);
-                lightingHelper.colorSide(glass, Blocks.glass, x, y, z, 2, null);
-                VertexHelper.setOffset(-(1 - path_offset));
-                RenderHelper.renderFaceZNeg(renderBlocks, x, y, z, icon);
-            //}
+            // TODO: Revisit when alpha pass is properly implemented.
+            VertexHelper.setOffset(-(1 - path_offset));
+            RenderHelper.renderFaceZNeg(renderBlocks, x, y, z, icon);
             
         } else if (path_on_y) {
             
             renderBlocks.setRenderBounds(0.1875F, 0.0F, 0.1875F, 0.8125F, 1.0F, 0.8125F);
+            Tessellator.instance.setColorOpaque_F(0.5F, 0.5F, 0.5F);
+            VertexHelper.setOffset(-path_offset);
             
-            //if (renderAlphaOverride) {
-                
-                /* On alpha pass, YNeg face is drawn on both sides. */
-                
-               // lightingHelper.setLightingYPos(Blocks.glass, x, y, z);
-               // lightingHelper.colorSide(Blocks.glass, x, y, z, 0, null);
-               // VertexHelper.setOffset(-path_offset);
-               // RenderHelper.renderFaceYNeg(renderBlocks, x, y, z, icon);
-                
-            //} else {
-                
-                lightingHelper.setLightingYNeg(glass, x, y, z);
-                lightingHelper.colorSide(glass, Blocks.glass, x, y, z, 0, null);
-                VertexHelper.setOffset(-path_offset);
-                RenderHelper.renderFaceYNeg(renderBlocks, x, y, z, icon);
-                
-                //if (!renderAlphaOverride) {
-                    lightingHelper.setLightingYPos(glass, x, y, z);
-                    lightingHelper.colorSide(glass, Blocks.glass, x, y, z, 1, null);
-                    VertexHelper.setOffset(-(1 - path_offset));
-                    RenderHelper.renderFaceYPos(renderBlocks, x, y, z, icon);
-                //}
-                
-            //}
+            RenderHelper.renderFaceYNeg(renderBlocks, x, y, z, icon);
+            
+            // TODO: Revisit when alpha pass is properly implemented.
+            Tessellator.instance.setColorOpaque_F(1.0F, 1.0F, 1.0F);
+            VertexHelper.setOffset(-(1 - path_offset));
+            RenderHelper.renderFaceYPos(renderBlocks, x, y, z, icon);
             
         } else {
             
             renderBlocks.setRenderBounds(0.0F, 0.1875F, 0.1875F, 1.0F, 0.8125F, 0.8125F);
-            
-            lightingHelper.setLightingXPos(glass, x, y, z);
-            lightingHelper.colorSide(glass, Blocks.glass, x, y, z, 5, null);
+            Tessellator.instance.setColorOpaque_F(0.6F, 0.6F, 0.6F);
             VertexHelper.setOffset(-path_offset);
+            
             RenderHelper.renderFaceXPos(renderBlocks, x, y, z, icon);
             
-            //if (!renderAlphaOverride) {
-                lightingHelper.setLightingXNeg(glass, x, y, z);
-                lightingHelper.colorSide(glass, Blocks.glass, x, y, z, 4, null);
-                VertexHelper.setOffset(-(1 - path_offset));
-                RenderHelper.renderFaceXNeg(renderBlocks, x, y, z, icon);
-            //}
+            // TODO: Revisit when alpha pass is properly implemented.
+            VertexHelper.setOffset(-(1 - path_offset));
+            RenderHelper.renderFaceXNeg(renderBlocks, x, y, z, icon);
             
         }
         
         VertexHelper.clearOffset();
-        suppressDyeColor = false;
         
         renderHandle(new ItemStack(Blocks.iron_block), x, y, z, true, true);
     }
@@ -391,76 +367,51 @@ public class BlockHandlerCarpentersHatch extends BlockHandlerBase {
             renderBlock(itemStack, x, y, z);
             
         }
-        
-        suppressDyeColor = true;
+
+        Tessellator.instance.setBrightness(Blocks.glass.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y, z));
         
         ItemStack glass = new ItemStack(Blocks.glass);
         
         if (path_on_x) {
             
             renderBlocks.setRenderBounds(0.1875F, 0.1875F, 0.0F, 0.8125F, 0.8125F, 1.0F);
-            
-            lightingHelper.setLightingZPos(glass, x, y, z);
-            lightingHelper.colorSide(glass, Blocks.glass, x, y, z, 3, null);
+            Tessellator.instance.setColorOpaque_F(0.8F, 0.8F, 0.8F);
             VertexHelper.setOffset(-path_offset);
+            
             RenderHelper.renderFaceZPos(renderBlocks, x, y, z, IconRegistry.icon_hatch_french_glass);
             
-            //if (!renderAlphaOverride) {
-                lightingHelper.setLightingZNeg(glass, x, y, z);
-                lightingHelper.colorSide(glass, Blocks.glass, x, y, z, 2, null);
-                VertexHelper.setOffset(-(1 - path_offset));
-                RenderHelper.renderFaceZNeg(renderBlocks, x, y, z, IconRegistry.icon_hatch_french_glass);
-            //}
+            // TODO: Remove this render code when alpha pass is properly implemented.
+            VertexHelper.setOffset(-(1 - path_offset));
+            RenderHelper.renderFaceZNeg(renderBlocks, x, y, z, IconRegistry.icon_hatch_french_glass);
             
         } else if (path_on_y) {
             
             renderBlocks.setRenderBounds(0.1875F, 0.0F, 0.1875F, 0.8125F, 1.0F, 0.8125F);
+            Tessellator.instance.setColorOpaque_F(0.5F, 0.5F, 0.5F);
+            VertexHelper.setOffset(-path_offset);
             
-            //if (renderAlphaOverride) {
-                
-                /* On alpha pass, YNeg face is drawn on both sides. */
-                
-               // lightingHelper.setLightingYPos(Blocks.glass, x, y, z);
-               // lightingHelper.colorSide(Blocks.glass, x, y, z, 0, null);
-               // VertexHelper.setOffset(-path_offset);
-               // RenderHelper.renderFaceYNeg(renderBlocks, x, y, z, IconRegistry.icon_hatch_french_glass);
-                
-            //} else {
-                
-                lightingHelper.setLightingYNeg(glass, x, y, z);
-                lightingHelper.colorSide(glass, Blocks.glass, x, y, z, 0, null);
-                VertexHelper.setOffset(-path_offset);
-                RenderHelper.renderFaceYNeg(renderBlocks, x, y, z, IconRegistry.icon_hatch_french_glass);
-                
-                //if (!renderAlphaOverride) {
-                    lightingHelper.setLightingYPos(glass, x, y, z);
-                    lightingHelper.colorSide(glass, Blocks.glass, x, y, z, 1, null);
-                    VertexHelper.setOffset(-(1 - path_offset));
-                    RenderHelper.renderFaceYPos(renderBlocks, x, y, z, IconRegistry.icon_hatch_french_glass);
-                //}
-                
-            //}
+            RenderHelper.renderFaceYNeg(renderBlocks, x, y, z, IconRegistry.icon_hatch_french_glass);
+            
+            // TODO: Remove this render code when alpha pass is properly implemented.
+            Tessellator.instance.setColorOpaque_F(1.0F, 1.0F, 1.0F);
+            VertexHelper.setOffset(-(1 - path_offset));
+            RenderHelper.renderFaceYPos(renderBlocks, x, y, z, IconRegistry.icon_hatch_french_glass);
             
         } else {
             
             renderBlocks.setRenderBounds(0.0F, 0.1875F, 0.1875F, 1.0F, 0.8125F, 0.8125F);
-            
-            lightingHelper.setLightingXPos(glass, x, y, z);
-            lightingHelper.colorSide(glass, Blocks.glass, x, y, z, 5, null);
+            Tessellator.instance.setColorOpaque_F(0.6F, 0.6F, 0.6F);
             VertexHelper.setOffset(-path_offset);
+            
             RenderHelper.renderFaceXPos(renderBlocks, x, y, z, IconRegistry.icon_hatch_french_glass);
             
-            //if (!renderAlphaOverride) {
-                lightingHelper.setLightingXNeg(glass, x, y, z);
-                lightingHelper.colorSide(glass, Blocks.glass, x, y, z, 4, null);
-                VertexHelper.setOffset(-(1 - path_offset));
-                RenderHelper.renderFaceXNeg(renderBlocks, x, y, z, IconRegistry.icon_hatch_french_glass);
-            //}
+            // TODO: Remove this render code when alpha pass is properly implemented.
+            VertexHelper.setOffset(-(1 - path_offset));
+            RenderHelper.renderFaceXNeg(renderBlocks, x, y, z, IconRegistry.icon_hatch_french_glass);
             
         }
         
         VertexHelper.clearOffset();
-        suppressDyeColor = false;
         
         renderHandle(new ItemStack(Blocks.iron_block), x, y, z, true, true);
     }
