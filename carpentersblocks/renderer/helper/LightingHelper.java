@@ -23,8 +23,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class LightingHelper {
 
-    public static final LightingHelper instance = new LightingHelper();
-
     private Tessellator      tessellator = Tessellator.instance;
     private BlockHandlerBase blockHandler;
     private RenderBlocks     renderBlocks;
@@ -62,14 +60,10 @@ public class LightingHelper {
      */
     public int[] brightness = new int[6];
     
-    public LightingHelper bind(BlockHandlerBase blockHandler)
+    public LightingHelper(BlockHandlerBase blockHandler)
     {
-        clearLightnessOverride();
-        clearBrightnessOverride();
-        clearColorOverride();
         this.blockHandler = blockHandler;
         renderBlocks = blockHandler.renderBlocks;
-        return this;
     }
 
     /**
@@ -184,7 +178,7 @@ public class LightingHelper {
     {
         float[] dyeRGB = { 1.0F, 1.0F, 1.0F };
 
-        if (!blockHandler.suppressDyeColor && !(block.equals(Blocks.grass) && side == 1)) {
+        if (!blockHandler.suppressDyeColor && (BlockProperties.hasDye(blockHandler.TE, blockHandler.coverRendering) || blockHandler.hasDyeOverride)) {
             dyeRGB = blockHandler.hasDyeOverride ? DyeHandler.getRGB(blockHandler.dyeOverride) : DyeHandler.getRGB(DyeHandler.getColor(BlockProperties.getDye(blockHandler.TE, blockHandler.coverRendering)));
         }
 

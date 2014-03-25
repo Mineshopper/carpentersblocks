@@ -41,7 +41,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
     protected static final int EAST  = 5;
     
     public RenderBlocks      renderBlocks;
-    protected LightingHelper lightingHelper = LightingHelper.instance;
+    public LightingHelper    lightingHelper;
     public Block             srcBlock;
     public TEBase            TE;
     protected boolean        suppressOverlay;
@@ -117,9 +117,9 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
          */
         if (TE != null) {
             
-            this.renderBlocks = renderBlocks;
             srcBlock = block;
-            lightingHelper.bind(this);
+            this.renderBlocks = renderBlocks;
+            this.lightingHelper = new LightingHelper(this);
             
             renderCarpentersBlock(x, y, z);
             renderSideBlocks(x, y, z);

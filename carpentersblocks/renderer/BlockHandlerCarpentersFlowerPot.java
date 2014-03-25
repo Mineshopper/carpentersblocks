@@ -144,7 +144,7 @@ public class BlockHandlerCarpentersFlowerPot extends BlockHandlerBase {
         tessellator.addTranslation(0.0F, 0.25F, 0.0F);
 
         Block block = FlowerPotProperties.toBlock(itemStack);
-        RenderHelperFlowerPot.setPlantColor(TE, itemStack, block, x, y, z);
+        RenderHelperFlowerPot.setPlantColor(lightingHelper, TE, itemStack, block, x, y, z);
         
         if (block instanceof BlockCrops) {
             /* Crop plants will use fully matured metadata. */
@@ -176,7 +176,7 @@ public class BlockHandlerCarpentersFlowerPot extends BlockHandlerBase {
                 RenderHelperFlowerPot.renderPlantThinCrossedSquares(renderBlocks, block, icon, x, y, z, true);
                 break;
             case CACTUS:
-                RenderHelperFlowerPot.drawPlantCactus(renderBlocks, itemStack, x, y, z);
+                RenderHelperFlowerPot.drawPlantCactus(lightingHelper, renderBlocks, itemStack, x, y, z);
                 break;
             case LEAVES:
                 drawStackedBlocks(itemStack, x, y, z);
