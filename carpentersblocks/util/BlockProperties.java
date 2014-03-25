@@ -456,7 +456,7 @@ public class BlockProperties {
      */
     public static int getPattern(TEBase TE, int side)
     {
-        return TE.pattern[side] & 0xffff;
+        return TE.pattern[side] & 0xff;
     }
     
     /**
