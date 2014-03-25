@@ -424,33 +424,29 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
     protected void renderMultiTexturedSide(ItemStack itemStack, int x, int y, int z, int side, IIcon icon)
     {
         Block block = BlockProperties.toBlock(itemStack);
-
-        int renderPass = MinecraftForgeClient.getRenderPass();
-        int blockRenderPass = block.getRenderBlockPass();
+        
+        // TODO: Revisit render passes when alpha rendering bug is fixed.
+        //int renderPass = MinecraftForgeClient.getRenderPass();
+        //int blockRenderPass = block.getRenderBlockPass();
         
         /* Render base block. */
-
-        // TODO: Uncomment when alpha render pass bugs are fixed.
-        //if (renderPass == blockRenderPass) {
-            
-            if (BlockProperties.blockRotates(itemStack)) {
-                setDirectionalRotation(side);
-            }
-
-            /* Render side */
-            
-            lightingHelper.colorSide(itemStack, block, x, y, z, side, icon);
-            renderSide(x, y, z, side, icon);
-            
-            clearRotation(side);
-            
-            /* Grass sides are a special case. */
-            
-            if (block.equals(Blocks.grass)) {
-                renderGrassSideOverlay(x, y, z, side);
-            }
-            
-        //}
+        
+        if (BlockProperties.blockRotates(itemStack)) {
+            setDirectionalRotation(side);
+        }
+        
+        /* Render side */
+        
+        lightingHelper.colorSide(itemStack, block, x, y, z, side, icon);
+        renderSide(x, y, z, side, icon);
+        
+        clearRotation(side);
+        
+        /* Grass sides are a special case. */
+        
+        if (block.equals(Blocks.grass)) {
+            renderGrassSideOverlay(x, y, z, side);
+        }
         
         boolean temp_dye_state = suppressDyeColor;
         suppressDyeColor = true;
@@ -458,21 +454,11 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
         /* Render decorations. */
         
         if (!suppressPattern && BlockProperties.hasPattern(TE, coverRendering)) {
-            // TODO: Revisit when alpha render pass bug is fixed
-            if (block.getRenderBlockPass() == 1) {
-                VertexHelper.setOffset(0.0001D);
-            }
             renderPattern(x, y, z, side);
-            VertexHelper.clearOffset();
         }
         
         if (!suppressOverlay && BlockProperties.hasOverlay(TE, coverRendering)) {
-            // TODO: Revisit when alpha render pass bug is fixed
-            if (blockRenderPass == 1) {
-                VertexHelper.setOffset(0.0002D);
-            }
             renderOverlay(block, x, y, z, side);
-            VertexHelper.clearOffset();
         }
         
         suppressDyeColor = temp_dye_state;
@@ -574,7 +560,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
         int pattern = BlockProperties.getPattern(TE, coverRendering);
         IIcon icon = renderBlocks.getIconSafe(IconRegistry.icon_pattern[pattern]);
         
-        lightingHelper.colorSide(new ItemStack(Blocks.glass), Blocks.grass, x, y, z, side, icon);
+        lightingHelper.colorSide(new ItemStack(Blocks.glass), Blocks.glass, x, y, z, side, icon);
         renderSide(x, y, z, side, icon);
     }
     
