@@ -42,7 +42,7 @@ public class EventHandler {
     
     /** Stores entity that hit block. */
     public static EntityPlayer eventEntityPlayer;
-    
+
     /** This is an offset used for blockIcon. */
     public final static int BLOCKICON_BASE_ID = 1000;
     
@@ -85,7 +85,7 @@ public class EventHandler {
                     block.onBlockClicked(eventEntityPlayer.worldObj, event.x, event.y, event.z, eventEntityPlayer);
                 }
                 
-            } else if (toolEquipped) {
+            } else {
                 
                 /*
                  * onBlockActivated() isn't called if the player is sneaking.
