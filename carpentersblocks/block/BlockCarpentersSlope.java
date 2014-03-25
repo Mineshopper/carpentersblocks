@@ -91,50 +91,50 @@ public class BlockCarpentersSlope extends BlockCoverable {
                 break;
             case WEDGE_INT:
                 if (slope.isPositive) {
-                    if ((slopeID += 2) > Slope.ID_WEDGE_INT_POS_SE) {
-                        slopeID = Slope.ID_WEDGE_INT_POS_NE;
+                    if (++slopeID > Slope.ID_WEDGE_INT_POS_SW) {
+                        slopeID = Slope.ID_WEDGE_INT_POS_SE;
                     }
                 } else {
-                    if ((slopeID += 2) > Slope.ID_WEDGE_INT_NEG_SE) {
-                        slopeID = Slope.ID_WEDGE_INT_NEG_NE;
+                    if (++slopeID > Slope.ID_WEDGE_INT_NEG_SW) {
+                        slopeID = Slope.ID_WEDGE_INT_NEG_SE;
                     }
                 }
                 break;
             case WEDGE_EXT:
                 if (slope.isPositive) {
-                    if ((slopeID += 2) > Slope.ID_WEDGE_EXT_POS_NW) {
-                        slopeID = Slope.ID_WEDGE_EXT_POS_SW;
+                    if (++slopeID > Slope.ID_WEDGE_EXT_POS_SW) {
+                        slopeID = Slope.ID_WEDGE_EXT_POS_SE;
                     }
                 } else {
-                    if ((slopeID += 2) > Slope.ID_WEDGE_EXT_NEG_NW) {
-                        slopeID = Slope.ID_WEDGE_EXT_NEG_SW;
+                    if (++slopeID > Slope.ID_WEDGE_EXT_NEG_SW) {
+                        slopeID = Slope.ID_WEDGE_EXT_NEG_SE;
                     }
                 }
                 break;
             case OBLIQUE_INT:
                 if (slope.isPositive) {
-                    if ((slopeID += 2) > Slope.ID_OBL_INT_POS_SE) {
-                        slopeID = Slope.ID_OBL_INT_POS_NE;
+                    if (++slopeID > Slope.ID_OBL_INT_POS_SW) {
+                        slopeID = Slope.ID_OBL_INT_POS_SE;
                     }
                 } else {
-                    if ((slopeID += 2) > Slope.ID_OBL_INT_NEG_SE) {
-                        slopeID = Slope.ID_OBL_INT_NEG_NE;
+                    if (++slopeID > Slope.ID_OBL_INT_NEG_SW) {
+                        slopeID = Slope.ID_OBL_INT_NEG_SE;
                     }
                 }
                 break;
             case OBLIQUE_EXT:
                 if (slope.isPositive) {
-                    if ((slopeID += 2) > Slope.ID_OBL_EXT_POS_NW) {
-                        slopeID = Slope.ID_OBL_EXT_POS_SW;
+                    if (++slopeID > Slope.ID_OBL_EXT_POS_SW) {
+                        slopeID = Slope.ID_OBL_EXT_POS_SE;
                     }
                 } else {
-                    if ((slopeID += 2) > Slope.ID_OBL_EXT_NEG_NW) {
-                        slopeID = Slope.ID_OBL_EXT_NEG_SW;
+                    if (++slopeID > Slope.ID_OBL_EXT_NEG_SW) {
+                        slopeID = Slope.ID_OBL_EXT_NEG_SE;
                     }
                 }
                 break;
             case PRISM_1P:
-                if ((slopeID += 1) > Slope.ID_PRISM_1P_POS_E) {
+                if (++slopeID > Slope.ID_PRISM_1P_POS_E) {
                     slopeID = Slope.ID_PRISM_1P_POS_N;
                 }
                 break;
@@ -143,19 +143,17 @@ public class BlockCarpentersSlope extends BlockCoverable {
                     slopeID = Slope.ID_PRISM_2P_POS_WE;
                 } else if (slope.equals(Slope.PRISM_2P_POS_WE)) {
                     slopeID = Slope.ID_PRISM_2P_POS_NS;
-                } else if ((slopeID += 1) > Slope.ID_PRISM_2P_POS_SW) {
+                } else if (++slopeID > Slope.ID_PRISM_2P_POS_SW) {
                     slopeID = Slope.ID_PRISM_2P_POS_SE;
                 }
                 break;
             case PRISM_3P:
-                if ((slopeID += 1) > Slope.ID_PRISM_3P_POS_NSE) {
+                if (++slopeID > Slope.ID_PRISM_3P_POS_NSE) {
                     slopeID = Slope.ID_PRISM_3P_POS_NWE;
                 }
                 break;
-            case PRISM_4P:
-                break;
             case PRISM_WEDGE:
-                if ((slopeID += 1) > Slope.ID_PRISM_WEDGE_POS_E) {
+                if (++slopeID > Slope.ID_PRISM_WEDGE_POS_E) {
                     slopeID = Slope.ID_PRISM_WEDGE_POS_N;
                 }
                 break;
@@ -177,55 +175,43 @@ public class BlockCarpentersSlope extends BlockCoverable {
         Slope slope = Slope.slopesList[slopeID];
         
         /* Transform slope to next type. */
-        
+
         switch (slope.type)
         {
             case WEDGE_SIDE:
-                slopeID = Slope.ID_WEDGE_POS_N;
+                slopeID += 8;
                 break;
             case WEDGE:
                 if (slope.isPositive) {
                     slopeID -= 4;
                 } else {
-                    slopeID = Slope.ID_WEDGE_INT_POS_NE;
+                    slopeID += 12;
                 }
                 break;
             case WEDGE_INT:
                 if (slope.isPositive) {
-                    slopeID += 1;
+                    slopeID -= 4;
                 } else {
-                    if (slopeID == Slope.ID_WEDGE_INT_NEG_NE || slopeID == Slope.ID_WEDGE_INT_NEG_NW) {
-                        slopeID += 11;
-                    } else {
-                        slopeID +=3;
-                    }
+                    slopeID += 12;
                 }
                 break;
             case WEDGE_EXT:
                 if (slope.isPositive) {
-                    slopeID += 1;
+                    slopeID -= 4;
                 } else {
-                    if (slopeID == Slope.ID_WEDGE_EXT_NEG_SW || slopeID == Slope.ID_WEDGE_EXT_NEG_SE) {
-                        slopeID += 11;
-                    } else {
-                        slopeID += 3;
-                    }
+                    slopeID += 12;
                 }
                 break;
             case OBLIQUE_INT:
                 if (slope.isPositive) {
-                    slopeID += 1;
+                    slopeID -= 4;
                 } else {
-                    if (slopeID == Slope.ID_OBL_INT_NEG_NE || slopeID == Slope.ID_OBL_INT_NEG_NW) {
-                        slopeID += 11;
-                    } else {
-                        slopeID += 3;
-                    }
+                    slopeID += 12;
                 }
                 break;
             case OBLIQUE_EXT:
                 if (slope.isPositive) {
-                    slopeID += 1;
+                    slopeID -= 4;
                 } else {
                     slopeID = Slope.ID_PRISM_POS;
                 }
@@ -499,7 +485,7 @@ public class BlockCarpentersSlope extends BlockCoverable {
         } else {
             slopeID = side + 12;
         }
-        
+
         if (slopeID > 11) {
             switch (dir) {
                 case NORTH:
@@ -551,107 +537,111 @@ public class BlockCarpentersSlope extends BlockCoverable {
      */
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack itemStack)
     {
-        TEBase TE = (TEBase) world.getTileEntity(x, y, z);
-        
-        int slopeID = 0;
-        int metadata = world.getBlockMetadata(x, y, z);
-        
-        boolean isPositive = EventHandler.eventFace > 1 && EventHandler.hitY < 0.5F || EventHandler.eventFace == 1;
-        int corner = getCorner(entityLiving.rotationYaw, EventHandler.eventFace, EventHandler.hitX, EventHandler.hitY, EventHandler.hitZ);
-        
-        ForgeDirection dir = ForgeDirection.getOrientation(ForgeDirection.OPPOSITES[BlockProperties.getDirectionFromFacing(BlockProperties.getOppositeFacing(entityLiving)).ordinal()]);
-        
-        switch (metadata) {
-            case META_WEDGE:
-                
-                slopeID = getWedgeOrientation(dir, EventHandler.eventFace, EventHandler.hitX, EventHandler.hitY, EventHandler.hitZ);
-                
-                if (!entityLiving.isSneaking()) {
-                    slopeID = SlopeTransform.transformWedge(world, slopeID, x, y, z);
-                    BlockProperties.setMetadata(TE, slopeID);
-                    SlopeTransform.transformAdjacentWedges(world, slopeID, x, y, z);
-                }
-                
-                break;
-            case META_OBLIQUE_INT:
-                
-                switch (corner) {
-                    case CORNER_SE:
-                        slopeID = isPositive ? Slope.ID_OBL_INT_POS_SE : Slope.ID_OBL_INT_NEG_SE;
-                        break;
-                    case CORNER_NE:
-                        slopeID = isPositive ? Slope.ID_OBL_INT_POS_NE : Slope.ID_OBL_INT_NEG_NE;
-                        break;
-                    case CORNER_NW:
-                        slopeID = isPositive ? Slope.ID_OBL_INT_POS_NW : Slope.ID_OBL_INT_NEG_NW;
-                        break;
-                    case CORNER_SW:
-                        slopeID = isPositive ? Slope.ID_OBL_INT_POS_SW : Slope.ID_OBL_INT_NEG_SW;
-                        break;
-                }
-                
-                break;
-            case META_OBLIQUE_EXT:
-                
-                switch (corner) {
-                    case CORNER_SE:
-                        slopeID = isPositive ? Slope.ID_OBL_EXT_POS_SE : Slope.ID_OBL_EXT_NEG_SE;
-                        break;
-                    case CORNER_NE:
-                        slopeID = isPositive ? Slope.ID_OBL_EXT_POS_NE : Slope.ID_OBL_EXT_NEG_NE;
-                        break;
-                    case CORNER_NW:
-                        slopeID = isPositive ? Slope.ID_OBL_EXT_POS_NW : Slope.ID_OBL_EXT_NEG_NW;
-                        break;
-                    case CORNER_SW:
-                        slopeID = isPositive ? Slope.ID_OBL_EXT_POS_SW : Slope.ID_OBL_EXT_NEG_SW;
-                        break;
-                }
-                
-                break;
-            case META_PRISM:
-                
-                if (isPositive) {
+        if (!world.isRemote) {
+
+            TEBase TE = (TEBase) world.getTileEntity(x, y, z);
+            
+            int slopeID = 0;
+            int metadata = world.getBlockMetadata(x, y, z);
+            
+            boolean isPositive = EventHandler.eventFace > 1 && EventHandler.hitY < 0.5F || EventHandler.eventFace == 1;
+            int corner = getCorner(entityLiving.rotationYaw, EventHandler.eventFace, EventHandler.hitX, EventHandler.hitY, EventHandler.hitZ);
+            
+            ForgeDirection dir = ForgeDirection.getOrientation(ForgeDirection.OPPOSITES[BlockProperties.getDirectionFromFacing(BlockProperties.getOppositeFacing(entityLiving)).ordinal()]);
+            
+            switch (metadata) {
+                case META_WEDGE:
                     
-                    slopeID = Slope.ID_PRISM_POS;
+                    slopeID = getWedgeOrientation(dir, EventHandler.eventFace, EventHandler.hitX, EventHandler.hitY, EventHandler.hitZ);
                     
                     if (!entityLiving.isSneaking()) {
-                        slopeID = SlopeTransform.transformPrism(world, slopeID, x, y, z);
+                        slopeID = SlopeTransform.transformWedge(world, slopeID, x, y, z);
                         BlockProperties.setMetadata(TE, slopeID);
-                        SlopeTransform.transformAdjacentPrisms(world, x, y, z);
+                        SlopeTransform.transformAdjacentWedges(world, slopeID, x, y, z);
                     }
                     
-                } else {
+                    break;
+                case META_OBLIQUE_INT:
                     
-                    slopeID = Slope.ID_PRISM_NEG;
+                    switch (corner) {
+                        case CORNER_SE:
+                            slopeID = isPositive ? Slope.ID_OBL_INT_POS_SE : Slope.ID_OBL_INT_NEG_SE;
+                            break;
+                        case CORNER_NE:
+                            slopeID = isPositive ? Slope.ID_OBL_INT_POS_NE : Slope.ID_OBL_INT_NEG_NE;
+                            break;
+                        case CORNER_NW:
+                            slopeID = isPositive ? Slope.ID_OBL_INT_POS_NW : Slope.ID_OBL_INT_NEG_NW;
+                            break;
+                        case CORNER_SW:
+                            slopeID = isPositive ? Slope.ID_OBL_INT_POS_SW : Slope.ID_OBL_INT_NEG_SW;
+                            break;
+                    }
                     
-                }
-                
-                break;
-            case META_PRISM_SLOPE:
-                
-                switch (dir) {
-                    case NORTH:
-                        slopeID = Slope.ID_PRISM_WEDGE_POS_S;
-                        break;
-                    case SOUTH:
-                        slopeID = Slope.ID_PRISM_WEDGE_POS_N;
-                        break;
-                    case WEST:
-                        slopeID = Slope.ID_PRISM_WEDGE_POS_E;
-                        break;
-                    case EAST:
-                        slopeID = Slope.ID_PRISM_WEDGE_POS_W;
-                        break;
-                    default: {}
-                }
-                
-                break;
+                    break;
+                case META_OBLIQUE_EXT:
+                    
+                    switch (corner) {
+                        case CORNER_SE:
+                            slopeID = isPositive ? Slope.ID_OBL_EXT_POS_SE : Slope.ID_OBL_EXT_NEG_SE;
+                            break;
+                        case CORNER_NE:
+                            slopeID = isPositive ? Slope.ID_OBL_EXT_POS_NE : Slope.ID_OBL_EXT_NEG_NE;
+                            break;
+                        case CORNER_NW:
+                            slopeID = isPositive ? Slope.ID_OBL_EXT_POS_NW : Slope.ID_OBL_EXT_NEG_NW;
+                            break;
+                        case CORNER_SW:
+                            slopeID = isPositive ? Slope.ID_OBL_EXT_POS_SW : Slope.ID_OBL_EXT_NEG_SW;
+                            break;
+                    }
+                    
+                    break;
+                case META_PRISM:
+                    
+                    if (isPositive) {
+                        
+                        slopeID = Slope.ID_PRISM_POS;
+                        
+                        if (!entityLiving.isSneaking()) {
+                            slopeID = SlopeTransform.transformPrism(world, slopeID, x, y, z);
+                            BlockProperties.setMetadata(TE, slopeID);
+                            SlopeTransform.transformAdjacentPrisms(world, x, y, z);
+                        }
+                        
+                    } else {
+                        
+                        slopeID = Slope.ID_PRISM_NEG;
+                        
+                    }
+                    
+                    break;
+                case META_PRISM_SLOPE:
+                    
+                    switch (dir) {
+                        case NORTH:
+                            slopeID = Slope.ID_PRISM_WEDGE_POS_S;
+                            break;
+                        case SOUTH:
+                            slopeID = Slope.ID_PRISM_WEDGE_POS_N;
+                            break;
+                        case WEST:
+                            slopeID = Slope.ID_PRISM_WEDGE_POS_E;
+                            break;
+                        case EAST:
+                            slopeID = Slope.ID_PRISM_WEDGE_POS_W;
+                            break;
+                        default: {}
+                    }
+                    
+                    break;
+            }
+            
+            BlockProperties.setMetadata(TE, slopeID);
+            
+            super.onBlockPlacedBy(world, x, y, z, entityLiving, itemStack);
+        
         }
-        
-        BlockProperties.setMetadata(TE, slopeID);
-        
-        super.onBlockPlacedBy(world, x, y, z, entityLiving, itemStack);
     }
     
     @Override

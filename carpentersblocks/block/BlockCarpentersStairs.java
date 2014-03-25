@@ -39,7 +39,7 @@ public class BlockCarpentersStairs extends BlockCoverable {
         Stairs stairs = Stairs.stairsList[stairsID];
         
         /* Cycle between stairs direction based on current type. */
-        
+
         switch (stairs.stairsType)
         {
             case NORMAL_SIDE:
@@ -60,23 +60,23 @@ public class BlockCarpentersStairs extends BlockCoverable {
                 break;
             case NORMAL_INT:
                 if (stairs.isPositive) {
-                    if ((stairsID += 2) > Stairs.ID_NORMAL_INT_POS_SE) {
-                        stairsID = Stairs.ID_NORMAL_INT_POS_NE;
+                    if (++stairsID > Stairs.ID_NORMAL_INT_POS_SW) {
+                        stairsID = Stairs.ID_NORMAL_INT_POS_SE;
                     }
                 } else {
-                    if ((stairsID += 2) > Stairs.ID_NORMAL_INT_NEG_SE) {
-                        stairsID = Stairs.ID_NORMAL_INT_NEG_NE;
+                    if (++stairsID > Stairs.ID_NORMAL_INT_NEG_SW) {
+                        stairsID = Stairs.ID_NORMAL_INT_NEG_SE;
                     }
                 }
                 break;
             case NORMAL_EXT:
                 if (stairs.isPositive) {
-                    if ((stairsID += 2) > Stairs.ID_NORMAL_EXT_POS_NW) {
-                        stairsID = Stairs.ID_NORMAL_EXT_POS_SW;
+                    if (++stairsID > Stairs.ID_NORMAL_EXT_POS_SW) {
+                        stairsID = Stairs.ID_NORMAL_EXT_POS_SE;
                     }
                 }  else {
-                    if ((stairsID += 2) > Stairs.ID_NORMAL_EXT_NEG_NW) {
-                        stairsID = Stairs.ID_NORMAL_EXT_NEG_SW;
+                    if (++stairsID > Stairs.ID_NORMAL_EXT_NEG_SW) {
+                        stairsID = Stairs.ID_NORMAL_EXT_NEG_SE;
                     }
                 }
                 break;
@@ -97,33 +97,29 @@ public class BlockCarpentersStairs extends BlockCoverable {
         Stairs stairs = Stairs.stairsList[stairsID];
         
         /* Transform stairs to next type. */
-        
+
         switch (stairs.stairsType)
         {
             case NORMAL_SIDE:
-                stairsID = Stairs.ID_NORMAL_POS_N;
+                stairsID += 8;
                 break;
             case NORMAL:
                 if (stairs.isPositive) {
                     stairsID -= 4;
                 } else {
-                    stairsID = Stairs.ID_NORMAL_INT_POS_NE;
+                    stairsID += 12;
                 }
                 break;
             case NORMAL_INT:
                 if (stairs.isPositive) {
-                    stairsID += 1;
+                    stairsID -= 4;
                 } else {
-                    if (stairsID == Stairs.ID_NORMAL_INT_NEG_NE || stairsID == Stairs.ID_NORMAL_INT_NEG_NW) {
-                        stairsID += 11;
-                    } else {
-                        stairsID += 3;
-                    }
+                    stairsID += 12;
                 }
                 break;
             case NORMAL_EXT:
                 if (stairs.isPositive) {
-                    stairsID += 1;
+                    stairsID -= 4;
                 } else {
                     stairsID = Stairs.ID_NORMAL_SE;
                 }
@@ -283,41 +279,45 @@ public class BlockCarpentersStairs extends BlockCoverable {
      */
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack itemStack)
     {
-        TEBase TE = (TEBase) world.getTileEntity(x, y, z);
-        
-        int facing = MathHelper.floor_double(entityLiving.rotationYaw * 4.0F / 360.0F + 0.5D) & 3;
-        
-        BlockProperties.setMetadata(TE, world.getBlockMetadata(x, y, z));
-        int stairsID = BlockProperties.getMetadata(TE);
-        
-        if (stairsID > 11)
-        {
-            switch (facing) {
-                case 0:
-                    stairsID = stairsID == 12 ? Stairs.ID_NORMAL_NEG_N : Stairs.ID_NORMAL_POS_N;
-                    break;
-                case 1:
-                    stairsID = stairsID == 12 ? Stairs.ID_NORMAL_NEG_E : Stairs.ID_NORMAL_POS_E;
-                    break;
-                case 2:
-                    stairsID = stairsID == 12 ? Stairs.ID_NORMAL_NEG_S : Stairs.ID_NORMAL_POS_S;
-                    break;
-                case 3:
-                    stairsID = stairsID == 12 ? Stairs.ID_NORMAL_NEG_W : Stairs.ID_NORMAL_POS_W;
-                    break;
+        if (!world.isRemote) {
+
+            TEBase TE = (TEBase) world.getTileEntity(x, y, z);
+            
+            int facing = MathHelper.floor_double(entityLiving.rotationYaw * 4.0F / 360.0F + 0.5D) & 3;
+            
+            BlockProperties.setMetadata(TE, world.getBlockMetadata(x, y, z));
+            int stairsID = BlockProperties.getMetadata(TE);
+            
+            if (stairsID > 11)
+            {
+                switch (facing) {
+                    case 0:
+                        stairsID = stairsID == 12 ? Stairs.ID_NORMAL_NEG_N : Stairs.ID_NORMAL_POS_N;
+                        break;
+                    case 1:
+                        stairsID = stairsID == 12 ? Stairs.ID_NORMAL_NEG_E : Stairs.ID_NORMAL_POS_E;
+                        break;
+                    case 2:
+                        stairsID = stairsID == 12 ? Stairs.ID_NORMAL_NEG_S : Stairs.ID_NORMAL_POS_S;
+                        break;
+                    case 3:
+                        stairsID = stairsID == 12 ? Stairs.ID_NORMAL_NEG_W : Stairs.ID_NORMAL_POS_W;
+                        break;
+                }
             }
-        }
-        
-        BlockProperties.setMetadata(TE, stairsID);
-        
-        /* If shift key is down, skip auto-orientation. */
-        if (!entityLiving.isSneaking()) {
-            stairsID = StairsTransform.transformStairs(world, stairsID, x, y, z);
+            
             BlockProperties.setMetadata(TE, stairsID);
-            StairsTransform.transformAdjacentStairs(world, stairsID, x, y, z);
-        }
+            
+            /* If shift key is down, skip auto-orientation. */
+            if (!entityLiving.isSneaking()) {
+                stairsID = StairsTransform.transformStairs(world, stairsID, x, y, z);
+                BlockProperties.setMetadata(TE, stairsID);
+                StairsTransform.transformAdjacentStairs(world, stairsID, x, y, z);
+            }
+            
+            super.onBlockPlacedBy(world, x, y, z, entityLiving, itemStack);
         
-        super.onBlockPlacedBy(world, x, y, z, entityLiving, itemStack);
+        }
     }
     
     @Override
