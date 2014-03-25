@@ -22,10 +22,8 @@ public class TECarpentersTorch extends TEBase {
             State existing_state = Torch.getState(this);
             
             super.onDataPacket(net, pkt);
-            
-            State new_state = Torch.getState(this);
-            
-            if (new_state.ordinal() > existing_state.ordinal()) {
+
+            if (Torch.getState(this).ordinal() > existing_state.ordinal()) {
                 ParticleHelper.spawnTorchBigSmoke(this);
             }
         }

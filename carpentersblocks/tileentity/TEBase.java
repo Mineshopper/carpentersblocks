@@ -13,13 +13,13 @@ import net.minecraft.world.World;
 
 public class TEBase extends TileEntity {
     
-    private final String IDENT_COVER      = "cover";
-    private final String IDENT_DYE        = "dye";
-    private final String IDENT_OVERLAY    = "overlay";
-    private final String IDENT_ITEMSTACKS = "itemstacks";
-    private final String IDENT_METADATA   = "metadata";
-    private final String IDENT_OWNER      = "owner";
-    private final String IDENT_PATTERN    = "pattern";
+    private final String TAG_COVER      = "cover";
+    private final String TAG_DYE        = "dye";
+    private final String TAG_OVERLAY    = "overlay";
+    private final String TAG_ITEMSTACKS = "itemstacks";
+    private final String TAG_METADATA   = "metadata";
+    private final String TAG_OWNER      = "owner";
+    private final String TAG_PATTERN    = "pattern";
     
     public ItemStack[] cover   = new ItemStack[7];
     public ItemStack[] dye     = new ItemStack[7];
@@ -37,7 +37,7 @@ public class TEBase extends TileEntity {
     {
         super.readFromNBT(nbt);
 
-        NBTTagList itemstack_list = nbt.getTagList(IDENT_ITEMSTACKS, 10);
+        NBTTagList itemstack_list = nbt.getTagList(TAG_ITEMSTACKS, 10);
         
         cover   = new ItemStack[7];
         dye     = new ItemStack[7];
@@ -47,18 +47,18 @@ public class TEBase extends TileEntity {
         {
             NBTTagCompound nbt1 = itemstack_list.getCompoundTagAt(idx);
             
-            if (itemstack_list.getCompoundTagAt(idx).hasKey(IDENT_COVER)) {
-                cover[nbt1.getByte(IDENT_COVER) & 255] = ItemStack.loadItemStackFromNBT(nbt1);
-            } else if (itemstack_list.getCompoundTagAt(idx).hasKey(IDENT_DYE)) {
-                dye[nbt1.getByte(IDENT_DYE) & 255] = ItemStack.loadItemStackFromNBT(nbt1);
-            } else if (itemstack_list.getCompoundTagAt(idx).hasKey(IDENT_OVERLAY)) {
-                overlay[nbt1.getByte(IDENT_OVERLAY) & 255] = ItemStack.loadItemStackFromNBT(nbt1);
+            if (itemstack_list.getCompoundTagAt(idx).hasKey(TAG_COVER)) {
+                cover[nbt1.getByte(TAG_COVER) & 255] = ItemStack.loadItemStackFromNBT(nbt1);
+            } else if (itemstack_list.getCompoundTagAt(idx).hasKey(TAG_DYE)) {
+                dye[nbt1.getByte(TAG_DYE) & 255] = ItemStack.loadItemStackFromNBT(nbt1);
+            } else if (itemstack_list.getCompoundTagAt(idx).hasKey(TAG_OVERLAY)) {
+                overlay[nbt1.getByte(TAG_OVERLAY) & 255] = ItemStack.loadItemStackFromNBT(nbt1);
             }
         }
 
-        pattern  = nbt.getByteArray(IDENT_PATTERN);
-        metadata = nbt.getShort(IDENT_METADATA);
-        owner    = nbt.getString(IDENT_OWNER);
+        pattern  = nbt.getByteArray(TAG_PATTERN);
+        metadata = nbt.getShort(TAG_METADATA);
+        owner    = nbt.getString(TAG_OWNER);
     }
     
     @Override
@@ -72,29 +72,29 @@ public class TEBase extends TileEntity {
         {
             if (cover[side] != null) {
                 NBTTagCompound nbt1 = new NBTTagCompound();
-                nbt1.setByte(IDENT_COVER, side);
+                nbt1.setByte(TAG_COVER, side);
                 cover[side].writeToNBT(nbt1);
                 itemstack_list.appendTag(nbt1);
             }
             if (dye[side] != null) {
                 NBTTagCompound nbt1 = new NBTTagCompound();
-                nbt1.setByte(IDENT_DYE, side);
+                nbt1.setByte(TAG_DYE, side);
                 dye[side].writeToNBT(nbt1);
                 itemstack_list.appendTag(nbt1);
             }
             if (overlay[side] != null) {
                 NBTTagCompound nbt1 = new NBTTagCompound();
-                nbt1.setByte(IDENT_OVERLAY, side);
+                nbt1.setByte(TAG_OVERLAY, side);
                 overlay[side].writeToNBT(nbt1);
                 itemstack_list.appendTag(nbt1);
             }
         }
         
-        nbt.setTag(IDENT_ITEMSTACKS, itemstack_list);
+        nbt.setTag(TAG_ITEMSTACKS, itemstack_list);
         
-        nbt.setByteArray(IDENT_PATTERN, pattern);
-        nbt.setShort(IDENT_METADATA, metadata);
-        nbt.setString(IDENT_OWNER, owner);
+        nbt.setByteArray(TAG_PATTERN, pattern);
+        nbt.setShort(TAG_METADATA, metadata);
+        nbt.setString(TAG_OWNER, owner);
     }
     
     @Override

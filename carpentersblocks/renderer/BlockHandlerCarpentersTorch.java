@@ -134,11 +134,7 @@ public class BlockHandlerCarpentersTorch extends BlockHandlerBase {
         vector[7] = renderBlocks.blockAccess.getWorldVec3Pool().getVecFromPool(-vecX, vecY, vecZ);
         
         setRotations(Torch.getFacing(TE), x, y, z);
-        
-        /* Have to enforce partial render bounds on all sides to get correct lighting. */
-        
-        renderBlocks.setRenderBounds(0.1D, 0.1D, 0.1D, 0.9D, 0.9D, 0.9D);
-        
+
         lightingHelper.setLightingYNeg(itemStack, x, y, z);
         delegateSideRender(itemStack, x, y, z, DOWN);
         
