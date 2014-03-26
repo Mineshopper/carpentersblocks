@@ -141,6 +141,18 @@ public class LightingHelper {
     }
 
     /**
+     * Returns RGB from integer color.
+     */
+    public static float[] getRGB(int color)
+    {
+        float red = (color >> 16 & 255) / 255.0F;
+        float green = (color >> 8 & 255) / 255.0F;
+        float blue = (color & 255) / 255.0F;
+
+        return new float[] { red, green, blue };
+    }
+    
+    /**
      * Returns float array with RGB values for block.
      * If using our custom render helpers, be sure to apply anaglyph filter
      * before rendering.
@@ -150,10 +162,8 @@ public class LightingHelper {
         BlockProperties.setHostMetadata(blockHandler.TE, itemStack.getItemDamage());
         int color = getIntColor(block, x, y, z);
         BlockProperties.resetHostMetadata(blockHandler.TE);
-        
-        float[] rgb = { (color >> 16 & 255) / 255.0F, (color >> 8 & 255) / 255.0F, (color & 255) / 255.0F };
-        
-        return rgb;
+
+        return getRGB(color);
     }
 
     /**
@@ -179,7 +189,7 @@ public class LightingHelper {
         float[] dyeRGB = { 1.0F, 1.0F, 1.0F };
 
         if (!blockHandler.suppressDyeColor && (BlockProperties.hasDye(blockHandler.TE, blockHandler.coverRendering) || blockHandler.hasDyeOverride)) {
-            dyeRGB = blockHandler.hasDyeOverride ? DyeHandler.getRGB(blockHandler.dyeOverride) : DyeHandler.getRGB(DyeHandler.getColor(BlockProperties.getDye(blockHandler.TE, blockHandler.coverRendering)));
+            dyeRGB = blockHandler.hasDyeOverride ? getRGB(blockHandler.dyeOverride) : getRGB(DyeHandler.getColor(BlockProperties.getDye(blockHandler.TE, blockHandler.coverRendering)));
         }
 
         float[] blockRGB = getBlockRGB(itemStack, block, x, y, z);

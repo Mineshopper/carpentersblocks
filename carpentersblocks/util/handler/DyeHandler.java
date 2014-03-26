@@ -64,16 +64,4 @@ public class DyeHandler {
         return color;
     }
     
-    /**
-     * Returns RGB from integer color.
-     */
-    public static float[] getRGB(int color)
-    {
-        float red = (color >> 16 & 255) / 255.0F;
-        float green = (color >> 8 & 255) / 255.0F;
-        float blue = (color & 255) / 255.0F;
-
-        return new float[] { red, green, blue };
-    }
-    
 }
