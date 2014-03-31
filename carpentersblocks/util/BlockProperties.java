@@ -362,9 +362,9 @@ public class BlockProperties {
     /**
      * Returns true if ItemStack is a dye.
      */
-    public static boolean isDye(ItemStack itemStack)
+    public static boolean isDye(ItemStack itemStack, boolean allowWhite)
     {
-        return DyeHandler.getDyeObject(itemStack) != null;
+        return DyeHandler.getDyeObject(itemStack, allowWhite) != null;
     }
     
     /**

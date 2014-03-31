@@ -31,37 +31,54 @@ public class DyeHandler {
         dyeColor.put("dyeLightBlue", ItemDye.field_150922_c[12]);
         dyeColor.put(  "dyeMagenta", ItemDye.field_150922_c[13]);
         dyeColor.put(   "dyeOrange", ItemDye.field_150922_c[14]);
-        //dyeColor.put(    "dyeWhite", ItemDye.field_150922_c[15]);
+        dyeColor.put(    "dyeWhite", ItemDye.field_150922_c[15]);
   
+    }
+    
+    /**
+     * Returns ore name of dye, or "Unknown" if not a dye.
+     */
+    public static String getDyeName(ItemStack itemStack)
+    {
+        return OreDictionary.getOreName(OreDictionary.getOreID(itemStack));
     }
     
     /**
      * Grabs dye object from dyeColor map, or null if not found.
      */
-    public static Object getDyeObject(ItemStack itemStack)
+    public static Object getDyeObject(ItemStack itemStack, boolean allowWhite)
     {
-        return dyeColor.get(OreDictionary.getOreName(OreDictionary.getOreID(itemStack)));
-    }
+        Object object = dyeColor.get(getDyeName(itemStack));
         
+        if (!allowWhite && object != null && ((String) object).equals("dyeWhite")) {
+            return null;
+        }
+        
+        return dyeColor.get(getDyeName(itemStack));
+    }
+    
     /**
-     * Looks up ItemStack in OreDictionary to identify whether it is a dye.
-     * Returns representative dye color as integer.
+     * Returns color value based on ItemStack.
      */
     public static int getColor(ItemStack itemStack)
     {
+        return getColor(getDyeName(itemStack));
+    }
+    
+    /**
+     * Returns color value based on ore dictionary name.
+     */
+    public static int getColor(String dye)
+    {
         int color = 0xffffff;
         
-        if (itemStack != null) {
-
-            Object dyeLookup = getDyeObject(itemStack);
-            
-            if (dyeLookup != null) {
-                color = (Integer) dyeLookup;
-            }
-            
+        Object dyeLookup = dyeColor.get(dye);
+        
+        if (dyeLookup != null) {
+            color = (Integer) dyeLookup;
         }
         
         return color;
     }
-    
+        
 }

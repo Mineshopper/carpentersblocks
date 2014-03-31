@@ -67,7 +67,7 @@ public class VertexHelper {
     {
         Tessellator tessellator = Tessellator.instance;
         
-        if (renderBlocks.enableAO)
+        if (renderBlocks != null && renderBlocks.enableAO)
         {
             switch(vertex) {
                 case BOTTOM_CENTER:
@@ -104,7 +104,7 @@ public class VertexHelper {
                     break;
             }
         }
-        
+
         tessellator.addVertexWithUV(x, y, z, u, v);
         ++vertexCount;
     }
