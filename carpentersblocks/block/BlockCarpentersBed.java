@@ -11,7 +11,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayer.EnumStatus;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
@@ -282,7 +281,7 @@ public class BlockCarpentersBed extends BlockCoverable {
      */
     public Item getItem(World world, int x, int y, int z)
     {
-        return Items.bed;
+        return ItemRegistry.itemCarpentersBed;
     }
     
     @Override
