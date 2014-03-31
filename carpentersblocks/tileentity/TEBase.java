@@ -1,5 +1,6 @@
 package carpentersblocks.tileentity;
 
+import carpentersblocks.util.IProtected;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -11,7 +12,7 @@ import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-public class TEBase extends TileEntity {
+public class TEBase extends TileEntity implements IProtected {
     
     private final String TAG_COVER      = "cover";
     private final String TAG_DYE        = "dye";
@@ -160,6 +161,7 @@ public class TEBase extends TileEntity {
     /**
      * Sets owner of tile entity.
      */
+    @Override
     public void setOwner(String owner)
     {
         this.owner = owner;
@@ -168,11 +170,12 @@ public class TEBase extends TileEntity {
     /**
      * Returns owner of tile entity.
      */
+    @Override
     public String getOwner()
     {
         return owner;
     }
-    
+
     @Override
     /**
      * Determines if this TileEntity requires update calls.

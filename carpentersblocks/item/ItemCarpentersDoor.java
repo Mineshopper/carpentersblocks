@@ -27,7 +27,7 @@ public class ItemCarpentersDoor extends Item {
     @Override
     public void registerIcons(IIconRegister iconRegister)
     {
-        itemIcon = iconRegister.registerIcon("carpentersblocks:door");
+        itemIcon = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "door");
     }
     
     @Override

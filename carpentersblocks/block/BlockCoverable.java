@@ -18,7 +18,6 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.boss.EntityWither;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -37,6 +36,7 @@ import carpentersblocks.api.ICarpentersHammer;
 import carpentersblocks.renderer.helper.ParticleHelper;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
+import carpentersblocks.util.PlayerPermissions;
 import carpentersblocks.util.handler.EventHandler;
 import carpentersblocks.util.handler.OverlayHandler;
 import carpentersblocks.util.handler.OverlayHandler.Overlay;
@@ -136,39 +136,20 @@ public class BlockCoverable extends BlockContainer {
     {
         TileEntity TE = world.getTileEntity(x, y, z);
         
-        if (world.getBlock(x, y, z).equals(this) || TE != null && TE instanceof TEBase) {
-            return (TEBase) world.getTileEntity(x, y, z);
+        if (TE != null && TE instanceof TEBase) {
+            return (TEBase) TE;
         } else {
             return null;
         }
     }
-    
-    /**
-     * Returns true if player is operator.
-     * Can only return true if called server-side.
-     */
-    protected boolean isOp(EntityLivingBase entityLiving)
-    {
-        if (!entityLiving.worldObj.isRemote) {
-            return ((EntityPlayerMP)entityLiving).mcServer.getConfigurationManager().isPlayerOpped(((EntityPlayer)entityLiving).getDisplayName());
-        } else {
-            return false;
-        }
-    }
-    
+
     /**
      * Returns whether player is allowed to make alterations to this block.
      * This does not include block activation.  For that, use canPlayerActivate().
      */
     protected boolean canPlayerEdit(TEBase TE, EntityPlayer entityPlayer)
     {
-        if (isOp(entityPlayer)) {
-            return true;
-        } else if (FeatureRegistry.enableBlockOwnership) {
-            return TE.isOwner(entityPlayer);
-        } else {
-            return entityPlayer.canPlayerEdit(TE.xCoord, TE.yCoord, TE.zCoord, EventHandler.eventFace, entityPlayer.getHeldItem());
-        }
+        return PlayerPermissions.canPlayerEdit(TE, TE.xCoord, TE.yCoord, TE.zCoord, entityPlayer);
     }
     
     /**
@@ -323,7 +304,7 @@ public class BlockCoverable extends BlockContainer {
                                     altered.add(decInv.add(BlockProperties.setOverlay(TE, effectiveSide, itemStack)));
                                 }
     
-                            } else if (entityPlayer.isSneaking() && FeatureRegistry.enableDyeColors && BlockProperties.isDye(itemStack)) {
+                            } else if (entityPlayer.isSneaking() && FeatureRegistry.enableDyeColors && BlockProperties.isDye(itemStack, false)) {
     
                                 if (!BlockProperties.hasDye(TE, effectiveSide)) {
                                     altered.add(decInv.add(BlockProperties.setDye(TE, effectiveSide, itemStack)));

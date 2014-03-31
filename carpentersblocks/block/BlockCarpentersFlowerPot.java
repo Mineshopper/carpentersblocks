@@ -74,6 +74,34 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
             return super.getIcon(side, metadata);
         }
     }
+        
+    @Override
+    /**
+     * Cycle backward through bed designs.
+     */
+    protected boolean onHammerLeftClick(TEBase TE, EntityPlayer entityPlayer)
+    {
+        int design = FlowerPotDesignHandler.getPrev(FlowerPot.getDesign(TE));
+        FlowerPot.setDesign(TE, design);
+        
+        return true;
+    }
+    
+    @Override
+    /**
+     * Cycle forward through designs or set to no design.
+     */
+    protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer)
+    {
+        if (entityPlayer.isSneaking()) {
+            FlowerPot.setDesign(TE, 0);
+        } else {
+            int design = FlowerPotDesignHandler.getNext(FlowerPot.getDesign(TE));
+            FlowerPot.setDesign(TE, design);
+        }
+        
+        return true;
+    }
     
     @Override
     /**
@@ -105,34 +133,6 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
         }
         
         return false;
-    }
-    
-    @Override
-    /**
-     * Cycle backward through bed designs.
-     */
-    protected boolean onHammerLeftClick(TEBase TE, EntityPlayer entityPlayer)
-    {
-        int design = FlowerPotDesignHandler.getPrev(FlowerPot.getDesign(TE));
-        FlowerPot.setDesign(TE, design);
-        
-        return true;
-    }
-    
-    @Override
-    /**
-     * Cycle forward through designs or set to no design.
-     */
-    protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer)
-    {
-        if (entityPlayer.isSneaking()) {
-            FlowerPot.setDesign(TE, 0);
-        } else {
-            int design = FlowerPotDesignHandler.getNext(FlowerPot.getDesign(TE));
-            FlowerPot.setDesign(TE, design);
-        }
-        
-        return true;
     }
     
     @Override

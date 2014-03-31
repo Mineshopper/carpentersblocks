@@ -29,7 +29,7 @@ public class ItemCarpentersHammer extends Item implements ICarpentersHammer {
     @Override
     public void registerIcons(IIconRegister iconRegister)
     {
-        itemIcon = iconRegister.registerIcon("carpentersblocks:hammer");
+        itemIcon = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "hammer");
     }
     
     @Override
@@ -54,4 +54,14 @@ public class ItemCarpentersHammer extends Item implements ICarpentersHammer {
         return block instanceof BlockCoverable ? 1.0001F : super.func_150893_a(itemStack, block);
     }
     
+    /**
+     * Callback for item usage. If the item does something special on right clicking, he will have one of those. Return
+     * True if something happen and false if it don't. This is for ITEMS, not BLOCKS
+     */
+    @Override
+    public boolean onItemUse(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, World par3World, int par4, int par5, int par6, int par7, float par8, float par9, float par10)
+    {
+        return false;
+    }
+
 }

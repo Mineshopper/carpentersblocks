@@ -29,7 +29,7 @@ public class ItemCarpentersChisel extends Item implements ICarpentersChisel {
     @Override
     public void registerIcons(IIconRegister iconRegister)
     {
-        itemIcon = iconRegister.registerIcon("carpentersblocks:chisel");
+        itemIcon = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "chisel");
     }
     
     @Override

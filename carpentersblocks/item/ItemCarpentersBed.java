@@ -30,7 +30,7 @@ public class ItemCarpentersBed extends Item {
      */
     public void registerIcons(IIconRegister iconRegister)
     {
-        itemIcon = iconRegister.registerIcon("carpentersblocks:bed");
+        itemIcon = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "bed");
     }
     
     @Override
