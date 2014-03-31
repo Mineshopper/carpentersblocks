@@ -1,5 +1,8 @@
 package carpentersblocks.util.registry;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.client.event.TextureStitchEvent;
@@ -10,6 +13,7 @@ import carpentersblocks.CarpentersBlocks;
 import carpentersblocks.util.ModLogger;
 import carpentersblocks.util.bed.BedDesignHandler;
 import carpentersblocks.util.flowerpot.FlowerPotDesignHandler;
+import carpentersblocks.util.handler.TileHandler;
 import carpentersblocks.util.handler.PatternHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
@@ -43,10 +47,13 @@ public class IconRegistry {
     public static IIcon icon_safe_light;
     public static IIcon icon_flower_pot;
     public static IIcon icon_flower_pot_glass;
-    
+    public static IIcon icon_blank_tile;
+
     public static IIcon[] icon_pattern           = new IIcon[PatternHandler.maxNum];
     public static IIcon[] icon_bed_pillow_custom = new IIcon[BedDesignHandler.maxNum];
     public static IIcon[] icon_flower_pot_design = new IIcon[FlowerPotDesignHandler.maxNum];
+    
+    public static List<IIcon> icon_tile          = new ArrayList<IIcon>();
     
     @SubscribeEvent
     /**
@@ -83,6 +90,12 @@ public class IconRegistry {
                 icon_pattern[numIcon] = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "pattern/pattern_" + numIcon);
             }
         }
+
+        // Tile icons
+        icon_blank_tile = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "tile/blank");
+        for (String name : TileHandler.tileList) {
+            icon_tile.add(iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "tile/" + name));
+        }        
     }
     
 }

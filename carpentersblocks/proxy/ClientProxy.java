@@ -18,6 +18,7 @@ import carpentersblocks.renderer.BlockHandlerCarpentersSafe;
 import carpentersblocks.renderer.BlockHandlerCarpentersSlope;
 import carpentersblocks.renderer.BlockHandlerCarpentersStairs;
 import carpentersblocks.renderer.BlockHandlerCarpentersTorch;
+import carpentersblocks.util.handler.EntityHandler;
 import carpentersblocks.util.handler.OptifineHandler;
 import carpentersblocks.util.handler.TileEntityHandler;
 import carpentersblocks.util.registry.BlockRegistry;
@@ -33,6 +34,7 @@ public class ClientProxy extends CommonProxy {
     {
         MinecraftForge.EVENT_BUS.register(new IconRegistry());
         TileEntityHandler.registerTileEntityRenderers();
+        EntityHandler.registerEntityRenderers();
         
         if (BlockRegistry.enableBarrier) {
             BlockRegistry.carpentersBarrierRenderID = RenderingRegistry.getNextAvailableRenderId();

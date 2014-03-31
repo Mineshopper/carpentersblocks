@@ -6,6 +6,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
 import carpentersblocks.item.ItemCarpentersBed;
+import carpentersblocks.item.ItemCarpentersTile;
 import carpentersblocks.item.ItemCarpentersChisel;
 import carpentersblocks.item.ItemCarpentersDoor;
 import carpentersblocks.item.ItemCarpentersHammer;
@@ -18,6 +19,7 @@ public class ItemRegistry {
     public static Item itemCarpentersChisel;
     public static Item itemCarpentersDoor;
     public static Item itemCarpentersBed;
+    public static Item itemCarpentersTile;
     
     public static boolean enableHammer                  = true;
     public static boolean enableChisel                  = true;
@@ -27,6 +29,8 @@ public class ItemRegistry {
     public static double itemHammerDamageChanceFromSlopes      = 0.75D;
     public static double itemHammerDamageChanceFromStairs      = 1.0D;
     public static double itemHammerDamageChanceFromCollapsible = 0.2D;
+    
+    private static int recipeQuantityTile = 12;
     
     /**
      * Registers item IDs.
@@ -70,6 +74,12 @@ public class ItemRegistry {
             itemCarpentersBed = new ItemCarpentersBed().setUnlocalizedName("itemCarpentersBed");
             GameRegistry.registerItem(itemCarpentersBed, "itemCarpentersBed");
             GameRegistry.addRecipe(new ItemStack(itemCarpentersBed, BlockRegistry.recipeQuantityBed), new Object[] { "XXX", "YYY", 'X', Blocks.wool, 'Y', BlockRegistry.blockCarpentersBlock });
+        }
+        
+        if (FeatureRegistry.enableTile) {
+            itemCarpentersTile = new ItemCarpentersTile().setUnlocalizedName("itemCarpentersTile");
+            GameRegistry.registerItem(itemCarpentersTile, "itemCarpentersTile");
+            GameRegistry.addRecipe(new ItemStack(itemCarpentersTile, recipeQuantityTile), new Object[] { "XXX", "YYY", 'X', Blocks.hardened_clay, 'Y', BlockRegistry.blockCarpentersBlock });
         }
     }
     

@@ -8,6 +8,7 @@ item.itemCarpentersHammer.name=Carpenter's Hammer
 item.itemCarpentersChisel.name=Carpenter's Chisel
 item.itemCarpentersDoor.name=Carpenter's Door
 item.itemCarpentersBed.name=Carpenter's Bed
+item.itemCarpentersTile.name=Carpenter's Tile
 
 # BLOCKS
 tile.blockCarpentersBarrier.name=Carpenter's Barrier
@@ -31,6 +32,9 @@ tile.blockCarpentersStairs.name=Carpenter's Stairs
 tile.blockCarpentersTorch.name=Carpenter's Torch
 tile.blockCarpentersSafe.name=Carpenter's Safe
 tile.blockCarpentersFlowerPot.name=Carpenter's Flower Pot
+
+# ENTITIES
+entity.CarpentersTile.name=Carpenter's Tile
 
 # MESSAGES
 message.polarity_pos.name=POLARITY: Normal redstone output.

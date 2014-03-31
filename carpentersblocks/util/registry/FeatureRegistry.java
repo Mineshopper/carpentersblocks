@@ -13,8 +13,9 @@ public class FeatureRegistry {
     public static boolean enablePatterns               = true;
     public static boolean enableFancyFluids            = true;
     public static boolean enableTorchWeatherEffects    = true;
-    public static boolean enableBlockOwnership         = true;
+    public static boolean enableOwnership              = true;
     public static boolean enableMCPatcherCompatibility = false;
+    public static boolean enableTile                   = true;
 
     public static String[] overlay_list;
     
@@ -30,14 +31,15 @@ public class FeatureRegistry {
         enableSideCovers = config.get("features", "Enable Side Covers", enableSideCovers).getBoolean(enableSideCovers);
         enableDyeColors  = config.get("features",  "Enable Dye Colors",  enableDyeColors).getBoolean(enableDyeColors);
         enablePatterns   = config.get("features",    "Enable Patterns",   enablePatterns).getBoolean(enablePatterns);
+        enableTile       = config.get("features",      "Enable Canvas",       enableTile).getBoolean(enableTile);
         
         Property fancyFluidsProp = config.get("features", "Enable Fancy Fluids", enableFancyFluids);
         fancyFluidsProp.comment = "When enabled, unobstructed stationary fluid adjacent to block will render in the same space.\nNote: this only takes effect when Fancy Graphics are enabled.";
         enableFancyFluids = fancyFluidsProp.getBoolean(enableFancyFluids);
         
-        Property blockOwnershipProp = config.get("features", "Enable Block Ownership", enableBlockOwnership);
-        blockOwnershipProp.comment = "This will prevent players besides you and server operators from editing your blocks.\nNote: this does not protect blocks against destruction (intentional), and may allow activation if appropriate. Also, the Carpenter's Safe is not affected by this.";
-        enableBlockOwnership = blockOwnershipProp.getBoolean(enableBlockOwnership);
+        Property ownershipProp = config.get("features", "Enable Ownership", enableOwnership);
+        ownershipProp.comment = "This will prevent players besides you and server operators from editing your objects.\nNote: this does not protect objects against destruction (intentional), and may allow activation if appropriate. Also, the Carpenter's Safe is not affected by this.";
+        enableOwnership = ownershipProp.getBoolean(enableOwnership);
         
         Property slopeSmoothnessProp = config.get("slope", "Smoothness", slopeSmoothness);
         slopeSmoothnessProp.comment = "This controls the smoothness of the slope faces.\nNote: smoothness of 2 is similar to stairs, while a value above 25 is generally fluid.";

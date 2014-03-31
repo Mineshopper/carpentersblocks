@@ -5,7 +5,9 @@ import carpentersblocks.CarpentersBlocks;
 import carpentersblocks.util.bed.BedDesignHandler;
 import carpentersblocks.util.flowerpot.FlowerPotDesignHandler;
 import carpentersblocks.util.flowerpot.FlowerPotHandler;
+import carpentersblocks.util.handler.TileHandler;
 import carpentersblocks.util.handler.DyeHandler;
+import carpentersblocks.util.handler.EntityHandler;
 import carpentersblocks.util.handler.EventHandler;
 import carpentersblocks.util.handler.OverlayHandler;
 import carpentersblocks.util.handler.PacketHandler;
@@ -37,6 +39,11 @@ public class CommonProxy {
         
         if (BlockRegistry.enableBed) {
             BedDesignHandler.init(event);
+        }
+        
+        if (FeatureRegistry.enableTile) {
+            TileHandler.init(event);
+            EntityHandler.registerEntities();
         }
         
         MinecraftForge.EVENT_BUS.register(new EventHandler());
