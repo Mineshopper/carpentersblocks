@@ -367,7 +367,7 @@ public class EntityCarpentersTile extends EntityBase {
     }
 
     /**
-     * checks to make sure painting can be placed there
+     * Returns true if tile is on a valid surface.
      */
     public boolean onValidSurface()
     {
@@ -403,14 +403,14 @@ public class EntityCarpentersTile extends EntityBase {
     
                     if (itemStack.getItem() instanceof ICarpentersHammer) {
                         if (entity.isSneaking()) {
-                            if (!this.isDead && !this.worldObj.isRemote) {
+                            if (!this.isDead) {
                                 dropItem = true;
                             }                        
                         } else {
                             setNextIcon();
                         }              
                     } else {
-                        if (!this.isDead && !this.worldObj.isRemote) {
+                        if (!this.isDead) {
                             dropItem = true;
                         }   
                     }

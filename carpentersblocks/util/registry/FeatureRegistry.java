@@ -31,7 +31,7 @@ public class FeatureRegistry {
         enableSideCovers = config.get("features", "Enable Side Covers", enableSideCovers).getBoolean(enableSideCovers);
         enableDyeColors  = config.get("features",  "Enable Dye Colors",  enableDyeColors).getBoolean(enableDyeColors);
         enablePatterns   = config.get("features",    "Enable Patterns",   enablePatterns).getBoolean(enablePatterns);
-        enableTile       = config.get("features",      "Enable Canvas",       enableTile).getBoolean(enableTile);
+        enableTile       = config.get("features",        "Enable Tile",       enableTile).getBoolean(enableTile);
         
         Property fancyFluidsProp = config.get("features", "Enable Fancy Fluids", enableFancyFluids);
         fancyFluidsProp.comment = "When enabled, unobstructed stationary fluid adjacent to block will render in the same space.\nNote: this only takes effect when Fancy Graphics are enabled.";
