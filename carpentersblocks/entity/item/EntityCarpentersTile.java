@@ -298,6 +298,14 @@ public class EntityCarpentersTile extends EntityBase {
         if (getTile().equals(getDefaultTile())) {
             return IconRegistry.icon_blank_tile;
         } else {
+
+            int idx = TileHandler.tileList.indexOf(getTile());
+            
+            if (idx == -1) {
+                this.setTile(getDefaultTile());
+                idx = 0;
+            }
+            
             return IconRegistry.icon_tile.get(TileHandler.tileList.indexOf(getTile()));
         }
     }
