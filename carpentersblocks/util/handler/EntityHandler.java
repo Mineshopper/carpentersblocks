@@ -17,7 +17,7 @@ public class EntityHandler {
      */
     public static void registerEntities()
     {
-        EntityRegistry.registerModEntity(EntityCarpentersTile.class, "CarpentersTile", ID_TILE, CarpentersBlocks.instance, 64, 5, false);
+        EntityRegistry.registerModEntity(EntityCarpentersTile.class, "CarpentersTile", ID_TILE, CarpentersBlocks.instance, 64, 999, false);
     }
     
     @SideOnly(Side.CLIENT)

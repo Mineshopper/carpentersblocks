@@ -30,12 +30,13 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class EntityCarpentersTile extends EntityBase {
 
     private int ticks;
+    private boolean boundsSet;
 
     private final static byte ID_DIR  = 13;
     private final static byte ID_DYE  = 14;
     private final static byte ID_TILE = 15;
     private final static byte ID_ROT  = 16;
-    
+
     private final static String TAG_TILE = "tile";
     private final static String TAG_DIR  = "dir";
     private final static String TAG_DYE  = "dye";
@@ -66,13 +67,13 @@ public class EntityCarpentersTile extends EntityBase {
         posY = y;
         posZ = z;
         setDirection(dir);
-        this.setBoundingBox();
+        setBoundingBox();
 
         if (!ignoreNeighbors) {
-        
+
             List<EntityCarpentersTile> list = new ArrayList<EntityCarpentersTile>();
             double factor = 0.2D;
-            
+
             boundingBox.contract(0.1D, 0.1D, 0.1D);
 
             switch (offset_side) {
@@ -95,7 +96,7 @@ public class EntityCarpentersTile extends EntityBase {
                     list = world.getEntitiesWithinAABB(EntityCarpentersTile.class, boundingBox.offset(factor, 0.0D, 0.0D));
                     break;
                 default:
-                    
+
                     switch (dir) {
                         case DOWN:
                         case UP:
@@ -111,31 +112,31 @@ public class EntityCarpentersTile extends EntityBase {
                             break;
                         default: {}
                     }
-                    
+
             }
 
             for (EntityCarpentersTile tile : list)
             {
                 /* Skip checking diagonal tiles when tile is placed in center. */
-                
+
                 if (offset_side.equals(ForgeDirection.UNKNOWN))
                 {
                     switch (dir) {
                         case DOWN:
                         case UP:
-                            if (!(tile.posX == this.posX || tile.posZ == this.posZ)) {
+                            if (!(tile.posX == posX || tile.posZ == posZ)) {
                                 continue;
                             }
                             break;
                         case NORTH:
                         case SOUTH:
-                            if (!(tile.posX == this.posX || tile.posY == this.posY)) {
+                            if (!(tile.posX == posX || tile.posY == posY)) {
                                 continue;
                             }
                             break;
                         case WEST:
                         case EAST:
-                            if (!(tile.posZ == this.posZ || tile.posY == this.posY)) {
+                            if (!(tile.posZ == posZ || tile.posY == posY)) {
                                 continue;
                             }
                             break;
@@ -144,7 +145,7 @@ public class EntityCarpentersTile extends EntityBase {
                 }
 
                 /* Match up tile properties with neighbor. */
-                
+
                 if (!tile.getDye().equals(getDefaultDye())) {
                     setDye(tile.getDye());
                 }
@@ -159,26 +160,66 @@ public class EntityCarpentersTile extends EntityBase {
         }
     }
 
+    /**
+     * Keeps moving the entity up so it isn't colliding with blocks and other requirements for this entity to be spawned
+     * (only actually used on players though its also on Entity)
+     */
+    @Override
+    @SideOnly(Side.CLIENT)
+    protected void preparePlayerToSpawn() { }
+
+    /**
+     * Sets the width and height of the entity. Args: width, height
+     */
+    @Override
+    protected void setSize(float width, float height) { }
+
+    /**
+     * Sets the x,y,z of the entity from the given parameters. Also seems to set up a bounding box.
+     */
+    @Override
+    public void setPosition(double x, double y, double z) { }
+
+    /**
+     * Sets the position and rotation. Only difference from the other one is no bounding on the rotation. Args: posX,
+     * posY, posZ, yaw, pitch
+     */
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void setPositionAndRotation2(double posX, double posY, double posZ, float yaw, float pitch, int par9) { }
+
+    /**
+     * Called when a player mounts an entity. e.g. mounts a pig, mounts a boat.
+     */
+    @Override
+    public void mountEntity(Entity entity) { }
+
+    @Override
+    protected boolean func_145771_j(double x, double y, double z)
+    {
+        return false;
+    }
+
     public String getDefaultTile()
     {
         return "blank";
     }
-    
+
     public String getDefaultDye()
     {
         return "dyeWhite";
     }
-    
+
     public void playTileSound()
     {
         BlockProperties.playBlockSound(worldObj, new ItemStack(Blocks.hardened_clay), (int) Math.floor(posX), (int) Math.floor(posY), (int) Math.floor(posZ));
     }
-    
+
     public void playDyeSound()
     {
         BlockProperties.playBlockSound(worldObj, new ItemStack(Blocks.sand), (int) Math.floor(posX), (int) Math.floor(posY), (int) Math.floor(posZ));
     }
-    
+
     public double[] getBounds()
     {
         return bounds[getDataWatcher().getWatchableObjectInt(ID_DIR)];
@@ -194,7 +235,7 @@ public class EntityCarpentersTile extends EntityBase {
     {
         return ForgeDirection.getOrientation(getDataWatcher().getWatchableObjectInt(ID_DIR));
     }
-    
+
     public void setDirection(ForgeDirection dir)
     {
         getDataWatcher().updateObject(ID_DIR, new Integer(dir.ordinal()));
@@ -204,23 +245,23 @@ public class EntityCarpentersTile extends EntityBase {
     {
         getDataWatcher().updateObject(ID_ROT, new Integer(rotation));
     }
-    
+
     public void rotate()
     {
         int rotation = getRotation();
         setRotation(++rotation & 3);
     }
-    
+
     public int getRotation()
     {
         return getDataWatcher().getWatchableObjectInt(ID_ROT);
     }
-    
+
     public void setDye(String dye)
     {
         getDataWatcher().updateObject(ID_DYE, new String(dye));
     }
-    
+
     public String getDye()
     {
         return getDataWatcher().getWatchableObjectString(ID_DYE);
@@ -230,12 +271,12 @@ public class EntityCarpentersTile extends EntityBase {
     {
         getDataWatcher().updateObject(ID_TILE, new String(tile));
     }
-    
+
     public String getTile()
     {
         return getDataWatcher().getWatchableObjectString(ID_TILE);
     }
-    
+
     /**
      * Sets next tile design.
      */
@@ -243,7 +284,7 @@ public class EntityCarpentersTile extends EntityBase {
     {
         setTile(TileHandler.getNext(getTile()));
     }
-    
+
     /**
      * Sets previous tile design.
      */
@@ -273,7 +314,7 @@ public class EntityCarpentersTile extends EntityBase {
         getDataWatcher().updateObject(ID_ROT, Integer.valueOf(nbtTagCompound.getInteger(TAG_ROT)));
         super.readEntityFromNBT(nbtTagCompound);
     }
-    
+
     /**
      * (abstract) Protected helper method to write subclass entity data to NBT.
      */
@@ -296,17 +337,17 @@ public class EntityCarpentersTile extends EntityBase {
 
             EntityPlayer entityPlayer = (EntityPlayer) entity;
             ItemStack itemStack = entityPlayer.getHeldItem();
-            
+
             boolean hasHammer = false;
-            
+
             if (itemStack != null) {
                 Item item = itemStack.getItem();
-                
+
                 if (item instanceof ICarpentersHammer) {
                     hasHammer = true;
                 }
             }
-            
+
             if (entityPlayer.capabilities.isCreativeMode && !hasHammer) {
                 return;
             }
@@ -322,20 +363,24 @@ public class EntityCarpentersTile extends EntityBase {
     @Override
     public void onUpdate()
     {
+        if (!boundsSet) {
+            setBoundingBox();
+            boundsSet = true;
+        }
+        
         if (!worldObj.isRemote) {
             
             if (ticks++ >= 20) {
                 
-                this.setBoundingBox();
                 ticks = 0;
                 
-                if (!isDead && !onValidSurface())
-                {
+                if (!isDead && !onValidSurface()) {
                     setDead();
                     onBroken((Entity)null);
                 }
+                
             }
-
+            
         }
     }
 
@@ -391,53 +436,53 @@ public class EntityCarpentersTile extends EntityBase {
         if (!worldObj.isRemote) {
 
             Entity entity = damageSource.getEntity();
-    
+
             boolean dropItem = false;
-            
+
             if (entity instanceof EntityPlayer) {
-                            
+
                 EntityPlayer entityPlayer = (EntityPlayer) entity;
                 ItemStack itemStack = entityPlayer.getHeldItem();
-    
+
                 if (itemStack != null) {
-    
+
                     if (itemStack.getItem() instanceof ICarpentersHammer) {
                         if (entity.isSneaking()) {
-                            if (!this.isDead) {
+                            if (!isDead) {
                                 dropItem = true;
-                            }                        
+                            }
                         } else {
                             setNextIcon();
-                        }              
+                        }
                     } else {
-                        if (!this.isDead) {
+                        if (!isDead) {
                             dropItem = true;
-                        }   
+                        }
                     }
-                    
+
                 } else if (entityPlayer.capabilities.isCreativeMode) {
-                    
-                    dropItem = true; 
-                    
+
+                    dropItem = true;
+
                 }
-    
+
             }
-            
+
             playTileSound();
-            
+
             if (dropItem)
             {
-                this.setDead();
-                this.setBeenAttacked();
-                this.onBroken(damageSource.getEntity());
+                setDead();
+                setBeenAttacked();
+                onBroken(damageSource.getEntity());
                 return true;
             }
-        
+
         }
-        
+
         return false;
     }
-    
+
     @Override
     /**
      * First layer of player interaction.
@@ -445,37 +490,37 @@ public class EntityCarpentersTile extends EntityBase {
     public boolean interactFirst(EntityPlayer entityPlayer)
     {
         if (worldObj.isRemote) {
-            
+
             return true;
-            
+
         } else if (PlayerPermissions.canPlayerEdit(this, (int) Math.floor(posX), (int) Math.floor(posY), (int) Math.floor(posZ), entityPlayer)) {
-            
+
             ItemStack itemStack = entityPlayer.getHeldItem();
-            
+
             if (itemStack != null) {
-                
+
                 if (itemStack.getItem() instanceof ICarpentersHammer) {
-                    
+
                     if (entityPlayer.isSneaking()) {
                         rotate();
                     } else {
                         setPrevIcon();
                     }
-                    
+
                     playTileSound();
-                    
+
                 } else if (BlockProperties.isDye(itemStack, true)) {
-                    
+
                     setDye(DyeHandler.getDyeName(itemStack));
                     playDyeSound();
-                    
+
                 }
 
                 return true;
             }
-       
+
         }
-        
+
         return false;
     }
 
@@ -516,19 +561,6 @@ public class EntityCarpentersTile extends EntityBase {
     }
 
     /**
-     * Sets the position and rotation. Only difference from the other one is no bounding on the rotation. Args: posX,
-     * posY, posZ, yaw, pitch
-     */
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void setPositionAndRotation2(double posX, double posY, double posZ, float yaw, float pitch, int par9)
-    {
-        this.posX = posX;
-        this.posY = posY;
-        this.posZ = posZ;
-    }
-
-    /**
      * Returns true if other Entities should be prevented from moving through this Entity.
      */
     @Override
@@ -543,7 +575,6 @@ public class EntityCarpentersTile extends EntityBase {
     @Override
     public AxisAlignedBB getBoundingBox()
     {
-        setBoundingBox();
         return boundingBox;
     }
 
@@ -558,5 +589,5 @@ public class EntityCarpentersTile extends EntityBase {
     {
         return false;
     }
-        
+
 }
