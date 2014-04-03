@@ -14,7 +14,6 @@ public class FeatureRegistry {
     public static boolean enableFancyFluids            = true;
     public static boolean enableTorchWeatherEffects    = true;
     public static boolean enableOwnership              = true;
-    public static boolean enableMCPatcherCompatibility = false;
     public static boolean enableTile                   = true;
 
     public static String[] overlay_list;
@@ -48,10 +47,6 @@ public class FeatureRegistry {
         Property torchWeatherEffectsProp = config.get("torch", "Enable Torch Weather Effects", enableTorchWeatherEffects);
         torchWeatherEffectsProp.comment = "This controls whether torches extinguish themselves when exposed to rain or snow.";
         enableTorchWeatherEffects = torchWeatherEffectsProp.getBoolean(enableTorchWeatherEffects);
-        
-        Property MCPatcherProp = config.get("compatibility", "Enable MCPatcher Compatibility", enableMCPatcherCompatibility);
-        MCPatcherProp.comment = "This will fix block texture issues caused by MCPatcher.";
-        enableMCPatcherCompatibility = MCPatcherProp.getBoolean(enableMCPatcherCompatibility);
 
         Property overlayList = config.get("overlays", "Overlay Items", new String[] { "item.seeds:grass", "item.snowball:snow", "item.string:web", "tile.vine:vine", "item.wheat:hay", "tile.mushroom:mycelium" });
         overlayList.comment = "This maps items that can be used as overlays.\nItems are prefixed with unlocalized names (get these from en_US.lang from resource jar)\nOverlay prefixes are :grass, :snow, :web, :vine, :hay, :mycelium";

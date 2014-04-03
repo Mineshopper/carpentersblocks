@@ -62,11 +62,7 @@ public class IconRegistry {
     public void loadTextures(TextureStitchEvent.Pre event)
     {
         if (event.map.getTextureType() == 0) {
-            if (!FeatureRegistry.enableMCPatcherCompatibility) {
-                registerIcons(event.map);
-            } else {
-                ModLogger.log(Level.INFO, "MCPatcher icon registration compatibility enabled.");
-            }
+            registerIcons(event.map);
         }
     }
     

@@ -62,10 +62,6 @@ public class BlockCoverable extends BlockContainer {
      */
     public void registerBlockIcons(IIconRegister iconRegister)
     {
-        if (FeatureRegistry.enableMCPatcherCompatibility) {
-            IconRegistry.registerIcons(iconRegister);
-        }
-        
         super.registerBlockIcons(iconRegister);
     }
     
