@@ -8,6 +8,7 @@ item.itemCarpentersHammer.name=Hammer des Zimmermanns
 item.itemCarpentersChisel.name=Meißel des Zimmermanns
 item.itemCarpentersDoor.name=Tür des Zimmermanns
 item.itemCarpentersBed.name=Bett des Zimmermanns
+item.itemCarpentersTile.name=Fliese des Zimmermanns
 
 # BLOCKS
 tile.blockCarpentersBarrier.name=Barriere des Zimmermanns
@@ -31,6 +32,9 @@ tile.blockCarpentersStairs.name=Treppe des Zimmermanns
 tile.blockCarpentersTorch.name=Fackel des Zimmermanns
 tile.blockCarpentersSafe.name=Tresor des Zimmermanns
 tile.blockCarpentersFlowerPot.name=Blumentopf des Zimmermanns
+
+# ENTITIES
+entity.CarpentersTile.name=Fliese des Zimmermanns
 
 # MESSAGES
 message.polarity_pos.name=POLARITÄT: Normaler Redstone-Output.
