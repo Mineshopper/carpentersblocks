@@ -519,7 +519,7 @@ public class EntityCarpentersTile extends EntityBase {
 
                 } else if (BlockProperties.isDye(itemStack, true)) {
 
-                    setDye(DyeHandler.getDyeName(itemStack));
+                    setDye(DyeHandler.getOreDictName(itemStack));
                     playDyeSound();
 
                 }

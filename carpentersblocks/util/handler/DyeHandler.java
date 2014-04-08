@@ -36,25 +36,20 @@ public class DyeHandler {
     }
     
     /**
-     * Returns ore name of dye, or "Unknown" if not a dye.
+     * Returns definition for ItemStack from OreDictionary.
      */
-    public static String getDyeName(ItemStack itemStack)
+    public static String getOreDictName(ItemStack itemStack)
     {
         return OreDictionary.getOreName(OreDictionary.getOreID(itemStack));
     }
     
     /**
-     * Grabs dye object from dyeColor map, or null if not found.
+     * Returns true if ItemStack is a dye.
      */
-    public static Object getDyeObject(ItemStack itemStack, boolean allowWhite)
+    public static boolean isDye(ItemStack itemStack, boolean allowWhite)
     {
-        Object object = dyeColor.get(getDyeName(itemStack));
-        
-        if (!allowWhite && object != null && ((String) object).equals("dyeWhite")) {
-            return null;
-        }
-        
-        return dyeColor.get(getDyeName(itemStack));
+        String name = getOreDictName(itemStack);
+        return dyeColor.containsKey(name) ? (name.equals("dyeWhite") && !allowWhite ? false : true) : false;
     }
     
     /**
@@ -62,7 +57,7 @@ public class DyeHandler {
      */
     public static int getColor(ItemStack itemStack)
     {
-        return getColor(getDyeName(itemStack));
+        return getColor(getOreDictName(itemStack));
     }
     
     /**
