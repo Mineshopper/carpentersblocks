@@ -605,6 +605,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
      */
     public boolean getEnableAO(ItemStack itemStack)
     {
+    	// TODO: Investigate why this returns NPE for some users
         return Minecraft.isAmbientOcclusionEnabled() && !disableAO && BlockProperties.toBlock(itemStack).getLightValue() == 0;
     }
 
