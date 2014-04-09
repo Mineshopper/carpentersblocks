@@ -121,26 +121,29 @@ public class BlockCarpentersDoor extends BlockCoverable {
      * Returns a list of door tile entities that make up either a single door or two connected double doors.
      */
     private List<TEBase> getDoorPieces(TEBase TE)
-    {
+    {    	
         List<TEBase> list = new ArrayList<TEBase>();
-        
         World world = TE.getWorldObj();
         
+        int piece = Door.getPiece(TE);
         int facing = Door.getFacing(TE);
         int hinge = Door.getHinge(TE);
-        int piece = Door.getPiece(TE);
+        int neighbor_offset = piece == Door.PIECE_TOP ? -1 : 1;
+                
+        /* Add source door pieces */
         
-        boolean isTop = piece == Door.PIECE_TOP;
-        
-        /*
-         * Add calling TE and its matching piece
-         */
         list.add(TE);
-        list.add((TEBase) world.getTileEntity(TE.xCoord, TE.yCoord - (isTop ? 1 : -1), TE.zCoord));
         
-        /*
-         * Begin searching for and adding other neighboring pieces
-         */
+        TEBase TE_neighbor = (TEBase) world.getTileEntity(TE.xCoord, TE.yCoord + neighbor_offset, TE.zCoord);
+        
+        if (TE_neighbor == null) {
+        	return list;
+        } else {
+        	list.add(TE_neighbor);
+        }
+        
+        /* Begin searching for and adding other neighboring pieces. */
+        
         TEBase TE_ZN = world.getBlock(TE.xCoord, TE.yCoord, TE.zCoord - 1).equals(this) ? (TEBase) world.getTileEntity(TE.xCoord, TE.yCoord, TE.zCoord - 1) : null;
         TEBase TE_ZP = world.getBlock(TE.xCoord, TE.yCoord, TE.zCoord + 1).equals(this) ? (TEBase) world.getTileEntity(TE.xCoord, TE.yCoord, TE.zCoord + 1) : null;
         TEBase TE_XN = world.getBlock(TE.xCoord - 1, TE.yCoord, TE.zCoord).equals(this) ? (TEBase) world.getTileEntity(TE.xCoord - 1, TE.yCoord, TE.zCoord) : null;
@@ -154,14 +157,14 @@ public class BlockCarpentersDoor extends BlockCoverable {
                     if (piece == Door.getPiece(TE_ZN) && facing == Door.getFacing(TE_ZN) && hinge == Door.HINGE_LEFT && Door.getHinge(TE_ZN) == Door.HINGE_RIGHT)
                     {
                         list.add(TE_ZN);
-                        list.add((TEBase) world.getTileEntity(TE.xCoord, TE.yCoord - (isTop ? 1 : -1), TE.zCoord - 1));
+                        list.add((TEBase) world.getTileEntity(TE.xCoord, TE.yCoord + neighbor_offset, TE.zCoord - 1));
                     }
                 }
                 if (TE_ZP != null) {
                     if (piece == Door.getPiece(TE_ZP) && facing == Door.getFacing(TE_ZP) && hinge == Door.HINGE_RIGHT && Door.getHinge(TE_ZP) == Door.HINGE_LEFT)
                     {
                         list.add(TE_ZP);
-                        list.add((TEBase) world.getTileEntity(TE.xCoord, TE.yCoord - (isTop ? 1 : -1), TE.zCoord + 1));
+                        list.add((TEBase) world.getTileEntity(TE.xCoord, TE.yCoord + neighbor_offset, TE.zCoord + 1));
                     }
                 }
                 break;
@@ -172,14 +175,14 @@ public class BlockCarpentersDoor extends BlockCoverable {
                     if (piece == Door.getPiece(TE_ZN) && facing == Door.getFacing(TE_ZN) && hinge == Door.HINGE_RIGHT && Door.getHinge(TE_ZN) == Door.HINGE_LEFT)
                     {
                         list.add(TE_ZN);
-                        list.add((TEBase) world.getTileEntity(TE.xCoord, TE.yCoord - (isTop ? 1 : -1), TE.zCoord - 1));
+                        list.add((TEBase) world.getTileEntity(TE.xCoord, TE.yCoord + neighbor_offset, TE.zCoord - 1));
                     }
                 }
                 if (TE_ZP != null) {
                     if (piece == Door.getPiece(TE_ZP) && facing == Door.getFacing(TE_ZP) && hinge == Door.HINGE_LEFT && Door.getHinge(TE_ZP) == Door.HINGE_RIGHT)
                     {
                         list.add(TE_ZP);
-                        list.add((TEBase) world.getTileEntity(TE.xCoord, TE.yCoord - (isTop ? 1 : -1), TE.zCoord + 1));
+                        list.add((TEBase) world.getTileEntity(TE.xCoord, TE.yCoord + neighbor_offset, TE.zCoord + 1));
                     }
                 }
                 break;
@@ -191,14 +194,14 @@ public class BlockCarpentersDoor extends BlockCoverable {
                     if (piece == Door.getPiece(TE_XN) && facing == Door.getFacing(TE_XN) && hinge == Door.HINGE_RIGHT && Door.getHinge(TE_XN) == Door.HINGE_LEFT)
                     {
                         list.add(TE_XN);
-                        list.add((TEBase) world.getTileEntity(TE.xCoord - 1, TE.yCoord - (isTop ? 1 : -1), TE.zCoord));
+                        list.add((TEBase) world.getTileEntity(TE.xCoord - 1, TE.yCoord + neighbor_offset, TE.zCoord));
                     }
                 }
                 if (TE_XP != null) {
                     if (piece == Door.getPiece(TE_XP) && facing == Door.getFacing(TE_XP) && hinge == Door.HINGE_LEFT && Door.getHinge(TE_XP) == Door.HINGE_RIGHT)
                     {
                         list.add(TE_XP);
-                        list.add((TEBase) world.getTileEntity(TE.xCoord + 1, TE.yCoord - (isTop ? 1 : -1), TE.zCoord));
+                        list.add((TEBase) world.getTileEntity(TE.xCoord + 1, TE.yCoord + neighbor_offset, TE.zCoord));
                     }
                 }
                 break;
@@ -209,14 +212,14 @@ public class BlockCarpentersDoor extends BlockCoverable {
                     if (piece == Door.getPiece(TE_XN) && facing == Door.getFacing(TE_XN) && hinge == Door.HINGE_LEFT && Door.getHinge(TE_XN) == Door.HINGE_RIGHT)
                     {
                         list.add(TE_XN);
-                        list.add((TEBase) world.getTileEntity(TE.xCoord - 1, TE.yCoord - (isTop ? 1 : -1), TE.zCoord));
+                        list.add((TEBase) world.getTileEntity(TE.xCoord - 1, TE.yCoord + neighbor_offset, TE.zCoord));
                     }
                 }
                 if (TE_XP != null) {
                     if (piece == Door.getPiece(TE_XP) && facing == Door.getFacing(TE_XP) && hinge == Door.HINGE_RIGHT && Door.getHinge(TE_XP) == Door.HINGE_LEFT)
                     {
                         list.add(TE_XP);
-                        list.add((TEBase) world.getTileEntity(TE.xCoord + 1, TE.yCoord - (isTop ? 1 : -1), TE.zCoord));
+                        list.add((TEBase) world.getTileEntity(TE.xCoord + 1, TE.yCoord + neighbor_offset, TE.zCoord));
                     }
                 }
                 break;
