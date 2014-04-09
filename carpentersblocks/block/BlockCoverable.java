@@ -569,44 +569,50 @@ public class BlockCoverable extends BlockContainer {
      */
     public boolean addHitEffects(World world, MovingObjectPosition target, EffectRenderer effectRenderer)
     {
-        TEBase TE = (TEBase) world.getTileEntity(target.blockX, target.blockY, target.blockZ);
+        TEBase TE = getTileEntity(world, target.blockX, target.blockY, target.blockZ);
         
-        int effectiveSide = BlockProperties.hasCover(TE, target.sideHit) ? target.sideHit : 6;
-        
-        ItemStack itemStack = OverlayHandler.getOverlaySideSensitive(TE, effectiveSide, target.sideHit);
-        
-        Block block = BlockProperties.toBlock(itemStack);
+        if (TE != null) {
 
-        int metadata = block instanceof BlockCoverable ? EventHandler.BLOCKICON_BASE_ID : itemStack.getItemDamage();
+	        int effectiveSide = BlockProperties.hasCover(TE, target.sideHit) ? target.sideHit : 6;
+	        
+	        ItemStack itemStack = OverlayHandler.getOverlaySideSensitive(TE, effectiveSide, target.sideHit);
+	        
+	        Block block = BlockProperties.toBlock(itemStack);
+	
+	        int metadata = block instanceof BlockCoverable ? EventHandler.BLOCKICON_BASE_ID : itemStack.getItemDamage();
+	        
+	        double xOffset = target.blockX + world.rand.nextDouble() * (block.getBlockBoundsMaxX() - block.getBlockBoundsMinX() - 0.1F * 2.0F) + 0.1F + block.getBlockBoundsMinX();
+	        double yOffset = target.blockY + world.rand.nextDouble() * (block.getBlockBoundsMaxY() - block.getBlockBoundsMinY() - 0.1F * 2.0F) + 0.1F + block.getBlockBoundsMinY();
+	        double zOffset = target.blockZ + world.rand.nextDouble() * (block.getBlockBoundsMaxZ() - block.getBlockBoundsMinZ() - 0.1F * 2.0F) + 0.1F + block.getBlockBoundsMinZ();
+	        
+	        switch (target.sideHit) {
+	            case 0:
+	                yOffset = target.blockY + block.getBlockBoundsMinY() - 0.1D;
+	                break;
+	            case 1:
+	                yOffset = target.blockY + block.getBlockBoundsMaxY() + 0.1D;
+	                break;
+	            case 2:
+	                zOffset = target.blockZ + block.getBlockBoundsMinZ() - 0.1D;
+	                break;
+	            case 3:
+	                zOffset = target.blockZ + block.getBlockBoundsMaxZ() + 0.1D;
+	                break;
+	            case 4:
+	                xOffset = target.blockX + block.getBlockBoundsMinX() - 0.1D;
+	                break;
+	            case 5:
+	                xOffset = target.blockX + block.getBlockBoundsMaxX() + 0.1D;
+	                break;
+	        }
+	        
+	        ParticleHelper.addBlockHitEffect(TE, target, xOffset, yOffset, zOffset, block, metadata, effectRenderer);
+	        
+	        return true;
         
-        double xOffset = target.blockX + world.rand.nextDouble() * (block.getBlockBoundsMaxX() - block.getBlockBoundsMinX() - 0.1F * 2.0F) + 0.1F + block.getBlockBoundsMinX();
-        double yOffset = target.blockY + world.rand.nextDouble() * (block.getBlockBoundsMaxY() - block.getBlockBoundsMinY() - 0.1F * 2.0F) + 0.1F + block.getBlockBoundsMinY();
-        double zOffset = target.blockZ + world.rand.nextDouble() * (block.getBlockBoundsMaxZ() - block.getBlockBoundsMinZ() - 0.1F * 2.0F) + 0.1F + block.getBlockBoundsMinZ();
-        
-        switch (target.sideHit) {
-            case 0:
-                yOffset = target.blockY + block.getBlockBoundsMinY() - 0.1D;
-                break;
-            case 1:
-                yOffset = target.blockY + block.getBlockBoundsMaxY() + 0.1D;
-                break;
-            case 2:
-                zOffset = target.blockZ + block.getBlockBoundsMinZ() - 0.1D;
-                break;
-            case 3:
-                zOffset = target.blockZ + block.getBlockBoundsMaxZ() + 0.1D;
-                break;
-            case 4:
-                xOffset = target.blockX + block.getBlockBoundsMinX() - 0.1D;
-                break;
-            case 5:
-                xOffset = target.blockX + block.getBlockBoundsMaxX() + 0.1D;
-                break;
         }
         
-        ParticleHelper.addBlockHitEffect(TE, target, xOffset, yOffset, zOffset, block, metadata, effectRenderer);
-        
-        return true;
+        return super.addHitEffects(world, target, effectRenderer);
     }
     
     @Override
