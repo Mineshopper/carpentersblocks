@@ -44,8 +44,6 @@ public class BlockCarpentersTorch extends BlockCoverable {
         IconRegistry.icon_torch_lit             = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "torch/torch_lit");
         IconRegistry.icon_torch_head_smoldering = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "torch/torch_head_smoldering");
         IconRegistry.icon_torch_head_unlit      = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "torch/torch_head_unlit");
-        
-        super.registerBlockIcons(iconRegister);
     }
     
     @SideOnly(Side.CLIENT)

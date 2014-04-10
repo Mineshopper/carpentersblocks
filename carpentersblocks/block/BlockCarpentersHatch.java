@@ -46,8 +46,6 @@ public class BlockCarpentersHatch extends BlockCoverable {
         IconRegistry.icon_hatch_glass        = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "hatch/hatch_glass");
         IconRegistry.icon_hatch_french_glass = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "hatch/hatch_french_glass");
         IconRegistry.icon_hatch_screen       = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "hatch/hatch_screen");
-        
-        super.registerBlockIcons(iconRegister);
     }
     
     @Override

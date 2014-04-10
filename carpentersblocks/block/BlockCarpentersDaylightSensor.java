@@ -34,8 +34,6 @@ public class BlockCarpentersDaylightSensor extends BlockCoverable {
     public void registerBlockIcons(IIconRegister iconRegister)
     {
         IconRegistry.icon_daylight_sensor_glass_top = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "daylightsensor/daylight_sensor_glass_top");
-        
-        super.registerBlockIcons(iconRegister);
     }
     
     @Override

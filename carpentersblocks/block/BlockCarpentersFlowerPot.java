@@ -52,8 +52,6 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
         
         IconRegistry.icon_flower_pot       = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "flowerpot/flower_pot");
         IconRegistry.icon_flower_pot_glass = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "flowerpot/flower_pot_glass");
-        
-        super.registerBlockIcons(iconRegister);
     }
     
     @SideOnly(Side.CLIENT)

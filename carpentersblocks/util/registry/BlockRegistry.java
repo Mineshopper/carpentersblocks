@@ -168,7 +168,6 @@ public class BlockRegistry {
             
             blockCarpentersBlock = new BlockCarpentersBlock(Material.wood)
                 .setBlockName("blockCarpentersBlock")
-                .setBlockTextureName(CarpentersBlocks.MODID + ":" + "general/quartered_frame")
                 .setHardness(0.2F)
                 .setStepSound(BlockProperties.stepSound)
                 .setCreativeTab(CarpentersBlocks.creativeTab);
@@ -190,7 +189,6 @@ public class BlockRegistry {
             
             blockCarpentersBarrier = new BlockCarpentersBarrier(Material.wood)
                 .setBlockName("blockCarpentersBarrier")
-                .setBlockTextureName(CarpentersBlocks.MODID + ":" + "general/solid")
                 .setHardness(0.2F)
                 .setStepSound(BlockProperties.stepSound)
                 .setCreativeTab(CarpentersBlocks.creativeTab);
@@ -212,7 +210,6 @@ public class BlockRegistry {
             
             blockCarpentersBed = new BlockCarpentersBed(Material.wood)
                 .setBlockName("blockCarpentersBed")
-                .setBlockTextureName(CarpentersBlocks.MODID + ":" + "general/solid")
                 .setHardness(0.4F)
                 .setStepSound(BlockProperties.stepSound);          
             
@@ -229,7 +226,6 @@ public class BlockRegistry {
             
             blockCarpentersButton = new BlockCarpentersButton(Material.circuits)
                 .setBlockName("blockCarpentersButton")
-                .setBlockTextureName(CarpentersBlocks.MODID + ":" + "general/solid")
                 .setHardness(0.2F)
                 .setStepSound(BlockProperties.stepSound)
                 .setCreativeTab(CarpentersBlocks.creativeTab)
@@ -252,7 +248,6 @@ public class BlockRegistry {
             
             blockCarpentersCollapsibleBlock = new BlockCarpentersCollapsibleBlock(Material.wood)
                 .setBlockName("blockCarpentersCollapsibleBlock")
-                .setBlockTextureName(CarpentersBlocks.MODID + ":" + "general/solid")
                 .setHardness(0.2F)
                 .setStepSound(BlockProperties.stepSound)
                 .setCreativeTab(CarpentersBlocks.creativeTab);
@@ -274,7 +269,6 @@ public class BlockRegistry {
             
             blockCarpentersDaylightSensor = new BlockCarpentersDaylightSensor(Material.wood)
                 .setBlockName("blockCarpentersDaylightSensor")
-                .setBlockTextureName(CarpentersBlocks.MODID + ":" + "general/solid")
                 .setHardness(0.2F)
                 .setStepSound(BlockProperties.stepSound)
                 .setCreativeTab(CarpentersBlocks.creativeTab);
@@ -296,7 +290,6 @@ public class BlockRegistry {
             
             blockCarpentersDoor = new BlockCarpentersDoor(Material.wood)
                 .setBlockName("blockCarpentersDoor")
-                .setBlockTextureName(CarpentersBlocks.MODID + ":" + "general/solid")
                 .setHardness(0.2F)
                 .setStepSound(BlockProperties.stepSound);
             
@@ -313,7 +306,6 @@ public class BlockRegistry {
             
             blockCarpentersFlowerPot = new BlockCarpentersFlowerPot(Material.circuits)
                 .setBlockName("blockCarpentersFlowerPot")
-                .setBlockTextureName(CarpentersBlocks.MODID + ":" + "general/solid")
                 .setHardness(0.5F)
                 .setStepSound(BlockProperties.stepSound)
                 .setCreativeTab(CarpentersBlocks.creativeTab);
@@ -335,7 +327,6 @@ public class BlockRegistry {
             
             blockCarpentersGate = new BlockCarpentersGate(Material.wood)
                 .setBlockName("blockCarpentersGate")
-                .setBlockTextureName(CarpentersBlocks.MODID + ":" + "general/solid")
                 .setHardness(0.2F)
                 .setStepSound(BlockProperties.stepSound)
                 .setCreativeTab(CarpentersBlocks.creativeTab);
@@ -357,7 +348,6 @@ public class BlockRegistry {
             
             blockCarpentersHatch = new BlockCarpentersHatch(Material.wood)
                 .setBlockName("blockCarpentersHatch")
-                .setBlockTextureName(CarpentersBlocks.MODID + ":" + "general/solid")
                 .setHardness(0.2F)
                 .setStepSound(BlockProperties.stepSound)
                 .setCreativeTab(CarpentersBlocks.creativeTab);
@@ -379,7 +369,6 @@ public class BlockRegistry {
             
             blockCarpentersLadder = new BlockCarpentersLadder(Material.wood)
                 .setBlockName("blockCarpentersLadder")
-                .setBlockTextureName(CarpentersBlocks.MODID + ":" + "general/solid")
                 .setHardness(0.2F)
                 .setStepSound(Blocks.ladder.stepSound)
                 .setCreativeTab(CarpentersBlocks.creativeTab);                
@@ -401,7 +390,6 @@ public class BlockRegistry {
             
             blockCarpentersLever = new BlockCarpentersLever(Material.circuits)
                 .setBlockName("blockCarpentersLever")
-                .setBlockTextureName(CarpentersBlocks.MODID + ":" + "general/solid")
                 .setHardness(0.2F)
                 .setStepSound(BlockProperties.stepSound)
                 .setCreativeTab(CarpentersBlocks.creativeTab);
@@ -423,7 +411,6 @@ public class BlockRegistry {
             
             blockCarpentersPressurePlate = new BlockCarpentersPressurePlate(Material.wood)
                 .setBlockName("blockCarpentersPressurePlate")
-                .setBlockTextureName(CarpentersBlocks.MODID + ":" + "general/full_frame")
                 .setHardness(0.2F)
                 .setStepSound(BlockProperties.stepSound)
                 .setCreativeTab(CarpentersBlocks.creativeTab)
@@ -446,7 +433,6 @@ public class BlockRegistry {
             
             blockCarpentersSafe = new BlockCarpentersSafe(Material.wood)
                 .setBlockName("blockCarpentersSafe")
-                .setBlockTextureName(CarpentersBlocks.MODID + ":" + "general/solid")
                 .setHardness(2.5F)
                 .setStepSound(BlockProperties.stepSound)
                 .setCreativeTab(CarpentersBlocks.creativeTab);
@@ -468,7 +454,6 @@ public class BlockRegistry {
             
             blockCarpentersSlope = new BlockCarpentersSlope(Material.wood)
                 .setBlockName("blockCarpentersSlope")
-                .setBlockTextureName(CarpentersBlocks.MODID + ":" + "general/full_frame")
                 .setHardness(0.2F)
                 .setStepSound(BlockProperties.stepSound)
                 .setCreativeTab(CarpentersBlocks.creativeTab);
@@ -490,7 +475,6 @@ public class BlockRegistry {
             
             blockCarpentersStairs = new BlockCarpentersStairs(Material.wood)
                 .setBlockName("blockCarpentersStairs")
-                .setBlockTextureName(CarpentersBlocks.MODID + ":" + "general/quartered_frame")
                 .setHardness(0.2F)
                 .setStepSound(BlockProperties.stepSound)
                 .setCreativeTab(CarpentersBlocks.creativeTab);
@@ -512,7 +496,6 @@ public class BlockRegistry {
             
             blockCarpentersTorch = new BlockCarpentersTorch(Material.circuits)
                 .setBlockName("blockCarpentersTorch")
-                .setBlockTextureName(CarpentersBlocks.MODID + ":" + "torch/torch_lit")
                 .setHardness(0.2F)
                 .setStepSound(BlockProperties.stepSound)
                 .setCreativeTab(CarpentersBlocks.creativeTab)

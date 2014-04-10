@@ -40,8 +40,6 @@ public class BlockCarpentersLever extends BlockCoverable {
     public void registerBlockIcons(IIconRegister iconRegister)
     {
         IconRegistry.icon_lever = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "lever/lever");
-        
-        super.registerBlockIcons(iconRegister);
     }
     
     @SideOnly(Side.CLIENT)

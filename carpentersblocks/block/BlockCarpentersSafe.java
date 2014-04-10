@@ -43,8 +43,6 @@ public class BlockCarpentersSafe extends BlockCoverable {
     public void registerBlockIcons(IIconRegister iconRegister)
     {
         IconRegistry.icon_safe_light = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "safe/safe_light");
-        
-        super.registerBlockIcons(iconRegister);
     }
     
     /**

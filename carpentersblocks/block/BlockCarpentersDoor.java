@@ -43,8 +43,6 @@ public class BlockCarpentersDoor extends BlockCoverable {
         IconRegistry.icon_door_glass_top           = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "door/door_glass_top"          );
         IconRegistry.icon_door_french_glass_top    = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "door/door_french_glass_top"   );
         IconRegistry.icon_door_french_glass_bottom = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "door/door_french_glass_bottom");
-        
-        super.registerBlockIcons(iconRegister);
     }
     
     @Override

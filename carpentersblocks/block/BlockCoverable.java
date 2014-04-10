@@ -60,9 +60,16 @@ public class BlockCoverable extends BlockContainer {
      * When this method is called, your block should register all the icons it needs with the given IconRegister. This
      * is the only chance you get to register icons.
      */
-    public void registerBlockIcons(IIconRegister iconRegister)
+    public void registerBlockIcons(IIconRegister iconRegister) { }
+    
+    @SideOnly(Side.CLIENT)
+    /**
+     * Returns a base icon that doesn't rely on blockIcon, which
+     * is set prior to texture stitch events.
+     */
+    protected IIcon getIcon()
     {
-        super.registerBlockIcons(iconRegister);
+    	return IconRegistry.icon_solid;
     }
     
     @SideOnly(Side.CLIENT)
@@ -75,7 +82,7 @@ public class BlockCoverable extends BlockContainer {
     {
         switch (metadata) {
             case EventHandler.BLOCKICON_BASE_ID:
-                return blockIcon;
+                return getIcon();
             default:
                 return IconRegistry.icon_blank;
         }

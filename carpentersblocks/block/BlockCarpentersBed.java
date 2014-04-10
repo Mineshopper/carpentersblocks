@@ -45,7 +45,6 @@ public class BlockCarpentersBed extends BlockCoverable {
      */
     public void registerBlockIcons(IIconRegister iconRegister)
     {
-        // Bed design icons
         for (int numIcon = 0; numIcon < BedDesignHandler.maxNum; ++numIcon) {
             if (BedDesignHandler.hasPillow[numIcon]) {
                 IconRegistry.icon_bed_pillow_custom[numIcon] = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "bed/design_" + numIcon + "/pillow");
@@ -53,8 +52,6 @@ public class BlockCarpentersBed extends BlockCoverable {
         }
         
         IconRegistry.icon_bed_pillow = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "bed/bed_pillow");
-        
-        super.registerBlockIcons(iconRegister);
     }
     
     @Override
