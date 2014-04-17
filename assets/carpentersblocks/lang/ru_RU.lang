@@ -8,6 +8,7 @@ item.itemCarpentersHammer.name=Молоток плотника
 item.itemCarpentersChisel.name=Стамеска плотника
 item.itemCarpentersDoor.name=Дверь плотника
 item.itemCarpentersBed.name=Кровать плотника
+item.itemCarpentersTile.name=Плитка плотника
 
 # BLOCKS
 tile.blockCarpentersBarrier.name=Забор плотника
@@ -22,11 +23,18 @@ tile.blockCarpentersHatch.name=Люк плотника
 tile.blockCarpentersLadder.name=Лестница плотника
 tile.blockCarpentersLever.name=Рычаг плотника
 tile.blockCarpentersPressurePlate.name=Нажимная пластина плотника
-tile.blockCarpentersSlope.name=Склон плотника
+tile.blockCarpentersSlope.wedge.name=Прямой склон плотника
+tile.blockCarpentersSlope.obliqueInterior.name=Косой внутренний склон плотника
+tile.blockCarpentersSlope.obliqueExterior.name=Косой внешний склон плотника
+tile.blockCarpentersSlope.prism.name=Призмовидный склон плотника
+tile.blockCarpentersSlope.prismWedge.name=Призмовидный плоский склон плотника
 tile.blockCarpentersStairs.name=Ступеньки плотника
 tile.blockCarpentersTorch.name=Факел плотника
 tile.blockCarpentersSafe.name=Сейф плотника
 tile.blockCarpentersFlowerPot.name=Цветочный горшок плотника
+
+# ENTITIES
+entity.CarpentersTile.name=Плитка плотника
 
 # MESSAGES
 message.polarity_pos.name=ПОЛЯРНОСТЬ: Нормальный выходной сингнал красного камня.
