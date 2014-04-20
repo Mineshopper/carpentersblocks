@@ -46,21 +46,6 @@ public class BlockCarpentersSafe extends BlockCoverable {
     }
     
     /**
-     * Returns whether player is allowed to make alterations to this block.
-     * This does not include block activation.  For that, use canPlayerActivate().
-     */
-    @Override
-    protected boolean canPlayerEdit(TEBase TE, EntityPlayer entityPlayer)
-    {
-        if (PlayerPermissions.isOp(entityPlayer)) {
-            return true;
-        } else {
-            return entityPlayer.canPlayerEdit(TE.xCoord, TE.yCoord, TE.zCoord, 0, entityPlayer.getHeldItem()) &&
-                   TE.isOwner(entityPlayer);
-        }
-    }
-    
-    /**
      * Returns whether player is allowed to activate this block.
      */
     @Override

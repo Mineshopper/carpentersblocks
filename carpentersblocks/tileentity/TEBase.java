@@ -2,7 +2,6 @@ package carpentersblocks.tileentity;
 
 import carpentersblocks.util.IProtected;
 import net.minecraft.block.Block;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -148,14 +147,6 @@ public class TEBase extends TileEntity implements IProtected {
     public boolean shouldRefresh(Block oldBlock, Block newBlock, int oldMeta, int newMeta, World world, int x, int y, int z)
     {
         return oldBlock != newBlock;
-    }
-    
-    /**
-     * Returns true if entityPlayer is owner of tile entity.
-     */
-    public boolean isOwner(EntityPlayer entityPlayer)
-    {
-        return owner.equals(entityPlayer.getDisplayName()) || owner.equals("");
     }
     
     /**

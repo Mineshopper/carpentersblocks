@@ -92,7 +92,7 @@ public class BlockCarpentersDoor extends BlockCoverable {
         
         return true;
     }
-    
+
     @Override
     /**
      * Opens or closes door on right click.

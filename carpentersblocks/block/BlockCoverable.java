@@ -775,15 +775,15 @@ public class BlockCoverable extends BlockContainer {
      */
     public float getExplosionResistance(Entity entity, World world, int x, int y, int z, double explosionX, double explosionY, double explosionZ)
     {
-        TEBase TE = getTileEntity(world, x, y, z);
-        
-        if (TE != null) {
-            if (BlockProperties.hasCover(TE, 6)) {
-                return BlockProperties.toBlock(BlockProperties.getCover(TE, 6)).getExplosionResistance(entity);
-            }
-        }
-        
-        return this.getExplosionResistance(entity);
+    	TEBase TE = getTileEntity(world, x, y, z);
+
+    	if (TE != null) {
+    		if (BlockProperties.hasCover(TE, 6)) {
+    			return BlockProperties.toBlock(BlockProperties.getCover(TE, 6)).getExplosionResistance(entity);
+    		}
+    	}
+
+    	return this.getExplosionResistance(entity);
     }
     
     @Override
