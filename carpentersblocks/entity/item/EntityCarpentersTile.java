@@ -462,15 +462,11 @@ public class EntityCarpentersTile extends EntityBase {
                         } else {
                             setNextIcon();
                         }
-                    } else {
+                    } else if (entityPlayer.capabilities.isCreativeMode) {
                         if (!isDead) {
                             dropItem = true;
                         }
                     }
-
-                } else if (entityPlayer.capabilities.isCreativeMode) {
-
-                    dropItem = true;
 
                 }
 
