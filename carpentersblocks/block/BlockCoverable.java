@@ -276,7 +276,7 @@ public class BlockCoverable extends BlockContainer {
     
                                 Block block = BlockProperties.toBlock(itemStack);
     
-                                /* Will handle blocks that save directions using only x and y axes (pumpkin) */
+                                /* Will handle blocks that save directions using only y axis (pumpkin) */
                                 int metadata = block instanceof BlockDirectional ? MathHelper.floor_double(entityPlayer.rotationYaw * 4.0F / 360.0F + 2.5D) & 3 : itemStack.getItemDamage();
     
                                 /* Will handle blocks that save directions using all axes (logs, quartz) */
@@ -326,7 +326,7 @@ public class BlockCoverable extends BlockContainer {
     
                 } else {
     
-                    BlockProperties.playBlockSound(TE, itemStack);
+                    BlockProperties.playBlockSound(TE.getWorldObj(), BlockProperties.getCover(TE, 6), TE.xCoord, TE.yCoord, TE.zCoord, true);
                     damageItemWithChance(world, entityPlayer);
                     onNeighborBlockChange(world, x, y, z, this);
                     world.notifyBlocksOfNeighborChange(x, y, z, this);

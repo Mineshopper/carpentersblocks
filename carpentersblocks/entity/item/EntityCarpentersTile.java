@@ -212,12 +212,12 @@ public class EntityCarpentersTile extends EntityBase {
 
     public void playTileSound()
     {
-        BlockProperties.playBlockSound(worldObj, new ItemStack(Blocks.hardened_clay), (int) Math.floor(posX), (int) Math.floor(posY), (int) Math.floor(posZ));
+        BlockProperties.playBlockSound(worldObj, new ItemStack(Blocks.hardened_clay), (int) Math.floor(posX), (int) Math.floor(posY), (int) Math.floor(posZ), true);
     }
 
     public void playDyeSound()
     {
-        BlockProperties.playBlockSound(worldObj, new ItemStack(Blocks.sand), (int) Math.floor(posX), (int) Math.floor(posY), (int) Math.floor(posZ));
+        BlockProperties.playBlockSound(worldObj, new ItemStack(Blocks.sand), (int) Math.floor(posX), (int) Math.floor(posY), (int) Math.floor(posZ), true);
     }
 
     public double[] getBounds()

@@ -5,7 +5,6 @@ import net.minecraft.block.Block.SoundType;
 import net.minecraft.block.BlockBreakable;
 import net.minecraft.block.BlockQuartz;
 import net.minecraft.block.BlockRotatedPillar;
-import net.minecraft.block.BlockSlab;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -170,24 +169,18 @@ public class BlockProperties {
         return block instanceof BlockQuartz ||
                block instanceof BlockRotatedPillar;
     }
-    
+
     /**
      * Plays block sound.
+     * Reduced volume is for damaging a block, versus full volume for placement or destruction.
      */
-    public static void playBlockSound(TEBase TE, ItemStack itemStack)
+    public static void playBlockSound(World world, ItemStack itemStack, int x, int y, int z, boolean reducedVolume)
     {
-        playBlockSound(TE.getWorldObj(), itemStack, TE.xCoord, TE.yCoord, TE.zCoord);
-    }
-    
-    /**
-     * Plays block break sound.
-     */
-    public static void playBlockSound(World world, ItemStack itemStack, int x, int y, int z)
-    {
-        Block block = toBlock(itemStack);
-        SoundType soundType = block != null ? block.stepSound : Blocks.sand.stepSound;
+        SoundType soundType = toBlock(itemStack).stepSound;
+        float volume = (soundType.getVolume() + 1.0F) / (reducedVolume ? 8.0F : 2.0F);
+        float pitch = soundType.getPitch() * 0.8F;
         
-        world.playSoundEffect(x + 0.5F, y + 0.5F, z + 0.5F, soundType.func_150496_b(), (soundType.getVolume() + 1.0F) / 2.0F, soundType.getPitch() * 0.8F);
+        world.playSoundEffect(x + 0.5F, y + 0.5F, z + 0.5F, soundType.func_150496_b(), volume, pitch);
     }
     
     /**
@@ -269,7 +262,6 @@ public class BlockProperties {
             	return false;
             } else {
             	return block.isOpaqueCube() ||
-                       block instanceof BlockSlab ||
                        block instanceof BlockBreakable;
             }
             
