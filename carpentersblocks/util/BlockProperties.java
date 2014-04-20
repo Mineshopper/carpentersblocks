@@ -3,7 +3,6 @@ package carpentersblocks.util;
 import net.minecraft.block.Block;
 import net.minecraft.block.Block.SoundType;
 import net.minecraft.block.BlockBreakable;
-import net.minecraft.block.BlockPane;
 import net.minecraft.block.BlockQuartz;
 import net.minecraft.block.BlockRotatedPillar;
 import net.minecraft.block.BlockSlab;
@@ -17,14 +16,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+import carpentersblocks.CarpentersBlocks;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.handler.DyeHandler;
 import carpentersblocks.util.handler.OverlayHandler;
 
 public class BlockProperties {
-    
-    // TODO: Change to custom sound for PlaySoundEvent overrides when available
-    public final static SoundType stepSound = Blocks.planks.stepSound;//new SoundType(CarpentersBlocks.MODID, 1.0F, 1.0F);
+
+    public final static SoundType stepSound = new SoundType(CarpentersBlocks.MODID, 1.0F, 1.0F);
     
     /**
      * Sets host metadata to match ItemStack damage value.
@@ -262,17 +261,18 @@ public class BlockProperties {
      */
     public static boolean isCover(ItemStack itemStack)
     {
-        if (itemStack.getItem() instanceof ItemBlock && !isOverlay(itemStack))
-        {
+        if (itemStack.getItem() instanceof ItemBlock && !isOverlay(itemStack)) {
+        	
             Block block = Block.getBlockFromItem(itemStack.getItem());
             
-            return !block.hasTileEntity(itemStack.getItemDamage()) &&
-                    (
-                            block.renderAsNormalBlock() ||
-                            block instanceof BlockSlab ||
-                            block instanceof BlockPane ||
-                            block instanceof BlockBreakable
-                            );
+            if (block.hasTileEntity(itemStack.getItemDamage())) {
+            	return false;
+            } else {
+            	return block.isOpaqueCube() ||
+                       block instanceof BlockSlab ||
+                       block instanceof BlockBreakable;
+            }
+            
         }
         
         return false;
