@@ -43,7 +43,25 @@ public class PacketHandler {
             	Block block = entityPlayer.worldObj.getBlock(x, y, z);
             	
             	if (block != Blocks.air) {
-            		block.onBlockActivated(entityPlayer.worldObj, x, y, z, entityPlayer, side, 1.0F, 1.0F, 1.0F);
+            		
+            		boolean result = block.onBlockActivated(entityPlayer.worldObj, x, y, z, entityPlayer, side, 1.0F, 1.0F, 1.0F);
+            		
+                    if (!result) {
+                    	
+                    	ItemStack itemStack = entityPlayer.getHeldItem();
+
+                        if (itemStack != null) {
+                        	
+                        	itemStack.tryPlaceItemIntoWorld(entityPlayer, entityPlayer.worldObj, x, y, z, side, 1.0F, 1.0F, 1.0F);
+                        	
+                            if (!entityPlayer.capabilities.isCreativeMode && --itemStack.stackSize <= 0) {
+                                entityPlayer.inventory.setInventorySlotContents(entityPlayer.inventory.currentItem, (ItemStack)null);
+                            }
+                            
+	                    }
+                        
+                    }
+            		
             	}
             	
                 break;

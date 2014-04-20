@@ -81,9 +81,12 @@ public class EventHandler {
 	                boolean toolEquipped = itemStack != null && (itemStack.getItem() instanceof ICarpentersHammer || itemStack.getItem() instanceof ICarpentersChisel);
 	                	            	
 	                /*
-	                 * Creative mode won't call onBlockClicked() because it will try to destroy the block.
+	                 * Creative mode doesn't normally invoke onBlockClicked(), but rather it tries
+	                 * to destroy the block.
+	                 * 
 	                 * We'll invoke it here when a Carpenter's tool is being held.
 	                 */
+	                
 	                if (toolEquipped && eventEntityPlayer.capabilities.isCreativeMode) {
 	                    block.onBlockClicked(eventEntityPlayer.worldObj, event.x, event.y, event.z, eventEntityPlayer);
 	                }
@@ -91,11 +94,26 @@ public class EventHandler {
 	            	break;
 	            case RIGHT_CLICK_BLOCK:
 	            	
-	                /* onBlockActivated() isn't called if the player is sneaking, so do it here. */
+	                /*
+	                 * To enable full functionality with the hammer, we need to override pretty
+	                 * much everything that happens on sneak right-click.
+	                 * 
+	                 * onBlockActivated() isn't called if the player is sneaking, so do it here.
+	                 * 
+				     * The server will receive the packet and attempt to alter the Carpenter's
+				     * block.  If nothing changes, vanilla behavior will resume - the Item(Block)
+				     * in the ItemStack (if applicable) will be created adjacent to block.
+	                 */
        
 	            	if (eventEntityPlayer.isSneaking()) {
-	            		event.setCanceled(true);
-	            		PacketHandler.sendPacketToServer(PacketHandler.PACKET_BLOCK_ACTIVATED, event.x, event.y, event.z, event.face);
+	            		
+	            		if (!(itemStack != null && BlockProperties.isCover(itemStack))) {
+	            			
+		            		event.setCanceled(true);
+		            		PacketHandler.sendPacketToServer(PacketHandler.PACKET_BLOCK_ACTIVATED, event.x, event.y, event.z, event.face);
+		            		
+		            	}
+	            		
 	            	}
 
 	            	break;
