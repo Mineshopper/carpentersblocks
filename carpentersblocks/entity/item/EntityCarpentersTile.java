@@ -447,7 +447,7 @@ public class EntityCarpentersTile extends EntityBase {
 
             boolean dropItem = false;
 
-            if (entity instanceof EntityPlayer) {
+            if (entity instanceof EntityPlayer && PlayerPermissions.canPlayerEdit(this, MathHelper.floor_double(posX), MathHelper.floor_double(posY), MathHelper.floor_double(posZ), (EntityPlayer) entity)) {
 
                 EntityPlayer entityPlayer = (EntityPlayer) entity;
                 ItemStack itemStack = entityPlayer.getHeldItem();

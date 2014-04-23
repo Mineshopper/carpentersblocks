@@ -260,7 +260,7 @@ public class BlockCarpentersSafe extends BlockCoverable {
     {
         TEBase TE = (TEBase) world.getTileEntity(x, y, z);
         
-        if (Safe.isOpen(TE) || !canPlayerEdit(TE, entityPlayer)) {
+        if (Safe.isOpen(TE) || !PlayerPermissions.canPlayerEdit(TE, TE.xCoord, TE.yCoord, TE.zCoord, entityPlayer)) {
             return -1; // Unbreakable
         } else {
             return super.getPlayerRelativeBlockHardness(entityPlayer, world, x, y, z);

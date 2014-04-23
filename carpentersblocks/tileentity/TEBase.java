@@ -146,6 +146,17 @@ public class TEBase extends TileEntity implements IProtected {
     @Override
     public boolean shouldRefresh(Block oldBlock, Block newBlock, int oldMeta, int newMeta, World world, int x, int y, int z)
     {
+    	/*
+    	 * This is a curious method.
+    	 * 
+    	 * Essentially, when doing most block logic server-side, changes
+    	 * to blocks will momentarily "flash" to their default state
+    	 * when rendering client-side.  This is most noticeable when adding
+    	 * or removing covers for the first time.
+    	 * 
+    	 * Making the tile entity refresh only when the block is first created
+    	 * is not only reasonable, but fixes this behavior.
+    	 */
         return oldBlock != newBlock;
     }
     

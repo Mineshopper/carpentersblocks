@@ -169,18 +169,6 @@ public class BlockCarpentersBlock extends BlockCoverable {
      */
     public boolean isBlockNormalCube()
     {
-        /*
-        if (getTileEntity(world, x, y, z)) {
-            TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
-            return BlockProperties.getData(TE) == Slab.BLOCK_FULL;
-        }
-         */
-        
-        /*
-         * Need to implement this for the full version of Carpenter's Block
-         * THen do a partial implementation with pieces that can shrink from any direction.
-         */
-        
         return false;
     }
     

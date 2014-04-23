@@ -9,6 +9,7 @@ import java.io.IOException;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.network.play.client.C17PacketCustomPayload;
@@ -50,7 +51,7 @@ public class PacketHandler {
                     	
                     	ItemStack itemStack = entityPlayer.getHeldItem();
 
-                        if (itemStack != null) {
+                        if (itemStack != null && itemStack.getItem() instanceof ItemBlock) {
                         	
                         	itemStack.tryPlaceItemIntoWorld(entityPlayer, entityPlayer.worldObj, x, y, z, side, 1.0F, 1.0F, 1.0F);
                         	
