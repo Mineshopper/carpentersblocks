@@ -49,7 +49,7 @@ public class FeatureRegistry {
         enableTorchWeatherEffects = torchWeatherEffectsProp.getBoolean(enableTorchWeatherEffects);
 
         Property overlayList = config.get("overlays", "Overlay Items", new String[] { "item.seeds:grass", "item.snowball:snow", "item.string:web", "tile.vine:vine", "item.wheat:hay", "tile.mushroom:mycelium" });
-        overlayList.comment = "This maps items that can be used as overlays.\nItems are prefixed with unlocalized names (get these from en_US.lang from resource jar)\nOverlay prefixes are :grass, :snow, :web, :vine, :hay, :mycelium";
+        overlayList.comment = "This maps items that can be used as overlays.\nItems are prefixed with unlocalized names (get these from en_US.lang from resource jar)\nOverlay suffixes are :grass, :snow, :web, :vine, :hay, :mycelium";
         overlay_list = overlayList.getStringList();
     }
     
