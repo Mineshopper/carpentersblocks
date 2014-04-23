@@ -147,15 +147,6 @@ public class BlockCoverable extends BlockContainer {
     }
 
     /**
-     * Returns whether player is allowed to make alterations to this block.
-     * This does not include block activation.  For that, use canPlayerActivate().
-     */
-    protected boolean canPlayerEdit(TEBase TE, EntityPlayer entityPlayer)
-    {
-        return PlayerPermissions.canPlayerEdit(TE, TE.xCoord, TE.yCoord, TE.zCoord, entityPlayer);
-    }
-    
-    /**
      * Returns whether player is allowed to activate this block.
      */
     protected boolean canPlayerActivate(TEBase TE, EntityPlayer entityPlayer)
@@ -171,7 +162,7 @@ public class BlockCoverable extends BlockContainer {
     {
         TEBase TE = (TEBase) world.getTileEntity(x, y, z);
         
-        if (!world.isRemote && canPlayerEdit(TE, entityPlayer)) {
+        if (!world.isRemote && PlayerPermissions.canPlayerEdit(TE, TE.xCoord, TE.yCoord, TE.zCoord, entityPlayer)) {
             
             ItemStack itemStack = entityPlayer.getCurrentEquippedItem();
             
@@ -256,7 +247,7 @@ public class BlockCoverable extends BlockContainer {
     
                 preOnBlockActivated(TE, entityPlayer, side, hitX, hitY, hitZ, altered, decInv);
 
-                if (canPlayerEdit(TE, entityPlayer)) {
+                if (PlayerPermissions.canPlayerEdit(TE, TE.xCoord, TE.yCoord, TE.zCoord, entityPlayer)) {
     
                     if (!altered.contains(true)) {
     
@@ -540,7 +531,7 @@ public class BlockCoverable extends BlockContainer {
         ItemStack itemStack = entityPlayer.getHeldItem();
         
         if (itemStack != null) {
-            Item item = entityPlayer.getHeldItem().getItem();
+            Item item = itemStack.getItem();
             return entityPlayer.capabilities.isCreativeMode && item != null && (item instanceof ICarpentersHammer || item instanceof ICarpentersChisel);
         }
         
@@ -555,7 +546,7 @@ public class BlockCoverable extends BlockContainer {
     public boolean removedByPlayer(World world, EntityPlayer entityPlayer, int x, int y, int z)
     {
         if (!suppressDestroyBlock(entityPlayer)) {
-            return world.setBlockToAir(x, y, z);
+            return super.removedByPlayer(world, entityPlayer, x, y, z);
         }
         
         return false;
@@ -1009,7 +1000,22 @@ public class BlockCoverable extends BlockContainer {
      * EntityPlayer.
      */
     public float getPlayerRelativeBlockHardness(EntityPlayer entityPlayer, World world, int x, int y, int z)
-    {
+    {                
+        /* Don't damage block if holding Carpenter's tool. */
+        
+        ItemStack itemStack = entityPlayer.getHeldItem();
+    	
+        if (itemStack != null) {
+        	
+        	Item item = itemStack.getItem();
+        	if (item instanceof ICarpentersHammer || item instanceof ICarpentersChisel) {
+        		return -1.0F;
+        	}
+        	
+        }
+        
+        /* Return block hardness of cover. */
+        
         TEBase TE = getTileEntity(world, x, y, z);
         
         if (TE != null) {

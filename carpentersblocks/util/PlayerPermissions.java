@@ -5,17 +5,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import carpentersblocks.util.registry.FeatureRegistry;
 
 public class PlayerPermissions {
-    
-	/**
-	 * Returns true if EntityPlayer is operator or owner of IProtected object.
-	 */
-	private static boolean isOwner(IProtected object, EntityPlayer entityPlayer)
-	{
-		String owner = object.getOwner();
-		
-		return owner.equals(entityPlayer.getDisplayName()) || owner.equals("") || isOp(entityPlayer);
-	}
-	
+
     /**
      * Returns true if player is operator.
      * Can only return true if called server-side.
@@ -37,9 +27,10 @@ public class PlayerPermissions {
         if (isOp(entityPlayer)) {
             return true;
         } else if (FeatureRegistry.enableOwnership) {
-            return isOwner(object, entityPlayer);
+    		String owner = object.getOwner();
+    		return owner.equals(entityPlayer.getDisplayName());
         } else {
-            return entityPlayer.canPlayerEdit(x, y, z, 0, entityPlayer.getHeldItem());
+        	return entityPlayer.canPlayerEdit(x, y, z, 0, entityPlayer.getHeldItem());
         }
     }
         
