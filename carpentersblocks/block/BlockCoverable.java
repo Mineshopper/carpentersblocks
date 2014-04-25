@@ -131,18 +131,34 @@ public class BlockCoverable extends BlockContainer {
     }
     
     /**
+     * Returns tile entity only if the block matches, otherwise null.
+     */
+    protected TEBase getTileEntityStrict(IBlockAccess world, int x, int y, int z)
+    {
+    	if (world.getBlock(x, y, z).equals(this)) {
+    		return getTileEntity(world, x, y, z);
+    	} else {
+    		return null;
+    	}
+    }
+    
+    /**
      * Returns tile entity if this block is valid, otherwise null.
      * Always grab it from here then cast it to the type you need
      * after verifying the block is what you're expecting.
+     * 
+     * This is used broadly when detecting nearby Carpenter's blocks
+     * for duplicating adjacent block properties like chisel patterns,
+     * color, etc.
      */
     protected TEBase getTileEntity(IBlockAccess world, int x, int y, int z)
     {
         TileEntity TE = world.getTileEntity(x, y, z);
         
         if (TE != null && TE instanceof TEBase) {
-            return (TEBase) TE;
+        	return (TEBase) TE;
         } else {
-            return null;
+        	return null;
         }
     }
 

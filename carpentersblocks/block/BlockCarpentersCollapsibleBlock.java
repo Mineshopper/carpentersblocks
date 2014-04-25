@@ -157,7 +157,7 @@ public class BlockCarpentersCollapsibleBlock extends BlockCoverable {
      */
     public boolean isSideSolid(IBlockAccess world, int x, int y, int z, ForgeDirection side)
     {
-        TEBase TE = getTileEntity(world, x, y, z);
+        TEBase TE = getTileEntityStrict(world, x, y, z);
         
         if (TE != null) {
             
