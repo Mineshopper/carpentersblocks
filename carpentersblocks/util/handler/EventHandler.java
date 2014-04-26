@@ -107,12 +107,10 @@ public class EventHandler {
        
 	            	if (eventEntityPlayer.isSneaking()) {
 	            		
-	            		if (!(itemStack != null && BlockProperties.isCover(itemStack))) {
-	            			
+	            		if (!(itemStack != null && itemStack.getItem() instanceof ItemBlock && !BlockProperties.isOverlay(itemStack))) {
 		            		event.setCanceled(true);
 		            		PacketHandler.sendPacketToServer(PacketHandler.PACKET_BLOCK_ACTIVATED, event.x, event.y, event.z, event.face);
-		            		
-		            	}
+	            		}
 	            		
 	            	}
 

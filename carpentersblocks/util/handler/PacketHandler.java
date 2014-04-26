@@ -29,13 +29,39 @@ public class PacketHandler {
     {
         ByteBufInputStream bbis = new ByteBufInputStream(event.packet.payload());
         EntityPlayer entityPlayer = ((NetHandlerPlayServer) event.handler).playerEntity;
+        ItemStack itemStack = entityPlayer.getHeldItem();
         
         switch (bbis.readInt()) {
             case PACKET_SLOPE_SELECT:
-                slopeSelect(entityPlayer, bbis.readBoolean());
-                break;
-            case PACKET_BLOCK_ACTIVATED:
+            {
+            	boolean incDamage = bbis.readBoolean();
             	
+                if (itemStack != null) {
+
+                    if (incDamage) {
+
+                        if (itemStack.getItemDamage() >= BlockCarpentersSlope.slopeType.length - 1) {
+                            itemStack.setItemDamage(0);
+                        } else {
+                            itemStack.setItemDamage(itemStack.getItemDamage() + 1);
+                        }
+
+                    } else {
+
+                        if (itemStack.getItemDamage() <= 0) {
+                            itemStack.setItemDamage(BlockCarpentersSlope.slopeType.length - 1);
+                        } else {
+                            itemStack.setItemDamage(itemStack.getItemDamage() - 1);
+                        }
+
+                    }
+
+                }
+                
+                break;
+            }
+            case PACKET_BLOCK_ACTIVATED:
+            {
             	int x = bbis.readInt();
             	int y = bbis.readInt();
             	int z = bbis.readInt();
@@ -48,8 +74,6 @@ public class PacketHandler {
             		boolean result = block.onBlockActivated(entityPlayer.worldObj, x, y, z, entityPlayer, side, 1.0F, 1.0F, 1.0F);
             		
                     if (!result) {
-                    	
-                    	ItemStack itemStack = entityPlayer.getHeldItem();
 
                         if (itemStack != null && itemStack.getItem() instanceof ItemBlock) {
                         	
@@ -66,8 +90,8 @@ public class PacketHandler {
             	}
             	
                 break;
-            default:
-                break;
+            }
+            default: {}
         }
 
         bbis.close();
@@ -97,33 +121,6 @@ public class PacketHandler {
                 break;
             default:
                 break;
-        }
-    }
-    
-    private void slopeSelect(EntityPlayer entityPlayer, boolean incDamage)
-    {
-        ItemStack itemStack = entityPlayer.getHeldItem();
-
-        if (itemStack != null) {
-
-            if (incDamage) {
-
-                if (itemStack.getItemDamage() >= BlockCarpentersSlope.slopeType.length - 1) {
-                    itemStack.setItemDamage(0);
-                } else {
-                    itemStack.setItemDamage(itemStack.getItemDamage() + 1);
-                }
-
-            } else {
-
-                if (itemStack.getItemDamage() <= 0) {
-                    itemStack.setItemDamage(BlockCarpentersSlope.slopeType.length - 1);
-                } else {
-                    itemStack.setItemDamage(itemStack.getItemDamage() - 1);
-                }
-
-            }
-
         }
     }
     
