@@ -48,7 +48,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockCoverable extends BlockContainer {
-    
+
     public BlockCoverable(Material material)
     {
         super(material);
@@ -260,7 +260,7 @@ public class BlockCoverable extends BlockContainer {
     
                 /* Sides 0-5 are side covers, and 6 is the base block. */
                 int effectiveSide = BlockProperties.hasCover(TE, side) ? side : 6;
-    
+
                 preOnBlockActivated(TE, entityPlayer, side, hitX, hitY, hitZ, altered, decInv);
 
                 if (PlayerPermissions.canPlayerEdit(TE, TE.xCoord, TE.yCoord, TE.zCoord, entityPlayer)) {

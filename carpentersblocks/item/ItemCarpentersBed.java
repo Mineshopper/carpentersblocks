@@ -2,7 +2,6 @@ package carpentersblocks.item;
 
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -14,7 +13,7 @@ import carpentersblocks.util.registry.BlockRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class ItemCarpentersBed extends Item {
+public class ItemCarpentersBed extends ItemBlock {
     
     public ItemCarpentersBed()
     {
@@ -51,18 +50,17 @@ public class ItemCarpentersBed extends Item {
             int z_offset = z - dir.offsetZ;
             
             if (
-                    entityPlayer.canPlayerEdit(x, y, z, side, itemStack)                          &&
-                    entityPlayer.canPlayerEdit(x_offset, y, z_offset, side, itemStack)            &&
-                    world.isAirBlock(x, y, z)                                                     &&
-                    world.isAirBlock(x_offset, y, z_offset)                                       &&
-                    World.doesBlockHaveSolidTopSurface(world, x, y - 1, z)                        &&
-                    World.doesBlockHaveSolidTopSurface(world, x_offset, y - 1, z_offset)          &&
-                    world.setBlock(x, y, z, BlockRegistry.blockCarpentersBed, 0, 4)               &&
-                    world.setBlock(x_offset, y, z_offset, BlockRegistry.blockCarpentersBed, 0, 4)
+                    entityPlayer.canPlayerEdit(x, y, z, side, itemStack)                                                &&
+                    entityPlayer.canPlayerEdit(x_offset, y, z_offset, side, itemStack)                                  &&
+                    world.isAirBlock(x, y, z)                                                                           &&
+                    world.isAirBlock(x_offset, y, z_offset)                                                             &&
+                    World.doesBlockHaveSolidTopSurface(world, x, y - 1, z)                                              &&
+                    World.doesBlockHaveSolidTopSurface(world, x_offset, y - 1, z_offset)                                &&
+                    placeBlock(world, BlockRegistry.blockCarpentersBed, entityPlayer, itemStack, x, y, z)               &&
+                    placeBlock(world, BlockRegistry.blockCarpentersBed, entityPlayer, itemStack, x_offset, y, z_offset)
                     )
             {
-                BlockProperties.playBlockSound(world, new ItemStack(BlockRegistry.blockCarpentersBed), x, y, z, false);
-                
+
                 /* Foot of bed. */
                 
                 TEBase TE_foot = (TEBase) world.getTileEntity(x, y, z);
@@ -73,8 +71,13 @@ public class ItemCarpentersBed extends Item {
                 TEBase TE_head = (TEBase) world.getTileEntity(x_offset, y, z_offset);
                 Bed.setHeadOfBed(TE_head);
                 Bed.setDirection(TE_head, facing);
+
+                BlockProperties.playBlockSound(world, new ItemStack(BlockRegistry.blockCarpentersBed), x, y, z, false);
+
+                if (!entityPlayer.capabilities.isCreativeMode && --itemStack.stackSize <= 0) {
+                    entityPlayer.inventory.setInventorySlotContents(entityPlayer.inventory.currentItem, (ItemStack)null);
+                }
                 
-                --itemStack.stackSize;
                 return true;
             }
             

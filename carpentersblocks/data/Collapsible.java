@@ -11,7 +11,7 @@ public class Collapsible {
      * [0000]  [0000]  [0000]  [0000]
      * XZNN    XZNP    XZPN    XZPP
      */
-    
+
     public final static int QUAD_XZNN = 0;
     public final static int QUAD_XZNP = 1;
     public final static int QUAD_XZPN = 2;

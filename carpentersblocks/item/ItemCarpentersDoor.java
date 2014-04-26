@@ -3,7 +3,6 @@ package carpentersblocks.item;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
@@ -15,7 +14,7 @@ import carpentersblocks.util.registry.BlockRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class ItemCarpentersDoor extends Item {
+public class ItemCarpentersDoor extends ItemBlock {
     
     public ItemCarpentersDoor()
     {
@@ -42,20 +41,18 @@ public class ItemCarpentersDoor extends Item {
             ++y;
             
             if (
-                    y < 255                                                              &&
-                    entityPlayer.canPlayerEdit(x, y, z, side, itemStack)                 &&
-                    entityPlayer.canPlayerEdit(x, y + 1, z, side, itemStack)             &&
-                    world.isAirBlock(x, y, z)                                            &&
-                    world.isAirBlock(x, y + 1, z)                                        &&
-                    World.doesBlockHaveSolidTopSurface(world, x, y - 1, z)               &&
-                    world.setBlock(x, y, z, BlockRegistry.blockCarpentersDoor, 0, 4)     &&
-                    world.setBlock(x, y + 1, z, BlockRegistry.blockCarpentersDoor, 0, 4)
+                    y < 255                                                                                    &&
+                    entityPlayer.canPlayerEdit(x, y, z, side, itemStack)                                       &&
+                    entityPlayer.canPlayerEdit(x, y + 1, z, side, itemStack)                                   &&
+                    world.isAirBlock(x, y, z)                                                                  &&
+                    world.isAirBlock(x, y + 1, z)                                                              &&
+                    World.doesBlockHaveSolidTopSurface(world, x, y - 1, z)                                     &&
+                    placeBlock(world, BlockRegistry.blockCarpentersDoor, entityPlayer, itemStack, x, y, z)     &&
+                    placeBlock(world, BlockRegistry.blockCarpentersDoor, entityPlayer, itemStack, x, y + 1, z)
                     )
             {
                 int facing = MathHelper.floor_double((entityPlayer.rotationYaw + 180.0F) * 4.0F / 360.0F - 0.5D) & 3;
-                
-                BlockProperties.playBlockSound(world, new ItemStack(BlockRegistry.blockCarpentersDoor), x, y, z, false);
-                
+
                 /* Create bottom door piece. */
                 
                 TEBase TE = (TEBase) world.getTileEntity(x, y, z);
@@ -97,8 +94,13 @@ public class ItemCarpentersDoor extends Item {
                 Door.setHingeSide(TE_YP, Door.getHinge(TE));
                 Door.setPiece(TE_YP, Door.PIECE_TOP);
                 Door.setRigidity(TE_YP, Door.getRigidity(TE));
+
+                BlockProperties.playBlockSound(world, new ItemStack(BlockRegistry.blockCarpentersDoor), x, y, z, false);
+
+                if (!entityPlayer.capabilities.isCreativeMode && --itemStack.stackSize <= 0) {
+                    entityPlayer.inventory.setInventorySlotContents(entityPlayer.inventory.currentItem, (ItemStack)null);
+                }
                 
-                --itemStack.stackSize;
                 return true;
             }
             
