@@ -85,6 +85,7 @@ public class BlockHandlerCarpentersSafe extends BlockHandlerBase {
         /* Light strip */
         
         renderBlocks.setRenderBounds(0.125D, 0.125D, 0.9375D, 0.25D, 0.6875D, 1.0D);
+        rotateBounds(renderBlocks, ForgeDirection.WEST);
         super.renderInventoryBlock(Blocks.obsidian, metadata, modelID, renderBlocks);
     }
     
