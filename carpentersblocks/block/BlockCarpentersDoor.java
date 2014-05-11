@@ -132,7 +132,7 @@ public class BlockCarpentersDoor extends BlockCoverable {
         
         list.add(TE);
         
-        TEBase TE_neighbor = (TEBase) world.getTileEntity(TE.xCoord, TE.yCoord + neighbor_offset, TE.zCoord);
+        TEBase TE_neighbor = getTileEntity(world, TE.xCoord, TE.yCoord + neighbor_offset, TE.zCoord);
         
         if (TE_neighbor == null) {
         	return list;
@@ -142,10 +142,10 @@ public class BlockCarpentersDoor extends BlockCoverable {
         
         /* Begin searching for and adding other neighboring pieces. */
         
-        TEBase TE_ZN = world.getBlock(TE.xCoord, TE.yCoord, TE.zCoord - 1).equals(this) ? (TEBase) world.getTileEntity(TE.xCoord, TE.yCoord, TE.zCoord - 1) : null;
-        TEBase TE_ZP = world.getBlock(TE.xCoord, TE.yCoord, TE.zCoord + 1).equals(this) ? (TEBase) world.getTileEntity(TE.xCoord, TE.yCoord, TE.zCoord + 1) : null;
-        TEBase TE_XN = world.getBlock(TE.xCoord - 1, TE.yCoord, TE.zCoord).equals(this) ? (TEBase) world.getTileEntity(TE.xCoord - 1, TE.yCoord, TE.zCoord) : null;
-        TEBase TE_XP = world.getBlock(TE.xCoord + 1, TE.yCoord, TE.zCoord).equals(this) ? (TEBase) world.getTileEntity(TE.xCoord + 1, TE.yCoord, TE.zCoord) : null;
+        TEBase TE_ZN = getTileEntity(world, TE.xCoord, TE.yCoord, TE.zCoord - 1);
+        TEBase TE_ZP = getTileEntity(world, TE.xCoord, TE.yCoord, TE.zCoord + 1);
+        TEBase TE_XN = getTileEntity(world, TE.xCoord - 1, TE.yCoord, TE.zCoord);
+        TEBase TE_XP = getTileEntity(world, TE.xCoord + 1, TE.yCoord, TE.zCoord);
         
         switch (facing)
         {
@@ -261,57 +261,62 @@ public class BlockCarpentersDoor extends BlockCoverable {
      */
     public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
     {
-        TEBase TE = (TEBase) world.getTileEntity(x, y, z);
-        int facing = Door.getFacing(TE);
-        int hinge = Door.getHinge(TE);
-        boolean isOpen = Door.getState(TE) == Door.STATE_OPEN;
+        TEBase TE = getTileEntity(world, x, y, z);
         
-        float    x_low = 0.0F,
-                z_low = 0.0F,
-                x_high = 1.0F,
-                z_high = 1.0F;
+        if (TE != null) {
         
-        switch (facing)
-        {
-            case Door.FACING_XN:
-                if (!isOpen) {
-                    x_low = 0.8125F;
-                } else if (hinge == Door.HINGE_RIGHT) {
-                    z_high = 0.1875F;
-                } else {
-                    z_low = 0.8125F;
-                }
-                break;
-            case Door.FACING_XP:
-                if (!isOpen) {
-                    x_high = 0.1875F;
-                } else if (hinge == Door.HINGE_RIGHT) {
-                    z_low = 0.8125F;
-                } else {
-                    z_high = 0.1875F;
-                }
-                break;
-            case Door.FACING_ZN:
-                if (!isOpen) {
-                    z_low = 0.8125F;
-                } else if (hinge == Door.HINGE_RIGHT) {
-                    x_low = 0.8125F;
-                } else {
-                    x_high = 0.1875F;
-                }
-                break;
-            case Door.FACING_ZP:
-                if (!isOpen) {
-                    z_high = 0.1875F;
-                } else if (hinge == Door.HINGE_RIGHT) {
-                    x_high = 0.1875F;
-                } else {
-                    x_low = 0.8125F;
-                }
-                break;
+	        int facing = Door.getFacing(TE);
+	        int hinge = Door.getHinge(TE);
+	        boolean isOpen = Door.getState(TE) == Door.STATE_OPEN;
+	        
+	        float    x_low = 0.0F,
+	                z_low = 0.0F,
+	                x_high = 1.0F,
+	                z_high = 1.0F;
+	        
+	        switch (facing)
+	        {
+	            case Door.FACING_XN:
+	                if (!isOpen) {
+	                    x_low = 0.8125F;
+	                } else if (hinge == Door.HINGE_RIGHT) {
+	                    z_high = 0.1875F;
+	                } else {
+	                    z_low = 0.8125F;
+	                }
+	                break;
+	            case Door.FACING_XP:
+	                if (!isOpen) {
+	                    x_high = 0.1875F;
+	                } else if (hinge == Door.HINGE_RIGHT) {
+	                    z_low = 0.8125F;
+	                } else {
+	                    z_high = 0.1875F;
+	                }
+	                break;
+	            case Door.FACING_ZN:
+	                if (!isOpen) {
+	                    z_low = 0.8125F;
+	                } else if (hinge == Door.HINGE_RIGHT) {
+	                    x_low = 0.8125F;
+	                } else {
+	                    x_high = 0.1875F;
+	                }
+	                break;
+	            case Door.FACING_ZP:
+	                if (!isOpen) {
+	                    z_high = 0.1875F;
+	                } else if (hinge == Door.HINGE_RIGHT) {
+	                    x_high = 0.1875F;
+	                } else {
+	                    x_low = 0.8125F;
+	                }
+	                break;
+	        }
+	        
+	        setBlockBounds(x_low, 0.0F, z_low, x_high, 1.0F, z_high);
+        
         }
-        
-        setBlockBounds(x_low, 0.0F, z_low, x_high, 1.0F, z_high);
     }
     
     /**
@@ -365,50 +370,57 @@ public class BlockCarpentersDoor extends BlockCoverable {
      */
     public void onNeighborBlockChange(World world, int x, int y, int z, Block block)
     {
-        TEBase TE = getTileEntity(world, x, y, z);
+    	if (!world.isRemote) {
+    	
+	        TEBase TE = getTileEntity(world, x, y, z);
+	        
+	        if (TE != null) {
+            
+	            boolean isOpen = Door.getState(TE) == Door.STATE_OPEN;
+	            
+	            /*
+	             * Check if door piece is orphaned.
+	             */
+	            if (Door.getPiece(TE) == Door.PIECE_BOTTOM) {
+	                if (!world.getBlock(x, y + 1, z).equals(this)) {
+	                    world.setBlockToAir(x, y, z);
+	                    return;
+	                } else if (!World.doesBlockHaveSolidTopSurface(world, x, y - 1, z)) {
+	                    world.setBlockToAir(x, y + 1, z);
+	                    dropBlockAsItem(world, x, y, z, 0, 0);
+	                    return;
+	                }
+	            } else if (!world.getBlock(x, y - 1, z).equals(this)) {
+	                world.setBlockToAir(x, y, z);
+	                return;
+	            }
+	            
+	            /*
+	             * Create list of door pieces and check state of each so
+	             * that they act as a single entity regardless of which
+	             * door piece receives this event.
+	             */
+	            boolean isPowered = false;
+	            List<TEBase> doorPieces = getDoorPieces(TE);
+	            for (TEBase piece : doorPieces) {
+	            	if (piece != null) {
+		                if (world.isBlockIndirectlyGettingPowered(piece.xCoord, piece.yCoord, piece.zCoord)) {
+		                    isPowered = true;
+		                }
+	            	}
+	            }
+	            
+	            /*
+	             * Set block open or closed
+	             */
+	            if (block != null && block.canProvidePower() && isPowered != isOpen) {
+	                setDoorState(TE, isOpen ? Door.STATE_CLOSED : Door.STATE_OPEN);
+	            }
+	            
+	        }
         
-        if (!world.isRemote && TE != null) {
-            
-            boolean isOpen = Door.getState(TE) == Door.STATE_OPEN;
-            
-            /*
-             * Check if door piece is orphaned.
-             */
-            if (Door.getPiece(TE) == Door.PIECE_BOTTOM) {
-                if (!world.getBlock(x, y + 1, z).equals(this)) {
-                    world.setBlockToAir(x, y, z);
-                    return;
-                } else if (!World.doesBlockHaveSolidTopSurface(world, x, y - 1, z)) {
-                    world.setBlockToAir(x, y + 1, z);
-                    dropBlockAsItem(world, x, y, z, 0, 0);
-                    return;
-                }
-            } else if (!world.getBlock(x, y - 1, z).equals(this)) {
-                world.setBlockToAir(x, y, z);
-                return;
-            }
-            
-            /*
-             * Create list of door pieces and check state of each so
-             * that they act as a single entity regardless of which
-             * door piece receives this event.
-             */
-            boolean isPowered = false;
-            List<TEBase> doorPieces = getDoorPieces(TE);
-            for (TEBase piece : doorPieces) {
-                if (world.isBlockIndirectlyGettingPowered(piece.xCoord, piece.yCoord, piece.zCoord)) {
-                    isPowered = true;
-                }
-            }
-            
-            /*
-             * Set block open or closed
-             */
-            if (block != null && block.canProvidePower() && isPowered != isOpen) {
-                setDoorState(TE, isOpen ? Door.STATE_CLOSED : Door.STATE_OPEN);
-            }
-        }
-        
+    	}
+    	
         super.onNeighborBlockChange(world, x, y, z, block);
     }
     

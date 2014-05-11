@@ -1327,7 +1327,7 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
     private void prepareFaceYNeg(ItemStack itemStack, Slope slope, int x, int y, int z)
     {
         renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
-        lightingHelper.setLightingYNeg(itemStack, x, y, z);
+        lightingHelper.setupLightingYNeg(itemStack, x, y, z);
 
         switch (slope.getFace(ForgeDirection.DOWN)) {
             case WEDGE:
@@ -1347,7 +1347,7 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
     private void prepareFaceYPos(ItemStack itemStack, Slope slope, int x, int y, int z)
     {
         renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
-        lightingHelper.setLightingYPos(itemStack, x, y, z);
+        lightingHelper.setupLightingYPos(itemStack, x, y, z);
 
         switch (slope.getFace(ForgeDirection.UP)) {
             case WEDGE:
@@ -1367,7 +1367,7 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
     private void prepareFaceZNeg(ItemStack itemStack, Slope slope, int x, int y, int z)
     {
         renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
-        lightingHelper.setLightingZNeg(itemStack, x, y, z);
+        lightingHelper.setupLightingZNeg(itemStack, x, y, z);
 
         switch (slope.getFace(ForgeDirection.NORTH)) {
             case WEDGE:
@@ -1378,11 +1378,11 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
                 RenderHelper.startDrawing(TRIANGLES);
 
                 renderBlocks.setRenderBounds(0.5D, 0.0D, 0.0D, 1.0D, 0.5D, 1.0D);
-                lightingHelper.setLightingZNeg(itemStack, x, y, z);
+                lightingHelper.setupLightingZNeg(itemStack, x, y, z);
                 setIDAndRender(itemStack, TRIANGLE_ZXNP, x, y, z, NORTH);
 
                 renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 0.5D, 0.5D, 1.0D);
-                lightingHelper.setLightingZNeg(itemStack, x, y, z);
+                lightingHelper.setupLightingZNeg(itemStack, x, y, z);
                 setIDAndRender(itemStack, TRIANGLE_ZXNN, x, y, z, NORTH);
 
                 break;
@@ -1399,7 +1399,7 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
     private void prepareFaceZPos(ItemStack itemStack, Slope slope, int x, int y, int z)
     {
         renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
-        lightingHelper.setLightingZPos(itemStack, x, y, z);
+        lightingHelper.setupLightingZPos(itemStack, x, y, z);
 
         switch (slope.getFace(ForgeDirection.SOUTH)) {
             case WEDGE:
@@ -1410,11 +1410,11 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
                 RenderHelper.startDrawing(TRIANGLES);
 
                 renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 0.5D, 0.5D, 1.0D);
-                lightingHelper.setLightingZPos(itemStack, x, y, z);
+                lightingHelper.setupLightingZPos(itemStack, x, y, z);
                 setIDAndRender(itemStack, TRIANGLE_ZXPN, x, y, z, SOUTH);
 
                 renderBlocks.setRenderBounds(0.5D, 0.0D, 0.0D, 1.0D, 0.5D, 1.0D);
-                lightingHelper.setLightingZPos(itemStack, x, y, z);
+                lightingHelper.setupLightingZPos(itemStack, x, y, z);
                 setIDAndRender(itemStack, TRIANGLE_ZXPP, x, y, z, SOUTH);
 
                 break;
@@ -1431,7 +1431,7 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
     private void prepareFaceXNeg(ItemStack itemStack, Slope slope, int x, int y, int z)
     {
         renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
-        lightingHelper.setLightingXNeg(itemStack, x, y, z);
+        lightingHelper.setupLightingXNeg(itemStack, x, y, z);
 
         switch (slope.getFace(ForgeDirection.WEST)) {
             case WEDGE:
@@ -1442,11 +1442,11 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
                 RenderHelper.startDrawing(TRIANGLES);
 
                 renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 0.5D, 0.5D);
-                lightingHelper.setLightingXNeg(itemStack, x, y, z);
+                lightingHelper.setupLightingXNeg(itemStack, x, y, z);
                 setIDAndRender(itemStack, TRIANGLE_XZNN, x, y, z, WEST);
 
                 renderBlocks.setRenderBounds(0.0D, 0.0D, 0.5D, 1.0D, 0.5D, 1.0D);
-                lightingHelper.setLightingXNeg(itemStack, x, y, z);
+                lightingHelper.setupLightingXNeg(itemStack, x, y, z);
                 setIDAndRender(itemStack, TRIANGLE_XZNP, x, y, z, WEST);
 
                 break;
@@ -1463,7 +1463,7 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
     private void prepareFaceXPos(ItemStack itemStack, Slope slope, int x, int y, int z)
     {
         renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
-        lightingHelper.setLightingXPos(itemStack, x, y, z);
+        lightingHelper.setupLightingXPos(itemStack, x, y, z);
 
         switch (slope.getFace(ForgeDirection.EAST)) {
             case WEDGE:
@@ -1474,11 +1474,11 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
                 RenderHelper.startDrawing(TRIANGLES);
 
                 renderBlocks.setRenderBounds(0.0D, 0.0D, 0.5D, 1.0D, 0.5D, 1.0D);
-                lightingHelper.setLightingXPos(itemStack, x, y, z);
+                lightingHelper.setupLightingXPos(itemStack, x, y, z);
                 setIDAndRender(itemStack, TRIANGLE_XZPP, x, y, z, EAST);
 
                 renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 0.5D, 0.5D);
-                lightingHelper.setLightingXPos(itemStack, x, y, z);
+                lightingHelper.setupLightingXPos(itemStack, x, y, z);
                 setIDAndRender(itemStack, TRIANGLE_XZPN, x, y, z, EAST);
 
                 break;

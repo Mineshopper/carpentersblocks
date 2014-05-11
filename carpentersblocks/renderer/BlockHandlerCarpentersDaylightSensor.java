@@ -71,12 +71,13 @@ public class BlockHandlerCarpentersDaylightSensor extends BlockHandlerBase {
             /* Render glass inlay */
             
             ItemStack glass = new ItemStack(Blocks.glass);
+            float[] primaryRGB = { 1.0F, 1.0F, 1.0F };
             
             renderBlocks.enableAO = getEnableAO(glass);
             
             renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 0.25D, 1.0D);
-            lightingHelper.setLightingYPos(glass, x, y, z);
-            lightingHelper.colorSide(glass, Blocks.glass, x, y, z, 1, null);
+            lightingHelper.setupLightingYPos(glass, x, y, z);
+            lightingHelper.setupColor(glass, Blocks.glass, x, y, z, 1, primaryRGB, null);
             RenderHelper.renderFaceYPos(renderBlocks, x, y, z, IconRegistry.icon_daylight_sensor_glass_top);
             
             renderBlocks.enableAO = false;

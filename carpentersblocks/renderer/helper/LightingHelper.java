@@ -15,7 +15,6 @@ import net.minecraft.util.IIcon;
 import carpentersblocks.data.Slope;
 import carpentersblocks.renderer.BlockHandlerBase;
 import carpentersblocks.util.BlockProperties;
-import carpentersblocks.util.handler.DyeHandler;
 import carpentersblocks.util.handler.OptifineHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -23,43 +22,30 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class LightingHelper {
 
-    private Tessellator      tessellator = Tessellator.instance;
-    private BlockHandlerBase blockHandler;
-    private RenderBlocks     renderBlocks;
+    public  BlockHandlerBase    blockHandler;
+    private RenderBlocks        renderBlocks;
+    private boolean             hasLightnessOverride;
+    private float               lightnessOverride;
+    private boolean             hasBrightnessOverride;
+    private int                 brightnessOverride;
+    private boolean             hasColorOverride;
+    private float[]             colorOverride          = new float[3];
+    public final int            NORMAL_BRIGHTNESS      = 0xff00ff;
+    public final int            MAX_BRIGHTNESS         = 0xf000f0;
+    public static final float[] LIGHTNESS              = new float[] { 0.5F, 1.0F, 0.8F, 0.8F, 0.6F, 0.6F };
 
-    private boolean          hasLightnessOverride;
-    private float            lightnessOverride;
-
-    private boolean          hasBrightnessOverride;
-    private int              brightnessOverride;
-
-    private boolean          hasColorOverride;
-    private float[]          colorOverride     = new float[3];
-
-    public final int         NORMAL_BRIGHTNESS = 0xff00ff;
-    public final int         MAX_BRIGHTNESS    = 0xf000f0;
-
-    private final int        RED               = 0;
-    private final int        GREEN             = 1;
-    private final int        BLUE              = 2;
-    
-    public final float       LIGHTNESS_YN      = 0.5F;
-    public final float       LIGHTNESS_YP      = 1.0F;
-    public final float       LIGHTNESS_Z       = 0.8F;
-    public final float       LIGHTNESS_X       = 0.6F;
-    
-    public final float[]     LIGHTNESS         = new float[] { 0.5F, 1.0F, 0.8F, 0.8F, 0.6F, 0.6F };
-
-    /**
-     * Stores uncolored, ambient occlusion values for each corner of every face.
-     */
+    /** Ambient occlusion values for all four corners of side. */
     public float[] ao = new float[4];
     
-    /**
-     * Stores brightness for all six faces.
-     */
-    public int[] brightness = new int[6];
+    /** Brightness for side. */
+    public int brightness;
     
+    /**
+     * Class constructor specifying the {@link BlockHandlerBase}.
+	 *
+	 * @param blockHandler  the {@link BlockHandlerBase}
+     * @return the {@link LightingHelper}
+     */
     public LightingHelper(BlockHandlerBase blockHandler)
     {
         this.blockHandler = blockHandler;
@@ -68,6 +54,9 @@ public class LightingHelper {
 
     /**
      * Sets lightness override.
+	 *
+	 * @param lightness  the lightness override
+     * @return the {@link LightingHelper}
      */
     public LightingHelper setLightnessOverride(float lightness)
     {
@@ -78,6 +67,8 @@ public class LightingHelper {
 
     /**
      * Clears lightness override.
+	 *
+     * @return nothing
      */
     public void clearLightnessOverride()
     {
@@ -86,6 +77,9 @@ public class LightingHelper {
 
     /**
      * Sets brightness override.
+	 *
+	 * @param lightness  the brightness override
+     * @return the {@link LightingHelper}
      */
     public LightingHelper setBrightnessOverride(int brightness)
     {
@@ -96,6 +90,8 @@ public class LightingHelper {
 
     /**
      * Clears brightness override.
+	 *
+     * @return nothing
      */
     public void clearBrightnessOverride()
     {
@@ -103,15 +99,10 @@ public class LightingHelper {
     }
 
     /**
-     * Returns RenderBlocks instance.
-     */
-    public RenderBlocks getRenderBlocks()
-    {
-        return renderBlocks;
-    }
-
-    /**
      * Sets color override.
+	 *
+	 * @param rgb  the color override
+     * @return nothing
      */
     public void setColorOverride(float[] rgb)
     {
@@ -121,77 +112,70 @@ public class LightingHelper {
 
     /**
      * Clears color override.
+	 *
+     * @return nothing
      */
     public void clearColorOverride()
     {
         hasColorOverride = false;
     }
-    
-    /**
-     * Returns block color as integer.
-     * Optifine integration is used here.
-     */
-    public int getIntColor(Block block, int x, int y, int z)
-    {
-        if (OptifineHandler.enableOptifineIntegration) {
-            return OptifineHandler.getColorMultiplier(block, renderBlocks.blockAccess, x, y, z);
-        } else {
-            return block.colorMultiplier(renderBlocks.blockAccess, x, y, z);
-        }
-    }
 
     /**
-     * Returns RGB from integer color.
+     * Gets rgb color from integer.
+     * 
+	 * @param color  the integer color
+     * @return a float array with rgb values
      */
     public static float[] getRGB(int color)
     {
         float red = (color >> 16 & 255) / 255.0F;
         float green = (color >> 8 & 255) / 255.0F;
         float blue = (color & 255) / 255.0F;
-
-        return new float[] { red, green, blue };
+        float[] rgb = { red, green, blue };
+        
+        return rgb;
     }
     
     /**
-     * Returns float array with RGB values for block.
-     * If using our custom render helpers, be sure to apply anaglyph filter
-     * before rendering.
+     * Returns float array with RGB values for block.  Color is most
+     * commonly different for {@link Blocks#grass}
+     * <p>
+     * If using our custom render helpers, be sure to use {@link #applyAnaglyph(float[])}.
+     * 
+     * @param itemStack  the cover {@link ItemStack}
+     * @param block  the {@link Block} inside the {@link ItemStack}
+	 * @param x	 the x coordinate
+	 * @param y  the y coordinate
+	 * @param z  the z coordinate
+     * @return a float array with rgb values
      */
     public float[] getBlockRGB(ItemStack itemStack, Block block, int x, int y, int z)
     {        
         BlockProperties.setHostMetadata(blockHandler.TE, itemStack.getItemDamage());
-        int color = getIntColor(block, x, y, z);
+        int color = OptifineHandler.enableOptifineIntegration ? OptifineHandler.getColorMultiplier(block, renderBlocks.blockAccess, x, y, z) : block.colorMultiplier(renderBlocks.blockAccess, x, y, z);
         BlockProperties.resetHostMetadata(blockHandler.TE);
 
         return getRGB(color);
     }
-
+    
     /**
-     * If anaglyph is enabled, will apply a color filter to the RGB before returning it.
+     * Sets up the color using lightness, brightness, and the primary color
+     * value (usually the dye color) for the side.
+     * 
+     * @param itemStack  the cover {@link ItemStack}
+     * @param block  the {@link Block} inside the {@link ItemStack}
+	 * @param x	 the x coordinate
+	 * @param y  the y coordinate
+	 * @param z  the z coordinate
+	 * @param side  the side
+	 * @param primaryRGB  the primary color
+	 * @param icon  the icon
+     * @return a float array with rgb values
      */
-    public float[] applyAnaglyphFilter(float[] rgb)
+    public void setupColor(ItemStack itemStack, Block block, int x, int y, int z, int side, float[] primaryRGB, IIcon icon)
     {
-        if (EntityRenderer.anaglyphEnable)
-        {
-            rgb[RED]   = (rgb[RED] * 30.0F + rgb[GREEN] * 59.0F + rgb[BLUE] * 11.0F) / 100.0F;
-            rgb[GREEN] = (rgb[RED] * 30.0F + rgb[GREEN] * 70.0F) / 100.0F;
-            rgb[BLUE]  = (rgb[RED] * 30.0F + rgb[BLUE]  * 70.0F) / 100.0F;
-        }
-
-        return rgb;
-    }
-
-    /**
-     * Apply lightness and color to AO or tessellator.
-     */
-    public void colorSide(ItemStack itemStack, Block block, int x, int y, int z, int side, IIcon icon)
-    {
-        float[] dyeRGB = { 1.0F, 1.0F, 1.0F };
-
-        if (!blockHandler.suppressDyeColor && (BlockProperties.hasDye(blockHandler.TE, blockHandler.coverRendering) || blockHandler.hasDyeOverride)) {
-            dyeRGB = blockHandler.hasDyeOverride ? getRGB(blockHandler.dyeOverride) : getRGB(DyeHandler.getColor(BlockProperties.getDye(blockHandler.TE, blockHandler.coverRendering)));
-        }
-
+    	Tessellator tessellator = Tessellator.instance;
+    	float lightness = hasLightnessOverride ? lightnessOverride : LIGHTNESS[side];    	
         float[] blockRGB = getBlockRGB(itemStack, block, x, y, z);
         
         /* If block is grass, we have to apply color selectively. */
@@ -202,16 +186,20 @@ public class LightingHelper {
             boolean useGrassColor = block.equals(Blocks.grass) && (side == 1 || icon.equals(BlockGrass.getIconSideOverlay()) || posSlopedSide);
 
             if (!useGrassColor) {
-                blockRGB[RED] = blockRGB[GREEN] = blockRGB[BLUE] = 1.0F;
+                blockRGB[0] = blockRGB[1] = blockRGB[2] = 1.0F;
             }
 
         }
 
-        float lightness = hasLightnessOverride ? lightnessOverride : LIGHTNESS[side];
-
-        tessellator.setBrightness(hasBrightnessOverride ? brightnessOverride : brightness[side]);
-        float[] finalRGB = applyAnaglyphFilter(hasColorOverride ? colorOverride : new float[] { blockRGB[RED] * dyeRGB[RED], blockRGB[GREEN] * dyeRGB[GREEN], blockRGB[BLUE] * dyeRGB[BLUE] });
-
+        tessellator.setBrightness(hasBrightnessOverride ? brightnessOverride : brightness);
+        float[] finalRGB = { blockRGB[0] * primaryRGB[0], blockRGB[1] * primaryRGB[1], blockRGB[2] * primaryRGB[2] };
+        
+        if (hasColorOverride) {
+        	finalRGB = colorOverride;
+        }
+        
+        applyAnaglyph(finalRGB);
+    	
         if (renderBlocks.enableAO) {
 
             if (renderBlocks.hasOverrideBlockTexture()) {
@@ -222,9 +210,9 @@ public class LightingHelper {
 
             } else {
 
-                renderBlocks.colorRedTopLeft   = renderBlocks.colorRedBottomLeft   = renderBlocks.colorRedBottomRight   = renderBlocks.colorRedTopRight   = finalRGB[RED]   * lightness;
-                renderBlocks.colorGreenTopLeft = renderBlocks.colorGreenBottomLeft = renderBlocks.colorGreenBottomRight = renderBlocks.colorGreenTopRight = finalRGB[GREEN] * lightness;
-                renderBlocks.colorBlueTopLeft  = renderBlocks.colorBlueBottomLeft  = renderBlocks.colorBlueBottomRight  = renderBlocks.colorBlueTopRight  = finalRGB[BLUE]  * lightness;
+                renderBlocks.colorRedTopLeft   = renderBlocks.colorRedBottomLeft   = renderBlocks.colorRedBottomRight   = renderBlocks.colorRedTopRight   = finalRGB[0]   * lightness;
+                renderBlocks.colorGreenTopLeft = renderBlocks.colorGreenBottomLeft = renderBlocks.colorGreenBottomRight = renderBlocks.colorGreenTopRight = finalRGB[1] * lightness;
+                renderBlocks.colorBlueTopLeft  = renderBlocks.colorBlueBottomLeft  = renderBlocks.colorBlueBottomRight  = renderBlocks.colorBlueTopRight  = finalRGB[2]  * lightness;
 
                 renderBlocks.colorRedTopLeft       *= ao[TOP_LEFT];
                 renderBlocks.colorGreenTopLeft     *= ao[TOP_LEFT];
@@ -242,16 +230,35 @@ public class LightingHelper {
 
         } else {
 
-            tessellator.setColorOpaque_F(finalRGB[RED] * lightness, finalRGB[GREEN] * lightness, finalRGB[BLUE] * lightness);
+            tessellator.setColorOpaque_F(finalRGB[0] * lightness, finalRGB[1] * lightness, finalRGB[2] * lightness);
 
         }
     }
 
     /**
-     * Takes two brightness inputs and returns average brightness.
+     * Will apply anaglyph color multipliers to RGB float array.
+     * <p>
+     * If {@link EntityRenderer#anaglyphEnable} is false,
+     * will do nothing.
      * 
-     * This is not currently used for local methods, but may
-     * eventually provide mixed brightness levels based on render bounds.
+     * @param rgb  array containing red, green and blue float values
+     * @return nothing
+     */
+    public void applyAnaglyph(float[] rgb)
+    {
+        if (EntityRenderer.anaglyphEnable) {
+            rgb[0]   = (rgb[0] * 30.0F + rgb[1] * 59.0F + rgb[2] * 11.0F) / 100.0F;
+            rgb[1] = (rgb[0] * 30.0F + rgb[1] * 70.0F) / 100.0F;
+            rgb[2]  = (rgb[0] * 30.0F + rgb[2]  * 70.0F) / 100.0F;
+        }
+    }
+
+    /**
+     * Gets average brightness from two brightness values.
+     * 
+     * @param brightness1  the first brightness value
+	 * @param brightness2  the second brightness value
+     * @return the mixed brightness
      */
     public static int getAverageBrightness(int brightness1, int brightness2)
     {
@@ -268,8 +275,13 @@ public class LightingHelper {
     }
 
     /**
-     * Returns mixed ambient occlusion value from two inputs, with ratio
-     * applied to first input.
+     * Gets mixed ambient occlusion value from two inputs, with a
+     * ratio applied to the final result.
+     * 
+     * @param ao1  the first ambient occlusion value
+	 * @param ao2  the second ambient occlusion value
+	 * @param ratio  the ratio for mixing
+     * @return the mixed red, green, blue float values
      */
     public static float getMixedAo(float ao1, float ao2, double ratio)
     {
@@ -279,14 +291,28 @@ public class LightingHelper {
     }
 
     /**
-     * Fills AO variables with lightness for bottom face.
+     * Sets up lighting for the bottom face and returns the {@link LightingHelper}.
+     * <p>
+     * This is a consolidated <code>method</code> that sets side shading
+     * with respect to the following attributes:
+     * <p>
+     * <ul>
+     *   <li>{@link RenderBlocks#enableAO}</li>
+     *   <li>{@link RenderBlocks#partialRenderBounds}</li>
+     * </ul>
+     * 
+     * @param itemStack  the cover {@link ItemStack}
+	 * @param x	 the x coordinate
+	 * @param y  the y coordinate
+	 * @param z  the z coordinate
+	 * @return the {@link LightingHelper}
      */
-    public LightingHelper setLightingYNeg(ItemStack itemStack, int x, int y, int z)
+    public LightingHelper setupLightingYNeg(ItemStack itemStack, int x, int y, int z)
     {
         Block block = BlockProperties.toBlock(itemStack);
         int y_offset = renderBlocks.renderMinY > 0.0F ? y : y - 1;
         int mixedBrightness = block.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y_offset, z);
-        brightness[0] = mixedBrightness;
+        brightness = mixedBrightness;
 
         if (renderBlocks.enableAO) {
 
@@ -352,14 +378,28 @@ public class LightingHelper {
     }
 
     /**
-     * Fills AO variables with lightness for top face.
+     * Sets up lighting for the top face and returns the {@link LightingHelper}.
+     * <p>
+     * This is a consolidated <code>method</code> that sets side shading
+     * with respect to the following attributes:
+     * <p>
+     * <ul>
+     *   <li>{@link RenderBlocks#enableAO}</li>
+     *   <li>{@link RenderBlocks#partialRenderBounds}</li>
+     * </ul>
+     * 
+     * @param itemStack  the cover {@link ItemStack}
+	 * @param x	 the x coordinate
+	 * @param y  the y coordinate
+	 * @param z  the z coordinate
+	 * @return the {@link LightingHelper}
      */
-    public LightingHelper setLightingYPos(ItemStack itemStack, int x, int y, int z)
+    public LightingHelper setupLightingYPos(ItemStack itemStack, int x, int y, int z)
     {
         Block block = BlockProperties.toBlock(itemStack);
         int y_offset = renderBlocks.renderMaxY < 1.0F ? y : y + 1;
         int mixedBrightness = block.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y_offset, z);
-        brightness[1] = mixedBrightness;
+        brightness = mixedBrightness;
 
         if (renderBlocks.enableAO) {
 
@@ -424,14 +464,28 @@ public class LightingHelper {
     }
 
     /**
-     * Fills AO variables with lightness for North face.
+     * Sets up lighting for the North face and returns the {@link LightingHelper}.
+     * <p>
+     * This is a consolidated <code>method</code> that sets side shading
+     * with respect to the following attributes:
+     * <p>
+     * <ul>
+     *   <li>{@link RenderBlocks#enableAO}</li>
+     *   <li>{@link RenderBlocks#partialRenderBounds}</li>
+     * </ul>
+     * 
+     * @param itemStack  the cover {@link ItemStack}
+	 * @param x	 the x coordinate
+	 * @param y  the y coordinate
+	 * @param z  the z coordinate
+	 * @return the {@link LightingHelper}
      */
-    public LightingHelper setLightingZNeg(ItemStack itemStack, int x, int y, int z)
+    public LightingHelper setupLightingZNeg(ItemStack itemStack, int x, int y, int z)
     {
         Block block = BlockProperties.toBlock(itemStack);
         int z_offset = renderBlocks.renderMinZ > 0.0F ? z : z - 1;
         int mixedBrightness = block.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y, z_offset);
-        brightness[2] = mixedBrightness;
+        brightness = mixedBrightness;
 
         if (renderBlocks.enableAO) {
 
@@ -496,14 +550,28 @@ public class LightingHelper {
     }
 
     /**
-     * Fills AO variables with lightness for South face.
+     * Sets up lighting for the South face and returns the {@link LightingHelper}.
+     * <p>
+     * This is a consolidated <code>method</code> that sets side shading
+     * with respect to the following attributes:
+     * <p>
+     * <ul>
+     *   <li>{@link RenderBlocks#enableAO}</li>
+     *   <li>{@link RenderBlocks#partialRenderBounds}</li>
+     * </ul>
+     * 
+     * @param itemStack  the cover {@link ItemStack}
+	 * @param x	 the x coordinate
+	 * @param y  the y coordinate
+	 * @param z  the z coordinate
+	 * @return the {@link LightingHelper}
      */
-    public LightingHelper setLightingZPos(ItemStack itemStack, int x, int y, int z)
+    public LightingHelper setupLightingZPos(ItemStack itemStack, int x, int y, int z)
     {
         Block block = BlockProperties.toBlock(itemStack);
         int z_offset = renderBlocks.renderMaxZ < 1.0F ? z : z + 1;
         int mixedBrightness = block.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y, z_offset);
-        brightness[3] = mixedBrightness;
+        brightness = mixedBrightness;
 
         if (renderBlocks.enableAO) {
 
@@ -567,14 +635,28 @@ public class LightingHelper {
     }
 
     /**
-     * Fills AO variables with lightness for West face.
+     * Sets up lighting for the West face and returns the {@link LightingHelper}.
+     * <p>
+     * This is a consolidated <code>method</code> that sets side shading
+     * with respect to the following attributes:
+     * <p>
+     * <ul>
+     *   <li>{@link RenderBlocks#enableAO}</li>
+     *   <li>{@link RenderBlocks#partialRenderBounds}</li>
+     * </ul>
+     * 
+     * @param itemStack  the cover {@link ItemStack}
+	 * @param x	 the x coordinate
+	 * @param y  the y coordinate
+	 * @param z  the z coordinate
+	 * @return the {@link LightingHelper}
      */
-    public LightingHelper setLightingXNeg(ItemStack itemStack, int x, int y, int z)
+    public LightingHelper setupLightingXNeg(ItemStack itemStack, int x, int y, int z)
     {
         Block block = BlockProperties.toBlock(itemStack);
         int x_offset = renderBlocks.renderMinX > 0.0F ? x : x - 1;
         int mixedBrightness = block.getMixedBrightnessForBlock(renderBlocks.blockAccess, x_offset, y, z);
-        brightness[4] = mixedBrightness;
+        brightness = mixedBrightness;
 
         if (renderBlocks.enableAO) {
 
@@ -639,14 +721,28 @@ public class LightingHelper {
     }
 
     /**
-     * Fills AO variables with lightness for East face.
+     * Sets up lighting for the East face and returns the {@link LightingHelper}.
+     * <p>
+     * This is a consolidated <code>method</code> that sets side shading
+     * with respect to the following attributes:
+     * <p>
+     * <ul>
+     *   <li>{@link RenderBlocks#enableAO}</li>
+     *   <li>{@link RenderBlocks#partialRenderBounds}</li>
+     * </ul>
+     * 
+     * @param itemStack  the cover {@link ItemStack}
+	 * @param x	 the x coordinate
+	 * @param y  the y coordinate
+	 * @param z  the z coordinate
+	 * @return the {@link LightingHelper}
      */
-    public LightingHelper setLightingXPos(ItemStack itemStack, int x, int y, int z)
+    public LightingHelper setupLightingXPos(ItemStack itemStack, int x, int y, int z)
     {
         Block block = BlockProperties.toBlock(itemStack);
         int x_offset = renderBlocks.renderMaxX < 1.0F ? x : x + 1;
         int mixedBrightness = block.getMixedBrightnessForBlock(renderBlocks.blockAccess, x_offset, y, z);
-        brightness[5] = mixedBrightness;
+        brightness = mixedBrightness;
 
         if (renderBlocks.enableAO) {
 

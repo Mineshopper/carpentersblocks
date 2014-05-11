@@ -81,26 +81,30 @@ public class BlockCarpentersBarrier extends BlockCoverable {
      */
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack itemStack)
     {
-        TEBase TE = (TEBase) world.getTileEntity(x, y, z);
+        TEBase TE = getTileEntity(world, x, y, z);
         
-        /* Match block type with adjacent type if possible. */
+        if (TE != null) {
         
-        TEBase[] TE_list = getAdjacentTileEntities(world, x, y, z);
+	        /* Match block type with adjacent type if possible. */
+	        
+	        TEBase[] TE_list = getAdjacentTileEntities(world, x, y, z);
+	        
+	        for (TEBase TE_current : TE_list) {
+	            
+	            if (TE_current != null) {
+	                
+	                Block block = TE_current.getBlockType();
+	                
+	                if (block.equals(this)) {
+	                    Barrier.setType(TE, Barrier.getType(TE_current));
+	                } else if (block.equals(BlockRegistry.blockCarpentersGate)) {
+	                    Barrier.setType(TE, Gate.getType(TE_current));
+	                }
+	                
+	            }
+	            
+	        }
         
-        for (TEBase TE_current : TE_list) {
-            
-            if (TE_current != null) {
-                
-                Block block = TE_current.getBlockType();
-                
-                if (block.equals(this)) {
-                    Barrier.setType(TE, Barrier.getType(TE_current));
-                } else if (block.equals(BlockRegistry.blockCarpentersGate)) {
-                    Barrier.setType(TE, Gate.getType(TE_current));
-                }
-                
-            }
-            
         }
         
         super.onBlockPlacedBy(world, x, y, z, entityLiving, itemStack);

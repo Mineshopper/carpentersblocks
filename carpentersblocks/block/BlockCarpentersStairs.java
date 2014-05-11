@@ -164,38 +164,43 @@ public class BlockCarpentersStairs extends BlockCoverable {
      */
     public MovingObjectPosition collisionRayTrace(World world, int x, int y, int z, Vec3 startVec, Vec3 endVec)
     {
-        TEBase TE = (TEBase) world.getTileEntity(x, y, z);
+        TEBase TE = getTileEntity(world, x, y, z);
         
         MovingObjectPosition finalTrace = null;
         
-        Stairs stairs = Stairs.stairsList[BlockProperties.getMetadata(TE)];
-        StairsUtil stairsUtil = new StairsUtil();
+        if (TE != null) {
         
-        double currDist = 0.0D;
-        double maxDist = 0.0D;
+	        Stairs stairs = Stairs.stairsList[BlockProperties.getMetadata(TE)];
+	        StairsUtil stairsUtil = new StairsUtil();
+	        
+	        double currDist = 0.0D;
+	        double maxDist = 0.0D;
+	        
+	        // Determine if ray trace is a hit on stairs
+	        for (int box = 0; box < 3; ++box)
+	        {
+	            float[] bounds = stairsUtil.genBounds(box, stairs);
+	            
+	            if (bounds != null)
+	            {
+	                setBlockBounds(bounds[0], bounds[1], bounds[2], bounds[3], bounds[4], bounds[5]);
+	                MovingObjectPosition traceResult = super.collisionRayTrace(world, x, y, z, startVec, endVec);
+	                
+	                if (traceResult != null)
+	                {
+	                    currDist = traceResult.hitVec.squareDistanceTo(endVec);
+	                    if (currDist > maxDist) {
+	                        finalTrace = traceResult;
+	                        maxDist = currDist;
+	                    }
+	                }
+	            }
+	        }
+	        
+	        setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
         
-        // Determine if ray trace is a hit on stairs
-        for (int box = 0; box < 3; ++box)
-        {
-            float[] bounds = stairsUtil.genBounds(box, stairs);
-            
-            if (bounds != null)
-            {
-                setBlockBounds(bounds[0], bounds[1], bounds[2], bounds[3], bounds[4], bounds[5]);
-                MovingObjectPosition traceResult = super.collisionRayTrace(world, x, y, z, startVec, endVec);
-                
-                if (traceResult != null)
-                {
-                    currDist = traceResult.hitVec.squareDistanceTo(endVec);
-                    if (currDist > maxDist) {
-                        finalTrace = traceResult;
-                        maxDist = currDist;
-                    }
-                }
-            }
         }
         
-        setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
         return finalTrace;
     }
     
@@ -206,23 +211,28 @@ public class BlockCarpentersStairs extends BlockCoverable {
      */
     public void addCollisionBoxesToList(World world, int x, int y, int z, AxisAlignedBB axisAlignedBB, List list, Entity entity)
     {
-        TEBase TE = (TEBase) world.getTileEntity(x, y, z);
+        TEBase TE = getTileEntity(world, x, y, z);
         
-        AxisAlignedBB colBox = null;
+        if (TE != null) {
         
-        Stairs stairs = Stairs.stairsList[BlockProperties.getMetadata(TE)];
-        StairsUtil stairsUtil = new StairsUtil();
+	        AxisAlignedBB colBox = null;
+	        
+	        Stairs stairs = Stairs.stairsList[BlockProperties.getMetadata(TE)];
+	        StairsUtil stairsUtil = new StairsUtil();
+	        
+	        for (int box = 0; box < 3; ++box) {
+	        	
+	            float[] bounds = stairsUtil.genBounds(box, stairs);
+	            
+	            if (bounds != null) {
+	                colBox = AxisAlignedBB.getAABBPool().getAABB(x + bounds[0], y + bounds[1], z + bounds[2], x + bounds[3], y + bounds[4], z + bounds[5]);
+	            }
+	            if (colBox != null && axisAlignedBB.intersectsWith(colBox)) {
+	                list.add(colBox);
+	            }
+	            
+	        }
         
-        for (int box = 0; box < 3; ++box)
-        {
-            float[] bounds = stairsUtil.genBounds(box, stairs);
-            
-            if (bounds != null) {
-                colBox = AxisAlignedBB.getAABBPool().getAABB(x + bounds[0], y + bounds[1], z + bounds[2], x + bounds[3], y + bounds[4], z + bounds[5]);
-            }
-            if (colBox != null && axisAlignedBB.intersectsWith(colBox)) {
-                list.add(colBox);
-            }
         }
     }
     
@@ -232,7 +242,7 @@ public class BlockCarpentersStairs extends BlockCoverable {
      */
     public boolean isSideSolid(IBlockAccess world, int x, int y, int z, ForgeDirection side)
     {
-        TEBase TE = getTileEntityStrict(world, x, y, z);
+        TEBase TE = getTileEntity(world, x, y, z);
         
         if (TE != null) {
             if (isBlockSolid(world, x, y, z)) {
@@ -294,45 +304,45 @@ public class BlockCarpentersStairs extends BlockCoverable {
      */
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack itemStack)
     {
-        if (!world.isRemote) {
+    	TEBase TE = getTileEntity(world, x, y, z);
 
-            TEBase TE = (TEBase) world.getTileEntity(x, y, z);
-            
-            int facing = MathHelper.floor_double(entityLiving.rotationYaw * 4.0F / 360.0F + 0.5D) & 3;
-            
-            BlockProperties.setMetadata(TE, world.getBlockMetadata(x, y, z));
-            int stairsID = BlockProperties.getMetadata(TE);
-            
-            if (stairsID > 11)
-            {
-                switch (facing) {
-                    case 0:
-                        stairsID = stairsID == 12 ? Stairs.ID_NORMAL_NEG_N : Stairs.ID_NORMAL_POS_N;
-                        break;
-                    case 1:
-                        stairsID = stairsID == 12 ? Stairs.ID_NORMAL_NEG_E : Stairs.ID_NORMAL_POS_E;
-                        break;
-                    case 2:
-                        stairsID = stairsID == 12 ? Stairs.ID_NORMAL_NEG_S : Stairs.ID_NORMAL_POS_S;
-                        break;
-                    case 3:
-                        stairsID = stairsID == 12 ? Stairs.ID_NORMAL_NEG_W : Stairs.ID_NORMAL_POS_W;
-                        break;
-                }
-            }
-            
-            BlockProperties.setMetadata(TE, stairsID);
-            
-            /* If shift key is down, skip auto-orientation. */
-            if (!entityLiving.isSneaking()) {
-                stairsID = StairsTransform.transformStairs(world, stairsID, x, y, z);
-                BlockProperties.setMetadata(TE, stairsID);
-                StairsTransform.transformAdjacentStairs(world, stairsID, x, y, z);
-            }
-            
-            super.onBlockPlacedBy(world, x, y, z, entityLiving, itemStack);
+    	if (TE != null) {
+
+    		int facing = MathHelper.floor_double(entityLiving.rotationYaw * 4.0F / 360.0F + 0.5D) & 3;
+
+    		BlockProperties.setMetadata(TE, world.getBlockMetadata(x, y, z));
+    		int stairsID = BlockProperties.getMetadata(TE);
+
+    		if (stairsID > 11)
+    		{
+    			switch (facing) {
+    			case 0:
+    				stairsID = stairsID == 12 ? Stairs.ID_NORMAL_NEG_N : Stairs.ID_NORMAL_POS_N;
+    				break;
+    			case 1:
+    				stairsID = stairsID == 12 ? Stairs.ID_NORMAL_NEG_E : Stairs.ID_NORMAL_POS_E;
+    				break;
+    			case 2:
+    				stairsID = stairsID == 12 ? Stairs.ID_NORMAL_NEG_S : Stairs.ID_NORMAL_POS_S;
+    				break;
+    			case 3:
+    				stairsID = stairsID == 12 ? Stairs.ID_NORMAL_NEG_W : Stairs.ID_NORMAL_POS_W;
+    				break;
+    			}
+    		}
+
+    		BlockProperties.setMetadata(TE, stairsID);
+
+    		/* If shift key is down, skip auto-orientation. */
+    		if (!entityLiving.isSneaking()) {
+    			stairsID = StairsTransform.transformStairs(world, stairsID, x, y, z);
+    			BlockProperties.setMetadata(TE, stairsID);
+    			StairsTransform.transformAdjacentStairs(world, stairsID, x, y, z);
+    		}
+
+    	}
         
-        }
+        super.onBlockPlacedBy(world, x, y, z, entityLiving, itemStack);
     }
     
     @Override

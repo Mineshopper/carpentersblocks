@@ -140,18 +140,22 @@ public class BlockCarpentersGate extends BlockCoverable {
     {
         TEBase TE = (TEBase) world.getTileEntity(x, y, z);
         
-        if (Gate.getFacing(TE) == Gate.FACING_ON_Z) {
-            if (Gate.getType(TE) == Gate.TYPE_VANILLA || Gate.getType(TE) == Gate.TYPE_WALL) {
-                setBlockBounds(0.4375F, 0.0F, 0.0F, 0.5625F, 1.0F, 1.0F);
-            } else {
-                setBlockBounds(0.375F, 0.0F, 0.0F, 0.625F, 1.0F, 1.0F);
-            }
-        } else {
-            if (Gate.getType(TE) == Gate.TYPE_VANILLA || Gate.getType(TE) == Gate.TYPE_WALL) {
-                setBlockBounds(0.0F, 0.0F, 0.4375F, 1.0F, 1.0F, 0.5625F);
-            } else {
-                setBlockBounds(0.0F, 0.0F, 0.375F, 1.0F, 1.0F, 0.625F);
-            }
+        if (TE != null) {
+        
+	        if (Gate.getFacing(TE) == Gate.FACING_ON_Z) {
+	            if (Gate.getType(TE) == Gate.TYPE_VANILLA || Gate.getType(TE) == Gate.TYPE_WALL) {
+	                setBlockBounds(0.4375F, 0.0F, 0.0F, 0.5625F, 1.0F, 1.0F);
+	            } else {
+	                setBlockBounds(0.375F, 0.0F, 0.0F, 0.625F, 1.0F, 1.0F);
+	            }
+	        } else {
+	            if (Gate.getType(TE) == Gate.TYPE_VANILLA || Gate.getType(TE) == Gate.TYPE_WALL) {
+	                setBlockBounds(0.0F, 0.0F, 0.4375F, 1.0F, 1.0F, 0.5625F);
+	            } else {
+	                setBlockBounds(0.0F, 0.0F, 0.375F, 1.0F, 1.0F, 0.625F);
+	            }
+	        }
+        
         }
     }
     
@@ -192,32 +196,36 @@ public class BlockCarpentersGate extends BlockCoverable {
      */
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack itemStack)
     {
-        TEBase TE = (TEBase) world.getTileEntity(x, y, z);
-        
-        int facing = (MathHelper.floor_double(entityLiving.rotationYaw * 4.0F / 360.0F + 0.5D) & 3) % 4;
-        
-        Gate.setFacing(TE, facing == 3 || facing == 1 ? Gate.FACING_ON_Z : Gate.FACING_ON_X);
-        
-        /* Match block type with adjacent type if possible. */
-        
-        TEBase[] TE_list = getAdjacentTileEntities(world, x, y, z);
-        
-        for (TEBase TE_current : TE_list) {
-            
-            if (TE_current != null) {
-                
-                Block block = TE_current.getBlockType();
-                
-                if (block.equals(this)) {
-                    Gate.setType(TE, Gate.getType(TE_current));
-                } else if (block.equals(BlockRegistry.blockCarpentersGate)) {
-                    Gate.setType(TE, Barrier.getType(TE_current));
-                }
-                
-            }
-            
-        }
-        
+    	TEBase TE = getTileEntity(world, x, y, z);
+
+    	if (TE != null) {
+
+    		int facing = (MathHelper.floor_double(entityLiving.rotationYaw * 4.0F / 360.0F + 0.5D) & 3) % 4;
+
+    		Gate.setFacing(TE, facing == 3 || facing == 1 ? Gate.FACING_ON_Z : Gate.FACING_ON_X);
+
+    		/* Match block type with adjacent type if possible. */
+
+    		TEBase[] TE_list = getAdjacentTileEntities(world, x, y, z);
+
+    		for (TEBase TE_current : TE_list) {
+
+    			if (TE_current != null) {
+
+    				Block block = TE_current.getBlockType();
+
+    				if (block.equals(this)) {
+    					Gate.setType(TE, Gate.getType(TE_current));
+    				} else if (block.equals(BlockRegistry.blockCarpentersGate)) {
+    					Gate.setType(TE, Barrier.getType(TE_current));
+    				}
+
+    			}
+
+    		}
+
+    	}
+
         super.onBlockPlacedBy(world, x, y, z, entityLiving, itemStack);
     }
     
@@ -228,26 +236,30 @@ public class BlockCarpentersGate extends BlockCoverable {
      */
     public void onNeighborBlockChange(World world, int x, int y, int z, Block block)
     {
-        TEBase TE = getTileEntity(world, x, y, z);
+    	if (!world.isRemote) {
+    	
+	        TEBase TE = getTileEntity(world, x, y, z);
+	        
+	        if (TE != null) {
+	            
+	            boolean isPowered = world.isBlockIndirectlyGettingPowered(x, y, z);
+	            
+	            if (isPowered || block != null && block.canProvidePower())
+	            {
+	                int state = Gate.getState(TE);
+	                
+	                if (isPowered && state == Gate.STATE_CLOSED) {
+	                    Gate.setState(TE, Gate.STATE_OPEN, true);
+	                    cycleNeighborGate(TE, world, x, y, z);
+	                } else if (!isPowered && state == Gate.STATE_OPEN) {
+	                    Gate.setState(TE, Gate.STATE_CLOSED, true);
+	                    cycleNeighborGate(TE, world, x, y, z);
+	                }
+	            }
+	            
+	        }
         
-        if (!world.isRemote && TE != null) {
-            
-            boolean isPowered = world.isBlockIndirectlyGettingPowered(x, y, z);
-            
-            if (isPowered || block != null && block.canProvidePower())
-            {
-                int state = Gate.getState(TE);
-                
-                if (isPowered && state == Gate.STATE_CLOSED) {
-                    Gate.setState(TE, Gate.STATE_OPEN, true);
-                    cycleNeighborGate(TE, world, x, y, z);
-                } else if (!isPowered && state == Gate.STATE_OPEN) {
-                    Gate.setState(TE, Gate.STATE_CLOSED, true);
-                    cycleNeighborGate(TE, world, x, y, z);
-                }
-            }
-            
-        }
+    	}
         
         super.onNeighborBlockChange(world, x, y, z, block);
     }

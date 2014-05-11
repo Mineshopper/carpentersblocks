@@ -102,12 +102,13 @@ public class BlockCarpentersTorch extends BlockCoverable {
      */
     public boolean canPlaceBlockOnSide(World world, int x, int y, int z, int side)
     {
-        if (side > 0)
-        {
+        if (side > 0) {
+        	
             ForgeDirection dir = ForgeDirection.getOrientation(side);
             Block block = world.getBlock(x, y - 1, z);
             
             return world.getBlock(x - dir.offsetX, y - dir.offsetY, z - dir.offsetZ).isSideSolid(world, x - dir.offsetX, y - dir.offsetY, z - dir.offsetZ, dir) || side == 1 && block != null && block.canPlaceTorchOnTop(world, x, y, z);
+        
         }
         
         return false;
@@ -128,12 +129,16 @@ public class BlockCarpentersTorch extends BlockCoverable {
      */
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack itemStack)
     {
-        TEBase TE = (TEBase) world.getTileEntity(x, y, z);
+        TEBase TE = getTileEntity(world, x, y, z);
         
-        int facing = world.getBlockMetadata(x, y, z);
+        if (TE != null) {
         
-        Torch.setFacing(TE, facing);
-        Torch.setReady(TE);
+	        int facing = world.getBlockMetadata(x, y, z);
+	        
+	        Torch.setFacing(TE, facing);
+	        Torch.setReady(TE);
+        
+        }
         
         super.onBlockPlacedBy(world, x, y, z, entityLiving, itemStack);
     }
@@ -145,21 +150,26 @@ public class BlockCarpentersTorch extends BlockCoverable {
      */
     public void onNeighborBlockChange(World world, int x, int y, int z, Block block)
     {
-        TEBase TE = getTileEntity(world, x, y, z);
+    	if (!world.isRemote) {
+    	
+	        TEBase TE = getTileEntity(world, x, y, z);
+	        
+	        if (TE != null) {
+	            
+	            if (Torch.isReady(TE)) {
+	            	
+	                ForgeDirection facing = Torch.getFacing(TE);
+	                
+	                if (!canPlaceBlockOnSide(world, x, y, z, facing.ordinal())) {
+	                    dropBlockAsItem(world, x, y, z, 0, 0);
+	                    world.setBlockToAir(x, y, z);
+	                }
+	                
+	            }
+	            
+	        }
         
-        if (!world.isRemote && TE != null) {
-            
-            if (Torch.isReady(TE))
-            {
-                ForgeDirection facing = Torch.getFacing(TE);
-                
-                if (!canPlaceBlockOnSide(world, x, y, z, facing.ordinal())) {
-                    dropBlockAsItem(world, x, y, z, 0, 0);
-                    world.setBlockToAir(x, y, z);
-                }
-            }
-            
-        }
+    	}
         
         super.onNeighborBlockChange(world, x, y, z, block);
     }
@@ -171,26 +181,30 @@ public class BlockCarpentersTorch extends BlockCoverable {
     @Override
     public MovingObjectPosition collisionRayTrace(World world, int x, int y, int z, Vec3 startVec, Vec3 endVec)
     {
-        TEBase TE = (TEBase) world.getTileEntity(x, y, z);
+        TEBase TE = getTileEntity(world, x, y, z);
         
-        ForgeDirection facing = Torch.getFacing(TE);
+        if (TE != null) {
         
-        switch (facing) {
-            case NORTH:
-                setBlockBounds(0.5F - 0.15F, 0.2F, 1.0F - 0.15F * 2.0F, 0.5F + 0.15F, 0.8F, 1.0F);
-                break;
-            case SOUTH:
-                setBlockBounds(0.5F - 0.15F, 0.2F, 0.0F, 0.5F + 0.15F, 0.8F, 0.15F * 2.0F);
-                break;
-            case WEST:
-                setBlockBounds(1.0F - 0.15F * 2.0F, 0.2F, 0.5F - 0.15F, 1.0F, 0.8F, 0.5F + 0.15F);
-                break;
-            case EAST:
-                setBlockBounds(0.0F, 0.2F, 0.5F - 0.15F, 0.15F * 2.0F, 0.8F, 0.5F + 0.15F);
-                break;
-            default:
-                setBlockBounds(0.5F - 0.1F, 0.0F, 0.5F - 0.1F, 0.5F + 0.1F, 0.6F, 0.5F + 0.1F);
-                break;
+	        ForgeDirection facing = Torch.getFacing(TE);
+	        
+	        switch (facing) {
+	            case NORTH:
+	                setBlockBounds(0.5F - 0.15F, 0.2F, 1.0F - 0.15F * 2.0F, 0.5F + 0.15F, 0.8F, 1.0F);
+	                break;
+	            case SOUTH:
+	                setBlockBounds(0.5F - 0.15F, 0.2F, 0.0F, 0.5F + 0.15F, 0.8F, 0.15F * 2.0F);
+	                break;
+	            case WEST:
+	                setBlockBounds(1.0F - 0.15F * 2.0F, 0.2F, 0.5F - 0.15F, 1.0F, 0.8F, 0.5F + 0.15F);
+	                break;
+	            case EAST:
+	                setBlockBounds(0.0F, 0.2F, 0.5F - 0.15F, 0.15F * 2.0F, 0.8F, 0.5F + 0.15F);
+	                break;
+	            default:
+	                setBlockBounds(0.5F - 0.1F, 0.0F, 0.5F - 0.1F, 0.5F + 0.1F, 0.6F, 0.5F + 0.1F);
+	                break;
+	        }
+        
         }
         
         return super.collisionRayTrace(world, x, y, z, startVec, endVec);
@@ -202,36 +216,40 @@ public class BlockCarpentersTorch extends BlockCoverable {
     @Override
     public void updateTick(World world, int x, int y, int z, Random random)
     {
-        TEBase TE = getTileEntity(world, x, y, z);
+    	if (!world.isRemote) {
+    	
+	        TEBase TE = getTileEntity(world, x, y, z);
+	        
+	        if (TE != null) {
+	            
+	            boolean canDropState = FeatureRegistry.enableTorchWeatherEffects;
+	            boolean isWet = world.isRaining() && world.canBlockSeeTheSky(x, y, z) && world.getBiomeGenForCoords(x, z).rainfall > 0.0F;
+	            
+	            switch (Torch.getState(TE))
+	            {
+	                case LIT:
+	                    if (canDropState && isWet) {
+	                        Torch.setState(TE, State.SMOLDERING);
+	                    }
+	                    break;
+	                case SMOLDERING:
+	                    if (canDropState && isWet) {
+	                        Torch.setState(TE, State.UNLIT);
+	                    } else {
+	                        Torch.setState(TE, State.LIT);
+	                    }
+	                    break;
+	                case UNLIT:
+	                    if (!canDropState || !isWet) {
+	                        Torch.setState(TE, State.SMOLDERING);
+	                    }
+	                    break;
+	                default: {}
+	            }
+	            
+	        }
         
-        if (!world.isRemote && TE != null) {
-            
-            boolean canDropState = FeatureRegistry.enableTorchWeatherEffects;
-            boolean isWet = world.isRaining() && world.canBlockSeeTheSky(x, y, z) && world.getBiomeGenForCoords(x, z).rainfall > 0.0F;
-            
-            switch (Torch.getState(TE))
-            {
-                case LIT:
-                    if (canDropState && isWet) {
-                        Torch.setState(TE, State.SMOLDERING);
-                    }
-                    break;
-                case SMOLDERING:
-                    if (canDropState && isWet) {
-                        Torch.setState(TE, State.UNLIT);
-                    } else {
-                        Torch.setState(TE, State.LIT);
-                    }
-                    break;
-                case UNLIT:
-                    if (!canDropState || !isWet) {
-                        Torch.setState(TE, State.SMOLDERING);
-                    }
-                    break;
-                default: {}
-            }
-            
-        }
+    	}
     }
     
     @Override
@@ -247,8 +265,8 @@ public class BlockCarpentersTorch extends BlockCoverable {
             
             State state = Torch.getState(TE);
             
-            if (!state.equals(State.UNLIT))
-            {
+            if (!state.equals(State.UNLIT)) {
+            	
                 double[] headCoords = Torch.getHeadCoordinates(TE);
                 
                 world.spawnParticle("smoke", headCoords[0], headCoords[1], headCoords[2], 0.0D, 0.0D, 0.0D);
@@ -256,6 +274,7 @@ public class BlockCarpentersTorch extends BlockCoverable {
                 if (state.equals(State.LIT)) {
                     world.spawnParticle("flame", headCoords[0], headCoords[1], headCoords[2], 0.0D, 0.0D, 0.0D);
                 }
+                
             }
             
         }

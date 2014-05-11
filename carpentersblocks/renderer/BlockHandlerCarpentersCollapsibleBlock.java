@@ -11,6 +11,7 @@ import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;
+import carpentersblocks.renderer.helper.LightingHelper;
 import carpentersblocks.renderer.helper.RenderHelper;
 import carpentersblocks.renderer.helper.RenderHelperCollapsible;
 import carpentersblocks.util.collapsible.CollapsibleUtil;
@@ -102,7 +103,7 @@ public class BlockHandlerCarpentersCollapsibleBlock extends BlockAdvancedLightin
         
         /* BOTTOM FACE */
         if (srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x, y - 1, z, DOWN)) {
-            lightingHelper.setLightingYNeg(itemStack, x, y, z);
+            lightingHelper.setupLightingYNeg(itemStack, x, y, z);
             setIDAndRender(itemStack, NORMAL_YN, x, y, z, DOWN);
         }
         
@@ -136,28 +137,28 @@ public class BlockHandlerCarpentersCollapsibleBlock extends BlockAdvancedLightin
     {
         switch (side) {
             case NORTH: {
-                double lightness_WE = (1.0F - lightingHelper.LIGHTNESS_X) * Math.abs(CollapsibleUtil.offset_XZNN - CollapsibleUtil.offset_XZPN);
-                double lightness_NS = (1.0F - lightingHelper.LIGHTNESS_Z) * Math.abs(CollapsibleUtil.CENTER_YMAX - (CollapsibleUtil.offset_XZPN + CollapsibleUtil.offset_XZNN) / 2.0F) * 2.0F;
+                double lightness_WE = (1.0F - LightingHelper.LIGHTNESS[4]) * Math.abs(CollapsibleUtil.offset_XZNN - CollapsibleUtil.offset_XZPN);
+                double lightness_NS = (1.0F - LightingHelper.LIGHTNESS[2]) * Math.abs(CollapsibleUtil.CENTER_YMAX - (CollapsibleUtil.offset_XZPN + CollapsibleUtil.offset_XZNN) / 2.0F) * 2.0F;
                 
-                return (float) (lightingHelper.LIGHTNESS_YP - (lightness_WE + lightness_NS) / 2.0F);
+                return (float) (LightingHelper.LIGHTNESS[0] - (lightness_WE + lightness_NS) / 2.0F);
             }
             case SOUTH: {
-                double lightness_WE = (1.0F - lightingHelper.LIGHTNESS_X) * Math.abs(CollapsibleUtil.offset_XZNP - CollapsibleUtil.offset_XZPP);
-                double lightness_NS = (1.0F - lightingHelper.LIGHTNESS_Z) * Math.abs(CollapsibleUtil.CENTER_YMAX - (CollapsibleUtil.offset_XZPP + CollapsibleUtil.offset_XZNP) / 2.0F) * 2.0F;
+                double lightness_WE = (1.0F - LightingHelper.LIGHTNESS[4]) * Math.abs(CollapsibleUtil.offset_XZNP - CollapsibleUtil.offset_XZPP);
+                double lightness_NS = (1.0F - LightingHelper.LIGHTNESS[2]) * Math.abs(CollapsibleUtil.CENTER_YMAX - (CollapsibleUtil.offset_XZPP + CollapsibleUtil.offset_XZNP) / 2.0F) * 2.0F;
                 
-                return (float) (lightingHelper.LIGHTNESS_YP - (lightness_WE + lightness_NS) / 2.0F);
+                return (float) (LightingHelper.LIGHTNESS[0] - (lightness_WE + lightness_NS) / 2.0F);
             }
             case WEST: {
-                double lightness_WE = (1.0F - lightingHelper.LIGHTNESS_Z) * Math.abs(CollapsibleUtil.offset_XZNN - CollapsibleUtil.offset_XZNP);
-                double lightness_NS = (1.0F - lightingHelper.LIGHTNESS_X) * Math.abs(CollapsibleUtil.CENTER_YMAX - (CollapsibleUtil.offset_XZNP + CollapsibleUtil.offset_XZNN) / 2.0F) * 2.0F;
+                double lightness_WE = (1.0F - LightingHelper.LIGHTNESS[2]) * Math.abs(CollapsibleUtil.offset_XZNN - CollapsibleUtil.offset_XZNP);
+                double lightness_NS = (1.0F - LightingHelper.LIGHTNESS[4]) * Math.abs(CollapsibleUtil.CENTER_YMAX - (CollapsibleUtil.offset_XZNP + CollapsibleUtil.offset_XZNN) / 2.0F) * 2.0F;
                 
-                return (float) (lightingHelper.LIGHTNESS_YP - (lightness_WE + lightness_NS) / 2.0F);
+                return (float) (LightingHelper.LIGHTNESS[0] - (lightness_WE + lightness_NS) / 2.0F);
             }
             case EAST: {
-                double lightness_WE = (1.0F - lightingHelper.LIGHTNESS_Z) * Math.abs(CollapsibleUtil.offset_XZPP - CollapsibleUtil.offset_XZPN);
-                double lightness_NS = (1.0F - lightingHelper.LIGHTNESS_X) * Math.abs(CollapsibleUtil.CENTER_YMAX - (CollapsibleUtil.offset_XZPP + CollapsibleUtil.offset_XZPN) / 2.0F) * 2.0F;
+                double lightness_WE = (1.0F - LightingHelper.LIGHTNESS[2]) * Math.abs(CollapsibleUtil.offset_XZPP - CollapsibleUtil.offset_XZPN);
+                double lightness_NS = (1.0F - LightingHelper.LIGHTNESS[4]) * Math.abs(CollapsibleUtil.CENTER_YMAX - (CollapsibleUtil.offset_XZPP + CollapsibleUtil.offset_XZPN) / 2.0F) * 2.0F;
                 
-                return (float) (lightingHelper.LIGHTNESS_YP - (lightness_WE + lightness_NS) / 2.0F);
+                return (float) (LightingHelper.LIGHTNESS[0] - (lightness_WE + lightness_NS) / 2.0F);
             }
             default:
                 return 1.0F;
@@ -172,25 +173,25 @@ public class BlockHandlerCarpentersCollapsibleBlock extends BlockAdvancedLightin
         /* Top North triangle. */
         
         renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 0.5D);
-        lightingHelper.setLightingYPos(itemStack, x, y, z).setLightnessOverride(getInterpolatedLightness(ForgeDirection.NORTH));
+        lightingHelper.setupLightingYPos(itemStack, x, y, z).setLightnessOverride(getInterpolatedLightness(ForgeDirection.NORTH));
         setIDAndRender(itemStack, SLOPE_YZPN, x, y, z, UP);
         
         /* Top South triangle. */
         
         renderBlocks.setRenderBounds(0.0D, 0.0D, 0.5D, 1.0D, 1.0D, 1.0D);
-        lightingHelper.setLightingYPos(itemStack, x, y, z).setLightnessOverride(getInterpolatedLightness(ForgeDirection.SOUTH));
+        lightingHelper.setupLightingYPos(itemStack, x, y, z).setLightnessOverride(getInterpolatedLightness(ForgeDirection.SOUTH));
         setIDAndRender(itemStack, SLOPE_YZPP, x, y, z, UP);
         
         /* Top West triangle. */
         
         renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 0.5D, 1.0D, 1.0D);
-        lightingHelper.setLightingYPos(itemStack, x, y, z).setLightnessOverride(getInterpolatedLightness(ForgeDirection.WEST));
+        lightingHelper.setupLightingYPos(itemStack, x, y, z).setLightnessOverride(getInterpolatedLightness(ForgeDirection.WEST));
         setIDAndRender(itemStack, SLOPE_XYNP, x, y, z, UP);
         
         /* Top East triangle. */
         
         renderBlocks.setRenderBounds(0.5D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
-        lightingHelper.setLightingYPos(itemStack, x, y, z).setLightnessOverride(getInterpolatedLightness(ForgeDirection.EAST));
+        lightingHelper.setupLightingYPos(itemStack, x, y, z).setLightnessOverride(getInterpolatedLightness(ForgeDirection.EAST));
         setIDAndRender(itemStack, SLOPE_XYPP, x, y, z, UP);
         
         lightingHelper.clearLightnessOverride();
@@ -201,7 +202,7 @@ public class BlockHandlerCarpentersCollapsibleBlock extends BlockAdvancedLightin
      */
     private void prepareFaceZNeg(ItemStack itemStack, int x, int y, int z)
     {
-        lightingHelper.setLightingZNeg(itemStack, x, y, z);
+        lightingHelper.setupLightingZNeg(itemStack, x, y, z);
         
         if (renderBlocks.enableAO) {
             lightingHelper.ao[TOP_LEFT]  = (float) (ao[NORTH][BOTTOM_LEFT] + (ao[NORTH][TOP_LEFT] - ao[NORTH][BOTTOM_LEFT]) * CollapsibleUtil.offset_XZPN);
@@ -216,7 +217,7 @@ public class BlockHandlerCarpentersCollapsibleBlock extends BlockAdvancedLightin
      */
     private void prepareFaceZPos(ItemStack itemStack, int x, int y, int z)
     {
-        lightingHelper.setLightingZPos(itemStack, x, y, z);
+        lightingHelper.setupLightingZPos(itemStack, x, y, z);
         
         if (renderBlocks.enableAO) {
             lightingHelper.ao[TOP_LEFT]  = (float) (ao[SOUTH][BOTTOM_LEFT] + (ao[SOUTH][TOP_LEFT] - ao[SOUTH][BOTTOM_LEFT]) * CollapsibleUtil.offset_XZNP);
@@ -231,7 +232,7 @@ public class BlockHandlerCarpentersCollapsibleBlock extends BlockAdvancedLightin
      */
     private void prepareFaceXNeg(ItemStack itemStack, int x, int y, int z)
     {
-        lightingHelper.setLightingXNeg(itemStack, x, y, z);
+        lightingHelper.setupLightingXNeg(itemStack, x, y, z);
         
         if (renderBlocks.enableAO) {
             lightingHelper.ao[TOP_LEFT]  = (float) (ao[WEST][BOTTOM_LEFT] + (ao[WEST][TOP_LEFT] - ao[WEST][BOTTOM_LEFT]) * CollapsibleUtil.offset_XZNN);
@@ -246,7 +247,7 @@ public class BlockHandlerCarpentersCollapsibleBlock extends BlockAdvancedLightin
      */
     private void prepareFaceXPos(ItemStack itemStack, int x, int y, int z)
     {
-        lightingHelper.setLightingXPos(itemStack, x, y, z);
+        lightingHelper.setupLightingXPos(itemStack, x, y, z);
         
         if (renderBlocks.enableAO) {
             lightingHelper.ao[TOP_LEFT]  = (float) (ao[EAST][BOTTOM_LEFT] + (ao[EAST][TOP_LEFT] - ao[EAST][BOTTOM_LEFT]) * CollapsibleUtil.offset_XZPP);

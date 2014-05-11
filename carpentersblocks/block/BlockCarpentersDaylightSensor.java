@@ -95,18 +95,22 @@ public class BlockCarpentersDaylightSensor extends BlockCoverable {
     {
         if (!world.provider.hasNoSky)
         {
-            TEBase TE = (TEBase) world.getTileEntity(x, y, z);
+            TEBase TE = getTileEntity(world, x, y, z);
             
-            int temp_lightValue = DaylightSensor.getLightLevel(TE);
-            int lightValue = world.getSavedLightValue(EnumSkyBlock.Sky, x, y, z) - world.skylightSubtracted;
+            if (TE != null) {
             
-            if (world.isThundering()) {
-                lightValue = 7;
-            }
+	            int temp_lightValue = DaylightSensor.getLightLevel(TE);
+	            int lightValue = world.getSavedLightValue(EnumSkyBlock.Sky, x, y, z) - world.skylightSubtracted;
+	            
+	            if (world.isThundering()) {
+	                lightValue = 7;
+	            }
+	            
+	            if (temp_lightValue != lightValue) {
+	                DaylightSensor.setLightLevel(TE, lightValue);
+	                world.notifyBlocksOfNeighborChange(x, y, z, this);
+	            }
             
-            if (temp_lightValue != lightValue) {
-                DaylightSensor.setLightLevel(TE, lightValue);
-                world.notifyBlocksOfNeighborChange(x, y, z, this);
             }
         }
     }

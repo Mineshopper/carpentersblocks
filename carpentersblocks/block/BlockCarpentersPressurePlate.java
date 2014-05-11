@@ -109,9 +109,11 @@ public class BlockCarpentersPressurePlate extends BlockCoverable {
      */
     public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
     {
-        TEBase TE = (TEBase) world.getTileEntity(x, y, z);
+        TEBase TE = getTileEntity(world, x, y, z);
         
-        setBlockBounds(0.0625F, 0.0F, 0.0625F, 1.0F - 0.0625F, isDepressed(TE) ? 0.03125F : 0.0625F, 1.0F - 0.0625F);
+        if (TE != null) {
+        	setBlockBounds(0.0625F, 0.0F, 0.0625F, 1.0F - 0.0625F, isDepressed(TE) ? 0.03125F : 0.0625F, 1.0F - 0.0625F);
+        }
     }
     
     @Override
@@ -149,14 +151,18 @@ public class BlockCarpentersPressurePlate extends BlockCoverable {
      */
     public void onNeighborBlockChange(World world, int x, int y, int z, Block block)
     {
-        TEBase TE = getTileEntity(world, x, y, z);
+    	if (!world.isRemote) {
+    	
+	        TEBase TE = getTileEntity(world, x, y, z);
+	        
+	        if (TE != null) {
+	            if (!World.doesBlockHaveSolidTopSurface(world, x, y - 1, z)) {
+	                dropBlockAsItem(world, x, y, z, 0, 0);
+	                world.setBlockToAir(x, y, z);
+	            }
+	        }
         
-        if (!world.isRemote && TE != null) {
-            if (!World.doesBlockHaveSolidTopSurface(world, x, y - 1, z)) {
-                dropBlockAsItem(world, x, y, z, 0, 0);
-                world.setBlockToAir(x, y, z);
-            }
-        }
+    	}
         
         super.onNeighborBlockChange(world, x, y, z, block);
     }
@@ -261,12 +267,7 @@ public class BlockCarpentersPressurePlate extends BlockCoverable {
     public int isProvidingWeakPower(IBlockAccess world, int x, int y, int z, int side)
     {
         TEBase TE = getTileEntity(world, x, y, z);
-        
-        if (TE != null) {
-            return getPowerSupply(TE, BlockProperties.getMetadata(TE));
-        } else {
-            return 0;
-        }
+        return TE == null ? 0 : getPowerSupply(TE, BlockProperties.getMetadata(TE));
     }
     
     @Override
@@ -277,12 +278,7 @@ public class BlockCarpentersPressurePlate extends BlockCoverable {
     public int isProvidingStrongPower(IBlockAccess world, int x, int y, int z, int side)
     {
         TEBase TE = getTileEntity(world, x, y, z);
-        
-        if (TE != null) {
-            return side == 1 ? getPowerSupply(TE, BlockProperties.getMetadata(TE)) : 0;
-        } else {
-            return 0;
-        }
+        return TE == null ? 0 : side == 1 ? getPowerSupply(TE, BlockProperties.getMetadata(TE)) : 0;
     }
     
     @Override
@@ -337,7 +333,7 @@ public class BlockCarpentersPressurePlate extends BlockCoverable {
      */
     public void breakBlock(World world, int x, int y, int z, Block block, int metadata)
     {
-        TEBase TE = getTileEntity(world, x, y, z);
+        TEBase TE = getSimpleTileEntity(world, x, y, z);
         
         if (TE != null) {
             if (isDepressed(TE)) {

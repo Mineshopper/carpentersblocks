@@ -76,14 +76,14 @@ public class BlockCarpentersCollapsibleBlock extends BlockCoverable {
     {
         World world = TE.getWorldObj();
         
-        TEBase TE_XN   = world.getBlock(TE.xCoord - 1, TE.yCoord, TE.zCoord).equals(this)     ? (TEBase) world.getTileEntity(TE.xCoord - 1, TE.yCoord, TE.zCoord)     : null;
-        TEBase TE_XP   = world.getBlock(TE.xCoord + 1, TE.yCoord, TE.zCoord).equals(this)     ? (TEBase) world.getTileEntity(TE.xCoord + 1, TE.yCoord, TE.zCoord)     : null;
-        TEBase TE_ZN   = world.getBlock(TE.xCoord, TE.yCoord, TE.zCoord - 1).equals(this)     ? (TEBase) world.getTileEntity(TE.xCoord, TE.yCoord, TE.zCoord - 1)     : null;
-        TEBase TE_ZP   = world.getBlock(TE.xCoord, TE.yCoord, TE.zCoord + 1).equals(this)     ? (TEBase) world.getTileEntity(TE.xCoord, TE.yCoord, TE.zCoord + 1)     : null;
-        TEBase TE_XZNN = world.getBlock(TE.xCoord - 1, TE.yCoord, TE.zCoord - 1).equals(this) ? (TEBase) world.getTileEntity(TE.xCoord - 1, TE.yCoord, TE.zCoord - 1) : null;
-        TEBase TE_XZNP = world.getBlock(TE.xCoord - 1, TE.yCoord, TE.zCoord + 1).equals(this) ? (TEBase) world.getTileEntity(TE.xCoord - 1, TE.yCoord, TE.zCoord + 1) : null;
-        TEBase TE_XZPN = world.getBlock(TE.xCoord + 1, TE.yCoord, TE.zCoord - 1).equals(this) ? (TEBase) world.getTileEntity(TE.xCoord + 1, TE.yCoord, TE.zCoord - 1) : null;
-        TEBase TE_XZPP = world.getBlock(TE.xCoord + 1, TE.yCoord, TE.zCoord + 1).equals(this) ? (TEBase) world.getTileEntity(TE.xCoord + 1, TE.yCoord, TE.zCoord + 1) : null;
+        TEBase TE_XN   = getTileEntity(world, TE.xCoord - 1, TE.yCoord, TE.zCoord);
+        TEBase TE_XP   = getTileEntity(world, TE.xCoord + 1, TE.yCoord, TE.zCoord);
+        TEBase TE_ZN   = getTileEntity(world, TE.xCoord, TE.yCoord, TE.zCoord - 1);
+        TEBase TE_ZP   = getTileEntity(world, TE.xCoord, TE.yCoord, TE.zCoord + 1);
+        TEBase TE_XZNN = getTileEntity(world, TE.xCoord - 1, TE.yCoord, TE.zCoord - 1);
+        TEBase TE_XZNP = getTileEntity(world, TE.xCoord - 1, TE.yCoord, TE.zCoord + 1);
+        TEBase TE_XZPN = getTileEntity(world, TE.xCoord + 1, TE.yCoord, TE.zCoord - 1);
+        TEBase TE_XZPP = getTileEntity(world, TE.xCoord + 1, TE.yCoord, TE.zCoord + 1);
         
         int height = Collapsible.getQuadHeight(TE, src_quadrant);
         
@@ -142,7 +142,7 @@ public class BlockCarpentersCollapsibleBlock extends BlockCoverable {
      */
     public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
     {
-        TEBase TE = (TEBase) world.getTileEntity(x, y, z);
+        TEBase TE = getTileEntity(world, x, y, z);
         
         float maxHeight = getMaxHeight(TE);
         
@@ -157,7 +157,7 @@ public class BlockCarpentersCollapsibleBlock extends BlockCoverable {
      */
     public boolean isSideSolid(IBlockAccess world, int x, int y, int z, ForgeDirection side)
     {
-        TEBase TE = getTileEntityStrict(world, x, y, z);
+        TEBase TE = getTileEntity(world, x, y, z);
         
         if (TE != null) {
             
@@ -195,30 +195,34 @@ public class BlockCarpentersCollapsibleBlock extends BlockCoverable {
         
         if (!entityLiving.isSneaking()) {
             
-            TEBase TE = (TEBase) world.getTileEntity(x, y, z);
+            TEBase TE = getTileEntity(world, x, y, z);
             
-            /* Match adjacent collapsible quadrant heights. */
+            if (TE != null) {
             
-            TEBase TE_XN = world.getBlock(x - 1, y, z).equals(this) ? (TEBase) world.getTileEntity(x - 1, y, z) : null;
-            TEBase TE_XP = world.getBlock(x + 1, y, z).equals(this) ? (TEBase) world.getTileEntity(x + 1, y, z) : null;
-            TEBase TE_ZN = world.getBlock(x, y, z - 1).equals(this) ? (TEBase) world.getTileEntity(x, y, z - 1) : null;
-            TEBase TE_ZP = world.getBlock(x, y, z + 1).equals(this) ? (TEBase) world.getTileEntity(x, y, z + 1) : null;
+	            /* Match adjacent collapsible quadrant heights. */
+	            
+	            TEBase TE_XN = getTileEntity(world, x - 1, y, z);
+	            TEBase TE_XP = getTileEntity(world, x + 1, y, z);
+	            TEBase TE_ZN = getTileEntity(world, x, y, z - 1);
+	            TEBase TE_ZP = getTileEntity(world, x, y, z + 1);
+	            
+	            if (TE_XN != null) {
+	                Collapsible.setQuadHeight(TE, Collapsible.QUAD_XZNN, Collapsible.getQuadHeight(TE_XN, Collapsible.QUAD_XZPN));
+	                Collapsible.setQuadHeight(TE, Collapsible.QUAD_XZNP, Collapsible.getQuadHeight(TE_XN, Collapsible.QUAD_XZPP));
+	            }
+	            if (TE_XP != null) {
+	                Collapsible.setQuadHeight(TE, Collapsible.QUAD_XZPN, Collapsible.getQuadHeight(TE_XP, Collapsible.QUAD_XZNN));
+	                Collapsible.setQuadHeight(TE, Collapsible.QUAD_XZPP, Collapsible.getQuadHeight(TE_XP, Collapsible.QUAD_XZNP));
+	            }
+	            if (TE_ZN != null) {
+	                Collapsible.setQuadHeight(TE, Collapsible.QUAD_XZNN, Collapsible.getQuadHeight(TE_ZN, Collapsible.QUAD_XZNP));
+	                Collapsible.setQuadHeight(TE, Collapsible.QUAD_XZPN, Collapsible.getQuadHeight(TE_ZN, Collapsible.QUAD_XZPP));
+	            }
+	            if (TE_ZP != null) {
+	                Collapsible.setQuadHeight(TE, Collapsible.QUAD_XZNP, Collapsible.getQuadHeight(TE_ZP, Collapsible.QUAD_XZNN));
+	                Collapsible.setQuadHeight(TE, Collapsible.QUAD_XZPP, Collapsible.getQuadHeight(TE_ZP, Collapsible.QUAD_XZPN));
+	            }
             
-            if (TE_XN != null) {
-                Collapsible.setQuadHeight(TE, Collapsible.QUAD_XZNN, Collapsible.getQuadHeight(TE_XN, Collapsible.QUAD_XZPN));
-                Collapsible.setQuadHeight(TE, Collapsible.QUAD_XZNP, Collapsible.getQuadHeight(TE_XN, Collapsible.QUAD_XZPP));
-            }
-            if (TE_XP != null) {
-                Collapsible.setQuadHeight(TE, Collapsible.QUAD_XZPN, Collapsible.getQuadHeight(TE_XP, Collapsible.QUAD_XZNN));
-                Collapsible.setQuadHeight(TE, Collapsible.QUAD_XZPP, Collapsible.getQuadHeight(TE_XP, Collapsible.QUAD_XZNP));
-            }
-            if (TE_ZN != null) {
-                Collapsible.setQuadHeight(TE, Collapsible.QUAD_XZNN, Collapsible.getQuadHeight(TE_ZN, Collapsible.QUAD_XZNP));
-                Collapsible.setQuadHeight(TE, Collapsible.QUAD_XZPN, Collapsible.getQuadHeight(TE_ZN, Collapsible.QUAD_XZPP));
-            }
-            if (TE_ZP != null) {
-                Collapsible.setQuadHeight(TE, Collapsible.QUAD_XZNP, Collapsible.getQuadHeight(TE_ZP, Collapsible.QUAD_XZNN));
-                Collapsible.setQuadHeight(TE, Collapsible.QUAD_XZPP, Collapsible.getQuadHeight(TE_ZP, Collapsible.QUAD_XZPN));
             }
         }
         
@@ -292,18 +296,22 @@ public class BlockCarpentersCollapsibleBlock extends BlockCoverable {
      */
     public void addCollisionBoxesToList(World world, int x, int y, int z, AxisAlignedBB axisAlignedBB, List list, Entity entity)
     {
-        TEBase TE = (TEBase) world.getTileEntity(x, y, z);
+        TEBase TE = getTileEntity(world, x, y, z);
         
-        AxisAlignedBB colBox = null;
+        if (TE != null) {
         
-        for (int quad = 0; quad < 4; ++quad)
-        {
-            float[] bounds = genBounds(TE, quad);
-            colBox = AxisAlignedBB.getAABBPool().getAABB(x + bounds[0], y + bounds[1], z + bounds[2], x + bounds[3], y + bounds[4], z + bounds[5]);
-            
-            if (axisAlignedBB.intersectsWith(colBox)) {
-                list.add(colBox);
-            }
+	        AxisAlignedBB colBox = null;
+	        
+	        for (int quad = 0; quad < 4; ++quad)
+	        {
+	            float[] bounds = genBounds(TE, quad);
+	            colBox = AxisAlignedBB.getAABBPool().getAABB(x + bounds[0], y + bounds[1], z + bounds[2], x + bounds[3], y + bounds[4], z + bounds[5]);
+	            
+	            if (axisAlignedBB.intersectsWith(colBox)) {
+	                list.add(colBox);
+	            }
+	        }
+        
         }
     }
     
@@ -314,32 +322,36 @@ public class BlockCarpentersCollapsibleBlock extends BlockCoverable {
      */
     public MovingObjectPosition collisionRayTrace(World world, int x, int y, int z, Vec3 startVec, Vec3 endVec)
     {
-        TEBase TE = (TEBase) world.getTileEntity(x, y, z);
-        
+        TEBase TE = getTileEntity(world, x, y, z);
         MovingObjectPosition finalTrace = null;
         
-        double currDist = 0.0D;
-        double maxDist = 0.0D;
+        if (TE != null) {
+
+	        double currDist = 0.0D;
+	        double maxDist = 0.0D;
+	        
+	        // Determine if ray trace is a hit on block
+	        for (int quad = 0; quad < 4; ++quad)
+	        {
+	            float[] bounds = genBounds(TE, quad);
+	            
+	            setBlockBounds(bounds[0], bounds[1], bounds[2], bounds[3], bounds[4], bounds[5]);
+	            MovingObjectPosition traceResult = super.collisionRayTrace(world, x, y, z, startVec, endVec);
+	            
+	            if (traceResult != null)
+	            {
+	                currDist = traceResult.hitVec.squareDistanceTo(endVec);
+	                if (currDist > maxDist) {
+	                    finalTrace = traceResult;
+	                    maxDist = currDist;
+	                }
+	            }
+	        }
+	        
+	        setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
         
-        // Determine if ray trace is a hit on block
-        for (int quad = 0; quad < 4; ++quad)
-        {
-            float[] bounds = genBounds(TE, quad);
-            
-            setBlockBounds(bounds[0], bounds[1], bounds[2], bounds[3], bounds[4], bounds[5]);
-            MovingObjectPosition traceResult = super.collisionRayTrace(world, x, y, z, startVec, endVec);
-            
-            if (traceResult != null)
-            {
-                currDist = traceResult.hitVec.squareDistanceTo(endVec);
-                if (currDist > maxDist) {
-                    finalTrace = traceResult;
-                    maxDist = currDist;
-                }
-            }
         }
         
-        setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
         return finalTrace;
     }
     

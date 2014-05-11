@@ -136,29 +136,32 @@ public class BlockCarpentersBlock extends BlockCoverable {
      */
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack itemStack)
     {
-        TEBase TE = (TEBase) world.getTileEntity(x, y, z);
-        
-        int data = Slab.BLOCK_FULL;
-        
-        if (!entityLiving.isSneaking()) {
-            
-            /* Match block type with adjacent type if possible. */
-            
-            TEBase[] TE_list = getAdjacentTileEntities(world, x, y, z);
-            
-            for (TEBase TE_current : TE_list) {
-                if (TE_current != null) {
-                    if (TE_current.getBlockType().equals(this)) {
-                        data = BlockProperties.getMetadata(TE_current);
-                    }
-                }
-            }
-            
-        }
-        
-        BlockProperties.setMetadata(TE, data);
-        
-        super.onBlockPlacedBy(world, x, y, z, entityLiving, itemStack);
+    	TEBase TE = getTileEntity(world, x, y, z);
+
+    	if (TE != null) {
+
+    		int data = Slab.BLOCK_FULL;
+
+    		if (!entityLiving.isSneaking()) {
+
+    			/* Match block type with adjacent type if possible. */
+
+    			TEBase[] TE_list = getAdjacentTileEntities(world, x, y, z);
+
+    			for (TEBase TE_current : TE_list) {
+    				if (TE_current != null) {
+    					if (TE_current.getBlockType().equals(this)) {
+    						data = BlockProperties.getMetadata(TE_current);
+    					}
+    				}
+    			}
+
+    		}
+
+    		BlockProperties.setMetadata(TE, data);
+    	}
+    	
+    	super.onBlockPlacedBy(world, x, y, z, entityLiving, itemStack);
     }
     
     @Override
@@ -178,7 +181,7 @@ public class BlockCarpentersBlock extends BlockCoverable {
      */
     public boolean isSideSolid(IBlockAccess world, int x, int y, int z, ForgeDirection side)
     {
-        TEBase TE = getTileEntityStrict(world, x, y, z);
+        TEBase TE = getTileEntity(world, x, y, z);
         
         if (TE != null) {
             

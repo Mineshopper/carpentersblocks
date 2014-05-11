@@ -93,7 +93,6 @@ public class BlockCarpentersLever extends BlockCoverable {
     public boolean canPlaceBlockOnSide(World world, int x, int y, int z, int side)
     {
         ForgeDirection dir = ForgeDirection.getOrientation(side);
-        
         return world.getBlock(x - dir.offsetX, y - dir.offsetY, z - dir.offsetZ).isSideSolid(world, x - dir.offsetX, y - dir.offsetY, z - dir.offsetZ, dir);
     }
     
@@ -112,24 +111,29 @@ public class BlockCarpentersLever extends BlockCoverable {
      */
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack itemStack)
     {
-        TEBase TE = (TEBase) world.getTileEntity(x, y, z);
-        int facing = world.getBlockMetadata(x, y, z);
+        TEBase TE = getTileEntity(world, x, y, z);
         
-        Lever.setFacing(TE, facing);
-        Lever.setReady(TE);
+        if (TE != null) {
         
-        /* For vertical facings, set axis rotation. */
-        if (facing < 2)
-        {
-            ForgeDirection dir = BlockProperties.getDirectionFromFacing(BlockProperties.getOppositeFacing(entityLiving));
-            
-            if (dir.equals(ForgeDirection.NORTH) || dir.equals(ForgeDirection.SOUTH)) {
-                Lever.setAxis(TE, Axis.Z);
-            }
-        } else {
-            if (facing == ForgeDirection.NORTH.ordinal() || facing == ForgeDirection.SOUTH.ordinal()) {
-                Lever.setAxis(TE, Axis.Z);
-            }
+	        int facing = world.getBlockMetadata(x, y, z);
+	        
+	        Lever.setFacing(TE, facing);
+	        Lever.setReady(TE);
+	        
+	        /* For vertical facings, set axis rotation. */
+	        if (facing < 2)
+	        {
+	            ForgeDirection dir = BlockProperties.getDirectionFromFacing(BlockProperties.getOppositeFacing(entityLiving));
+	            
+	            if (dir.equals(ForgeDirection.NORTH) || dir.equals(ForgeDirection.SOUTH)) {
+	                Lever.setAxis(TE, Axis.Z);
+	            }
+	        } else {
+	            if (facing == ForgeDirection.NORTH.ordinal() || facing == ForgeDirection.SOUTH.ordinal()) {
+	                Lever.setAxis(TE, Axis.Z);
+	            }
+	        }
+        
         }
         
         super.onBlockPlacedBy(world, x, y, z, entityLiving, itemStack);
@@ -142,21 +146,25 @@ public class BlockCarpentersLever extends BlockCoverable {
      */
     public void onNeighborBlockChange(World world, int x, int y, int z, Block block)
     {
-        TEBase TE = getTileEntity(world, x, y, z);
+    	if (!world.isRemote) {
+    	
+	        TEBase TE = getTileEntity(world, x, y, z);
+	        
+	        if (TE != null) {
+	            
+	            if (Lever.isReady(TE))
+	            {
+	                ForgeDirection facing = Lever.getFacing(TE);
+	                
+	                if (!canPlaceBlockOnSide(world, x, y, z, facing.ordinal())) {
+	                    dropBlockAsItem(world, x, y, z, 0, 0);
+	                    world.setBlockToAir(x, y, z);
+	                }
+	            }
+	            
+	        }
         
-        if (!world.isRemote && TE != null) {
-            
-            if (Lever.isReady(TE))
-            {
-                ForgeDirection facing = Lever.getFacing(TE);
-                
-                if (!canPlaceBlockOnSide(world, x, y, z, facing.ordinal())) {
-                    dropBlockAsItem(world, x, y, z, 0, 0);
-                    world.setBlockToAir(x, y, z);
-                }
-            }
-            
-        }
+    	}
         
         super.onNeighborBlockChange(world, x, y, z, block);
     }
@@ -167,43 +175,46 @@ public class BlockCarpentersLever extends BlockCoverable {
      */
     public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
     {
-        TEBase TE = (TEBase) world.getTileEntity(x, y, z);
+        TEBase TE = getTileEntity(world, x, y, z);
         
-        ForgeDirection facing = Lever.getFacing(TE);
-        Axis axis = Lever.getAxis(TE);
+        if (TE != null) {
         
-        float offset = 0.1875F;
+	        ForgeDirection facing = Lever.getFacing(TE);
+	        Axis axis = Lever.getAxis(TE);
+	        
+	        float offset = 0.1875F;
+	        
+	        switch (facing) {
+	            case DOWN:
+	                if (axis.equals(Axis.X)) {
+	                    setBlockBounds(0.2F, 1.0F - offset, 0.5F - offset, 0.8F, 1.0F, 0.5F + offset);
+	                } else {
+	                    setBlockBounds(0.5F - offset, 1.0F - offset, 0.2F, 0.5F + offset, 1.0F, 0.8F);
+	                }
+	                break;
+	            case UP:
+	                if (axis.equals(Axis.X)) {
+	                    setBlockBounds(0.2F, 0.0F, 0.5F - offset, 0.8F, offset, 0.5F + offset);
+	                } else {
+	                    setBlockBounds(0.5F - offset, 0.0F, 0.2F, 0.5F + offset, offset, 0.8F);
+	                }
+	                break;
+	            case NORTH:
+	                setBlockBounds(0.5F - offset, 0.2F, 1.0F - offset, 0.5F + offset, 0.8F, 1.0F);
+	                break;
+	            case SOUTH:
+	                setBlockBounds(0.5F - offset, 0.2F, 0.0F, 0.5F + offset, 0.8F, offset);
+	                break;
+	            case WEST:
+	                setBlockBounds(1.0F - offset, 0.2F, 0.5F - offset, 1.0F, 0.8F, 0.5F + offset);
+	                break;
+	            case EAST:
+	                setBlockBounds(0.0F, 0.2F, 0.5F - offset, offset, 0.8F, 0.5F + offset);
+	                break;
+	            default: {}
+	        }
         
-        switch (facing) {
-            case DOWN:
-                if (axis.equals(Axis.X)) {
-                    setBlockBounds(0.2F, 1.0F - offset, 0.5F - offset, 0.8F, 1.0F, 0.5F + offset);
-                } else {
-                    setBlockBounds(0.5F - offset, 1.0F - offset, 0.2F, 0.5F + offset, 1.0F, 0.8F);
-                }
-                break;
-            case UP:
-                if (axis.equals(Axis.X)) {
-                    setBlockBounds(0.2F, 0.0F, 0.5F - offset, 0.8F, offset, 0.5F + offset);
-                } else {
-                    setBlockBounds(0.5F - offset, 0.0F, 0.2F, 0.5F + offset, offset, 0.8F);
-                }
-                break;
-            case NORTH:
-                setBlockBounds(0.5F - offset, 0.2F, 1.0F - offset, 0.5F + offset, 0.8F, 1.0F);
-                break;
-            case SOUTH:
-                setBlockBounds(0.5F - offset, 0.2F, 0.0F, 0.5F + offset, 0.8F, offset);
-                break;
-            case WEST:
-                setBlockBounds(1.0F - offset, 0.2F, 0.5F - offset, 1.0F, 0.8F, 0.5F + offset);
-                break;
-            case EAST:
-                setBlockBounds(0.0F, 0.2F, 0.5F - offset, offset, 0.8F, 0.5F + offset);
-                break;
-            default: {}
         }
-        
     }
     
     @Override
@@ -241,12 +252,7 @@ public class BlockCarpentersLever extends BlockCoverable {
     public int isProvidingWeakPower(IBlockAccess world, int x, int y, int z, int side)
     {
         TEBase TE = getTileEntity(world, x, y, z);
-        
-        if (TE != null) {
-            return getPowerSupply(TE);
-        } else {
-            return 0;
-        }
+        return TE == null ? 0 : getPowerSupply(TE);
     }
     
     @Override
@@ -257,12 +263,7 @@ public class BlockCarpentersLever extends BlockCoverable {
     public int isProvidingStrongPower(IBlockAccess world, int x, int y, int z, int side)
     {
         TEBase TE = getTileEntity(world, x, y, z);
-        
-        if (TE != null) {
-            return Lever.getFacing(TE).ordinal() == side ? getPowerSupply(TE) : 0;
-        } else {
-            return 0;
-        }
+        return TE == null ? 0 : Lever.getFacing(TE).ordinal() == side ? getPowerSupply(TE) : 0;
     }
     
     /**
@@ -309,7 +310,7 @@ public class BlockCarpentersLever extends BlockCoverable {
      */
     public void breakBlock(World world, int x, int y, int z, Block block, int metadata)
     {
-        TEBase TE = getTileEntity(world, x, y, z);
+        TEBase TE = getSimpleTileEntity(world, x, y, z);
         
         if (TE != null) {
             if (isActive(TE)) {

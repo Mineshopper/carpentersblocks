@@ -58,7 +58,7 @@ public class BlockHandlerCarpentersTorch extends BlockHandlerBase {
     /**
      * Renders side.
      */
-    protected void renderSide(int x, int y, int z, int side, IIcon icon)
+    protected void render(int x, int y, int z, int side, IIcon icon)
     {
         renderFace(Tessellator.instance, side, icon, true);
     }
@@ -135,22 +135,22 @@ public class BlockHandlerCarpentersTorch extends BlockHandlerBase {
         
         setRotations(Torch.getFacing(TE), x, y, z);
 
-        lightingHelper.setLightingYNeg(itemStack, x, y, z);
+        lightingHelper.setupLightingYNeg(itemStack, x, y, z);
         delegateSideRender(itemStack, x, y, z, DOWN);
         
-        lightingHelper.setLightingYPos(itemStack, x, y, z);
+        lightingHelper.setupLightingYPos(itemStack, x, y, z);
         delegateSideRender(itemStack, x, y, z, UP);
         
-        lightingHelper.setLightingZNeg(itemStack, x, y, z);
+        lightingHelper.setupLightingZNeg(itemStack, x, y, z);
         delegateSideRender(itemStack, x, y, z, NORTH);
         
-        lightingHelper.setLightingZPos(itemStack, x, y, z);
+        lightingHelper.setupLightingZPos(itemStack, x, y, z);
         delegateSideRender(itemStack, x, y, z, SOUTH);
         
-        lightingHelper.setLightingXNeg(itemStack, x, y, z);
+        lightingHelper.setupLightingXNeg(itemStack, x, y, z);
         delegateSideRender(itemStack, x, y, z, WEST);
         
-        lightingHelper.setLightingXPos(itemStack, x, y, z);
+        lightingHelper.setupLightingXPos(itemStack, x, y, z);
         delegateSideRender(itemStack, x, y, z, EAST);
     }
     

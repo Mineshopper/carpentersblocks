@@ -30,28 +30,34 @@ public class BlockCarpentersLadder extends BlockCoverable {
      */
     public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
     {
-        TEBase TE = (TEBase) world.getTileEntity(x, y, z);
-        int data = BlockProperties.getMetadata(TE);
+        TEBase TE = getTileEntity(world, x, y, z);
         
-        switch (data) {
-            case Ladder.FACING_NORTH: // Ladder on +Z
-                setBlockBounds(0.0F, 0.0F, 0.8125F, 1.0F, 1.0F, 1.0F);
-                break;
-            case Ladder.FACING_SOUTH: // Ladder on -Z
-                setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 0.1875F);
-                break;
-            case Ladder.FACING_WEST: // Ladder on +X
-                setBlockBounds(0.8125F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
-                break;
-            case Ladder.FACING_EAST: // Ladder on -X
-                setBlockBounds(0.0F, 0.0F, 0.0F, 0.1875F, 1.0F, 1.0F);
-                break;
-            case Ladder.FACING_ON_X:
-                setBlockBounds(0.0F, 0.0F, 0.375F, 1.0F, 1.0F, 0.625F);
-                break;
-            default: // Ladder.FACING_ON_Z
-                setBlockBounds(0.375F, 0.0F, 0.0F, 0.625F, 1.0F, 1.0F);
-                break;
+        if (TE != null) {
+        
+	        int data = BlockProperties.getMetadata(TE);
+	        
+	        switch (data) {
+	            case Ladder.FACING_NORTH: // Ladder on +Z
+	                setBlockBounds(0.0F, 0.0F, 0.8125F, 1.0F, 1.0F, 1.0F);
+	                break;
+	            case Ladder.FACING_SOUTH: // Ladder on -Z
+	                setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 0.1875F);
+	                break;
+	            case Ladder.FACING_WEST: // Ladder on +X
+	                setBlockBounds(0.8125F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
+	                break;
+	            case Ladder.FACING_EAST: // Ladder on -X
+	                setBlockBounds(0.0F, 0.0F, 0.0F, 0.1875F, 1.0F, 1.0F);
+	                break;
+	            case Ladder.FACING_ON_X:
+	                setBlockBounds(0.0F, 0.0F, 0.375F, 1.0F, 1.0F, 0.625F);
+	                break;
+	            default: // Ladder.FACING_ON_Z
+	                setBlockBounds(0.375F, 0.0F, 0.0F, 0.625F, 1.0F, 1.0F);
+	                break;
+	                
+	        }
+        
         }
     }
     
@@ -142,31 +148,37 @@ public class BlockCarpentersLadder extends BlockCoverable {
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack itemStack)
     {
         TEBase TE = getTileEntity(world, x, y, z);
-        int metadata = world.getBlockMetadata(x, y, z);
         
-        if (metadata < 2) {
-            int facing = MathHelper.floor_double(entityLiving.rotationYaw * 4.0F / 360.0F + 0.5D) & 3;
-            BlockProperties.setMetadata(TE, facing % 2 == 0 ? Ladder.FACING_ON_X : Ladder.FACING_ON_Z);
-        } else {
-            BlockProperties.setMetadata(TE, metadata);
-        }
+        if (TE != null) {
         
-        if (!entityLiving.isSneaking())
-        {
-            TEBase TE_adj = null;
-            
-            Block block_YN = world.getBlock(x, y - 1, z);
-            Block block_YP = world.getBlock(x, y + 1, z);
-            
-            if (block_YN != null && block_YN.equals(this)) {
-                TE_adj = (TEBase) world.getTileEntity(x, y - 1, z);
-            } else if (block_YP != null && block_YN.equals(this)) {
-                TE_adj = (TEBase) world.getTileEntity(x, y + 1, z);
-            }
-            
-            if (TE_adj != null) {
-                BlockProperties.setMetadata(TE, BlockProperties.getMetadata(TE_adj));
-            }
+	        int metadata = world.getBlockMetadata(x, y, z);
+	        
+	        if (metadata < 2) {
+	            int facing = MathHelper.floor_double(entityLiving.rotationYaw * 4.0F / 360.0F + 0.5D) & 3;
+	            BlockProperties.setMetadata(TE, facing % 2 == 0 ? Ladder.FACING_ON_X : Ladder.FACING_ON_Z);
+	        } else {
+	            BlockProperties.setMetadata(TE, metadata);
+	        }
+	        
+	        if (!entityLiving.isSneaking()) {
+	        	
+	            TEBase TE_adj = null;
+	            
+	            Block block_YN = world.getBlock(x, y - 1, z);
+	            Block block_YP = world.getBlock(x, y + 1, z);
+	            
+	            if (block_YN != null && block_YN.equals(this)) {
+	                TE_adj = (TEBase) world.getTileEntity(x, y - 1, z);
+	            } else if (block_YP != null && block_YN.equals(this)) {
+	                TE_adj = (TEBase) world.getTileEntity(x, y + 1, z);
+	            }
+	            
+	            if (TE_adj != null) {
+	                BlockProperties.setMetadata(TE, BlockProperties.getMetadata(TE_adj));
+	            }
+	            
+	        }
+        
         }
         
         super.onBlockPlacedBy(world, x, y, z, entityLiving, itemStack);
@@ -179,42 +191,46 @@ public class BlockCarpentersLadder extends BlockCoverable {
      */
     public void onNeighborBlockChange(World world, int x, int y, int z, Block block)
     {
-        TEBase TE = getTileEntity(world, x, y, z);
+    	if (!world.isRemote) {
+    	
+	        TEBase TE = getTileEntity(world, x, y, z);
+	        
+	        if (TE != null) {
+	            
+	            int data = BlockProperties.getMetadata(TE);
+	            boolean dropBlock = false;
+	            
+	            switch (data) {
+	                case 2:
+	                    if (!world.getBlock(x, y, z + 1).isSideSolid(world, x, y, z + 1, ForgeDirection.NORTH)) {
+	                        dropBlock = true;
+	                    }
+	                    break;
+	                case 3:
+	                    if (!world.getBlock(x, y, z - 1).isSideSolid(world, x, y, z - 1, ForgeDirection.SOUTH)) {
+	                        dropBlock = true;
+	                    }
+	                    break;
+	                case 4:
+	                    if (!world.getBlock(x + 1, y, z).isSideSolid(world, x + 1, y, z, ForgeDirection.WEST)) {
+	                        dropBlock = true;
+	                    }
+	                    break;
+	                case 5:
+	                    if (!world.getBlock(x - 1, y, z).isSideSolid(world, x - 1, y, z, ForgeDirection.EAST)) {
+	                        dropBlock = true;
+	                    }
+	                    break;
+	            }
+	            
+	            if (dropBlock) {
+	                dropBlockAsItem(world, x, y, z, data, 0);
+	                world.setBlockToAir(x, y, z);
+	            }
+	            
+	        }
         
-        if (!world.isRemote && TE != null) {
-            
-            int data = BlockProperties.getMetadata(TE);
-            boolean dropBlock = false;
-            
-            switch (data) {
-                case 2:
-                    if (!world.getBlock(x, y, z + 1).isSideSolid(world, x, y, z + 1, ForgeDirection.NORTH)) {
-                        dropBlock = true;
-                    }
-                    break;
-                case 3:
-                    if (!world.getBlock(x, y, z - 1).isSideSolid(world, x, y, z - 1, ForgeDirection.SOUTH)) {
-                        dropBlock = true;
-                    }
-                    break;
-                case 4:
-                    if (!world.getBlock(x + 1, y, z).isSideSolid(world, x + 1, y, z, ForgeDirection.WEST)) {
-                        dropBlock = true;
-                    }
-                    break;
-                case 5:
-                    if (!world.getBlock(x - 1, y, z).isSideSolid(world, x - 1, y, z, ForgeDirection.EAST)) {
-                        dropBlock = true;
-                    }
-                    break;
-            }
-            
-            if (dropBlock) {
-                dropBlockAsItem(world, x, y, z, data, 0);
-                world.setBlockToAir(x, y, z);
-            }
-            
-        }
+    	}
         
         super.onNeighborBlockChange(world, x, y, z, block);
     }

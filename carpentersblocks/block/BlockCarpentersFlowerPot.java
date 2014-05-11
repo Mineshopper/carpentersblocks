@@ -222,30 +222,34 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
      */
     public void onNeighborBlockChange(World world, int x, int y, int z, Block block)
     {
-        TEBase TE = getTileEntity(world, x, y, z);
+    	if (!world.isRemote) {
+    	
+	        TEBase TE = getTileEntity(world, x, y, z);
+	        
+	        if (TE != null) {
+	            
+	            if (!canPlaceBlockOnSide(world, x, y, z, 1)) {
+	                dropBlockAsItem(world, x, y, z, world.getBlockMetadata(x, y, z), 0);
+	                world.setBlockToAir(x, y, z);
+	            }
+	            
+	            /* Eject double tall plant if obstructed. */
+	            
+	            if (FlowerPotProperties.hasPlant(TE)) {
+	                
+	                Profile profile = FlowerPotHandler.getPlantProfile(TE);
+	                
+	                if (profile.equals(Profile.DOUBLEPLANT) || profile.equals(Profile.THIN_DOUBLEPLANT)) {
+	                    if (world.getBlock(x, y + 1, z).isSideSolid(world, x, y + 1, z, ForgeDirection.DOWN)) {
+	                        FlowerPotProperties.setPlant(TE, (ItemStack)null);
+	                    }
+	                }
+	                
+	            }
+	            
+	        }
         
-        if (!world.isRemote && TE != null) {
-            
-            if (!canPlaceBlockOnSide(world, x, y, z, 1)) {
-                dropBlockAsItem(world, x, y, z, world.getBlockMetadata(x, y, z), 0);
-                world.setBlockToAir(x, y, z);
-            }
-            
-            /* Eject double tall plant if obstructed. */
-            
-            if (FlowerPotProperties.hasPlant(TE)) {
-                
-                Profile profile = FlowerPotHandler.getPlantProfile(TE);
-                
-                if (profile.equals(Profile.DOUBLEPLANT) || profile.equals(Profile.THIN_DOUBLEPLANT)) {
-                    if (world.getBlock(x, y + 1, z).isSideSolid(world, x, y + 1, z, ForgeDirection.DOWN)) {
-                        FlowerPotProperties.setPlant(TE, (ItemStack)null);
-                    }
-                }
-                
-            }
-            
-        }
+    	}
         
         super.onNeighborBlockChange(world, x, y, z, block);
     }
@@ -271,24 +275,28 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
      */
     public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
     {
-        TECarpentersFlowerPot TE = (TECarpentersFlowerPot) world.getTileEntity(x, y, z);
+    	TEBase TE = getTileEntity(world, x, y, z);
+    	
+    	if (TE != null && TE instanceof TECarpentersFlowerPot) {
+
+	        if (FlowerPotProperties.hasPlant(TE)) {
+	            
+	            switch (FlowerPotHandler.getPlantProfile(TE)) {
+	                case CACTUS:
+	                case LEAVES:
+	                    setBlockBounds(0.3125F, 0.0F, 0.3125F, 0.6875F, 0.99F, 0.6875F);
+	                    break;
+	                default:
+	                    setBlockBounds(0.3125F, 0.0F, 0.3125F, 0.6875F, 0.75F, 0.6875F);
+	            }
+	            
+	        } else {
+	            
+	            setBlockBounds(0.3125F, 0.0F, 0.3125F, 0.6875F, 0.375F, 0.6875F);
+	            
+	        }
         
-        if (FlowerPotProperties.hasPlant(TE)) {
-            
-            switch (FlowerPotHandler.getPlantProfile(TE)) {
-                case CACTUS:
-                case LEAVES:
-                    setBlockBounds(0.3125F, 0.0F, 0.3125F, 0.6875F, 0.99F, 0.6875F);
-                    break;
-                default:
-                    setBlockBounds(0.3125F, 0.0F, 0.3125F, 0.6875F, 0.75F, 0.6875F);
-            }
-            
-        } else {
-            
-            setBlockBounds(0.3125F, 0.0F, 0.3125F, 0.6875F, 0.375F, 0.6875F);
-            
-        }
+    	}
     }
     
     @Override
@@ -452,9 +460,10 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
      */
     public void breakBlock(World world, int x, int y, int z, Block block, int metadata)
     {
-        TEBase TE = getTileEntity(world, x, y, z);
+        TEBase TE = getSimpleTileEntity(world, x, y, z);
         
         if (TE != null && TE instanceof TECarpentersFlowerPot) {
+        	
             if (FlowerPot.isEnriched(TE)) {
                 FlowerPot.setEnrichment(TE, false);
             }
@@ -464,6 +473,7 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
             if (FlowerPotProperties.hasSoil(TE)) {
                 FlowerPotProperties.setSoil(TE, (ItemStack)null);
             }
+            
         }
         
         super.breakBlock(world, x, y, z, block, metadata);

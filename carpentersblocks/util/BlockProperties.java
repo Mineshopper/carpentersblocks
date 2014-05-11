@@ -3,8 +3,10 @@ package carpentersblocks.util;
 import net.minecraft.block.Block;
 import net.minecraft.block.Block.SoundType;
 import net.minecraft.block.BlockBreakable;
+import net.minecraft.block.BlockPane;
 import net.minecraft.block.BlockQuartz;
 import net.minecraft.block.BlockRotatedPillar;
+import net.minecraft.block.BlockSlab;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -261,7 +263,9 @@ public class BlockProperties {
             if (block.hasTileEntity(itemStack.getItemDamage())) {
             	return false;
             } else {
-            	return block.isOpaqueCube() ||
+                return block.renderAsNormalBlock() ||
+                       block instanceof BlockSlab ||
+                       block instanceof BlockPane ||
                        block instanceof BlockBreakable;
             }
             
@@ -279,17 +283,16 @@ public class BlockProperties {
         if (itemStack != null) {
 
             Block block = Block.getBlockFromItem(itemStack.getItem());
-            
-            Item itemDropped = block.getItemDropped(itemStack.getItemDamage(), world.rand, /* Fortune */ 0);
             int damageDropped = block.damageDropped(itemStack.getItemDamage());
+            Item itemDropped = block.getItemDropped(itemStack.getItemDamage(), world.rand, /* Fortune */ 0);
             
             /*
              * Check if block drops itself, and, if so, correct the damage value
              * to the block's default.
              */
             
-            if (itemDropped.equals(itemStack.getItem()) && damageDropped != itemStack.getItemDamage()) {
-                itemStack.setItemDamage(damageDropped);
+            if (itemDropped != null && itemDropped.equals(itemStack.getItem()) && damageDropped != itemStack.getItemDamage()) {
+	        	itemStack.setItemDamage(damageDropped);
             }
             
         }

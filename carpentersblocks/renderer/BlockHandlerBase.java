@@ -7,6 +7,7 @@ import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.MinecraftForgeClient;
@@ -21,6 +22,7 @@ import carpentersblocks.renderer.helper.RenderHelper;
 import carpentersblocks.renderer.helper.VertexHelper;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
+import carpentersblocks.util.handler.DyeHandler;
 import carpentersblocks.util.handler.EventHandler;
 import carpentersblocks.util.handler.OverlayHandler;
 import carpentersblocks.util.handler.OverlayHandler.Overlay;
@@ -107,7 +109,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
     {
         VertexHelper.vertexCount = 0;
   
-        TE = (TEBase) blockAccess.getTileEntity(x, y, z);
+        TileEntity TE_default = blockAccess.getTileEntity(x, y, z);
 
         /*
          * A catch-all for bad render calls.  Could happen if tile entities aren't
@@ -115,8 +117,9 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
          * like the door or bed when created or destroyed, when TE does not yet exist
          * or has already been removed.
          */
-        if (TE != null) {
+        if (TE_default != null && TE_default instanceof TEBase) {
             
+        	TE = (TEBase) TE_default;
             srcBlock = block;
             this.renderBlocks = renderBlocks;
             this.lightingHelper = new LightingHelper(this);
@@ -437,15 +440,13 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
         
         /* Render side */
         
-        lightingHelper.colorSide(itemStack, block, x, y, z, side, icon);
-        renderSide(x, y, z, side, icon);
-        
+        setColorAndRender(itemStack, block, x, y, z, side, icon);        
         clearRotation(side);
         
         /* Grass sides are a special case. */
         
-        if (block.equals(Blocks.grass)) {
-            renderGrassSideOverlay(x, y, z, side);
+        if (block.equals(Blocks.grass) && side > UP) {
+        	setColorAndRender(new ItemStack(Blocks.grass), Blocks.grass, x, y, z, side, getGrassOverlayIcon(side));
         }
         
         boolean temp_dye_state = suppressDyeColor;
@@ -476,26 +477,12 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
          * decorations. Can also check Icon name for beginsWith("destroy_stage_").
          */
         if (renderBlocks.hasOverrideBlockTexture()) {
-            lightingHelper.colorSide(itemStack, BlockProperties.toBlock(itemStack), x, y, z, side, renderBlocks.overrideBlockTexture);
-            renderSide(x, y, z, side, renderBlocks.overrideBlockTexture);
+            setColorAndRender(itemStack, BlockProperties.toBlock(itemStack), x, y, z, side, renderBlocks.overrideBlockTexture);
         } else {
             renderMultiTexturedSide(itemStack, x, y, z, side, getIcon(itemStack, side));
         }
     }
-    
-    /**
-     * Renders forced grass overlay on side.
-     */
-    protected void renderGrassSideOverlay(int x, int y, int z, int side)
-    {
-        if (side > UP)
-        {
-            IIcon icon = getGrassOverlayIcon(side);
-            lightingHelper.colorSide(new ItemStack(Blocks.grass), Blocks.grass, x, y, z, side, icon);
-            renderSide(x, y, z, side, icon);
-        }
-    }
-    
+
     /**
      * Renders overlay on side.
      */
@@ -514,11 +501,8 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
         }
 
         if (icon != null) {
-            
             ItemStack itemStack = OverlayHandler.getOverlay(TE, coverRendering);
-            lightingHelper.colorSide(itemStack, BlockProperties.toBlock(itemStack), x, y, z, side, icon);
-            renderSide(x, y, z, side, icon);
-            
+            setColorAndRender(itemStack, BlockProperties.toBlock(itemStack), x, y, z, side, icon);
         }
     }
     
@@ -560,14 +544,45 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
         int pattern = BlockProperties.getPattern(TE, coverRendering);
         IIcon icon = renderBlocks.getIconSafe(IconRegistry.icon_pattern[pattern]);
         
-        lightingHelper.colorSide(new ItemStack(Blocks.glass), Blocks.glass, x, y, z, side, icon);
-        renderSide(x, y, z, side, icon);
+        setColorAndRender(new ItemStack(Blocks.glass), Blocks.glass, x, y, z, side, icon);
     }
     
     /**
-     * Renders side.
+     * Sets color, lightness, and brightness in {@link LightingHelper} and
+     * renders side.
+     * 
+     * @param itemStack  the cover ItemStack
+     * @param block  the block inside the ItemStack
+	 * @param x	 the x coordinate
+	 * @param y  the y coordinate
+	 * @param z  the z coordinate
+     * @param side  the side currently being worked on
+     * @param icon  the icon for the side
+     * @return nothing
      */
-    protected void renderSide(int x, int y, int z, int side, IIcon icon)
+    public void setColorAndRender(ItemStack itemStack, Block block, int x, int y, int z, int side, IIcon icon)
+    {
+        float[] primaryRGB = { 1.0F, 1.0F, 1.0F };
+
+        if (!suppressDyeColor && (BlockProperties.hasDye(TE, coverRendering) || hasDyeOverride)) {
+            primaryRGB = hasDyeOverride ? LightingHelper.getRGB(dyeOverride) : LightingHelper.getRGB(DyeHandler.getColor(BlockProperties.getDye(TE, coverRendering)));
+        }
+
+        lightingHelper.setupColor(itemStack, block, x, y, z, side, primaryRGB, icon);
+        render(x, y, z, side, icon);
+    }
+    
+    /**
+     * Renders a side.
+     * 
+	 * @param x	 the x coordinate
+	 * @param y  the y coordinate
+	 * @param z  the z coordinate
+     * @param side  the side currently being worked on
+     * @param icon  the icon for the side
+     * @return nothing
+     */
+    protected void render(int x, int y, int z, int side, IIcon icon)
     {
         switch (side) {
             case DOWN:
@@ -621,37 +636,37 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
         
         if (renderBlocks.renderAllFaces || srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x, y - 1, z, DOWN) || renderBlocks.renderMinY > 0.0D)
         {
-            lightingHelper.setLightingYNeg(itemStack, x, y, z);
+            lightingHelper.setupLightingYNeg(itemStack, x, y, z);
             delegateSideRender(itemStack, x, y, z, DOWN);
         }
         
         if (renderBlocks.renderAllFaces || srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x, y + 1, z, UP) || renderBlocks.renderMaxY < 1.0D)
         {
-            lightingHelper.setLightingYPos(itemStack, x, y, z);
+            lightingHelper.setupLightingYPos(itemStack, x, y, z);
             delegateSideRender(itemStack, x, y, z, UP);
         }
         
         if (renderBlocks.renderAllFaces || srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x, y, z - 1, NORTH) || renderBlocks.renderMinZ > 0.0D)
         {
-            lightingHelper.setLightingZNeg(itemStack, x, y, z);
+            lightingHelper.setupLightingZNeg(itemStack, x, y, z);
             delegateSideRender(itemStack, x, y, z, NORTH);
         }
         
         if (renderBlocks.renderAllFaces || srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x, y, z + 1, SOUTH) || renderBlocks.renderMaxZ < 1.0D)
         {
-            lightingHelper.setLightingZPos(itemStack, x, y, z);
+            lightingHelper.setupLightingZPos(itemStack, x, y, z);
             delegateSideRender(itemStack, x, y, z, SOUTH);
         }
         
         if (renderBlocks.renderAllFaces || srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x - 1, y, z, WEST) || renderBlocks.renderMinX > 0.0D)
         {
-            lightingHelper.setLightingXNeg(itemStack, x, y, z);
+            lightingHelper.setupLightingXNeg(itemStack, x, y, z);
             delegateSideRender(itemStack, x, y, z, WEST);
         }
         
         if (renderBlocks.renderAllFaces || srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x + 1, y, z, EAST) || renderBlocks.renderMaxX < 1.0D)
         {
-            lightingHelper.setLightingXPos(itemStack, x, y, z);
+            lightingHelper.setupLightingXPos(itemStack, x, y, z);
             delegateSideRender(itemStack, x, y, z, EAST);
         }
         

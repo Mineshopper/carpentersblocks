@@ -23,7 +23,8 @@ public class RenderHelperFlowerPot extends RenderHelper {
     {
         Tessellator tessellator = Tessellator.instance;
 
-        float[] rgb = lightingHelper.applyAnaglyphFilter(lightingHelper.getBlockRGB(itemStack, block, x, y, z));
+        float[] rgb = lightingHelper.getBlockRGB(itemStack, block, x, y, z);
+        lightingHelper.applyAnaglyph(rgb);
         
         tessellator.setColorOpaque_F(rgb[0], rgb[1], rgb[2]);
 
@@ -247,14 +248,14 @@ public class RenderHelperFlowerPot extends RenderHelper {
         double vMin = icon.getInterpolatedV(16.0D);
         double vMax = icon.getInterpolatedV(0.0D);
         
-        renderBlocks.enableAO = true;
-        
+        renderBlocks.enableAO = true;        
         renderBlocks.setRenderBounds(0.375D, 0.25D, 0.375D, 0.6875D, 1.0D, 0.6875D);
+        float[] primaryRGB = { 1.0F, 1.0F, 1.0F };
         
         /* NORTH FACE */
         
-        lightingHelper.setLightingZNeg(itemStack, x, y, z);
-        lightingHelper.colorSide(itemStack, block, x, y, z, 2, icon);
+        lightingHelper.setupLightingZNeg(itemStack, x, y, z);
+        lightingHelper.setupColor(itemStack, block, x, y, z, 2, primaryRGB, icon);
         
         // LEFT
         setupVertex(renderBlocks, x + 0.6875F, y + 0.75F, z + 0.375F, uMinL, vMax, TOP_LEFT);
@@ -270,8 +271,8 @@ public class RenderHelperFlowerPot extends RenderHelper {
         
         /* SOUTH FACE */
         
-        lightingHelper.setLightingZPos(itemStack, x, y, z);
-        lightingHelper.colorSide(itemStack, block, x, y, z, 3, icon);
+        lightingHelper.setupLightingZPos(itemStack, x, y, z);
+        lightingHelper.setupColor(itemStack, block, x, y, z, 3, primaryRGB, icon);
         
         // LEFT
         setupVertex(renderBlocks, x + 0.3125F, y + 0.75F, z + 0.625F, uMinL, vMax, TOP_LEFT);
@@ -287,8 +288,8 @@ public class RenderHelperFlowerPot extends RenderHelper {
         
         /* WEST FACE */
         
-        lightingHelper.setLightingXNeg(itemStack, x, y, z);
-        lightingHelper.colorSide(itemStack, block, x, y, z, 4, icon);
+        lightingHelper.setupLightingXNeg(itemStack, x, y, z);
+        lightingHelper.setupColor(itemStack, block, x, y, z, 4, primaryRGB, icon);
         
         // LEFT
         setupVertex(renderBlocks, x + 0.375F, y + 0.75F, z + 0.3125F, uMinL, vMax, TOP_LEFT);
@@ -304,8 +305,8 @@ public class RenderHelperFlowerPot extends RenderHelper {
         
         /* EAST FACE */
         
-        lightingHelper.setLightingXPos(itemStack, x, y, z);
-        lightingHelper.colorSide(itemStack, block, x, y, z, 5, icon);
+        lightingHelper.setupLightingXPos(itemStack, x, y, z);
+        lightingHelper.setupColor(itemStack, block, x, y, z, 5, primaryRGB, icon);
         
         // LEFT
         setupVertex(renderBlocks, x + 0.625F, y + 0.75F, z + 0.6875F, uMinL, vMax, TOP_LEFT);
@@ -321,8 +322,8 @@ public class RenderHelperFlowerPot extends RenderHelper {
         
         /* UP */
         
-        lightingHelper.setLightingYPos(itemStack, x, y, z);
-        lightingHelper.colorSide(itemStack, block, x, y, z, 1, icon);
+        lightingHelper.setupLightingYPos(itemStack, x, y, z);
+        lightingHelper.setupColor(itemStack, block, x, y, z, 1, primaryRGB, icon);
         
         icon = block.getBlockTextureFromSide(1);
         

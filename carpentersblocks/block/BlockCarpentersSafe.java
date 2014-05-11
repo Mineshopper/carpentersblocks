@@ -133,9 +133,11 @@ public class BlockCarpentersSafe extends BlockCoverable {
      */
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack itemStack)
     {
-        TEBase TE = (TEBase) world.getTileEntity(x, y, z);
+        TEBase TE = getTileEntity(world, x, y, z);
         
-        Safe.setFacing(TE, BlockProperties.getOppositeFacing(entityLiving));
+        if (TE != null) {
+        	Safe.setFacing(TE, BlockProperties.getOppositeFacing(entityLiving));
+        }
         
         super.onBlockPlacedBy(world, x, y, z, entityLiving, itemStack);
     }
@@ -210,7 +212,7 @@ public class BlockCarpentersSafe extends BlockCoverable {
      */
     public boolean isSideSolid(IBlockAccess world, int x, int y, int z, ForgeDirection side)
     {
-        TEBase TE = getTileEntityStrict(world, x, y, z);
+        TEBase TE = getTileEntity(world, x, y, z);
         
         if (TE != null) {
             if (isBlockSolid(world, x, y, z)) {
@@ -227,7 +229,7 @@ public class BlockCarpentersSafe extends BlockCoverable {
      */
     public void breakBlock(World world, int x, int y, int z, Block block, int metadata)
     {
-        TEBase TE = getTileEntity(world, x, y, z);
+        TEBase TE = getSimpleTileEntity(world, x, y, z);
         
         if (TE != null) {
             
@@ -258,13 +260,19 @@ public class BlockCarpentersSafe extends BlockCoverable {
      */
     public float getPlayerRelativeBlockHardness(EntityPlayer entityPlayer, World world, int x, int y, int z)
     {
-        TEBase TE = (TEBase) world.getTileEntity(x, y, z);
+        TEBase TE = getTileEntity(world, x, y, z);
         
-        if (Safe.isOpen(TE) || !PlayerPermissions.canPlayerEdit(TE, TE.xCoord, TE.yCoord, TE.zCoord, entityPlayer)) {
-            return -1; // Unbreakable
-        } else {
-            return super.getPlayerRelativeBlockHardness(entityPlayer, world, x, y, z);
+        if (TE != null) {
+        
+	        if (Safe.isOpen(TE) || !PlayerPermissions.canPlayerEdit(TE, TE.xCoord, TE.yCoord, TE.zCoord, entityPlayer)) {
+	            return -1; // Unbreakable
+	        } else {
+	            return super.getPlayerRelativeBlockHardness(entityPlayer, world, x, y, z);
+	        }
+        
         }
+        
+        return super.getPlayerRelativeBlockHardness(entityPlayer, world, x, y, z);
     }
     
     @Override

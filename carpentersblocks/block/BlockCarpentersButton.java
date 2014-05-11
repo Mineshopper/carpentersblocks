@@ -72,7 +72,6 @@ public class BlockCarpentersButton extends BlockCoverable {
     public boolean canPlaceBlockOnSide(World world, int x, int y, int z, int side)
     {
         ForgeDirection dir = ForgeDirection.getOrientation(side);
-        
         return world.getBlock(x - dir.offsetX, y, z - dir.offsetZ).isSideSolid(world, x - dir.offsetX, y, z - dir.offsetZ, dir);
     }
     
@@ -91,12 +90,14 @@ public class BlockCarpentersButton extends BlockCoverable {
      */
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack itemStack)
     {
-        TEBase TE = (TEBase) world.getTileEntity(x, y, z);
-        
-        Button.setFacing(TE, world.getBlockMetadata(x, y, z));
-        Button.setReady(TE);
-        
-        super.onBlockPlacedBy(world, x, y, z, entityLiving, itemStack);
+    	TEBase TE = getTileEntity(world, x, y, z);
+
+    	if (TE != null) {
+    		Button.setFacing(TE, world.getBlockMetadata(x, y, z));
+    		Button.setReady(TE);
+    	}
+    	
+    	super.onBlockPlacedBy(world, x, y, z, entityLiving, itemStack);
     }
     
     @Override
@@ -106,22 +107,28 @@ public class BlockCarpentersButton extends BlockCoverable {
      */
     public void onNeighborBlockChange(World world, int x, int y, int z, Block block)
     {
-        TEBase TE = getTileEntity(world, x, y, z);
-        
-        if (!world.isRemote && TE != null) {
-            
-            if (Button.isReady(TE))
-            {
-                ForgeDirection dir = Button.getFacing(TE);
-                
-                if (!canPlaceBlockOnSide(world, x, y, z, dir.ordinal())) {
-                    dropBlockAsItem(world, x, y, z, 0, 0);
-                    world.setBlockToAir(x, y, z);
-                }
-            }
-        }
-        
-        super.onNeighborBlockChange(world, x, y, z, block);
+    	if (!world.isRemote) {
+    	
+	        TEBase TE = getTileEntity(world, x, y, z);
+	        
+	        if (TE != null) {
+	            
+	            if (Button.isReady(TE)) {
+	
+	                ForgeDirection dir = Button.getFacing(TE);
+	                
+	                if (!canPlaceBlockOnSide(world, x, y, z, dir.ordinal())) {
+	                    dropBlockAsItem(world, x, y, z, 0, 0);
+	                    world.setBlockToAir(x, y, z);
+	                }
+	                
+	            }
+	        
+	        }
+	        
+	    }
+    	
+    	super.onNeighborBlockChange(world, x, y, z, block);
     }
     
     @Override
@@ -130,7 +137,7 @@ public class BlockCarpentersButton extends BlockCoverable {
      */
     public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
     {
-        TEBase TE = (TEBase) world.getTileEntity(x, y, z);
+        TEBase TE = getTileEntity(world, x, y, z);
         
         ForgeDirection dir = Button.getFacing(TE);
         
@@ -177,7 +184,7 @@ public class BlockCarpentersButton extends BlockCoverable {
      */
     public void breakBlock(World world, int x, int y, int z, Block block, int metadata)
     {
-        TEBase TE = getTileEntity(world, x, y, z);
+        TEBase TE = getSimpleTileEntity(world, x, y, z);
         
         if (TE != null) {
             if (isDepressed(TE)) {
@@ -269,9 +276,7 @@ public class BlockCarpentersButton extends BlockCoverable {
     private void notifySideNeighbor(World world, int x, int y, int z, int side)
     {
         world.notifyBlocksOfNeighborChange(x, y, z, this);
-        
         ForgeDirection dir = ForgeDirection.getOrientation(side);
-        
         world.notifyBlocksOfNeighborChange(x - dir.offsetX, y, z - dir.offsetZ, this);
     }
     
