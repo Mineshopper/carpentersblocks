@@ -14,19 +14,19 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class BlockHandlerCarpentersSafe extends BlockHandlerBase {
-    
+
     private final int   numBoxes    = 21;
     private final int   numCapacity = 9;
     private final float LIGHT_MAX   = 1.0F;
     private final float LIGHT_MIN   = 0.15F;
-    
+
     private final byte BLOCKTYPE_COVER            = 0;
     private final byte BLOCKTYPE_PANEL            = 1;
     private final byte BLOCKTYPE_HANDLE           = 2;
     private final byte BLOCKTYPE_GREEN_LIGHT      = 3;
     private final byte BLOCKTYPE_RED_LIGHT        = 4;
     private final byte BLOCKTYPE_DOOR             = 5;
-    
+
     private final byte WOOD_XLOW_WALL             = 0;
     private final byte WOOD_XMAX_WALL             = 1;
     private final byte WOOD_BOTTOM_LEFT           = 2;
@@ -48,19 +48,19 @@ public class BlockHandlerCarpentersSafe extends BlockHandlerBase {
     private final byte HANDLE                     = 18;
     private final byte GREEN_LIGHT                = 19;
     private final byte RED_LIGHT                  = 20;
-    
+
     private final float[] LIGHT_RED_ACTIVE        = {        LIGHT_MAX,             0.0F,             0.0F };
     private final float[] LIGHT_RED_INACTIVE      = { LIGHT_MAX / 3.0F,        LIGHT_MIN,        LIGHT_MIN };
     private final float[] LIGHT_GREEN_ACTIVE      = {             0.0F,        LIGHT_MAX,             0.0F };
     private final float[] LIGHT_GREEN_INACTIVE    = {        LIGHT_MIN, LIGHT_MAX / 3.0F,        LIGHT_MIN };
     private final float[] LIGHT_BLUE_ACTIVE       = {             0.0F,             0.0F,        LIGHT_MAX };
     private final float[] LIGHT_BLUE_INACTIVE     = {        LIGHT_MIN,        LIGHT_MIN, LIGHT_MAX / 3.0F };
-    
+
     @Override
     public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderBlocks)
     {
         Block tempBlock = block;
-        
+
         for (int box = 0; box < numBoxes; ++box)
         {
             setBounds(renderBlocks, box, true);
@@ -78,17 +78,17 @@ public class BlockHandlerCarpentersSafe extends BlockHandlerBase {
                 default:
                     tempBlock = Blocks.obsidian;
             }
-            
+
             super.renderInventoryBlock(tempBlock, metadata, modelID, renderBlocks);
         }
-        
+
         /* Light strip */
-        
+
         renderBlocks.setRenderBounds(0.125D, 0.125D, 0.9375D, 0.25D, 0.6875D, 1.0D);
         rotateBounds(renderBlocks, ForgeDirection.WEST);
         super.renderInventoryBlock(Blocks.obsidian, metadata, modelID, renderBlocks);
     }
-    
+
     /**
      * Rotates renderBounds if direction does not equal SOUTH.
      */
@@ -128,7 +128,7 @@ public class BlockHandlerCarpentersSafe extends BlockHandlerBase {
             default: {}
         }
     }
-    
+
     /**
      * Returns box block type.
      */
@@ -148,7 +148,7 @@ public class BlockHandlerCarpentersSafe extends BlockHandlerBase {
             return BLOCKTYPE_RED_LIGHT;
         }
     }
-    
+
     /**
      * All bounds are set relative to NORTH facing safe.
      * Rotate them after this using rotateBounds().
@@ -156,7 +156,7 @@ public class BlockHandlerCarpentersSafe extends BlockHandlerBase {
     private void setBounds(RenderBlocks renderBlocks, int box, boolean isInventory)
     {
         boolean isOpen = isInventory ? false : Safe.getState(TE) == Safe.STATE_OPEN;
-        
+
         switch (box) {
             case WOOD_XLOW_WALL:
                 renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 0.0625D, 1.0D, 1.0D);
@@ -223,7 +223,7 @@ public class BlockHandlerCarpentersSafe extends BlockHandlerBase {
                 break;
         }
     }
-    
+
     @Override
     /**
      * Renders safe.
@@ -231,32 +231,32 @@ public class BlockHandlerCarpentersSafe extends BlockHandlerBase {
     protected void renderCarpentersBlock(int x, int y, int z)
     {
         renderBlocks.renderAllFaces = true;
-        
+
         /* Begin drawing everything but the capacity light strip. */
-        
+
         ItemStack itemStack = BlockProperties.getCover(TE, 6);
         ForgeDirection facing = Safe.getFacing(TE);
-        
+
         for (int box = 0; box < numBoxes; ++box)
         {
             setBounds(renderBlocks, box, false);
             rotateBounds(renderBlocks, facing);
             drawBox(itemStack, x, y, z, box);
         }
-        
+
         /* Begin drawing the capacity light strip. */
-        
+
         setIconOverride(6, IconRegistry.icon_safe_light);
-        
+
         double yMin = 0.125D;
         double yMax = 0.1875D;
         int capacity = getCapacityIlluminated();
-        
+
         suppressDyeColor = true;
         suppressOverlay = true;
         suppressPattern = true;
         disableAO = true;
-        
+
         for (int box = 0; box < numCapacity; ++box)
         {
             if (box + 1 <= capacity) {
@@ -266,56 +266,56 @@ public class BlockHandlerCarpentersSafe extends BlockHandlerBase {
             } else {
                 lightingHelper.setColorOverride(LIGHT_BLUE_INACTIVE);
             }
-            
+
             renderBlocks.setRenderBounds(0.125D, yMin, 0.9375D, 0.25D, yMax, 1.0D);
             rotateBounds(renderBlocks, facing);
             renderBlock(new ItemStack(Blocks.ice), x, y, z);
             lightingHelper.clearColorOverride();
             lightingHelper.clearBrightnessOverride();
             lightingHelper.clearLightnessOverride();
-            
+
             yMin += 0.0625D;
             yMax += 0.0625D;
         }
-        
+
         disableAO = false;
         suppressDyeColor = false;
         suppressOverlay = false;
         suppressPattern = false;
-        
+
         clearIconOverride(6);
-        
+
         renderBlocks.renderAllFaces = false;
     }
-    
+
     private void drawBox(ItemStack itemStack, int x, int y, int z, int box)
     {
         boolean isLocked = Safe.isLocked(TE);
         int type = getBlockType(box);
-        
+
         if (type != BLOCKTYPE_COVER && type != BLOCKTYPE_DOOR)
         {
             suppressDyeColor = true;
             suppressOverlay = true;
             suppressPattern = true;
         }
-        
+
         switch (type) {
             case BLOCKTYPE_PANEL:
-                
+
                 renderBlock(getMetalBlock(), x, y, z);
-                
+
                 break;
             case BLOCKTYPE_HANDLE:
-                
+
                 renderBlock(new ItemStack(Blocks.iron_block), x, y, z);
-                
+
                 break;
             case BLOCKTYPE_GREEN_LIGHT:
-                
+
                 disableAO = true;
                 setIconOverride(6, IconRegistry.icon_safe_light);
-                
+
                 if (isLocked) {
                     lightingHelper.setColorOverride(LIGHT_GREEN_INACTIVE);
                 } else {
@@ -323,20 +323,20 @@ public class BlockHandlerCarpentersSafe extends BlockHandlerBase {
                     lightingHelper.setBrightnessOverride(lightingHelper.MAX_BRIGHTNESS);
                     lightingHelper.setColorOverride(LIGHT_GREEN_ACTIVE);
                 }
-                
+
                 renderBlock(new ItemStack(Blocks.ice), x, y, z);
                 lightingHelper.clearColorOverride();
                 lightingHelper.clearBrightnessOverride();
                 lightingHelper.clearLightnessOverride();
                 clearIconOverride(6);
                 disableAO = false;
-                
+
                 break;
             case BLOCKTYPE_RED_LIGHT:
-                
+
                 disableAO = true;
                 setIconOverride(6, IconRegistry.icon_safe_light);
-                
+
                 if (isLocked) {
                     lightingHelper.setLightnessOverride(1.0F);
                     lightingHelper.setBrightnessOverride(lightingHelper.MAX_BRIGHTNESS);
@@ -344,37 +344,37 @@ public class BlockHandlerCarpentersSafe extends BlockHandlerBase {
                 } else {
                     lightingHelper.setColorOverride(LIGHT_RED_INACTIVE);
                 }
-                
+
                 renderBlock(new ItemStack(Blocks.ice), x, y, z);
                 lightingHelper.clearColorOverride();
                 lightingHelper.clearBrightnessOverride();
                 lightingHelper.clearLightnessOverride();
                 clearIconOverride(6);
                 disableAO = false;
-                
+
                 break;
             default:
-                
+
                 renderBlock(itemStack, x, y, z);
-                
+
                 break;
         }
-        
+
         suppressDyeColor = false;
         suppressOverlay = false;
         suppressPattern = false;
     }
-    
+
     /**
      * Returns metal block used for safe panel.
      */
     private ItemStack getMetalBlock()
     {
         TECarpentersSafe TE_safe = (TECarpentersSafe) TE;
-        
+
         return TE_safe.hasUpgrade() ? new ItemStack(Blocks.gold_block) : new ItemStack(Blocks.iron_block);
     }
-    
+
     /**
      * Returns how many capacity strips to illuminate.
      * Value returned should be between 0-9.
@@ -383,15 +383,15 @@ public class BlockHandlerCarpentersSafe extends BlockHandlerBase {
     {
         TECarpentersSafe TE_safe = (TECarpentersSafe) TE;
         int numSlotsFilled = 0;
-        
+
         for (int slot = 0; slot < TE_safe.getSizeInventory(); ++slot)
         {
             if (TE_safe.getStackInSlot(slot) != null) {
                 ++numSlotsFilled;
             }
         }
-        
+
         return numSlotsFilled / (3 * TE_safe.getSizeInventory() / 27);
     }
-    
+
 }

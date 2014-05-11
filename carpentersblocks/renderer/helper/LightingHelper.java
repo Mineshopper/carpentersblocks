@@ -36,14 +36,14 @@ public class LightingHelper {
 
     /** Ambient occlusion values for all four corners of side. */
     public float[] ao = new float[4];
-    
+
     /** Brightness for side. */
     public int brightness;
-    
+
     /**
      * Class constructor specifying the {@link BlockHandlerBase}.
-	 *
-	 * @param blockHandler  the {@link BlockHandlerBase}
+     *
+     * @param blockHandler  the {@link BlockHandlerBase}
      * @return the {@link LightingHelper}
      */
     public LightingHelper(BlockHandlerBase blockHandler)
@@ -54,8 +54,8 @@ public class LightingHelper {
 
     /**
      * Sets lightness override.
-	 *
-	 * @param lightness  the lightness override
+     *
+     * @param lightness  the lightness override
      * @return the {@link LightingHelper}
      */
     public LightingHelper setLightnessOverride(float lightness)
@@ -67,7 +67,7 @@ public class LightingHelper {
 
     /**
      * Clears lightness override.
-	 *
+     *
      * @return nothing
      */
     public void clearLightnessOverride()
@@ -77,8 +77,8 @@ public class LightingHelper {
 
     /**
      * Sets brightness override.
-	 *
-	 * @param lightness  the brightness override
+     *
+     * @param lightness  the brightness override
      * @return the {@link LightingHelper}
      */
     public LightingHelper setBrightnessOverride(int brightness)
@@ -90,7 +90,7 @@ public class LightingHelper {
 
     /**
      * Clears brightness override.
-	 *
+     *
      * @return nothing
      */
     public void clearBrightnessOverride()
@@ -100,8 +100,8 @@ public class LightingHelper {
 
     /**
      * Sets color override.
-	 *
-	 * @param rgb  the color override
+     *
+     * @param rgb  the color override
      * @return nothing
      */
     public void setColorOverride(float[] rgb)
@@ -112,7 +112,7 @@ public class LightingHelper {
 
     /**
      * Clears color override.
-	 *
+     *
      * @return nothing
      */
     public void clearColorOverride()
@@ -122,8 +122,8 @@ public class LightingHelper {
 
     /**
      * Gets rgb color from integer.
-     * 
-	 * @param color  the integer color
+     *
+     * @param color  the integer color
      * @return a float array with rgb values
      */
     public static float[] getRGB(int color)
@@ -132,52 +132,52 @@ public class LightingHelper {
         float green = (color >> 8 & 255) / 255.0F;
         float blue = (color & 255) / 255.0F;
         float[] rgb = { red, green, blue };
-        
+
         return rgb;
     }
-    
+
     /**
      * Returns float array with RGB values for block.  Color is most
      * commonly different for {@link Blocks#grass}
      * <p>
      * If using our custom render helpers, be sure to use {@link #applyAnaglyph(float[])}.
-     * 
+     *
      * @param itemStack  the cover {@link ItemStack}
      * @param block  the {@link Block} inside the {@link ItemStack}
-	 * @param x	 the x coordinate
-	 * @param y  the y coordinate
-	 * @param z  the z coordinate
+     * @param x     the x coordinate
+     * @param y  the y coordinate
+     * @param z  the z coordinate
      * @return a float array with rgb values
      */
     public float[] getBlockRGB(ItemStack itemStack, Block block, int x, int y, int z)
-    {        
+    {
         BlockProperties.setHostMetadata(blockHandler.TE, itemStack.getItemDamage());
         int color = OptifineHandler.enableOptifineIntegration ? OptifineHandler.getColorMultiplier(block, renderBlocks.blockAccess, x, y, z) : block.colorMultiplier(renderBlocks.blockAccess, x, y, z);
         BlockProperties.resetHostMetadata(blockHandler.TE);
 
         return getRGB(color);
     }
-    
+
     /**
      * Sets up the color using lightness, brightness, and the primary color
      * value (usually the dye color) for the side.
-     * 
+     *
      * @param itemStack  the cover {@link ItemStack}
      * @param block  the {@link Block} inside the {@link ItemStack}
-	 * @param x	 the x coordinate
-	 * @param y  the y coordinate
-	 * @param z  the z coordinate
-	 * @param side  the side
-	 * @param primaryRGB  the primary color
-	 * @param icon  the icon
+     * @param x     the x coordinate
+     * @param y  the y coordinate
+     * @param z  the z coordinate
+     * @param side  the side
+     * @param primaryRGB  the primary color
+     * @param icon  the icon
      * @return a float array with rgb values
      */
     public void setupColor(ItemStack itemStack, Block block, int x, int y, int z, int side, float[] primaryRGB, IIcon icon)
     {
-    	Tessellator tessellator = Tessellator.instance;
-    	float lightness = hasLightnessOverride ? lightnessOverride : LIGHTNESS[side];    	
+        Tessellator tessellator = Tessellator.instance;
+        float lightness = hasLightnessOverride ? lightnessOverride : LIGHTNESS[side];
         float[] blockRGB = getBlockRGB(itemStack, block, x, y, z);
-        
+
         /* If block is grass, we have to apply color selectively. */
 
         if (block.equals(Blocks.grass)) {
@@ -193,13 +193,13 @@ public class LightingHelper {
 
         tessellator.setBrightness(hasBrightnessOverride ? brightnessOverride : brightness);
         float[] finalRGB = { blockRGB[0] * primaryRGB[0], blockRGB[1] * primaryRGB[1], blockRGB[2] * primaryRGB[2] };
-        
+
         if (hasColorOverride) {
-        	finalRGB = colorOverride;
+            finalRGB = colorOverride;
         }
-        
+
         applyAnaglyph(finalRGB);
-    	
+
         if (renderBlocks.enableAO) {
 
             if (renderBlocks.hasOverrideBlockTexture()) {
@@ -240,7 +240,7 @@ public class LightingHelper {
      * <p>
      * If {@link EntityRenderer#anaglyphEnable} is false,
      * will do nothing.
-     * 
+     *
      * @param rgb  array containing red, green and blue float values
      * @return nothing
      */
@@ -255,9 +255,9 @@ public class LightingHelper {
 
     /**
      * Gets average brightness from two brightness values.
-     * 
+     *
      * @param brightness1  the first brightness value
-	 * @param brightness2  the second brightness value
+     * @param brightness2  the second brightness value
      * @return the mixed brightness
      */
     public static int getAverageBrightness(int brightness1, int brightness2)
@@ -277,10 +277,10 @@ public class LightingHelper {
     /**
      * Gets mixed ambient occlusion value from two inputs, with a
      * ratio applied to the final result.
-     * 
+     *
      * @param ao1  the first ambient occlusion value
-	 * @param ao2  the second ambient occlusion value
-	 * @param ratio  the ratio for mixing
+     * @param ao2  the second ambient occlusion value
+     * @param ratio  the ratio for mixing
      * @return the mixed red, green, blue float values
      */
     public static float getMixedAo(float ao1, float ao2, double ratio)
@@ -300,12 +300,12 @@ public class LightingHelper {
      *   <li>{@link RenderBlocks#enableAO}</li>
      *   <li>{@link RenderBlocks#partialRenderBounds}</li>
      * </ul>
-     * 
+     *
      * @param itemStack  the cover {@link ItemStack}
-	 * @param x	 the x coordinate
-	 * @param y  the y coordinate
-	 * @param z  the z coordinate
-	 * @return the {@link LightingHelper}
+     * @param x     the x coordinate
+     * @param y  the y coordinate
+     * @param z  the z coordinate
+     * @return the {@link LightingHelper}
      */
     public LightingHelper setupLightingYNeg(ItemStack itemStack, int x, int y, int z)
     {
@@ -387,12 +387,12 @@ public class LightingHelper {
      *   <li>{@link RenderBlocks#enableAO}</li>
      *   <li>{@link RenderBlocks#partialRenderBounds}</li>
      * </ul>
-     * 
+     *
      * @param itemStack  the cover {@link ItemStack}
-	 * @param x	 the x coordinate
-	 * @param y  the y coordinate
-	 * @param z  the z coordinate
-	 * @return the {@link LightingHelper}
+     * @param x     the x coordinate
+     * @param y  the y coordinate
+     * @param z  the z coordinate
+     * @return the {@link LightingHelper}
      */
     public LightingHelper setupLightingYPos(ItemStack itemStack, int x, int y, int z)
     {
@@ -473,12 +473,12 @@ public class LightingHelper {
      *   <li>{@link RenderBlocks#enableAO}</li>
      *   <li>{@link RenderBlocks#partialRenderBounds}</li>
      * </ul>
-     * 
+     *
      * @param itemStack  the cover {@link ItemStack}
-	 * @param x	 the x coordinate
-	 * @param y  the y coordinate
-	 * @param z  the z coordinate
-	 * @return the {@link LightingHelper}
+     * @param x     the x coordinate
+     * @param y  the y coordinate
+     * @param z  the z coordinate
+     * @return the {@link LightingHelper}
      */
     public LightingHelper setupLightingZNeg(ItemStack itemStack, int x, int y, int z)
     {
@@ -559,12 +559,12 @@ public class LightingHelper {
      *   <li>{@link RenderBlocks#enableAO}</li>
      *   <li>{@link RenderBlocks#partialRenderBounds}</li>
      * </ul>
-     * 
+     *
      * @param itemStack  the cover {@link ItemStack}
-	 * @param x	 the x coordinate
-	 * @param y  the y coordinate
-	 * @param z  the z coordinate
-	 * @return the {@link LightingHelper}
+     * @param x     the x coordinate
+     * @param y  the y coordinate
+     * @param z  the z coordinate
+     * @return the {@link LightingHelper}
      */
     public LightingHelper setupLightingZPos(ItemStack itemStack, int x, int y, int z)
     {
@@ -644,12 +644,12 @@ public class LightingHelper {
      *   <li>{@link RenderBlocks#enableAO}</li>
      *   <li>{@link RenderBlocks#partialRenderBounds}</li>
      * </ul>
-     * 
+     *
      * @param itemStack  the cover {@link ItemStack}
-	 * @param x	 the x coordinate
-	 * @param y  the y coordinate
-	 * @param z  the z coordinate
-	 * @return the {@link LightingHelper}
+     * @param x     the x coordinate
+     * @param y  the y coordinate
+     * @param z  the z coordinate
+     * @return the {@link LightingHelper}
      */
     public LightingHelper setupLightingXNeg(ItemStack itemStack, int x, int y, int z)
     {
@@ -730,12 +730,12 @@ public class LightingHelper {
      *   <li>{@link RenderBlocks#enableAO}</li>
      *   <li>{@link RenderBlocks#partialRenderBounds}</li>
      * </ul>
-     * 
+     *
      * @param itemStack  the cover {@link ItemStack}
-	 * @param x	 the x coordinate
-	 * @param y  the y coordinate
-	 * @param z  the z coordinate
-	 * @return the {@link LightingHelper}
+     * @param x     the x coordinate
+     * @param y  the y coordinate
+     * @param z  the z coordinate
+     * @return the {@link LightingHelper}
      */
     public LightingHelper setupLightingXPos(ItemStack itemStack, int x, int y, int z)
     {

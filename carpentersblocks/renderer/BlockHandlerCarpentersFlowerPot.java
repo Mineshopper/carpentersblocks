@@ -20,13 +20,13 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class BlockHandlerCarpentersFlowerPot extends BlockHandlerBase {
-    
+
     @Override
     public boolean shouldRender3DInInventory(int modelId)
     {
         return false;
     }
-    
+
     @Override
     /**
      * Override to provide custom icons.
@@ -34,7 +34,7 @@ public class BlockHandlerCarpentersFlowerPot extends BlockHandlerBase {
     protected IIcon getUniqueIcon(ItemStack itemStack, int side, IIcon icon)
     {
         Block block = BlockProperties.toBlock(itemStack);
-        
+
         if (block instanceof BlockCoverable) {
             return IconRegistry.icon_solid;
         } else if (block.equals(Blocks.glass)) {
@@ -43,7 +43,7 @@ public class BlockHandlerCarpentersFlowerPot extends BlockHandlerBase {
             return icon;
         }
     }
-    
+
     @Override
     /**
      * Renders block
@@ -51,39 +51,39 @@ public class BlockHandlerCarpentersFlowerPot extends BlockHandlerBase {
     protected void renderCarpentersBlock(int x, int y, int z)
     {
         TECarpentersFlowerPot TE = (TECarpentersFlowerPot) renderBlocks.blockAccess.getTileEntity(x, y, z);
-        
+
         renderBlocks.renderAllFaces = true;
-        
+
         ItemStack itemStack = BlockProperties.getCover(TE, 6);
-        
+
         if (FlowerPot.getDesign(TE) > 0)
         {
             suppressOverlay = true;
             suppressPattern = true;
             suppressDyeColor = true;
         }
-        
+
         renderPot(itemStack, x, y, z);
-        
+
         suppressOverlay = true;
         suppressPattern = true;
         suppressDyeColor = true;
-        
+
         if (FlowerPotProperties.hasSoil(TE)) {
             renderSoil(FlowerPotProperties.getSoil(TE), x, y, z);
         }
-        
+
         if (FlowerPotProperties.hasPlant(TE)) {
             renderPlant(FlowerPotProperties.getPlant(TE), x, y, z);
         }
-        
+
         suppressOverlay = false;
         suppressPattern = false;
         suppressDyeColor = false;
-        
+
         renderBlocks.renderAllFaces = false;
     }
-    
+
     /**
      * Renders flower pot
      */
@@ -93,37 +93,37 @@ public class BlockHandlerCarpentersFlowerPot extends BlockHandlerBase {
             IIcon designIcon = IconRegistry.icon_flower_pot_design[FlowerPot.getDesign(TE)];
             setIconOverride(6, designIcon);
         }
-        
+
         /* BOTTOM BOX */
-        
+
         renderBlocks.setRenderBounds(0.375D, 0.0D, 0.375D, 0.625D, 0.0625D, 0.625D);
         renderBlock(itemStack, x, y, z);
-        
+
         /* NORTH BOX */
-        
+
         renderBlocks.setRenderBounds(0.375D, 0.0D, 0.3125D, 0.625D, 0.375D, 0.375D);
         renderBlock(itemStack, x, y, z);
-        
+
         /* SOUTH BOX */
-        
+
         renderBlocks.setRenderBounds(0.375D, 0.0D, 0.625D, 0.625D, 0.375D, 0.6875D);
         renderBlock(itemStack, x, y, z);
-        
+
         /* WEST BOX */
-        
+
         renderBlocks.setRenderBounds(0.3125D, 0.0D, 0.3125D, 0.375D, 0.375D, 0.6875D);
         renderBlock(itemStack, x, y, z);
-        
+
         /* EAST BOX */
-        
+
         renderBlocks.setRenderBounds(0.625D, 0.0D, 0.3125D, 0.6875D, 0.375D, 0.6875D);
         renderBlock(itemStack, x, y, z);
-        
+
         clearIconOverride(6);
-        
+
         return true;
     }
-    
+
     /**
      * Renders soil
      */
@@ -131,10 +131,10 @@ public class BlockHandlerCarpentersFlowerPot extends BlockHandlerBase {
     {
         renderBlocks.setRenderBounds(0.375D, 0.0625D, 0.375D, 0.625D, 0.25D, 0.625D);
         renderBlock(itemStack, x, y, z);
-        
+
         return true;
     }
-    
+
     /**
      * Renders plant
      */
@@ -145,12 +145,12 @@ public class BlockHandlerCarpentersFlowerPot extends BlockHandlerBase {
 
         Block block = FlowerPotProperties.toBlock(itemStack);
         RenderHelperFlowerPot.setPlantColor(lightingHelper, TE, itemStack, block, x, y, z);
-        
+
         if (block instanceof BlockCrops) {
             /* Crop plants will use fully matured metadata. */
             itemStack.setItemDamage(7);
         }
-        
+
         IIcon icon = block.getIcon(2, itemStack.getItemDamage());
 
         switch (FlowerPotHandler.getPlantProfile(itemStack)) {
@@ -184,10 +184,10 @@ public class BlockHandlerCarpentersFlowerPot extends BlockHandlerBase {
         }
 
         tessellator.addTranslation(0.0F, -0.25F, 0.0F);
-        
+
         return true;
     }
-    
+
     /**
      * Draws stacked blocks for leaves or mod cacti.
      */
@@ -204,8 +204,8 @@ public class BlockHandlerCarpentersFlowerPot extends BlockHandlerBase {
         renderBlocks.setRenderBounds(0.375F, 0.50D, 0.375F, 0.625F, 0.75D, 0.625F);
         renderBlock(itemStack, x, y, z);
         renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
-        
+
         BlockProperties.resetHostMetadata(TE);
     }
-    
+
 }

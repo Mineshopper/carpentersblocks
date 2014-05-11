@@ -16,7 +16,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class IconRegistry {
-    
+
     public static IIcon icon_blank;
     public static IIcon icon_solid;
     public static IIcon icon_oblique_pos;
@@ -50,9 +50,9 @@ public class IconRegistry {
     public static IIcon[] icon_pattern           = new IIcon[PatternHandler.maxNum];
     public static IIcon[] icon_bed_pillow_custom = new IIcon[BedDesignHandler.maxNum];
     public static IIcon[] icon_flower_pot_design = new IIcon[FlowerPotDesignHandler.maxNum];
-    
+
     public static List<IIcon> icon_tile          = new ArrayList<IIcon>();
-    
+
     @SubscribeEvent
     /**
      * This will load all icons that are used universally for all blocks.
@@ -71,7 +71,7 @@ public class IconRegistry {
             icon_overlay_mycelium_side   = event.map.registerIcon(CarpentersBlocks.MODID + ":" + "overlay/overlay_mycelium_side");
 
             /* Chisel pattern icons */
-            
+
             for (int numIcon = 0; numIcon < PatternHandler.maxNum; ++numIcon) {
                 if (PatternHandler.hasPattern[numIcon]) {
                     icon_pattern[numIcon] = event.map.registerIcon(CarpentersBlocks.MODID + ":" + "pattern/pattern_" + numIcon);
@@ -79,12 +79,12 @@ public class IconRegistry {
             }
 
             /* Tile icons */
-            
+
             icon_blank_tile = event.map.registerIcon(CarpentersBlocks.MODID + ":" + "tile/blank");
             for (String name : TileHandler.tileList) {
                 icon_tile.add(event.map.registerIcon(CarpentersBlocks.MODID + ":" + "tile/" + name));
-            }   
-        	
+            }
+
         }
     }
 

@@ -10,14 +10,14 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class HelperCorner extends RenderHelper {
-    
+
     /**
      * Renders the given texture to the North sloped face of the block.
      */
     public static void renderSlopeZNeg(RenderBlocks renderBlocks, int slopeID, double x, double y, double z, IIcon icon)
     {
         prepareRender(renderBlocks, ForgeDirection.NORTH, x, y, z, icon);
-        
+
         switch (slopeID)
         {
             case Slope.ID_WEDGE_INT_NEG_NW:
@@ -62,14 +62,14 @@ public class HelperCorner extends RenderHelper {
                 break;
         }
     }
-    
+
     /**
      * Renders the given texture to the South sloped face of the block.
      */
     public static void renderSlopeZPos(RenderBlocks renderBlocks, int slopeID, double x, double y, double z, IIcon icon)
     {
         prepareRender(renderBlocks, ForgeDirection.SOUTH, x, y, z, icon);
-        
+
         switch (slopeID)
         {
             case Slope.ID_WEDGE_INT_NEG_SW:
@@ -114,14 +114,14 @@ public class HelperCorner extends RenderHelper {
                 break;
         }
     }
-    
+
     /**
      * Renders the given texture to the West sloped face of the block.
      */
     public static void renderSlopeXNeg(RenderBlocks renderBlocks, int slopeID, double x, double y, double z, IIcon icon)
     {
         prepareRender(renderBlocks, ForgeDirection.WEST, x, y, z, icon);
-        
+
         switch (slopeID)
         {
             case Slope.ID_WEDGE_INT_NEG_NW:
@@ -166,14 +166,14 @@ public class HelperCorner extends RenderHelper {
                 break;
         }
     }
-    
+
     /**
      * Renders the given texture to the East sloped face of the block.
      */
     public static void renderSlopeXPos(RenderBlocks renderBlocks, int slopeID, double x, double y, double z, IIcon icon)
     {
         prepareRender(renderBlocks, ForgeDirection.EAST, x, y, z, icon);
-        
+
         switch (slopeID)
         {
             case Slope.ID_WEDGE_INT_NEG_NE:
@@ -218,5 +218,5 @@ public class HelperCorner extends RenderHelper {
                 break;
         }
     }
-    
+
 }

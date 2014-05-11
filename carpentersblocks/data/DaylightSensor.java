@@ -4,20 +4,20 @@ import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 
 public class DaylightSensor {
-    
+
     /**
      * 16-bit data components:
      *
      * [000000000]  [00]         [0]       [0000]
      * Unused       Sensitivity  Polarity  LightLevel
      */
-    
+
     public final static byte POLARITY_POSITIVE = 0;
     public final static byte POLARITY_NEGATIVE = 1;
-    
+
     public final static byte SENSITIVITY_SLEEP    = 0;
     public final static byte SENSITIVITY_MONSTERS = 1;
-    
+
     /**
      * Returns light level.
      */
@@ -25,7 +25,7 @@ public class DaylightSensor {
     {
         return BlockProperties.getMetadata(TE) & 0xf;
     }
-    
+
     /**
      * Sets light level.
      */
@@ -33,10 +33,10 @@ public class DaylightSensor {
     {
         int temp = BlockProperties.getMetadata(TE) & 0xfff0;
         temp |= lightLevel;
-        
+
         BlockProperties.setMetadata(TE, temp);
     }
-    
+
     /**
      * Returns polarity.
      */
@@ -45,7 +45,7 @@ public class DaylightSensor {
         int temp = BlockProperties.getMetadata(TE) & 0x10;
         return temp >> 4;
     }
-    
+
     /**
      * Sets polarity.
      */
@@ -53,10 +53,10 @@ public class DaylightSensor {
     {
         int temp = BlockProperties.getMetadata(TE) & 0xffef;
         temp |= state << 4;
-        
+
         BlockProperties.setMetadata(TE, temp);
     }
-    
+
     /**
      * Returns sensitivity.
      */
@@ -65,7 +65,7 @@ public class DaylightSensor {
         int temp = BlockProperties.getMetadata(TE) & 0x60;
         return temp >> 5;
     }
-    
+
     /**
      * Sets sensitivity.
      */
@@ -73,10 +73,10 @@ public class DaylightSensor {
     {
         int temp = BlockProperties.getMetadata(TE) & 0xff9f;
         temp |= sensitivity << 5;
-        
+
         BlockProperties.setMetadata(TE, temp);
     }
-    
+
     /**
      * Sets sensor to next sensitivity level.
      * Returns new sensitivity.
@@ -84,16 +84,16 @@ public class DaylightSensor {
     public static int setNextSensitivity(TEBase TE)
     {
         int sensitivity = getSensitivity(TE);
-        
+
         if (++sensitivity > 1) {
             sensitivity = 0;
         }
-        
+
         setSensitivity(TE, sensitivity);
-        
+
         return sensitivity;
     }
-    
+
     /**
      * Returns whether daylight sensor is in active state.
      */
@@ -101,16 +101,16 @@ public class DaylightSensor {
     {
         boolean posPolarity = getPolarity(TE) == POLARITY_POSITIVE;
         boolean isActive = false;
-        
+
         int lightLevel = getLightLevel(TE);
-        
+
         if (getSensitivity(TE) == SENSITIVITY_SLEEP) {
             isActive = lightLevel > 11;
         } else {
             isActive = lightLevel > 7;
         }
-        
+
         return posPolarity ? isActive : !isActive;
     }
-    
+
 }

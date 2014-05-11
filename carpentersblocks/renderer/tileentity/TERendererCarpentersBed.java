@@ -19,7 +19,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class TERendererCarpentersBed extends TileEntitySpecialRenderer {
-    
+
     @Override
     public void renderTileEntityAt(TileEntity TE, double x, double y, double z, float f)
     {
@@ -31,32 +31,32 @@ public class TERendererCarpentersBed extends TileEntitySpecialRenderer {
          * bed pieces, but it just seemed a bit extreme.  This method
          * renders every frame.
          */
-        
+
         int design = Bed.getDesign((TEBase)TE);
-        
+
         if (design > 0 && BedDesignHandler.hasBlanket[design]) {
             renderBedDesignAt((TEBase)TE, x, y, z, design);
         }
     }
-    
+
     private void renderBedDesignAt(TEBase TE, double x, double y, double z, int design)
     {
         boolean isHead = Bed.isHeadOfBed(TE);
         boolean isOccupied = Bed.isOccupied(TE);
-        
+
         /* Setup rendering environment. */
-        
+
         RenderBlocks renderBlocks = new RenderBlocks();
         bindTexture(BedDesignHandler.resource_blanket[design]);
         Tessellator tessellator = Tessellator.instance;
         tessellator.setBrightness(Blocks.dirt.getMixedBrightnessForBlock(TE.getWorldObj(), TE.xCoord, TE.yCoord, TE.zCoord));
         tessellator.startDrawingQuads();
         GL11.glDisable(GL11.GL_LIGHTING);
-        
+
         ForgeDirection dir = Bed.getDirection(TE);
-        
+
         if (isHead) {
-            
+
             switch (dir)
             {
                 case NORTH: // -Z
@@ -83,12 +83,12 @@ public class TERendererCarpentersBed extends TileEntitySpecialRenderer {
                     BedDesignHelper.renderFaceZPos(renderBlocks, BedDesignHelper.SIDE1, x, y, z);
                     break;
             }
-            
+
             BedDesignHelper.renderFaceYPos(renderBlocks, BedDesignHelper.HEAD, x, y, z);
             renderBlocks.uvRotateTop = 0;
-            
+
         } else {
-            
+
             switch (dir)
             {
                 case NORTH: // -Z
@@ -119,15 +119,15 @@ public class TERendererCarpentersBed extends TileEntitySpecialRenderer {
                     BedDesignHelper.renderFaceXPos(renderBlocks, BedDesignHelper.END, x, y, z);
                     break;
             }
-            
+
             BedDesignHelper.renderFaceYPos(renderBlocks, BedDesignHelper.FOOT, x, y, z);
             renderBlocks.uvRotateTop = 0;
-            
+
         }
-        
+
         tessellator.draw();
         GL11.glEnable(GL11.GL_LIGHTING);
         bindTexture(TextureMap.locationBlocksTexture);
     }
-    
+
 }

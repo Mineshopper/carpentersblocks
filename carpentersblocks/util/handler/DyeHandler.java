@@ -10,7 +10,7 @@ import net.minecraftforge.oredict.OreDictionary;
 public class DyeHandler {
 
     public static Map dyeColor = new HashMap();
-    
+
     /**
      * Initializes dye colors.
      */
@@ -32,9 +32,9 @@ public class DyeHandler {
         dyeColor.put(  "dyeMagenta", ItemDye.field_150922_c[13]);
         dyeColor.put(   "dyeOrange", ItemDye.field_150922_c[14]);
         dyeColor.put(    "dyeWhite", ItemDye.field_150922_c[15]);
-  
+
     }
-    
+
     /**
      * Returns definition for ItemStack from OreDictionary.
      */
@@ -42,7 +42,7 @@ public class DyeHandler {
     {
         return OreDictionary.getOreName(OreDictionary.getOreID(itemStack));
     }
-    
+
     /**
      * Returns true if ItemStack is a dye.
      */
@@ -51,7 +51,7 @@ public class DyeHandler {
         String name = getOreDictName(itemStack);
         return dyeColor.containsKey(name) ? (name.equals("dyeWhite") && !allowWhite ? false : true) : false;
     }
-    
+
     /**
      * Returns color value based on ItemStack.
      */
@@ -59,21 +59,21 @@ public class DyeHandler {
     {
         return getColor(getOreDictName(itemStack));
     }
-    
+
     /**
      * Returns color value based on ore dictionary name.
      */
     public static int getColor(String dye)
     {
         int color = 0xffffff;
-        
+
         Object dyeLookup = dyeColor.get(dye);
-        
+
         if (dyeLookup != null) {
             color = (Integer) dyeLookup;
         }
-        
+
         return color;
     }
-        
+
 }

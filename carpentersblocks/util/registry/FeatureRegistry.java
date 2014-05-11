@@ -5,7 +5,7 @@ import net.minecraftforge.common.config.Property;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 
 public class FeatureRegistry {
-    
+
     public static boolean enableCovers                 = true;
     public static boolean enableOverlays               = true;
     public static boolean enableSideCovers             = true;
@@ -17,9 +17,9 @@ public class FeatureRegistry {
     public static boolean enableTile                   = true;
 
     public static String[] overlay_list;
-    
+
     public static int slopeSmoothness = 2;
-    
+
     /**
      * Initializes configuration properties.
      */
@@ -31,19 +31,19 @@ public class FeatureRegistry {
         enableDyeColors  = config.get("features",  "Enable Dye Colors",  enableDyeColors).getBoolean(enableDyeColors);
         enablePatterns   = config.get("features",    "Enable Patterns",   enablePatterns).getBoolean(enablePatterns);
         enableTile       = config.get("features",        "Enable Tile",       enableTile).getBoolean(enableTile);
-        
+
         Property fancyFluidsProp = config.get("features", "Enable Fancy Fluids", enableFancyFluids);
         fancyFluidsProp.comment = "When enabled, unobstructed stationary fluid adjacent to block will render in the same space.\nNote: this only takes effect when Fancy Graphics are enabled.";
         enableFancyFluids = fancyFluidsProp.getBoolean(enableFancyFluids);
-        
+
         Property ownershipProp = config.get("features", "Enable Ownership", enableOwnership);
         ownershipProp.comment = "This will prevent players besides you and server operators from editing your objects.\nNote: this does not protect objects against destruction (intentional), and may allow activation if appropriate. Also, the Carpenter's Safe is not affected by this.";
         enableOwnership = ownershipProp.getBoolean(enableOwnership);
-        
+
         Property slopeSmoothnessProp = config.get("slope", "Smoothness", slopeSmoothness);
         slopeSmoothnessProp.comment = "This controls the smoothness of the slope faces.\nNote: smoothness of 2 is similar to stairs, while a value above 25 is generally fluid.";
         slopeSmoothness = slopeSmoothnessProp.getInt(slopeSmoothness);
-        
+
         Property torchWeatherEffectsProp = config.get("torch", "Enable Torch Weather Effects", enableTorchWeatherEffects);
         torchWeatherEffectsProp.comment = "This controls whether torches extinguish themselves when exposed to rain or snow.";
         enableTorchWeatherEffects = torchWeatherEffectsProp.getBoolean(enableTorchWeatherEffects);
@@ -52,5 +52,5 @@ public class FeatureRegistry {
         overlayList.comment = "This maps items that can be used as overlays.\nItems are prefixed with unlocalized names (get these from en_US.lang from resource jar)\nOverlay suffixes are :grass, :snow, :web, :vine, :hay, :mycelium";
         overlay_list = overlayList.getStringList();
     }
-    
+
 }

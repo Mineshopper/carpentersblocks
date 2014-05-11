@@ -12,29 +12,29 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemCarpentersHammer extends Item implements ICarpentersHammer {
 
-	public ItemCarpentersHammer()
-	{
+    public ItemCarpentersHammer()
+    {
         setMaxStackSize(1);
         setCreativeTab(CarpentersBlocks.creativeTab);
-        
+
         if (ItemRegistry.itemCarpentersToolsDamageable) {
             setMaxDamage(ItemRegistry.itemCarpentersToolsUses);
         }
-	}
-	
+    }
+
     @SideOnly(Side.CLIENT)
     @Override
     public void registerIcons(IIconRegister iconRegister)
     {
         itemIcon = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "hammer");
     }
-    
+
     @Override
     public void onHammerUse(World world, EntityPlayer entityPlayer)
     {
         entityPlayer.getCurrentEquippedItem().damageItem(1, entityPlayer);
     }
-    
+
     @Override
     public boolean canUseHammer(World world, EntityPlayer entityPlayer)
     {

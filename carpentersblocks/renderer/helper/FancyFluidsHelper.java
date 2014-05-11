@@ -12,7 +12,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class FancyFluidsHelper {
-    
+
     /**
      * Renders fancy fluids in block space.
      */
@@ -26,7 +26,7 @@ public class FancyFluidsHelper {
         Block block_XZPP = renderBlocks.blockAccess.getBlock(x + 1, y, z + 1);
         Block block_XZNN = renderBlocks.blockAccess.getBlock(x - 1, y, z - 1);
         Block block_XZPN = renderBlocks.blockAccess.getBlock(x + 1, y, z - 1);
-        
+
         boolean isFluid_XN   = block_XN != null ? block_XN instanceof BlockLiquid || block_XN instanceof IFluidBlock : false;
         boolean isFluid_XP   = block_XP != null ? block_XP instanceof BlockLiquid || block_XP instanceof IFluidBlock : false;
         boolean isFluid_ZN   = block_ZN != null ? block_ZN instanceof BlockLiquid || block_ZN instanceof IFluidBlock : false;
@@ -35,17 +35,17 @@ public class FancyFluidsHelper {
         boolean isFluid_XZPP = block_XZPP != null ? block_XZPP instanceof BlockLiquid || block_XZPP instanceof IFluidBlock : false;
         boolean isFluid_XZNN = block_XZNN != null ? block_XZNN instanceof BlockLiquid || block_XZNN instanceof IFluidBlock : false;
         boolean isFluid_XZPN = block_XZPN != null ? block_XZPN instanceof BlockLiquid || block_XZPN instanceof IFluidBlock : false;
-        
+
         Block block = renderBlocks.blockAccess.getBlock(x, y, z);
-        
+
         boolean isSolid_XN = block.isSideSolid(renderBlocks.blockAccess, x, y, z, ForgeDirection.WEST);
         boolean isSolid_XP = block.isSideSolid(renderBlocks.blockAccess, x, y, z, ForgeDirection.EAST);
         boolean isSolid_ZN = block.isSideSolid(renderBlocks.blockAccess, x, y, z, ForgeDirection.NORTH);
         boolean isSolid_ZP = block.isSideSolid(renderBlocks.blockAccess, x, y, z, ForgeDirection.SOUTH);
-        
+
         int metadata = 0;
         int diagMetadata = 0;
-        
+
         Block fluidBlock = null;
         Block diagFluidBlock = null;
         for (int count = 2; count < 10 && fluidBlock == null; ++count)
@@ -117,17 +117,17 @@ public class FancyFluidsHelper {
                     break;
             }
         }
-        
+
         if (fluidBlock != null && renderPass == fluidBlock.getRenderBlockPass() || diagFluidBlock != null && renderPass == diagFluidBlock.getRenderBlockPass())
         {
             boolean renderFluid = false;
-            
+
             float minX = 0;
             float minZ = 0;
             float maxX = 1.0F;
             float maxZ = 1.0F;
             float offset = 0.01F;
-            
+
             for (int side = 2; side < 6; ++side)
             {
                 switch (side)
@@ -170,7 +170,7 @@ public class FancyFluidsHelper {
                         break;
                 }
             }
-            
+
             if (renderFluid)
             {
                 if (isSolid_XN) {
@@ -185,13 +185,13 @@ public class FancyFluidsHelper {
                 if (isSolid_ZN) {
                     minZ += offset;
                 }
-                
+
                 if (fluidBlock == null)
                 {
                     fluidBlock = diagFluidBlock;
                     metadata = diagMetadata;
                 }
-                
+
                 if (!fluidBlock.hasTileEntity(metadata) && metadata == 0)
                 {
                     double fluidHeight = (fluidBlock instanceof BlockLiquid ? 1.0D - 1.0F / 9.0F : 0.875F) - 0.0010000000474974513D;
@@ -202,8 +202,8 @@ public class FancyFluidsHelper {
                 }
             }
         }
-        
+
         return false;
     }
-    
+
 }

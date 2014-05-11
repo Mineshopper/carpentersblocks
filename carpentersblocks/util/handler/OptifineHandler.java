@@ -10,10 +10,10 @@ import org.apache.logging.log4j.Level;
 import carpentersblocks.util.ModLogger;
 
 public class OptifineHandler {
-    
+
     public static boolean enableOptifineIntegration = false;
     private static Method getColorMultiplier;
-    
+
     /**
      * Initializes Optifine integration.
      * If reflection fails, will return false.
@@ -29,7 +29,7 @@ public class OptifineHandler {
             ModLogger.log(Level.WARN, "Optifine integration failed: " + e.getMessage());
         }
     }
-    
+
     public static int getColorMultiplier(Block block, IBlockAccess blockAccess, int x, int y, int z)
     {
         int colorMultiplier = block.colorMultiplier(blockAccess, x, y, z);
@@ -40,8 +40,8 @@ public class OptifineHandler {
             ModLogger.log(Level.WARN, "Block custom coloring failed, disabling Optifine integration: " + e.getMessage());
             enableOptifineIntegration = false;
         }
-        
+
         return colorMultiplier;
     }
-    
+
 }

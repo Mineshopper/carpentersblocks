@@ -10,7 +10,7 @@ public class PlayerPermissions {
      * Returns true if player is operator.
      * Can only return true if called server-side.
      */
-	private static boolean isOp(EntityPlayer entityPlayer)
+    private static boolean isOp(EntityPlayer entityPlayer)
     {
         if (!entityPlayer.worldObj.isRemote) {
             return ((EntityPlayerMP)entityPlayer).mcServer.getConfigurationManager().isPlayerOpped(entityPlayer.getDisplayName());
@@ -27,11 +27,11 @@ public class PlayerPermissions {
         if (isOp(entityPlayer)) {
             return true;
         } else if (FeatureRegistry.enableOwnership) {
-    		String owner = object.getOwner();
-    		return owner.equals(entityPlayer.getDisplayName());
+            String owner = object.getOwner();
+            return owner.equals(entityPlayer.getDisplayName());
         } else {
-        	return entityPlayer.canPlayerEdit(x, y, z, 0, entityPlayer.getHeldItem());
+            return entityPlayer.canPlayerEdit(x, y, z, 0, entityPlayer.getHeldItem());
         }
     }
-        
+
 }

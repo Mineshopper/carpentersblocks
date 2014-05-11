@@ -9,7 +9,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class EntityHandler {
-    
+
     public final static int ID_TILE = 0;
 
     /**
@@ -19,7 +19,7 @@ public class EntityHandler {
     {
         EntityRegistry.registerModEntity(EntityCarpentersTile.class, "CarpentersTile", ID_TILE, CarpentersBlocks.instance, 64, 999, false);
     }
-    
+
     @SideOnly(Side.CLIENT)
     /**
      * Initializes entity renderers.
@@ -28,5 +28,5 @@ public class EntityHandler {
     {
         RenderingRegistry.registerEntityRenderingHandler(EntityCarpentersTile.class, new RenderCarpentersTile());
     }
-    
+
 }

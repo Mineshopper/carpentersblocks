@@ -7,7 +7,7 @@ import org.apache.logging.log4j.Logger;
 import carpentersblocks.CarpentersBlocks;
 
 public class ModLogger {
-    
+
     private static Logger logger = LogManager.getLogger(CarpentersBlocks.MODID);
 
     public static void log(Level level, String format, Object... data)
@@ -44,5 +44,5 @@ public class ModLogger {
     {
         return logger;
     }
-    
+
 }

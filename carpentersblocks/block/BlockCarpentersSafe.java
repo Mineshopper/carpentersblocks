@@ -28,12 +28,12 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockCarpentersSafe extends BlockCoverable {
-    
+
     public BlockCarpentersSafe(Material material)
     {
         super(material);
     }
-    
+
     @SideOnly(Side.CLIENT)
     @Override
     /**
@@ -44,7 +44,7 @@ public class BlockCarpentersSafe extends BlockCoverable {
     {
         IconRegistry.icon_safe_light = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "safe/safe_light");
     }
-    
+
     /**
      * Returns whether player is allowed to activate this block.
      */
@@ -53,7 +53,7 @@ public class BlockCarpentersSafe extends BlockCoverable {
     {
         return PlayerPermissions.canPlayerEdit(TE, TE.xCoord, TE.yCoord, TE.zCoord, entityPlayer) || !Safe.isLocked(TE);
     }
-    
+
     @Override
     /**
      * Rotates safe so that it faces player.
@@ -62,7 +62,7 @@ public class BlockCarpentersSafe extends BlockCoverable {
     {
         int facing = BlockProperties.getOppositeFacing(entityPlayer);
         ForgeDirection dir = BlockProperties.getDirectionFromFacing(facing);
-        
+
         if (dir != Safe.getFacing(TE)) {
             Safe.setFacing(TE, facing);
             return true;
@@ -70,7 +70,7 @@ public class BlockCarpentersSafe extends BlockCoverable {
             return false;
         }
     }
-    
+
     @Override
     /**
      * Cycles locked state.
@@ -78,35 +78,35 @@ public class BlockCarpentersSafe extends BlockCoverable {
     protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer)
     {
         if (entityPlayer.isSneaking()) {
-            
+
             boolean locked = !Safe.isLocked(TE);
-            
+
             Safe.setLocked(TE, locked);
-            
+
             if (locked) {
                 Safe.setAutoPerm(TE, Safe.AUTOMATION_DISABLED);
             } else {
                 Safe.setAutoPerm(TE, Safe.AUTOMATION_ALL);
             }
-            
+
             if (locked) {
                 ChatHandler.sendMessageToPlayer("message.safe_lock.name", entityPlayer);
             } else {
                 ChatHandler.sendMessageToPlayer("message.safe_unlock.name", entityPlayer);
             }
-            
+
             return true;
-            
+
         } else {
-            
+
             int autoPerm = Safe.getAutoPerm(TE);
-            
+
             if (++autoPerm > 3) {
                 autoPerm = 0;
             }
-            
+
             Safe.setAutoPerm(TE, autoPerm);
-            
+
             switch (autoPerm) {
                 case Safe.AUTOMATION_ALL:
                     ChatHandler.sendMessageToPlayer("message.automation_all.name", entityPlayer);
@@ -121,12 +121,12 @@ public class BlockCarpentersSafe extends BlockCoverable {
                     ChatHandler.sendMessageToPlayer("message.automation_extract.name", entityPlayer);
                     break;
             }
-            
+
         }
-        
+
         return true;
     }
-    
+
     @Override
     /**
      * Called when the block is placed in the world.
@@ -134,14 +134,14 @@ public class BlockCarpentersSafe extends BlockCoverable {
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack itemStack)
     {
         TEBase TE = getTileEntity(world, x, y, z);
-        
+
         if (TE != null) {
-        	Safe.setFacing(TE, BlockProperties.getOppositeFacing(entityLiving));
+            Safe.setFacing(TE, BlockProperties.getOppositeFacing(entityLiving));
         }
-        
+
         super.onBlockPlacedBy(world, x, y, z, entityLiving, itemStack);
     }
-    
+
     @Override
     /**
      * Called upon block activation (right click on the block.)
@@ -149,10 +149,10 @@ public class BlockCarpentersSafe extends BlockCoverable {
     protected void postOnBlockActivated(TEBase TE, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ, List<Boolean> altered, List<Boolean> decInv)
     {
         if (!Safe.isOpen(TE) && canPlayerActivate(TE, entityPlayer)) {
-            
+
             TECarpentersSafe TE_safe = (TECarpentersSafe) TE;
             ItemStack itemStack = entityPlayer.getHeldItem();
-            
+
             if (itemStack != null && itemStack.getItem().equals(Items.gold_ingot)) {
                 if (!TE_safe.hasUpgrade()) {
                     if (TE_safe.incSizeInventory()) {
@@ -168,18 +168,18 @@ public class BlockCarpentersSafe extends BlockCoverable {
             }
 
         } else {
-            
+
             ChatHandler.sendMessageToPlayer("message.block_lock.name", entityPlayer);
-            
+
         }
-        
+
         /*
          * Safe should always return true because it either warns the player
          * that it is locked, or it returns the GUI.
          */
         altered.add(true);
     }
-    
+
     /**
      * Location sensitive version of getExplosionRestance
      *
@@ -198,7 +198,7 @@ public class BlockCarpentersSafe extends BlockCoverable {
     {
         return Blocks.bedrock.getExplosionResistance(entity);
     }
-    
+
     @Override
     /**
      * Checks if the block is a solid face on the given side, used by placement logic.
@@ -213,16 +213,16 @@ public class BlockCarpentersSafe extends BlockCoverable {
     public boolean isSideSolid(IBlockAccess world, int x, int y, int z, ForgeDirection side)
     {
         TEBase TE = getTileEntity(world, x, y, z);
-        
+
         if (TE != null) {
             if (isBlockSolid(world, x, y, z)) {
                 return side != Safe.getFacing(TE);
             }
         }
-        
+
         return false;
     }
-    
+
     @Override
     /**
      * ejects contained items into the world, and notifies neighbours of an update, as appropriate
@@ -230,29 +230,29 @@ public class BlockCarpentersSafe extends BlockCoverable {
     public void breakBlock(World world, int x, int y, int z, Block block, int metadata)
     {
         TEBase TE = getSimpleTileEntity(world, x, y, z);
-        
+
         if (TE != null) {
-            
+
             TECarpentersSafe TE_safe = (TECarpentersSafe) TE;
-            
+
             if (TE_safe.hasUpgrade()) {
                 BlockProperties.ejectEntity(TE, new ItemStack(Items.gold_ingot));
             }
-            
+
             for (int slot = 0; slot < TE_safe.getSizeInventory(); ++slot)
             {
                 ItemStack itemStack = TE_safe.getStackInSlot(slot);
-                
+
                 if (itemStack != null) {
                     BlockProperties.ejectEntity(TE, itemStack);
                 }
             }
-            
+
         }
-        
+
         super.breakBlock(world, x, y, z, block, metadata);
     }
-    
+
     @Override
     /**
      * Gets the hardness of block at the given coordinates in the given world, relative to the ability of the given
@@ -261,20 +261,20 @@ public class BlockCarpentersSafe extends BlockCoverable {
     public float getPlayerRelativeBlockHardness(EntityPlayer entityPlayer, World world, int x, int y, int z)
     {
         TEBase TE = getTileEntity(world, x, y, z);
-        
+
         if (TE != null) {
-        
-	        if (Safe.isOpen(TE) || !PlayerPermissions.canPlayerEdit(TE, TE.xCoord, TE.yCoord, TE.zCoord, entityPlayer)) {
-	            return -1; // Unbreakable
-	        } else {
-	            return super.getPlayerRelativeBlockHardness(entityPlayer, world, x, y, z);
-	        }
-        
+
+            if (Safe.isOpen(TE) || !PlayerPermissions.canPlayerEdit(TE, TE.xCoord, TE.yCoord, TE.zCoord, entityPlayer)) {
+                return -1; // Unbreakable
+            } else {
+                return super.getPlayerRelativeBlockHardness(entityPlayer, world, x, y, z);
+            }
+
         }
-        
+
         return super.getPlayerRelativeBlockHardness(entityPlayer, world, x, y, z);
     }
-    
+
     @Override
     /**
      * Returns a new instance of a block's tile entity class. Called on placing the block.
@@ -283,7 +283,7 @@ public class BlockCarpentersSafe extends BlockCoverable {
     {
         return new TECarpentersSafe();
     }
-    
+
     @Override
     /**
      * The type of render function that is called for this block
@@ -292,5 +292,5 @@ public class BlockCarpentersSafe extends BlockCoverable {
     {
         return BlockRegistry.carpentersSafeRenderID;
     }
-    
+
 }

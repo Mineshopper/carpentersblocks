@@ -14,13 +14,13 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemCarpentersBed extends ItemBlock {
-    
+
     public ItemCarpentersBed()
     {
         setMaxStackSize(64);
         setCreativeTab(CarpentersBlocks.creativeTab);
     }
-    
+
     @SideOnly(Side.CLIENT)
     @Override
     /**
@@ -31,7 +31,7 @@ public class ItemCarpentersBed extends ItemBlock {
     {
         itemIcon = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "bed");
     }
-    
+
     @Override
     /**
      * Callback for item usage. If the item does something special on right clicking, he will have one of those. Return
@@ -40,15 +40,15 @@ public class ItemCarpentersBed extends ItemBlock {
     public boolean onItemUse(ItemStack itemStack, EntityPlayer entityPlayer, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
     {
         if (side == 1) {
-            
+
             ++y;
-            
+
             int facing = BlockProperties.getOppositeFacing(entityPlayer);
             ForgeDirection dir = BlockProperties.getDirectionFromFacing(facing);
-            
+
             int x_offset = x - dir.offsetX;
             int z_offset = z - dir.offsetZ;
-            
+
             if (
                     entityPlayer.canPlayerEdit(x, y, z, side, itemStack)                                                &&
                     entityPlayer.canPlayerEdit(x_offset, y, z_offset, side, itemStack)                                  &&
@@ -62,12 +62,12 @@ public class ItemCarpentersBed extends ItemBlock {
             {
 
                 /* Foot of bed. */
-                
+
                 TEBase TE_foot = (TEBase) world.getTileEntity(x, y, z);
                 Bed.setDirection(TE_foot, facing);
-                
+
                 /* Head of bed. */
-                
+
                 TEBase TE_head = (TEBase) world.getTileEntity(x_offset, y, z_offset);
                 Bed.setHeadOfBed(TE_head);
                 Bed.setDirection(TE_head, facing);
@@ -77,13 +77,13 @@ public class ItemCarpentersBed extends ItemBlock {
                 if (!entityPlayer.capabilities.isCreativeMode && --itemStack.stackSize <= 0) {
                     entityPlayer.inventory.setInventorySlotContents(entityPlayer.inventory.currentItem, (ItemStack)null);
                 }
-                
+
                 return true;
             }
-            
+
         }
-        
+
         return false;
     }
-    
+
 }

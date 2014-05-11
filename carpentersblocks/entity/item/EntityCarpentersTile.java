@@ -300,12 +300,12 @@ public class EntityCarpentersTile extends EntityBase {
         } else {
 
             int idx = TileHandler.tileList.indexOf(getTile());
-            
+
             if (idx == -1) {
                 this.setTile(getDefaultTile());
                 idx = 0;
             }
-            
+
             return IconRegistry.icon_tile.get(TileHandler.tileList.indexOf(getTile()));
         }
     }
@@ -375,20 +375,20 @@ public class EntityCarpentersTile extends EntityBase {
             setBoundingBox();
             boundsSet = true;
         }
-        
+
         if (!worldObj.isRemote) {
-            
+
             if (ticks++ >= 20) {
-                
+
                 ticks = 0;
-                
+
                 if (!isDead && !onValidSurface()) {
                     setDead();
                     onBroken((Entity)null);
                 }
-                
+
             }
-            
+
         }
     }
 
@@ -515,16 +515,16 @@ public class EntityCarpentersTile extends EntityBase {
 
                 } else if (BlockProperties.isDye(itemStack, true)) {
 
-                	if (entityPlayer.isSneaking()) {
-                		
-                		String dye = DyeHandler.getOreDictName(itemStack);
-                		
-                		if (!getDye().equals(dye)) {
-                			setDye(DyeHandler.getOreDictName(itemStack));
-                			playDyeSound();
-                		}
+                    if (entityPlayer.isSneaking()) {
 
-                	}
+                        String dye = DyeHandler.getOreDictName(itemStack);
+
+                        if (!getDye().equals(dye)) {
+                            setDye(DyeHandler.getOreDictName(itemStack));
+                            playDyeSound();
+                        }
+
+                    }
 
                 }
 

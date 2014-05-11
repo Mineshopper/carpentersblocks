@@ -21,14 +21,14 @@ public class FlowerPotProperties {
     public static Block toBlock(ItemStack itemStack)
     {
         Object plant = FlowerPotHandler.itemPlant.get(itemStack.getItem());
-        
+
         if (plant != null) {
             return (Block) plant;
         } else {
             return Block.getBlockFromItem(itemStack.getItem());
         }
     }
-    
+
     /**
      * Returns plant color.
      */
@@ -36,17 +36,17 @@ public class FlowerPotProperties {
     {
         ItemStack itemStack = getPlant(TE);
         Block block = toBlock(itemStack);
-        
+
         BlockProperties.setHostMetadata(TE, itemStack.getItemDamage());
 
         int color1 = block.getBlockColor();
         int color2 = block.colorMultiplier(TE.getWorldObj(), TE.xCoord, TE.yCoord, TE.zCoord);
-        
+
         BlockProperties.resetHostMetadata(TE);
-        
+
         return color1 < color2 ? color1 : color2;
     }
-    
+
     /**
      * Returns whether plant can be colored - leaves, grass, etc.
      */
@@ -54,7 +54,7 @@ public class FlowerPotProperties {
     {
         return FlowerPotProperties.getPlantColor(TE) != 16777215;
     }
-    
+
     /**
      * Returns whether flower pot has a design.
      */
@@ -62,24 +62,24 @@ public class FlowerPotProperties {
     {
         return FlowerPot.getDesign(TE) > 0;
     }
-    
+
     /**
      * Returns whether pot has soil.
      */
     public static boolean hasSoil(TEBase TE)
     {
         ItemStack itemStack = ((TECarpentersFlowerPot)TE).soil;
-        
+
         return itemStack != null && isSoil(itemStack);
     }
-    
+
     /**
      * Returns whether ItemStack contains soil.
      */
     public static boolean isSoil(ItemStack itemStack)
     {
         Block block = Block.getBlockFromItem(itemStack.getItem());
-        
+
         if (itemStack.getItem() instanceof ItemBlock && !block.hasTileEntity(itemStack.getItemDamage())) {
             Material material = block.getMaterial();
             return material.equals(Material.grass) || material.equals(Material.ground) || material.equals(Material.sand);
@@ -87,7 +87,7 @@ public class FlowerPotProperties {
             return false;
         }
     }
-    
+
     /**
      * Returns soil ItemStack.
      */
@@ -95,7 +95,7 @@ public class FlowerPotProperties {
     {
         return ((TECarpentersFlowerPot)TE).soil;
     }
-    
+
     /**
      * Sets soil block.
      */
@@ -106,26 +106,26 @@ public class FlowerPotProperties {
         }
 
         ((TECarpentersFlowerPot)TE).soil = itemStack;
-        
+
         World world = TE.getWorldObj();
         Block block = itemStack == null ? null : Block.getBlockFromItem(itemStack.getItem());
-        
+
         world.notifyBlocksOfNeighborChange(TE.xCoord, TE.yCoord, TE.zCoord, block);
         world.markBlockForUpdate(TE.xCoord, TE.yCoord, TE.zCoord);
-        
+
         return true;
     }
-    
+
     /**
      * Returns whether pot has plant.
      */
     public static boolean hasPlant(TEBase TE)
     {
         ItemStack itemStack = ((TECarpentersFlowerPot)TE).plant;
-        
+
         return itemStack != null && isPlant(itemStack);
     }
-    
+
     /**
      * Returns whether ItemStack contains a plant.
      */
@@ -143,7 +143,7 @@ public class FlowerPotProperties {
             return FlowerPotHandler.itemPlant.containsKey(itemStack.getItem());
         }
     }
-    
+
     /**
      * Returns plant block.
      */
@@ -162,14 +162,14 @@ public class FlowerPotProperties {
         }
 
         ((TECarpentersFlowerPot)TE).plant = itemStack;
-        
+
         World world = TE.getWorldObj();
         Block block = itemStack == null ? null : Block.getBlockFromItem(itemStack.getItem());
-        
+
         world.notifyBlocksOfNeighborChange(TE.xCoord, TE.yCoord, TE.zCoord, block);
         world.markBlockForUpdate(TE.xCoord, TE.yCoord, TE.zCoord);
-        
+
         return true;
     }
-    
+
 }

@@ -14,7 +14,7 @@ import carpentersblocks.util.registry.FeatureRegistry;
 import carpentersblocks.util.registry.IconRegistry;
 
 public class OverlayHandler {
-    
+
     public enum Overlay {
         NONE,
         GRASS,
@@ -33,12 +33,12 @@ public class OverlayHandler {
     public static void init()
     {
         for (String name : FeatureRegistry.overlay_list) {
-            
+
             String itemName = name.substring(0, name.indexOf(":"));
             String overlayType = name.substring(name.indexOf(":") + 1);
 
             Overlay overlay = Overlay.NONE;
-            
+
             if (overlayType.equals("grass")) {
                 overlay = Overlay.GRASS;
             } else if (overlayType.equals("snow")) {
@@ -52,14 +52,14 @@ public class OverlayHandler {
             } else if (overlayType.equals("mycelium")) {
                 overlay = Overlay.MYCELIUM;
             }
-            
+
             if (!overlay.equals(Overlay.NONE) && !overlayMap.containsKey(itemName)) {
                 overlayMap.put(itemName, overlay);
             }
 
         }
     }
-    
+
     /**
      * Returns overlay from ItemStack.
      */
@@ -68,33 +68,33 @@ public class OverlayHandler {
         if (itemStack != null) {
             return (Overlay) overlayMap.get(itemStack.getUnlocalizedName());
         }
-        
+
         return Overlay.NONE;
     }
 
     /**
      * Returns ItemStack representative of overlay block type.
      * Will return block or cover if no overlay is present.
-     * 
+     *
      * Use this when determining side particles to render.
      */
     public static ItemStack getOverlay(TEBase TE, int cover)
     {
         return getOverlaySideSensitive(TE, cover, -1);
     }
-    
+
     /**
      * Returns ItemStack representative of overlay block type.
      * Will return block or cover if no overlay is present.
-     * 
+     *
      * Use this when determining side particles to render.
      */
     public static ItemStack getOverlaySideSensitive(TEBase TE, int cover, int side)
     {
         ItemStack itemStack = BlockProperties.getCover(TE, cover);
-        
+
         boolean returnOverlay = Math.abs(side) == 1;
-        
+
         switch (getOverlay(BlockProperties.getOverlay(TE, cover))) {
             case GRASS:
                 if (returnOverlay) {
@@ -122,10 +122,10 @@ public class OverlayHandler {
                 break;
             default: {}
         }
-        
+
         return itemStack;
     }
-    
+
     /**
      * Returns icon for overlay.
      */
@@ -134,7 +134,7 @@ public class OverlayHandler {
         Block block = BlockProperties.toBlock(OverlayHandler.getOverlay(TE, cover));
 
         Overlay overlay = OverlayHandler.getOverlay(BlockProperties.getOverlay(TE, cover));
-        
+
         switch (overlay) {
             case GRASS:
             case SNOW:
@@ -167,5 +167,5 @@ public class OverlayHandler {
             }
         }
     }
-        
+
 }

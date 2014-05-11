@@ -27,12 +27,12 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockCarpentersTorch extends BlockCoverable {
-    
+
     public BlockCarpentersTorch(Material material)
     {
         super(material);
     }
-    
+
     @SideOnly(Side.CLIENT)
     @Override
     /**
@@ -45,7 +45,7 @@ public class BlockCarpentersTorch extends BlockCoverable {
         IconRegistry.icon_torch_head_smoldering = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "torch/torch_head_smoldering");
         IconRegistry.icon_torch_head_unlit      = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "torch/torch_head_unlit");
     }
-    
+
     @SideOnly(Side.CLIENT)
     @Override
     /**
@@ -55,7 +55,7 @@ public class BlockCarpentersTorch extends BlockCoverable {
     {
         return IconRegistry.icon_torch_lit;
     }
-    
+
     @Override
     /**
      * Returns light value based on cover or side covers.
@@ -63,12 +63,12 @@ public class BlockCarpentersTorch extends BlockCoverable {
     public int getLightValue(IBlockAccess world, int x, int y, int z)
     {
         TEBase TE = getTileEntity(world, x, y, z);
-        
+
         if (TE != null) {
-            
+
             int coverLight = super.getLightValue(world, x, y, z);
             int torchLight = 0;
-            
+
             switch (Torch.getState(TE)) {
                 case LIT:
                     torchLight = 15;
@@ -78,14 +78,14 @@ public class BlockCarpentersTorch extends BlockCoverable {
                     break;
                 default: {}
             }
-            
+
             return coverLight > torchLight ? coverLight : torchLight;
-            
+
         }
-        
+
         return super.getLightValue();
     }
-    
+
     /**
      * Returns a bounding box from the pool of bounding boxes (this means this box can change after the pool has been
      * cleared to be reused)
@@ -95,7 +95,7 @@ public class BlockCarpentersTorch extends BlockCoverable {
     {
         return null;
     }
-    
+
     @Override
     /**
      * checks to see if you can place this block can be placed on that side of a block: BlockLever overrides
@@ -103,17 +103,17 @@ public class BlockCarpentersTorch extends BlockCoverable {
     public boolean canPlaceBlockOnSide(World world, int x, int y, int z, int side)
     {
         if (side > 0) {
-        	
+
             ForgeDirection dir = ForgeDirection.getOrientation(side);
             Block block = world.getBlock(x, y - 1, z);
-            
+
             return world.getBlock(x - dir.offsetX, y - dir.offsetY, z - dir.offsetZ).isSideSolid(world, x - dir.offsetX, y - dir.offsetY, z - dir.offsetZ, dir) || side == 1 && block != null && block.canPlaceTorchOnTop(world, x, y, z);
-        
+
         }
-        
+
         return false;
     }
-    
+
     @Override
     /**
      * Called when a block is placed using its ItemBlock. Args: World, X, Y, Z, side, hitX, hitY, hitZ, block metadata
@@ -122,7 +122,7 @@ public class BlockCarpentersTorch extends BlockCoverable {
     {
         return side;
     }
-    
+
     @Override
     /**
      * Called when the block is placed in the world.
@@ -130,19 +130,19 @@ public class BlockCarpentersTorch extends BlockCoverable {
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack itemStack)
     {
         TEBase TE = getTileEntity(world, x, y, z);
-        
+
         if (TE != null) {
-        
-	        int facing = world.getBlockMetadata(x, y, z);
-	        
-	        Torch.setFacing(TE, facing);
-	        Torch.setReady(TE);
-        
+
+            int facing = world.getBlockMetadata(x, y, z);
+
+            Torch.setFacing(TE, facing);
+            Torch.setReady(TE);
+
         }
-        
+
         super.onBlockPlacedBy(world, x, y, z, entityLiving, itemStack);
     }
-    
+
     @Override
     /**
      * Lets the block know when one of its neighbor changes. Doesn't know which neighbor changed (coordinates passed are
@@ -150,30 +150,30 @@ public class BlockCarpentersTorch extends BlockCoverable {
      */
     public void onNeighborBlockChange(World world, int x, int y, int z, Block block)
     {
-    	if (!world.isRemote) {
-    	
-	        TEBase TE = getTileEntity(world, x, y, z);
-	        
-	        if (TE != null) {
-	            
-	            if (Torch.isReady(TE)) {
-	            	
-	                ForgeDirection facing = Torch.getFacing(TE);
-	                
-	                if (!canPlaceBlockOnSide(world, x, y, z, facing.ordinal())) {
-	                    dropBlockAsItem(world, x, y, z, 0, 0);
-	                    world.setBlockToAir(x, y, z);
-	                }
-	                
-	            }
-	            
-	        }
-        
-    	}
-        
+        if (!world.isRemote) {
+
+            TEBase TE = getTileEntity(world, x, y, z);
+
+            if (TE != null) {
+
+                if (Torch.isReady(TE)) {
+
+                    ForgeDirection facing = Torch.getFacing(TE);
+
+                    if (!canPlaceBlockOnSide(world, x, y, z, facing.ordinal())) {
+                        dropBlockAsItem(world, x, y, z, 0, 0);
+                        world.setBlockToAir(x, y, z);
+                    }
+
+                }
+
+            }
+
+        }
+
         super.onNeighborBlockChange(world, x, y, z, block);
     }
-    
+
     /**
      * Ray traces through the blocks collision from start vector to end vector returning a ray trace hit. Args: world,
      * x, y, z, startVec, endVec
@@ -182,76 +182,76 @@ public class BlockCarpentersTorch extends BlockCoverable {
     public MovingObjectPosition collisionRayTrace(World world, int x, int y, int z, Vec3 startVec, Vec3 endVec)
     {
         TEBase TE = getTileEntity(world, x, y, z);
-        
+
         if (TE != null) {
-        
-	        ForgeDirection facing = Torch.getFacing(TE);
-	        
-	        switch (facing) {
-	            case NORTH:
-	                setBlockBounds(0.5F - 0.15F, 0.2F, 1.0F - 0.15F * 2.0F, 0.5F + 0.15F, 0.8F, 1.0F);
-	                break;
-	            case SOUTH:
-	                setBlockBounds(0.5F - 0.15F, 0.2F, 0.0F, 0.5F + 0.15F, 0.8F, 0.15F * 2.0F);
-	                break;
-	            case WEST:
-	                setBlockBounds(1.0F - 0.15F * 2.0F, 0.2F, 0.5F - 0.15F, 1.0F, 0.8F, 0.5F + 0.15F);
-	                break;
-	            case EAST:
-	                setBlockBounds(0.0F, 0.2F, 0.5F - 0.15F, 0.15F * 2.0F, 0.8F, 0.5F + 0.15F);
-	                break;
-	            default:
-	                setBlockBounds(0.5F - 0.1F, 0.0F, 0.5F - 0.1F, 0.5F + 0.1F, 0.6F, 0.5F + 0.1F);
-	                break;
-	        }
-        
+
+            ForgeDirection facing = Torch.getFacing(TE);
+
+            switch (facing) {
+                case NORTH:
+                    setBlockBounds(0.5F - 0.15F, 0.2F, 1.0F - 0.15F * 2.0F, 0.5F + 0.15F, 0.8F, 1.0F);
+                    break;
+                case SOUTH:
+                    setBlockBounds(0.5F - 0.15F, 0.2F, 0.0F, 0.5F + 0.15F, 0.8F, 0.15F * 2.0F);
+                    break;
+                case WEST:
+                    setBlockBounds(1.0F - 0.15F * 2.0F, 0.2F, 0.5F - 0.15F, 1.0F, 0.8F, 0.5F + 0.15F);
+                    break;
+                case EAST:
+                    setBlockBounds(0.0F, 0.2F, 0.5F - 0.15F, 0.15F * 2.0F, 0.8F, 0.5F + 0.15F);
+                    break;
+                default:
+                    setBlockBounds(0.5F - 0.1F, 0.0F, 0.5F - 0.1F, 0.5F + 0.1F, 0.6F, 0.5F + 0.1F);
+                    break;
+            }
+
         }
-        
+
         return super.collisionRayTrace(world, x, y, z, startVec, endVec);
     }
-    
+
     /**
      * Ticks the block if it's been scheduled
      */
     @Override
     public void updateTick(World world, int x, int y, int z, Random random)
     {
-    	if (!world.isRemote) {
-    	
-	        TEBase TE = getTileEntity(world, x, y, z);
-	        
-	        if (TE != null) {
-	            
-	            boolean canDropState = FeatureRegistry.enableTorchWeatherEffects;
-	            boolean isWet = world.isRaining() && world.canBlockSeeTheSky(x, y, z) && world.getBiomeGenForCoords(x, z).rainfall > 0.0F;
-	            
-	            switch (Torch.getState(TE))
-	            {
-	                case LIT:
-	                    if (canDropState && isWet) {
-	                        Torch.setState(TE, State.SMOLDERING);
-	                    }
-	                    break;
-	                case SMOLDERING:
-	                    if (canDropState && isWet) {
-	                        Torch.setState(TE, State.UNLIT);
-	                    } else {
-	                        Torch.setState(TE, State.LIT);
-	                    }
-	                    break;
-	                case UNLIT:
-	                    if (!canDropState || !isWet) {
-	                        Torch.setState(TE, State.SMOLDERING);
-	                    }
-	                    break;
-	                default: {}
-	            }
-	            
-	        }
-        
-    	}
+        if (!world.isRemote) {
+
+            TEBase TE = getTileEntity(world, x, y, z);
+
+            if (TE != null) {
+
+                boolean canDropState = FeatureRegistry.enableTorchWeatherEffects;
+                boolean isWet = world.isRaining() && world.canBlockSeeTheSky(x, y, z) && world.getBiomeGenForCoords(x, z).rainfall > 0.0F;
+
+                switch (Torch.getState(TE))
+                {
+                    case LIT:
+                        if (canDropState && isWet) {
+                            Torch.setState(TE, State.SMOLDERING);
+                        }
+                        break;
+                    case SMOLDERING:
+                        if (canDropState && isWet) {
+                            Torch.setState(TE, State.UNLIT);
+                        } else {
+                            Torch.setState(TE, State.LIT);
+                        }
+                        break;
+                    case UNLIT:
+                        if (!canDropState || !isWet) {
+                            Torch.setState(TE, State.SMOLDERING);
+                        }
+                        break;
+                    default: {}
+                }
+
+            }
+
+        }
     }
-    
+
     @Override
     @SideOnly(Side.CLIENT)
     /**
@@ -260,32 +260,32 @@ public class BlockCarpentersTorch extends BlockCoverable {
     public void randomDisplayTick(World world, int x, int y, int z, Random random)
     {
         TEBase TE = getTileEntity(world, x, y, z);
-        
+
         if (TE != null) {
-            
+
             State state = Torch.getState(TE);
-            
+
             if (!state.equals(State.UNLIT)) {
-            	
+
                 double[] headCoords = Torch.getHeadCoordinates(TE);
-                
+
                 world.spawnParticle("smoke", headCoords[0], headCoords[1], headCoords[2], 0.0D, 0.0D, 0.0D);
-                
+
                 if (state.equals(State.LIT)) {
                     world.spawnParticle("flame", headCoords[0], headCoords[1], headCoords[2], 0.0D, 0.0D, 0.0D);
                 }
-                
+
             }
-            
+
         }
     }
-    
+
     @Override
     public TileEntity createNewTileEntity(World world, int metadata)
     {
         return new TECarpentersTorch();
     }
-    
+
     @Override
     /**
      * The type of render function that is called for this block
@@ -294,5 +294,5 @@ public class BlockCarpentersTorch extends BlockCoverable {
     {
         return BlockRegistry.carpentersTorchRenderID;
     }
-    
+
 }

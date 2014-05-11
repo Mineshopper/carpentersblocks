@@ -13,14 +13,14 @@ import java.util.List;
 import net.minecraftforge.common.util.ForgeDirection;
 
 public class Stairs {
-    
+
     /**
      * 16-bit data components:
      *
      * [0000000000000000]
      * stairsID
      */
-    
+
     public final static byte ID_NORMAL_SE         = 0;
     public final static byte ID_NORMAL_NW         = 1;
     public final static byte ID_NORMAL_NE         = 2;
@@ -49,7 +49,7 @@ public class Stairs {
     public final static byte ID_NORMAL_EXT_POS_NW = 25;
     public final static byte ID_NORMAL_EXT_POS_NE = 26;
     public final static byte ID_NORMAL_EXT_POS_SW = 27;
-    
+
     public enum Type
     {
         NORMAL_SIDE,
@@ -57,23 +57,23 @@ public class Stairs {
         NORMAL_INT,
         NORMAL_EXT
     }
-    
+
     /** Array containing registered stairs. */
     public static final Stairs[] stairsList = new Stairs[28];
-    
+
     /** ID of the stairs. */
     public final int stairsID;
-    
+
     /** Stairs type. */
     public final Type stairsType;
-    
+
     /**
      * Holds stairs face shape.
      *
      * [DOWN, UP, NORTH, SOUTH, WEST, EAST]
      */
     private final int[] faceShape;
-    
+
     /**
      * If faceShape indicates side is STAGGERED,
      * this will indicate which corner of face
@@ -87,25 +87,25 @@ public class Stairs {
      * [DOWN, UP, NORTH, SOUTH, WEST, EAST]
      */
     private final int[] staggeredCorner;
-    
+
     /**
      * Are the stairs facing up.
      * A quick reference since it's called often.
      */
     public final boolean isPositive;
-    
+
     /** Stairs direction. */
     public final List<ForgeDirection> facings;
-    
+
     public static final byte NO_FACE = 0;
     public static final byte FULL = 1;
     public static final byte STAGGERED = 2;
-    
+
     public static final byte MIN_MIN = 1;
     public static final byte MIN_MAX = 2;
     public static final byte MAX_MIN = 3;
     public static final byte MAX_MAX = 4;
-    
+
     public Stairs(int stairsID, Type stairsType, ForgeDirection[] facings, int[] faceShape, int[] staggeredCorner)
     {
         this.stairsID = stairsID;
@@ -113,16 +113,16 @@ public class Stairs {
         this.stairsType = stairsType;
         this.faceShape = faceShape;
         this.staggeredCorner = staggeredCorner;
-        
+
         this.facings = new ArrayList<ForgeDirection>();
-        
+
         for (ForgeDirection face : facings) {
             this.facings.add(face);
         }
-        
+
         isPositive = this.facings.contains(UP);
     }
-    
+
     public static final Stairs NORMAL_NW = new Stairs(ID_NORMAL_NW, Type.NORMAL_SIDE, new ForgeDirection[] { NORTH, WEST }, new int[] { STAGGERED, STAGGERED, NO_FACE, FULL, NO_FACE, FULL }, new int[] { MAX_MAX, MAX_MAX, 0, 0, 0, 0 });
     public static final Stairs NORMAL_NE = new Stairs(ID_NORMAL_NE, Type.NORMAL_SIDE, new ForgeDirection[] { NORTH, EAST }, new int[] { STAGGERED, STAGGERED, NO_FACE, FULL, FULL, NO_FACE }, new int[] { MIN_MAX, MIN_MAX, 0, 0, 0, 0 });
     public static final Stairs NORMAL_SW = new Stairs(ID_NORMAL_SW, Type.NORMAL_SIDE, new ForgeDirection[] { SOUTH, WEST }, new int[] { STAGGERED, STAGGERED, FULL, NO_FACE, NO_FACE, FULL }, new int[] { MAX_MIN, MAX_MIN, 0, 0, 0, 0 });
@@ -151,15 +151,15 @@ public class Stairs {
     public static final Stairs NORMAL_EXT_POS_NE = new Stairs(ID_NORMAL_EXT_POS_NE, Type.NORMAL_EXT, new ForgeDirection[] { UP, NORTH, EAST }, new int[] { FULL, NO_FACE, NO_FACE, STAGGERED, STAGGERED, NO_FACE }, new int[] { 0, 0, 0, MIN_MIN, MAX_MIN, 0 });
     public static final Stairs NORMAL_EXT_POS_SW = new Stairs(ID_NORMAL_EXT_POS_SW, Type.NORMAL_EXT, new ForgeDirection[] { UP, SOUTH, WEST }, new int[] { FULL, NO_FACE, STAGGERED, NO_FACE, NO_FACE, STAGGERED }, new int[] { 0, 0, MAX_MIN, 0, 0, MIN_MIN });
     public static final Stairs NORMAL_EXT_POS_SE = new Stairs(ID_NORMAL_EXT_POS_SE, Type.NORMAL_EXT, new ForgeDirection[] { UP, SOUTH, EAST }, new int[] { FULL, NO_FACE, STAGGERED, NO_FACE, STAGGERED, NO_FACE }, new int[] { 0, 0, MIN_MIN, 0, MIN_MIN, 0 });
-    
+
     public boolean isFaceFull(ForgeDirection side)
     {
         return faceShape[side.ordinal()] == FULL;
     }
-    
+
     public int staggeredOrientation(ForgeDirection side)
     {
         return staggeredCorner[side.ordinal()];
     }
-    
+
 }

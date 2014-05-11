@@ -3,14 +3,14 @@ package carpentersblocks.util.stairs;
 import carpentersblocks.data.Stairs;
 
 public class StairsUtil {
-    
+
     /**
      * Will return stairs boundaries.
      */
     public float[] genBounds(int box, Stairs stairs)
     {
         ++box;
-        
+
         switch (stairs.stairsID)
         {
             case Stairs.ID_NORMAL_SW:
@@ -270,8 +270,8 @@ public class StairsUtil {
                 }
                 break;
         }
-        
+
         return null;
     }
-    
+
 }

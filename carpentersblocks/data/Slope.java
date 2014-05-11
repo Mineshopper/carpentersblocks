@@ -13,14 +13,14 @@ import java.util.List;
 import net.minecraftforge.common.util.ForgeDirection;
 
 public class Slope {
-    
+
     /**
      * 16-bit data components:
      *
      * [0000000000000000]
      * slopeID
      */
-    
+
     public final static byte ID_WEDGE_SE          = 0;
     public final static byte ID_WEDGE_NW          = 1;
     public final static byte ID_WEDGE_NE          = 2;
@@ -86,7 +86,7 @@ public class Slope {
     public final static byte ID_PRISM_WEDGE_POS_S = 62;
     public final static byte ID_PRISM_WEDGE_POS_W = 63;
     public final static byte ID_PRISM_WEDGE_POS_E = 64;
-    
+
     public enum Type
     {
         WEDGE_SIDE,
@@ -102,7 +102,7 @@ public class Slope {
         PRISM_4P,
         PRISM_WEDGE
     }
-    
+
     public enum Face
     {
         NONE,
@@ -110,33 +110,33 @@ public class Slope {
         WEDGE,
         TRIANGLE
     }
-    
+
     /*
      * These represent the primary corner of the face shape.
      * 0 means no face.
      */
-    
+
     public final static byte XYNN = 1;
     public final static byte XYNP = 2;
     public final static byte XYPN = 3;
     public final static byte XYPP = 4;
-    
+
     /** Array containing registered slopes. */
     public static final Slope[] slopesList = new Slope[65];
-    
+
     /** ID of the slope. */
     public final int slopeID;
-    
+
     /** Slope type. */
     public final Type type;
-    
+
     /**
      * Holds slope face shape.
      *
      * [DOWN, UP, NORTH, SOUTH, WEST, EAST]
      */
     private final Face[] face;
-    
+
     /**
      * If faceShape indicates side is WEDGE,
      * this will indicate which corner of face
@@ -150,19 +150,19 @@ public class Slope {
      * [DOWN, UP, NORTH, SOUTH, WEST, EAST]
      */
     private final int[] faceBias;
-    
+
     /**
      * Is the slope facing up.
      * A quick reference since it's called often.
      */
     public final boolean isPositive;
-    
+
     /**
      * For most slopes, this aids in auto-transformation code.
      * For prism slopes, this aids in rendering the slopes.
      */
     public final List<ForgeDirection> facings;
-    
+
     public Slope(int slopeID, Type slopeType, ForgeDirection[] facings, Face[] faceShape, int[] faceBias)
     {
         this.slopeID = slopeID;
@@ -170,16 +170,16 @@ public class Slope {
         type = slopeType;
         face = faceShape;
         this.faceBias = faceBias;
-        
+
         this.facings = new ArrayList<ForgeDirection>();
-        
+
         for (ForgeDirection face : facings) {
             this.facings.add(face);
         }
-        
+
         isPositive = this.facings.contains(UP);
     }
-    
+
     public static final Slope WEDGE_NW = new Slope(ID_WEDGE_NW, Type.WEDGE_SIDE, new ForgeDirection[] { NORTH, WEST }, new Face[] { Face.WEDGE, Face.WEDGE, Face.NONE, Face.FULL, Face.NONE, Face.FULL }, new int[] { XYPP, XYPP, 0, 0, 0, 0 });
     public static final Slope WEDGE_NE = new Slope(ID_WEDGE_NE, Type.WEDGE_SIDE, new ForgeDirection[] { NORTH, EAST }, new Face[] { Face.WEDGE, Face.WEDGE, Face.NONE, Face.FULL, Face.FULL, Face.NONE }, new int[] { XYNP, XYNP, 0, 0, 0, 0 });
     public static final Slope WEDGE_SW = new Slope(ID_WEDGE_SW, Type.WEDGE_SIDE, new ForgeDirection[] { SOUTH, WEST }, new Face[] { Face.WEDGE, Face.WEDGE, Face.FULL, Face.NONE, Face.NONE, Face.FULL }, new int[] { XYPN, XYPN, 0, 0, 0, 0 });
@@ -245,7 +245,7 @@ public class Slope {
     public static final Slope PRISM_WEDGE_POS_S = new Slope(ID_PRISM_WEDGE_POS_S, Type.PRISM_WEDGE, new ForgeDirection[] { UP, SOUTH }, new Face[] { Face.FULL, Face.NONE, Face.FULL, Face.TRIANGLE, Face.WEDGE, Face.WEDGE }, new int[] { 0, 0, 0, 0, XYNN, XYNN });
     public static final Slope PRISM_WEDGE_POS_W = new Slope(ID_PRISM_WEDGE_POS_W, Type.PRISM_WEDGE, new ForgeDirection[] { UP, WEST }, new Face[] { Face.FULL, Face.NONE, Face.WEDGE, Face.WEDGE, Face.TRIANGLE, Face.FULL }, new int[] { 0, 0, XYPN, XYPN, 0, 0 });
     public static final Slope PRISM_WEDGE_POS_E = new Slope(ID_PRISM_WEDGE_POS_E, Type.PRISM_WEDGE, new ForgeDirection[] { UP, EAST }, new Face[] { Face.FULL, Face.NONE, Face.WEDGE, Face.WEDGE, Face.FULL, Face.TRIANGLE }, new int[] { 0, 0, XYNN, XYNN, 0, 0 });
-    
+
     /**
      * Returns primary slope type.
      * Used when slopes share common attributes.
@@ -263,25 +263,25 @@ public class Slope {
                 return type;
         }
     }
-    
+
     public Face getFace(ForgeDirection side)
     {
         return face[side.ordinal()];
     }
-    
+
     public boolean isFaceFull(ForgeDirection side)
     {
         return face[side.ordinal()] == Face.FULL;
     }
-    
+
     public boolean hasSide(ForgeDirection side)
     {
         return face[side.ordinal()] != Face.NONE;
     }
-    
+
     public int getFaceBias(ForgeDirection side)
     {
         return faceBias[side.ordinal()];
     }
-    
+
 }

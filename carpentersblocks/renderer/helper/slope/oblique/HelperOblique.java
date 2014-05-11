@@ -10,16 +10,16 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class HelperOblique extends RenderHelper {
-    
+
     /**
      * Renders the given texture to interior oblique on the bottom sloped face.
      */
     public static void renderIntObliqueYNeg(RenderBlocks renderBlocks, int slopeID, double x, double y, double z, IIcon icon)
     {
         prepareRender(renderBlocks, ForgeDirection.NORTH, x, y, z, icon);
-        
+
         double uTM = uTR - (uTR - uTL) / 2;
-        
+
         switch (slopeID) {
             case Slope.ID_OBL_INT_NEG_NW:
                 setupVertex(renderBlocks, xMin, yMin, zMax, uBR, vBR, SOUTHWEST);
@@ -43,16 +43,16 @@ public class HelperOblique extends RenderHelper {
                 break;
         }
     }
-    
+
     /**
      * Renders the given texture to interior oblique on the top sloped face.
      */
     public static void renderIntObliqueYPos(RenderBlocks renderBlocks, int slopeID, double x, double y, double z, IIcon icon)
     {
         prepareRender(renderBlocks, ForgeDirection.NORTH, x, y, z, icon);
-        
+
         double uTM = uTR - (uTR - uTL) / 2;
-        
+
         switch (slopeID) {
             case Slope.ID_OBL_INT_POS_NW:
                 setupVertex(renderBlocks, xMax, yMax, zMin, uTL, vTL, NORTHEAST);
@@ -76,20 +76,20 @@ public class HelperOblique extends RenderHelper {
                 break;
         }
     }
-    
+
     /**
      * Renders the given texture to exterior oblique bottom face on right.
      */
     public static void renderExtObliqueYNegLeft(RenderBlocks renderBlocks, int slopeID, double x, double y, double z, IIcon icon)
     {
         prepareRender(renderBlocks, ForgeDirection.NORTH, x, y, z, icon);
-        
+
         double uTOP_MIDDLE = uTR;
         double uTOP_RIGHT_MIDDLE = uTOP_MIDDLE - (uTR - uTL) / 2;
-        
+
         double xMid = xMax - (xMax - xMin) / 2;
         double zMid = zMax - (zMax - zMin) / 2;
-        
+
         switch (slopeID) {
             case Slope.ID_OBL_EXT_NEG_NW:
                 setupVertex(renderBlocks, xMid, yMax, zMid,       uTOP_MIDDLE, vTR, TOP_CENTER );
@@ -113,20 +113,20 @@ public class HelperOblique extends RenderHelper {
                 break;
         }
     }
-    
+
     /**
      * Renders the given texture to exterior oblique bottom face on right.
      */
     public static void renderExtObliqueYNegRight(RenderBlocks renderBlocks, int slopeID, double x, double y, double z, IIcon icon)
     {
         prepareRender(renderBlocks, ForgeDirection.NORTH, x, y, z, icon);
-        
+
         double uTOP_MIDDLE = uTR - (uTR - uTL) / 2;
         double uTOP_LEFT_MIDDLE = uTOP_MIDDLE - (uTR - uTL) / 2;
-        
+
         double xMid = xMax - (xMax - xMin) / 2;
         double zMid = zMax - (zMax - zMin) / 2;
-        
+
         switch (slopeID) {
             case Slope.ID_OBL_EXT_NEG_NW:
                 setupVertex(renderBlocks, xMin, yMax, zMax,      uTOP_MIDDLE, vTR, TOP_RIGHT  );
@@ -150,20 +150,20 @@ public class HelperOblique extends RenderHelper {
                 break;
         }
     }
-    
+
     /**
      * Renders the given texture to exterior oblique top face on left.
      */
     public static void renderExtObliqueYPosLeft(RenderBlocks renderBlocks, int slopeID, double x, double y, double z, IIcon icon)
     {
         prepareRender(renderBlocks, ForgeDirection.NORTH, x, y, z, icon);
-        
+
         double uBOTTOM_MIDDLE = uBR;
         double uBOTTOM_RIGHT_MIDDLE = uBOTTOM_MIDDLE - (uBR - uBL) / 2;
-        
+
         double xMid = xMax - (xMax - xMin) / 2;
         double zMid = zMax - (zMax - zMin) / 2;
-        
+
         switch (slopeID) {
             case Slope.ID_OBL_EXT_POS_NW:
                 setupVertex(renderBlocks, xMax, yMax, zMax,       uBOTTOM_MIDDLE, vTL, TOP_LEFT     );
@@ -187,20 +187,20 @@ public class HelperOblique extends RenderHelper {
                 break;
         }
     }
-    
+
     /**
      * Renders the given texture to exterior oblique top face on right.
      */
     public static void renderExtObliqueYPosRight(RenderBlocks renderBlocks, int slopeID, double x, double y, double z, IIcon icon)
     {
         prepareRender(renderBlocks, ForgeDirection.NORTH, x, y, z, icon);
-        
+
         double uBOTTOM_MIDDLE = uBR - (uBR - uBL) / 2;
         double uBOTTOM_LEFT_MIDDLE = uBOTTOM_MIDDLE - (uBR - uBL) / 2;
-        
+
         double xMid = xMax - (xMax - xMin) / 2;
         double zMid = zMax - (zMax - zMin) / 2;
-        
+
         switch (slopeID) {
             case Slope.ID_OBL_EXT_POS_NW:
                 setupVertex(renderBlocks, xMax, yMax, zMax, uBOTTOM_LEFT_MIDDLE, vTL, TOP_LEFT     );
@@ -224,5 +224,5 @@ public class HelperOblique extends RenderHelper {
                 break;
         }
     }
-    
+
 }

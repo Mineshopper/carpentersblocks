@@ -7,7 +7,7 @@ import carpentersblocks.data.Torch.State;
 import carpentersblocks.renderer.helper.ParticleHelper;
 
 public class TECarpentersTorch extends TEBase {
-    
+
     @Override
     /**
      * Torch events are handled server-side.  The client won't receive
@@ -20,7 +20,7 @@ public class TECarpentersTorch extends TEBase {
         if (worldObj != null && worldObj.isRemote)
         {
             State existing_state = Torch.getState(this);
-            
+
             super.onDataPacket(net, pkt);
 
             if (Torch.getState(this).ordinal() > existing_state.ordinal()) {
@@ -28,5 +28,5 @@ public class TECarpentersTorch extends TEBase {
             }
         }
     }
-    
+
 }

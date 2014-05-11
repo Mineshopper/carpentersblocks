@@ -18,12 +18,12 @@ import carpentersblocks.util.handler.ChatHandler;
 import carpentersblocks.util.registry.BlockRegistry;
 
 public class BlockCarpentersButton extends BlockCoverable {
-    
+
     public BlockCarpentersButton(Material material)
     {
         super(material);
     }
-    
+
     @Override
     /**
      * Alters polarity.
@@ -31,10 +31,10 @@ public class BlockCarpentersButton extends BlockCoverable {
     protected boolean onHammerLeftClick(TEBase TE, EntityPlayer entityPlayer)
     {
         int polarity = Button.getPolarity(TE) == Button.POLARITY_POSITIVE ? Button.POLARITY_NEGATIVE : Button.POLARITY_POSITIVE;
-        
+
         Button.setPolarity(TE, polarity);
         notifySideNeighbor(TE.getWorldObj(), TE.xCoord, TE.yCoord, TE.zCoord, ForgeDirection.OPPOSITES[Button.getFacing(TE).ordinal()]);
-        
+
         switch (polarity) {
             case Button.POLARITY_POSITIVE:
                 ChatHandler.sendMessageToPlayer("message.polarity_pos.name", entityPlayer);
@@ -42,10 +42,10 @@ public class BlockCarpentersButton extends BlockCoverable {
             case Button.POLARITY_NEGATIVE:
                 ChatHandler.sendMessageToPlayer("message.polarity_neg.name", entityPlayer);
         }
-        
+
         return true;
     }
-    
+
     @Override
     /**
      * Returns a bounding box from the pool of bounding boxes (this means this box can change after the pool has been
@@ -55,7 +55,7 @@ public class BlockCarpentersButton extends BlockCoverable {
     {
         return null;
     }
-    
+
     @Override
     /**
      * How many world ticks before ticking
@@ -64,7 +64,7 @@ public class BlockCarpentersButton extends BlockCoverable {
     {
         return 20;
     }
-    
+
     @Override
     /**
      * Checks to see if you can place this block can be placed on that side of a block: BlockLever overrides
@@ -74,7 +74,7 @@ public class BlockCarpentersButton extends BlockCoverable {
         ForgeDirection dir = ForgeDirection.getOrientation(side);
         return world.getBlock(x - dir.offsetX, y, z - dir.offsetZ).isSideSolid(world, x - dir.offsetX, y, z - dir.offsetZ, dir);
     }
-    
+
     @Override
     /**
      * Called when a block is placed using its ItemBlock. Args: World, X, Y, Z, side, hitX, hitY, hitZ, block metadata
@@ -83,23 +83,23 @@ public class BlockCarpentersButton extends BlockCoverable {
     {
         return side;
     }
-    
+
     @Override
     /**
      * Called when the block is placed in the world.
      */
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack itemStack)
     {
-    	TEBase TE = getTileEntity(world, x, y, z);
+        TEBase TE = getTileEntity(world, x, y, z);
 
-    	if (TE != null) {
-    		Button.setFacing(TE, world.getBlockMetadata(x, y, z));
-    		Button.setReady(TE);
-    	}
-    	
-    	super.onBlockPlacedBy(world, x, y, z, entityLiving, itemStack);
+        if (TE != null) {
+            Button.setFacing(TE, world.getBlockMetadata(x, y, z));
+            Button.setReady(TE);
+        }
+
+        super.onBlockPlacedBy(world, x, y, z, entityLiving, itemStack);
     }
-    
+
     @Override
     /**
      * Lets the block know when one of its neighbor changes. Doesn't know which neighbor changed (coordinates passed are
@@ -107,30 +107,30 @@ public class BlockCarpentersButton extends BlockCoverable {
      */
     public void onNeighborBlockChange(World world, int x, int y, int z, Block block)
     {
-    	if (!world.isRemote) {
-    	
-	        TEBase TE = getTileEntity(world, x, y, z);
-	        
-	        if (TE != null) {
-	            
-	            if (Button.isReady(TE)) {
-	
-	                ForgeDirection dir = Button.getFacing(TE);
-	                
-	                if (!canPlaceBlockOnSide(world, x, y, z, dir.ordinal())) {
-	                    dropBlockAsItem(world, x, y, z, 0, 0);
-	                    world.setBlockToAir(x, y, z);
-	                }
-	                
-	            }
-	        
-	        }
-	        
-	    }
-    	
-    	super.onNeighborBlockChange(world, x, y, z, block);
+        if (!world.isRemote) {
+
+            TEBase TE = getTileEntity(world, x, y, z);
+
+            if (TE != null) {
+
+                if (Button.isReady(TE)) {
+
+                    ForgeDirection dir = Button.getFacing(TE);
+
+                    if (!canPlaceBlockOnSide(world, x, y, z, dir.ordinal())) {
+                        dropBlockAsItem(world, x, y, z, 0, 0);
+                        world.setBlockToAir(x, y, z);
+                    }
+
+                }
+
+            }
+
+        }
+
+        super.onNeighborBlockChange(world, x, y, z, block);
     }
-    
+
     @Override
     /**
      * Updates the blocks bounds based on its current state. Args: world, x, y, z
@@ -138,11 +138,11 @@ public class BlockCarpentersButton extends BlockCoverable {
     public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
     {
         TEBase TE = getTileEntity(world, x, y, z);
-        
+
         ForgeDirection dir = Button.getFacing(TE);
-        
+
         float depth = isDepressed(TE) ? 0.0625F : 0.125F;
-        
+
         switch (dir) {
             case NORTH:
                 setBlockBounds(0.5F - 0.1875F, 0.375F, 1.0F - depth, 0.5F + 0.1875F, 0.625F, 1.0F);
@@ -159,7 +159,7 @@ public class BlockCarpentersButton extends BlockCoverable {
             default: {}
         }
     }
-    
+
     @Override
     /**
      * Called upon block activation (right click on the block.)
@@ -167,17 +167,17 @@ public class BlockCarpentersButton extends BlockCoverable {
     protected void postOnBlockActivated(TEBase TE, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ, List<Boolean> altered, List<Boolean> decInv)
     {
         if (!isDepressed(TE)) {
-            
+
             World world = TE.getWorldObj();
             ForgeDirection facing = Button.getFacing(TE);
             Button.setState(TE, Button.STATE_ON, true);
             notifySideNeighbor(world, TE.xCoord, TE.yCoord, TE.zCoord, facing.ordinal());
             world.scheduleBlockUpdate(TE.xCoord, TE.yCoord, TE.zCoord, this, tickRate(world));
             altered.add(true);
-            
+
         }
     }
-    
+
     @Override
     /**
      * Ejects contained items into the world, and notifies neighbours of an update, as appropriate
@@ -185,16 +185,16 @@ public class BlockCarpentersButton extends BlockCoverable {
     public void breakBlock(World world, int x, int y, int z, Block block, int metadata)
     {
         TEBase TE = getSimpleTileEntity(world, x, y, z);
-        
+
         if (TE != null) {
             if (isDepressed(TE)) {
                 notifySideNeighbor(world, x, y, z, Button.getFacing(TE).ordinal());
             }
         }
-        
+
         super.breakBlock(world, x, y, z, block, metadata);
     }
-    
+
     /**
      * Returns whether button is in depressed state
      */
@@ -202,7 +202,7 @@ public class BlockCarpentersButton extends BlockCoverable {
     {
         return Button.getState(TE) == Button.STATE_ON;
     }
-    
+
     @Override
     /**
      * Returns true if the block is emitting indirect/weak redstone power on the specified side. If isBlockNormalCube
@@ -212,14 +212,14 @@ public class BlockCarpentersButton extends BlockCoverable {
     public int isProvidingWeakPower(IBlockAccess world, int x, int y, int z, int side)
     {
         TEBase TE = getTileEntity(world, x, y, z);
-        
+
         if (TE != null) {
             return getPowerSupply((TEBase) world.getTileEntity(x, y, z));
         }
-        
+
         return 0;
     }
-    
+
     @Override
     /**
      * Returns true if the block is emitting direct/strong redstone power on the specified side. Args: World, X, Y, Z,
@@ -228,28 +228,28 @@ public class BlockCarpentersButton extends BlockCoverable {
     public int isProvidingStrongPower(IBlockAccess world, int x, int y, int z, int side)
     {
         TEBase TE = getTileEntity(world, x, y, z);
-        
+
         if (TE != null) {
             return Button.getFacing(TE).ordinal() == side ? getPowerSupply(TE) : 0;
         }
-        
+
         return 0;
     }
-    
+
     /**
      * Returns power level (0 or 15)
      */
     private int getPowerSupply(TEBase TE)
     {
         int polarity = Button.getPolarity(TE);
-        
+
         if (isDepressed(TE)) {
             return polarity == Button.POLARITY_POSITIVE ? 15 : 0;
         } else {
             return polarity == Button.POLARITY_NEGATIVE ? 15 : 0;
         }
     }
-    
+
     @Override
     /**
      * Can this block provide power. Only wire currently seems to have this change based on its state.
@@ -258,7 +258,7 @@ public class BlockCarpentersButton extends BlockCoverable {
     {
         return true;
     }
-    
+
     @Override
     /**
      * Ticks the block if it's been scheduled
@@ -266,20 +266,20 @@ public class BlockCarpentersButton extends BlockCoverable {
     public void updateTick(World world, int x, int y, int z, Random random)
     {
         TEBase TE = getTileEntity(world, x, y, z);
-        
+
         if (!world.isRemote && TE != null) {
             Button.setState(TE, Button.STATE_OFF, true);
             notifySideNeighbor(world, x, y, z, Button.getFacing(TE).ordinal());
         }
     }
-    
+
     private void notifySideNeighbor(World world, int x, int y, int z, int side)
     {
         world.notifyBlocksOfNeighborChange(x, y, z, this);
         ForgeDirection dir = ForgeDirection.getOrientation(side);
         world.notifyBlocksOfNeighborChange(x - dir.offsetX, y, z - dir.offsetZ, this);
     }
-    
+
     @Override
     /**
      * The type of render function that is called for this block
@@ -288,5 +288,5 @@ public class BlockCarpentersButton extends BlockCoverable {
     {
         return BlockRegistry.carpentersButtonRenderID;
     }
-    
+
 }

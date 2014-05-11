@@ -22,23 +22,23 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockCarpentersPressurePlate extends BlockCoverable {
-    
+
     public BlockCarpentersPressurePlate(Material material)
     {
         super(material);
     }
-    
+
     @Override
-	@SideOnly(Side.CLIENT)
+    @SideOnly(Side.CLIENT)
     /**
      * Returns a base icon that doesn't rely on blockIcon, which
      * is set prior to texture stitch events.
      */
     protected IIcon getIcon()
     {
-    	return IconRegistry.icon_full_frame;
+        return IconRegistry.icon_full_frame;
     }
-    
+
     @Override
     /**
      * Alters polarity.
@@ -46,10 +46,10 @@ public class BlockCarpentersPressurePlate extends BlockCoverable {
     protected boolean onHammerLeftClick(TEBase TE, EntityPlayer entityPlayer)
     {
         int polarity = PressurePlate.getPolarity(TE) == PressurePlate.POLARITY_POSITIVE ? PressurePlate.POLARITY_NEGATIVE : PressurePlate.POLARITY_POSITIVE;
-        
+
         PressurePlate.setPolarity(TE, polarity);
         TE.getWorldObj().notifyBlocksOfNeighborChange(TE.xCoord, TE.yCoord - 1, TE.zCoord, this);
-        
+
         switch (polarity) {
             case PressurePlate.POLARITY_POSITIVE:
                 ChatHandler.sendMessageToPlayer("message.polarity_pos.name", entityPlayer);
@@ -57,10 +57,10 @@ public class BlockCarpentersPressurePlate extends BlockCoverable {
             case PressurePlate.POLARITY_NEGATIVE:
                 ChatHandler.sendMessageToPlayer("message.polarity_neg.name", entityPlayer);
         }
-        
+
         return true;
     }
-    
+
     @Override
     /**
      * Alters trigger behavior.
@@ -68,7 +68,7 @@ public class BlockCarpentersPressurePlate extends BlockCoverable {
     protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer)
     {
         int trigger;
-        
+
         switch (PressurePlate.getTriggerEntity(TE))
         {
             case PressurePlate.TRIGGER_PLAYER:
@@ -83,9 +83,9 @@ public class BlockCarpentersPressurePlate extends BlockCoverable {
             default:
                 trigger = PressurePlate.TRIGGER_PLAYER;
         }
-        
+
         PressurePlate.setTriggerEntity(TE, trigger);
-        
+
         switch (trigger) {
             case PressurePlate.TRIGGER_PLAYER:
                 ChatHandler.sendMessageToPlayer("message.trigger_player.name", entityPlayer);
@@ -99,10 +99,10 @@ public class BlockCarpentersPressurePlate extends BlockCoverable {
             case PressurePlate.TRIGGER_ALL:
                 ChatHandler.sendMessageToPlayer("message.trigger_all.name", entityPlayer);
         }
-        
+
         return true;
     }
-    
+
     @Override
     /**
      * Updates the blocks bounds based on its current state. Args: world, x, y, z
@@ -110,12 +110,12 @@ public class BlockCarpentersPressurePlate extends BlockCoverable {
     public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
     {
         TEBase TE = getTileEntity(world, x, y, z);
-        
+
         if (TE != null) {
-        	setBlockBounds(0.0625F, 0.0F, 0.0625F, 1.0F - 0.0625F, isDepressed(TE) ? 0.03125F : 0.0625F, 1.0F - 0.0625F);
+            setBlockBounds(0.0625F, 0.0F, 0.0625F, 1.0F - 0.0625F, isDepressed(TE) ? 0.03125F : 0.0625F, 1.0F - 0.0625F);
         }
     }
-    
+
     @Override
     /**
      * How many world ticks before ticking
@@ -124,7 +124,7 @@ public class BlockCarpentersPressurePlate extends BlockCoverable {
     {
         return 20;
     }
-    
+
     @Override
     /**
      * Returns a bounding box from the pool of bounding boxes (this means this box can change after the pool has been
@@ -134,7 +134,7 @@ public class BlockCarpentersPressurePlate extends BlockCoverable {
     {
         return null;
     }
-    
+
     @Override
     /**
      * Checks to see if its valid to put this block at the specified coordinates. Args: world, x, y, z
@@ -143,7 +143,7 @@ public class BlockCarpentersPressurePlate extends BlockCoverable {
     {
         return World.doesBlockHaveSolidTopSurface(world, x, y - 1, z);
     }
-    
+
     @Override
     /**
      * Lets the block know when one of its neighbor changes. Doesn't know which neighbor changed (coordinates passed are
@@ -151,22 +151,22 @@ public class BlockCarpentersPressurePlate extends BlockCoverable {
      */
     public void onNeighborBlockChange(World world, int x, int y, int z, Block block)
     {
-    	if (!world.isRemote) {
-    	
-	        TEBase TE = getTileEntity(world, x, y, z);
-	        
-	        if (TE != null) {
-	            if (!World.doesBlockHaveSolidTopSurface(world, x, y - 1, z)) {
-	                dropBlockAsItem(world, x, y, z, 0, 0);
-	                world.setBlockToAir(x, y, z);
-	            }
-	        }
-        
-    	}
-        
+        if (!world.isRemote) {
+
+            TEBase TE = getTileEntity(world, x, y, z);
+
+            if (TE != null) {
+                if (!World.doesBlockHaveSolidTopSurface(world, x, y - 1, z)) {
+                    dropBlockAsItem(world, x, y, z, 0, 0);
+                    world.setBlockToAir(x, y, z);
+                }
+            }
+
+        }
+
         super.onNeighborBlockChange(world, x, y, z, block);
     }
-    
+
     @Override
     /**
      * Ticks the block if it's been scheduled
@@ -174,13 +174,13 @@ public class BlockCarpentersPressurePlate extends BlockCoverable {
     public void updateTick(World world, int x, int y, int z, Random random)
     {
         if (!world.isRemote) {
- 
+
             TEBase TE = getTileEntity(world, x, y, z);
-        
+
             if (TE != null) {
-                
+
                 List entityList = world.getEntitiesWithinAABB(Entity.class, getSensitiveAABB(x, y, z));
-                
+
                 boolean shouldActivate = false;
                 if (!entityList.isEmpty()) {
                     for (int count = 0; count < entityList.size() && !shouldActivate; ++count) {
@@ -189,18 +189,18 @@ public class BlockCarpentersPressurePlate extends BlockCoverable {
                         }
                     }
                 }
-                
+
                 if (!shouldActivate && isDepressed(TE)) {
                     toggleOff(TE, world, x, y, z);
                 } else {
                     world.scheduleBlockUpdate(x, y, z, this, tickRate(world));
                 }
-                
+
             }
-        
+
         }
     }
-    
+
     @Override
     /**
      * Triggered whenever an entity collides with this block (enters into the block). Args: world, x, y, z, entity
@@ -208,18 +208,18 @@ public class BlockCarpentersPressurePlate extends BlockCoverable {
     public void onEntityCollidedWithBlock(World world, int x, int y, int z, Entity entity)
     {
         if (!world.isRemote) {
-            
+
             TEBase TE = getTileEntity(world, x, y, z);
-            
+
             if (TE != null) {
                 if (shouldTrigger(TE, entity, world, x, y, z) && !isDepressed(TE)) {
                     toggleOn(TE, world, x, y, z);
                 }
             }
-            
+
         }
     }
-    
+
     /**
      * Activates pressure plate.
      */
@@ -229,7 +229,7 @@ public class BlockCarpentersPressurePlate extends BlockCoverable {
         notifyNeighborsOfUpdate(world, x, y, z);
         world.scheduleBlockUpdate(x, y, z, this, tickRate(world));
     }
-    
+
     /**
      * Deactivates pressure plate.
      */
@@ -238,18 +238,18 @@ public class BlockCarpentersPressurePlate extends BlockCoverable {
         PressurePlate.setState(TE, PressurePlate.STATE_OFF, true);
         notifyNeighborsOfUpdate(world, x, y, z);
     }
-    
+
     private AxisAlignedBB getSensitiveAABB(int x, int y, int z)
     {
         return AxisAlignedBB.getAABBPool().getAABB(x + 0.125F, y, z + 0.125F, x + 1.0F - 0.125F, y + 0.25D, z + 1.0F - 0.125F);
     }
-    
+
     private void notifyNeighborsOfUpdate(World world, int x, int y, int z)
     {
         world.notifyBlocksOfNeighborChange(x, y, z, this);
         world.notifyBlocksOfNeighborChange(x, y - 1, z, this);
     }
-    
+
     /**
      * Returns whether pressure plate is in depressed state
      */
@@ -257,7 +257,7 @@ public class BlockCarpentersPressurePlate extends BlockCoverable {
     {
         return PressurePlate.getState(TE) == PressurePlate.STATE_ON;
     }
-    
+
     @Override
     /**
      * Returns true if the block is emitting indirect/weak redstone power on the specified side. If isBlockNormalCube
@@ -269,7 +269,7 @@ public class BlockCarpentersPressurePlate extends BlockCoverable {
         TEBase TE = getTileEntity(world, x, y, z);
         return TE == null ? 0 : getPowerSupply(TE, BlockProperties.getMetadata(TE));
     }
-    
+
     @Override
     /**
      * Returns true if the block is emitting direct/strong redstone power on the specified side. Args: World, X, Y, Z,
@@ -280,7 +280,7 @@ public class BlockCarpentersPressurePlate extends BlockCoverable {
         TEBase TE = getTileEntity(world, x, y, z);
         return TE == null ? 0 : side == 1 ? getPowerSupply(TE, BlockProperties.getMetadata(TE)) : 0;
     }
-    
+
     @Override
     /**
      * Can this block provide power. Only wire currently seems to have this change based on its state.
@@ -289,21 +289,21 @@ public class BlockCarpentersPressurePlate extends BlockCoverable {
     {
         return true;
     }
-    
+
     /**
      * Returns power level (0 or 15)
      */
     private int getPowerSupply(TEBase TE, int data)
     {
         int polarity = PressurePlate.getPolarity(TE);
-        
+
         if (isDepressed(TE)) {
             return polarity == PressurePlate.POLARITY_POSITIVE ? 15 : 0;
         } else {
             return polarity == PressurePlate.POLARITY_NEGATIVE ? 15 : 0;
         }
     }
-    
+
     /**
      * Returns whether pressure plate should trigger based on entity colliding with it.
      */
@@ -312,9 +312,9 @@ public class BlockCarpentersPressurePlate extends BlockCoverable {
         if (entity == null) {
             return false;
         }
-        
+
         int trigger = PressurePlate.getTriggerEntity(TE);
-        
+
         switch (trigger) {
             case PressurePlate.TRIGGER_PLAYER:
                 return entity instanceof EntityPlayer;
@@ -326,7 +326,7 @@ public class BlockCarpentersPressurePlate extends BlockCoverable {
                 return true;
         }
     }
-    
+
     @Override
     /**
      * Ejects contained items into the world, and notifies neighbours of an update, as appropriate
@@ -334,16 +334,16 @@ public class BlockCarpentersPressurePlate extends BlockCoverable {
     public void breakBlock(World world, int x, int y, int z, Block block, int metadata)
     {
         TEBase TE = getSimpleTileEntity(world, x, y, z);
-        
+
         if (TE != null) {
             if (isDepressed(TE)) {
                 notifyNeighborsOfUpdate(world, x, y, z);
             }
         }
-        
+
         super.breakBlock(world, x, y, z, block, metadata);
     }
-    
+
     @Override
     @SideOnly(Side.CLIENT)
     /**
@@ -354,7 +354,7 @@ public class BlockCarpentersPressurePlate extends BlockCoverable {
     {
         return side != 0;
     }
-    
+
     @Override
     /**
      * The type of render function that is called for this block
@@ -363,5 +363,5 @@ public class BlockCarpentersPressurePlate extends BlockCoverable {
     {
         return BlockRegistry.carpentersPressurePlateRenderID;
     }
-    
+
 }

@@ -30,13 +30,13 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockCarpentersBed extends BlockCoverable {
-    
+
     public BlockCarpentersBed(Material material)
     {
         super(material);
         setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.625F, 1.0F);
     }
-    
+
     @SideOnly(Side.CLIENT)
     @Override
     /**
@@ -50,10 +50,10 @@ public class BlockCarpentersBed extends BlockCoverable {
                 IconRegistry.icon_bed_pillow_custom[numIcon] = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "bed/design_" + numIcon + "/pillow");
             }
         }
-        
+
         IconRegistry.icon_bed_pillow = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "bed/bed_pillow");
     }
-    
+
     @Override
     /**
      * Determines if this block is classified as a Bed, Allowing
@@ -64,7 +64,7 @@ public class BlockCarpentersBed extends BlockCoverable {
     {
         return true;
     }
-    
+
     @Override
     /**
      * Cycle backward through bed designs.
@@ -72,18 +72,18 @@ public class BlockCarpentersBed extends BlockCoverable {
     protected boolean onHammerLeftClick(TEBase TE, EntityPlayer entityPlayer)
     {
         int design = BedDesignHandler.getPrev(Bed.getDesign(TE));
-        
+
         Bed.setDesign(TE, design);
-        
+
         TEBase TE_opp = Bed.getOppositeTE(TE);
-        
+
         if (TE_opp != null) {
             Bed.setDesign(TE_opp, design);
         }
-        
+
         return true;
     }
-    
+
     @Override
     /**
      * Cycle forward through bed designs.
@@ -91,104 +91,104 @@ public class BlockCarpentersBed extends BlockCoverable {
     protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer)
     {
         int temp_design = entityPlayer.isSneaking() ? 0 : BedDesignHandler.getNext(Bed.getDesign(TE));
-        
+
         Bed.setDesign(TE, temp_design);
         TEBase TE_opp = Bed.getOppositeTE(TE);
-        
+
         if (TE_opp != null) {
             Bed.setDesign(TE_opp, temp_design);
         }
-        
+
         return true;
     }
-    
+
     @Override
     /**
      * Called upon block activation (right click on the block.)
      */
     protected void postOnBlockActivated(TEBase TE, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ, List<Boolean> altered, List<Boolean> decInv)
     {
-    	World world = TE.getWorldObj();
+        World world = TE.getWorldObj();
 
-    	int x = TE.xCoord;
-    	int y = TE.yCoord;
-    	int z = TE.zCoord;
+        int x = TE.xCoord;
+        int y = TE.yCoord;
+        int z = TE.zCoord;
 
-    	if (!Bed.isHeadOfBed(TE)) {
+        if (!Bed.isHeadOfBed(TE)) {
 
-    		TEBase TE_opp = Bed.getOppositeTE(TE);
+            TEBase TE_opp = Bed.getOppositeTE(TE);
 
-    		if (TE_opp != null) {
-    			x = TE_opp.xCoord;
-    			z = TE_opp.zCoord;
-    		} else {
-    			altered.add(true);
-    			return;
-    		}
+            if (TE_opp != null) {
+                x = TE_opp.xCoord;
+                z = TE_opp.zCoord;
+            } else {
+                altered.add(true);
+                return;
+            }
 
-    	}
+        }
 
-    	if (world.provider.canRespawnHere() && world.getBiomeGenForCoords(x, z) != BiomeGenBase.hell) {
+        if (world.provider.canRespawnHere() && world.getBiomeGenForCoords(x, z) != BiomeGenBase.hell) {
 
-    		if (Bed.isOccupied(TE)) {
+            if (Bed.isOccupied(TE)) {
 
-    			EntityPlayer entityPlayer1 = null;
-    			Iterator iterator = world.playerEntities.iterator();
+                EntityPlayer entityPlayer1 = null;
+                Iterator iterator = world.playerEntities.iterator();
 
-    			while (iterator.hasNext()) {
+                while (iterator.hasNext()) {
 
-    				EntityPlayer entityPlayer2 = (EntityPlayer)iterator.next();
+                    EntityPlayer entityPlayer2 = (EntityPlayer)iterator.next();
 
-    				if (entityPlayer2.isPlayerSleeping()) {
+                    if (entityPlayer2.isPlayerSleeping()) {
 
-    					ChunkCoordinates chunkCoordinates = entityPlayer2.playerLocation;
+                        ChunkCoordinates chunkCoordinates = entityPlayer2.playerLocation;
 
-    					if (chunkCoordinates.posX == x && chunkCoordinates.posY == y && chunkCoordinates.posZ == z) {
-    						entityPlayer1 = entityPlayer2;
-    					}
+                        if (chunkCoordinates.posX == x && chunkCoordinates.posY == y && chunkCoordinates.posZ == z) {
+                            entityPlayer1 = entityPlayer2;
+                        }
 
-    				}
+                    }
 
-    			}
+                }
 
-    			if (entityPlayer1 != null) {
+                if (entityPlayer1 != null) {
 
-    				ChatHandler.sendMessageToPlayer("tile.bed.occupied", entityPlayer, false);
-    				altered.add(true);
-    				return;
+                    ChatHandler.sendMessageToPlayer("tile.bed.occupied", entityPlayer, false);
+                    altered.add(true);
+                    return;
 
-    			}
+                }
 
-    			setBedOccupied(world, x, y, z, entityPlayer, false);
+                setBedOccupied(world, x, y, z, entityPlayer, false);
 
-    		}
+            }
 
-    		EnumStatus enumstatus = entityPlayer.sleepInBedAt(x, y, z);
+            EnumStatus enumstatus = entityPlayer.sleepInBedAt(x, y, z);
 
-    		if (enumstatus == EnumStatus.OK) {
+            if (enumstatus == EnumStatus.OK) {
 
-    			setBedOccupied(world, x, y, z, entityPlayer, true);
+                setBedOccupied(world, x, y, z, entityPlayer, true);
 
-    		} else {
+            } else {
 
-    			if (enumstatus == EnumStatus.NOT_POSSIBLE_NOW) {
-    				ChatHandler.sendMessageToPlayer("tile.bed.noSleep", entityPlayer, false);
-    			} else if (enumstatus == EnumStatus.NOT_SAFE) {
-    				ChatHandler.sendMessageToPlayer("tile.bed.notSafe", entityPlayer, false);
-    			}
+                if (enumstatus == EnumStatus.NOT_POSSIBLE_NOW) {
+                    ChatHandler.sendMessageToPlayer("tile.bed.noSleep", entityPlayer, false);
+                } else if (enumstatus == EnumStatus.NOT_SAFE) {
+                    ChatHandler.sendMessageToPlayer("tile.bed.notSafe", entityPlayer, false);
+                }
 
-    		}
+            }
 
-    	} else {
+        } else {
 
-    		world.setBlockToAir(x, y, z);
-    		world.newExplosion((Entity)null, x + 0.5F, y + 0.5F, z + 0.5F, 5.0F, true, true);
+            world.setBlockToAir(x, y, z);
+            world.newExplosion((Entity)null, x + 0.5F, y + 0.5F, z + 0.5F, 5.0F, true, true);
 
-    	}
+        }
 
-    	altered.add(true);
+        altered.add(true);
     }
-    
+
     @Override
     /**
      * Lets the block know when one of its neighbor changes. Doesn't know which neighbor changed (coordinates passed are
@@ -196,21 +196,21 @@ public class BlockCarpentersBed extends BlockCoverable {
      */
     public void onNeighborBlockChange(World world, int x, int y, int z, Block block)
     {
-    	if (!world.isRemote) {
-    	
-	        TEBase TE = getTileEntity(world, x, y, z);
-	        
-	        if (TE != null) {
-	            if (Bed.getOppositeTE(TE) == null) {
-	                world.setBlockToAir(x, y, z);
-	            }
-	        }
-        
-    	}
-        
+        if (!world.isRemote) {
+
+            TEBase TE = getTileEntity(world, x, y, z);
+
+            if (TE != null) {
+                if (Bed.getOppositeTE(TE) == null) {
+                    world.setBlockToAir(x, y, z);
+                }
+            }
+
+        }
+
         super.onNeighborBlockChange(world, x, y, z, block);
     }
-    
+
     @Override
     /**
      * Returns the items to drop on destruction.
@@ -219,7 +219,7 @@ public class BlockCarpentersBed extends BlockCoverable {
     {
         return ItemRegistry.itemCarpentersBed;
     }
-    
+
     @Override
     /**
      * Called when a user either starts or stops sleeping in the bed.
@@ -233,21 +233,21 @@ public class BlockCarpentersBed extends BlockCoverable {
      */
     public void setBedOccupied(IBlockAccess world, int x, int y, int z, EntityPlayer player, boolean occupied)
     {
-    	TEBase TE = getTileEntity(world, x, y, z);
+        TEBase TE = getTileEntity(world, x, y, z);
 
-    	if (TE != null && !TE.getWorldObj().isRemote) {
+        if (TE != null && !TE.getWorldObj().isRemote) {
 
-    		Bed.setOccupied(TE, occupied);
+            Bed.setOccupied(TE, occupied);
 
-    		TEBase TE_opp = Bed.getOppositeTE(TE);
+            TEBase TE_opp = Bed.getOppositeTE(TE);
 
-    		if (TE_opp != null) {
-    			Bed.setOccupied(TE_opp, occupied);
-    		}
+            if (TE_opp != null) {
+                Bed.setOccupied(TE_opp, occupied);
+            }
 
-    	}
+        }
     }
-    
+
     @Override
     /**
      * Returns the direction of the block. Same values that
@@ -262,7 +262,7 @@ public class BlockCarpentersBed extends BlockCoverable {
     public int getBedDirection(IBlockAccess world, int x, int y, int z)
     {
         TEBase TE = getTileEntity(world, x, y, z);
-        
+
         switch (Bed.getDirection(TE))
         {
             case NORTH:
@@ -275,7 +275,7 @@ public class BlockCarpentersBed extends BlockCoverable {
                 return 1;
         }
     }
-    
+
     @Override
     @SideOnly(Side.CLIENT)
     /**
@@ -285,13 +285,13 @@ public class BlockCarpentersBed extends BlockCoverable {
     {
         return ItemRegistry.itemCarpentersBed;
     }
-    
+
     @Override
     public TileEntity createNewTileEntity(World world, int metadata)
     {
         return new TECarpentersBed();
     }
-    
+
     @Override
     /**
      * The type of render function that is called for this block
@@ -300,5 +300,5 @@ public class BlockCarpentersBed extends BlockCoverable {
     {
         return BlockRegistry.carpentersBedRenderID;
     }
-    
+
 }

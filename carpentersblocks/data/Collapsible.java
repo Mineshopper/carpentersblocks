@@ -4,7 +4,7 @@ import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 
 public class Collapsible {
-    
+
     /**
      * 16-bit data components:
      *
@@ -16,7 +16,7 @@ public class Collapsible {
     public final static int QUAD_XZNP = 1;
     public final static int QUAD_XZPN = 2;
     public final static int QUAD_XZPP = 3;
-    
+
     /**
      * Returns corner number.
      */
@@ -24,7 +24,7 @@ public class Collapsible {
     {
         int xOffset = (int) Math.round(hitX);
         int zOffset = (int) Math.round(hitZ);
-        
+
         if (xOffset == 0) {
             if (zOffset == 0) {
                 return QUAD_XZNN;
@@ -39,7 +39,7 @@ public class Collapsible {
             }
         }
     }
-    
+
     /**
      * Sets height of corner as value from 1 to 16.
      * Will correct out-of-range values automatically, and won't cause block update if height doesn't change.
@@ -48,7 +48,7 @@ public class Collapsible {
     {
         int data = BlockProperties.getMetadata(TE);
         --height;
-        
+
         if (height >= 0 && height < 16)
         {
             switch (corner) {
@@ -69,20 +69,20 @@ public class Collapsible {
                     data |= 15 - height;
                     break;
             }
-            
+
             if (BlockProperties.getMetadata(TE) != data) {
                 BlockProperties.setMetadata(TE, data);
             }
         }
     }
-    
+
     /**
      * Returns height of corner as value from 1 to 16.
      */
     public static int getQuadHeight(final TEBase TE, int corner)
     {
         int data = BlockProperties.getMetadata(TE);
-        
+
         switch (corner) {
             case QUAD_XZNN:
                 data &= 0xf000;
@@ -99,5 +99,5 @@ public class Collapsible {
                 return 16;
         }
     }
-    
+
 }

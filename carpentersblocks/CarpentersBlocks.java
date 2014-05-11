@@ -18,48 +18,48 @@ import cpw.mods.fml.common.network.FMLEventChannel;
 import cpw.mods.fml.common.network.NetworkRegistry;
 
 @Mod(
-		modid = CarpentersBlocks.MODID,
-		name = "Carpenter's Blocks",
-		version = CarpentersBlocks.VERSION,
-		dependencies = "required-after:Forge@[10.12.1.1060,)"
-		)
+        modid = CarpentersBlocks.MODID,
+        name = "Carpenter's Blocks",
+        version = CarpentersBlocks.VERSION,
+        dependencies = "required-after:Forge@[10.12.1.1060,)"
+        )
 public class CarpentersBlocks {
-    
+
     public static final String MODID   = "CarpentersBlocks";
     public static final String VERSION = "3.1.5";
     public static FMLEventChannel channel;
     public static CreativeTabs creativeTab = new CarpentersBlocksTab(MODID);
-    
+
     @Instance(MODID)
     public static CarpentersBlocks instance;
-    
+
     @SidedProxy(clientSide = "carpentersblocks.proxy.ClientProxy", serverSide = "carpentersblocks.proxy.CommonProxy")
     public static CommonProxy proxy;
-    
+
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
         channel = NetworkRegistry.INSTANCE.newEventDrivenChannel(MODID);
-        
+
         Configuration config = new Configuration(event.getSuggestedConfigurationFile());
-        
+
         config.load();
-        
+
         FeatureRegistry.initFeatures(event, config);
         BlockRegistry.initBlocks(event, config);
         ItemRegistry.initItems(event, config);
-        
+
         if (config.hasChanged()) {
             config.save();
         }
-        
+
         BlockRegistry.registerBlocks();
         ItemRegistry.registerItems();
-        
+
         proxy.registerHandlers(event);
         proxy.registerRenderInformation(event);
     }
-    
+
     @EventHandler
     public void init(FMLInitializationEvent event)
     {

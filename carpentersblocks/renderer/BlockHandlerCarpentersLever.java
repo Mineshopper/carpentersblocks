@@ -20,13 +20,13 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class BlockHandlerCarpentersLever extends BlockHandlerBase {
-    
+
     @Override
     public boolean shouldRender3DInInventory(int modelId)
     {
         return false;
     }
-    
+
     @Override
     /**
      * Override to provide custom icons.
@@ -34,14 +34,14 @@ public class BlockHandlerCarpentersLever extends BlockHandlerBase {
     protected IIcon getUniqueIcon(ItemStack itemStack, int side, IIcon icon)
     {
         Block block = BlockProperties.toBlock(itemStack);
-        
+
         if (block instanceof BlockCoverable) {
             return IconRegistry.icon_solid;
         } else {
             return icon;
         }
     }
-    
+
     @Override
     /**
      * Renders block
@@ -51,28 +51,28 @@ public class BlockHandlerCarpentersLever extends BlockHandlerBase {
         renderBlocks.renderAllFaces = true;
 
         renderLever(BlockProperties.getCover(TE, 6), x, y, z);
-        
+
         renderBlocks.renderAllFaces = false;
     }
-    
+
     /**
      * Renders lever.
      */
     private void renderLever(ItemStack itemStack, int x, int y, int z)
     {
         /* Set block bounds and render lever base. */
-        
+
         BlockCarpentersLever blockRef = (BlockCarpentersLever) BlockRegistry.blockCarpentersLever;
         blockRef.setBlockBoundsBasedOnState(renderBlocks.blockAccess, x, y, z);
-        
+
         renderBlocks.setRenderBoundsFromBlock(blockRef);
         renderBlock(itemStack, x, y, z);
-        
+
         /* Render lever handle. */
-        
+
         renderLeverHandle(x, y, z);
     }
-    
+
     /**
      * Renders the lever handle.
      */
@@ -81,18 +81,18 @@ public class BlockHandlerCarpentersLever extends BlockHandlerBase {
         Tessellator tessellator = Tessellator.instance;
         tessellator.setBrightness(Blocks.dirt.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y, z));
         tessellator.setColorOpaque_F(1.0F, 1.0F, 1.0F);
-        
+
         ForgeDirection facing = Lever.getFacing(TE);
         boolean toggleState = Lever.getState(TE) == Lever.STATE_ON;
         boolean rotateLever = Lever.getAxis(TE) == Axis.X;
-        
+
         IIcon icon = renderBlocks.hasOverrideBlockTexture() ? renderBlocks.overrideBlockTexture : IconRegistry.icon_lever;
-        
+
         double uMin = icon.getMinU();
         double uMax = icon.getMaxU();
         double vMin = icon.getMinV();
         double vMax = icon.getMaxV();
-        
+
         Vec3[] vector = new Vec3[8];
         float vecX = 0.0625F;
         float vecY = 0.625F;
@@ -105,9 +105,9 @@ public class BlockHandlerCarpentersLever extends BlockHandlerBase {
         vector[5] = renderBlocks.blockAccess.getWorldVec3Pool().getVecFromPool(vecX, vecY, -vecZ);
         vector[6] = renderBlocks.blockAccess.getWorldVec3Pool().getVecFromPool(vecX, vecY, vecZ);
         vector[7] = renderBlocks.blockAccess.getWorldVec3Pool().getVecFromPool(-vecX, vecY, vecZ);
-        
+
         /* Set up lever handle rotation. */
-        
+
         for (int vecCount = 0; vecCount < 8; ++vecCount)
         {
             if (toggleState) {
@@ -117,17 +117,17 @@ public class BlockHandlerCarpentersLever extends BlockHandlerBase {
                 vector[vecCount].zCoord += 0.0625D;
                 vector[vecCount].rotateAroundX(-((float)Math.PI * 2F / 9F));
             }
-            
+
             if (facing.ordinal() < 2) {
-                
+
                 if (facing.equals(ForgeDirection.DOWN)) {
                     vector[vecCount].rotateAroundZ((float)Math.PI);
                 }
-                
+
                 if (rotateLever) {
                     vector[vecCount].rotateAroundY((float)Math.PI / 2F);
                 }
-                
+
                 if (facing.equals(ForgeDirection.UP)) {
                     vector[vecCount].xCoord += x + 0.5D;
                     vector[vecCount].yCoord += y + 0.125F;
@@ -137,12 +137,12 @@ public class BlockHandlerCarpentersLever extends BlockHandlerBase {
                     vector[vecCount].yCoord += y + 0.875F;
                     vector[vecCount].zCoord += z + 0.5D;
                 }
-                
+
             } else {
-                
+
                 vector[vecCount].yCoord -= 0.375D;
                 vector[vecCount].rotateAroundX((float)Math.PI / 2F);
-                
+
                 switch (facing) {
                     case NORTH:
                         vector[vecCount].rotateAroundY(0.0F);
@@ -158,19 +158,19 @@ public class BlockHandlerCarpentersLever extends BlockHandlerBase {
                         break;
                     default: {}
                 }
-                
+
                 vector[vecCount].xCoord += x + 0.5D;
                 vector[vecCount].yCoord += y + 0.5F;
                 vector[vecCount].zCoord += z + 0.5D;
-                
+
             }
         }
-        
+
         Vec3 vertex1 = null;
         Vec3 vertex2 = null;
         Vec3 vertex3 = null;
         Vec3 vertex4 = null;
-        
+
         for (int side = 0; side < 6; ++side)
         {
             if (side == 0) {
@@ -184,7 +184,7 @@ public class BlockHandlerCarpentersLever extends BlockHandlerBase {
                 uMax = icon.getInterpolatedU(9.0D);
                 vMax = icon.getMaxV();
             }
-            
+
             switch (side) {
                 case 0:
                     vertex1 = vector[0];
@@ -227,14 +227,14 @@ public class BlockHandlerCarpentersLever extends BlockHandlerBase {
                     vertex4 = vector[4];
                     break;
             }
-            
+
             tessellator.addVertexWithUV(vertex1.xCoord, vertex1.yCoord, vertex1.zCoord, uMin, vMax);
             tessellator.addVertexWithUV(vertex2.xCoord, vertex2.yCoord, vertex2.zCoord, uMax, vMax);
             tessellator.addVertexWithUV(vertex3.xCoord, vertex3.yCoord, vertex3.zCoord, uMax, vMin);
             tessellator.addVertexWithUV(vertex4.xCoord, vertex4.yCoord, vertex4.zCoord, uMin, vMin);
-            
+
             VertexHelper.vertexCount += 4;
         }
     }
-    
+
 }

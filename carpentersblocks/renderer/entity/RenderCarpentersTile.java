@@ -38,15 +38,15 @@ public class RenderCarpentersTile extends Render {
     {
         Tessellator tessellator = Tessellator.instance;
         tessellator.startDrawingQuads();
-        
+
         double bounds[] = entity.getBounds();
         RenderHelper.setBounds(bounds[0], bounds[1], bounds[2], bounds[3], bounds[4], bounds[5]);
-        
+
         float[] dyeColor = LightingHelper.getRGB(DyeHandler.getColor(entity.getDye()));
         tessellator.setColorOpaque_F(dyeColor[0], dyeColor[1], dyeColor[2]);
-        
+
         IIcon icon = entity.getIcon();
-        
+
         RenderHelper.setRotationOverride(entity.getRotation());
         tessellator.setNormal(0.0F, -1.0F, 0.0F);
         RenderHelper.renderFaceYNeg(null, x, y, z, icon);
@@ -61,7 +61,7 @@ public class RenderCarpentersTile extends Render {
         tessellator.setNormal(1.0F, 0.0F, 0.0F);
         RenderHelper.renderFaceXPos(null, x, y, z, icon);
         RenderHelper.clearRotationOverride();
-        
+
         tessellator.draw();
     }
 

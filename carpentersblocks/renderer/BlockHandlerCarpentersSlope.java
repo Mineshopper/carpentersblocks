@@ -235,7 +235,7 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
     }
 
     private boolean forceFullFrame = false;
-    
+
     @Override
     /**
      * Override to provide custom icons.
@@ -249,7 +249,7 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
             int metadata = itemStack.getItemDamage();
 
             if (!BlockProperties.hasCover(TE, 6)) {
-                
+
                 switch (slope.type) {
                     case OBLIQUE_EXT:
                     case OBLIQUE_INT:
@@ -261,7 +261,7 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
                     case PRISM_3P:
                     case PRISM_4P:
                     case PRISM_WEDGE:
-                        
+
                         if (forceFullFrame) {
                             icon = IconRegistry.icon_full_frame;
                         } else {
@@ -272,11 +272,11 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
                     default:
                         break;
                 }
-                
+
             } else {
-            
+
                 /* For directional blocks, make sure sloped icons match regardless of side. */
-                
+
                 if (BlockProperties.blockRotates(itemStack)) {
                     if (metadata % 8 == 0) {
                         icon = block.getIcon(slope.isPositive ? 1 : 0, metadata);
@@ -286,15 +286,15 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
                 } else if (block instanceof BlockDirectional && !slope.type.equals(Type.WEDGE)) {
                     icon = block.getBlockTextureFromSide(1);
                 }
-                
+
                 /* Grass-type blocks have unique top faces that we must force on positive sloped sides. */
-                
+
                 if (slope.isPositive) {
                     if (block.getMaterial().equals(Material.grass)) {
                         icon = block.getIcon(1, metadata);
                     }
                 }
-                
+
             }
         }
 
@@ -520,9 +520,9 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
         }
 
         isSideSloped = false;
-        
+
         lightingHelper.clearLightnessOverride();
-        
+
         /* Render non-sloped faces. */
 
         if (slope.hasSide(ForgeDirection.DOWN) && srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x, y - 1, z, DOWN)) {
@@ -717,7 +717,7 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
                 setWedgeLighting(itemStack, Slope.WEDGE_POS_S);
                 setIDAndRender(itemStack, PRISM_WEDGE_ZP, x, y, z, SOUTH);
                 forceFullFrame = false;
-                
+
                 break;
             case Slope.ID_PRISM_WEDGE_POS_W:
 
@@ -737,7 +737,7 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
                 setWedgeLighting(itemStack, Slope.WEDGE_POS_W);
                 setIDAndRender(itemStack, PRISM_WEDGE_XN, x, y, z, WEST);
                 forceFullFrame = false;
-                
+
                 break;
             case Slope.ID_PRISM_WEDGE_POS_E:
 
@@ -757,7 +757,7 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
                 setWedgeLighting(itemStack, Slope.WEDGE_POS_E);
                 setIDAndRender(itemStack, PRISM_WEDGE_XP, x, y, z, EAST);
                 forceFullFrame = false;
-                
+
                 break;
         }
     }
@@ -768,13 +768,13 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
      */
     private void setWedgeLighting(ItemStack itemStack, Slope slope)
     {
-        prepareLighting(itemStack);       
-        
+        prepareLighting(itemStack);
+
         World world = TE.getWorldObj();
-        
+
         boolean solid_YP = world.isSideSolid(TE.xCoord, TE.yCoord + 1, TE.zCoord, ForgeDirection.DOWN);
         boolean solid_YN = world.isSideSolid(TE.xCoord, TE.yCoord - 1, TE.zCoord, ForgeDirection.UP);
-        
+
         switch (slope.slopeID) {
             case Slope.ID_WEDGE_NW:
 
@@ -1093,12 +1093,12 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
 
         renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
         prepareLighting(itemStack);
-        
+
         World world = TE.getWorldObj();
-        
+
         boolean solid_YP = world.isSideSolid(TE.xCoord, TE.yCoord + 1, TE.zCoord, ForgeDirection.DOWN);
         boolean solid_YN = world.isSideSolid(TE.xCoord, TE.yCoord - 1, TE.zCoord, ForgeDirection.UP);
-        
+
         if (renderBlocks.enableAO) {
 
             switch (slope.slopeID) {
@@ -1209,12 +1209,12 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
 
         renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
         prepareLighting(itemStack);
-        
+
         World world = TE.getWorldObj();
-        
+
         boolean solid_YP = world.isSideSolid(TE.xCoord, TE.yCoord + 1, TE.zCoord, ForgeDirection.DOWN);
         boolean solid_YN = world.isSideSolid(TE.xCoord, TE.yCoord - 1, TE.zCoord, ForgeDirection.UP);
-        
+
         if (renderBlocks.enableAO) {
 
             switch (slope.slopeID) {
@@ -1230,7 +1230,7 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
 
                     break;
                 case Slope.ID_OBL_EXT_NEG_NE:
-                    
+
                     lightingHelper.ao[TOP_LEFT]    = offset_ao[DOWN][SOUTHEAST];
                     lightingHelper.ao[BOTTOM_LEFT] = solid_YN ? offset_ao[UP][SOUTHWEST] : ao[DOWN][SOUTHWEST];
                     lightingHelper.ao[TOP_RIGHT]   = offset_ao[DOWN][NORTHWEST];

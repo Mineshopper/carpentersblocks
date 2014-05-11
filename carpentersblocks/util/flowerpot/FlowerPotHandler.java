@@ -12,7 +12,7 @@ import net.minecraft.item.ItemStack;
 import carpentersblocks.tileentity.TEBase;
 
 public class FlowerPotHandler {
-    
+
     public final static Map<String, Profile> plantProfile = new HashMap<String, Profile>();
     public final static Map<Item, Block>     itemPlant = new HashMap<Item, Block>();
 
@@ -27,18 +27,18 @@ public class FlowerPotHandler {
         CACTUS,
         LEAVES
     }
-    
+
     /**
      * Initializes plant profiles.
      */
     public static void initPlants()
     {
-        /* 
+        /*
          * Map Items with Blocks.
          * Needed because Block.getBlockFromItem() won't return an object
          * for these ItemStacks.
          */
-        
+
         itemPlant.put(Items.carrot, Blocks.carrots );
         itemPlant.put(Items.potato, Blocks.potatoes);
         itemPlant.put(Items.reeds , Blocks.reeds   );
@@ -65,7 +65,7 @@ public class FlowerPotHandler {
         plantProfile.put("tile.flower2.houstonia"    , Profile.TRUE_SCALE      );
 
         /* Weee! Flowers */
-        
+
         plantProfile.put("orangeflower"       , Profile.TRUE_SCALE);
         plantProfile.put("orangemoonflower"   , Profile.TRUE_SCALE);
         plantProfile.put("purpleflower"       , Profile.THIN_YP   );
@@ -76,15 +76,15 @@ public class FlowerPotHandler {
         plantProfile.put("purplemoonflower"   , Profile.THIN_YP   );
         plantProfile.put("brownmoonflower"    , Profile.THIN_YP   );
         plantProfile.put("redmoonflower"      , Profile.THIN_YP   );
-        
+
         /* Harvestcraft */
-        
+
         plantProfile.put("tile.PamHarvestCraft:strawberrycrop_2"   , Profile.THIN_YP);
         plantProfile.put("tile.PamHarvestCraft:cranberrycrop_2"    , Profile.THIN_YP);
         plantProfile.put("tile.PamHarvestCraft:whitemushroomcrop_2", Profile.THIN_YP);
-        
+
         /* Biomes O' Plenty */
-        
+
         plantProfile.put("tile.bop.foliage.poisonivy"         , Profile.REDUCED_SCALE_YP);
         plantProfile.put("tile.bop.flowers.swampflower"       , Profile.THIN_YP         );
         plantProfile.put("tile.bop.flowers.violet"            , Profile.THIN_YP         );
@@ -97,23 +97,23 @@ public class FlowerPotHandler {
         plantProfile.put("tile.bop.mushrooms.bluemilk"        , Profile.TRUE_SCALE      );
         plantProfile.put("tile.bop.mushrooms.flatmushroom"    , Profile.TRUE_SCALE      );
         plantProfile.put("tile.bop.stoneFormations.stalactite", Profile.THIN_YN         );
-        
+
         /* Natura */
-        
+
         plantProfile.put("block.sapling.blood"    , Profile.REDUCED_SCALE_YN);
         plantProfile.put("block.glowshroom.green" , Profile.TRUE_SCALE      );
         plantProfile.put("block.glowshroom.blue"  , Profile.TRUE_SCALE      );
         plantProfile.put("block.glowshroom.purple", Profile.TRUE_SCALE      );
-        
+
         /* ExtraBiomesXL */
-        
+
         plantProfile.put("tile.extrabiomes.cattail" , Profile.THIN_YP);
         plantProfile.put("tile.extrabiomes.flower.2", Profile.THIN_YP);
         plantProfile.put("tile.extrabiomes.flower.5", Profile.THIN_YP);
         plantProfile.put("tile.extrabiomes.flower.6", Profile.THIN_YP);
         plantProfile.put("tile.extrabiomes.flower.7", Profile.THIN_YP);
     }
-       
+
     /**
      * Returns the plant profile to indicate which render method to use.
      */
@@ -121,14 +121,14 @@ public class FlowerPotHandler {
     {
         return getPlantProfile(FlowerPotProperties.getPlant(TE));
     }
-    
+
     /**
      * Returns the plant profile to indicate which render method to use.
      */
     public static Profile getPlantProfile(ItemStack itemStack)
     {
         Block block = FlowerPotProperties.toBlock(itemStack);
-        
+
         String name = itemStack.getUnlocalizedName();
 
         Material material = block.getMaterial();
@@ -143,5 +143,5 @@ public class FlowerPotHandler {
             return Profile.REDUCED_SCALE_YP;
         }
     }
-    
+
 }

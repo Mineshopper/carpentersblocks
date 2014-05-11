@@ -21,12 +21,12 @@ import carpentersblocks.util.registry.BlockRegistry;
 import carpentersblocks.util.registry.ItemRegistry;
 
 public class BlockCarpentersCollapsibleBlock extends BlockCoverable {
-    
+
     public BlockCarpentersCollapsibleBlock(Material material)
     {
         super(material);
     }
-    
+
     @Override
     /**
      * Raise quadrant of block.
@@ -35,13 +35,13 @@ public class BlockCarpentersCollapsibleBlock extends BlockCoverable {
     {
         int quad = Collapsible.getQuad(EventHandler.hitX, EventHandler.hitZ);
         int quadHeight = Collapsible.getQuadHeight(TE, quad);
-        
+
         Collapsible.setQuadHeight(TE, quad, --quadHeight);
         smoothAdjacentCollapsibles(TE, quad);
-        
+
         return true;
     }
-    
+
     @Override
     /**
      * Lower quadrant of block.
@@ -50,13 +50,13 @@ public class BlockCarpentersCollapsibleBlock extends BlockCoverable {
     {
         int quad = Collapsible.getQuad(EventHandler.hitX, EventHandler.hitZ);
         int quadHeight = Collapsible.getQuadHeight(TE, quad);
-        
+
         Collapsible.setQuadHeight(TE, quad, ++quadHeight);
         smoothAdjacentCollapsibles(TE, quad);
-        
+
         return true;
     }
-    
+
     @Override
     /**
      * Damages hammer with a chance to not damage.
@@ -67,7 +67,7 @@ public class BlockCarpentersCollapsibleBlock extends BlockCoverable {
             super.damageItemWithChance(world, entityPlayer);
         }
     }
-    
+
     /**
      * Will attempt to smooth transitions to any adjacent collapsible blocks
      * given a TE and source quadrant.
@@ -75,7 +75,7 @@ public class BlockCarpentersCollapsibleBlock extends BlockCoverable {
     private void smoothAdjacentCollapsibles(TEBase TE, int src_quadrant)
     {
         World world = TE.getWorldObj();
-        
+
         TEBase TE_XN   = getTileEntity(world, TE.xCoord - 1, TE.yCoord, TE.zCoord);
         TEBase TE_XP   = getTileEntity(world, TE.xCoord + 1, TE.yCoord, TE.zCoord);
         TEBase TE_ZN   = getTileEntity(world, TE.xCoord, TE.yCoord, TE.zCoord - 1);
@@ -84,9 +84,9 @@ public class BlockCarpentersCollapsibleBlock extends BlockCoverable {
         TEBase TE_XZNP = getTileEntity(world, TE.xCoord - 1, TE.yCoord, TE.zCoord + 1);
         TEBase TE_XZPN = getTileEntity(world, TE.xCoord + 1, TE.yCoord, TE.zCoord - 1);
         TEBase TE_XZPP = getTileEntity(world, TE.xCoord + 1, TE.yCoord, TE.zCoord + 1);
-        
+
         int height = Collapsible.getQuadHeight(TE, src_quadrant);
-        
+
         switch (src_quadrant)
         {
             case Collapsible.QUAD_XZNN:
@@ -135,7 +135,7 @@ public class BlockCarpentersCollapsibleBlock extends BlockCoverable {
                 break;
         }
     }
-    
+
     @Override
     /**
      * Updates the blocks bounds based on its current state. Args: world, x, y, z
@@ -143,14 +143,14 @@ public class BlockCarpentersCollapsibleBlock extends BlockCoverable {
     public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
     {
         TEBase TE = getTileEntity(world, x, y, z);
-        
+
         float maxHeight = getMaxHeight(TE);
-        
+
         if (maxHeight != 1.0F) {
             setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, maxHeight, 1.0F);
         }
     }
-    
+
     @Override
     /**
      * Checks if the block is a solid face on the given side, used by placement logic.
@@ -158,11 +158,11 @@ public class BlockCarpentersCollapsibleBlock extends BlockCoverable {
     public boolean isSideSolid(IBlockAccess world, int x, int y, int z, ForgeDirection side)
     {
         TEBase TE = getTileEntity(world, x, y, z);
-        
+
         if (TE != null) {
-            
+
             if (isBlockSolid(world, x, y, z)) {
-                
+
                 switch (side) {
                     case UP:
                         return BlockProperties.getMetadata(TE) == 0;
@@ -177,14 +177,14 @@ public class BlockCarpentersCollapsibleBlock extends BlockCoverable {
                     default:
                         return true;
                 }
-                
+
             }
-            
+
         }
-        
+
         return false;
     }
-    
+
     @Override
     /**
      * Called when the block is placed in the world.
@@ -192,60 +192,60 @@ public class BlockCarpentersCollapsibleBlock extends BlockCoverable {
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack itemStack)
     {
         /* If shift key is down, skip auto-setting quadrant heights. */
-        
+
         if (!entityLiving.isSneaking()) {
-            
+
             TEBase TE = getTileEntity(world, x, y, z);
-            
+
             if (TE != null) {
-            
-	            /* Match adjacent collapsible quadrant heights. */
-	            
-	            TEBase TE_XN = getTileEntity(world, x - 1, y, z);
-	            TEBase TE_XP = getTileEntity(world, x + 1, y, z);
-	            TEBase TE_ZN = getTileEntity(world, x, y, z - 1);
-	            TEBase TE_ZP = getTileEntity(world, x, y, z + 1);
-	            
-	            if (TE_XN != null) {
-	                Collapsible.setQuadHeight(TE, Collapsible.QUAD_XZNN, Collapsible.getQuadHeight(TE_XN, Collapsible.QUAD_XZPN));
-	                Collapsible.setQuadHeight(TE, Collapsible.QUAD_XZNP, Collapsible.getQuadHeight(TE_XN, Collapsible.QUAD_XZPP));
-	            }
-	            if (TE_XP != null) {
-	                Collapsible.setQuadHeight(TE, Collapsible.QUAD_XZPN, Collapsible.getQuadHeight(TE_XP, Collapsible.QUAD_XZNN));
-	                Collapsible.setQuadHeight(TE, Collapsible.QUAD_XZPP, Collapsible.getQuadHeight(TE_XP, Collapsible.QUAD_XZNP));
-	            }
-	            if (TE_ZN != null) {
-	                Collapsible.setQuadHeight(TE, Collapsible.QUAD_XZNN, Collapsible.getQuadHeight(TE_ZN, Collapsible.QUAD_XZNP));
-	                Collapsible.setQuadHeight(TE, Collapsible.QUAD_XZPN, Collapsible.getQuadHeight(TE_ZN, Collapsible.QUAD_XZPP));
-	            }
-	            if (TE_ZP != null) {
-	                Collapsible.setQuadHeight(TE, Collapsible.QUAD_XZNP, Collapsible.getQuadHeight(TE_ZP, Collapsible.QUAD_XZNN));
-	                Collapsible.setQuadHeight(TE, Collapsible.QUAD_XZPP, Collapsible.getQuadHeight(TE_ZP, Collapsible.QUAD_XZPN));
-	            }
-            
+
+                /* Match adjacent collapsible quadrant heights. */
+
+                TEBase TE_XN = getTileEntity(world, x - 1, y, z);
+                TEBase TE_XP = getTileEntity(world, x + 1, y, z);
+                TEBase TE_ZN = getTileEntity(world, x, y, z - 1);
+                TEBase TE_ZP = getTileEntity(world, x, y, z + 1);
+
+                if (TE_XN != null) {
+                    Collapsible.setQuadHeight(TE, Collapsible.QUAD_XZNN, Collapsible.getQuadHeight(TE_XN, Collapsible.QUAD_XZPN));
+                    Collapsible.setQuadHeight(TE, Collapsible.QUAD_XZNP, Collapsible.getQuadHeight(TE_XN, Collapsible.QUAD_XZPP));
+                }
+                if (TE_XP != null) {
+                    Collapsible.setQuadHeight(TE, Collapsible.QUAD_XZPN, Collapsible.getQuadHeight(TE_XP, Collapsible.QUAD_XZNN));
+                    Collapsible.setQuadHeight(TE, Collapsible.QUAD_XZPP, Collapsible.getQuadHeight(TE_XP, Collapsible.QUAD_XZNP));
+                }
+                if (TE_ZN != null) {
+                    Collapsible.setQuadHeight(TE, Collapsible.QUAD_XZNN, Collapsible.getQuadHeight(TE_ZN, Collapsible.QUAD_XZNP));
+                    Collapsible.setQuadHeight(TE, Collapsible.QUAD_XZPN, Collapsible.getQuadHeight(TE_ZN, Collapsible.QUAD_XZPP));
+                }
+                if (TE_ZP != null) {
+                    Collapsible.setQuadHeight(TE, Collapsible.QUAD_XZNP, Collapsible.getQuadHeight(TE_ZP, Collapsible.QUAD_XZNN));
+                    Collapsible.setQuadHeight(TE, Collapsible.QUAD_XZPP, Collapsible.getQuadHeight(TE_ZP, Collapsible.QUAD_XZPN));
+                }
+
             }
         }
-        
+
         super.onBlockPlacedBy(world, x, y, z, entityLiving, itemStack);
     }
-    
+
     /**
      * Returns block height determined by the highest quadrant.
      */
     private float getMaxHeight(TEBase TE)
     {
         float maxHeight = 1.0F / 16.0F;
-        
+
         for (int quadrant = 0; quadrant < 4; ++quadrant) {
             float quadHeight = Collapsible.getQuadHeight(TE, quadrant) / 16.0F;
             if (quadHeight > maxHeight) {
                 maxHeight = quadHeight;
             }
         }
-        
+
         return maxHeight;
     }
-    
+
     /**
      * Will generate four boxes with max height represented by quadrant height.
      */
@@ -255,7 +255,7 @@ public class BlockCarpentersCollapsibleBlock extends BlockCoverable {
         float zMin = 0.0F;
         float xMax = 1.0F;
         float zMax = 1.0F;
-        
+
         switch (quad)
         {
             case Collapsible.QUAD_XZNN:
@@ -275,20 +275,20 @@ public class BlockCarpentersCollapsibleBlock extends BlockCoverable {
                 zMin = 0.5F;
                 break;
         }
-        
+
         float maxHeight = getMaxHeight(TE);
         float height = Collapsible.getQuadHeight(TE, quad) / 16.0F;
-        
+
         /* Make quads stagger no more than 0.5F so player can always walk across them. */
         if (maxHeight - height > 0.5F) {
             height = maxHeight - 0.5F;
         }
-        
+
         float[] finalBounds = { xMin, 0.0F, zMin, xMax, height, zMax };
-        
+
         return finalBounds;
     }
-    
+
     @Override
     /**
      * Adds all intersecting collision boxes to a list. (Be sure to only add boxes to the list if they intersect the
@@ -297,24 +297,24 @@ public class BlockCarpentersCollapsibleBlock extends BlockCoverable {
     public void addCollisionBoxesToList(World world, int x, int y, int z, AxisAlignedBB axisAlignedBB, List list, Entity entity)
     {
         TEBase TE = getTileEntity(world, x, y, z);
-        
+
         if (TE != null) {
-        
-	        AxisAlignedBB colBox = null;
-	        
-	        for (int quad = 0; quad < 4; ++quad)
-	        {
-	            float[] bounds = genBounds(TE, quad);
-	            colBox = AxisAlignedBB.getAABBPool().getAABB(x + bounds[0], y + bounds[1], z + bounds[2], x + bounds[3], y + bounds[4], z + bounds[5]);
-	            
-	            if (axisAlignedBB.intersectsWith(colBox)) {
-	                list.add(colBox);
-	            }
-	        }
-        
+
+            AxisAlignedBB colBox = null;
+
+            for (int quad = 0; quad < 4; ++quad)
+            {
+                float[] bounds = genBounds(TE, quad);
+                colBox = AxisAlignedBB.getAABBPool().getAABB(x + bounds[0], y + bounds[1], z + bounds[2], x + bounds[3], y + bounds[4], z + bounds[5]);
+
+                if (axisAlignedBB.intersectsWith(colBox)) {
+                    list.add(colBox);
+                }
+            }
+
         }
     }
-    
+
     @Override
     /**
      * Ray traces through the blocks collision from start vector to end vector returning a ray trace hit. Args: world,
@@ -324,37 +324,37 @@ public class BlockCarpentersCollapsibleBlock extends BlockCoverable {
     {
         TEBase TE = getTileEntity(world, x, y, z);
         MovingObjectPosition finalTrace = null;
-        
+
         if (TE != null) {
 
-	        double currDist = 0.0D;
-	        double maxDist = 0.0D;
-	        
-	        // Determine if ray trace is a hit on block
-	        for (int quad = 0; quad < 4; ++quad)
-	        {
-	            float[] bounds = genBounds(TE, quad);
-	            
-	            setBlockBounds(bounds[0], bounds[1], bounds[2], bounds[3], bounds[4], bounds[5]);
-	            MovingObjectPosition traceResult = super.collisionRayTrace(world, x, y, z, startVec, endVec);
-	            
-	            if (traceResult != null)
-	            {
-	                currDist = traceResult.hitVec.squareDistanceTo(endVec);
-	                if (currDist > maxDist) {
-	                    finalTrace = traceResult;
-	                    maxDist = currDist;
-	                }
-	            }
-	        }
-	        
-	        setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
-        
+            double currDist = 0.0D;
+            double maxDist = 0.0D;
+
+            // Determine if ray trace is a hit on block
+            for (int quad = 0; quad < 4; ++quad)
+            {
+                float[] bounds = genBounds(TE, quad);
+
+                setBlockBounds(bounds[0], bounds[1], bounds[2], bounds[3], bounds[4], bounds[5]);
+                MovingObjectPosition traceResult = super.collisionRayTrace(world, x, y, z, startVec, endVec);
+
+                if (traceResult != null)
+                {
+                    currDist = traceResult.hitVec.squareDistanceTo(endVec);
+                    if (currDist > maxDist) {
+                        finalTrace = traceResult;
+                        maxDist = currDist;
+                    }
+                }
+            }
+
+            setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
+
         }
-        
+
         return finalTrace;
     }
-    
+
     @Override
     /**
      * The type of render function that is called for this block
@@ -363,5 +363,5 @@ public class BlockCarpentersCollapsibleBlock extends BlockCoverable {
     {
         return BlockRegistry.carpentersCollapsibleBlockRenderID;
     }
-    
+
 }

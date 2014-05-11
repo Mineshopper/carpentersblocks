@@ -8,22 +8,22 @@ import net.minecraft.nbt.NBTTagList;
 import carpentersblocks.data.Safe;
 
 public class TECarpentersSafe extends TEBase implements ISidedInventory {
-    
+
     /** Holds contents of block. */
     private ItemStack[] inventoryContents = new ItemStack[54];
-    
+
     /** Holds size of inventory. */
     private int inventorySize = 27;
-    
+
     /** Counts ticks. */
     private int tickCount;
-    
+
     /** Used to determine whether capacity strip requires a redraw. */
     private boolean contentsChanged;
-    
+
     /** Indicates safe render update should occur this tick. */
     private boolean forceEntityUpdate;
-    
+
     @Override
     /**
      * Determines if this TileEntity requires update calls.
@@ -33,7 +33,7 @@ public class TECarpentersSafe extends TEBase implements ISidedInventory {
     {
         return true;
     }
-    
+
     @Override
     /**
      * Allows the entity to update its state. Overridden in most subclasses, e.g. the mob spawner uses this to count
@@ -53,7 +53,7 @@ public class TECarpentersSafe extends TEBase implements ISidedInventory {
             }
         }
     }
-    
+
     private static final int[] accessibleSlots = {
         0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10,
         11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
@@ -61,7 +61,7 @@ public class TECarpentersSafe extends TEBase implements ISidedInventory {
         33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43,
         44, 45, 46, 47, 48, 49, 50, 51, 52, 53
     };
-    
+
     /**
      * Returns whether safe has 54 item slots.
      */
@@ -69,7 +69,7 @@ public class TECarpentersSafe extends TEBase implements ISidedInventory {
     {
         return inventorySize > 27;
     }
-    
+
     /**
      * Sets inventory size.
      * Returns false if size cannot be increased.
@@ -79,11 +79,11 @@ public class TECarpentersSafe extends TEBase implements ISidedInventory {
         if (hasUpgrade()) {
             return false;
         }
-        
+
         inventorySize = 54;
         return true;
     }
-    
+
     /**
      * Returns the number of slots in the inventory.
      */
@@ -92,7 +92,7 @@ public class TECarpentersSafe extends TEBase implements ISidedInventory {
     {
         return inventorySize;
     }
-    
+
     /**
      * Returns the stack in slot
      */
@@ -105,7 +105,7 @@ public class TECarpentersSafe extends TEBase implements ISidedInventory {
             return null;
         }
     }
-    
+
     /**
      * Removes from an inventory slot (first arg) up to a specified number (second arg) of items and returns them in a
      * new stack.
@@ -116,7 +116,7 @@ public class TECarpentersSafe extends TEBase implements ISidedInventory {
         if (inventoryContents[slot] != null)
         {
             ItemStack itemStack;
-            
+
             if (inventoryContents[slot].stackSize <= numItems) {
                 itemStack = inventoryContents[slot];
                 inventoryContents[slot] = null;
@@ -124,11 +124,11 @@ public class TECarpentersSafe extends TEBase implements ISidedInventory {
                 return itemStack;
             } else {
                 itemStack = inventoryContents[slot].splitStack(numItems);
-                
+
                 if (inventoryContents[slot].stackSize == 0) {
                     inventoryContents[slot] = null;
                 }
-                
+
                 markDirty();
                 return itemStack;
             }
@@ -136,7 +136,7 @@ public class TECarpentersSafe extends TEBase implements ISidedInventory {
             return null;
         }
     }
-    
+
     /**
      * When some containers are closed they call this on each slot, then drop whatever it returns as an EntityItem -
      * like when you close a workbench GUI.
@@ -152,7 +152,7 @@ public class TECarpentersSafe extends TEBase implements ISidedInventory {
             return null;
         }
     }
-    
+
     /**
      * Sets the given item stack to the specified slot in the inventory (can be crafting or armor sections).
      */
@@ -160,14 +160,14 @@ public class TECarpentersSafe extends TEBase implements ISidedInventory {
     public void setInventorySlotContents(int slot, ItemStack itemStack)
     {
         inventoryContents[slot] = itemStack;
-        
+
         if (itemStack != null && itemStack.stackSize > getInventoryStackLimit()) {
             itemStack.stackSize = getInventoryStackLimit();
         }
-        
+
         markDirty();
     }
-    
+
     @Override
     /**
      * Called when an the contents of an Inventory change, usually
@@ -177,7 +177,7 @@ public class TECarpentersSafe extends TEBase implements ISidedInventory {
         contentsChanged = true;
         super.markDirty();
     }
-    
+
     /**
      * Reads a tile entity from NBT.
      */
@@ -186,21 +186,21 @@ public class TECarpentersSafe extends TEBase implements ISidedInventory {
     {
         super.readFromNBT(nbt);
         NBTTagList nbttaglist = nbt.getTagList("Items", 10);
-        
+
         inventorySize = nbt.getInteger("inventorySize");
         inventoryContents = new ItemStack[getSizeInventory()];
-        
+
         for (int count = 0; count < nbttaglist.tagCount(); ++count)
         {
             NBTTagCompound nbttagcompound1 = nbttaglist.getCompoundTagAt(count);
             int j = nbttagcompound1.getByte("Slot") & 255;
-            
+
             if (j >= 0 && j < inventoryContents.length) {
                 inventoryContents[j] = ItemStack.loadItemStackFromNBT(nbttagcompound1);
             }
         }
     }
-    
+
     /**
      * Writes a tile entity to NBT.
      */
@@ -209,7 +209,7 @@ public class TECarpentersSafe extends TEBase implements ISidedInventory {
     {
         super.writeToNBT(nbt);
         NBTTagList nbttaglist = new NBTTagList();
-        
+
         for (int idx = 0; idx < inventoryContents.length; ++idx)
         {
             if (inventoryContents[idx] != null)
@@ -220,11 +220,11 @@ public class TECarpentersSafe extends TEBase implements ISidedInventory {
                 nbttaglist.appendTag(nbttagcompound1);
             }
         }
-        
+
         nbt.setInteger("inventorySize", inventorySize);
         nbt.setTag("Items", nbttaglist);
     }
-    
+
     /**
      * Do not make give this method the name canInteractWith because it clashes with Container
      */
@@ -234,65 +234,65 @@ public class TECarpentersSafe extends TEBase implements ISidedInventory {
         if (worldObj.getTileEntity(xCoord, yCoord, zCoord) == this) {
             return entityPlayer.getDistanceSq(xCoord + 0.5D, yCoord + 0.5D, zCoord + 0.5D) <= 64.0D;
         }
-        
+
         return false;
     }
-    
+
     @Override
     public void openInventory()
     {
         Safe.setState(this, Safe.STATE_OPEN);
     }
-    
+
     @Override
     public void closeInventory()
     {
         Safe.setState(this, Safe.STATE_CLOSED);
-        
+
         /* Make updateEntity() check contents immediately on close. */
         forceEntityUpdate = true;
     }
-    
+
     @Override
     public String getInventoryName()
     {
         return "tile.blockCarpentersSafe.name";
     }
-    
+
     @Override
     public boolean hasCustomInventoryName()
     {
         return false;
     }
-    
+
     @Override
     public int getInventoryStackLimit()
     {
         return 64;
     }
-    
+
     @Override
     public int[] getAccessibleSlotsFromSide(int side)
     {
         return accessibleSlots;
     }
-    
+
     @Override
     public boolean canInsertItem(int slot, ItemStack itemStack, int side)
     {
         return Safe.allowsInsertion(this) && Safe.getFacing(this).ordinal() != side;
     }
-    
+
     @Override
     public boolean canExtractItem(int slot, ItemStack itemStack, int side)
     {
         return Safe.allowsExtraction(this) && Safe.getFacing(this).ordinal() != side;
     }
-    
+
     @Override
     public boolean isItemValidForSlot(int i, ItemStack itemstack)
     {
         return true;
     }
-    
+
 }

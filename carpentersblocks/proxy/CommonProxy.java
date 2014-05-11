@@ -17,39 +17,39 @@ import carpentersblocks.util.registry.FeatureRegistry;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 
 public class CommonProxy {
-    
+
     public void registerHandlers(FMLPreInitializationEvent event)
     {
         if (BlockRegistry.enableFlowerPot) {
             FlowerPotHandler.initPlants();
             FlowerPotDesignHandler.init(event);
         }
-        
+
         if (FeatureRegistry.enableDyeColors) {
             DyeHandler.init();
         }
-        
+
         if (FeatureRegistry.enableOverlays) {
             OverlayHandler.init();
         }
-        
+
         if (FeatureRegistry.enablePatterns) {
             PatternHandler.init(event);
         }
-        
+
         if (BlockRegistry.enableBed) {
             BedDesignHandler.init(event);
         }
-        
+
         if (FeatureRegistry.enableTile) {
             TileHandler.init(event);
             EntityHandler.registerEntities();
         }
-        
+
         MinecraftForge.EVENT_BUS.register(new EventHandler());
         CarpentersBlocks.channel.register(new PacketHandler());
     }
-    
+
     public void registerRenderInformation(FMLPreInitializationEvent event) { }
-    
+
 }

@@ -10,14 +10,14 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class HelperOrthoWedge extends RenderHelper {
-    
+
     /**
      * Renders the given texture to the bottom face of the block.
      */
     public static void renderFaceYNeg(RenderBlocks renderBlocks, int slopeID, double x, double y, double z, IIcon icon)
     {
         prepareRender(renderBlocks, ForgeDirection.DOWN, x, y, z, icon);
-        
+
         switch (slopeID)
         {
             case Slope.ID_OBL_EXT_POS_NW:
@@ -50,14 +50,14 @@ public class HelperOrthoWedge extends RenderHelper {
                 break;
         }
     }
-    
+
     /**
      * Renders the given texture to the top face of the block.
      */
     public static void renderFaceYPos(RenderBlocks renderBlocks, int slopeID, double x, double y, double z, IIcon icon)
     {
         prepareRender(renderBlocks, ForgeDirection.UP, x, y, z, icon);
-        
+
         switch (slopeID)
         {
             case Slope.ID_OBL_EXT_NEG_NW:
@@ -90,17 +90,17 @@ public class HelperOrthoWedge extends RenderHelper {
                 break;
         }
     }
-    
+
     /**
      * Renders the given texture to the North face of the block.
      */
     public static void renderFaceZNeg(RenderBlocks renderBlocks, int slopeID, double x, double y, double z, IIcon icon)
     {
         prepareRender(renderBlocks, ForgeDirection.NORTH, x, y, z, icon);
-        
+
         boolean floatingHeight = iconHasFloatingHeight(icon);
         Slope slope = Slope.slopesList[slopeID];
-        
+
         if (slope.isPositive) {
             if (slope.facings.contains(ForgeDirection.WEST)) {
                 setupVertex(renderBlocks, xMax, yMax, zMin, uTL,                        vTL, TOP_LEFT    );
@@ -123,17 +123,17 @@ public class HelperOrthoWedge extends RenderHelper {
             }
         }
     }
-    
+
     /**
      * Renders the given texture to the South face of the block.
      */
     public static void renderFaceZPos(RenderBlocks renderBlocks, int slopeID, double x, double y, double z, IIcon icon)
     {
         prepareRender(renderBlocks, ForgeDirection.SOUTH, x, y, z, icon);
-        
+
         boolean floatingHeight = iconHasFloatingHeight(icon);
         Slope slope = Slope.slopesList[slopeID];
-        
+
         if (slope.isPositive) {
             if (slope.facings.contains(ForgeDirection.WEST)) {
                 setupVertex(renderBlocks, xMin, yMin, zMax, uBL, floatingHeight ? vTL : vBL, BOTTOM_LEFT );
@@ -156,17 +156,17 @@ public class HelperOrthoWedge extends RenderHelper {
             }
         }
     }
-    
+
     /**
      * Renders the given texture to the West face of the block.
      */
     public static void renderFaceXNeg(RenderBlocks renderBlocks, int slopeID, double x, double y, double z, IIcon icon)
     {
         prepareRender(renderBlocks, ForgeDirection.WEST, x, y, z, icon);
-        
+
         boolean floatingHeight = iconHasFloatingHeight(icon);
         Slope slope = Slope.slopesList[slopeID];
-        
+
         if (slope.isPositive) {
             if (slope.facings.contains(ForgeDirection.NORTH)) {
                 setupVertex(renderBlocks, xMin, yMin, zMin, uBL, floatingHeight ? vTL : vBL, BOTTOM_LEFT );
@@ -189,17 +189,17 @@ public class HelperOrthoWedge extends RenderHelper {
             }
         }
     }
-    
+
     /**
      * Renders the given texture to the East face of the block.
      */
     public static void renderFaceXPos(RenderBlocks renderBlocks, int slopeID, double x, double y, double z, IIcon icon)
     {
         prepareRender(renderBlocks, ForgeDirection.EAST, x, y, z, icon);
-        
+
         boolean floatingHeight = iconHasFloatingHeight(icon);
         Slope slope = Slope.slopesList[slopeID];
-        
+
         if (slope.isPositive) {
             if (slope.facings.contains(ForgeDirection.NORTH)) {
                 setupVertex(renderBlocks, xMax, yMax, zMax, uTL,                        vTL, TOP_LEFT    );
@@ -222,5 +222,5 @@ public class HelperOrthoWedge extends RenderHelper {
             }
         }
     }
-    
+
 }

@@ -23,12 +23,12 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockCarpentersDoor extends BlockCoverable {
-    
+
     public BlockCarpentersDoor(Material material)
     {
         super(material);
     }
-    
+
     @SideOnly(Side.CLIENT)
     @Override
     /**
@@ -44,7 +44,7 @@ public class BlockCarpentersDoor extends BlockCoverable {
         IconRegistry.icon_door_french_glass_top    = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "door/door_french_glass_top"   );
         IconRegistry.icon_door_french_glass_bottom = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "door/door_french_glass_bottom");
     }
-    
+
     @Override
     /**
      * Alters hinge side.
@@ -52,12 +52,12 @@ public class BlockCarpentersDoor extends BlockCoverable {
     protected boolean onHammerLeftClick(TEBase TE, EntityPlayer entityPlayer)
     {
         int hinge = Door.getHinge(TE);
-        
+
         setDoorHinge(TE, hinge == Door.HINGE_LEFT ? Door.HINGE_RIGHT : Door.HINGE_LEFT);
-        
+
         return true;
     }
-    
+
     @Override
     /**
      * Alters door type and redstone behavior.
@@ -65,21 +65,21 @@ public class BlockCarpentersDoor extends BlockCoverable {
     protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer)
     {
         if (!entityPlayer.isSneaking()) {
-            
+
             int type = Door.getType(TE);
-            
+
             if (++type > 5) {
                 type = 0;
             }
-            
+
             setDoorType(TE, type);
-            
+
         } else {
-            
+
             int rigidity = Door.getRigidity(TE) == Door.HINGED_NONRIGID ? Door.HINGED_RIGID : Door.HINGED_NONRIGID;
-            
+
             setDoorRigidity(TE, rigidity);
-            
+
             switch (rigidity) {
                 case Door.HINGED_NONRIGID:
                     ChatHandler.sendMessageToPlayer("message.activation_wood.name", entityPlayer);
@@ -87,9 +87,9 @@ public class BlockCarpentersDoor extends BlockCoverable {
                 case Door.HINGED_RIGID:
                     ChatHandler.sendMessageToPlayer("message.activation_iron.name", entityPlayer);
             }
-            
+
         }
-        
+
         return true;
     }
 
@@ -100,13 +100,13 @@ public class BlockCarpentersDoor extends BlockCoverable {
     protected void postOnBlockActivated(TEBase TE, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ, List<Boolean> altered, List<Boolean> decInv)
     {
         if (!activationRequiresRedstone(TE)) {
-            
+
             setDoorState(TE, Door.getState(TE) == Door.STATE_OPEN ? Door.STATE_CLOSED : Door.STATE_OPEN);
             altered.add(true);
-            
+
         }
     }
-    
+
     /**
      * Returns whether door requires redstone activation.
      */
@@ -114,43 +114,43 @@ public class BlockCarpentersDoor extends BlockCoverable {
     {
         return Door.getRigidity(TE) == Door.HINGED_RIGID;
     }
-    
+
     /**
      * Returns a list of door tile entities that make up either a single door or two connected double doors.
      */
     private List<TEBase> getDoorPieces(TEBase TE)
-    {    	
+    {
         List<TEBase> list = new ArrayList<TEBase>();
         World world = TE.getWorldObj();
-        
+
         int piece = Door.getPiece(TE);
         int facing = Door.getFacing(TE);
         int hinge = Door.getHinge(TE);
         int neighbor_offset = piece == Door.PIECE_TOP ? -1 : 1;
-                
+
         /* Add source door pieces */
-        
+
         list.add(TE);
-        
+
         TEBase TE_neighbor = getTileEntity(world, TE.xCoord, TE.yCoord + neighbor_offset, TE.zCoord);
-        
+
         if (TE_neighbor == null) {
-        	return list;
+            return list;
         } else {
-        	list.add(TE_neighbor);
+            list.add(TE_neighbor);
         }
-        
+
         /* Begin searching for and adding other neighboring pieces. */
-        
+
         TEBase TE_ZN = getTileEntity(world, TE.xCoord, TE.yCoord, TE.zCoord - 1);
         TEBase TE_ZP = getTileEntity(world, TE.xCoord, TE.yCoord, TE.zCoord + 1);
         TEBase TE_XN = getTileEntity(world, TE.xCoord - 1, TE.yCoord, TE.zCoord);
         TEBase TE_XP = getTileEntity(world, TE.xCoord + 1, TE.yCoord, TE.zCoord);
-        
+
         switch (facing)
         {
             case Door.FACING_XN:
-                
+
                 if (TE_ZN != null) {
                     if (piece == Door.getPiece(TE_ZN) && facing == Door.getFacing(TE_ZN) && hinge == Door.HINGE_LEFT && Door.getHinge(TE_ZN) == Door.HINGE_RIGHT)
                     {
@@ -166,9 +166,9 @@ public class BlockCarpentersDoor extends BlockCoverable {
                     }
                 }
                 break;
-                
+
             case Door.FACING_XP:
-                
+
                 if (TE_ZN != null) {
                     if (piece == Door.getPiece(TE_ZN) && facing == Door.getFacing(TE_ZN) && hinge == Door.HINGE_RIGHT && Door.getHinge(TE_ZN) == Door.HINGE_LEFT)
                     {
@@ -184,10 +184,10 @@ public class BlockCarpentersDoor extends BlockCoverable {
                     }
                 }
                 break;
-                
+
             case Door.FACING_ZN:
             {
-                
+
                 if (TE_XN != null) {
                     if (piece == Door.getPiece(TE_XN) && facing == Door.getFacing(TE_XN) && hinge == Door.HINGE_RIGHT && Door.getHinge(TE_XN) == Door.HINGE_LEFT)
                     {
@@ -205,7 +205,7 @@ public class BlockCarpentersDoor extends BlockCoverable {
                 break;
             }
             case Door.FACING_ZP:
-                
+
                 if (TE_XN != null) {
                     if (piece == Door.getPiece(TE_XN) && facing == Door.getFacing(TE_XN) && hinge == Door.HINGE_LEFT && Door.getHinge(TE_XN) == Door.HINGE_RIGHT)
                     {
@@ -221,12 +221,12 @@ public class BlockCarpentersDoor extends BlockCoverable {
                     }
                 }
                 break;
-                
+
         }
-        
+
         return list;
     }
-    
+
     @Override
     @SideOnly(Side.CLIENT)
     /**
@@ -237,10 +237,10 @@ public class BlockCarpentersDoor extends BlockCoverable {
         if (world.getBlock(x, y, z).equals(this)) {
             setBlockBoundsBasedOnState(world, x, y, z);
         }
-        
+
         return super.getSelectedBoundingBoxFromPool(world, x, y, z);
     }
-    
+
     @Override
     /**
      * Returns a bounding box from the pool of bounding boxes (this means this box can change after the pool has been
@@ -251,10 +251,10 @@ public class BlockCarpentersDoor extends BlockCoverable {
         if (world.getBlock(x, y, z).equals(this)) {
             setBlockBoundsBasedOnState(world, x, y, z);
         }
-        
+
         return super.getCollisionBoundingBoxFromPool(world, x, y, z);
     }
-    
+
     @Override
     /**
      * Updates the blocks bounds based on its current state. Args: world, x, y, z
@@ -262,63 +262,63 @@ public class BlockCarpentersDoor extends BlockCoverable {
     public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
     {
         TEBase TE = getTileEntity(world, x, y, z);
-        
+
         if (TE != null) {
-        
-	        int facing = Door.getFacing(TE);
-	        int hinge = Door.getHinge(TE);
-	        boolean isOpen = Door.getState(TE) == Door.STATE_OPEN;
-	        
-	        float    x_low = 0.0F,
-	                z_low = 0.0F,
-	                x_high = 1.0F,
-	                z_high = 1.0F;
-	        
-	        switch (facing)
-	        {
-	            case Door.FACING_XN:
-	                if (!isOpen) {
-	                    x_low = 0.8125F;
-	                } else if (hinge == Door.HINGE_RIGHT) {
-	                    z_high = 0.1875F;
-	                } else {
-	                    z_low = 0.8125F;
-	                }
-	                break;
-	            case Door.FACING_XP:
-	                if (!isOpen) {
-	                    x_high = 0.1875F;
-	                } else if (hinge == Door.HINGE_RIGHT) {
-	                    z_low = 0.8125F;
-	                } else {
-	                    z_high = 0.1875F;
-	                }
-	                break;
-	            case Door.FACING_ZN:
-	                if (!isOpen) {
-	                    z_low = 0.8125F;
-	                } else if (hinge == Door.HINGE_RIGHT) {
-	                    x_low = 0.8125F;
-	                } else {
-	                    x_high = 0.1875F;
-	                }
-	                break;
-	            case Door.FACING_ZP:
-	                if (!isOpen) {
-	                    z_high = 0.1875F;
-	                } else if (hinge == Door.HINGE_RIGHT) {
-	                    x_high = 0.1875F;
-	                } else {
-	                    x_low = 0.8125F;
-	                }
-	                break;
-	        }
-	        
-	        setBlockBounds(x_low, 0.0F, z_low, x_high, 1.0F, z_high);
-        
+
+            int facing = Door.getFacing(TE);
+            int hinge = Door.getHinge(TE);
+            boolean isOpen = Door.getState(TE) == Door.STATE_OPEN;
+
+            float    x_low = 0.0F,
+                    z_low = 0.0F,
+                    x_high = 1.0F,
+                    z_high = 1.0F;
+
+            switch (facing)
+            {
+                case Door.FACING_XN:
+                    if (!isOpen) {
+                        x_low = 0.8125F;
+                    } else if (hinge == Door.HINGE_RIGHT) {
+                        z_high = 0.1875F;
+                    } else {
+                        z_low = 0.8125F;
+                    }
+                    break;
+                case Door.FACING_XP:
+                    if (!isOpen) {
+                        x_high = 0.1875F;
+                    } else if (hinge == Door.HINGE_RIGHT) {
+                        z_low = 0.8125F;
+                    } else {
+                        z_high = 0.1875F;
+                    }
+                    break;
+                case Door.FACING_ZN:
+                    if (!isOpen) {
+                        z_low = 0.8125F;
+                    } else if (hinge == Door.HINGE_RIGHT) {
+                        x_low = 0.8125F;
+                    } else {
+                        x_high = 0.1875F;
+                    }
+                    break;
+                case Door.FACING_ZP:
+                    if (!isOpen) {
+                        z_high = 0.1875F;
+                    } else if (hinge == Door.HINGE_RIGHT) {
+                        x_high = 0.1875F;
+                    } else {
+                        x_low = 0.8125F;
+                    }
+                    break;
+            }
+
+            setBlockBounds(x_low, 0.0F, z_low, x_high, 1.0F, z_high);
+
         }
     }
-    
+
     /**
      * Cycle door state.
      * Will update all connecting door pieces.
@@ -330,7 +330,7 @@ public class BlockCarpentersDoor extends BlockCoverable {
             Door.setState(piece, state, piece == TE ? true : false);
         }
     }
-    
+
     /**
      * Updates door type.
      * Will also update adjoining door piece.
@@ -340,7 +340,7 @@ public class BlockCarpentersDoor extends BlockCoverable {
         Door.setType(TE, type);
         updateAdjoiningDoorPiece(TE);
     }
-    
+
     /**
      * Set door rigidity.
      * Will update all connecting door pieces.
@@ -352,7 +352,7 @@ public class BlockCarpentersDoor extends BlockCoverable {
             Door.setRigidity(piece, rigidity);
         }
     }
-    
+
     /**
      * Updates door hinge side.
      * Will also update adjoining door piece.
@@ -362,7 +362,7 @@ public class BlockCarpentersDoor extends BlockCoverable {
         Door.setHingeSide(TE, hinge);
         updateAdjoiningDoorPiece(TE);
     }
-    
+
     @Override
     /**
      * Lets the block know when one of its neighbor changes. Doesn't know which neighbor changed (coordinates passed are
@@ -370,60 +370,60 @@ public class BlockCarpentersDoor extends BlockCoverable {
      */
     public void onNeighborBlockChange(World world, int x, int y, int z, Block block)
     {
-    	if (!world.isRemote) {
-    	
-	        TEBase TE = getTileEntity(world, x, y, z);
-	        
-	        if (TE != null) {
-            
-	            boolean isOpen = Door.getState(TE) == Door.STATE_OPEN;
-	            
-	            /*
-	             * Check if door piece is orphaned.
-	             */
-	            if (Door.getPiece(TE) == Door.PIECE_BOTTOM) {
-	                if (!world.getBlock(x, y + 1, z).equals(this)) {
-	                    world.setBlockToAir(x, y, z);
-	                    return;
-	                } else if (!World.doesBlockHaveSolidTopSurface(world, x, y - 1, z)) {
-	                    world.setBlockToAir(x, y + 1, z);
-	                    dropBlockAsItem(world, x, y, z, 0, 0);
-	                    return;
-	                }
-	            } else if (!world.getBlock(x, y - 1, z).equals(this)) {
-	                world.setBlockToAir(x, y, z);
-	                return;
-	            }
-	            
-	            /*
-	             * Create list of door pieces and check state of each so
-	             * that they act as a single entity regardless of which
-	             * door piece receives this event.
-	             */
-	            boolean isPowered = false;
-	            List<TEBase> doorPieces = getDoorPieces(TE);
-	            for (TEBase piece : doorPieces) {
-	            	if (piece != null) {
-		                if (world.isBlockIndirectlyGettingPowered(piece.xCoord, piece.yCoord, piece.zCoord)) {
-		                    isPowered = true;
-		                }
-	            	}
-	            }
-	            
-	            /*
-	             * Set block open or closed
-	             */
-	            if (block != null && block.canProvidePower() && isPowered != isOpen) {
-	                setDoorState(TE, isOpen ? Door.STATE_CLOSED : Door.STATE_OPEN);
-	            }
-	            
-	        }
-        
-    	}
-    	
+        if (!world.isRemote) {
+
+            TEBase TE = getTileEntity(world, x, y, z);
+
+            if (TE != null) {
+
+                boolean isOpen = Door.getState(TE) == Door.STATE_OPEN;
+
+                /*
+                 * Check if door piece is orphaned.
+                 */
+                if (Door.getPiece(TE) == Door.PIECE_BOTTOM) {
+                    if (!world.getBlock(x, y + 1, z).equals(this)) {
+                        world.setBlockToAir(x, y, z);
+                        return;
+                    } else if (!World.doesBlockHaveSolidTopSurface(world, x, y - 1, z)) {
+                        world.setBlockToAir(x, y + 1, z);
+                        dropBlockAsItem(world, x, y, z, 0, 0);
+                        return;
+                    }
+                } else if (!world.getBlock(x, y - 1, z).equals(this)) {
+                    world.setBlockToAir(x, y, z);
+                    return;
+                }
+
+                /*
+                 * Create list of door pieces and check state of each so
+                 * that they act as a single entity regardless of which
+                 * door piece receives this event.
+                 */
+                boolean isPowered = false;
+                List<TEBase> doorPieces = getDoorPieces(TE);
+                for (TEBase piece : doorPieces) {
+                    if (piece != null) {
+                        if (world.isBlockIndirectlyGettingPowered(piece.xCoord, piece.yCoord, piece.zCoord)) {
+                            isPowered = true;
+                        }
+                    }
+                }
+
+                /*
+                 * Set block open or closed
+                 */
+                if (block != null && block.canProvidePower() && isPowered != isOpen) {
+                    setDoorState(TE, isOpen ? Door.STATE_CLOSED : Door.STATE_OPEN);
+                }
+
+            }
+
+        }
+
         super.onNeighborBlockChange(world, x, y, z, block);
     }
-    
+
     @Override
     /**
      * Returns the ID of the items to drop on destruction.
@@ -432,7 +432,7 @@ public class BlockCarpentersDoor extends BlockCoverable {
     {
         return ItemRegistry.itemCarpentersDoor;
     }
-    
+
     @Override
     @SideOnly(Side.CLIENT)
     /**
@@ -442,7 +442,7 @@ public class BlockCarpentersDoor extends BlockCoverable {
     {
         return ItemRegistry.itemCarpentersDoor;
     }
-    
+
     /**
      * Updates state, hinge and type for adjoining door piece.
      */
@@ -452,24 +452,24 @@ public class BlockCarpentersDoor extends BlockCoverable {
         int hinge = Door.getHinge(TE);
         int type = Door.getType(TE);
         int rigidity = Door.getRigidity(TE);
-        
+
         boolean isTop = Door.getPiece(TE) == Door.PIECE_TOP;
-        
+
         World world = TE.getWorldObj();
-        
+
         TEBase TE_adj;
         if (isTop) {
             TE_adj = (TEBase) world.getTileEntity(TE.xCoord, TE.yCoord - 1, TE.zCoord);
         } else {
             TE_adj = (TEBase) world.getTileEntity(TE.xCoord, TE.yCoord + 1, TE.zCoord);
         }
-        
+
         Door.setState(TE_adj, state, false);
         Door.setHingeSide(TE_adj, hinge);
         Door.setType(TE_adj, type);
         Door.setRigidity(TE_adj, rigidity);
     }
-    
+
     @Override
     /**
      * The type of render function that is called for this block
@@ -478,5 +478,5 @@ public class BlockCarpentersDoor extends BlockCoverable {
     {
         return BlockRegistry.carpentersDoorRenderID;
     }
-    
+
 }
