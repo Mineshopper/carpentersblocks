@@ -21,7 +21,7 @@ public class TECarpentersSafe extends TEBase implements ISidedInventory {
     /** Used to determine whether capacity strip requires a redraw. */
     private boolean contentsChanged;
 
-    /** Indicates safe render update should occur this tick. */
+    /** Indicates safe render update should occur next tick. */
     private boolean forceEntityUpdate;
 
     @Override
@@ -55,7 +55,7 @@ public class TECarpentersSafe extends TEBase implements ISidedInventory {
     }
 
     private static final int[] accessibleSlots = {
-        0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10,
+         0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10,
         11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
         22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32,
         33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43,
@@ -78,10 +78,11 @@ public class TECarpentersSafe extends TEBase implements ISidedInventory {
     {
         if (hasUpgrade()) {
             return false;
+        } else {
+            inventorySize *= 2;
+            markDirty();
+            return true;
         }
-
-        inventorySize = 54;
-        return true;
     }
 
     /**
