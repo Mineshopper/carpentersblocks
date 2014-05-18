@@ -45,6 +45,9 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
 
+    /** Returns whether side is sloped face. */
+    public boolean           isSideSloped;
+
     /* Render IDs */
 
     private static final int NORMAL_YN              = 0;
@@ -547,6 +550,12 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
         RenderHelper.startDrawing(QUADS);
 
         renderBlocks.enableAO = false;
+    }
+
+    @Override
+    protected boolean isPositiveFace(int side)
+    {
+        return super.isPositiveFace(side) || isSideSloped && Slope.slopesList[BlockProperties.getMetadata(TE)].isPositive;
     }
 
     /**

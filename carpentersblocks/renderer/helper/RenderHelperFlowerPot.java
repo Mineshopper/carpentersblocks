@@ -7,6 +7,7 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import carpentersblocks.data.FlowerPot;
+import carpentersblocks.renderer.BlockHandlerBase;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.flowerpot.FlowerPotProperties;
@@ -19,17 +20,18 @@ public class RenderHelperFlowerPot extends RenderHelper {
     /**
      * Applies plant color to tessellator.
      */
-    public static void setPlantColor(LightingHelper lightingHelper, TEBase TE, ItemStack itemStack, Block block, int x, int y, int z)
+    public static void setPlantColor(BlockHandlerBase blockHandler, ItemStack itemStack, int x, int y, int z)
     {
+        Block block = BlockProperties.toBlock(itemStack);
         Tessellator tessellator = Tessellator.instance;
 
-        float[] rgb = lightingHelper.getBlockRGB(itemStack, block, x, y, z);
-        lightingHelper.applyAnaglyph(rgb);
+        float[] rgb = blockHandler.getBlockRGB(itemStack, x, y, z, 1, null);
+        blockHandler.lightingHelper.applyAnaglyph(rgb);
 
         tessellator.setColorOpaque_F(rgb[0], rgb[1], rgb[2]);
 
-        if (FlowerPot.isEnriched(TE)) {
-            if (FlowerPotProperties.getPlantColor(TE) != 16777215) {
+        if (FlowerPot.isEnriched(blockHandler.TE)) {
+            if (FlowerPotProperties.getPlantColor(blockHandler.TE) != 16777215) {
                 tessellator.setColorOpaque_F(0.45F, 0.80F, 0.30F);
             }
         }
@@ -250,12 +252,12 @@ public class RenderHelperFlowerPot extends RenderHelper {
 
         renderBlocks.enableAO = true;
         renderBlocks.setRenderBounds(0.375D, 0.25D, 0.375D, 0.6875D, 1.0D, 0.6875D);
-        float[] primaryRGB = { 1.0F, 1.0F, 1.0F };
+        float[] rgb = { 1.0F, 1.0F, 1.0F };
 
         /* NORTH FACE */
 
         lightingHelper.setupLightingZNeg(itemStack, x, y, z);
-        lightingHelper.setupColor(itemStack, block, x, y, z, 2, primaryRGB, icon);
+        lightingHelper.setupColor(x, y, z, 2, rgb, icon);
 
         // LEFT
         setupVertex(renderBlocks, x + 0.6875F, y + 0.75F, z + 0.375F, uMinL, vMax, TOP_LEFT);
@@ -272,7 +274,7 @@ public class RenderHelperFlowerPot extends RenderHelper {
         /* SOUTH FACE */
 
         lightingHelper.setupLightingZPos(itemStack, x, y, z);
-        lightingHelper.setupColor(itemStack, block, x, y, z, 3, primaryRGB, icon);
+        lightingHelper.setupColor(x, y, z, 3, rgb, icon);
 
         // LEFT
         setupVertex(renderBlocks, x + 0.3125F, y + 0.75F, z + 0.625F, uMinL, vMax, TOP_LEFT);
@@ -289,7 +291,7 @@ public class RenderHelperFlowerPot extends RenderHelper {
         /* WEST FACE */
 
         lightingHelper.setupLightingXNeg(itemStack, x, y, z);
-        lightingHelper.setupColor(itemStack, block, x, y, z, 4, primaryRGB, icon);
+        lightingHelper.setupColor(x, y, z, 4, rgb, icon);
 
         // LEFT
         setupVertex(renderBlocks, x + 0.375F, y + 0.75F, z + 0.3125F, uMinL, vMax, TOP_LEFT);
@@ -306,7 +308,7 @@ public class RenderHelperFlowerPot extends RenderHelper {
         /* EAST FACE */
 
         lightingHelper.setupLightingXPos(itemStack, x, y, z);
-        lightingHelper.setupColor(itemStack, block, x, y, z, 5, primaryRGB, icon);
+        lightingHelper.setupColor(x, y, z, 5, rgb, icon);
 
         // LEFT
         setupVertex(renderBlocks, x + 0.625F, y + 0.75F, z + 0.6875F, uMinL, vMax, TOP_LEFT);
@@ -323,7 +325,7 @@ public class RenderHelperFlowerPot extends RenderHelper {
         /* UP */
 
         lightingHelper.setupLightingYPos(itemStack, x, y, z);
-        lightingHelper.setupColor(itemStack, block, x, y, z, 1, primaryRGB, icon);
+        lightingHelper.setupColor(x, y, z, 1, rgb, icon);
 
         icon = block.getBlockTextureFromSide(1);
 

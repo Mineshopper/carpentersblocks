@@ -5,6 +5,7 @@ import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import carpentersblocks.data.DaylightSensor;
+import carpentersblocks.renderer.helper.LightingHelper;
 import carpentersblocks.renderer.helper.RenderHelper;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.registry.IconRegistry;
@@ -77,7 +78,7 @@ public class BlockHandlerCarpentersDaylightSensor extends BlockHandlerBase {
 
             renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 0.25D, 1.0D);
             lightingHelper.setupLightingYPos(glass, x, y, z);
-            lightingHelper.setupColor(glass, Blocks.glass, x, y, z, 1, primaryRGB, null);
+            lightingHelper.setupColor(x, y, z, 1, getBlockRGB(glass, x, y, z, 1, null), null);
             RenderHelper.renderFaceYPos(renderBlocks, x, y, z, IconRegistry.icon_daylight_sensor_glass_top);
 
             renderBlocks.enableAO = false;
@@ -93,7 +94,7 @@ public class BlockHandlerCarpentersDaylightSensor extends BlockHandlerBase {
 
             if (isActive) {
                 disableAO = true;
-                lightingHelper.setBrightnessOverride(lightingHelper.MAX_BRIGHTNESS);
+                lightingHelper.setBrightnessOverride(LightingHelper.MAX_BRIGHTNESS);
             } else {
                 lightingHelper.setLightnessOverride(0.5F);
             }

@@ -15,7 +15,6 @@ import net.minecraftforge.client.MinecraftForgeClient;
 import org.lwjgl.opengl.GL11;
 
 import carpentersblocks.block.BlockCoverable;
-import carpentersblocks.data.Slope;
 import carpentersblocks.renderer.helper.FancyFluidsHelper;
 import carpentersblocks.renderer.helper.LightingHelper;
 import carpentersblocks.renderer.helper.RenderHelper;
@@ -24,8 +23,8 @@ import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.handler.DyeHandler;
 import carpentersblocks.util.handler.EventHandler;
+import carpentersblocks.util.handler.OptifineHandler;
 import carpentersblocks.util.handler.OverlayHandler;
-import carpentersblocks.util.handler.OverlayHandler.Overlay;
 import carpentersblocks.util.registry.FeatureRegistry;
 import carpentersblocks.util.registry.IconRegistry;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
@@ -58,9 +57,6 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
 
     /** 0-5 are side covers, with 6 being the block itself. */
     public int               coverRendering      = 6;
-
-    /** Returns whether side is sloped face. */
-    public boolean           isSideSloped;
 
     @Override
     public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderBlocks)
@@ -122,7 +118,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
             TE = (TEBase) TE_default;
             srcBlock = block;
             this.renderBlocks = renderBlocks;
-            this.lightingHelper = new LightingHelper(this);
+            this.lightingHelper = new LightingHelper(renderBlocks);
 
             renderCarpentersBlock(x, y, z);
             renderSideBlocks(x, y, z);
@@ -134,7 +130,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
                 int renderPass = MinecraftForgeClient.getRenderPass();
 
                 if (renderPass >= 0 && Minecraft.isFancyGraphicsEnabled() && BlockProperties.hasCover(TE, 6)) {
-                    FancyFluidsHelper.render(TE, lightingHelper, renderBlocks, x, y, z, renderPass);
+                    FancyFluidsHelper.render(this, x, y, z, renderPass);
                 }
 
             }
@@ -393,7 +389,6 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
 
     /**
      * Override to provide custom icons.
-     * Will be null checked later.
      */
     protected IIcon getUniqueIcon(ItemStack itemStack, int side, IIcon icon)
     {
@@ -440,13 +435,13 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
 
         /* Render side */
 
-        setColorAndRender(itemStack, block, x, y, z, side, icon);
+        setColorAndRender(itemStack, x, y, z, side, icon);
         clearRotation(side);
 
         /* Grass sides are a special case. */
 
         if (block.equals(Blocks.grass) && side > UP) {
-            setColorAndRender(new ItemStack(Blocks.grass), Blocks.grass, x, y, z, side, getGrassOverlayIcon(side));
+            setColorAndRender(new ItemStack(Blocks.grass), x, y, z, side, BlockGrass.getIconSideOverlay());
         }
 
         boolean temp_dye_state = suppressDyeColor;
@@ -477,7 +472,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
          * decorations. Can also check Icon name for beginsWith("destroy_stage_").
          */
         if (renderBlocks.hasOverrideBlockTexture()) {
-            setColorAndRender(itemStack, BlockProperties.toBlock(itemStack), x, y, z, side, renderBlocks.overrideBlockTexture);
+            setColorAndRender(itemStack, x, y, z, side, renderBlocks.overrideBlockTexture);
         } else {
             renderMultiTexturedSide(itemStack, x, y, z, side, getIcon(itemStack, side));
         }
@@ -488,52 +483,16 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
      */
     protected void renderOverlay(Block block, int x, int y, int z, int side)
     {
-        if (isSideSloped && Slope.slopesList[BlockProperties.getMetadata(TE)].isPositive) {
-            side = UP;
-        }
+        side = isPositiveFace(side) ? 1 : side;
 
         IIcon icon = OverlayHandler.getOverlayIcon(TE, coverRendering, side);
 
-        if (block.equals(Blocks.grass) && !BlockProperties.getOverlay(TE, coverRendering).equals(Overlay.GRASS)) {
-            if (!BlockProperties.toBlock(BlockProperties.getCover(TE, coverRendering)).equals(Blocks.grass) && side > 0) {
-                icon = getGrassOverlayIcon(side);
-            }
-        }
-
         if (icon != null) {
+
             ItemStack itemStack = OverlayHandler.getOverlay(TE, coverRendering);
-            setColorAndRender(itemStack, BlockProperties.toBlock(itemStack), x, y, z, side, icon);
+            setColorAndRender(itemStack, x, y, z, side, icon);
+
         }
-    }
-
-    /**
-     * Returns grass overlay icon.
-     */
-    protected IIcon getGrassOverlayIcon(int side)
-    {
-        boolean isPositiveSlope = isSideSloped ? Slope.slopesList[BlockProperties.getMetadata(TE)].isPositive : false;
-
-        IIcon icon = BlockGrass.getIconSideOverlay();
-
-        if (side == UP || isPositiveSlope) {
-            icon = Blocks.grass.getBlockTextureFromSide(1);
-        } else {
-
-            /*
-             * When FAST graphics are used, grass blocks use a single
-             * texture to draw each side.
-             *
-             * Because our implementation of grass sides requires
-             * two render passes, and it must be kept separate to drape
-             * off of our custom blocks, we must draw icon_fast_grass to
-             * mimic the look of vanilla grass blocks.
-             */
-            if (!RenderBlocks.fancyGrass) {
-                icon = IconRegistry.icon_overlay_fast_grass_side;
-            }
-        }
-
-        return icon;
     }
 
     /**
@@ -544,7 +503,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
         int pattern = BlockProperties.getPattern(TE, coverRendering);
         IIcon icon = renderBlocks.getIconSafe(IconRegistry.icon_pattern[pattern]);
 
-        setColorAndRender(new ItemStack(Blocks.glass), Blocks.glass, x, y, z, side, icon);
+        setColorAndRender(new ItemStack(Blocks.glass), x, y, z, side, icon);
     }
 
     /**
@@ -553,29 +512,71 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
      *
      * @param itemStack  the cover ItemStack
      * @param block  the block inside the ItemStack
-     * @param x     the x coordinate
+     * @param x  the x coordinate
      * @param y  the y coordinate
      * @param z  the z coordinate
      * @param side  the side currently being worked on
      * @param icon  the icon for the side
      * @return nothing
      */
-    public void setColorAndRender(ItemStack itemStack, Block block, int x, int y, int z, int side, IIcon icon)
+    public void setColorAndRender(ItemStack itemStack, int x, int y, int z, int side, IIcon icon)
     {
-        float[] primaryRGB = { 1.0F, 1.0F, 1.0F };
+        float[] rgb = getBlockRGB(itemStack, x, y, z, side, icon);
 
         if (!suppressDyeColor && (BlockProperties.hasDye(TE, coverRendering) || hasDyeOverride)) {
-            primaryRGB = hasDyeOverride ? LightingHelper.getRGB(dyeOverride) : LightingHelper.getRGB(DyeHandler.getColor(BlockProperties.getDye(TE, coverRendering)));
+            rgb = hasDyeOverride ? LightingHelper.getRGB(dyeOverride) : LightingHelper.getRGB(DyeHandler.getColor(BlockProperties.getDye(TE, coverRendering)));
         }
 
-        lightingHelper.setupColor(itemStack, block, x, y, z, side, primaryRGB, icon);
+        lightingHelper.setupColor(x, y, z, side, rgb, icon);
         render(x, y, z, side, icon);
+    }
+
+    /**
+     * Returns float array with RGB values for block.  Color is most
+     * commonly different for {@link Blocks#grass}
+     * <p>
+     * If using our custom render helpers, be sure to use {@link #applyAnaglyph(float[])}.
+     *
+     * @param itemStack  the cover {@link ItemStack}
+     * @param block  the {@link Block} inside the {@link ItemStack}
+     * @param x  the x coordinate
+     * @param y  the y coordinate
+     * @param z  the z coordinate
+     * @return a float array with rgb values
+     */
+    public float[] getBlockRGB(ItemStack itemStack, int x, int y, int z, int side, IIcon icon)
+    {
+        Block block = BlockProperties.toBlock(itemStack);
+
+        BlockProperties.setHostMetadata(TE, itemStack.getItemDamage());
+        float rgb[] = LightingHelper.getRGB(OptifineHandler.enableOptifineIntegration ? OptifineHandler.getColorMultiplier(block, renderBlocks.blockAccess, x, y, z) : block.colorMultiplier(renderBlocks.blockAccess, x, y, z));
+        BlockProperties.resetHostMetadata(TE);
+
+        if (block.equals(Blocks.grass) && !isPositiveFace(side) && !icon.equals(BlockGrass.getIconSideOverlay())) {
+            rgb[0] = rgb[1] = rgb[2] = 1.0F;
+        }
+
+        return rgb;
+    }
+
+    /**
+     * Returns whether side is top face.
+     *
+     * @param TE  the {@link TEBase}
+     * @param block  the {@link Block}
+     * @param side  the side
+     * @param icon  the {@link IIcon}
+     * @return true if positive y face
+     */
+    protected boolean isPositiveFace(int side)
+    {
+        return side == 1;
     }
 
     /**
      * Renders a side.
      *
-     * @param x     the x coordinate
+     * @param x  the x coordinate
      * @param y  the y coordinate
      * @param z  the z coordinate
      * @param side  the side currently being worked on

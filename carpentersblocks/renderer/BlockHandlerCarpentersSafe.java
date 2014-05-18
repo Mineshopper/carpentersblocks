@@ -6,6 +6,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
 import carpentersblocks.data.Safe;
+import carpentersblocks.renderer.helper.LightingHelper;
 import carpentersblocks.tileentity.TECarpentersSafe;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.registry.IconRegistry;
@@ -17,8 +18,6 @@ public class BlockHandlerCarpentersSafe extends BlockHandlerBase {
 
     private final int   numBoxes    = 21;
     private final int   numCapacity = 9;
-    private final float LIGHT_MAX   = 1.0F;
-    private final float LIGHT_MIN   = 0.15F;
 
     private final byte BLOCKTYPE_COVER            = 0;
     private final byte BLOCKTYPE_PANEL            = 1;
@@ -49,12 +48,12 @@ public class BlockHandlerCarpentersSafe extends BlockHandlerBase {
     private final byte GREEN_LIGHT                = 19;
     private final byte RED_LIGHT                  = 20;
 
-    private final float[] LIGHT_RED_ACTIVE        = {        LIGHT_MAX,             0.0F,             0.0F };
-    private final float[] LIGHT_RED_INACTIVE      = { LIGHT_MAX / 3.0F,        LIGHT_MIN,        LIGHT_MIN };
-    private final float[] LIGHT_GREEN_ACTIVE      = {             0.0F,        LIGHT_MAX,             0.0F };
-    private final float[] LIGHT_GREEN_INACTIVE    = {        LIGHT_MIN, LIGHT_MAX / 3.0F,        LIGHT_MIN };
-    private final float[] LIGHT_BLUE_ACTIVE       = {             0.0F,             0.0F,        LIGHT_MAX };
-    private final float[] LIGHT_BLUE_INACTIVE     = {        LIGHT_MIN,        LIGHT_MIN, LIGHT_MAX / 3.0F };
+    private final int LIGHT_RED_ACTIVE     = 0xff0000;
+    private final int LIGHT_RED_INACTIVE   = 0x7e3636;
+    private final int LIGHT_GREEN_ACTIVE   = 0x00ff00;
+    private final int LIGHT_GREEN_INACTIVE = 0x367e36;
+    private final int LIGHT_BLUE_ACTIVE    = 0x0000ff;
+    private final int LIGHT_BLUE_INACTIVE  = 0x383884;
 
     @Override
     public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderBlocks)
@@ -261,7 +260,7 @@ public class BlockHandlerCarpentersSafe extends BlockHandlerBase {
         {
             if (box + 1 <= capacity) {
                 lightingHelper.setLightnessOverride(1.0F);
-                lightingHelper.setBrightnessOverride(lightingHelper.MAX_BRIGHTNESS);
+                lightingHelper.setBrightnessOverride(LightingHelper.MAX_BRIGHTNESS);
                 lightingHelper.setColorOverride(LIGHT_BLUE_ACTIVE);
             } else {
                 lightingHelper.setColorOverride(LIGHT_BLUE_INACTIVE);
@@ -320,7 +319,7 @@ public class BlockHandlerCarpentersSafe extends BlockHandlerBase {
                     lightingHelper.setColorOverride(LIGHT_GREEN_INACTIVE);
                 } else {
                     lightingHelper.setLightnessOverride(1.0F);
-                    lightingHelper.setBrightnessOverride(lightingHelper.MAX_BRIGHTNESS);
+                    lightingHelper.setBrightnessOverride(LightingHelper.MAX_BRIGHTNESS);
                     lightingHelper.setColorOverride(LIGHT_GREEN_ACTIVE);
                 }
 
@@ -339,7 +338,7 @@ public class BlockHandlerCarpentersSafe extends BlockHandlerBase {
 
                 if (isLocked) {
                     lightingHelper.setLightnessOverride(1.0F);
-                    lightingHelper.setBrightnessOverride(lightingHelper.MAX_BRIGHTNESS);
+                    lightingHelper.setBrightnessOverride(LightingHelper.MAX_BRIGHTNESS);
                     lightingHelper.setColorOverride(LIGHT_RED_ACTIVE);
                 } else {
                     lightingHelper.setColorOverride(LIGHT_RED_INACTIVE);

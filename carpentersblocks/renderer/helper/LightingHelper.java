@@ -5,34 +5,32 @@ import static carpentersblocks.renderer.helper.VertexHelper.BOTTOM_RIGHT;
 import static carpentersblocks.renderer.helper.VertexHelper.TOP_LEFT;
 import static carpentersblocks.renderer.helper.VertexHelper.TOP_RIGHT;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockGrass;
 import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
-import carpentersblocks.data.Slope;
 import carpentersblocks.renderer.BlockHandlerBase;
 import carpentersblocks.util.BlockProperties;
-import carpentersblocks.util.handler.OptifineHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class LightingHelper {
 
-    public  BlockHandlerBase    blockHandler;
-    private RenderBlocks        renderBlocks;
+    public  RenderBlocks        renderBlocks;
     private boolean             hasLightnessOverride;
     private float               lightnessOverride;
     private boolean             hasBrightnessOverride;
     private int                 brightnessOverride;
     private boolean             hasColorOverride;
-    private float[]             colorOverride          = new float[3];
-    public final int            NORMAL_BRIGHTNESS      = 0xff00ff;
-    public final int            MAX_BRIGHTNESS         = 0xf000f0;
-    public static final float[] LIGHTNESS              = new float[] { 0.5F, 1.0F, 0.8F, 0.8F, 0.6F, 0.6F };
+    private int                 colorOverride          = 0xffffff;
+    public static final int     NORMAL_BRIGHTNESS      = 0xff00ff;
+    public static final int     MAX_BRIGHTNESS         = 0xf000f0;
+    public static final float[] LIGHTNESS              = { 0.5F, 1.0F, 0.8F, 0.8F, 0.6F, 0.6F };
+
+    /** Enforce grass block lighting properties. */
+    private boolean grassMode;
 
     /** Ambient occlusion values for all four corners of side. */
     public float[] ao = new float[4];
@@ -46,10 +44,9 @@ public class LightingHelper {
      * @param blockHandler  the {@link BlockHandlerBase}
      * @return the {@link LightingHelper}
      */
-    public LightingHelper(BlockHandlerBase blockHandler)
+    public LightingHelper(RenderBlocks renderBlocks)
     {
-        this.blockHandler = blockHandler;
-        renderBlocks = blockHandler.renderBlocks;
+        this.renderBlocks = renderBlocks;
     }
 
     /**
@@ -73,6 +70,18 @@ public class LightingHelper {
     public void clearLightnessOverride()
     {
         hasLightnessOverride = false;
+    }
+
+    /**
+     * Sets grass mode.
+     * <p>
+     * Used to enforce grass lighting properties.
+     *
+     * @param mode  grass mode
+     */
+    public void setGrassMode(boolean mode)
+    {
+        grassMode = mode;
     }
 
     /**
@@ -101,13 +110,13 @@ public class LightingHelper {
     /**
      * Sets color override.
      *
-     * @param rgb  the color override
+     * @param color  the color override
      * @return nothing
      */
-    public void setColorOverride(float[] rgb)
+    public void setColorOverride(int color)
     {
         hasColorOverride = true;
-        colorOverride = rgb;
+        colorOverride = color;
     }
 
     /**
@@ -137,82 +146,45 @@ public class LightingHelper {
     }
 
     /**
-     * Returns float array with RGB values for block.  Color is most
-     * commonly different for {@link Blocks#grass}
-     * <p>
-     * If using our custom render helpers, be sure to use {@link #applyAnaglyph(float[])}.
-     *
-     * @param itemStack  the cover {@link ItemStack}
-     * @param block  the {@link Block} inside the {@link ItemStack}
-     * @param x     the x coordinate
-     * @param y  the y coordinate
-     * @param z  the z coordinate
-     * @return a float array with rgb values
-     */
-    public float[] getBlockRGB(ItemStack itemStack, Block block, int x, int y, int z)
-    {
-        BlockProperties.setHostMetadata(blockHandler.TE, itemStack.getItemDamage());
-        int color = OptifineHandler.enableOptifineIntegration ? OptifineHandler.getColorMultiplier(block, renderBlocks.blockAccess, x, y, z) : block.colorMultiplier(renderBlocks.blockAccess, x, y, z);
-        BlockProperties.resetHostMetadata(blockHandler.TE);
-
-        return getRGB(color);
-    }
-
-    /**
      * Sets up the color using lightness, brightness, and the primary color
      * value (usually the dye color) for the side.
      *
      * @param itemStack  the cover {@link ItemStack}
      * @param block  the {@link Block} inside the {@link ItemStack}
-     * @param x     the x coordinate
+     * @param x  the x coordinate
      * @param y  the y coordinate
      * @param z  the z coordinate
      * @param side  the side
      * @param primaryRGB  the primary color
      * @param icon  the icon
+     * @param grassMode  affects how color is applied to faces for grass block only
      * @return a float array with rgb values
      */
-    public void setupColor(ItemStack itemStack, Block block, int x, int y, int z, int side, float[] primaryRGB, IIcon icon)
+    public void setupColor(int x, int y, int z, int side, float[] rgb, IIcon icon)
     {
         Tessellator tessellator = Tessellator.instance;
         float lightness = hasLightnessOverride ? lightnessOverride : LIGHTNESS[side];
-        float[] blockRGB = getBlockRGB(itemStack, block, x, y, z);
-
-        /* If block is grass, we have to apply color selectively. */
-
-        if (block.equals(Blocks.grass)) {
-
-            boolean posSlopedSide = blockHandler.isSideSloped ? Slope.slopesList[BlockProperties.getMetadata(blockHandler.TE)].isPositive : false;
-            boolean useGrassColor = block.equals(Blocks.grass) && (side == 1 || icon.equals(BlockGrass.getIconSideOverlay()) || posSlopedSide);
-
-            if (!useGrassColor) {
-                blockRGB[0] = blockRGB[1] = blockRGB[2] = 1.0F;
-            }
-
-        }
-
         tessellator.setBrightness(hasBrightnessOverride ? brightnessOverride : brightness);
-        float[] finalRGB = { blockRGB[0] * primaryRGB[0], blockRGB[1] * primaryRGB[1], blockRGB[2] * primaryRGB[2] };
 
-        if (hasColorOverride) {
-            finalRGB = colorOverride;
+        if (hasColorOverride && !renderBlocks.hasOverrideBlockTexture()) {
+            rgb = getRGB(colorOverride);
         }
 
-        applyAnaglyph(finalRGB);
+        applyAnaglyph(rgb);
 
         if (renderBlocks.enableAO) {
 
             if (renderBlocks.hasOverrideBlockTexture()) {
 
-                renderBlocks.colorRedTopLeft   = renderBlocks.colorRedBottomLeft   = renderBlocks.colorRedBottomRight   = renderBlocks.colorRedTopRight   = blockRGB[0];
-                renderBlocks.colorGreenTopLeft = renderBlocks.colorGreenBottomLeft = renderBlocks.colorGreenBottomRight = renderBlocks.colorGreenTopRight = blockRGB[1];
-                renderBlocks.colorBlueTopLeft  = renderBlocks.colorBlueBottomLeft  = renderBlocks.colorBlueBottomRight  = renderBlocks.colorBlueTopRight  = blockRGB[2];
+                renderBlocks.colorRedTopLeft   = renderBlocks.colorRedBottomLeft   = renderBlocks.colorRedBottomRight   = renderBlocks.colorRedTopRight   = rgb[0];
+                renderBlocks.colorGreenTopLeft = renderBlocks.colorGreenBottomLeft = renderBlocks.colorGreenBottomRight = renderBlocks.colorGreenTopRight = rgb[1];
+                renderBlocks.colorBlueTopLeft  = renderBlocks.colorBlueBottomLeft  = renderBlocks.colorBlueBottomRight  = renderBlocks.colorBlueTopRight  = rgb[2];
 
             } else {
 
-                renderBlocks.colorRedTopLeft   = renderBlocks.colorRedBottomLeft   = renderBlocks.colorRedBottomRight   = renderBlocks.colorRedTopRight   = finalRGB[0]   * lightness;
-                renderBlocks.colorGreenTopLeft = renderBlocks.colorGreenBottomLeft = renderBlocks.colorGreenBottomRight = renderBlocks.colorGreenTopRight = finalRGB[1] * lightness;
-                renderBlocks.colorBlueTopLeft  = renderBlocks.colorBlueBottomLeft  = renderBlocks.colorBlueBottomRight  = renderBlocks.colorBlueTopRight  = finalRGB[2]  * lightness;
+                renderBlocks.colorRedTopLeft   = renderBlocks.colorRedBottomLeft   = renderBlocks.colorRedBottomRight   = renderBlocks.colorRedTopRight   = rgb[0] * lightness;
+                renderBlocks.colorGreenTopLeft = renderBlocks.colorGreenBottomLeft = renderBlocks.colorGreenBottomRight = renderBlocks.colorGreenTopRight = rgb[1] * lightness;
+                renderBlocks.colorBlueTopLeft  = renderBlocks.colorBlueBottomLeft  = renderBlocks.colorBlueBottomRight  = renderBlocks.colorBlueTopRight  = rgb[2] * lightness;
 
                 renderBlocks.colorRedTopLeft       *= ao[TOP_LEFT];
                 renderBlocks.colorGreenTopLeft     *= ao[TOP_LEFT];
@@ -230,7 +202,7 @@ public class LightingHelper {
 
         } else {
 
-            tessellator.setColorOpaque_F(finalRGB[0] * lightness, finalRGB[1] * lightness, finalRGB[2] * lightness);
+            tessellator.setColorOpaque_F(rgb[0] * lightness, rgb[1] * lightness, rgb[2] * lightness);
 
         }
     }
@@ -247,9 +219,9 @@ public class LightingHelper {
     public void applyAnaglyph(float[] rgb)
     {
         if (EntityRenderer.anaglyphEnable) {
-            rgb[0]   = (rgb[0] * 30.0F + rgb[1] * 59.0F + rgb[2] * 11.0F) / 100.0F;
+            rgb[0] = (rgb[0] * 30.0F + rgb[1] * 59.0F + rgb[2] * 11.0F) / 100.0F;
             rgb[1] = (rgb[0] * 30.0F + rgb[1] * 70.0F) / 100.0F;
-            rgb[2]  = (rgb[0] * 30.0F + rgb[2]  * 70.0F) / 100.0F;
+            rgb[2] = (rgb[0] * 30.0F + rgb[2]  * 70.0F) / 100.0F;
         }
     }
 

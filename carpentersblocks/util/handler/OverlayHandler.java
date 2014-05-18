@@ -5,6 +5,7 @@ import java.util.Map;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockGrass;
+import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
@@ -148,7 +149,7 @@ public class OverlayHandler {
                     default:
                         switch (overlay) {
                             case GRASS:
-                                return BlockGrass.getIconSideOverlay();
+                                return RenderBlocks.fancyGrass ? BlockGrass.getIconSideOverlay() : IconRegistry.icon_overlay_fast_grass_side;
                             case SNOW:
                                 return IconRegistry.icon_overlay_snow_side;
                             case HAY:
