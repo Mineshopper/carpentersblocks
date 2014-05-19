@@ -27,8 +27,7 @@ public class PlayerPermissions {
         if (isOp(entityPlayer)) {
             return true;
         } else if (FeatureRegistry.enableOwnership) {
-            String owner = object.getOwner();
-            return owner.equals(entityPlayer.getDisplayName());
+            return object.getOwner().equals(entityPlayer.getDisplayName());
         } else {
             return entityPlayer.canPlayerEdit(x, y, z, 0, entityPlayer.getHeldItem());
         }

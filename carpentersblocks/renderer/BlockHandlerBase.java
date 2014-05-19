@@ -41,22 +41,21 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
     protected static final int WEST  = 4;
     protected static final int EAST  = 5;
 
-    public RenderBlocks      renderBlocks;
-    public LightingHelper    lightingHelper;
-    public Block             srcBlock;
-    public TEBase            TE;
-    protected boolean        suppressOverlay;
-    protected boolean        suppressPattern;
-    public boolean           suppressDyeColor;
-    protected boolean        disableAO;
-    public boolean           hasDyeOverride;
-    public int               dyeOverride;
-
-    protected boolean[]      hasIconOverride     = new boolean[6];
-    protected IIcon[]        iconOverride        = new IIcon[6];
+    public RenderBlocks   renderBlocks;
+    public LightingHelper lightingHelper;
+    public Block          srcBlock;
+    public TEBase         TE;
+    public boolean        suppressOverlay;
+    public boolean        suppressPattern;
+    public boolean        suppressDyeColor;
+    public boolean        disableAO;
+    public boolean        hasDyeOverride;
+    public int            dyeOverride;
+    public boolean[]      hasIconOverride   = new boolean[6];
+    public IIcon[]        iconOverride      = new IIcon[6];
 
     /** 0-5 are side covers, with 6 being the block itself. */
-    public int               coverRendering      = 6;
+    public int            coverRendering    = 6;
 
     @Override
     public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderBlocks)
@@ -403,6 +402,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
         int metadata = itemStack.getItemDamage();
 
         /*  Uncovered BlockCoverable has invisible icon, correct it here. */
+
         if (Block.getBlockFromItem(itemStack.getItem()) instanceof BlockCoverable) {
             metadata = EventHandler.BLOCKICON_BASE_ID;
         }
@@ -424,30 +424,29 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
         Block block = BlockProperties.toBlock(itemStack);
 
         // TODO: Revisit render passes when alpha rendering bug is fixed.
-        //int renderPass = MinecraftForgeClient.getRenderPass();
-        //int blockRenderPass = block.getRenderBlockPass();
 
-        /* Render base block. */
+        /* Render side */
 
         if (BlockProperties.blockRotates(itemStack)) {
             setDirectionalRotation(side);
         }
-
-        /* Render side */
-
         setColorAndRender(itemStack, x, y, z, side, icon);
         clearRotation(side);
 
-        /* Grass sides are a special case. */
+        /* Render BlockGrass side overlay here, if needed. */
 
-        if (block.equals(Blocks.grass) && side > UP) {
-            setColorAndRender(new ItemStack(Blocks.grass), x, y, z, side, BlockGrass.getIconSideOverlay());
+        if (block.equals(Blocks.grass) && side > 0 && !isPositiveFace(side)) {
+            if (Minecraft.isFancyGraphicsEnabled()) {
+                setColorAndRender(new ItemStack(Blocks.grass), x, y, z, side, BlockGrass.getIconSideOverlay());
+            } else {
+                setColorAndRender(new ItemStack(Blocks.dirt), x, y, z, side, IconRegistry.icon_overlay_fast_grass_side);
+            }
         }
+
+        /* Render decorations. */
 
         boolean temp_dye_state = suppressDyeColor;
         suppressDyeColor = true;
-
-        /* Render decorations. */
 
         if (!suppressPattern && BlockProperties.hasPattern(TE, coverRendering)) {
             renderPattern(x, y, z, side);
@@ -469,7 +468,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
         /*
          * A texture override in the context of this mod indicates the breaking
          * animation is being drawn. If this is the case, draw side without
-         * decorations. Can also check Icon name for beginsWith("destroy_stage_").
+         * decorations. Can also check icon name for beginsWith("destroy_stage_").
          */
         if (renderBlocks.hasOverrideBlockTexture()) {
             setColorAndRender(itemStack, x, y, z, side, renderBlocks.overrideBlockTexture);
@@ -560,7 +559,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
     }
 
     /**
-     * Returns whether side is top face.
+     * Returns whether side is considered a top face.
      *
      * @param TE  the {@link TEBase}
      * @param block  the {@link Block}
@@ -622,8 +621,6 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
     public boolean getEnableAO(ItemStack itemStack)
     {
         Block block = BlockProperties.toBlock(itemStack);
-
-        // TODO: Investigate why this returns NPE for some users
         return Minecraft.isAmbientOcclusionEnabled() && !disableAO && block.getLightValue() == 0;
     }
 
@@ -633,6 +630,10 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
      */
     protected void renderBlock(ItemStack itemStack, int x, int y, int z)
     {
+        if (BlockProperties.toBlock(itemStack) == null) {
+            return;
+        }
+
         renderBlocks.enableAO = getEnableAO(itemStack);
 
         if (renderBlocks.renderAllFaces || srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x, y - 1, z, DOWN) || renderBlocks.renderMinY > 0.0D)
