@@ -7,7 +7,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import carpentersblocks.CarpentersBlocks;
-import carpentersblocks.data.Door;
+import carpentersblocks.data.Hinge;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.registry.BlockRegistry;
@@ -56,9 +56,9 @@ public class ItemCarpentersDoor extends ItemBlock {
                 /* Create bottom door piece. */
 
                 TEBase TE = (TEBase) world.getTileEntity(x, y, z);
-                Door.setFacing(TE, facing);
-                Door.setHingeSide(TE, getHingePoint(TE, BlockRegistry.blockCarpentersDoor));
-                Door.setPiece(TE, Door.PIECE_BOTTOM);
+                Hinge.setFacing(TE, facing);
+                Hinge.setHingeSide(TE, getHingePoint(TE, BlockRegistry.blockCarpentersDoor));
+                Hinge.setPiece(TE, Hinge.PIECE_BOTTOM);
 
                 /* Match door type and rigidity with adjacent type if possible. */
 
@@ -69,31 +69,31 @@ public class ItemCarpentersDoor extends ItemBlock {
 
                 int type = 0;
                 if (TE_XN != null) {
-                    Door.setType(TE, Door.getType(TE_XN));
-                    Door.setRigidity(TE, Door.getRigidity(TE_XN));
-                    type = Door.getType(TE_XN);
+                    Hinge.setType(TE, Hinge.getType(TE_XN));
+                    Hinge.setRigidity(TE, Hinge.getRigidity(TE_XN));
+                    type = Hinge.getType(TE_XN);
                 } else if (TE_XP != null) {
-                    Door.setType(TE, Door.getType(TE_XP));
-                    Door.setRigidity(TE, Door.getRigidity(TE_XP));
-                    type = Door.getType(TE_XP);
+                    Hinge.setType(TE, Hinge.getType(TE_XP));
+                    Hinge.setRigidity(TE, Hinge.getRigidity(TE_XP));
+                    type = Hinge.getType(TE_XP);
                 } else if (TE_ZN != null) {
-                    Door.setType(TE, Door.getType(TE_ZN));
-                    Door.setRigidity(TE, Door.getRigidity(TE_ZN));
-                    type = Door.getType(TE_ZN);
+                    Hinge.setType(TE, Hinge.getType(TE_ZN));
+                    Hinge.setRigidity(TE, Hinge.getRigidity(TE_ZN));
+                    type = Hinge.getType(TE_ZN);
                 } else if (TE_ZP != null) {
-                    Door.setType(TE, Door.getType(TE_ZP));
-                    Door.setRigidity(TE, Door.getRigidity(TE_ZP));
-                    type = Door.getType(TE_ZP);
+                    Hinge.setType(TE, Hinge.getType(TE_ZP));
+                    Hinge.setRigidity(TE, Hinge.getRigidity(TE_ZP));
+                    type = Hinge.getType(TE_ZP);
                 }
 
                 /* Create top door piece. */
 
                 TEBase TE_YP = (TEBase) world.getTileEntity(x, y + 1, z);
-                Door.setFacing(TE_YP, facing);
-                Door.setType(TE_YP, type);
-                Door.setHingeSide(TE_YP, Door.getHinge(TE));
-                Door.setPiece(TE_YP, Door.PIECE_TOP);
-                Door.setRigidity(TE_YP, Door.getRigidity(TE));
+                Hinge.setFacing(TE_YP, facing);
+                Hinge.setType(TE_YP, type);
+                Hinge.setHingeSide(TE_YP, Hinge.getHinge(TE));
+                Hinge.setPiece(TE_YP, Hinge.PIECE_TOP);
+                Hinge.setRigidity(TE_YP, Hinge.getRigidity(TE));
 
                 BlockProperties.playBlockSound(world, new ItemStack(BlockRegistry.blockCarpentersDoor), x, y, z, false);
 
@@ -115,10 +115,10 @@ public class ItemCarpentersDoor extends ItemBlock {
      */
     private int getHingePoint(TEBase TE, Block block)
     {
-        int facing = Door.getFacing(TE);
-        Door.getHinge(TE);
-        Door.getState(TE);
-        int piece = Door.getPiece(TE);
+        int facing = Hinge.getFacing(TE);
+        Hinge.getHinge(TE);
+        Hinge.getState(TE);
+        int piece = Hinge.getPiece(TE);
 
         World world = TE.getWorldObj();
 
@@ -129,45 +129,45 @@ public class ItemCarpentersDoor extends ItemBlock {
 
         switch (facing)
         {
-            case Door.FACING_XN:
+            case Hinge.FACING_XN:
 
                 if (TE_ZP != null) {
-                    if (piece == Door.getPiece(TE_ZP) && facing == Door.getFacing(TE_ZP) && Door.getHinge(TE_ZP) == Door.HINGE_LEFT) {
-                        return Door.HINGE_RIGHT;
+                    if (piece == Hinge.getPiece(TE_ZP) && facing == Hinge.getFacing(TE_ZP) && Hinge.getHinge(TE_ZP) == Hinge.HINGE_LEFT) {
+                        return Hinge.HINGE_RIGHT;
                     }
                 }
 
                 break;
-            case Door.FACING_XP:
+            case Hinge.FACING_XP:
 
                 if (TE_ZN != null) {
-                    if (piece == Door.getPiece(TE_ZN) && facing == Door.getFacing(TE_ZN) && Door.getHinge(TE_ZN) == Door.HINGE_LEFT) {
-                        return Door.HINGE_RIGHT;
+                    if (piece == Hinge.getPiece(TE_ZN) && facing == Hinge.getFacing(TE_ZN) && Hinge.getHinge(TE_ZN) == Hinge.HINGE_LEFT) {
+                        return Hinge.HINGE_RIGHT;
                     }
                 }
 
                 break;
-            case Door.FACING_ZN:
+            case Hinge.FACING_ZN:
 
                 if (TE_XN != null) {
-                    if (piece == Door.getPiece(TE_XN) && facing == Door.getFacing(TE_XN) && Door.getHinge(TE_XN) == Door.HINGE_LEFT) {
-                        return Door.HINGE_RIGHT;
+                    if (piece == Hinge.getPiece(TE_XN) && facing == Hinge.getFacing(TE_XN) && Hinge.getHinge(TE_XN) == Hinge.HINGE_LEFT) {
+                        return Hinge.HINGE_RIGHT;
                     }
                 }
 
                 break;
-            case Door.FACING_ZP:
+            case Hinge.FACING_ZP:
 
                 if (TE_XP != null) {
-                    if (piece == Door.getPiece(TE_XP) && facing == Door.getFacing(TE_XP) && Door.getHinge(TE_XP) == Door.HINGE_LEFT) {
-                        return Door.HINGE_RIGHT;
+                    if (piece == Hinge.getPiece(TE_XP) && facing == Hinge.getFacing(TE_XP) && Hinge.getHinge(TE_XP) == Hinge.HINGE_LEFT) {
+                        return Hinge.HINGE_RIGHT;
                     }
                 }
 
                 break;
         }
 
-        return Door.HINGE_LEFT;
+        return Hinge.HINGE_LEFT;
     }
 
 }

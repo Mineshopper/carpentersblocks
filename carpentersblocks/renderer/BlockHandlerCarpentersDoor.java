@@ -5,7 +5,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import carpentersblocks.block.BlockCarpentersDoor;
-import carpentersblocks.data.Door;
+import carpentersblocks.data.Hinge;
 import carpentersblocks.renderer.helper.RenderHelper;
 import carpentersblocks.renderer.helper.VertexHelper;
 import carpentersblocks.util.BlockProperties;
@@ -32,25 +32,25 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
         renderBlocks.renderAllFaces = true;
 
         ItemStack itemStack = BlockProperties.getCover(TE, 6);
-        int type = Door.getType(TE);
+        int type = Hinge.getType(TE);
 
         switch (type) {
-            case Door.TYPE_GLASS_TOP:
+            case Hinge.TYPE_GLASS_TOP:
                 renderGlassTopDoor(itemStack, x, y, z);
                 break;
-            case Door.TYPE_GLASS_TALL:
+            case Hinge.TYPE_GLASS_TALL:
                 renderTallDoor(itemStack, x, y, z);
                 break;
-            case Door.TYPE_PANELS:
+            case Hinge.TYPE_PANELS:
                 renderPanelsDoor(itemStack, x, y, z);
                 break;
-            case Door.TYPE_SCREEN_TALL:
+            case Hinge.TYPE_SCREEN_TALL:
                 renderTallDoor(itemStack, x, y, z);
                 break;
-            case Door.TYPE_FRENCH_GLASS:
+            case Hinge.TYPE_FRENCH_GLASS:
                 renderFrenchGlassDoor(itemStack, x, y, z);
                 break;
-            case Door.TYPE_HIDDEN:
+            case Hinge.TYPE_HIDDEN:
                 renderHiddenDoor(itemStack, x, y, z);
                 break;
         }
@@ -63,10 +63,10 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
      */
     private void renderFrenchGlassDoor(ItemStack itemStack, int x, int y, int z)
     {
-        int hinge = Door.getHinge(TE);
-        int facing = Door.getFacing(TE);
-        boolean isOpen = Door.getState(TE) == Door.STATE_OPEN;
-        boolean isBottom = Door.getPiece(TE) == Door.PIECE_BOTTOM;
+        int hinge = Hinge.getHinge(TE);
+        int facing = Hinge.getFacing(TE);
+        boolean isOpen = Hinge.getState(TE) == Hinge.STATE_OPEN;
+        boolean isBottom = Hinge.getPiece(TE) == Hinge.PIECE_BOTTOM;
 
         boolean path_on_x = false;
 
@@ -86,7 +86,7 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
 
         switch (facing)
         {
-            case Door.FACING_XN:
+            case Hinge.FACING_XN:
 
                 if (!isOpen) {
 
@@ -97,7 +97,7 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
                     path_offset = 0.09375F;
                     path_on_x = true;
 
-                } else if (hinge == Door.HINGE_RIGHT) {
+                } else if (hinge == Hinge.HINGE_RIGHT) {
 
                     z_high = 0.1875F;
                     z_high_offset = z_high;
@@ -116,7 +116,7 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
                 }
 
                 break;
-            case Door.FACING_XP:
+            case Hinge.FACING_XP:
 
                 if (!isOpen) {
 
@@ -127,7 +127,7 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
                     path_offset = 0.90625F;
                     path_on_x = true;
 
-                } else if (hinge == Door.HINGE_RIGHT) {
+                } else if (hinge == Hinge.HINGE_RIGHT) {
 
                     z_low = 0.8125F;
                     z_low_offset = z_low;
@@ -146,7 +146,7 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
                 }
 
                 break;
-            case Door.FACING_ZN:
+            case Hinge.FACING_ZN:
 
                 if (!isOpen) {
 
@@ -156,7 +156,7 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
                     x_low_offset = 0.8125F;
                     path_offset = 0.09375F;
 
-                } else if (hinge == Door.HINGE_RIGHT) {
+                } else if (hinge == Hinge.HINGE_RIGHT) {
 
                     x_low = 0.8125F;
                     x_low_offset = x_low;
@@ -177,7 +177,7 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
                 }
 
                 break;
-            case Door.FACING_ZP:
+            case Hinge.FACING_ZP:
 
                 if (!isOpen) {
 
@@ -187,7 +187,7 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
                     x_low_offset = 0.8125F;
                     path_offset = 0.90625F;
 
-                } else if (hinge == Door.HINGE_RIGHT) {
+                } else if (hinge == Hinge.HINGE_RIGHT) {
 
                     x_high = 0.1875F;
                     x_high_offset = x_high;
@@ -346,9 +346,9 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
      */
     private void renderGlassTopDoor(ItemStack itemStack, int x, int y, int z)
     {
-        int hinge = Door.getHinge(TE);
-        boolean isOpen = Door.getState(TE) == Door.STATE_OPEN;
-        boolean isBottom = Door.getPiece(TE) == Door.PIECE_BOTTOM;
+        int hinge = Hinge.getHinge(TE);
+        boolean isOpen = Hinge.getState(TE) == Hinge.STATE_OPEN;
+        boolean isBottom = Hinge.getPiece(TE) == Hinge.PIECE_BOTTOM;
 
         boolean path_on_x = false;
 
@@ -366,9 +366,9 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
         float x_high_offset = 1.0F;
         float z_high_offset = 1.0F;
 
-        switch (Door.getFacing(TE))
+        switch (Hinge.getFacing(TE))
         {
-            case Door.FACING_XN:
+            case Hinge.FACING_XN:
 
                 if (!isOpen) {
 
@@ -379,7 +379,7 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
                     path_offset = 0.09375F;
                     path_on_x = true;
 
-                } else if (hinge == Door.HINGE_RIGHT) {
+                } else if (hinge == Hinge.HINGE_RIGHT) {
 
                     z_high = 0.1875F;
                     z_high_offset = z_high;
@@ -398,7 +398,7 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
                 }
 
                 break;
-            case Door.FACING_XP:
+            case Hinge.FACING_XP:
 
                 if (!isOpen) {
 
@@ -409,7 +409,7 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
                     path_offset = 0.90625F;
                     path_on_x = true;
 
-                } else if (hinge == Door.HINGE_RIGHT) {
+                } else if (hinge == Hinge.HINGE_RIGHT) {
 
                     z_low = 0.8125F;
                     z_low_offset = z_low;
@@ -428,7 +428,7 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
                 }
 
                 break;
-            case Door.FACING_ZN:
+            case Hinge.FACING_ZN:
 
                 if (!isOpen) {
 
@@ -438,7 +438,7 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
                     x_low_offset = 0.8125F;
                     path_offset = 0.09375F;
 
-                } else if (hinge == Door.HINGE_RIGHT) {
+                } else if (hinge == Hinge.HINGE_RIGHT) {
 
                     x_low = 0.8125F;
                     x_low_offset = x_low;
@@ -459,7 +459,7 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
                 }
 
                 break;
-            case Door.FACING_ZP:
+            case Hinge.FACING_ZP:
 
                 if (!isOpen) {
 
@@ -469,7 +469,7 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
                     x_low_offset = 0.8125F;
                     path_offset = 0.90625F;
 
-                } else if (hinge == Door.HINGE_RIGHT) {
+                } else if (hinge == Hinge.HINGE_RIGHT) {
 
                     x_high = 0.1875F;
                     x_high_offset = x_high;
@@ -610,9 +610,9 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
      */
     private void renderPanelsDoor(ItemStack itemStack, int x, int y, int z)
     {
-        int hinge = Door.getHinge(TE);
-        boolean isOpen = Door.getState(TE) == Door.STATE_OPEN;
-        boolean isBottom = Door.getPiece(TE) == Door.PIECE_BOTTOM;
+        int hinge = Hinge.getHinge(TE);
+        boolean isOpen = Hinge.getState(TE) == Hinge.STATE_OPEN;
+        boolean isBottom = Hinge.getPiece(TE) == Hinge.PIECE_BOTTOM;
 
         boolean path_on_x = false;
 
@@ -628,9 +628,9 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
         float x_high_offset = 1.0F;
         float z_high_offset = 1.0F;
 
-        switch (Door.getFacing(TE))
+        switch (Hinge.getFacing(TE))
         {
-            case Door.FACING_XN:
+            case Hinge.FACING_XN:
 
                 if (!isOpen) {
 
@@ -640,7 +640,7 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
                     z_low_offset = 0.8125F;
                     path_on_x = true;
 
-                } else if (hinge == Door.HINGE_RIGHT) {
+                } else if (hinge == Hinge.HINGE_RIGHT) {
 
                     z_high = 0.1875F;
                     z_high_offset = z_high;
@@ -657,7 +657,7 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
                 }
 
                 break;
-            case Door.FACING_XP:
+            case Hinge.FACING_XP:
 
                 if (!isOpen) {
 
@@ -667,7 +667,7 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
                     z_low_offset = 0.8125F;
                     path_on_x = true;
 
-                } else if (hinge == Door.HINGE_RIGHT) {
+                } else if (hinge == Hinge.HINGE_RIGHT) {
 
                     z_low = 0.8125F;
                     z_low_offset = z_low;
@@ -684,7 +684,7 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
                 }
 
                 break;
-            case Door.FACING_ZN:
+            case Hinge.FACING_ZN:
 
                 if (!isOpen) {
 
@@ -693,7 +693,7 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
                     x_high_offset = 0.1875F;
                     x_low_offset = 0.8125F;
 
-                } else if (hinge == Door.HINGE_RIGHT) {
+                } else if (hinge == Hinge.HINGE_RIGHT) {
 
                     x_low = 0.8125F;
                     x_low_offset = x_low;
@@ -712,7 +712,7 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
                 }
 
                 break;
-            case Door.FACING_ZP:
+            case Hinge.FACING_ZP:
 
                 if (!isOpen) {
 
@@ -721,7 +721,7 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
                     x_high_offset = 0.1875F;
                     x_low_offset = 0.8125F;
 
-                } else if (hinge == Door.HINGE_RIGHT) {
+                } else if (hinge == Hinge.HINGE_RIGHT) {
 
                     x_high = 0.1875F;
                     x_high_offset = x_high;
@@ -830,9 +830,9 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
      */
     private void renderTallDoor(ItemStack itemStack, int x, int y, int z)
     {
-        int hinge = Door.getHinge(TE);
-        boolean isOpen = Door.getState(TE) == Door.STATE_OPEN;
-        boolean isBottom = Door.getPiece(TE) == Door.PIECE_BOTTOM;
+        int hinge = Hinge.getHinge(TE);
+        boolean isOpen = Hinge.getState(TE) == Hinge.STATE_OPEN;
+        boolean isBottom = Hinge.getPiece(TE) == Hinge.PIECE_BOTTOM;
 
         boolean path_on_x = false;
 
@@ -850,9 +850,9 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
         float x_high_offset = 1.0F;
         float z_high_offset = 1.0F;
 
-        switch (Door.getFacing(TE))
+        switch (Hinge.getFacing(TE))
         {
-            case Door.FACING_XN:
+            case Hinge.FACING_XN:
 
                 if (!isOpen) {
 
@@ -863,7 +863,7 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
                     path_offset = 0.09375F;
                     path_on_x = true;
 
-                } else if (hinge == Door.HINGE_RIGHT) {
+                } else if (hinge == Hinge.HINGE_RIGHT) {
 
                     z_high = 0.1875F;
                     z_high_offset = z_high;
@@ -882,7 +882,7 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
                 }
 
                 break;
-            case Door.FACING_XP:
+            case Hinge.FACING_XP:
 
                 if (!isOpen) {
 
@@ -893,7 +893,7 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
                     path_offset = 0.90625F;
                     path_on_x = true;
 
-                } else if (hinge == Door.HINGE_RIGHT) {
+                } else if (hinge == Hinge.HINGE_RIGHT) {
 
                     z_low = 0.8125F;
                     z_low_offset = z_low;
@@ -912,7 +912,7 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
                 }
 
                 break;
-            case Door.FACING_ZN:
+            case Hinge.FACING_ZN:
 
                 if (!isOpen) {
 
@@ -922,7 +922,7 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
                     x_low_offset = 0.8125F;
                     path_offset = 0.09375F;
 
-                } else if (hinge == Door.HINGE_RIGHT) {
+                } else if (hinge == Hinge.HINGE_RIGHT) {
 
                     x_low = 0.8125F;
                     x_low_offset = x_low;
@@ -943,7 +943,7 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
                 }
 
                 break;
-            case Door.FACING_ZP:
+            case Hinge.FACING_ZP:
 
                 if (!isOpen) {
 
@@ -953,7 +953,7 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
                     x_low_offset = 0.8125F;
                     path_offset = 0.90625F;
 
-                } else if (hinge == Door.HINGE_RIGHT) {
+                } else if (hinge == Hinge.HINGE_RIGHT) {
 
                     x_high = 0.1875F;
                     x_high_offset = x_high;
@@ -997,13 +997,13 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
             renderBlock(itemStack, x, y, z);
         }
 
-        int type = Door.getType(TE);
+        int type = Hinge.getType(TE);
         IIcon icon;
 
         if (isBottom) {
-            icon = type == Door.TYPE_SCREEN_TALL ? IconRegistry.icon_door_screen_tall : IconRegistry.icon_door_glass_tall_bottom;
+            icon = type == Hinge.TYPE_SCREEN_TALL ? IconRegistry.icon_door_screen_tall : IconRegistry.icon_door_glass_tall_bottom;
         } else {
-            icon = type == Door.TYPE_SCREEN_TALL ? IconRegistry.icon_door_screen_tall : IconRegistry.icon_door_glass_tall_top;
+            icon = type == Hinge.TYPE_SCREEN_TALL ? IconRegistry.icon_door_screen_tall : IconRegistry.icon_door_glass_tall_top;
         }
 
         VertexHelper.setOffset(-(1 - path_offset));
@@ -1062,9 +1062,9 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
         suppressPattern = true;
         suppressOverlay = true;
 
-        int hinge = Door.getHinge(TE);
-        boolean isOpen = Door.getState(TE) == Door.STATE_OPEN;
-        boolean isBottom = Door.getPiece(TE) == Door.PIECE_BOTTOM;
+        int hinge = Hinge.getHinge(TE);
+        boolean isOpen = Hinge.getState(TE) == Hinge.STATE_OPEN;
+        boolean isBottom = Hinge.getPiece(TE) == Hinge.PIECE_BOTTOM;
 
         float x_low = 0.0F;
         float y_low = isBottom ? 0.875F : 0.0625F;
@@ -1073,13 +1073,13 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
         float y_low_offset = isBottom ? 0.875F : 0.0F;
         float y_high_offset = isBottom ? 1.0F : 0.125F;
 
-        switch (Door.getFacing(TE))
+        switch (Hinge.getFacing(TE))
         {
-            case Door.FACING_XN:
+            case Hinge.FACING_XN:
 
                 if (!isOpen) {
 
-                    z_low = hinge == Door.HINGE_RIGHT ? 0.875F : 0.0625F;
+                    z_low = hinge == Hinge.HINGE_RIGHT ? 0.875F : 0.0625F;
 
                     if (render_inside_handle)
                     {
@@ -1097,7 +1097,7 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
                         renderBlock(itemStack, x + 1, y, z);
                     }
 
-                } else if (hinge == Door.HINGE_RIGHT) {
+                } else if (hinge == Hinge.HINGE_RIGHT) {
 
                     if (render_outside_handle)
                     {
@@ -1136,11 +1136,11 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
                 }
 
                 break;
-            case Door.FACING_XP:
+            case Hinge.FACING_XP:
 
                 if (!isOpen) {
 
-                    z_low = hinge == Door.HINGE_RIGHT ? 0.0625F : 0.875F;
+                    z_low = hinge == Hinge.HINGE_RIGHT ? 0.0625F : 0.875F;
 
                     if (render_inside_handle)
                     {
@@ -1158,7 +1158,7 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
                         renderBlock(itemStack, x - 1, y, z);
                     }
 
-                } else if (hinge == Door.HINGE_RIGHT) {
+                } else if (hinge == Hinge.HINGE_RIGHT) {
 
                     if (render_outside_handle)
                     {
@@ -1197,11 +1197,11 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
                 }
 
                 break;
-            case Door.FACING_ZN:
+            case Hinge.FACING_ZN:
 
                 if (!isOpen) {
 
-                    x_low = hinge == Door.HINGE_RIGHT ? 0.0625F : 0.875F;
+                    x_low = hinge == Hinge.HINGE_RIGHT ? 0.0625F : 0.875F;
 
                     if (render_inside_handle)
                     {
@@ -1219,7 +1219,7 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
                         renderBlock(itemStack, x, y, z + 1);
                     }
 
-                } else if (hinge == Door.HINGE_RIGHT) {
+                } else if (hinge == Hinge.HINGE_RIGHT) {
 
                     if (render_outside_handle)
                     {
@@ -1258,11 +1258,11 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
                 }
 
                 break;
-            case Door.FACING_ZP:
+            case Hinge.FACING_ZP:
 
                 if (!isOpen) {
 
-                    x_low = hinge == Door.HINGE_RIGHT ? 0.875F : 0.0625F;
+                    x_low = hinge == Hinge.HINGE_RIGHT ? 0.875F : 0.0625F;
 
                     if (render_inside_handle)
                     {
@@ -1280,7 +1280,7 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
                         renderBlock(itemStack, x, y, z - 1);
                     }
 
-                } else if (hinge == Door.HINGE_RIGHT) {
+                } else if (hinge == Hinge.HINGE_RIGHT) {
 
                     if (render_outside_handle)
                     {
