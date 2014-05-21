@@ -20,6 +20,7 @@ import net.minecraftforge.common.ForgeDirection;
 import carpentersblocks.CarpentersBlocks;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.handler.OverlayHandler;
+import carpentersblocks.util.registry.FeatureRegistry;
 
 public class BlockProperties {
 
@@ -265,13 +266,11 @@ public class BlockProperties {
         {
             Block block = Block.blocksList[itemStack.getItem().itemID];
 
-            return !block.hasTileEntity(itemStack.getItemDamage()) &&
-                    (
-                            block.renderAsNormalBlock() ||
-                            block instanceof BlockHalfSlab ||
-                            block instanceof BlockPane ||
-                            block instanceof BlockBreakable
-                            );
+            if (block.hasTileEntity(itemStack.getItemDamage()) && FeatureRegistry.restrictTileEntityAsCover) {
+                return false;
+            } else {
+                return block.renderAsNormalBlock() || block instanceof BlockHalfSlab || block instanceof BlockPane || block instanceof BlockBreakable;
+            }
         }
 
         return false;
@@ -286,20 +285,20 @@ public class BlockProperties {
         if (itemStack != null)
         {
             Block block = Block.blocksList[itemStack.itemID];
-            
+
             int itemDropped = block.idDropped(itemStack.getItemDamage(), world.rand, /* Fortune */ 0);
             int damageDropped = block.damageDropped(itemStack.getItemDamage());
-            
+
             /*
              * Check if block drops itself, and, if so, correct the damage value
              * to the block's default.
              */
-            
+
             if (itemStack.itemID == itemDropped && damageDropped != itemStack.getItemDamage()) {
                 itemStack.setItemDamage(damageDropped);
             }
         }
-        
+
         return itemStack;
     }
 

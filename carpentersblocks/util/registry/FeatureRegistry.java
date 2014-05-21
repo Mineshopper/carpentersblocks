@@ -19,6 +19,7 @@ public class FeatureRegistry {
     public static boolean enableZFightingFix           = false;
     public static boolean enableOptifineIntegration    = true;
     public static boolean enableExtendedPlantSupport   = true;
+    public static boolean restrictTileEntityAsCover    = true;
 
     public static int slopeSmoothness = 2;
 
@@ -68,6 +69,10 @@ public class FeatureRegistry {
         Property plantColorOverrideProp = config.get("flower pot", "Override Biome Coloring", enablePlantColorOverride);
         plantColorOverrideProp.comment = "Set to true to override biome-colored plants to a lively green.";
         enablePlantColorOverride = plantColorOverrideProp.getBoolean(enablePlantColorOverride);
+
+        Property restrictTileEntityAsCoverProp = config.get("cover restriction", "Restrict covers that have tile entities", restrictTileEntityAsCover);
+        restrictTileEntityAsCoverProp.comment = "Setting this to false will allow nearly any block to be used as cover.  Results will vary, and crashes may occur if disabled.";
+        restrictTileEntityAsCover = restrictTileEntityAsCoverProp.getBoolean(restrictTileEntityAsCover);
     }
 
 }
