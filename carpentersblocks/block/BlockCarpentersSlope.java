@@ -418,7 +418,7 @@ public class BlockCarpentersSlope extends BlockCoverable {
      */
     public boolean isBlockSolidOnSide(World world, int x, int y, int z, ForgeDirection side)
     {
-        if (isValid(world, x, y, z)) {
+        if (isValid(world, x, y, z) && world.getBlockId(x, y, z) == this.blockID) {
 
             if (isBlockSolid(world, x, y, z)) {
                 TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
