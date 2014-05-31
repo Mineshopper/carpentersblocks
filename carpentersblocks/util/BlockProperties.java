@@ -327,8 +327,22 @@ public class BlockProperties {
     }
 
     /**
-     * Get block data.
-     * Will handle signed data types automatically.
+     * Get extended metadata for Carpenter's block.
+     *
+     * @deprecated  Provided until Smart Moving updates.
+     *    Replaced by {@link #getMetadata(TEBase)}
+     * @return extended metadata
+     */
+    @Deprecated
+    public final static int getData(TEBase TE)
+    {
+        return getMetadata(TE);
+    }
+
+    /**
+     * Get extended metadata for Carpenter's block.
+     *
+     * @return
      */
     public final static int getMetadata(TEBase TE)
     {
