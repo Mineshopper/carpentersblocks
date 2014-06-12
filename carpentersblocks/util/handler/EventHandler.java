@@ -9,6 +9,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.ResourceLocation;
@@ -44,9 +45,6 @@ public class EventHandler {
 
     /** Stores entity that hit block. */
     public static EntityPlayer eventEntityPlayer;
-
-    /** This is an offset used for blockIcon. */
-    public final static int BLOCKICON_BASE_ID = 1000;
 
     @SubscribeEvent
     /**
@@ -200,18 +198,10 @@ public class EventHandler {
 
             ItemStack itemStack = OverlayHandler.getOverlaySideSensitive(TE, effectiveSide, 1);
 
-            if (BlockProperties.toBlock(itemStack) instanceof BlockCoverable) {
-                itemStack.setItemDamage(BLOCKICON_BASE_ID);
-            }
+            /* Spawn sprint particles client-side. */
 
-            if (world.isRemote) {
-
-                /* Spawn sprint particles client-side. */
-
-                if (entity.isSprinting() && !entity.isInWater()) {
-                    ParticleHelper.spawnTileParticleAt(entity, itemStack);
-                }
-
+            if (world.isRemote && entity.isSprinting() && !entity.isInWater()) {
+                ParticleHelper.spawnTileParticleAt(entity, itemStack);
             }
 
             /* Adjust block slipperiness according to cover. */
@@ -229,65 +219,67 @@ public class EventHandler {
     @SubscribeEvent
     public void onPlaySoundEvent(PlaySoundEvent17 event)
     {
-        if (event != null && event.name != null) {
+        if (event != null && event.name != null && event.name.contains(CarpentersBlocks.MODID)) {
 
-            if (event.name.contains(CarpentersBlocks.MODID)) {
+            if (FMLCommonHandler.instance().getSide() == Side.CLIENT) {
 
-                if (FMLCommonHandler.instance().getSide() == Side.CLIENT) {
+                World world = FMLClientHandler.instance().getClient().theWorld;
+                int x = MathHelper.floor_float(event.sound.getXPosF());
+                int y = MathHelper.floor_float(event.sound.getYPosF());
+                int z = MathHelper.floor_float(event.sound.getZPosF());
 
-                    World world = FMLClientHandler.instance().getClient().theWorld;
-                    int x = MathHelper.floor_float(event.sound.getXPosF());
-                    int y = MathHelper.floor_float(event.sound.getYPosF());
-                    int z = MathHelper.floor_float(event.sound.getZPosF());
+                Block block = world.getBlock(x, y, z);
 
-                    Block block = world.getBlock(x, y, z);
+                TileEntity TE = world.getTileEntity(x, y, z);
 
-                    if (block != null && block instanceof BlockCoverable) {
-
-                        block = BlockProperties.toBlock(BlockProperties.getCover((TEBase) world.getTileEntity(x, y, z), 6));
-
-                        if (block instanceof BlockCoverable) {
-                            block = Blocks.planks;
-                        }
-
-                        event.result = new PositionedSoundRecord(new ResourceLocation(block.stepSound.getStepResourcePath()), (block.stepSound.getVolume() + 1.0F) / 8.0F, block.stepSound.getPitch() * 0.5F, x + 0.5F, y + 0.5F, z + 0.5F);
-
-                    }
-
+                if (TE != null && TE instanceof TEBase) {
+                    block = BlockProperties.toBlock(BlockProperties.getCover((TEBase) TE, 6));
                 }
+
+                if (block instanceof BlockCoverable) {
+                    block = Blocks.planks;
+                }
+
+                event.result = new PositionedSoundRecord(new ResourceLocation(block.stepSound.getBreakSound()), (block.stepSound.getVolume() + 1.0F) / 2.0F, block.stepSound.getPitch() * 0.8F, x + 0.5F, y + 0.5F, z + 0.5F);
 
             }
 
         }
     }
 
+    /**
+     * Override sounds when walking on block.
+     *
+     * @param event
+     */
     @SideOnly(Side.CLIENT)
     @SubscribeEvent
     public void onPlaySoundAtEntityEvent(PlaySoundAtEntityEvent event)
     {
-        if (event != null && event.name != null) {
+        if (event != null && event.name != null && event.name.contains(CarpentersBlocks.MODID)) {
 
-            if (event.name.equals("step." + CarpentersBlocks.MODID)) {
+            int x = MathHelper.floor_double(event.entity.posX);
+            int y = MathHelper.floor_double(event.entity.posY - 0.20000000298023224D - event.entity.yOffset);
+            int z = MathHelper.floor_double(event.entity.posZ);
 
-                int x = MathHelper.floor_double(event.entity.posX);
-                int y = MathHelper.floor_double(event.entity.posY - 0.20000000298023224D - event.entity.yOffset);
-                int z = MathHelper.floor_double(event.entity.posZ);
+            Block block = event.entity.worldObj.getBlock(x, y, z);
+            String prefix = event.name.substring(0, event.name.indexOf(".") + 1);
 
-                Block block = event.entity.worldObj.getBlock(x, y, z);
+            if (block != null && block instanceof BlockCoverable) {
 
-                if (block != null && block instanceof BlockCoverable) {
+                block = BlockProperties.toBlock(BlockProperties.getCover((TEBase) event.entity.worldObj.getTileEntity(x, y, z), 6));
 
-                    block = BlockProperties.toBlock(BlockProperties.getCover((TEBase) event.entity.worldObj.getTileEntity(x, y, z), 6));
-
-                    if (block instanceof BlockCoverable) {
-                        event.name = "step." + Blocks.planks.stepSound.soundName;
-                    } else if (block.stepSound != null) {
-                        event.name = "step." + block.stepSound.soundName;
-                    }
-
+                if (block instanceof BlockCoverable) {
+                    event.name = prefix + Blocks.planks.stepSound.soundName;
+                } else if (block.stepSound != null) {
+                    event.name = prefix + block.stepSound.soundName;
                 }
-            }
 
+            } else {
+
+                event.name = prefix + Blocks.planks.stepSound.soundName;
+
+            }
         }
     }
 
