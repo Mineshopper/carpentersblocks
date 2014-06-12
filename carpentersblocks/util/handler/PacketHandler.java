@@ -33,35 +33,14 @@ public class PacketHandler {
 
         switch (bbis.readInt()) {
             case PACKET_SLOPE_SELECT:
-            {
-                boolean incDamage = bbis.readBoolean();
 
                 if (itemStack != null) {
-
-                    if (incDamage) {
-
-                        if (itemStack.getItemDamage() >= BlockCarpentersSlope.slopeType.length - 1) {
-                            itemStack.setItemDamage(0);
-                        } else {
-                            itemStack.setItemDamage(itemStack.getItemDamage() + 1);
-                        }
-
-                    } else {
-
-                        if (itemStack.getItemDamage() <= 0) {
-                            itemStack.setItemDamage(BlockCarpentersSlope.slopeType.length - 1);
-                        } else {
-                            itemStack.setItemDamage(itemStack.getItemDamage() - 1);
-                        }
-
-                    }
-
+                    itemStack.setItemDamage((itemStack.getItemDamage() + (bbis.readBoolean() ? 1 : -1)) % BlockCarpentersSlope.slopeType.length);
                 }
 
                 break;
-            }
             case PACKET_BLOCK_ACTIVATED:
-            {
+
                 int x = bbis.readInt();
                 int y = bbis.readInt();
                 int z = bbis.readInt();
@@ -90,7 +69,6 @@ public class PacketHandler {
                 }
 
                 break;
-            }
             default: {}
         }
 
