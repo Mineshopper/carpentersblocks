@@ -87,7 +87,7 @@ public class EventHandler {
                     block.onBlockClicked(eventEntityPlayer.worldObj, event.x, event.y, event.z, eventEntityPlayer);
                 }
 
-            } else if (toolEquipped) {
+            } else {
 
                 /*
                  * onBlockActivated() isn't called if the player is sneaking.
