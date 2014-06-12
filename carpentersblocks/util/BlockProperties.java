@@ -18,13 +18,40 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import carpentersblocks.CarpentersBlocks;
+import carpentersblocks.block.BlockCoverable;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.handler.DyeHandler;
 import carpentersblocks.util.handler.OverlayHandler;
+import carpentersblocks.util.registry.FeatureRegistry;
 
-public class BlockProperties {
+public final class BlockProperties {
 
-    public final static SoundType stepSound = new SoundType(CarpentersBlocks.MODID, 1.0F, 1.0F);
+    private BlockProperties() { }
+
+    public final static SoundType stepSound         = new SoundType(CarpentersBlocks.MODID, 1.0F, 1.0F);
+    public final static int       MASK_DEFAULT_ICON = 0x10;
+
+    public static boolean isMetadataDefaultIcon(int metadata)
+    {
+        return (metadata & MASK_DEFAULT_ICON) > 0;
+    }
+
+    /**
+     * Adds additional data to unused bits in ItemStack metadata to
+     * identify special properties for ItemStack.
+     *
+     * Tells BlockCoverable class to retrieve block icon rather than
+     * default blank icon.
+     *
+     * @param itemStack
+     * @param mask
+     */
+    public static void prepareItemStackForRendering(ItemStack itemStack)
+    {
+        if (toBlock(itemStack) instanceof BlockCoverable) {
+            itemStack.setItemDamage(itemStack.getItemDamage() | MASK_DEFAULT_ICON);
+        }
+    }
 
     /**
      * Sets host metadata to match ItemStack damage value.
@@ -238,17 +265,23 @@ public class BlockProperties {
     }
 
     /**
-     * Returns cover ItemStack for side.
+     * Returns cover ItemStack in clean form for rendering purposes.
+     *
+     */
+    public static ItemStack getCoverForRendering(TEBase TE, int side)
+    {
+        return TE.cover[side] != null ? TE.cover[side] : new ItemStack(TE.getBlockType());
+    }
+
+    /**
+     * Returns filtered cover ItemStack that is safe for calling block properties.
      */
     public static ItemStack getCover(TEBase TE, int side)
     {
-        ItemStack itemStack = new ItemStack(TE.getBlockType());
+        ItemStack itemStack = getCoverForRendering(TE, side);
+        Block block = toBlock(itemStack);
 
-        if (TE.cover[side] != null) {
-            itemStack = TE.cover[side];
-        }
-
-        return itemStack;
+        return block.hasTileEntity(itemStack.getItemDamage()) && !(block instanceof BlockCoverable) ? new ItemStack(Blocks.planks) : itemStack;
     }
 
     /**
@@ -260,14 +293,11 @@ public class BlockProperties {
 
             Block block = Block.getBlockFromItem(itemStack.getItem());
 
-            if (block.hasTileEntity(itemStack.getItemDamage())) {
-                return false;
-            } else {
-                return block.renderAsNormalBlock() ||
-                       block instanceof BlockSlab ||
-                       block instanceof BlockPane ||
-                       block instanceof BlockBreakable;
-            }
+            return block.renderAsNormalBlock() ||
+                   block instanceof BlockSlab ||
+                   block instanceof BlockPane ||
+                   block instanceof BlockBreakable ||
+                   FeatureRegistry.coverExceptions.contains(itemStack.getDisplayName());
 
         }
 
@@ -449,7 +479,7 @@ public class BlockProperties {
      */
     public static boolean isOverlay(ItemStack itemStack)
     {
-        return OverlayHandler.overlayMap.containsKey(itemStack.getUnlocalizedName());
+        return OverlayHandler.overlayMap.containsKey(itemStack.getDisplayName());
     }
 
     /**

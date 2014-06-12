@@ -1,6 +1,5 @@
 package carpentersblocks.renderer.helper;
 
-import net.minecraft.block.Block;
 import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.client.particle.EntityDiggingFX;
 import net.minecraft.entity.Entity;
@@ -28,7 +27,7 @@ public class ParticleHelper {
     }
 
     /**
-     * Spawns a particle at the base of an entity
+     * Spawns a particle at the base of an entity.
      *
      * @param world the world to spawn the particle
      * @param entity the entity at which feet the particles will spawn
@@ -37,6 +36,8 @@ public class ParticleHelper {
      */
     public static void spawnTileParticleAt(Entity entity, ItemStack itemStack)
     {
+        BlockProperties.prepareItemStackForRendering(itemStack);
+
         entity.worldObj.spawnParticle
         (
                 "blockcrack_" + Item.getIdFromItem(itemStack.getItem()) + "_" + itemStack.getItemDamage(),
@@ -53,6 +54,7 @@ public class ParticleHelper {
      */
     public static void addDestroyEffect(World world, int x, int y, int z, ItemStack itemStack, EffectRenderer effectRenderer)
     {
+        BlockProperties.prepareItemStackForRendering(itemStack);
         byte factor = 4;
 
         for (int posX = 0; posX < factor; ++posX)
@@ -75,9 +77,11 @@ public class ParticleHelper {
     /**
      * Produces block hit particles at coordinates.
      */
-    public static void addBlockHitEffect(TEBase TE, MovingObjectPosition target, double x, double y, double z, Block block, int metadata, EffectRenderer effectRenderer)
+    public static void addHitEffect(TEBase TE, MovingObjectPosition target, double x, double y, double z, ItemStack itemStack, EffectRenderer effectRenderer)
     {
-        EntityDiggingFX particle = new EntityDiggingFX(TE.getWorldObj(), x, y, z, 0.0D, 0.0D, 0.0D, block, metadata);
+        BlockProperties.prepareItemStackForRendering(itemStack);
+
+        EntityDiggingFX particle = new EntityDiggingFX(TE.getWorldObj(), x, y, z, 0.0D, 0.0D, 0.0D, BlockProperties.toBlock(itemStack), itemStack.getItemDamage());
         effectRenderer.addEffect(particle.applyColourMultiplier(target.blockX, target.blockY, target.blockZ).multiplyVelocity(0.2F).multipleParticleScaleBy(0.6F));
     }
 

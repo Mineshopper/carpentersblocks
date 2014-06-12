@@ -68,13 +68,13 @@ public class BlockCoverable extends BlockContainer {
     public void registerBlockIcons(IIconRegister iconRegister) { }
 
     @SideOnly(Side.CLIENT)
+    public
     /**
      * Returns a base icon that doesn't rely on blockIcon, which
      * is set prior to texture stitch events.
      *
      * @return default icon
-     */
-    protected IIcon getIcon()
+     */ IIcon getIcon()
     {
         return IconRegistry.icon_solid;
     }
@@ -88,12 +88,11 @@ public class BlockCoverable extends BlockContainer {
      */
     public IIcon getIcon(int side, int metadata)
     {
-        switch (metadata) {
-            case EventHandler.BLOCKICON_BASE_ID:
-                return getIcon();
-            default:
-                return IconRegistry.icon_blank;
+        if (BlockProperties.isMetadataDefaultIcon(metadata)) {
+            return getIcon();
         }
+
+        return IconRegistry.icon_blank;
     }
 
     @SideOnly(Side.CLIENT)
@@ -104,13 +103,10 @@ public class BlockCoverable extends BlockContainer {
     public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side)
     {
         TEBase TE = getTileEntity(world, x, y, z);
-        ItemStack itemStack = BlockProperties.getCover(TE, 6);
+        ItemStack itemStack = TE.cover[6];
+        Block block = BlockProperties.toBlock(itemStack);
 
-        if (!BlockProperties.hasCover(TE, 6)) {
-            itemStack.setItemDamage(EventHandler.BLOCKICON_BASE_ID);
-        }
-
-        return BlockProperties.toBlock(itemStack).getIcon(side, itemStack.getItemDamage());
+        return block instanceof BlockCoverable ? getIcon() : block.getIcon(side, itemStack.getItemDamage());
     }
 
     /**
@@ -607,8 +603,6 @@ public class BlockCoverable extends BlockContainer {
 
             Block block = BlockProperties.toBlock(itemStack);
 
-            int metadata = block instanceof BlockCoverable ? EventHandler.BLOCKICON_BASE_ID : itemStack.getItemDamage();
-
             double xOffset = target.blockX + world.rand.nextDouble() * (block.getBlockBoundsMaxX() - block.getBlockBoundsMinX() - 0.1F * 2.0F) + 0.1F + block.getBlockBoundsMinX();
             double yOffset = target.blockY + world.rand.nextDouble() * (block.getBlockBoundsMaxY() - block.getBlockBoundsMinY() - 0.1F * 2.0F) + 0.1F + block.getBlockBoundsMinY();
             double zOffset = target.blockZ + world.rand.nextDouble() * (block.getBlockBoundsMaxZ() - block.getBlockBoundsMinZ() - 0.1F * 2.0F) + 0.1F + block.getBlockBoundsMinZ();
@@ -634,7 +628,7 @@ public class BlockCoverable extends BlockContainer {
                     break;
             }
 
-            ParticleHelper.addBlockHitEffect(TE, target, xOffset, yOffset, zOffset, block, metadata, effectRenderer);
+            ParticleHelper.addHitEffect(TE, target, xOffset, yOffset, zOffset, itemStack, effectRenderer);
 
             return true;
 
@@ -666,24 +660,13 @@ public class BlockCoverable extends BlockContainer {
             EntityPlayer entityPlayer = world.getClosestPlayer(x, y, z, 6.5F);
 
             if (entityPlayer != null) {
-
                 if (!suppressDestroyBlock(entityPlayer)) {
-
-                    ItemStack itemStack = BlockProperties.getCover(TE, 6);
-
-                    if (!BlockProperties.hasCover(TE, 6)) {
-                        itemStack.setItemDamage(EventHandler.BLOCKICON_BASE_ID);
-                    }
-
-                    ParticleHelper.addDestroyEffect(world, x, y, z, itemStack, effectRenderer);
-
+                    ParticleHelper.addDestroyEffect(world, x, y, z, BlockProperties.getCover(TE, 6), effectRenderer);
                 } else {
-
                     return true;
-
                 }
-
             }
+
         }
 
         return false;

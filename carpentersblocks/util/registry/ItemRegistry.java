@@ -37,14 +37,14 @@ public class ItemRegistry {
      */
     public static void initItems(FMLPreInitializationEvent event, Configuration config)
     {
-        enableHammer                  = config.get("tools",            "Enable Hammer",                  enableHammer).getBoolean(enableHammer);
-        enableChisel                  = config.get("tools",            "Enable Chisel",                  enableChisel).getBoolean(enableChisel);
-        itemCarpentersToolsUses       = config.get("tools",       "Vanilla Tools Uses",       itemCarpentersToolsUses).getInt(itemCarpentersToolsUses);
-        itemCarpentersToolsDamageable = config.get("tools", "Vanilla Tools Damageable", itemCarpentersToolsDamageable).getBoolean(itemCarpentersToolsDamageable);
+        enableHammer                  = config.get("items",            "Enable Hammer",                  enableHammer).getBoolean(enableHammer);
+        enableChisel                  = config.get("items",            "Enable Chisel",                  enableChisel).getBoolean(enableChisel);
+        itemCarpentersToolsUses       = config.get("items",        "Vanilla Tool Uses",       itemCarpentersToolsUses).getInt(itemCarpentersToolsUses);
+        itemCarpentersToolsDamageable = config.get("items", "Vanilla Tools Damageable", itemCarpentersToolsDamageable).getBoolean(itemCarpentersToolsDamageable);
 
-        itemHammerDamageChanceFromSlopes      = config.get("chance to damage hammer when interacting with block",      "itemHammerDamageChanceFromSlopes",      itemHammerDamageChanceFromSlopes).getDouble(     itemHammerDamageChanceFromSlopes);
-        itemHammerDamageChanceFromStairs      = config.get("chance to damage hammer when interacting with block",      "itemHammerDamageChanceFromStairs",      itemHammerDamageChanceFromStairs).getDouble(     itemHammerDamageChanceFromStairs);
-        itemHammerDamageChanceFromCollapsible = config.get("chance to damage hammer when interacting with block", "itemHammerDamageChanceFromCollapsible", itemHammerDamageChanceFromCollapsible).getDouble(itemHammerDamageChanceFromCollapsible);
+        itemHammerDamageChanceFromSlopes      = config.get("items",      "itemHammerDamageChanceFromSlopes",      itemHammerDamageChanceFromSlopes).getDouble(     itemHammerDamageChanceFromSlopes);
+        itemHammerDamageChanceFromStairs      = config.get("items",      "itemHammerDamageChanceFromStairs",      itemHammerDamageChanceFromStairs).getDouble(     itemHammerDamageChanceFromStairs);
+        itemHammerDamageChanceFromCollapsible = config.get("items", "itemHammerDamageChanceFromCollapsible", itemHammerDamageChanceFromCollapsible).getDouble(itemHammerDamageChanceFromCollapsible);
     }
 
     /**
