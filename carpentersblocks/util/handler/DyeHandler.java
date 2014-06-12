@@ -3,8 +3,6 @@ package carpentersblocks.util.handler;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.lang3.text.WordUtils;
-
 import net.minecraft.item.ItemDye;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.ForgeVersion;
@@ -19,9 +17,22 @@ public class DyeHandler {
      */
     public static void init()
     {
-        for (int idx = 0; idx < ItemDye.field_150923_a.length; ++idx) {
-            dyeColor.put("dye" + WordUtils.capitalize(ItemDye.field_150923_a[idx]), ItemDye.field_150922_c[idx]);
-        }
+        dyeColor.put(    "dyeBlack",  ItemDye.field_150922_c[0]);
+        dyeColor.put(      "dyeRed",  ItemDye.field_150922_c[1]);
+        dyeColor.put(    "dyeGreen",  ItemDye.field_150922_c[2]);
+        dyeColor.put(    "dyeBrown",  ItemDye.field_150922_c[3]);
+        dyeColor.put(     "dyeBlue",  ItemDye.field_150922_c[4]);
+        dyeColor.put(   "dyePurple",  ItemDye.field_150922_c[5]);
+        dyeColor.put(     "dyeCyan",  ItemDye.field_150922_c[6]);
+        dyeColor.put("dyeLightGray",  ItemDye.field_150922_c[7]);
+        dyeColor.put(     "dyeGray",  ItemDye.field_150922_c[8]);
+        dyeColor.put(     "dyePink",  ItemDye.field_150922_c[9]);
+        dyeColor.put(     "dyeLime", ItemDye.field_150922_c[10]);
+        dyeColor.put(   "dyeYellow", ItemDye.field_150922_c[11]);
+        dyeColor.put("dyeLightBlue", ItemDye.field_150922_c[12]);
+        dyeColor.put(  "dyeMagenta", ItemDye.field_150922_c[13]);
+        dyeColor.put(   "dyeOrange", ItemDye.field_150922_c[14]);
+        dyeColor.put(    "dyeWhite", ItemDye.field_150922_c[15]);
     }
 
     /**
@@ -30,7 +41,13 @@ public class DyeHandler {
     public static String getOreDictName(ItemStack itemStack)
     {
         if (ForgeVersion.getBuildVersion() > 1112) {
-            return OreDictionary.getOreName(OreDictionary.getOreIDs(itemStack)[0]);
+            for (int id : OreDictionary.getOreIDs(itemStack)) {
+                String result = OreDictionary.getOreName(id);
+                if (result.startsWith("dye") && result.length() > 3) {
+                    return result;
+                }
+            }
+            return "Unknown";
         } else {
             return OreDictionary.getOreName(OreDictionary.getOreID(itemStack));
         }
