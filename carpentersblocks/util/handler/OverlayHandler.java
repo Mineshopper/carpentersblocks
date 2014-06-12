@@ -33,7 +33,7 @@ public class OverlayHandler {
      */
     public static void init()
     {
-        for (String name : FeatureRegistry.overlay_list) {
+        for (String name : FeatureRegistry.overlayItems) {
 
             String itemName = name.substring(0, name.indexOf(":"));
             String overlayType = name.substring(name.indexOf(":") + 1);
@@ -67,7 +67,7 @@ public class OverlayHandler {
     public static Overlay getOverlay(ItemStack itemStack)
     {
         if (itemStack != null) {
-            return (Overlay) overlayMap.get(itemStack.getUnlocalizedName());
+            return (Overlay) overlayMap.get(itemStack.getDisplayName());
         }
 
         return Overlay.NONE;

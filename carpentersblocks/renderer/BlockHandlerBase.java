@@ -22,7 +22,6 @@ import carpentersblocks.renderer.helper.VertexHelper;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.handler.DyeHandler;
-import carpentersblocks.util.handler.EventHandler;
 import carpentersblocks.util.handler.OptifineHandler;
 import carpentersblocks.util.handler.OverlayHandler;
 import carpentersblocks.util.registry.FeatureRegistry;
@@ -63,38 +62,42 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
         Tessellator tessellator = Tessellator.instance;
         GL11.glRotatef(90.0F, 0.0F, 1.0F, 0.0F);
         GL11.glTranslatef(-0.5F, -0.5F, -0.5F);
-
-        IIcon icon_XN = renderBlocks.getBlockIconFromSide(block, 0);
-        IIcon icon_XP = renderBlocks.getBlockIconFromSide(block, 1);
-        IIcon icon_YN = renderBlocks.getBlockIconFromSide(block, 2);
-        IIcon icon_YP = renderBlocks.getBlockIconFromSide(block, 3);
-        IIcon icon_ZN = renderBlocks.getBlockIconFromSide(block, 4);
-        IIcon icon_ZP = renderBlocks.getBlockIconFromSide(block, 5);
+        tessellator.startDrawingQuads();
 
         if (block instanceof BlockCoverable) {
-            icon_XN = renderBlocks.getBlockIconFromSideAndMetadata(block, 0, EventHandler.BLOCKICON_BASE_ID);
-            icon_XP = renderBlocks.getBlockIconFromSideAndMetadata(block, 1, EventHandler.BLOCKICON_BASE_ID);
-            icon_YN = renderBlocks.getBlockIconFromSideAndMetadata(block, 2, EventHandler.BLOCKICON_BASE_ID);
-            icon_YP = renderBlocks.getBlockIconFromSideAndMetadata(block, 3, EventHandler.BLOCKICON_BASE_ID);
-            icon_ZN = renderBlocks.getBlockIconFromSideAndMetadata(block, 4, EventHandler.BLOCKICON_BASE_ID);
-            icon_ZP = renderBlocks.getBlockIconFromSideAndMetadata(block, 5, EventHandler.BLOCKICON_BASE_ID);
+
+            IIcon icon = renderBlocks.getIconSafe(((BlockCoverable)block).getIcon());
+            tessellator.setNormal(0.0F, -1.0F, 0.0F);
+            renderBlocks.renderFaceYNeg(block, 0.0D, 0.0D, 0.0D, icon);
+            tessellator.setNormal(0.0F, 1.0F, 0.0F);
+            renderBlocks.renderFaceYPos(block, 0.0D, 0.0D, 0.0D, icon);
+            tessellator.setNormal(0.0F, 0.0F, -1.0F);
+            renderBlocks.renderFaceZNeg(block, 0.0D, 0.0D, 0.0D, icon);
+            tessellator.setNormal(0.0F, 0.0F, 1.0F);
+            renderBlocks.renderFaceZPos(block, 0.0D, 0.0D, 0.0D, icon);
+            tessellator.setNormal(-1.0F, 0.0F, 0.0F);
+            renderBlocks.renderFaceXNeg(block, 0.0D, 0.0D, 0.0D, icon);
+            tessellator.setNormal(1.0F, 0.0F, 0.0F);
+            renderBlocks.renderFaceXPos(block, 0.0D, 0.0D, 0.0D, icon);
+
+        } else {
+
+            tessellator.setNormal(0.0F, -1.0F, 0.0F);
+            renderBlocks.renderFaceYNeg(block, 0.0D, 0.0D, 0.0D, renderBlocks.getIconSafe(block.getIcon(0, metadata)));
+            tessellator.setNormal(0.0F, 1.0F, 0.0F);
+            renderBlocks.renderFaceYPos(block, 0.0D, 0.0D, 0.0D, renderBlocks.getIconSafe(block.getIcon(1, metadata)));
+            tessellator.setNormal(0.0F, 0.0F, -1.0F);
+            renderBlocks.renderFaceZNeg(block, 0.0D, 0.0D, 0.0D, renderBlocks.getIconSafe(block.getIcon(2, metadata)));
+            tessellator.setNormal(0.0F, 0.0F, 1.0F);
+            renderBlocks.renderFaceZPos(block, 0.0D, 0.0D, 0.0D, renderBlocks.getIconSafe(block.getIcon(3, metadata)));
+            tessellator.setNormal(-1.0F, 0.0F, 0.0F);
+            renderBlocks.renderFaceXNeg(block, 0.0D, 0.0D, 0.0D, renderBlocks.getIconSafe(block.getIcon(4, metadata)));
+            tessellator.setNormal(1.0F, 0.0F, 0.0F);
+            renderBlocks.renderFaceXPos(block, 0.0D, 0.0D, 0.0D, renderBlocks.getIconSafe(block.getIcon(5, metadata)));
+
         }
 
-        tessellator.startDrawingQuads();
-        tessellator.setNormal(0.0F, -1.0F, 0.0F);
-        renderBlocks.renderFaceYNeg(block, 0.0D, 0.0D, 0.0D, icon_XN);
-        tessellator.setNormal(0.0F, 1.0F, 0.0F);
-        renderBlocks.renderFaceYPos(block, 0.0D, 0.0D, 0.0D, icon_XP);
-        tessellator.setNormal(0.0F, 0.0F, -1.0F);
-        renderBlocks.renderFaceZNeg(block, 0.0D, 0.0D, 0.0D, icon_YN);
-        tessellator.setNormal(0.0F, 0.0F, 1.0F);
-        renderBlocks.renderFaceZPos(block, 0.0D, 0.0D, 0.0D, icon_YP);
-        tessellator.setNormal(-1.0F, 0.0F, 0.0F);
-        renderBlocks.renderFaceXNeg(block, 0.0D, 0.0D, 0.0D, icon_ZN);
-        tessellator.setNormal(1.0F, 0.0F, 0.0F);
-        renderBlocks.renderFaceXPos(block, 0.0D, 0.0D, 0.0D, icon_ZP);
         tessellator.draw();
-
         GL11.glTranslatef(0.5F, 0.5F, 0.5F);
         GL11.glRotatef(90.0F, 0.0F, -1.0F, 0.0F);
     }
@@ -377,7 +380,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
             {
                 coverRendering = side;
                 int[] renderOffset = getSideCoverRenderBounds(x, y, z, side);
-                renderBlock(BlockProperties.getCover(TE, side), renderOffset[0], renderOffset[1], renderOffset[2]);
+                renderBlock(BlockProperties.getCoverForRendering(TE, side), renderOffset[0], renderOffset[1], renderOffset[2]);
                 renderBlocks.setRenderBoundsFromBlock(srcBlock);
             }
         }
@@ -399,15 +402,8 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
      */
     protected IIcon getIcon(ItemStack itemStack, int side)
     {
-        int metadata = itemStack.getItemDamage();
-
-        /*  Uncovered BlockCoverable has invisible icon, correct it here. */
-
-        if (Block.getBlockFromItem(itemStack.getItem()) instanceof BlockCoverable) {
-            metadata = EventHandler.BLOCKICON_BASE_ID;
-        }
-
-        IIcon icon = renderBlocks.getIconSafe(getUniqueIcon(itemStack, side, BlockProperties.toBlock(itemStack).getIcon(side, metadata)));
+        BlockProperties.prepareItemStackForRendering(itemStack);
+        IIcon icon = renderBlocks.getIconSafe(getUniqueIcon(itemStack, side, BlockProperties.toBlock(itemStack).getIcon(side, itemStack.getItemDamage())));
 
         if (hasIconOverride[side]) {
             icon = renderBlocks.getIconSafe(iconOverride[side]);
@@ -611,7 +607,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
      */
     protected void renderCarpentersBlock(int x, int y, int z)
     {
-        renderBlock(BlockProperties.getCover(TE, 6), x, y, z);
+        renderBlock(BlockProperties.getCoverForRendering(TE, 6), x, y, z);
     }
 
     /**

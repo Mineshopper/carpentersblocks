@@ -117,23 +117,23 @@ public class BlockRegistry {
      */
     public static void initBlocks(FMLPreInitializationEvent event, Configuration config)
     {
-        enableBarrier          = config.get("control",           "Enable Barrier",          enableBarrier).getBoolean(enableBarrier);
-        enableBed              = config.get("control",               "Enable Bed",              enableBed).getBoolean(enableBed);
-        enableBlock            = config.get("control",        "Enable Block/Slab",            enableBlock).getBoolean(enableBlock);
-        enableButton           = config.get("control",            "Enable Button",           enableButton).getBoolean(enableButton);
-        enableCollapsibleBlock = config.get("control", "Enable Collapsible Block", enableCollapsibleBlock).getBoolean(enableCollapsibleBlock);
-        enableDaylightSensor   = config.get("control",   "Enable Daylight Sensor",   enableDaylightSensor).getBoolean(enableDaylightSensor);
-        enableDoor             = config.get("control",              "Enable Door",             enableDoor).getBoolean(enableDoor);
-        enableFlowerPot        = config.get("control",        "Enable Flower Pot",        enableFlowerPot).getBoolean(enableFlowerPot);
-        enableGate             = config.get("control",              "Enable Gate",             enableGate).getBoolean(enableGate);
-        enableHatch            = config.get("control",             "Enable Hatch",            enableHatch).getBoolean(enableHatch);
-        enableLadder           = config.get("control",            "Enable Ladder",           enableLadder).getBoolean(enableLadder);
-        enableLever            = config.get("control",             "Enable Lever",            enableLever).getBoolean(enableLever);
-        enablePressurePlate    = config.get("control",    "Enable Pressure Plate",    enablePressurePlate).getBoolean(enablePressurePlate);
-        enableSafe             = config.get("control",              "Enable Safe",             enableSafe).getBoolean(enableSafe);
-        enableSlope            = config.get("control",             "Enable Slope",            enableSlope).getBoolean(enableSlope);
-        enableStairs           = config.get("control",            "Enable Stairs",           enableStairs).getBoolean(enableStairs);
-        enableTorch            = config.get("control",             "Enable Torch",            enableTorch).getBoolean(enableTorch);
+        enableBarrier          = config.get("blocks",           "Enable Barrier",          enableBarrier).getBoolean(enableBarrier);
+        enableBed              = config.get("blocks",               "Enable Bed",              enableBed).getBoolean(enableBed);
+        enableBlock            = config.get("blocks",        "Enable Block/Slab",            enableBlock).getBoolean(enableBlock);
+        enableButton           = config.get("blocks",            "Enable Button",           enableButton).getBoolean(enableButton);
+        enableCollapsibleBlock = config.get("blocks", "Enable Collapsible Block", enableCollapsibleBlock).getBoolean(enableCollapsibleBlock);
+        enableDaylightSensor   = config.get("blocks",   "Enable Daylight Sensor",   enableDaylightSensor).getBoolean(enableDaylightSensor);
+        enableDoor             = config.get("blocks",              "Enable Door",             enableDoor).getBoolean(enableDoor);
+        enableFlowerPot        = config.get("blocks",        "Enable Flower Pot",        enableFlowerPot).getBoolean(enableFlowerPot);
+        enableGate             = config.get("blocks",              "Enable Gate",             enableGate).getBoolean(enableGate);
+        enableHatch            = config.get("blocks",             "Enable Hatch",            enableHatch).getBoolean(enableHatch);
+        enableLadder           = config.get("blocks",            "Enable Ladder",           enableLadder).getBoolean(enableLadder);
+        enableLever            = config.get("blocks",             "Enable Lever",            enableLever).getBoolean(enableLever);
+        enablePressurePlate    = config.get("blocks",    "Enable Pressure Plate",    enablePressurePlate).getBoolean(enablePressurePlate);
+        enableSafe             = config.get("blocks",              "Enable Safe",             enableSafe).getBoolean(enableSafe);
+        enableSlope            = config.get("blocks",             "Enable Slope",            enableSlope).getBoolean(enableSlope);
+        enableStairs           = config.get("blocks",            "Enable Stairs",           enableStairs).getBoolean(enableStairs);
+        enableTorch            = config.get("blocks",             "Enable Torch",            enableTorch).getBoolean(enableTorch);
 
         recipeQuantityBarrier          = config.get("recipe quantities",           "Barrier",          recipeQuantityBarrier).getInt(recipeQuantityBarrier);
         recipeQuantityBed              = config.get("recipe quantities",               "Bed",              recipeQuantityBed).getInt(recipeQuantityBed);

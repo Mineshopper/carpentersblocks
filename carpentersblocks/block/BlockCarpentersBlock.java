@@ -35,7 +35,7 @@ public class BlockCarpentersBlock extends BlockCoverable {
      * Returns a base icon that doesn't rely on blockIcon, which
      * is set prior to texture stitch events.
      */
-    protected IIcon getIcon()
+    public IIcon getIcon()
     {
         return IconRegistry.icon_quartered_frame;
     }
