@@ -29,7 +29,7 @@ public class BlockHandlerCarpentersStairs extends BlockHandlerBase {
      */
     protected void renderCarpentersBlock(int x, int y, int z)
     {
-        ItemStack itemStack = BlockProperties.getCover(TE, 6);
+        ItemStack itemStack = getCoverForRendering();
 
         Stairs stairs = Stairs.stairsList[BlockProperties.getMetadata(TE)];
         StairsUtil stairsUtil = new StairsUtil();
@@ -68,8 +68,6 @@ public class BlockHandlerCarpentersStairs extends BlockHandlerBase {
             {
                 for (int side = 0; side < 6; ++side)
                 {
-                    ItemStack itemStack = BlockProperties.getCover(TE, side);
-
                     coverRendering = side;
 
                     if (BlockProperties.hasCover(TE, side))
@@ -78,7 +76,7 @@ public class BlockHandlerCarpentersStairs extends BlockHandlerBase {
                         int[] renderOffset = getSideCoverRenderBounds(x, y, z, side);
 
                         if (clipSideCoverBoundsBasedOnState(stairs.stairsID, box, side)) {
-                            renderBlock(itemStack, renderOffset[0], renderOffset[1], renderOffset[2]);
+                            renderBlock(getCoverForRendering(), renderOffset[0], renderOffset[1], renderOffset[2]);
                         }
                     }
                 }

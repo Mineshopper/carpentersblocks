@@ -8,7 +8,6 @@ import net.minecraftforge.common.util.ForgeDirection;
 import carpentersblocks.data.Safe;
 import carpentersblocks.renderer.helper.LightingHelper;
 import carpentersblocks.tileentity.TECarpentersSafe;
-import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.registry.IconRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -233,7 +232,7 @@ public class BlockHandlerCarpentersSafe extends BlockHandlerBase {
 
         /* Begin drawing everything but the capacity light strip. */
 
-        ItemStack itemStack = BlockProperties.getCover(TE, 6);
+        ItemStack itemStack = getCoverForRendering();
         ForgeDirection facing = Safe.getFacing(TE);
 
         for (int box = 0; box < numBoxes; ++box)

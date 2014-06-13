@@ -10,7 +10,6 @@ import carpentersblocks.block.BlockCarpentersHatch;
 import carpentersblocks.data.Hatch;
 import carpentersblocks.renderer.helper.RenderHelper;
 import carpentersblocks.renderer.helper.VertexHelper;
-import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.registry.BlockRegistry;
 import carpentersblocks.util.registry.IconRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -45,7 +44,7 @@ public class BlockHandlerCarpentersHatch extends BlockHandlerBase {
     {
         renderBlocks.renderAllFaces = true;
 
-        ItemStack itemStack = BlockProperties.getCover(TE, 6);
+        ItemStack itemStack = getCoverForRendering();
         int type = Hatch.getType(TE);
 
         switch (type) {

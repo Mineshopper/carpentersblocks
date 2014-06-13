@@ -7,7 +7,6 @@ import net.minecraft.item.ItemStack;
 import carpentersblocks.data.DaylightSensor;
 import carpentersblocks.renderer.helper.LightingHelper;
 import carpentersblocks.renderer.helper.RenderHelper;
-import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.registry.IconRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -120,7 +119,7 @@ public class BlockHandlerCarpentersDaylightSensor extends BlockHandlerBase {
 
         /* Render coverBlock walls and bottom */
 
-        ItemStack itemStack = BlockProperties.getCover(TE, 6);
+        ItemStack itemStack = getCoverForRendering();
 
         renderBlocks.setRenderBounds(0.0625D, 0.0D, 0.0625D, 0.9375D, 0.0625D, 0.9375D);
         renderBlock(itemStack, x, y, z);

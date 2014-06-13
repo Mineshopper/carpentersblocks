@@ -50,7 +50,7 @@ public class BlockHandlerCarpentersLever extends BlockHandlerBase {
     {
         renderBlocks.renderAllFaces = true;
 
-        renderLever(BlockProperties.getCover(TE, 6), x, y, z);
+        renderLever(getCoverForRendering(), x, y, z);
 
         renderBlocks.renderAllFaces = false;
     }
