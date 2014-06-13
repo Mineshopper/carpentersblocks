@@ -17,10 +17,10 @@ public class CollapsibleUtil {
      */
     public static void computeOffsets(TEBase TE)
     {
-        offset_XZNN = Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZNN) / 16.0D;
-        offset_XZNP = Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZNP) / 16.0D;
-        offset_XZPN = Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZPN) / 16.0D;
-        offset_XZPP = Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZPP) / 16.0D;
+        offset_XZNN = (Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZNN) - 1.0D) / 15.0D;
+        offset_XZNP = (Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZNP) - 1.0D) / 15.0D;
+        offset_XZPN = (Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZPN) - 1.0D) / 15.0D;
+        offset_XZPP = (Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZPP) - 1.0D) / 15.0D;
 
         /* Find primary corners and set center yMax offset. */
 

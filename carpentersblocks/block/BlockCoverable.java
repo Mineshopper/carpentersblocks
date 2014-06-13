@@ -290,13 +290,13 @@ public class BlockCoverable extends BlockContainer {
     
                                 }
     
-                            } else if (FeatureRegistry.enableOverlays && BlockProperties.isOverlay(itemStack)) {
+                            } else if (entityPlayer.isSneaking() && FeatureRegistry.enableOverlays && BlockProperties.isOverlay(itemStack)) {
     
                                 if (!BlockProperties.hasOverlay(TE, effectiveSide) && (effectiveSide < 6 && BlockProperties.hasCover(TE, effectiveSide) || effectiveSide == 6)) {
                                     altered.add(decInv.add(BlockProperties.setOverlay(TE, effectiveSide, itemStack)));
                                 }
     
-                            } else if (FeatureRegistry.enableDyeColors && itemStack.getItem().equals(Item.dyePowder) && itemStack.getItemDamage() != 15) {
+                            } else if (entityPlayer.isSneaking() && FeatureRegistry.enableDyeColors && itemStack.getItem().equals(Item.dyePowder) && itemStack.getItemDamage() != 15) {
     
                                 if (!BlockProperties.hasDyeColor(TE, effectiveSide)) {
                                     altered.add(decInv.add(BlockProperties.setDyeColor(TE, effectiveSide, 15 - itemStack.getItemDamage())));
