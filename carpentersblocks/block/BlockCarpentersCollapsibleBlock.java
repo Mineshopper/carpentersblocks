@@ -3,6 +3,8 @@ package carpentersblocks.block;
 import java.util.List;
 
 import net.minecraft.block.material.Material;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockAir;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -206,29 +208,67 @@ public class BlockCarpentersCollapsibleBlock extends BlockCoverable {
                 TEBase TE_ZN = getTileEntity(world, x, y, z - 1);
                 TEBase TE_ZP = getTileEntity(world, x, y, z + 1);
 
+                int height_XZNN = 1, height_XZPN = 1, height_XZPP = 1, height_XZNP = 1;
                 if (TE_XN != null) {
-                    Collapsible.setQuadHeight(TE, Collapsible.QUAD_XZNN, Collapsible.getQuadHeight(TE_XN, Collapsible.QUAD_XZPN));
-                    Collapsible.setQuadHeight(TE, Collapsible.QUAD_XZNP, Collapsible.getQuadHeight(TE_XN, Collapsible.QUAD_XZPP));
+                	height_XZNN = Math.max(height_XZNN, Collapsible.getQuadHeight(TE_XN, Collapsible.QUAD_XZPN));
+                	height_XZNP = Math.max(height_XZNP, Collapsible.getQuadHeight(TE_XN, Collapsible.QUAD_XZPP));
                 }
-                if (TE_XP != null) {
-                    Collapsible.setQuadHeight(TE, Collapsible.QUAD_XZPN, Collapsible.getQuadHeight(TE_XP, Collapsible.QUAD_XZNN));
-                    Collapsible.setQuadHeight(TE, Collapsible.QUAD_XZPP, Collapsible.getQuadHeight(TE_XP, Collapsible.QUAD_XZNP));
-                }
-                if (TE_ZN != null) {
-                    Collapsible.setQuadHeight(TE, Collapsible.QUAD_XZNN, Collapsible.getQuadHeight(TE_ZN, Collapsible.QUAD_XZNP));
-                    Collapsible.setQuadHeight(TE, Collapsible.QUAD_XZPN, Collapsible.getQuadHeight(TE_ZN, Collapsible.QUAD_XZPP));
-                }
-                if (TE_ZP != null) {
-                    Collapsible.setQuadHeight(TE, Collapsible.QUAD_XZNP, Collapsible.getQuadHeight(TE_ZP, Collapsible.QUAD_XZNN));
-                    Collapsible.setQuadHeight(TE, Collapsible.QUAD_XZPP, Collapsible.getQuadHeight(TE_ZP, Collapsible.QUAD_XZPN));
+                else {
+                	int height = getBlockHeight(world, x - 1, y, z);
+                	height_XZNN = Math.max(height_XZNN, height);
+                	height_XZNP = Math.max(height_XZNP, height);
                 }
 
+                if (TE_XP != null) {
+                	height_XZPN = Math.max(height_XZPN, Collapsible.getQuadHeight(TE_XP, Collapsible.QUAD_XZNN));
+                	height_XZPP = Math.max(height_XZPP, Collapsible.getQuadHeight(TE_XP, Collapsible.QUAD_XZNP));
+                }
+                else {
+                	int height = getBlockHeight(world, x + 1, y, z);
+                	height_XZPN = Math.max(height_XZPN, height);
+                	height_XZPP = Math.max(height_XZPP, height);
+                }
+                
+                if (TE_ZN != null) {
+                    height_XZNN = Math.max(height_XZNN, Collapsible.getQuadHeight(TE_ZN, Collapsible.QUAD_XZNP));
+                    height_XZPN = Math.max(height_XZPN, Collapsible.getQuadHeight(TE_ZN, Collapsible.QUAD_XZPP));
+                }
+                else {
+                	int height = getBlockHeight(world, x, y, z - 1);
+                    height_XZNN = Math.max(height_XZNN, height);
+                    height_XZPN = Math.max(height_XZPN, height);
+                }
+                
+                if (TE_ZP != null) {
+                    height_XZNP = Math.max(height_XZNP, Collapsible.getQuadHeight(TE_ZP, Collapsible.QUAD_XZNN));
+                    height_XZPP = Math.max(height_XZPP, Collapsible.getQuadHeight(TE_ZP, Collapsible.QUAD_XZPN));
+                }
+                else {
+                	int height = getBlockHeight(world, x, y, z + 1);
+                    height_XZNP = Math.max(height_XZNP, height);
+                    height_XZPP = Math.max(height_XZPP, height);
+                }
+
+                Collapsible.setQuadHeight(TE, Collapsible.QUAD_XZNN, height_XZNN);
+                Collapsible.setQuadHeight(TE, Collapsible.QUAD_XZNP, height_XZNP);
+                Collapsible.setQuadHeight(TE, Collapsible.QUAD_XZPP, height_XZPP);
+                Collapsible.setQuadHeight(TE, Collapsible.QUAD_XZPN, height_XZPN);
             }
         }
 
         super.onBlockPlacedBy(world, x, y, z, entityLiving, itemStack);
     }
 
+    /**
+     * Returns block height
+     */
+    private static int getBlockHeight(IBlockAccess world, int x, int y, int z)
+    {
+    	Block block = world.getBlock(x, y, z);
+    	double height = !(block instanceof BlockAir) ? block.getBlockBoundsMaxY() * 15.0 + 1.0 : 1.0;
+
+    	return (int)height;
+    }
     /**
      * Returns block height determined by the highest quadrant.
      */
