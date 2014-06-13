@@ -43,7 +43,7 @@ public class BlockHandlerCarpentersLadder extends BlockHandlerBase {
     {
         renderBlocks.renderAllFaces = true;
 
-        ItemStack itemStack = BlockProperties.getCover(TE, 6);
+        ItemStack itemStack = getCoverForRendering();
         int data = BlockProperties.getMetadata(TE);
 
         double xLow = 0.0D;

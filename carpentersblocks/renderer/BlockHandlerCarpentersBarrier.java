@@ -40,7 +40,7 @@ public class BlockHandlerCarpentersBarrier extends BlockHandlerBase {
     protected void renderCarpentersBlock(int x, int y, int z)
     {
         int type = Barrier.getType(TE);
-        ItemStack itemStack = BlockProperties.getCover(TE, 6);
+        ItemStack itemStack = getCoverForRendering();
 
         switch (type) {
             case Barrier.TYPE_PICKET:

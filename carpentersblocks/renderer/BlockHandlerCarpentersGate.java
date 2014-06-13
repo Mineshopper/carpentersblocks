@@ -5,7 +5,6 @@ import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
 import carpentersblocks.data.Gate;
-import carpentersblocks.util.BlockProperties;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -37,7 +36,7 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
     {
         renderBlocks.renderAllFaces = true;
 
-        ItemStack itemStack = BlockProperties.getCover(TE, 6);
+        ItemStack itemStack = getCoverForRendering();
         int type = Gate.getType(TE);
 
         switch (type) {

@@ -2,7 +2,6 @@ package carpentersblocks.renderer;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
-import carpentersblocks.util.BlockProperties;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -23,7 +22,7 @@ public class BlockHandlerCarpentersButton extends BlockHandlerBase {
     protected void renderCarpentersBlock(int x, int y, int z)
     {
         renderBlocks.renderAllFaces = true;
-        renderBlock(BlockProperties.getCover(TE, 6), x, y, z);
+        super.renderCarpentersBlock(x, y, z);
         renderBlocks.renderAllFaces = false;
     }
 

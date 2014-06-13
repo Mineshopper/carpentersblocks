@@ -48,7 +48,7 @@ public class BlockHandlerCarpentersTorch extends BlockHandlerBase {
         renderBlocks.renderAllFaces = true;
         disableAO = true;
 
-        renderTorch(BlockProperties.getCover(TE, 6), x, y, z);
+        renderTorch(getCoverForRendering(), x, y, z);
 
         disableAO = false;
         renderBlocks.renderAllFaces = false;

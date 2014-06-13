@@ -29,7 +29,7 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase {
      */
     protected void renderCarpentersBlock(int x, int y, int z)
     {
-        renderNormalBed(BlockProperties.getCover(TE, 6), x, y, z);
+        renderNormalBed(getCoverForRendering(), x, y, z);
     }
 
     private void renderNormalBed(ItemStack itemStack, int x, int y, int z)

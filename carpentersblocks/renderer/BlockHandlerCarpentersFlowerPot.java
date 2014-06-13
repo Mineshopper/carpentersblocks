@@ -54,7 +54,7 @@ public class BlockHandlerCarpentersFlowerPot extends BlockHandlerBase {
 
         renderBlocks.renderAllFaces = true;
 
-        ItemStack itemStack = BlockProperties.getCover(TE, 6);
+        ItemStack itemStack = getCoverForRendering();
 
         if (FlowerPot.getDesign(TE) > 0)
         {

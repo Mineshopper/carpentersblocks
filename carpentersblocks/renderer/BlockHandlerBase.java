@@ -154,12 +154,17 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
         return 0;
     }
 
+    protected ItemStack getCoverForRendering()
+    {
+        return BlockProperties.getCoverForRendering(TE, coverRendering);
+    }
+
     /**
      * Sets directional block side rotation in RenderBlocks.
      */
     protected void setDirectionalRotation(int side)
     {
-        int metadata = BlockProperties.getCover(TE, coverRendering).getItemDamage();
+        int metadata = getCoverForRendering().getItemDamage();
         int dir = metadata & 12;
 
         switch (side)
@@ -288,7 +293,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
          */
         if (side == UP)
         {
-            Block block = BlockProperties.toBlock(BlockProperties.getCover(TE, side));
+            Block block = BlockProperties.toBlock(getCoverForRendering());
             if (block.equals(Blocks.snow) || block.equals(Blocks.snow_layer)) {
                 offset = 1.0D / 8.0D;
             }
@@ -380,7 +385,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
             {
                 coverRendering = side;
                 int[] renderOffset = getSideCoverRenderBounds(x, y, z, side);
-                renderBlock(BlockProperties.getCoverForRendering(TE, side), renderOffset[0], renderOffset[1], renderOffset[2]);
+                renderBlock(getCoverForRendering(), renderOffset[0], renderOffset[1], renderOffset[2]);
                 renderBlocks.setRenderBoundsFromBlock(srcBlock);
             }
         }
@@ -607,7 +612,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
      */
     protected void renderCarpentersBlock(int x, int y, int z)
     {
-        renderBlock(BlockProperties.getCoverForRendering(TE, 6), x, y, z);
+        renderBlock(getCoverForRendering(), x, y, z);
     }
 
     /**
