@@ -87,14 +87,9 @@ public class EventHandler {
                     block.onBlockClicked(eventEntityPlayer.worldObj, event.x, event.y, event.z, eventEntityPlayer);
                 }
 
-            } else {
+            } else if (itemStack != null && !(itemStack.getItem() instanceof ItemBlock)) {
 
-                /*
-                 * onBlockActivated() isn't called if the player is sneaking.
-                 * We'll invoke it here.  It's not able to adjust the player's
-                 * inventory for operations such as decrementing an itemstack,
-                 * so we're limiting it to tool actions only.
-                 */
+                /* onBlockActivated() isn't called if the player is sneaking, so do it here. */
                 
                 if (eventEntityPlayer.isSneaking()) {
                     block.onBlockActivated(eventEntityPlayer.worldObj, event.x, event.y, event.z, eventEntityPlayer, eventFace, 1.0F, 1.0F, 1.0F);
