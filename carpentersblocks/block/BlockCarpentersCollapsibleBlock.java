@@ -4,7 +4,6 @@ import java.util.List;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockAir;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -190,7 +189,7 @@ public class BlockCarpentersCollapsibleBlock extends BlockCoverable {
     /**
      * Returns true if a slope should end at the given coords
      */
-    private boolean isSlopeBoundary(World world, int x, int y, int z, ForgeDirection side)
+    private boolean isSlopeBoundary(World world, int x, int y, int z)
     {
         TEBase TE = getTileEntity(world, x, y, z);
         if(TE != null)
@@ -205,7 +204,7 @@ public class BlockCarpentersCollapsibleBlock extends BlockCoverable {
     private int scanX(World world, int x, int y, int z, int dir, int maxDist)
     {
         for(int nx = x + dir; nx != x + maxDist * dir; nx += dir)
-            if(isSlopeBoundary(world, nx, y, z, dir < 0 ? ForgeDirection.EAST : ForgeDirection.WEST))
+            if(isSlopeBoundary(world, nx, y, z))
                 return nx;
 
         return x + dir;
@@ -217,7 +216,7 @@ public class BlockCarpentersCollapsibleBlock extends BlockCoverable {
     private int scanZ(World world, int x, int y, int z, int dir, int maxDist)
     {
         for(int nz = z + dir; nz != z + maxDist * dir; nz += dir)
-            if(isSlopeBoundary(world, x, y, nz, dir < 0 ? ForgeDirection.NORTH : ForgeDirection.SOUTH))
+            if(isSlopeBoundary(world, x, y, nz))
                 return nz;
 
         return z + dir;
