@@ -102,7 +102,7 @@ public class BlockCarpentersBlock extends BlockCoverable {
      */
     public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
     {
-        TEBase TE = (TEBase) world.getTileEntity(x, y, z);
+        TEBase TE = (TEBase) getTileEntity(world, x, y, z);
 
         int data = BlockProperties.getMetadata(TE);
 
