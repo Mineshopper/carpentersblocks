@@ -88,46 +88,6 @@ public class BlockHandlerCarpentersSafe extends BlockHandlerBase {
     }
 
     /**
-     * Rotates renderBounds if direction does not equal SOUTH.
-     */
-    private void rotateBounds(RenderBlocks renderBlocks, ForgeDirection dir)
-    {
-        switch (dir) {
-            case NORTH:
-                renderBlocks.setRenderBounds(
-                        1.0D - renderBlocks.renderMaxX,
-                        renderBlocks.renderMinY,
-                        1.0D - renderBlocks.renderMaxZ,
-                        1.0D - renderBlocks.renderMinX,
-                        renderBlocks.renderMaxY,
-                        1.0D - renderBlocks.renderMinZ
-                        );
-                break;
-            case EAST:
-                renderBlocks.setRenderBounds(
-                        renderBlocks.renderMinZ,
-                        renderBlocks.renderMinY,
-                        1.0D - renderBlocks.renderMaxX,
-                        renderBlocks.renderMaxZ,
-                        renderBlocks.renderMaxY,
-                        1.0D - renderBlocks.renderMinX
-                        );
-                break;
-            case WEST:
-                renderBlocks.setRenderBounds(
-                        1.0D - renderBlocks.renderMaxZ,
-                        renderBlocks.renderMinY,
-                        renderBlocks.renderMinX,
-                        1.0D - renderBlocks.renderMinZ,
-                        renderBlocks.renderMaxY,
-                        renderBlocks.renderMaxX
-                        );
-                break;
-            default: {}
-        }
-    }
-
-    /**
      * Returns box block type.
      */
     private int getBlockType(int box)
@@ -252,7 +212,7 @@ public class BlockHandlerCarpentersSafe extends BlockHandlerBase {
 
         suppressDyeColor = true;
         suppressOverlay = true;
-        suppressPattern = true;
+        suppressChiselDesign = true;
         disableAO = true;
 
         for (int box = 0; box < numCapacity; ++box)
@@ -279,7 +239,7 @@ public class BlockHandlerCarpentersSafe extends BlockHandlerBase {
         disableAO = false;
         suppressDyeColor = false;
         suppressOverlay = false;
-        suppressPattern = false;
+        suppressChiselDesign = false;
 
         clearIconOverride(6);
 
@@ -295,7 +255,7 @@ public class BlockHandlerCarpentersSafe extends BlockHandlerBase {
         {
             suppressDyeColor = true;
             suppressOverlay = true;
-            suppressPattern = true;
+            suppressChiselDesign = true;
         }
 
         switch (type) {
@@ -360,7 +320,7 @@ public class BlockHandlerCarpentersSafe extends BlockHandlerBase {
 
         suppressDyeColor = false;
         suppressOverlay = false;
-        suppressPattern = false;
+        suppressChiselDesign = false;
     }
 
     /**

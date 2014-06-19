@@ -10,6 +10,7 @@ import java.util.Random;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.BlockDirectional;
+import net.minecraft.block.BlockRedstoneWire;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -37,10 +38,10 @@ import carpentersblocks.renderer.helper.ParticleHelper;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.PlayerPermissions;
+import carpentersblocks.util.handler.DesignHandler;
 import carpentersblocks.util.handler.EventHandler;
 import carpentersblocks.util.handler.OverlayHandler;
 import carpentersblocks.util.handler.OverlayHandler.Overlay;
-import carpentersblocks.util.handler.PatternHandler;
 import carpentersblocks.util.registry.FeatureRegistry;
 import carpentersblocks.util.registry.IconRegistry;
 import carpentersblocks.util.registry.ItemRegistry;
@@ -76,7 +77,7 @@ public class BlockCoverable extends BlockContainer {
      * @return default icon
      */ IIcon getIcon()
     {
-        return IconRegistry.icon_solid;
+        return IconRegistry.icon_uncovered_solid;
     }
 
     @SideOnly(Side.CLIENT)
@@ -92,7 +93,7 @@ public class BlockCoverable extends BlockContainer {
             return getIcon();
         }
 
-        return IconRegistry.icon_blank;
+        return BlockRedstoneWire.getRedstoneWireIcon("cross_overlay");
     }
 
     @SideOnly(Side.CLIENT)
@@ -201,7 +202,7 @@ public class BlockCoverable extends BlockContainer {
                                     altered.add(BlockProperties.setDye(TE, effectiveSide, (ItemStack)null));
                                 } else if (BlockProperties.hasCover(TE, effectiveSide)) {
                                     altered.add(BlockProperties.setCover(TE, effectiveSide, (ItemStack)null));
-                                    altered.add(BlockProperties.setPattern(TE, effectiveSide, 0));
+                                    altered.add(BlockProperties.setChiselDesign(TE, effectiveSide, ""));
                                 }
 
                             } else {
@@ -221,8 +222,8 @@ public class BlockCoverable extends BlockContainer {
 
                         if (entityPlayer.isSneaking()) {
 
-                            if (BlockProperties.hasPattern(TE, effectiveSide)) {
-                                BlockProperties.setPattern(TE, effectiveSide, 0);
+                            if (BlockProperties.hasChiselDesign(TE, effectiveSide)) {
+                                BlockProperties.setChiselDesign(TE, effectiveSide, "");
                             }
 
                         } else if (BlockProperties.hasCover(TE, effectiveSide)) {
@@ -364,10 +365,10 @@ public class BlockCoverable extends BlockContainer {
      */
     public boolean onChiselClick(TEBase TE, int side, boolean leftClick)
     {
-        int pattern = BlockProperties.getPattern(TE, side);
-        int neighbor_pattern = 0;
+        String design = BlockProperties.getChiselDesign(TE, side);
+        String designAdj = "";
 
-        if (pattern == 0) {
+        if (design.equals("")) {
 
             World world = TE.getWorldObj();
 
@@ -376,27 +377,24 @@ public class BlockCoverable extends BlockContainer {
             TEBase[] TE_list = getAdjacentTileEntities(world, TE.xCoord, TE.yCoord, TE.zCoord);
 
             for (TEBase TE_current : TE_list) {
-
                 if (TE_current != null) {
-
                     TE_current.getBlockType();
-
-                    if (BlockProperties.hasPattern(TE_current, side)) {
-                        pattern = BlockProperties.getPattern(TE_current, side);
-                        neighbor_pattern = pattern;
+                    if (BlockProperties.hasChiselDesign(TE_current, side)) {
+                        design = BlockProperties.getChiselDesign(TE_current, side);
+                        designAdj = design;
                     }
-
                 }
-
             }
 
         }
 
-        if (neighbor_pattern == 0) {
-            pattern = leftClick ? PatternHandler.getPrev(pattern) : PatternHandler.getNext(pattern);
+        if (designAdj.equals("")) {
+            design = leftClick ? DesignHandler.getPrev("chisel", design) : DesignHandler.getNext("chisel", design);
         }
 
-        BlockProperties.setPattern(TE, side, pattern);
+        if (!design.equals("")) {
+            BlockProperties.setChiselDesign(TE, side, design);
+        }
 
         return true;
     }

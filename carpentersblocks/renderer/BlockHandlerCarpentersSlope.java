@@ -142,10 +142,10 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
 
                 tessellator.setNormal(0.0F, 0.5F, -1.0F);
                 renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 0.5D, 0.5D, 0.5D);
-                HelperPrism.renderWestPointSlopeZNeg(renderBlocks, 0.0D, 0.0D, 0.0D, IconRegistry.icon_quartered_frame);
+                HelperPrism.renderWestPointSlopeZNeg(renderBlocks, 0.0D, 0.0D, 0.0D, IconRegistry.icon_uncovered_quartered);
                 tessellator.setNormal(0.0F, 0.5F, 1.0F);
                 renderBlocks.setRenderBounds(0.0D, 0.0D, 0.5D, 0.5D, 0.5D, 1.0D);
-                HelperPrism.renderWestPointSlopeZPos(renderBlocks, 0.0D, 0.0D, 0.0D, IconRegistry.icon_quartered_frame);
+                HelperPrism.renderWestPointSlopeZPos(renderBlocks, 0.0D, 0.0D, 0.0D, IconRegistry.icon_uncovered_quartered);
 
                 tessellator.draw();
                 renderBlocks.setRenderBounds(0, 0, 0, 1.0D, 1.0D, 1.0D);
@@ -179,7 +179,7 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
                 tessellator.setNormal(-1.0F, 0.0F, 0.0F);
                 HelperOrthoWedge.renderFaceXNeg(renderBlocks, Slope.ID_OBL_INT_POS_SW, 0.0D, 0.0D, 0.0D, icon);
                 tessellator.setNormal(-1.0F, 0.5F, 1.0F);
-                HelperOblique.renderIntObliqueYPos(renderBlocks, Slope.ID_OBL_INT_POS_SW, 0.0D, 0.0D, 0.0D, IconRegistry.icon_oblique_pos);
+                HelperOblique.renderIntObliqueYPos(renderBlocks, Slope.ID_OBL_INT_POS_SW, 0.0D, 0.0D, 0.0D, IconRegistry.icon_uncovered_oblique_pos);
 
                 tessellator.draw();
                 tessellator.startDrawingQuads();
@@ -201,8 +201,8 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
                 tessellator.setNormal(1.0F, 0.0F, 0.0F);
                 HelperOrthoWedge.renderFaceXPos(renderBlocks, Slope.ID_OBL_EXT_POS_SW, 0.0D, 0.0D, 0.0D, icon);
                 tessellator.setNormal(-1.0F, 0.5F, 1.0F);
-                HelperOblique.renderExtObliqueYPosLeft(renderBlocks, Slope.ID_OBL_EXT_POS_SW, 0.0D, 0.0D, 0.0D, IconRegistry.icon_oblique_pos);
-                HelperOblique.renderExtObliqueYPosRight(renderBlocks, Slope.ID_OBL_EXT_POS_SW, 0.0D, 0.0D, 0.0D, IconRegistry.icon_oblique_pos);
+                HelperOblique.renderExtObliqueYPosLeft(renderBlocks, Slope.ID_OBL_EXT_POS_SW, 0.0D, 0.0D, 0.0D, IconRegistry.icon_uncovered_oblique_pos);
+                HelperOblique.renderExtObliqueYPosRight(renderBlocks, Slope.ID_OBL_EXT_POS_SW, 0.0D, 0.0D, 0.0D, IconRegistry.icon_uncovered_oblique_pos);
 
                 break;
             case BlockCarpentersSlope.META_PRISM:
@@ -258,7 +258,7 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
                 switch (slope.type) {
                     case OBLIQUE_EXT:
                     case OBLIQUE_INT:
-                        icon = slope.isPositive ? IconRegistry.icon_oblique_pos : IconRegistry.icon_oblique_neg;
+                        icon = slope.isPositive ? IconRegistry.icon_uncovered_oblique_pos : IconRegistry.icon_uncovered_oblique_neg;
                         break;
                     case PRISM:
                     case PRISM_1P:
@@ -268,9 +268,9 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
                     case PRISM_WEDGE:
 
                         if (forceFullFrame) {
-                            icon = IconRegistry.icon_full_frame;
+                            icon = IconRegistry.icon_uncovered_full;
                         } else {
-                            icon = IconRegistry.icon_quartered_frame;
+                            icon = IconRegistry.icon_uncovered_quartered;
                         }
 
                         break;

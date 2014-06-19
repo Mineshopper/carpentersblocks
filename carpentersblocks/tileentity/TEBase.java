@@ -13,23 +13,29 @@ import net.minecraft.world.World;
 
 public class TEBase extends TileEntity implements IProtected {
 
-    private final String TAG_COVER      = "cover";
-    private final String TAG_DYE        = "dye";
-    private final String TAG_OVERLAY    = "overlay";
-    private final String TAG_ITEMSTACKS = "itemstacks";
-    private final String TAG_METADATA   = "metadata";
-    private final String TAG_OWNER      = "owner";
-    private final String TAG_PATTERN    = "pattern";
+    private final String TAG_COVER         = "cover";
+    private final String TAG_DYE           = "dye";
+    private final String TAG_OVERLAY       = "overlay";
+    private final String TAG_ITEMSTACKS    = "itemstacks";
+    private final String TAG_METADATA      = "metadata";
+    private final String TAG_OWNER         = "owner";
+    private final String TAG_CHISEL_DESIGN = "chiselDesign";
+    private final String TAG_DESIGN        = "design";
 
-    public ItemStack[] cover   = new ItemStack[7];
-    public ItemStack[] dye     = new ItemStack[7];
-    public ItemStack[] overlay = new ItemStack[7];
-    public byte[] pattern      = new byte[7];
+    public ItemStack[] cover        = new ItemStack[7];
+    public ItemStack[] dye          = new ItemStack[7];
+    public ItemStack[] overlay      = new ItemStack[7];
+
+    /** Chisel design for each side and base block. */
+    public String[] chiselDesign = { "", "", "", "", "", "", ""};
 
     /** Holds specific block information like facing, states, etc. */
     public short metadata;
 
-    /** Holds name of player that created tile entity. */
+    /** Design name. */
+    public String design = "";
+
+    /** Owner of tile entity. */
     private String owner = "";
 
     @Override
@@ -56,8 +62,12 @@ public class TEBase extends TileEntity implements IProtected {
             }
         }
 
-        pattern  = nbt.getByteArray(TAG_PATTERN);
+        for (int idx = 0; idx < 7; ++idx) {
+            chiselDesign[idx] = nbt.getString(TAG_CHISEL_DESIGN + "_" + idx);
+        }
+
         metadata = nbt.getShort(TAG_METADATA);
+        design   = nbt.getString(TAG_DESIGN);
         owner    = nbt.getString(TAG_OWNER);
     }
 
@@ -92,8 +102,12 @@ public class TEBase extends TileEntity implements IProtected {
 
         nbt.setTag(TAG_ITEMSTACKS, itemstack_list);
 
-        nbt.setByteArray(TAG_PATTERN, pattern);
+        for (int idx = 0; idx < 7; ++idx) {
+            nbt.setString(TAG_CHISEL_DESIGN + "_" + idx, chiselDesign[idx]);
+        }
+
         nbt.setShort(TAG_METADATA, metadata);
+        nbt.setString(TAG_DESIGN, design);
         nbt.setString(TAG_OWNER, owner);
     }
 

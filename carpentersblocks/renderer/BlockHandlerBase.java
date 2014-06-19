@@ -11,6 +11,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.MinecraftForgeClient;
+import net.minecraftforge.common.util.ForgeDirection;
 
 import org.lwjgl.opengl.GL11;
 
@@ -21,6 +22,7 @@ import carpentersblocks.renderer.helper.RenderHelper;
 import carpentersblocks.renderer.helper.VertexHelper;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
+import carpentersblocks.util.handler.DesignHandler;
 import carpentersblocks.util.handler.DyeHandler;
 import carpentersblocks.util.handler.OptifineHandler;
 import carpentersblocks.util.handler.OverlayHandler;
@@ -45,7 +47,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
     public Block          srcBlock;
     public TEBase         TE;
     public boolean        suppressOverlay;
-    public boolean        suppressPattern;
+    public boolean        suppressChiselDesign;
     public boolean        suppressDyeColor;
     public boolean        disableAO;
     public boolean        hasDyeOverride;
@@ -152,6 +154,46 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
     public int getRenderId()
     {
         return 0;
+    }
+
+    /**
+     * Rotates renderBounds if direction does not equal SOUTH.
+     */
+    protected void rotateBounds(RenderBlocks renderBlocks, ForgeDirection dir)
+    {
+        switch (dir) {
+            case NORTH:
+                renderBlocks.setRenderBounds(
+                        1.0D - renderBlocks.renderMaxX,
+                        renderBlocks.renderMinY,
+                        1.0D - renderBlocks.renderMaxZ,
+                        1.0D - renderBlocks.renderMinX,
+                        renderBlocks.renderMaxY,
+                        1.0D - renderBlocks.renderMinZ
+                        );
+                break;
+            case EAST:
+                renderBlocks.setRenderBounds(
+                        renderBlocks.renderMinZ,
+                        renderBlocks.renderMinY,
+                        1.0D - renderBlocks.renderMaxX,
+                        renderBlocks.renderMaxZ,
+                        renderBlocks.renderMaxY,
+                        1.0D - renderBlocks.renderMinX
+                        );
+                break;
+            case WEST:
+                renderBlocks.setRenderBounds(
+                        1.0D - renderBlocks.renderMaxZ,
+                        renderBlocks.renderMinY,
+                        renderBlocks.renderMinX,
+                        1.0D - renderBlocks.renderMinZ,
+                        renderBlocks.renderMaxY,
+                        renderBlocks.renderMaxX
+                        );
+                break;
+            default: {}
+        }
     }
 
     protected ItemStack getCoverForRendering()
@@ -449,8 +491,8 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
         boolean temp_dye_state = suppressDyeColor;
         suppressDyeColor = true;
 
-        if (!suppressPattern && BlockProperties.hasPattern(TE, coverRendering)) {
-            renderPattern(x, y, z, side);
+        if (!suppressChiselDesign && BlockProperties.hasChiselDesign(TE, coverRendering)) {
+            renderChiselDesign(x, y, z, side);
         }
 
         if (!suppressOverlay && BlockProperties.hasOverlay(TE, coverRendering)) {
@@ -496,13 +538,12 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
     }
 
     /**
-     * Renders pattern on side.
+     * Renders chisel design on side.
      */
-    protected void renderPattern(int x, int y, int z, int side)
+    protected void renderChiselDesign(int x, int y, int z, int side)
     {
-        int pattern = BlockProperties.getPattern(TE, coverRendering);
-        IIcon icon = renderBlocks.getIconSafe(IconRegistry.icon_pattern[pattern]);
-
+        String design = BlockProperties.getChiselDesign(TE, coverRendering);
+        IIcon icon = renderBlocks.getIconSafe(IconRegistry.icon_design_chisel.get(DesignHandler.listChisel.indexOf(design)));
         setColorAndRender(new ItemStack(Blocks.glass), x, y, z, side, icon);
     }
 

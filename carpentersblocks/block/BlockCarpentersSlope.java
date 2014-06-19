@@ -55,7 +55,7 @@ public class BlockCarpentersSlope extends BlockCoverable {
      */
     public IIcon getIcon()
     {
-        return IconRegistry.icon_full_frame;
+        return IconRegistry.icon_uncovered_full;
     }
 
     @SideOnly(Side.CLIENT)
@@ -66,8 +66,8 @@ public class BlockCarpentersSlope extends BlockCoverable {
      */
     public void registerBlockIcons(IIconRegister iconRegister)
     {
-        IconRegistry.icon_oblique_pos = iconRegister.registerIcon("carpentersblocks:slope/oblique_pos");
-        IconRegistry.icon_oblique_neg = iconRegister.registerIcon("carpentersblocks:slope/oblique_neg");
+        IconRegistry.icon_uncovered_oblique_pos = iconRegister.registerIcon("carpentersblocks:slope/oblique_pos");
+        IconRegistry.icon_uncovered_oblique_neg = iconRegister.registerIcon("carpentersblocks:slope/oblique_neg");
     }
 
     @Override

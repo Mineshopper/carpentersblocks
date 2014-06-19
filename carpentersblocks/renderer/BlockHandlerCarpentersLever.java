@@ -36,7 +36,7 @@ public class BlockHandlerCarpentersLever extends BlockHandlerBase {
         Block block = BlockProperties.toBlock(itemStack);
 
         if (block instanceof BlockCoverable) {
-            return IconRegistry.icon_solid;
+            return IconRegistry.icon_uncovered_solid;
         } else {
             return icon;
         }

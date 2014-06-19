@@ -8,12 +8,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import carpentersblocks.block.BlockCoverable;
-import carpentersblocks.data.FlowerPot;
 import carpentersblocks.renderer.helper.RenderHelperFlowerPot;
 import carpentersblocks.tileentity.TECarpentersFlowerPot;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.flowerpot.FlowerPotHandler;
 import carpentersblocks.util.flowerpot.FlowerPotProperties;
+import carpentersblocks.util.handler.DesignHandler;
 import carpentersblocks.util.registry.IconRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -36,7 +36,7 @@ public class BlockHandlerCarpentersFlowerPot extends BlockHandlerBase {
         Block block = BlockProperties.toBlock(itemStack);
 
         if (block instanceof BlockCoverable) {
-            return IconRegistry.icon_solid;
+            return IconRegistry.icon_uncovered_solid;
         } else if (block.equals(Blocks.glass)) {
             return IconRegistry.icon_flower_pot_glass;
         } else {
@@ -56,17 +56,17 @@ public class BlockHandlerCarpentersFlowerPot extends BlockHandlerBase {
 
         ItemStack itemStack = getCoverForRendering();
 
-        if (FlowerPot.getDesign(TE) > 0)
+        if (BlockProperties.hasDesign(TE))
         {
             suppressOverlay = true;
-            suppressPattern = true;
+            suppressChiselDesign = true;
             suppressDyeColor = true;
         }
 
         renderPot(itemStack, x, y, z);
 
         suppressOverlay = true;
-        suppressPattern = true;
+        suppressChiselDesign = true;
         suppressDyeColor = true;
 
         if (FlowerPotProperties.hasSoil(TE)) {
@@ -78,7 +78,7 @@ public class BlockHandlerCarpentersFlowerPot extends BlockHandlerBase {
         }
 
         suppressOverlay = false;
-        suppressPattern = false;
+        suppressChiselDesign = false;
         suppressDyeColor = false;
 
         renderBlocks.renderAllFaces = false;
@@ -89,8 +89,8 @@ public class BlockHandlerCarpentersFlowerPot extends BlockHandlerBase {
      */
     public boolean renderPot(ItemStack itemStack, int x, int y, int z)
     {
-        if (FlowerPot.getDesign(TE) > 0) {
-            IIcon designIcon = IconRegistry.icon_flower_pot_design[FlowerPot.getDesign(TE)];
+        if (BlockProperties.hasDesign(TE)) {
+            IIcon designIcon = IconRegistry.icon_design_flower_pot.get(DesignHandler.listFlowerPot.indexOf(BlockProperties.getDesign(TE)));
             setIconOverride(6, designIcon);
         }
 

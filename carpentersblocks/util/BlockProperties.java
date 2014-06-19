@@ -20,6 +20,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import carpentersblocks.CarpentersBlocks;
 import carpentersblocks.block.BlockCoverable;
 import carpentersblocks.tileentity.TEBase;
+import carpentersblocks.util.handler.DesignHandler;
 import carpentersblocks.util.handler.DyeHandler;
 import carpentersblocks.util.handler.OverlayHandler;
 import carpentersblocks.util.registry.FeatureRegistry;
@@ -186,6 +187,50 @@ public final class BlockProperties {
         TE.getWorldObj().markBlockForUpdate(TE.xCoord, TE.yCoord, TE.zCoord);
     }
 
+    public static boolean hasDesign(TEBase TE)
+    {
+        return DesignHandler.getListForType(getBlockDesignType(TE)).contains(getDesign(TE));
+    }
+
+    public static String getDesign(TEBase TE)
+    {
+        return TE.design;
+    }
+
+    public static boolean setDesign(TEBase TE, String name)
+    {
+        if (!TE.design.equals(name)) {
+            TE.design = name;
+            if (!suppressUpdate) {
+                TE.getWorldObj().markBlockForUpdate(TE.xCoord, TE.yCoord, TE.zCoord);
+            }
+            return true;
+        }
+
+        return false;
+    }
+
+    public static boolean clearDesign(TEBase TE)
+    {
+        return setDesign(TE, "");
+    }
+
+    private static String getBlockDesignType(TEBase TE)
+    {
+        String name = TE.getBlockType().getUnlocalizedName();
+        return name.substring(new String("tile.blockCarpenters").length()).toLowerCase();
+    }
+
+    public static boolean setNextDesign(TEBase TE)
+    {
+        return setDesign(TE, DesignHandler.getNext(getBlockDesignType(TE), getDesign(TE)));
+    }
+
+    public static boolean setPrevDesign(TEBase TE)
+    {
+        return setDesign(TE, DesignHandler.getPrev(getBlockDesignType(TE), getDesign(TE)));
+    }
+
     /**
      * Returns whether block rotates based on placement conditions.
      * The blocks that utilize this property are mostly atypical, and
@@ -233,7 +278,7 @@ public final class BlockProperties {
         setCover(TE, side, (ItemStack)null);
         setDye(TE, side, (ItemStack)null);
         setOverlay(TE, side, (ItemStack)null);
-        setPattern(TE, side, 0);
+        setChiselDesign(TE, side, "");
 
         suppressUpdate = false;
 
@@ -381,21 +426,18 @@ public final class BlockProperties {
 
     /**
      * Set block data.
-     * Will do nothing if data is not altered.
      */
-    public static void setMetadata(TEBase TE, int data)
+    public static boolean setMetadata(TEBase TE, int data)
     {
-        /* No need to update if data hasn't changed. */
-
-        if (data != getMetadata(TE))
-        {
+        if (data != getMetadata(TE)) {
             TE.metadata = (short) data;
-
             if (!suppressUpdate) {
                 TE.getWorldObj().markBlockForUpdate(TE.xCoord, TE.yCoord, TE.zCoord);
-                TE.markDirty();
             }
+            return true;
         }
+
+        return false;
     }
 
     /**
@@ -485,31 +527,33 @@ public final class BlockProperties {
     /**
      * Returns whether block has pattern.
      */
-    public static boolean hasPattern(TEBase TE, int side)
+    public static boolean hasChiselDesign(TEBase TE, int side)
     {
-        return getPattern(TE, side) > 0;
+        return DesignHandler.listChisel.contains(getChiselDesign(TE, side));
     }
 
     /**
      * Returns pattern.
      */
-    public static int getPattern(TEBase TE, int side)
+    public static String getChiselDesign(TEBase TE, int side)
     {
-        return TE.pattern[side] & 0xff;
+        return TE.chiselDesign[side];
     }
 
     /**
      * Sets pattern.
      */
-    public static boolean setPattern(TEBase TE, int side, int pattern)
+    public static boolean setChiselDesign(TEBase TE, int side, String iconName)
     {
-        TE.pattern[side] = (byte) pattern;
-
-        if (!suppressUpdate) {
-            TE.getWorldObj().markBlockForUpdate(TE.xCoord, TE.yCoord, TE.zCoord);
+        if (!TE.chiselDesign.equals(iconName)) {
+            TE.chiselDesign[side] = iconName;
+            if (!suppressUpdate) {
+                TE.getWorldObj().markBlockForUpdate(TE.xCoord, TE.yCoord, TE.zCoord);
+            }
+            return true;
         }
 
-        return true;
+        return false;
     }
 
 }

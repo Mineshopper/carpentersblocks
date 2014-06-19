@@ -2,16 +2,13 @@ package carpentersblocks.proxy;
 
 import net.minecraftforge.common.MinecraftForge;
 import carpentersblocks.CarpentersBlocks;
-import carpentersblocks.util.bed.BedDesignHandler;
-import carpentersblocks.util.flowerpot.FlowerPotDesignHandler;
 import carpentersblocks.util.flowerpot.FlowerPotHandler;
-import carpentersblocks.util.handler.TileHandler;
+import carpentersblocks.util.handler.DesignHandler;
 import carpentersblocks.util.handler.DyeHandler;
 import carpentersblocks.util.handler.EntityHandler;
 import carpentersblocks.util.handler.EventHandler;
 import carpentersblocks.util.handler.OverlayHandler;
 import carpentersblocks.util.handler.PacketHandler;
-import carpentersblocks.util.handler.PatternHandler;
 import carpentersblocks.util.registry.BlockRegistry;
 import carpentersblocks.util.registry.FeatureRegistry;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
@@ -22,7 +19,6 @@ public class CommonProxy {
     {
         if (BlockRegistry.enableFlowerPot) {
             FlowerPotHandler.initPlants();
-            FlowerPotDesignHandler.init(event);
         }
 
         if (FeatureRegistry.enableDyeColors) {
@@ -33,18 +29,11 @@ public class CommonProxy {
             OverlayHandler.init();
         }
 
-        if (FeatureRegistry.enablePatterns) {
-            PatternHandler.init(event);
-        }
-
-        if (BlockRegistry.enableBed) {
-            BedDesignHandler.init(event);
-        }
-
         if (FeatureRegistry.enableTile) {
-            TileHandler.init(event);
             EntityHandler.registerEntities();
         }
+
+        DesignHandler.init(event);
 
         MinecraftForge.EVENT_BUS.register(new EventHandler());
         CarpentersBlocks.channel.register(new PacketHandler());

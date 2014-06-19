@@ -37,7 +37,7 @@ public class BlockCarpentersBlock extends BlockCoverable {
      */
     public IIcon getIcon()
     {
-        return IconRegistry.icon_quartered_frame;
+        return IconRegistry.icon_uncovered_quartered;
     }
 
     @Override

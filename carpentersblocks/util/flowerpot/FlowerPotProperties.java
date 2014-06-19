@@ -8,7 +8,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.IShearable;
-import carpentersblocks.data.FlowerPot;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.tileentity.TECarpentersFlowerPot;
 import carpentersblocks.util.BlockProperties;
@@ -53,14 +52,6 @@ public class FlowerPotProperties {
     public static boolean isPlantColorable(TEBase TE)
     {
         return FlowerPotProperties.getPlantColor(TE) != 16777215;
-    }
-
-    /**
-     * Returns whether flower pot has a design.
-     */
-    public static boolean hasDesign(TEBase TE)
-    {
-        return FlowerPot.getDesign(TE) > 0;
     }
 
     /**

@@ -66,7 +66,7 @@ public class BlockHandlerCarpentersDaylightSensor extends BlockHandlerBase {
 
             suppressDyeColor = true;
             suppressOverlay = true;
-            suppressPattern = true;
+            suppressChiselDesign = true;
 
             /* Render glass inlay */
 
@@ -115,7 +115,7 @@ public class BlockHandlerCarpentersDaylightSensor extends BlockHandlerBase {
 
             suppressDyeColor = false;
             suppressOverlay = false;
-            suppressPattern = false;
+            suppressChiselDesign = false;
 
         /* Render coverBlock walls and bottom */
 

@@ -592,7 +592,7 @@ public class BlockHandlerCarpentersHatch extends BlockHandlerBase {
         }
 
         suppressDyeColor = true;
-        suppressPattern = true;
+        suppressChiselDesign = true;
         suppressOverlay = true;
 
         int dir = Hatch.getDir(TE);
@@ -1001,7 +1001,7 @@ public class BlockHandlerCarpentersHatch extends BlockHandlerBase {
         }
 
         suppressDyeColor = false;
-        suppressPattern = false;
+        suppressChiselDesign = false;
         suppressOverlay = false;
     }
 

@@ -12,10 +12,11 @@ public class Bed {
      * 16-bit data components:
      *
      * [0]     [00]       [00000000]  [0]         [0000]
-     * isHead  Direction  Design      isOccupied  Type
+     * isHead  Direction  Unused      isOccupied  Type
      */
 
-    public final static byte TYPE_NORMAL = 0;
+    public final static byte TYPE_NORMAL   = 0;
+    public final static byte TYPE_PLATFORM = 1;
 
     /**
      * Returns type.
@@ -32,26 +33,6 @@ public class Bed {
     {
         int temp = BlockProperties.getMetadata(TE) & 0xfff0;
         temp |= type;
-
-        BlockProperties.setMetadata(TE, temp);
-    }
-
-    /**
-     * Returns design.
-     */
-    public static int getDesign(TEBase TE)
-    {
-        int temp = BlockProperties.getMetadata(TE) & 0x1fe0;
-        return temp >> 5;
-    }
-
-    /**
-     * Sets design.
-     */
-    public static void setDesign(TEBase TE, int design)
-    {
-        int temp = BlockProperties.getMetadata(TE) & 0xe01f;
-        temp |= design << 5;
 
         BlockProperties.setMetadata(TE, temp);
     }

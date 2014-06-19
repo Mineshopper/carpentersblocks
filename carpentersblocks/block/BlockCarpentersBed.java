@@ -12,7 +12,6 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayer.EnumStatus;
 import net.minecraft.item.Item;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -20,8 +19,7 @@ import net.minecraft.world.biome.BiomeGenBase;
 import carpentersblocks.CarpentersBlocks;
 import carpentersblocks.data.Bed;
 import carpentersblocks.tileentity.TEBase;
-import carpentersblocks.tileentity.TECarpentersBed;
-import carpentersblocks.util.bed.BedDesignHandler;
+import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.handler.ChatHandler;
 import carpentersblocks.util.registry.BlockRegistry;
 import carpentersblocks.util.registry.IconRegistry;
@@ -45,12 +43,6 @@ public class BlockCarpentersBed extends BlockCoverable {
      */
     public void registerBlockIcons(IIconRegister iconRegister)
     {
-        for (int numIcon = 0; numIcon < BedDesignHandler.maxNum; ++numIcon) {
-            if (BedDesignHandler.hasPillow[numIcon]) {
-                IconRegistry.icon_bed_pillow_custom[numIcon] = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "bed/design_" + numIcon + "/pillow");
-            }
-        }
-
         IconRegistry.icon_bed_pillow = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "bed/bed_pillow");
     }
 
@@ -71,15 +63,8 @@ public class BlockCarpentersBed extends BlockCoverable {
      */
     protected boolean onHammerLeftClick(TEBase TE, EntityPlayer entityPlayer)
     {
-        int design = BedDesignHandler.getPrev(Bed.getDesign(TE));
-
-        Bed.setDesign(TE, design);
-
-        TEBase TE_opp = Bed.getOppositeTE(TE);
-
-        if (TE_opp != null) {
-            Bed.setDesign(TE_opp, design);
-        }
+        BlockProperties.setPrevDesign(TE);
+        BlockProperties.setDesign(Bed.getOppositeTE(TE), BlockProperties.getDesign(TE));
 
         return true;
     }
@@ -90,13 +75,12 @@ public class BlockCarpentersBed extends BlockCoverable {
      */
     protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer)
     {
-        int temp_design = entityPlayer.isSneaking() ? 0 : BedDesignHandler.getNext(Bed.getDesign(TE));
-
-        Bed.setDesign(TE, temp_design);
-        TEBase TE_opp = Bed.getOppositeTE(TE);
-
-        if (TE_opp != null) {
-            Bed.setDesign(TE_opp, temp_design);
+        if (entityPlayer.isSneaking()) {
+            BlockProperties.clearDesign(TE);
+            BlockProperties.clearDesign(Bed.getOppositeTE(TE));
+        } else {
+            BlockProperties.setNextDesign(TE);
+            BlockProperties.setDesign(Bed.getOppositeTE(TE), BlockProperties.getDesign(TE));
         }
 
         return true;
@@ -284,12 +268,6 @@ public class BlockCarpentersBed extends BlockCoverable {
     public Item getItem(World world, int x, int y, int z)
     {
         return ItemRegistry.itemCarpentersBed;
-    }
-
-    @Override
-    public TileEntity createNewTileEntity(World world, int metadata)
-    {
-        return new TECarpentersBed();
     }
 
     @Override

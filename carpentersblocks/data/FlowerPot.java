@@ -11,7 +11,7 @@ public class FlowerPot {
      * 16-bit data components:
      *
      * [000]  [0]      [0000] [00000000]
-     * Unused Enriched Angle  Design
+     * Unused Enriched Angle  Unused
      */
 
     public final static byte COLOR_NATURAL  = 0;
@@ -57,29 +57,6 @@ public class FlowerPot {
     {
         int temp = BlockProperties.getMetadata(TE) & 0xf0ff;
         temp |= angle << 8;
-
-        BlockProperties.setMetadata(TE, temp);
-    }
-
-    /**
-     * Returns design.
-     */
-    public static int getDesign(TEBase TE)
-    {
-        return BlockProperties.getMetadata(TE) & 0xff;
-    }
-
-    /**
-     * Sets design.
-     */
-    public static void setDesign(TEBase TE, int design)
-    {
-        int temp = BlockProperties.getMetadata(TE) & 0xff00;
-        temp |= design;
-
-        if (design > 0 && BlockProperties.hasCover(TE, 6)) {
-            BlockProperties.setCover(TE, 6, (ItemStack)null);
-        }
 
         BlockProperties.setMetadata(TE, temp);
     }

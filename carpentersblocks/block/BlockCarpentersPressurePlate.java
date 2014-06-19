@@ -36,7 +36,7 @@ public class BlockCarpentersPressurePlate extends BlockCoverable {
      */
     public IIcon getIcon()
     {
-        return IconRegistry.icon_full_frame;
+        return IconRegistry.icon_uncovered_full;
     }
 
     @Override

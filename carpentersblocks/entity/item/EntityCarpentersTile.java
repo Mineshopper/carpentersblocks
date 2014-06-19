@@ -20,8 +20,8 @@ import net.minecraftforge.common.util.ForgeDirection;
 import carpentersblocks.api.ICarpentersHammer;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.PlayerPermissions;
+import carpentersblocks.util.handler.DesignHandler;
 import carpentersblocks.util.handler.DyeHandler;
-import carpentersblocks.util.handler.TileHandler;
 import carpentersblocks.util.registry.IconRegistry;
 import carpentersblocks.util.registry.ItemRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -32,15 +32,15 @@ public class EntityCarpentersTile extends EntityBase {
     private int ticks;
     private boolean boundsSet;
 
-    private final static byte ID_DIR  = 13;
-    private final static byte ID_DYE  = 14;
-    private final static byte ID_TILE = 15;
-    private final static byte ID_ROT  = 16;
+    private final static byte ID_DIRECTION = 13;
+    private final static byte ID_DYE       = 14;
+    private final static byte ID_DESIGN    = 15;
+    private final static byte ID_ROTATION  = 16;
 
-    private final static String TAG_TILE = "tile";
-    private final static String TAG_DIR  = "dir";
-    private final static String TAG_DYE  = "dye";
-    private final static String TAG_ROT  = "rot";
+    private final static String TAG_DESIGN    = "tile"; // Description holding for compatibility with pre-3.2.0
+    private final static String TAG_DIRECTION = "dir";
+    private final static String TAG_DYE       = "dye";
+    private final static String TAG_ROTATION  = "rot";
 
     /** Depth of tile. */
     private final static double depth = 0.0625D;
@@ -152,8 +152,8 @@ public class EntityCarpentersTile extends EntityBase {
                 if (tile.getRotation() != 0) {
                     setRotation(tile.getRotation());
                 }
-                if (!tile.getTile().equals(getDefaultTile())) {
-                    setTile(tile.getTile());
+                if (tile.hasDesign()) {
+                    setDesign(tile.getDesign());
                 }
             }
 
@@ -200,11 +200,6 @@ public class EntityCarpentersTile extends EntityBase {
         return false;
     }
 
-    public String getDefaultTile()
-    {
-        return "blank";
-    }
-
     public String getDefaultDye()
     {
         return "dyeWhite";
@@ -222,7 +217,7 @@ public class EntityCarpentersTile extends EntityBase {
 
     public double[] getBounds()
     {
-        return bounds[getDataWatcher().getWatchableObjectInt(ID_DIR)];
+        return bounds[getDataWatcher().getWatchableObjectInt(ID_DIRECTION)];
     }
 
     public void setBoundingBox()
@@ -233,17 +228,17 @@ public class EntityCarpentersTile extends EntityBase {
 
     public ForgeDirection getDirection()
     {
-        return ForgeDirection.getOrientation(getDataWatcher().getWatchableObjectInt(ID_DIR));
+        return ForgeDirection.getOrientation(getDataWatcher().getWatchableObjectInt(ID_DIRECTION));
     }
 
     public void setDirection(ForgeDirection dir)
     {
-        getDataWatcher().updateObject(ID_DIR, new Integer(dir.ordinal()));
+        getDataWatcher().updateObject(ID_DIRECTION, new Integer(dir.ordinal()));
     }
 
     public void setRotation(int rotation)
     {
-        getDataWatcher().updateObject(ID_ROT, new Integer(rotation));
+        getDataWatcher().updateObject(ID_ROTATION, new Integer(rotation));
     }
 
     public void rotate()
@@ -254,7 +249,7 @@ public class EntityCarpentersTile extends EntityBase {
 
     public int getRotation()
     {
-        return getDataWatcher().getWatchableObjectInt(ID_ROT);
+        return getDataWatcher().getWatchableObjectInt(ID_ROTATION);
     }
 
     public void setDye(String dye)
@@ -267,46 +262,27 @@ public class EntityCarpentersTile extends EntityBase {
         return getDataWatcher().getWatchableObjectString(ID_DYE);
     }
 
-    public void setTile(String tile)
+    public boolean hasDesign()
     {
-        getDataWatcher().updateObject(ID_TILE, new String(tile));
+        return DesignHandler.listTile.contains(getDesign());
     }
 
-    public String getTile()
+    public void setDesign(String tile)
     {
-        return getDataWatcher().getWatchableObjectString(ID_TILE);
+        getDataWatcher().updateObject(ID_DESIGN, new String(tile));
     }
 
-    /**
-     * Sets next tile design.
-     */
-    private void setNextIcon()
+    public String getDesign()
     {
-        setTile(TileHandler.getNext(getTile()));
-    }
-
-    /**
-     * Sets previous tile design.
-     */
-    private void setPrevIcon()
-    {
-        setTile(TileHandler.getPrev(getTile()));
+        return getDataWatcher().getWatchableObjectString(ID_DESIGN);
     }
 
     public IIcon getIcon()
     {
-        if (getTile().equals(getDefaultTile())) {
-            return IconRegistry.icon_blank_tile;
+        if (hasDesign()) {
+            return IconRegistry.icon_design_tile.get(DesignHandler.listTile.indexOf(getDesign()));
         } else {
-
-            int idx = TileHandler.tileList.indexOf(getTile());
-
-            if (idx == -1) {
-                this.setTile(getDefaultTile());
-                idx = 0;
-            }
-
-            return IconRegistry.icon_tile.get(TileHandler.tileList.indexOf(getTile()));
+            return IconRegistry.icon_tile_blank;
         }
     }
 
@@ -316,10 +292,10 @@ public class EntityCarpentersTile extends EntityBase {
     @Override
     public void readEntityFromNBT(NBTTagCompound nbtTagCompound)
     {
-        getDataWatcher().updateObject(ID_TILE, String.valueOf(nbtTagCompound.getString(TAG_TILE)));
+        getDataWatcher().updateObject(ID_DESIGN, String.valueOf(nbtTagCompound.getString(TAG_DESIGN)));
         getDataWatcher().updateObject(ID_DYE, String.valueOf(nbtTagCompound.getString(TAG_DYE)));
-        getDataWatcher().updateObject(ID_DIR, Integer.valueOf(nbtTagCompound.getInteger(TAG_DIR)));
-        getDataWatcher().updateObject(ID_ROT, Integer.valueOf(nbtTagCompound.getInteger(TAG_ROT)));
+        getDataWatcher().updateObject(ID_DIRECTION, Integer.valueOf(nbtTagCompound.getInteger(TAG_DIRECTION)));
+        getDataWatcher().updateObject(ID_ROTATION, Integer.valueOf(nbtTagCompound.getInteger(TAG_ROTATION)));
         super.readEntityFromNBT(nbtTagCompound);
     }
 
@@ -329,10 +305,10 @@ public class EntityCarpentersTile extends EntityBase {
     @Override
     public void writeEntityToNBT(NBTTagCompound nbtTagCompound)
     {
-        nbtTagCompound.setString(TAG_TILE, getDataWatcher().getWatchableObjectString(ID_TILE));
+        nbtTagCompound.setString(TAG_DESIGN, getDataWatcher().getWatchableObjectString(ID_DESIGN));
         nbtTagCompound.setString(TAG_DYE, getDataWatcher().getWatchableObjectString(ID_DYE));
-        nbtTagCompound.setInteger(TAG_DIR, getDataWatcher().getWatchableObjectInt(ID_DIR));
-        nbtTagCompound.setInteger(TAG_ROT, getDataWatcher().getWatchableObjectInt(ID_ROT));
+        nbtTagCompound.setInteger(TAG_DIRECTION, getDataWatcher().getWatchableObjectInt(ID_DIRECTION));
+        nbtTagCompound.setInteger(TAG_ROTATION, getDataWatcher().getWatchableObjectInt(ID_ROTATION));
         super.writeEntityToNBT(nbtTagCompound);
     }
 
@@ -460,7 +436,7 @@ public class EntityCarpentersTile extends EntityBase {
                                 dropItem = true;
                             }
                         } else {
-                            setNextIcon();
+                            setDesign(DesignHandler.getNext("tile", getDesign()));
                         }
                     } else if (entityPlayer.capabilities.isCreativeMode) {
                         if (!isDead) {
@@ -508,7 +484,7 @@ public class EntityCarpentersTile extends EntityBase {
                     if (entityPlayer.isSneaking()) {
                         rotate();
                     } else {
-                        setPrevIcon();
+                        setDesign(DesignHandler.getPrev("tile", getDesign()));
                     }
 
                     playTileSound();
@@ -566,10 +542,10 @@ public class EntityCarpentersTile extends EntityBase {
     protected void entityInit()
     {
         super.entityInit();
-        getDataWatcher().addObject(ID_TILE, new String("blank"));
+        getDataWatcher().addObject(ID_DESIGN, new String(""));
         getDataWatcher().addObject(ID_DYE, new String("dyeWhite"));
-        getDataWatcher().addObject(ID_DIR, new Integer(0));
-        getDataWatcher().addObject(ID_ROT, new Integer(0));
+        getDataWatcher().addObject(ID_DIRECTION, new Integer(0));
+        getDataWatcher().addObject(ID_ROTATION, new Integer(0));
     }
 
     /**

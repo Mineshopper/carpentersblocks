@@ -1058,7 +1058,7 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
         }
 
         suppressDyeColor = true;
-        suppressPattern = true;
+        suppressChiselDesign = true;
         suppressOverlay = true;
 
         int hinge = Hinge.getHinge(TE);
@@ -1321,7 +1321,7 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
         }
 
         suppressDyeColor = false;
-        suppressPattern = false;
+        suppressChiselDesign = false;
         suppressOverlay = false;
     }
 

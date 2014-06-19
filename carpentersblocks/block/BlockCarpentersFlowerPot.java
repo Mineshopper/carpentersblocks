@@ -23,7 +23,6 @@ import carpentersblocks.data.FlowerPot;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.tileentity.TECarpentersFlowerPot;
 import carpentersblocks.util.BlockProperties;
-import carpentersblocks.util.flowerpot.FlowerPotDesignHandler;
 import carpentersblocks.util.flowerpot.FlowerPotHandler;
 import carpentersblocks.util.flowerpot.FlowerPotHandler.Profile;
 import carpentersblocks.util.flowerpot.FlowerPotProperties;
@@ -44,12 +43,6 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
     @Override
     public void registerBlockIcons(IIconRegister iconRegister)
     {
-        for (int numIcon = 0; numIcon < FlowerPotDesignHandler.maxNum; ++numIcon) {
-            if (FlowerPotDesignHandler.hasDesign[numIcon]) {
-                IconRegistry.icon_flower_pot_design[numIcon] = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "flowerpot/design/design_" + numIcon);
-            }
-        }
-
         IconRegistry.icon_flower_pot       = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "flowerpot/flower_pot");
         IconRegistry.icon_flower_pot_glass = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "flowerpot/flower_pot_glass");
     }
@@ -79,9 +72,7 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
      */
     protected boolean onHammerLeftClick(TEBase TE, EntityPlayer entityPlayer)
     {
-        int design = FlowerPotDesignHandler.getPrev(FlowerPot.getDesign(TE));
-        FlowerPot.setDesign(TE, design);
-
+        BlockProperties.setPrevDesign(TE);
         return true;
     }
 
@@ -92,10 +83,9 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
     protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer)
     {
         if (entityPlayer.isSneaking()) {
-            FlowerPot.setDesign(TE, 0);
+            BlockProperties.clearDesign(TE);
         } else {
-            int design = FlowerPotDesignHandler.getNext(FlowerPot.getDesign(TE));
-            FlowerPot.setDesign(TE, design);
+            BlockProperties.setNextDesign(TE);
         }
 
         return true;
@@ -409,7 +399,7 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
     @Override
     protected boolean canCoverBase(TEBase TE, World world, int x, int y, int z)
     {
-        return !FlowerPotProperties.hasDesign(TE);
+        return !BlockProperties.hasDesign(TE);
     }
 
     @Override
