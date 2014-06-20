@@ -117,7 +117,7 @@ public class BlockCarpentersBarrier extends BlockCoverable {
      */
     public void addCollisionBoxesToList(World world, int x, int y, int z, AxisAlignedBB axisAlignedBB, List list, Entity entity)
     {
-        TEBase TE = (TEBase) getTileEntity(world, x, y, z);
+        TEBase TE = getTileEntity(world, x, y, z);
 
         boolean connect_ZN = canConnectBarrierTo(TE, world, x, y, z - 1, ForgeDirection.SOUTH);
         boolean connect_ZP = canConnectBarrierTo(TE, world, x, y, z + 1, ForgeDirection.NORTH);
@@ -177,7 +177,7 @@ public class BlockCarpentersBarrier extends BlockCoverable {
      */
     public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
     {
-        TEBase TE = (TEBase) getTileEntity(world, x, y, z);
+        TEBase TE = getTileEntity(world, x, y, z);
         int type = Barrier.getType(TE);
 
         boolean connect_ZN = canConnectBarrierTo(TE, world, x, y, z - 1, ForgeDirection.SOUTH);

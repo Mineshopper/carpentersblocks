@@ -330,7 +330,6 @@ public class BlockCarpentersSlope extends BlockCoverable {
     public MovingObjectPosition collisionRayTrace(World world, int x, int y, int z, Vec3 startVec, Vec3 endVec)
     {
         TEBase TE = getTileEntity(world, x, y, z);
-
         MovingObjectPosition finalTrace = null;
 
         if (TE != null) {
