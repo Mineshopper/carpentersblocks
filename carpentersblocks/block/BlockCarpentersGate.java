@@ -138,7 +138,7 @@ public class BlockCarpentersGate extends BlockCoverable {
      */
     public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
     {
-        TEBase TE = (TEBase) world.getTileEntity(x, y, z);
+        TEBase TE = getTileEntity(world, x, y, z);
 
         if (TE != null) {
 
@@ -173,7 +173,7 @@ public class BlockCarpentersGate extends BlockCoverable {
          */
         if (isGateBelow) {
 
-            TEBase TE_YN = (TEBase) world.getTileEntity(x, y - 1, z);
+            TEBase TE_YN = (TEBase) getTileEntity(world, x, y - 1, z);
             if (Gate.getFacing(TE_YN) == Gate.getFacing(TE)) {
                 Gate.setDirOpen(TE_YN, Gate.getDirOpen(TE));
                 Gate.setState(TE_YN, Gate.getState(TE), false);
@@ -181,7 +181,7 @@ public class BlockCarpentersGate extends BlockCoverable {
 
         } else if (isGateAbove) {
 
-            TEBase TE_YP = (TEBase) world.getTileEntity(x, y + 1, z);
+            TEBase TE_YP = (TEBase) getTileEntity(world, x, y + 1, z);
             if (Gate.getFacing(TE_YP) == Gate.getFacing(TE)) {
                 Gate.setDirOpen(TE_YP, Gate.getDirOpen(TE));
                 Gate.setState(TE_YP, Gate.getState(TE), false);

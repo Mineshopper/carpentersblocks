@@ -146,7 +146,7 @@ public class BlockCoverable extends BlockContainer {
     protected TEBase getSimpleTileEntity(IBlockAccess world, int x, int y, int z)
     {
         TileEntity TE = world.getTileEntity(x, y, z);
-        return (TE != null && TE instanceof TEBase) ? (TEBase) TE : null;
+        return (TE instanceof TEBase) ? (TEBase) TE : null;
     }
 
     /**
