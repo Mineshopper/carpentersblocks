@@ -20,7 +20,6 @@ import carpentersblocks.renderer.BlockHandlerCarpentersStairs;
 import carpentersblocks.renderer.BlockHandlerCarpentersTorch;
 import carpentersblocks.util.handler.EntityHandler;
 import carpentersblocks.util.handler.OptifineHandler;
-import carpentersblocks.util.handler.ResourceHandler;
 import carpentersblocks.util.registry.BlockRegistry;
 import carpentersblocks.util.registry.IconRegistry;
 import cpw.mods.fml.client.FMLClientHandler;
@@ -28,13 +27,6 @@ import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 
 public class ClientProxy extends CommonProxy {
-
-    @Override
-    public void registerHandlers(FMLPreInitializationEvent event)
-    {
-        ResourceHandler.init(event);
-        super.registerHandlers(event);
-    }
 
     @Override
     public void registerRenderInformation(FMLPreInitializationEvent event)

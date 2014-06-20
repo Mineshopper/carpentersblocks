@@ -9,14 +9,12 @@ import cpw.mods.fml.common.ModMetadata;
 
 public class CarpentersBlocksCachedResources extends DummyModContainer {
 
-    private String modDir = "";
-    public final static String MODID = "CarpentersBlocksCachedResources";
-    public final static String fileName = MODID + ".zip";
+    public static String MODID = "CarpentersBlocksCachedResources";
+    public static String resourceDir = CarpentersBlocks.modDir + "/" + CarpentersBlocks.MODID.toLowerCase();
 
-    public CarpentersBlocksCachedResources(String modDir)
+    public CarpentersBlocksCachedResources()
     {
         super(new ModMetadata());
-        this.modDir = modDir;
         ModMetadata meta = getMetadata();
         meta.modId = MODID;
         meta.name = "Carpenter's Blocks Cached Resources";
@@ -26,7 +24,7 @@ public class CarpentersBlocksCachedResources extends DummyModContainer {
     @Override
     public File getSource()
     {
-        return new File(modDir, fileName);
+        return new File(resourceDir, MODID + ".zip");
     }
 
     @Override

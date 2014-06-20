@@ -1,5 +1,7 @@
 package carpentersblocks;
 
+import org.apache.commons.io.FilenameUtils;
+
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraftforge.common.config.Configuration;
 import carpentersblocks.proxy.CommonProxy;
@@ -25,10 +27,11 @@ import cpw.mods.fml.common.network.NetworkRegistry;
         )
 public class CarpentersBlocks {
 
-    public static final String MODID   = "CarpentersBlocks";
+    public static final String MODID = "CarpentersBlocks";
     public static final String VERSION = "3.2.0";
     public static FMLEventChannel channel;
     public static CreativeTabs creativeTab = new CarpentersBlocksTab(MODID);
+    public static String modDir = "";
 
     @Instance(MODID)
     public static CarpentersBlocks instance;
@@ -40,6 +43,7 @@ public class CarpentersBlocks {
     public void preInit(FMLPreInitializationEvent event)
     {
         channel = NetworkRegistry.INSTANCE.newEventDrivenChannel(MODID);
+        modDir = FilenameUtils.getFullPathNoEndSeparator(event.getSourceFile().getAbsolutePath());
 
         Configuration config = new Configuration(event.getSuggestedConfigurationFile());
 
