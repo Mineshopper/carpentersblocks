@@ -42,6 +42,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
     protected static final int WEST  = 4;
     protected static final int EAST  = 5;
 
+    public Tessellator    tessellator = Tessellator.instance;
     public RenderBlocks   renderBlocks;
     public LightingHelper lightingHelper;
     public Block          srcBlock;
@@ -273,6 +274,56 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
     }
 
     /**
+     * Returns texture rotation for side.
+     */
+    protected int getRotation(int side)
+    {
+        switch (side)
+        {
+            case DOWN:
+                return renderBlocks.uvRotateBottom;
+            case UP:
+                return renderBlocks.uvRotateTop;
+            case NORTH:
+                return renderBlocks.uvRotateNorth;
+            case SOUTH:
+                return renderBlocks.uvRotateSouth;
+            case WEST:
+                return renderBlocks.uvRotateWest;
+            default:
+                return renderBlocks.uvRotateEast;
+        }
+    }
+
+    /**
+     * Sets texture rotation for side.
+     */
+    protected void setRotation(int side, int rotation)
+    {
+        switch (side)
+        {
+            case DOWN:
+                renderBlocks.uvRotateBottom = rotation;
+                break;
+            case UP:
+                renderBlocks.uvRotateTop = rotation;
+                break;
+            case NORTH:
+                renderBlocks.uvRotateNorth = rotation;
+                break;
+            case SOUTH:
+                renderBlocks.uvRotateSouth = rotation;
+                break;
+            case WEST:
+                renderBlocks.uvRotateWest = rotation;
+                break;
+            default:
+                renderBlocks.uvRotateEast = rotation;
+                break;
+        }
+    }
+
+    /**
      * Sets dye override.
      */
     protected void setDyeOverride(int dye)
@@ -470,11 +521,12 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
 
         /* Render side */
 
+        int tempRotation = getRotation(side);
         if (BlockProperties.blockRotates(itemStack)) {
             setDirectionalRotation(side);
         }
         setColorAndRender(itemStack, x, y, z, side, icon);
-        clearRotation(side);
+        setRotation(side, tempRotation);
 
         /* Render BlockGrass side overlay here, if needed. */
 
