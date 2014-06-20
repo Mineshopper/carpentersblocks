@@ -27,7 +27,7 @@ public class TEBase extends TileEntity implements IProtected {
     public ItemStack[] overlay      = new ItemStack[7];
 
     /** Chisel design for each side and base block. */
-    public String[] chiselDesign = { "", "", "", "", "", "", ""};
+    public String[] chiselDesign = { "", "", "", "", "", "", "" };
 
     /** Holds specific block information like facing, states, etc. */
     public short metadata;

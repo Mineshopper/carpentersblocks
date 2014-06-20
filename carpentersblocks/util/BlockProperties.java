@@ -215,7 +215,7 @@ public final class BlockProperties {
         return setDesign(TE, "");
     }
 
-    private static String getBlockDesignType(TEBase TE)
+    public static String getBlockDesignType(TEBase TE)
     {
         String name = TE.getBlockType().getUnlocalizedName();
         return name.substring(new String("tile.blockCarpenters").length()).toLowerCase();

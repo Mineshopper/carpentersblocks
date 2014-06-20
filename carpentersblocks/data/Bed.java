@@ -16,7 +16,6 @@ public class Bed {
      */
 
     public final static byte TYPE_NORMAL   = 0;
-    public final static byte TYPE_PLATFORM = 1;
 
     /**
      * Returns type.
