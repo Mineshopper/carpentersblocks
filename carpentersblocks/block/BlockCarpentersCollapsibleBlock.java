@@ -3,6 +3,7 @@ package carpentersblocks.block;
 import java.util.List;
 
 import net.minecraft.block.material.Material;
+import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -185,6 +186,55 @@ public class BlockCarpentersCollapsibleBlock extends BlockCoverable {
         return false;
     }
 
+    /**
+     * Returns true if a slope should end at the given coords
+     */
+    private boolean isSlopeBoundary(World world, int x, int y, int z)
+    {
+        TEBase TE = getTileEntity(world, x, y, z);
+        if(TE != null)
+            return true;
+        
+        return world.getBlock(x, y, z).getMaterial().blocksMovement() || !world.getBlock(x, y - 1, z).getMaterial().blocksMovement();
+    }
+
+    /**
+     * Scan X axis for slopes
+     */
+    private int scanX(World world, int x, int y, int z, int dir, int maxDist)
+    {
+        for(int nx = x + dir; nx != x + maxDist * dir; nx += dir)
+            if(isSlopeBoundary(world, nx, y, z))
+                return nx;
+
+        return x + dir;
+    }
+
+    /**
+     * Scan Z axis for slopes
+     */
+    private int scanZ(World world, int x, int y, int z, int dir, int maxDist)
+    {
+        for(int nz = z + dir; nz != z + maxDist * dir; nz += dir)
+            if(isSlopeBoundary(world, x, y, nz))
+                return nz;
+
+        return z + dir;
+    }
+    
+    /**
+     * Returns block height
+     */
+    private static int getBlockHeight(IBlockAccess world, int x, int y, int z)
+    {
+        Block block = world.getBlock(x, y, z);
+        if(!block.getMaterial().blocksMovement())
+            return 1;
+
+        double height = block.getBlockBoundsMaxY() * 15.0 + 1.0;
+        return (int)height;
+    }
+
     @Override
     /**
      * Called when the block is placed in the world.
@@ -199,30 +249,78 @@ public class BlockCarpentersCollapsibleBlock extends BlockCoverable {
 
             if (TE != null) {
 
-                /* Match adjacent collapsible quadrant heights. */
+                /* Create a linear slope from neighbor blocks and collapsible quadrants. */
 
-                TEBase TE_XN = getTileEntity(world, x - 1, y, z);
-                TEBase TE_XP = getTileEntity(world, x + 1, y, z);
-                TEBase TE_ZN = getTileEntity(world, x, y, z - 1);
-                TEBase TE_ZP = getTileEntity(world, x, y, z + 1);
+                /* Mininum and maximum height of quadrants */
+                final int MIN_HEIGHT = 1;
+                final int MAX_HEIGHT = 16;
 
-                if (TE_XN != null) {
-                    Collapsible.setQuadHeight(TE, Collapsible.QUAD_XZNN, Collapsible.getQuadHeight(TE_XN, Collapsible.QUAD_XZPN));
-                    Collapsible.setQuadHeight(TE, Collapsible.QUAD_XZNP, Collapsible.getQuadHeight(TE_XN, Collapsible.QUAD_XZPP));
+                /* find slopes in landscape */
+                int xn = scanX(world, x, y, z, -1, MAX_HEIGHT);
+                int xp = scanX(world, x, y, z, 1, MAX_HEIGHT);
+                int zn = scanZ(world, x, y, z, -1, MAX_HEIGHT);
+                int zp = scanZ(world, x, y, z, 1, MAX_HEIGHT);
+
+                TEBase TE_XN = getTileEntity(world, xn, y, z);
+                TEBase TE_XP = getTileEntity(world, xp, y, z);
+                TEBase TE_ZN = getTileEntity(world, x, y, zn);
+                TEBase TE_ZP = getTileEntity(world, x, y, zp);
+
+                int height_XZNN = MIN_HEIGHT, height_XZPN = MIN_HEIGHT, height_XZPP = MIN_HEIGHT, height_XZNP = MIN_HEIGHT;
+
+                int hxn1, hxn2;
+                if(TE_XN != null) {
+                    hxn1 = Collapsible.getQuadHeight(TE_XN, Collapsible.QUAD_XZPN);
+                    hxn2 = Collapsible.getQuadHeight(TE_XN, Collapsible.QUAD_XZPP);
+                } else {
+                    hxn1 = hxn2 = getBlockHeight(world, xn, y, z);
                 }
-                if (TE_XP != null) {
-                    Collapsible.setQuadHeight(TE, Collapsible.QUAD_XZPN, Collapsible.getQuadHeight(TE_XP, Collapsible.QUAD_XZNN));
-                    Collapsible.setQuadHeight(TE, Collapsible.QUAD_XZPP, Collapsible.getQuadHeight(TE_XP, Collapsible.QUAD_XZNP));
+                
+                int hxp1, hxp2;
+                if(TE_XP != null) {
+                    hxp1 = Collapsible.getQuadHeight(TE_XP, Collapsible.QUAD_XZNN);
+                    hxp2 = Collapsible.getQuadHeight(TE_XP, Collapsible.QUAD_XZNP);
+                } else {
+                    hxp1 = hxp2 = getBlockHeight(world, xp, y, z);
                 }
-                if (TE_ZN != null) {
-                    Collapsible.setQuadHeight(TE, Collapsible.QUAD_XZNN, Collapsible.getQuadHeight(TE_ZN, Collapsible.QUAD_XZNP));
-                    Collapsible.setQuadHeight(TE, Collapsible.QUAD_XZPN, Collapsible.getQuadHeight(TE_ZN, Collapsible.QUAD_XZPP));
+                
+                int hzn1, hzn2;
+                if(TE_ZN != null) {
+                    hzn1 = Collapsible.getQuadHeight(TE_ZN, Collapsible.QUAD_XZNP);
+                    hzn2 = Collapsible.getQuadHeight(TE_ZN, Collapsible.QUAD_XZPP);
+                } else {
+                    hzn1 = hzn2 = getBlockHeight(world, x, y, zn);
                 }
-                if (TE_ZP != null) {
-                    Collapsible.setQuadHeight(TE, Collapsible.QUAD_XZNP, Collapsible.getQuadHeight(TE_ZP, Collapsible.QUAD_XZNN));
-                    Collapsible.setQuadHeight(TE, Collapsible.QUAD_XZPP, Collapsible.getQuadHeight(TE_ZP, Collapsible.QUAD_XZPN));
+                
+                int hzp1, hzp2;
+                if(TE_ZP != null) {
+                    hzp1 = Collapsible.getQuadHeight(TE_ZP, Collapsible.QUAD_XZNN);
+                    hzp2 = Collapsible.getQuadHeight(TE_ZP, Collapsible.QUAD_XZPN);
+                } else {
+                    hzp1 = hzp2 = getBlockHeight(world, x, y, zp);
                 }
 
+                /* lerp between heights, create smooth slope */
+                int xdist = x - xn;
+                double dx1 = (double)(hxp1 - hxn1) / (xp - xn - 1);
+                double dx2 = (double)(hxp2 - hxn2) / (xp - xn - 1);
+                height_XZNN = Math.max(height_XZNN, (int)((double)hxn1 + dx1 * (xdist - 1)));
+                height_XZNP = Math.max(height_XZNP, (int)((double)hxn2 + dx2 * (xdist - 1)));
+                height_XZPN = Math.max(height_XZPN, (int)((double)hxn1 + dx1 * xdist));
+                height_XZPP = Math.max(height_XZPP, (int)((double)hxn2 + dx2 * xdist));
+
+                int zdist = z - zn;
+                double dz1 = (double)(hzp1 - hzn1) / (zp - zn - 1);
+                double dz2 = (double)(hzp2 - hzn2) / (zp - zn - 1);
+                height_XZNN = Math.max(height_XZNN, (int)((double)hzn1 + dz1 * (zdist - 1)));
+                height_XZNP = Math.max(height_XZNP, (int)((double)hzn1 + dz1 * zdist));
+                height_XZPN = Math.max(height_XZPN, (int)((double)hzn2 + dz2 * (zdist - 1)));
+                height_XZPP = Math.max(height_XZPP, (int)((double)hzn2 + dz2 * zdist));
+
+                Collapsible.setQuadHeight(TE, Collapsible.QUAD_XZNN, height_XZNN);
+                Collapsible.setQuadHeight(TE, Collapsible.QUAD_XZNP, height_XZNP);
+                Collapsible.setQuadHeight(TE, Collapsible.QUAD_XZPP, height_XZPP);
+                Collapsible.setQuadHeight(TE, Collapsible.QUAD_XZPN, height_XZPN);
             }
         }
 
