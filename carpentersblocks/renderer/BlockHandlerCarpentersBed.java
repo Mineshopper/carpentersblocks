@@ -30,15 +30,17 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase {
      */
     protected void renderCarpentersBlock(int x, int y, int z)
     {
+        renderBlocks.renderAllFaces = true;
+
         ItemStack itemStack = getCoverForRendering();
 
         if (hasDesign()) {
             icon_design = IconRegistry.icon_design_bed.get(DesignHandler.listBed.indexOf(BlockProperties.getDesign(TE)));
         }
 
-        renderBlocks.renderAllFaces = true;
-
         renderFabricComponents(new ItemStack(Blocks.wool), x, y, z);
+
+        applyFrameDyeOverride();
 
         switch (Bed.getType(TE)) {
             case Bed.TYPE_NORMAL:
@@ -46,7 +48,23 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase {
                 break;
         }
 
+        clearDyeOverride();
+        suppressDyeColor = false;
+
         renderBlocks.renderAllFaces = false;
+    }
+
+    private void applyFrameDyeOverride()
+    {
+        TEBase TE_temp = isHead() ? TE : Bed.getOppositeTE(TE);
+
+        if (TE_temp != null) {
+            if (BlockProperties.hasDye(TE_temp, 6)) {
+                setDyeOverride(DyeHandler.getColor(BlockProperties.getDye(TE_temp, 6)));
+            } else {
+                suppressDyeColor = true;
+            }
+        }
     }
 
     private boolean isOccupied()
@@ -83,33 +101,6 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase {
         }
 
         return 0;
-    }
-
-    /**
-     * Returns tile entity that influences the dye color of the frame.
-     */
-    private TEBase getFrameDyeTE()
-    {
-        TEBase TE_temp = TE;
-
-        if (!isHead()) {
-            TEBase TE_head = Bed.getOppositeTE(TE);
-            if (TE_head != null) {
-                TE_temp = TE_head;
-            }
-        }
-
-        return TE_temp;
-    }
-
-    private boolean isFrameDyed()
-    {
-        return BlockProperties.hasDye(getFrameDyeTE(), coverRendering);
-    }
-
-    private int getFrameDyeColor()
-    {
-        return DyeHandler.getColor(BlockProperties.getDye(getFrameDyeTE(), coverRendering));
     }
 
     private ForgeDirection getDirection()
@@ -301,10 +292,6 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase {
         boolean bedParallelNeg = isParallelNegSide();
         boolean bedParallelPos = isParallelPosSide();
 
-        if (isFrameDyed()) {
-            setDyeOverride(getFrameDyeColor());
-        }
-
         switch (getDirection())
         {
             case NORTH:
@@ -457,8 +444,6 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase {
             }
             default: { }
         }
-
-        clearDyeOverride();
     }
 
 }
