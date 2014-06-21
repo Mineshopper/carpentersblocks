@@ -19,6 +19,18 @@ public class TileEntityHandler {
         GameRegistry.registerTileEntity(         TECarpentersTorch.class,          "TileEntityCarpentersTorch");
         GameRegistry.registerTileEntity(          TECarpentersSafe.class,           "TileEntityCarpentersSafe");
         GameRegistry.registerTileEntity(     TECarpentersFlowerPot.class,      "TileEntityCarpentersFlowerPot");
+
+        registerCompatibilityMappings();
+    }
+
+    /**
+     * Add tile entity class mappings needed to retain compatibility
+     * with older versions of this mod.
+     */
+    private static void registerCompatibilityMappings()
+    {
+        GameRegistry.registerTileEntity(                    TEBase.class, "TileEntityCarpentersSlope"); // Mapping prior to MC 1.7+ migration
+        GameRegistry.registerTileEntity(TECarpentersDaylightSensor.class,   "TileEntityCarpentersExt"); // Mapping prior to MC 1.7+ migration
     }
 
 }
