@@ -18,6 +18,37 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase {
 
     private IIcon[] icon_design;
 
+    @Override
+    public boolean shouldRender3DInInventory(int modelId)
+    {
+        return false;
+    }
+
+    @Override
+    /**
+     * Renders bed
+     */
+    protected void renderCarpentersBlock(int x, int y, int z)
+    {
+        ItemStack itemStack = getCoverForRendering();
+
+        if (hasDesign()) {
+            icon_design = IconRegistry.icon_design_bed.get(DesignHandler.listBed.indexOf(BlockProperties.getDesign(TE)));
+        }
+
+        renderBlocks.renderAllFaces = true;
+
+        renderFabricComponents(new ItemStack(Blocks.wool), x, y, z);
+
+        switch (Bed.getType(TE)) {
+            case Bed.TYPE_NORMAL:
+                renderNormalFrame(itemStack, x, y, z);
+                break;
+        }
+
+        renderBlocks.renderAllFaces = false;
+    }
+
     private boolean isOccupied()
     {
         TEBase TE_opp = Bed.getOppositeTE(TE);
@@ -54,18 +85,31 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase {
         return 0;
     }
 
-    private int getFrameColor()
+    /**
+     * Returns tile entity that influences the dye color of the frame.
+     */
+    private TEBase getFrameDyeTE()
     {
-        if (isHead()) {
-            return DyeHandler.getColor(BlockProperties.getDye(TE, 6));
-        } else {
-            TEBase TE_opp = Bed.getOppositeTE(TE);
-            if (TE_opp != null) {
-                return DyeHandler.getColor(BlockProperties.getDye(TE_opp, 6));
+        TEBase TE_temp = TE;
+
+        if (!isHead()) {
+            TEBase TE_head = Bed.getOppositeTE(TE);
+            if (TE_head != null) {
+                TE_temp = TE_head;
             }
         }
 
-        return 0;
+        return TE_temp;
+    }
+
+    private boolean isFrameDyed()
+    {
+        return BlockProperties.hasDye(getFrameDyeTE(), coverRendering);
+    }
+
+    private int getFrameDyeColor()
+    {
+        return DyeHandler.getColor(BlockProperties.getDye(getFrameDyeTE(), coverRendering));
     }
 
     private ForgeDirection getDirection()
@@ -102,37 +146,6 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase {
         } else {
             return false;
         }
-    }
-
-    @Override
-    public boolean shouldRender3DInInventory(int modelId)
-    {
-        return false;
-    }
-
-    @Override
-    /**
-     * Renders bed
-     */
-    protected void renderCarpentersBlock(int x, int y, int z)
-    {
-        ItemStack itemStack = getCoverForRendering();
-
-        if (hasDesign()) {
-            icon_design = IconRegistry.icon_design_bed.get(DesignHandler.listBed.indexOf(BlockProperties.getDesign(TE)));
-        }
-
-        renderBlocks.renderAllFaces = true;
-
-        renderFabricComponents(new ItemStack(Blocks.wool), x, y, z);
-
-        switch (Bed.getType(TE)) {
-            case Bed.TYPE_NORMAL:
-                renderNormalFrame(itemStack, x, y, z);
-                break;
-        }
-
-        renderBlocks.renderAllFaces = false;
     }
 
     /**
@@ -288,7 +301,9 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase {
         boolean bedParallelNeg = isParallelNegSide();
         boolean bedParallelPos = isParallelPosSide();
 
-        setDyeOverride(getFrameColor());
+        if (isFrameDyed()) {
+            setDyeOverride(getFrameDyeColor());
+        }
 
         switch (getDirection())
         {
