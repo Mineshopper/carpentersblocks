@@ -330,7 +330,12 @@ public class BlockCarpentersCollapsibleBlock extends BlockCoverable {
                 Collapsible.setQuadHeight(TE, Collapsible.QUAD_XZNP, height_XZNP);
                 Collapsible.setQuadHeight(TE, Collapsible.QUAD_XZPP, height_XZPP);
                 Collapsible.setQuadHeight(TE, Collapsible.QUAD_XZPN, height_XZPN);
+
+                for (int quad = 0; quad < 4; ++quad) {
+                    smoothAdjacentCollapsibles(TE, quad);
+                }
             }
+
         }
 
         super.onBlockPlacedBy(world, x, y, z, entityLiving, itemStack);
