@@ -178,9 +178,9 @@ public class DesignHandler {
             int cols = image.getWidth() / size;
             int count = -1;
 
-            // Pillow [1] - Shift up 7px
+            // Pillow [1]
             // Blanket-Head-Left [3] - Rotate 270
-            // Blanket-Head-Top [4]
+            // Blanket-Head-Top & Trim [4]
             // Blanket-Head-Right [5] - Rotate 90
             // Blanket-Foot-Left [6] - Rotate 270
             // Blanket-Foot-Top [7]
@@ -203,9 +203,6 @@ public class DesignHandler {
                             Graphics2D gr = bufferedImage.createGraphics();
 
                             switch (count) {
-                                case 1:
-                                    gr.translate(0, -7);
-                                    break;
                                 case 3:
                                 case 6:
                                     gr.rotate(Math.toRadians(270.0D), size/2, size/2);

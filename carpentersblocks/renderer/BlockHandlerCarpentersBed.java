@@ -196,9 +196,9 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase {
 
         if (hasDesign()) {
 
-            int[] idxHead = { 2, 2, 7, 7, 1, 3 };
-            int[] idxFoot = { 5, 5, 7, 7, 4, 6 };
-            int[][] idxRot = { { 2, 3, 5, 4 }, { 2, 3, 4, 5 }, { 4, 5, 2, 3 }, { 5, 4, 2, 3 } };
+            int[] idxHead = { 2, 2, 2, 7, 1, 3 };
+            int[] idxFoot = { 5, 5, 2, 7, 4, 6 };
+            int[][] idxRot = { { 3, 2, 5, 4 }, { 2, 3, 4, 5 }, { 4, 5, 3, 2 }, { 5, 4, 2, 3 } };
             int valDir = dir.ordinal() - 2;
 
             /** 0 = head, 1 = foot */
