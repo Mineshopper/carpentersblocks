@@ -4,6 +4,10 @@ import static carpentersblocks.renderer.helper.RenderHelper.QUADS;
 import static carpentersblocks.renderer.helper.RenderHelper.TRIANGLES;
 import static carpentersblocks.renderer.helper.VertexHelper.BOTTOM_LEFT;
 import static carpentersblocks.renderer.helper.VertexHelper.BOTTOM_RIGHT;
+import static carpentersblocks.renderer.helper.VertexHelper.NORTHEAST;
+import static carpentersblocks.renderer.helper.VertexHelper.NORTHWEST;
+import static carpentersblocks.renderer.helper.VertexHelper.SOUTHEAST;
+import static carpentersblocks.renderer.helper.VertexHelper.SOUTHWEST;
 import static carpentersblocks.renderer.helper.VertexHelper.TOP_LEFT;
 import static carpentersblocks.renderer.helper.VertexHelper.TOP_RIGHT;
 import net.minecraft.block.Block;
@@ -90,15 +94,12 @@ public class BlockHandlerCarpentersCollapsibleBlock extends BlockAdvancedLightin
         /* Render top slopes. */
 
         RenderHelper.startDrawing(TRIANGLES);
-
         prepareLighting(itemStack);
-
         prepareTopFace(itemStack, x, y, z);
 
         /* Render all other faces. */
 
         RenderHelper.startDrawing(QUADS);
-
         renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
 
         /* BOTTOM FACE */
@@ -107,24 +108,34 @@ public class BlockHandlerCarpentersCollapsibleBlock extends BlockAdvancedLightin
             setIDAndRender(itemStack, NORMAL_YN, x, y, z, DOWN);
         }
 
+        double oneStep = 1.0D / 15.0D;
+
         /* NORTH FACE */
         if (srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x, y, z - 1, NORTH)) {
-            prepareFaceZNeg(itemStack, x, y, z);
+            if (CollapsibleUtil.offset_XZNN + CollapsibleUtil.offset_XZPN >= oneStep) {
+                prepareFaceZNeg(itemStack, x, y, z);
+            }
         }
 
         /* SOUTH FACE */
         if (srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x, y, z + 1, SOUTH)) {
-            prepareFaceZPos(itemStack, x, y, z);
+            if (CollapsibleUtil.offset_XZNP + CollapsibleUtil.offset_XZPP >= oneStep) {
+                prepareFaceZPos(itemStack, x, y, z);
+            }
         }
 
         /* WEST FACE */
         if (srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x - 1, y, z, WEST)) {
-            prepareFaceXNeg(itemStack, x, y, z);
+            if (CollapsibleUtil.offset_XZNN + CollapsibleUtil.offset_XZNP >= oneStep) {
+                prepareFaceXNeg(itemStack, x, y, z);
+            }
         }
 
         /* EAST FACE */
         if (srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x + 1, y, z, EAST)) {
-            prepareFaceXPos(itemStack, x, y, z);
+            if (CollapsibleUtil.offset_XZPN + CollapsibleUtil.offset_XZPP >= oneStep) {
+                prepareFaceXPos(itemStack, x, y, z);
+            }
         }
 
         renderBlocks.enableAO = false;
@@ -170,28 +181,87 @@ public class BlockHandlerCarpentersCollapsibleBlock extends BlockAdvancedLightin
      */
     private void prepareTopFace(ItemStack itemStack, int x, int y, int z)
     {
+        /* Compute CENTER_YMAX lighting. */
+
+        renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 0.5D, CollapsibleUtil.CENTER_YMAX, 0.5D);
+        lightingHelper.setupLightingYPos(itemStack, x, y, z);
+        float aoCenter = lightingHelper.ao[SOUTHEAST];
+        int brightnessCenter = renderBlocks.brightnessTopLeft;
+
+        /* Compute XZPP corner lighting. */
+
+        renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, CollapsibleUtil.offset_XZPP, 1.0D);
+        lightingHelper.setupLightingYPos(itemStack, x, y, z);
+        float aoXZPP = lightingHelper.ao[SOUTHEAST];
+        int brightnessXZPP = renderBlocks.brightnessTopLeft;
+
+        /* Compute XZPN corner lighting. */
+
+        renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, CollapsibleUtil.offset_XZPN, 1.0D);
+        lightingHelper.setupLightingYPos(itemStack, x, y, z);
+        float aoXZPN = lightingHelper.ao[NORTHEAST];
+        int brightnessXZPN = renderBlocks.brightnessBottomLeft;
+
+        /* Compute XZNN corner lighting. */
+
+        renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, CollapsibleUtil.offset_XZNN, 1.0D);
+        lightingHelper.setupLightingYPos(itemStack, x, y, z);
+        float aoXZNN = lightingHelper.ao[NORTHWEST];
+        int brightnessXZNN = renderBlocks.brightnessBottomRight;
+
+        /* Compute XZNP corner lighting. */
+
+        renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, CollapsibleUtil.offset_XZNP, 1.0D);
+        lightingHelper.setupLightingYPos(itemStack, x, y, z);
+        float aoXZNP = lightingHelper.ao[SOUTHWEST];
+        int brightnessXZNP = renderBlocks.brightnessTopRight;
+
         /* Top North triangle. */
 
-        renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 0.5D);
-        lightingHelper.setupLightingYPos(itemStack, x, y, z).setLightnessOverride(getInterpolatedLightness(ForgeDirection.NORTH));
+        lightingHelper.setLightnessOverride(getInterpolatedLightness(ForgeDirection.NORTH));
+        renderBlocks.setRenderBounds(0.0D, Math.min(CollapsibleUtil.offset_XZNN, CollapsibleUtil.offset_XZPN), 0.0D, 1.0D, Math.max(CollapsibleUtil.offset_XZNN, CollapsibleUtil.offset_XZPN), 0.5D);
+        lightingHelper.ao[TOP_LEFT] = lightingHelper.ao[TOP_RIGHT] = aoCenter;
+        renderBlocks.brightnessTopLeft = renderBlocks.brightnessTopRight = brightnessCenter;
+        lightingHelper.ao[BOTTOM_LEFT] = aoXZPN;
+        renderBlocks.brightnessBottomLeft = brightnessXZPN;
+        lightingHelper.ao[BOTTOM_RIGHT] = aoXZNN;
+        renderBlocks.brightnessBottomRight = brightnessXZNN;
         setIDAndRender(itemStack, SLOPE_YZPN, x, y, z, UP);
 
         /* Top South triangle. */
 
-        renderBlocks.setRenderBounds(0.0D, 0.0D, 0.5D, 1.0D, 1.0D, 1.0D);
-        lightingHelper.setupLightingYPos(itemStack, x, y, z).setLightnessOverride(getInterpolatedLightness(ForgeDirection.SOUTH));
+        lightingHelper.setLightnessOverride(getInterpolatedLightness(ForgeDirection.SOUTH));
+        renderBlocks.setRenderBounds(0.0D, Math.min(CollapsibleUtil.offset_XZNP, CollapsibleUtil.offset_XZPP), 0.5D, 1.0D, Math.max(CollapsibleUtil.offset_XZNP, CollapsibleUtil.offset_XZPP), 1.0D);
+        lightingHelper.ao[BOTTOM_LEFT] = lightingHelper.ao[BOTTOM_RIGHT] = aoCenter;
+        renderBlocks.brightnessBottomLeft = renderBlocks.brightnessBottomRight = brightnessCenter;
+        lightingHelper.ao[TOP_LEFT] = aoXZPP;
+        renderBlocks.brightnessTopLeft = brightnessXZPP;
+        lightingHelper.ao[TOP_RIGHT] = aoXZNP;
+        renderBlocks.brightnessTopRight = brightnessXZNP;
         setIDAndRender(itemStack, SLOPE_YZPP, x, y, z, UP);
 
         /* Top West triangle. */
 
-        renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 0.5D, 1.0D, 1.0D);
-        lightingHelper.setupLightingYPos(itemStack, x, y, z).setLightnessOverride(getInterpolatedLightness(ForgeDirection.WEST));
+        lightingHelper.setLightnessOverride(getInterpolatedLightness(ForgeDirection.WEST));
+        renderBlocks.setRenderBounds(0.0D, Math.min(CollapsibleUtil.offset_XZNN, CollapsibleUtil.offset_XZNP), 0.0D, 0.5D, Math.max(CollapsibleUtil.offset_XZNN, CollapsibleUtil.offset_XZNP), 1.0D);
+        lightingHelper.ao[TOP_LEFT] = lightingHelper.ao[BOTTOM_LEFT] = aoCenter;
+        renderBlocks.brightnessTopLeft = renderBlocks.brightnessBottomLeft = brightnessCenter;
+        lightingHelper.ao[TOP_RIGHT] = aoXZNP;
+        renderBlocks.brightnessTopRight = brightnessXZNP;
+        lightingHelper.ao[BOTTOM_RIGHT] = aoXZNN;
+        renderBlocks.brightnessBottomRight = brightnessXZNN;
         setIDAndRender(itemStack, SLOPE_XYNP, x, y, z, UP);
 
         /* Top East triangle. */
 
-        renderBlocks.setRenderBounds(0.5D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
-        lightingHelper.setupLightingYPos(itemStack, x, y, z).setLightnessOverride(getInterpolatedLightness(ForgeDirection.EAST));
+        lightingHelper.setLightnessOverride(getInterpolatedLightness(ForgeDirection.EAST));
+        renderBlocks.setRenderBounds(0.5D, Math.min(CollapsibleUtil.offset_XZPN, CollapsibleUtil.offset_XZPP), 0.0D, 1.0D, Math.max(CollapsibleUtil.offset_XZPN, CollapsibleUtil.offset_XZPP), 1.0D);
+        lightingHelper.ao[TOP_RIGHT] = lightingHelper.ao[BOTTOM_RIGHT] = aoCenter;
+        renderBlocks.brightnessTopRight = renderBlocks.brightnessBottomRight = brightnessCenter;
+        lightingHelper.ao[TOP_LEFT] = aoXZPP;
+        renderBlocks.brightnessTopLeft = brightnessXZPP;
+        lightingHelper.ao[BOTTOM_LEFT] = aoXZPN;
+        renderBlocks.brightnessBottomLeft = brightnessXZPN;
         setIDAndRender(itemStack, SLOPE_XYPP, x, y, z, UP);
 
         lightingHelper.clearLightnessOverride();

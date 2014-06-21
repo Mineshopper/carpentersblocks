@@ -20,9 +20,9 @@ public class RenderHelperCollapsible extends RenderHelper {
         double uTM = uTR - (uTR - uTL) / 2;
         double xMid = xMax - (xMax - xMin) / 2;
 
-        setupVertex(renderBlocks, xMid, yMin + CollapsibleUtil.CENTER_YMAX, zMax, uTM, vTR, TOP_CENTER  );
-        setupVertex(renderBlocks, xMax, yMin + CollapsibleUtil.offset_XZPN, zMin, uBL, vBL, NORTHEAST   );
-        setupVertex(renderBlocks, xMin, yMin + CollapsibleUtil.offset_XZNN, zMin, uBR, vBR, NORTHWEST   );
+        setupVertex(renderBlocks, xMid, y + CollapsibleUtil.CENTER_YMAX, zMax, uTM, vTR, TOP_CENTER  );
+        setupVertex(renderBlocks, xMax, y + CollapsibleUtil.offset_XZPN, zMin, uBL, vBL, NORTHEAST   );
+        setupVertex(renderBlocks, xMin, y + CollapsibleUtil.offset_XZNN, zMin, uBR, vBR, NORTHWEST   );
     }
 
     /**
@@ -35,9 +35,9 @@ public class RenderHelperCollapsible extends RenderHelper {
         double uBM = uBR - (uBR - uBL) / 2;
         double xMid = xMax - (xMax - xMin) / 2;
 
-        setupVertex(renderBlocks, xMax, yMin + CollapsibleUtil.offset_XZPP, zMax, uTL, vTL, SOUTHEAST    );
-        setupVertex(renderBlocks, xMid, yMin + CollapsibleUtil.CENTER_YMAX, zMin, uBM, vBR, BOTTOM_CENTER);
-        setupVertex(renderBlocks, xMin, yMin + CollapsibleUtil.offset_XZNP, zMax, uTR, vTR, SOUTHWEST    );
+        setupVertex(renderBlocks, xMax, y + CollapsibleUtil.offset_XZPP, zMax, uTL, vTL, SOUTHEAST    );
+        setupVertex(renderBlocks, xMid, y + CollapsibleUtil.CENTER_YMAX, zMin, uBM, vBR, BOTTOM_CENTER);
+        setupVertex(renderBlocks, xMin, y + CollapsibleUtil.offset_XZNP, zMax, uTR, vTR, SOUTHWEST    );
     }
 
     /**
@@ -50,9 +50,9 @@ public class RenderHelperCollapsible extends RenderHelper {
         double vLM = vBL - (vBL - vTL) / 2;
         double zMid = zMax - (zMax - zMin) / 2;
 
-        setupVertex(renderBlocks, xMax, yMin + CollapsibleUtil.CENTER_YMAX, zMid, uBL, vLM, LEFT_CENTER );
-        setupVertex(renderBlocks, xMin, yMin + CollapsibleUtil.offset_XZNN, zMin, uBR, vBR, NORTHWEST   );
-        setupVertex(renderBlocks, xMin, yMin + CollapsibleUtil.offset_XZNP, zMax, uTR, vTR, SOUTHWEST   );
+        setupVertex(renderBlocks, xMax, y + CollapsibleUtil.CENTER_YMAX, zMid, uBL, vLM, LEFT_CENTER );
+        setupVertex(renderBlocks, xMin, y + CollapsibleUtil.offset_XZNN, zMin, uBR, vBR, NORTHWEST   );
+        setupVertex(renderBlocks, xMin, y + CollapsibleUtil.offset_XZNP, zMax, uTR, vTR, SOUTHWEST   );
     }
 
     /**
@@ -65,9 +65,9 @@ public class RenderHelperCollapsible extends RenderHelper {
         double vRM = vBR - (vBR - vTR) / 2;
         double zMid = zMax - (zMax - zMin) / 2;
 
-        setupVertex(renderBlocks, xMax, yMin + CollapsibleUtil.offset_XZPP, zMax, uTL, vTL, SOUTHEAST   );
-        setupVertex(renderBlocks, xMax, yMin + CollapsibleUtil.offset_XZPN, zMin, uBL, vBL, NORTHEAST   );
-        setupVertex(renderBlocks, xMin, yMin + CollapsibleUtil.CENTER_YMAX, zMid, uBR, vRM, RIGHT_CENTER);
+        setupVertex(renderBlocks, xMax, y + CollapsibleUtil.offset_XZPP, zMax, uTL, vTL, SOUTHEAST   );
+        setupVertex(renderBlocks, xMax, y + CollapsibleUtil.offset_XZPN, zMin, uBL, vBL, NORTHEAST   );
+        setupVertex(renderBlocks, xMin, y + CollapsibleUtil.CENTER_YMAX, zMid, uBR, vRM, RIGHT_CENTER);
     }
 
     /**
