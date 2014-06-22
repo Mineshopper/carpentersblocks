@@ -2,35 +2,23 @@ package carpentersblocks.tileentity;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.Packet132TileEntityData;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import carpentersblocks.util.BlockProperties;
-import carpentersblocks.util.handler.OverlayHandler;
 
 public class TEBase extends TileEntity {
 
-	/* MC 1.7+ keys */
-
-    private final String TAG_COVER      = "cover";
-    private final String TAG_DYE        = "dye";
-    private final String TAG_OVERLAY    = "overlay";
-    private final String TAG_ITEMSTACKS = "itemstacks";
-    private final String TAG_METADATA   = "metadata";
-
-    /* MC 1.7+ fields */
+	/* Added for 1.7.2 migration. */
 
     public ItemStack[] newCover   = new ItemStack[7];
     public ItemStack[] newDye     = new ItemStack[7];
     public ItemStack[] newOverlay = new ItemStack[7];
 
-	/* MC 1.6+ fields */
+    /* MC 1.6.4 fields. */
 
     public short[] cover  = new short[7];
     public byte[] pattern = new byte[7];
@@ -42,76 +30,6 @@ public class TEBase extends TileEntity {
 
     /** Holds name of player that created tile entity. */
     private String owner = "";
-
-    private ItemStack[] getOverlaysAsItemStacks()
-    {
-    	ItemStack[] itemStack = new ItemStack[7];
-    	for (int idx = 0; idx < 7; ++idx) {
-    		if (BlockProperties.hasOverlay(this, idx)) {
-    			itemStack[idx] = OverlayHandler.getItemStack(overlay[idx]);
-    		}
-    	}
-    	return itemStack;
-    }
-
-    private ItemStack[] getCoversAsItemStacks()
-    {
-    	ItemStack[] itemStack = new ItemStack[7];
-    	for (int idx = 0; idx < 7; ++idx) {
-    		if (BlockProperties.hasCover(this, idx)) {
-    			itemStack[idx] = new ItemStack(BlockProperties.getCoverID(this, idx), 1, BlockProperties.getCoverMetadata(this, idx));
-    		}
-    	}
-    	return itemStack;
-    }
-
-    private ItemStack[] getColorAsItemStacks()
-    {
-    	ItemStack[] itemStack = new ItemStack[7];
-    	for (int idx = 0; idx < 7; ++idx) {
-    		if (BlockProperties.hasDyeColor(this, idx)) {
-    			itemStack[idx] = new ItemStack(Item.dyePowder, 1, 15 - color[idx]);
-    		}
-    	}
-    	return itemStack;
-    }
-
-    /**
-     * Create new NBT tags that are compatible with 1.7.2 branch.
-     */
-    private void writeToNBTMigrate(NBTTagCompound nbt)
-    {
-        NBTTagList itemstack_list = new NBTTagList();
-
-        newCover = getCoversAsItemStacks();
-        newDye = getColorAsItemStacks();
-        newOverlay = getOverlaysAsItemStacks();
-
-        for (byte side = 0; side < 7; ++side)
-        {
-            if (newCover[side] != null) {
-                NBTTagCompound nbt1 = new NBTTagCompound();
-                nbt1.setByte(TAG_COVER, side);
-                newCover[side].writeToNBT(nbt1);
-                itemstack_list.appendTag(nbt1);
-            }
-            if (newDye[side] != null) {
-                NBTTagCompound nbt1 = new NBTTagCompound();
-                nbt1.setByte(TAG_DYE, side);
-                newDye[side].writeToNBT(nbt1);
-                itemstack_list.appendTag(nbt1);
-            }
-            if (newOverlay[side] != null) {
-                NBTTagCompound nbt1 = new NBTTagCompound();
-                nbt1.setByte(TAG_OVERLAY, side);
-                newOverlay[side].writeToNBT(nbt1);
-                itemstack_list.appendTag(nbt1);
-            }
-        }
-
-        nbt.setTag(TAG_ITEMSTACKS, itemstack_list);
-        nbt.setShort(TAG_METADATA, data);
-    }
 
     @Override
     public void readFromNBT(NBTTagCompound nbt)
@@ -151,7 +69,7 @@ public class TEBase extends TileEntity {
 
         /* For compatibility when migrating to Carpenter's Blocks for MC 1.7+ */
 
-        writeToNBTMigrate(nbt);
+        MigrationHelper.writeToNBT(this, nbt);
     }
 
     @Override
