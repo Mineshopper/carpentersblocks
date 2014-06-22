@@ -32,7 +32,7 @@ import cpw.mods.fml.common.network.NetworkMod;
 public class CarpentersBlocks {
 
 	public final static String MODID = "CarpentersBlocks";
-	public final static String VERSION = "2.1.1";
+	public final static String VERSION = "2.1.2";
 
     @Instance(MODID)
     public static CarpentersBlocks instance;
