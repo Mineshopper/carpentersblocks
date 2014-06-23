@@ -146,8 +146,9 @@ public class BlockHandlerCarpentersFlowerPot extends BlockHandlerBase {
         Block block = FlowerPotProperties.toBlock(itemStack);
         RenderHelperFlowerPot.setPlantColor(this, itemStack, x, y, z);
 
+        /* Crop plants will use fully matured metadata. */
+
         if (block instanceof BlockCrops) {
-            /* Crop plants will use fully matured metadata. */
             itemStack.setItemDamage(7);
         }
 

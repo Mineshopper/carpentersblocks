@@ -22,10 +22,10 @@ public class RenderHelperFlowerPot extends RenderHelper {
      */
     public static void setPlantColor(BlockHandlerBase blockHandler, ItemStack itemStack, int x, int y, int z)
     {
-        Block block = BlockProperties.toBlock(itemStack);
+        Block block = FlowerPotProperties.toBlock(itemStack);
         Tessellator tessellator = Tessellator.instance;
 
-        float[] rgb = blockHandler.getBlockRGB(itemStack, x, y, z, 1, null);
+        float[] rgb = blockHandler.getBlockRGB(block, itemStack.getItemDamage(), x, y, z, 1, null);
         blockHandler.lightingHelper.applyAnaglyph(rgb);
 
         tessellator.setColorOpaque_F(rgb[0], rgb[1], rgb[2]);

@@ -2,7 +2,6 @@ package carpentersblocks.renderer.helper;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
-import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.IFluidBlock;
 import carpentersblocks.renderer.BlockHandlerBase;
@@ -195,7 +194,7 @@ public class FancyFluidsHelper {
                 {
                     double fluidHeight = (fluidBlock instanceof BlockLiquid ? 1.0D - 1.0F / 9.0F : 0.875F) - 0.0010000000474974513D;
                     blockHandler.renderBlocks.setRenderBounds(minX, offset, minZ, maxX, fluidHeight, maxZ);
-                    float rgb[] = blockHandler.getBlockRGB(new ItemStack(fluidBlock), x, y, z, 1, null);
+                    float rgb[] = blockHandler.getBlockRGB(fluidBlock, metadata, x, y, z, 1, null);
                     blockHandler.renderBlocks.renderStandardBlockWithColorMultiplier(fluidBlock, x, y, z, rgb[0], rgb[1], rgb[2]);
                     return true;
                 }

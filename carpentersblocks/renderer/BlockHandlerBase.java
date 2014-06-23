@@ -614,7 +614,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
      */
     public void setColorAndRender(ItemStack itemStack, int x, int y, int z, int side, IIcon icon)
     {
-        float[] rgb = getBlockRGB(itemStack, x, y, z, side, icon);
+        float[] rgb = getBlockRGB(BlockProperties.toBlock(itemStack), itemStack.getItemDamage(), x, y, z, side, icon);
 
         if (!suppressDyeColor && (BlockProperties.hasDye(TE, coverRendering) || hasDyeOverride)) {
             rgb = hasDyeOverride ? LightingHelper.getRGB(dyeOverride) : LightingHelper.getRGB(DyeHandler.getColor(BlockProperties.getDye(TE, coverRendering)));
@@ -637,11 +637,9 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
      * @param z  the z coordinate
      * @return a float array with rgb values
      */
-    public float[] getBlockRGB(ItemStack itemStack, int x, int y, int z, int side, IIcon icon)
+    public float[] getBlockRGB(Block block, int metadata, int x, int y, int z, int side, IIcon icon)
     {
-        Block block = BlockProperties.toBlock(itemStack);
-
-        BlockProperties.setHostMetadata(TE, itemStack.getItemDamage());
+        BlockProperties.setHostMetadata(TE, metadata);
         float rgb[] = LightingHelper.getRGB(OptifineHandler.enableOptifineIntegration ? OptifineHandler.getColorMultiplier(block, renderBlocks.blockAccess, x, y, z) : block.colorMultiplier(renderBlocks.blockAccess, x, y, z));
         BlockProperties.resetHostMetadata(TE);
 
