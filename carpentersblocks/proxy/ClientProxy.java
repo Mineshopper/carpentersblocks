@@ -33,7 +33,7 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void registerRenderInformation()
     {
-    	MinecraftForge.EVENT_BUS.register(new IconRegistry());
+        MinecraftForge.EVENT_BUS.register(new IconRegistry());
         EntityHandler.registerEntityRenderers();
 
         BlockRegistry.carpentersBlockRenderID = RenderingRegistry.getNextAvailableRenderId();

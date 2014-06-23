@@ -19,20 +19,19 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 
 public class CommonProxy {
 
-	public void preInit(FMLPreInitializationEvent event, Configuration config)
-	{
+    public void preInit(FMLPreInitializationEvent event, Configuration config)
+    {
         FeatureRegistry.preInit(event, config);
         BlockRegistry.preInit(event, config);
         ItemRegistry.preInit(event, config);
-		DesignHandler.preInit(event);
+        DesignHandler.preInit(event);
+        registerRenderInformation();
+    }
 
-		registerRenderInformation();
-	}
-
-	public void init(FMLInitializationEvent event)
-	{
-    	BlockRegistry.init(event);
-    	ItemRegistry.init(event);
+    public void init(FMLInitializationEvent event)
+    {
+        BlockRegistry.init(event);
+        ItemRegistry.init(event);
 
         if (BlockRegistry.enableFlowerPot) {
             FlowerPotHandler.init();
@@ -53,7 +52,7 @@ public class CommonProxy {
         MinecraftForge.EVENT_BUS.register(new EventHandler());
         CarpentersBlocks.channel.register(new PacketHandler());
         TileEntityHandler.init();
-	}
+    }
 
     public void registerRenderInformation() { }
 

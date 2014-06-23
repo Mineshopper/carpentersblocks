@@ -157,18 +157,18 @@ public class BlockRegistry {
 
     public static void init(FMLInitializationEvent event)
     {
-    	registerRecipes();
+        registerRecipes();
     }
 
     private static void registerBlocks()
     {
-    	/* Carpenter's Block is always enabled because recipes rely on it. */
+        /* Carpenter's Block is always enabled because recipes rely on it. */
 
         blockCarpentersBlock = new BlockCarpentersBlock(Material.wood)
-        	.setBlockName("blockCarpentersBlock")
-        	.setHardness(0.2F)
-        	.setStepSound(BlockProperties.stepSound)
-        	.setCreativeTab(CarpentersBlocks.creativeTab);
+            .setBlockName("blockCarpentersBlock")
+            .setHardness(0.2F)
+            .setStepSound(BlockProperties.stepSound)
+            .setCreativeTab(CarpentersBlocks.creativeTab);
         GameRegistry.registerBlock(blockCarpentersBlock, "blockCarpentersBlock");
         Blocks.fire.setFireInfo(blockCarpentersBlock, 5, 20);
 

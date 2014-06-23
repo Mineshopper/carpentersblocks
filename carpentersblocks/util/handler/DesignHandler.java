@@ -54,7 +54,7 @@ public class DesignHandler {
      */
     public static void preInit(FMLPreInitializationEvent event)
     {
-    	if (FMLForgePlugin.RUNTIME_DEOBF) {
+        if (FMLForgePlugin.RUNTIME_DEOBF) {
 
             try {
                 ZipFile zipFile = new ZipFile(event.getSourceFile());
@@ -65,17 +65,17 @@ public class DesignHandler {
                 zipFile.close();
             } catch (Exception e) { }
 
-    	} else {
+        } else {
 
-    		File folder = new File(event.getSourceFile().getAbsolutePath());
-    		String[] files = folder.list();
+            File folder = new File(event.getSourceFile().getAbsolutePath());
+            String[] files = folder.list();
 
-    		for (File file : FileUtils.listFiles(folder, new String[] { "png" }, true)) {
+            for (File file : FileUtils.listFiles(folder, new String[] { "png" }, true)) {
                 processPath(file.getAbsolutePath().replace("\\", "/"));
-    		}
-    	}
+            }
+        }
 
-    	ModLogger.log(Level.INFO, "Designs found: Bed[" + listBed.size() + "], Chisel[" + listChisel.size() + "], FlowerPot[" + listFlowerPot.size() + "], Tile[" + listTile.size() + "].");
+        ModLogger.log(Level.INFO, "Designs found: Bed[" + listBed.size() + "], Chisel[" + listChisel.size() + "], FlowerPot[" + listFlowerPot.size() + "], Tile[" + listTile.size() + "].");
 
         if (event.getSide().equals(Side.CLIENT)) {
 
@@ -95,56 +95,56 @@ public class DesignHandler {
 
     private static void processPath(String path)
     {
-    	if (isPathValid(path)) {
+        if (isPathValid(path)) {
 
-    		String name = path.substring(path.lastIndexOf('/') + 1, path.lastIndexOf('.'));
+            String name = path.substring(path.lastIndexOf('/') + 1, path.lastIndexOf('.'));
 
-	    	if (path.contains(PATH_CHISEL)) {
-	    		listChisel.add(name);
-	    	} else if (path.contains(PATH_BED)) {
-	    		listBed.add(name);
-	    	} else if (path.contains(PATH_FLOWER_POT)) {
-	    		listFlowerPot.add(name);
-	    	} else if (path.contains(PATH_TILE)) {
-	    		listTile.add(name);
-	    	}
+            if (path.contains(PATH_CHISEL)) {
+                listChisel.add(name);
+            } else if (path.contains(PATH_BED)) {
+                listBed.add(name);
+            } else if (path.contains(PATH_FLOWER_POT)) {
+                listFlowerPot.add(name);
+            } else if (path.contains(PATH_TILE)) {
+                listTile.add(name);
+            }
 
-    	}
+        }
     }
 
     @SideOnly(Side.CLIENT)
     public static void registerDesigns(IIconRegister iconRegister)
     {
             if (FeatureRegistry.enableTile) {
-	            for (String iconName : listTile) {
-	                IconRegistry.icon_design_tile.add(iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + PATH_TILE + iconName));
-	            }
+                for (String iconName : listTile) {
+                    IconRegistry.icon_design_tile.add(iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + PATH_TILE + iconName));
+                }
             }
     }
 
     @SideOnly(Side.CLIENT)
     public static void registerDesignIcons(IIconRegister iconRegister)
     {
-    	for (String iconName : listBed) {
-    		IIcon[] icons = new IIcon[8];
-    		for (int count = 0; count < 8; ++count) {
-    			icons[count] = iconRegister.registerIcon(CarpentersBlocksCachedResources.MODID.toLowerCase() + ":" + PATH_BED + "cache/" + iconName + "_" + count);
-    		}
-    		IconRegistry.icon_design_bed.add(icons);
-    	}
-    	if (FeatureRegistry.enableChiselDesigns) {
-    		for (String iconName : listChisel) {
-    			IconRegistry.icon_design_chisel.add(iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + PATH_CHISEL + iconName));
-    		}
-    	}
-    	for (String iconName : listFlowerPot) {
-    		IconRegistry.icon_design_flower_pot.add(iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + PATH_FLOWER_POT + iconName));
-    	}
-    	if (FeatureRegistry.enableTile) {
-    		for (String iconName : listTile) {
-    			IconRegistry.icon_design_tile.add(iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + PATH_TILE + iconName));
-    		}
-    	}
+        for (String iconName : listBed) {
+            IIcon[] icons = new IIcon[8];
+            for (int count = 0; count < 8; ++count) {
+                icons[count] = iconRegister.registerIcon(CarpentersBlocksCachedResources.MODID.toLowerCase() + ":" + PATH_BED + "cache/" + iconName + "_" + count);
+            }
+            IconRegistry.icon_design_bed.add(icons);
+        }
+        if (FeatureRegistry.enableChiselDesigns) {
+            for (String iconName : listChisel) {
+                IconRegistry.icon_design_chisel.add(iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + PATH_CHISEL + iconName));
+            }
+        }
+        for (String iconName : listFlowerPot) {
+            IconRegistry.icon_design_flower_pot.add(iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + PATH_FLOWER_POT + iconName));
+        }
+        if (FeatureRegistry.enableTile) {
+            for (String iconName : listTile) {
+                IconRegistry.icon_design_tile.add(iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + PATH_TILE + iconName));
+            }
+        }
     }
 
     public static ArrayList<String> getListForType(String type)

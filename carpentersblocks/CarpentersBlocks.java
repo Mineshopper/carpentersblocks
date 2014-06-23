@@ -61,7 +61,7 @@ public class CarpentersBlocks {
     @EventHandler
     public void init(FMLInitializationEvent event)
     {
-    	proxy.init(event);
+        proxy.init(event);
     }
 
 }

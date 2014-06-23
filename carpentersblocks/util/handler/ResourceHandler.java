@@ -64,7 +64,7 @@ public class ResourceHandler {
 
     private static void createZip(String dir, String fileName) throws Exception
     {
-    	File file = new File(dir, fileName);
+        File file = new File(dir, fileName);
         ZipOutputStream out = new ZipOutputStream(new FileOutputStream(file));
 
         for (BufferedImage image : images) {

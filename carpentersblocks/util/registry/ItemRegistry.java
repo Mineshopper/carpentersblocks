@@ -52,7 +52,7 @@ public class ItemRegistry {
 
     public static void init(FMLInitializationEvent event)
     {
-    	registerRecipes();
+        registerRecipes();
     }
 
     private static void registerItems()
