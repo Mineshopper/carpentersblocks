@@ -31,7 +31,7 @@ public class FlowerPotHandler {
     /**
      * Initializes plant profiles.
      */
-    public static void initPlants()
+    public static void init()
     {
         /*
          * Map Items with Blocks.

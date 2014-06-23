@@ -24,15 +24,20 @@ import carpentersblocks.util.registry.BlockRegistry;
 import carpentersblocks.util.registry.IconRegistry;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.client.registry.RenderingRegistry;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public class ClientProxy extends CommonProxy {
 
     @Override
-    public void registerRenderInformation(FMLPreInitializationEvent event)
+    public void registerRenderInformation()
     {
-        MinecraftForge.EVENT_BUS.register(new IconRegistry());
+    	MinecraftForge.EVENT_BUS.register(new IconRegistry());
         EntityHandler.registerEntityRenderers();
+
+        BlockRegistry.carpentersBlockRenderID = RenderingRegistry.getNextAvailableRenderId();
+        RenderingRegistry.registerBlockHandler(BlockRegistry.carpentersBlockRenderID, new BlockHandlerCarpentersBlock());
 
         if (BlockRegistry.enableBarrier) {
             BlockRegistry.carpentersBarrierRenderID = RenderingRegistry.getNextAvailableRenderId();
@@ -107,11 +112,6 @@ public class ClientProxy extends CommonProxy {
         if (BlockRegistry.enableSafe) {
             BlockRegistry.carpentersSafeRenderID = RenderingRegistry.getNextAvailableRenderId();
             RenderingRegistry.registerBlockHandler(BlockRegistry.carpentersSafeRenderID, new BlockHandlerCarpentersSafe());
-        }
-
-        if (BlockRegistry.enableBlock) {
-            BlockRegistry.carpentersBlockRenderID = RenderingRegistry.getNextAvailableRenderId();
-            RenderingRegistry.registerBlockHandler(BlockRegistry.carpentersBlockRenderID, new BlockHandlerCarpentersBlock());
         }
 
         if (BlockRegistry.enableFlowerPot) {

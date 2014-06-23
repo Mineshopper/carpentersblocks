@@ -2,6 +2,7 @@ package carpentersblocks.util.handler;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.zip.ZipEntry;
@@ -9,15 +10,18 @@ import java.util.zip.ZipFile;
 
 import javax.imageio.ImageIO;
 
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.event.TextureStitchEvent;
+import net.minecraftforge.classloading.FMLForgePlugin;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.Level;
 
 import carpentersblocks.CarpentersBlocks;
 import carpentersblocks.CarpentersBlocksCachedResources;
 import carpentersblocks.util.ModLogger;
+import carpentersblocks.util.registry.FeatureRegistry;
 import carpentersblocks.util.registry.IconRegistry;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
@@ -40,7 +44,7 @@ public class DesignHandler {
 
     private static boolean isPathValid(String path)
     {
-        return path.startsWith(PATH_BASE) &&
+        return path.contains(PATH_BASE) &&
                path.endsWith(".png") &&
                !path.contains(PATH_EXEMPT);
     }
@@ -48,52 +52,37 @@ public class DesignHandler {
     /**
      * Builds file list.
      */
-    public static void init(FMLPreInitializationEvent event)
+    public static void preInit(FMLPreInitializationEvent event)
     {
-        try
-        {
-            ZipFile zipFile = new ZipFile(event.getSourceFile());
-            Enumeration enumeration = zipFile.entries();
-            int count = 0;
+    	if (FMLForgePlugin.RUNTIME_DEOBF) {
 
-            while (enumeration.hasMoreElements())
-            {
-                ZipEntry zipEntry = (ZipEntry) enumeration.nextElement();
-                String fileName = zipEntry.getName();
-
-                if (isPathValid(fileName))
-                {
-                    ++count;
-                    int idxStart = PATH_BASE.length();
-                    int idxEnd = fileName.indexOf(".png");
-
-                    if (fileName.contains(PATH_CHISEL)) {
-                        listChisel.add(fileName.substring(idxStart + PATH_CHISEL.length(), idxEnd));
-                    } else if (fileName.contains(PATH_BED)) {
-                        listBed.add(fileName.substring(idxStart + PATH_BED.length(), idxEnd));
-                    } else if (fileName.contains(PATH_FLOWER_POT)) {
-                        listFlowerPot.add(fileName.substring(idxStart + PATH_FLOWER_POT.length(), idxEnd));
-                    } else if (fileName.contains(PATH_TILE)) {
-                        listTile.add(fileName.substring(idxStart + PATH_TILE.length(), idxEnd));
-                    }
+            try {
+                ZipFile zipFile = new ZipFile(event.getSourceFile());
+                Enumeration enumeration = zipFile.entries();
+                while (enumeration.hasMoreElements()) {
+                    processPath(((ZipEntry)enumeration.nextElement()).getName());
                 }
-            }
+                zipFile.close();
+            } catch (Exception e) { }
 
-            zipFile.close();
+    	} else {
 
-            ModLogger.log(Level.INFO, "Loaded " + count + " design" + (count != 1 ? "s." : "."));
-        }
-        catch (Exception e)
-        {
-            ModLogger.log(Level.WARN, "Encountered a problem loading designs: " + e.getMessage());
-        }
+    		File folder = new File(event.getSourceFile().getAbsolutePath());
+    		String[] files = folder.list();
+
+    		for (File file : FileUtils.listFiles(folder, new String[] { "png" }, true)) {
+                processPath(file.getAbsolutePath().replace("\\", "/"));
+    		}
+    	}
+
+    	ModLogger.log(Level.INFO, "Designs found: Bed[" + listBed.size() + "], Chisel[" + listChisel.size() + "], FlowerPot[" + listFlowerPot.size() + "], Tile[" + listTile.size() + "].");
 
         if (event.getSide().equals(Side.CLIENT)) {
 
             /* Create bed resources. */
             for (String iconName : listBed)
             {
-                ArrayList<BufferedImage> tempList = genBedIcons(iconName);
+                ArrayList<BufferedImage> tempList = getBedIcons(iconName);
                 for (BufferedImage image : tempList) {
                     ResourceHandler.addResource(iconName + "_" + tempList.indexOf(image), image);
                 }
@@ -104,25 +93,58 @@ public class DesignHandler {
         }
     }
 
-    @SideOnly(Side.CLIENT)
-    public static void initDesignIcons(TextureStitchEvent.Pre event)
+    private static void processPath(String path)
     {
-        for (String iconName : listChisel) {
-            IconRegistry.icon_design_chisel.add(event.map.registerIcon(CarpentersBlocks.MODID + ":" + PATH_CHISEL + iconName));
-        }
-        for (String iconName : listBed) {
-            IIcon[] icons = new IIcon[8];
-            for (int count = 0; count < 8; ++count) {
-                icons[count] = event.map.registerIcon(CarpentersBlocksCachedResources.MODID.toLowerCase() + ":" + PATH_BED + "cache/" + iconName + "_" + count);
+    	if (isPathValid(path)) {
+
+    		String name = path.substring(path.lastIndexOf('/') + 1, path.lastIndexOf('.'));
+
+	    	if (path.contains(PATH_CHISEL)) {
+	    		listChisel.add(name);
+	    	} else if (path.contains(PATH_BED)) {
+	    		listBed.add(name);
+	    	} else if (path.contains(PATH_FLOWER_POT)) {
+	    		listFlowerPot.add(name);
+	    	} else if (path.contains(PATH_TILE)) {
+	    		listTile.add(name);
+	    	}
+
+    	}
+    }
+
+    @SideOnly(Side.CLIENT)
+    public static void registerDesigns(IIconRegister iconRegister)
+    {
+            if (FeatureRegistry.enableTile) {
+	            for (String iconName : listTile) {
+	                IconRegistry.icon_design_tile.add(iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + PATH_TILE + iconName));
+	            }
             }
-            IconRegistry.icon_design_bed.add(icons);
-        }
-        for (String iconName : listFlowerPot) {
-            IconRegistry.icon_design_flower_pot.add(event.map.registerIcon(CarpentersBlocks.MODID + ":" + PATH_FLOWER_POT + iconName));
-        }
-        for (String iconName : listTile) {
-            IconRegistry.icon_design_tile.add(event.map.registerIcon(CarpentersBlocks.MODID + ":" + PATH_TILE + iconName));
-        }
+    }
+
+    @SideOnly(Side.CLIENT)
+    public static void registerDesignIcons(IIconRegister iconRegister)
+    {
+    	for (String iconName : listBed) {
+    		IIcon[] icons = new IIcon[8];
+    		for (int count = 0; count < 8; ++count) {
+    			icons[count] = iconRegister.registerIcon(CarpentersBlocksCachedResources.MODID.toLowerCase() + ":" + PATH_BED + "cache/" + iconName + "_" + count);
+    		}
+    		IconRegistry.icon_design_bed.add(icons);
+    	}
+    	if (FeatureRegistry.enableChiselDesigns) {
+    		for (String iconName : listChisel) {
+    			IconRegistry.icon_design_chisel.add(iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + PATH_CHISEL + iconName));
+    		}
+    	}
+    	for (String iconName : listFlowerPot) {
+    		IconRegistry.icon_design_flower_pot.add(iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + PATH_FLOWER_POT + iconName));
+    	}
+    	if (FeatureRegistry.enableTile) {
+    		for (String iconName : listTile) {
+    			IconRegistry.icon_design_tile.add(iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + PATH_TILE + iconName));
+    		}
+    	}
     }
 
     public static ArrayList<String> getListForType(String type)
@@ -164,7 +186,8 @@ public class DesignHandler {
         }
     }
 
-    public static ArrayList<BufferedImage> genBedIcons(String atlas)
+    @SideOnly(Side.CLIENT)
+    public static ArrayList<BufferedImage> getBedIcons(String atlas)
     {
         ArrayList<BufferedImage> imageList = new ArrayList<BufferedImage>();
 
@@ -177,15 +200,6 @@ public class DesignHandler {
             int rows = image.getHeight() / size;
             int cols = image.getWidth() / size;
             int count = -1;
-
-            // Pillow [1]
-            // Blanket-Head-Left [3] - Rotate 270
-            // Blanket-Head-Top & Trim [4]
-            // Blanket-Head-Right [5] - Rotate 90
-            // Blanket-Foot-Left [6] - Rotate 270
-            // Blanket-Foot-Top [7]
-            // Blanket-Foot-Right [8] - Rotate 90
-            // Blanket-Foot-End [10]
 
             for (int x = 0; x < rows; x++)
             {

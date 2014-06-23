@@ -47,17 +47,6 @@ public class BlockCarpentersSlope extends BlockCoverable {
         super(material);
     }
 
-    @Override
-    @SideOnly(Side.CLIENT)
-    /**
-     * Returns a base icon that doesn't rely on blockIcon, which
-     * is set prior to texture stitch events.
-     */
-    public IIcon getIcon()
-    {
-        return IconRegistry.icon_uncovered_full;
-    }
-
     @SideOnly(Side.CLIENT)
     @Override
     /**
@@ -68,6 +57,17 @@ public class BlockCarpentersSlope extends BlockCoverable {
     {
         IconRegistry.icon_uncovered_oblique_pos = iconRegister.registerIcon("carpentersblocks:slope/oblique_pos");
         IconRegistry.icon_uncovered_oblique_neg = iconRegister.registerIcon("carpentersblocks:slope/oblique_neg");
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    /**
+     * Returns a base icon that doesn't rely on blockIcon, which
+     * is set prior to texture stitch events.
+     */
+    public IIcon getIcon()
+    {
+        return IconRegistry.icon_uncovered_full;
     }
 
     @Override

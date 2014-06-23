@@ -1,15 +1,15 @@
 package carpentersblocks;
 
-import org.apache.commons.io.FilenameUtils;
+import java.io.File;
 
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraftforge.classloading.FMLForgePlugin;
 import net.minecraftforge.common.config.Configuration;
+
+import org.apache.commons.io.FilenameUtils;
+
 import carpentersblocks.proxy.CommonProxy;
 import carpentersblocks.util.CarpentersBlocksTab;
-import carpentersblocks.util.handler.TileEntityHandler;
-import carpentersblocks.util.registry.BlockRegistry;
-import carpentersblocks.util.registry.FeatureRegistry;
-import carpentersblocks.util.registry.ItemRegistry;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -43,31 +43,25 @@ public class CarpentersBlocks {
     public void preInit(FMLPreInitializationEvent event)
     {
         channel = NetworkRegistry.INSTANCE.newEventDrivenChannel(MODID);
-        modDir = FilenameUtils.getFullPathNoEndSeparator(event.getSourceFile().getAbsolutePath());
+
+        String srcPath = event.getSourceFile().getAbsolutePath().replace('\\', '/');
+        modDir = FMLForgePlugin.RUNTIME_DEOBF ? FilenameUtils.getFullPathNoEndSeparator(event.getSourceFile().getAbsolutePath()) : new File("").getAbsolutePath() + "\\mods";
 
         Configuration config = new Configuration(event.getSuggestedConfigurationFile());
 
         config.load();
 
-        FeatureRegistry.initFeatures(event, config);
-        BlockRegistry.initBlocks(event, config);
-        ItemRegistry.initItems(event, config);
+        proxy.preInit(event, config);
 
         if (config.hasChanged()) {
             config.save();
         }
-
-        BlockRegistry.registerBlocks();
-        ItemRegistry.registerItems();
-
-        proxy.registerHandlers(event);
-        proxy.registerRenderInformation(event);
     }
 
     @EventHandler
     public void init(FMLInitializationEvent event)
     {
-        TileEntityHandler.registerTileEntities();
+    	proxy.init(event);
     }
 
 }

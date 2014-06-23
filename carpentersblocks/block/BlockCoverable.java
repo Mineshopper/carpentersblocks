@@ -75,7 +75,8 @@ public class BlockCoverable extends BlockContainer {
      * is set prior to texture stitch events.
      *
      * @return default icon
-     */ IIcon getIcon()
+     */
+    IIcon getIcon()
     {
         return IconRegistry.icon_uncovered_solid;
     }
@@ -312,13 +313,13 @@ public class BlockCoverable extends BlockContainer {
 
                                     }
 
-                                } else if (entityPlayer.isSneaking() && FeatureRegistry.enableOverlays && BlockProperties.isOverlay(itemStack)) {
+                                } else if (entityPlayer.isSneaking() && FeatureRegistry.enableOverlay && BlockProperties.isOverlay(itemStack)) {
 
                                     if (!BlockProperties.hasOverlay(TE, effectiveSide) && (effectiveSide < 6 && BlockProperties.hasCover(TE, effectiveSide) || effectiveSide == 6)) {
                                         altered.add(decInv.add(BlockProperties.setOverlay(TE, effectiveSide, itemStack)));
                                     }
 
-                                } else if (entityPlayer.isSneaking() && FeatureRegistry.enableDyeColors && BlockProperties.isDye(itemStack, false)) {
+                                } else if (entityPlayer.isSneaking() && FeatureRegistry.enableDye && BlockProperties.isDye(itemStack, false)) {
 
                                     if (!BlockProperties.hasDye(TE, effectiveSide)) {
                                         altered.add(decInv.add(BlockProperties.setDye(TE, effectiveSide, itemStack)));

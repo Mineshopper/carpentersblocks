@@ -15,7 +15,7 @@ public class EntityHandler {
     /**
      * Registers entities.
      */
-    public static void registerEntities()
+    public static void init()
     {
         EntityRegistry.registerModEntity(EntityCarpentersTile.class, "CarpentersTile", ID_TILE, CarpentersBlocks.instance, 64, 999, false);
     }

@@ -56,16 +56,15 @@ public class IconRegistry {
         /** 0 = terrain.png, 1 = items.png */
         if (event.map.getTextureType() == 0) {
 
-            icon_uncovered_solid         = event.map.registerIcon(CarpentersBlocks.MODID + ":" + "general/solid");
-            icon_uncovered_full          = event.map.registerIcon(CarpentersBlocks.MODID + ":" + "general/full_frame");
-            icon_uncovered_quartered     = event.map.registerIcon(CarpentersBlocks.MODID + ":" + "general/quartered_frame");
-            icon_overlay_fast_grass_side = event.map.registerIcon(CarpentersBlocks.MODID + ":" + "overlay/overlay_fast_grass_side");
-            icon_overlay_hay_side        = event.map.registerIcon(CarpentersBlocks.MODID + ":" + "overlay/overlay_hay_side");
-            icon_overlay_snow_side       = event.map.registerIcon(CarpentersBlocks.MODID + ":" + "overlay/overlay_snow_side");
-            icon_overlay_mycelium_side   = event.map.registerIcon(CarpentersBlocks.MODID + ":" + "overlay/overlay_mycelium_side");
-            icon_tile_blank              = event.map.registerIcon(CarpentersBlocks.MODID + ":" + "tile/blank");
-
-            DesignHandler.initDesignIcons(event);
+        	icon_uncovered_solid         = event.map.registerIcon(CarpentersBlocks.MODID + ":" + "general/solid");
+        	icon_uncovered_full          = event.map.registerIcon(CarpentersBlocks.MODID + ":" + "general/full_frame");
+        	icon_uncovered_quartered     = event.map.registerIcon(CarpentersBlocks.MODID + ":" + "general/quartered_frame");
+        	icon_overlay_fast_grass_side = event.map.registerIcon(CarpentersBlocks.MODID + ":" + "overlay/overlay_fast_grass_side");
+        	icon_overlay_hay_side        = event.map.registerIcon(CarpentersBlocks.MODID + ":" + "overlay/overlay_hay_side");
+        	icon_overlay_snow_side       = event.map.registerIcon(CarpentersBlocks.MODID + ":" + "overlay/overlay_snow_side");
+        	icon_overlay_mycelium_side   = event.map.registerIcon(CarpentersBlocks.MODID + ":" + "overlay/overlay_mycelium_side");
+        	icon_tile_blank              = event.map.registerIcon(CarpentersBlocks.MODID + ":" + "tile/blank");
+        	DesignHandler.registerDesignIcons(event.map);
 
         }
     }

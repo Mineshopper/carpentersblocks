@@ -12,7 +12,7 @@ public class TileEntityHandler {
     /**
      * Registers tile entities.
      */
-    public static void registerTileEntities()
+    public static void init()
     {
         GameRegistry.registerTileEntity(                    TEBase.class,          "TileEntityCarpentersBlock");
         GameRegistry.registerTileEntity(TECarpentersDaylightSensor.class, "TileEntityCarpentersDaylightSensor");

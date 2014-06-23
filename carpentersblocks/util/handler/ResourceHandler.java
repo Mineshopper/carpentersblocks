@@ -38,22 +38,16 @@ public class ResourceHandler {
     public static void addResources()
     {
         if (!images.isEmpty()) {
-
             try {
-
                 if (createDirectory()) {
-                    createZip(CarpentersBlocksCachedResources.resourceDir, CarpentersBlocksCachedResources.MODID);
+                    createZip(CarpentersBlocksCachedResources.resourceDir, CarpentersBlocksCachedResources.MODID + ".zip");
                     ModLogger.log(Level.INFO, "Cached " + images.size() + " resource" + (images.size() != 1 ? "s." : "."));
                     FMLClientHandler.instance().addModAsResource(modContainer);
                     Minecraft.getMinecraft().refreshResources();
                 }
-
             } catch (Exception e) {
-
                 ModLogger.log(Level.WARN, "Resource caching failed: " + e.getMessage());
-
             }
-
         }
     }
 
@@ -70,8 +64,7 @@ public class ResourceHandler {
 
     private static void createZip(String dir, String fileName) throws Exception
     {
-        File file = new File(CarpentersBlocksCachedResources.resourceDir, CarpentersBlocksCachedResources.MODID + ".zip");
-
+    	File file = new File(dir, fileName);
         ZipOutputStream out = new ZipOutputStream(new FileOutputStream(file));
 
         for (BufferedImage image : images) {
