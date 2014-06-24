@@ -1004,7 +1004,7 @@ public class BlockCoverable extends BlockContainer {
             TEBase TE = getTileEntity(world, x, y, z);
 
             if (TE != null) {
-                BlockProperties.setOwner(TE, (EntityPlayer) entityLiving);
+                TE.setOwner(((EntityPlayer)entityLiving).getDisplayName());
             }
 
         }

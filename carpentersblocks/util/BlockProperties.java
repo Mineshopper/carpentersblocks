@@ -9,7 +9,6 @@ import net.minecraft.block.BlockRotatedPillar;
 import net.minecraft.block.BlockSlab;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
@@ -161,32 +160,6 @@ public final class BlockProperties {
         }
     }
 
-    /**
-     * Returns whether block has an owner.
-     * This is mainly for older blocks before ownership was implemented.
-     */
-    public static boolean hasOwner(TEBase TE)
-    {
-        return !TE.getOwner().equals("");
-    }
-
-    /**
-     * Returns owner of block.
-     */
-    public static String getOwner(TEBase TE)
-    {
-        return TE.getOwner();
-    }
-
-    /**
-     * Sets owner of block.
-     */
-    public static void setOwner(TEBase TE, EntityPlayer entityPlayer)
-    {
-        TE.setOwner(entityPlayer.getDisplayName());
-        TE.getWorldObj().markBlockForUpdate(TE.xCoord, TE.yCoord, TE.zCoord);
-    }
-
     public static boolean hasDesign(TEBase TE)
     {
         return DesignHandler.getListForType(getBlockDesignType(TE)).contains(getDesign(TE));
@@ -310,7 +283,7 @@ public final class BlockProperties {
     }
 
     /**
-     * Returns cover ItemStack in clean form for rendering purposes.
+     * Returns cover ItemStack in safe form for rendering purposes.
      *
      */
     public static ItemStack getCoverForRendering(TEBase TE, int side)
@@ -320,6 +293,9 @@ public final class BlockProperties {
 
     /**
      * Returns filtered cover ItemStack that is safe for calling block properties.
+     *
+     * This is needed to avoid calling properties for covers that have NBTTagCompounds,
+     * which may rely on data that does not exist.
      */
     public static ItemStack getCover(TEBase TE, int side)
     {
