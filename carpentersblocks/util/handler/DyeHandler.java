@@ -43,7 +43,7 @@ public class DyeHandler {
      */
     public static int getVanillaDmgValue(ItemStack itemStack)
     {
-        int color = DyeHandler.getColor(itemStack);
+        int color = getColor(itemStack);
 
         for (int idx = 0; idx < ItemDye.field_150922_c.length; ++idx) {
             if (color == ItemDye.field_150922_c[idx]) {
