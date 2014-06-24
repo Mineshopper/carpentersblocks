@@ -36,6 +36,25 @@ public class DyeHandler {
     }
 
     /**
+     * Returns vanilla dye metadata value for OreDictionary dye ItemStack.
+     *
+     * @param itemStack
+     * @return
+     */
+    public static int getVanillaDmgValue(ItemStack itemStack)
+    {
+        int color = DyeHandler.getColor(itemStack);
+
+        for (int idx = 0; idx < ItemDye.field_150922_c.length; ++idx) {
+            if (color == ItemDye.field_150922_c[idx]) {
+                return 15 - idx;
+            }
+        }
+
+        return 15;
+    }
+
+    /**
      * Returns definition for ItemStack from OreDictionary.
      */
     public static String getOreDictName(ItemStack itemStack)

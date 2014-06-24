@@ -83,24 +83,15 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase {
         return Bed.isHeadOfBed(TE);
     }
 
-    private int getBlanketColor()
+    private int getBlanketDyeMetadata()
     {
-        if (isHead()) {
-            TEBase TE_opp = Bed.getOppositeTE(TE);
-            if (TE_opp != null) {
-                ItemStack dyeStack = BlockProperties.getDye(TE_opp, 6);
-                if (dyeStack != null) {
-                    return 15 - dyeStack.getItemDamage();
-                }
-            }
-        } else {
-            ItemStack dyeStack = BlockProperties.getDye(TE, 6);
-            if (dyeStack != null) {
-                return 15 - dyeStack.getItemDamage();
-            }
-        }
+        TEBase TE_temp = isHead() ? Bed.getOppositeTE(TE) : TE;
 
-        return 0;
+        if (TE_temp != null && BlockProperties.hasDye(TE_temp, coverRendering)) {
+            return DyeHandler.getVanillaDmgValue(BlockProperties.getDye(TE_temp, coverRendering));
+        } else {
+            return 0;
+        }
     }
 
     private ForgeDirection getDirection()
@@ -224,7 +215,7 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase {
 
         if (isHead) {
 
-            itemStack.setItemDamage(getBlanketColor());
+            itemStack.setItemDamage(getBlanketDyeMetadata());
             renderBlocks.setRenderBounds(0.0D, yMin, 0.5D, 0.0625D, yTop, 1.0D);
             rotateBounds(renderBlocks, dir);
             renderBlock(itemStack, x, y, z);
@@ -238,7 +229,7 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase {
 
         } else {
 
-            itemStack.setItemDamage(getBlanketColor());
+            itemStack.setItemDamage(getBlanketDyeMetadata());
             renderBlocks.setRenderBounds(0.0D, yMin, 0.0D, 0.0625D, yTop, 1.0D);
             rotateBounds(renderBlocks, dir);
             renderBlock(itemStack, x, y, z);
