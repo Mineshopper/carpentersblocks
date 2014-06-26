@@ -41,4 +41,10 @@ public class ItemCarpentersChisel extends Item implements ICarpentersChisel {
         return true;
     }
 
+    @Override
+    public boolean func_150897_b(Block blockToBeHarvested)
+    {
+    	return blockToBeHarvested instanceof BlockCoverable ? true : false;
+    }
+
 }
