@@ -400,7 +400,12 @@ public class BlockCarpentersCollapsibleBlock extends BlockCoverable {
                 }
             }
 
-            setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
+            /* Determine true face hit since it's built of quadrants. */
+
+            if (finalTrace != null) {
+                setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
+                finalTrace = super.collisionRayTrace(world, x, y, z, startVec, endVec);
+            }
 
         }
 
