@@ -1,11 +1,15 @@
 package carpentersblocks.block;
 
+import java.util.List;
 import java.util.Random;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
@@ -20,6 +24,7 @@ import carpentersblocks.data.Torch;
 import carpentersblocks.data.Torch.State;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.tileentity.TECarpentersTorch;
+import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.registry.BlockRegistry;
 import carpentersblocks.util.registry.FeatureRegistry;
 import carpentersblocks.util.registry.IconRegistry;
@@ -54,6 +59,25 @@ public class BlockCarpentersTorch extends BlockCoverable {
     public IIcon getIcon(int side, int metadata)
     {
         return IconRegistry.icon_torch_lit;
+    }
+
+    /**
+     * Called when block is activated (right-click), before normal processing resumes.
+     */
+    @Override
+	protected void preOnBlockActivated(TEBase TE, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ, List<Boolean> altered, List<Boolean> decInv)
+    {
+        ItemStack itemStack = entityPlayer.getHeldItem();
+
+        if (itemStack != null && itemStack.getItem() instanceof ItemBlock) {
+            if (!Torch.getState(TE).equals(State.LIT)) {
+                Block block = BlockProperties.toBlock(itemStack);
+                if (block.equals(BlockRegistry.blockCarpentersTorch) || block.equals(Blocks.torch)) {
+                    Torch.setState(TE, State.LIT);
+                    altered.add(true);
+                }
+            }
+        }
     }
 
     @Override
@@ -154,19 +178,9 @@ public class BlockCarpentersTorch extends BlockCoverable {
 
             TEBase TE = getTileEntity(world, x, y, z);
 
-            if (TE != null) {
-
-                if (Torch.isReady(TE)) {
-
-                    ForgeDirection facing = Torch.getFacing(TE);
-
-                    if (!canPlaceBlockOnSide(world, x, y, z, facing.ordinal())) {
-                        dropBlockAsItem(world, x, y, z, 0, 0);
-                        world.setBlockToAir(x, y, z);
-                    }
-
-                }
-
+            if (TE != null && Torch.isReady(TE) && !canPlaceBlockOnSide(world, x, y, z, Torch.getFacing(TE).ordinal())) {
+                dropBlockAsItem(world, x, y, z, 0, 0);
+                world.setBlockToAir(x, y, z);
             }
 
         }
@@ -222,8 +236,13 @@ public class BlockCarpentersTorch extends BlockCoverable {
 
             if (TE != null) {
 
+                boolean barrierTop = world.isSideSolid(x, y + 1, z, ForgeDirection.UP) ||
+                                     world.isSideSolid(x, y + 1, z, ForgeDirection.DOWN);
+                boolean isWet = world.isRaining() &&
+                                world.canBlockSeeTheSky(x, y, z) &&
+                                world.getBiomeGenForCoords(x, z).rainfall > 0.0F &&
+                                !barrierTop;
                 boolean canDropState = FeatureRegistry.enableTorchWeatherEffects;
-                boolean isWet = world.isRaining() && world.canBlockSeeTheSky(x, y, z) && world.getBiomeGenForCoords(x, z).rainfall > 0.0F;
 
                 switch (Torch.getState(TE))
                 {
