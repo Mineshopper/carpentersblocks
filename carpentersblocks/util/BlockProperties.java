@@ -1,5 +1,7 @@
 package carpentersblocks.util;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.Block.SoundType;
 import net.minecraft.block.BlockBreakable;
@@ -282,9 +284,9 @@ public final class BlockProperties {
         return false;
     }
 
+    @SideOnly(Side.CLIENT)
     /**
-     * Returns cover ItemStack in safe form for rendering purposes.
-     *
+     * Returns untouched cover ItemStack for rendering purposes.
      */
     public static ItemStack getCoverForRendering(TEBase TE, int side)
     {
@@ -421,7 +423,8 @@ public final class BlockProperties {
      */
     public static boolean isDye(ItemStack itemStack, boolean allowWhite)
     {
-        return DyeHandler.isDye(itemStack, allowWhite);
+        return itemStack.getItem() != null &&
+               DyeHandler.isDye(itemStack, allowWhite);
     }
 
     /**
@@ -429,7 +432,8 @@ public final class BlockProperties {
      */
     public static boolean hasDye(TEBase TE, int side)
     {
-        return TE.dye[side] != null;
+        return TE.dye[side] != null &&
+               isDye(TE.dye[side], true);
     }
 
     /**
@@ -489,7 +493,8 @@ public final class BlockProperties {
      */
     public static boolean hasOverlay(TEBase TE, int side)
     {
-        return TE.overlay[side] != null;
+        return TE.overlay[side] != null &&
+               isOverlay(TE.overlay[side]);
     }
 
     /**
@@ -497,7 +502,8 @@ public final class BlockProperties {
      */
     public static boolean isOverlay(ItemStack itemStack)
     {
-        return OverlayHandler.overlayMap.containsKey(itemStack.getDisplayName());
+        return itemStack.getItem() != null &&
+               OverlayHandler.overlayMap.containsKey(itemStack.getDisplayName());
     }
 
     /**
