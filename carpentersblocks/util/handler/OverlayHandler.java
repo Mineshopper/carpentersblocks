@@ -9,132 +9,103 @@ import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
-import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.registry.FeatureRegistry;
 import carpentersblocks.util.registry.IconRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class OverlayHandler {
 
     public enum Overlay {
-        NONE,
-        GRASS,
-        SNOW,
-        WEB,
-        VINE,
-        HAY,
-        MYCELIUM
+        NONE(new ItemStack(Blocks.air)),
+        GRASS(new ItemStack(Blocks.grass)),
+        SNOW(new ItemStack(Blocks.snow)),
+        WEB(new ItemStack(Blocks.web)),
+        VINE(new ItemStack(Blocks.vine)),
+        HAY(new ItemStack(Blocks.hay_block)),
+        MYCELIUM(new ItemStack(Blocks.mycelium));
+
+        private ItemStack itemStack;
+
+        private Overlay(ItemStack itemStack) {
+            this.itemStack = itemStack;
+        }
+
+        public ItemStack getItemStack() {
+            return this.itemStack;
+        }
     }
 
     public static Map overlayMap = new HashMap();
 
     /**
-     * Initializes overlays.
+     * Initializes overlay definitions from configuration file.
      */
     public static void init()
     {
         for (String name : FeatureRegistry.overlayItems) {
 
             String itemName = name.substring(0, name.indexOf(":"));
-            String overlayType = name.substring(name.indexOf(":") + 1);
 
-            Overlay overlay = Overlay.NONE;
+            if (!overlayMap.containsKey(itemName)) {
 
-            if (overlayType.equals("grass")) {
-                overlay = Overlay.GRASS;
-            } else if (overlayType.equals("snow")) {
-                overlay = Overlay.SNOW;
-            } else if (overlayType.equals("web")) {
-                overlay = Overlay.WEB;
-            } else if (overlayType.equals("vine")) {
-                overlay = Overlay.VINE;
-            } else if (overlayType.equals("hay")) {
-                overlay = Overlay.HAY;
-            } else if (overlayType.equals("mycelium")) {
-                overlay = Overlay.MYCELIUM;
-            }
+                String overlayType = name.substring(name.indexOf(":") + 1).toLowerCase();
 
-            if (!overlay.equals(Overlay.NONE) && !overlayMap.containsKey(itemName)) {
-                overlayMap.put(itemName, overlay);
+                if (overlayType.equals("grass")) {
+                    overlayMap.put(itemName, Overlay.GRASS);
+                } else if (overlayType.equals("snow")) {
+                    overlayMap.put(itemName, Overlay.SNOW);
+                } else if (overlayType.equals("web")) {
+                    overlayMap.put(itemName, Overlay.WEB);
+                } else if (overlayType.equals("vine")) {
+                    overlayMap.put(itemName, Overlay.VINE);
+                } else if (overlayType.equals("hay")) {
+                    overlayMap.put(itemName, Overlay.HAY);
+                } else if (overlayType.equals("mycelium")) {
+                    overlayMap.put(itemName, Overlay.MYCELIUM);
+                }
+
             }
 
         }
     }
 
     /**
-     * Returns overlay from ItemStack.
+     * Returns true if overlay covers a majority or all of side.
      */
-    public static Overlay getOverlay(ItemStack itemStack)
+    public static boolean coversFullSide(Overlay overlay, int side)
     {
-        if (itemStack != null) {
-            return (Overlay) overlayMap.get(itemStack.getDisplayName());
-        }
-
-        return Overlay.NONE;
-    }
-
-    /**
-     * Returns ItemStack representative of overlay block type.
-     * Will return block or cover if no overlay is present.
-     *
-     * Use this when determining side particles to render.
-     */
-    public static ItemStack getOverlay(TEBase TE, int cover)
-    {
-        return getOverlaySideSensitive(TE, cover, -1);
-    }
-
-    /**
-     * Returns ItemStack representative of overlay block type.
-     * Will return block or cover if no overlay is present.
-     *
-     * Use this when determining side particles to render.
-     */
-    public static ItemStack getOverlaySideSensitive(TEBase TE, int cover, int side)
-    {
-        ItemStack itemStack = BlockProperties.getCover(TE, cover);
-
-        boolean returnOverlay = Math.abs(side) == 1;
-
-        switch (getOverlay(BlockProperties.getOverlay(TE, cover))) {
+        switch (overlay) {
             case GRASS:
-                if (returnOverlay) {
-                    return new ItemStack(Blocks.grass);
-                }
-                break;
             case SNOW:
-                if (returnOverlay) {
-                    return new ItemStack(Blocks.snow);
-                }
-                break;
-            case WEB:
-                return new ItemStack(Blocks.web);
-            case VINE:
-                return new ItemStack(Blocks.vine);
             case HAY:
-                if (returnOverlay) {
-                    return new ItemStack(Blocks.hay_block);
-                }
-                break;
             case MYCELIUM:
-                if (returnOverlay) {
-                    return new ItemStack(Blocks.mycelium);
-                }
-                break;
+                return side == 1;
             default: {}
         }
 
-        return itemStack;
+        return true;
     }
 
     /**
-     * Returns icon for overlay.
+     * Returns overlay from qualified ItemStack.
      */
-    public static IIcon getOverlayIcon(TEBase TE, int cover, int side)
+    public static Overlay getOverlayType(ItemStack itemStack)
     {
-        Block block = BlockProperties.toBlock(OverlayHandler.getOverlay(TE, cover));
+        Object object = overlayMap.get(itemStack.getDisplayName());
+        return object == null ? Overlay.NONE : (Overlay) object;
+    }
 
-        Overlay overlay = OverlayHandler.getOverlay(BlockProperties.getOverlay(TE, cover));
+    @SideOnly(Side.CLIENT)
+    /**
+     * Returns icon for overlay side.
+     *
+     * Returns null if there is no icon to return.
+     */
+    public static IIcon getOverlayIcon(Overlay overlay, int side)
+    {
+        Block block = BlockProperties.toBlock(overlay.getItemStack());
 
         switch (overlay) {
             case GRASS:

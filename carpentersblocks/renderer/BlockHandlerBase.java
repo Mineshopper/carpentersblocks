@@ -26,6 +26,7 @@ import carpentersblocks.util.handler.DesignHandler;
 import carpentersblocks.util.handler.DyeHandler;
 import carpentersblocks.util.handler.OptifineHandler;
 import carpentersblocks.util.handler.OverlayHandler;
+import carpentersblocks.util.handler.OverlayHandler.Overlay;
 import carpentersblocks.util.registry.FeatureRegistry;
 import carpentersblocks.util.registry.IconRegistry;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
@@ -578,14 +579,12 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
     protected void renderOverlay(Block block, int x, int y, int z, int side)
     {
         side = isPositiveFace(side) ? 1 : side;
+        Overlay overlay = OverlayHandler.getOverlayType(BlockProperties.getOverlay(TE, coverRendering));
 
-        IIcon icon = OverlayHandler.getOverlayIcon(TE, coverRendering, side);
+        IIcon icon = renderBlocks.getIconSafe(OverlayHandler.getOverlayIcon(overlay, side));
 
         if (icon != null) {
-
-            ItemStack itemStack = OverlayHandler.getOverlay(TE, coverRendering);
-            setColorAndRender(itemStack, x, y, z, side, icon);
-
+            setColorAndRender(overlay.getItemStack(), x, y, z, side, icon);
         }
     }
 

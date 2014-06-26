@@ -27,6 +27,7 @@ import carpentersblocks.block.BlockCoverable;
 import carpentersblocks.renderer.helper.ParticleHelper;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
+import carpentersblocks.util.handler.OverlayHandler.Overlay;
 import carpentersblocks.util.registry.BlockRegistry;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -195,8 +196,14 @@ public class EventHandler {
 
             TEBase TE = (TEBase) world.getTileEntity(x, y, z);
             int effectiveSide = BlockProperties.hasCover(TE, 1) ? 1 : 6;
+            ItemStack itemStack = BlockProperties.getCover(TE, effectiveSide);
 
-            ItemStack itemStack = OverlayHandler.getOverlaySideSensitive(TE, effectiveSide, 1);
+            if (BlockProperties.hasOverlay(TE, effectiveSide)) {
+                Overlay overlay = OverlayHandler.getOverlayType(BlockProperties.getOverlay(TE, effectiveSide));
+                if (OverlayHandler.coversFullSide(overlay, 1)) {
+                    itemStack = overlay.getItemStack();
+                }
+            }
 
             /* Spawn sprint particles client-side. */
 

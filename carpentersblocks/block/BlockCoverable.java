@@ -597,8 +597,14 @@ public class BlockCoverable extends BlockContainer {
         if (TE != null) {
 
             int effectiveSide = BlockProperties.hasCover(TE, target.sideHit) ? target.sideHit : 6;
+            ItemStack itemStack = BlockProperties.getCover(TE, effectiveSide);
 
-            ItemStack itemStack = OverlayHandler.getOverlaySideSensitive(TE, effectiveSide, target.sideHit);
+            if (BlockProperties.hasOverlay(TE, effectiveSide)) {
+                Overlay overlay = OverlayHandler.getOverlayType(BlockProperties.getOverlay(TE, effectiveSide));
+                if (OverlayHandler.coversFullSide(overlay, target.sideHit)) {
+                    itemStack = overlay.getItemStack();
+                }
+            }
 
             Block block = BlockProperties.toBlock(itemStack);
 
@@ -885,7 +891,7 @@ public class BlockCoverable extends BlockContainer {
             }
 
             if (BlockProperties.hasOverlay(TE, 6)) {
-                if (OverlayHandler.getOverlay(BlockProperties.getOverlay(TE, 6)).equals(Overlay.MYCELIUM)) {
+                if (OverlayHandler.getOverlayType(BlockProperties.getOverlay(TE, 6)).equals(Overlay.MYCELIUM)) {
                     Blocks.mycelium.randomDisplayTick(world, x, y, z, random);
                 }
             }
@@ -908,51 +914,37 @@ public class BlockCoverable extends BlockContainer {
      * @param x X Position
      * @param y Y Position
      * @param z Z position
-     * @param direction The direction relative to the given position the plant wants to be, typically its UP
+     * @param side The direction relative to the given position the plant wants to be, typically its UP
      * @param plantable The plant that wants to check
      * @return True to allow the plant to be planted/stay.
      */
     @Override
-    public boolean canSustainPlant(IBlockAccess world, int x, int y, int z, ForgeDirection direction, IPlantable plantable)
+    public boolean canSustainPlant(IBlockAccess world, int x, int y, int z, ForgeDirection side, IPlantable plantable)
     {
         TEBase TE = getTileEntity(world, x, y, z);
 
         if (TE != null) {
 
-            List<Block> blocks = new ArrayList<Block>();
+            /* If side is not solid, it can't sustain a plant. */
+
+            if (!isSideSolid(world, x, y, z, side)) {
+                return false;
+            }
 
             /*
              * Add base block, top block, and both of their associated
              * overlays to judge whether plants can be supported on block.
              */
 
-            for (int side = 1; side < 7; side += 5) {
+            List<Block> blocks = new ArrayList<Block>();
 
-                if (BlockProperties.hasCover(TE, side)) {
-                    blocks.add(BlockProperties.toBlock(BlockProperties.getCover(TE, side)));
+            for (int side1 = 1; side1 < 7; side1 += 5) {
+                if (BlockProperties.hasCover(TE, side1)) {
+                    blocks.add(BlockProperties.toBlock(BlockProperties.getCover(TE, side1)));
                 }
-
-                if (BlockProperties.hasOverlay(TE, side)) {
-
-                    switch (OverlayHandler.getOverlay(BlockProperties.getOverlay(TE, side))) {
-                        case GRASS:
-                            blocks.add(Blocks.grass);
-                            break;
-                        case HAY:
-                            blocks.add(Blocks.hay_block);
-                            break;
-                        case MYCELIUM:
-                            blocks.add(Blocks.mycelium);
-                            break;
-                        case SNOW:
-                            blocks.add(Blocks.snow);
-                            break;
-                        default:
-                            break;
-                    }
-
+                if (BlockProperties.hasOverlay(TE, side1)) {
+                    blocks.add(BlockProperties.toBlock(OverlayHandler.getOverlayType(BlockProperties.getOverlay(TE, side1)).getItemStack()));
                 }
-
             }
 
             EnumPlantType plantType = plantable.getPlantType(world, x, y + 1, z);
@@ -976,7 +968,7 @@ public class BlockCoverable extends BlockContainer {
             }
         }
 
-        return super.canSustainPlant(world, x, y, z, direction, plantable);
+        return super.canSustainPlant(world, x, y, z, side, plantable);
     }
 
     /**
