@@ -65,7 +65,7 @@ public class BlockCarpentersTorch extends BlockCoverable {
      * Called when block is activated (right-click), before normal processing resumes.
      */
     @Override
-	protected void preOnBlockActivated(TEBase TE, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ, List<Boolean> altered, List<Boolean> decInv)
+    protected void preOnBlockActivated(TEBase TE, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ, List<Boolean> altered, List<Boolean> decInv)
     {
         ItemStack itemStack = entityPlayer.getHeldItem();
 
@@ -236,16 +236,21 @@ public class BlockCarpentersTorch extends BlockCoverable {
 
             if (TE != null) {
 
-                boolean barrierTop = world.isSideSolid(x, y + 1, z, ForgeDirection.UP) ||
-                                     world.isSideSolid(x, y + 1, z, ForgeDirection.DOWN);
-                boolean isWet = world.isRaining() &&
-                                world.canBlockSeeTheSky(x, y, z) &&
-                                world.getBiomeGenForCoords(x, z).rainfall > 0.0F &&
-                                !barrierTop;
+                boolean isWet = world.isRaining() && world.canBlockSeeTheSky(x, y, z) && world.getBiomeGenForCoords(x, z).rainfall > 0.0F;
                 boolean canDropState = FeatureRegistry.enableTorchWeatherEffects;
 
-                switch (Torch.getState(TE))
-                {
+                /* Search spaces above for solid faces that could block weather effects. */
+
+                if (isWet) {
+                    for (int yInc = 1; yInc < world.getHeight(); ++yInc) {
+                        if (world.isSideSolid(x, y + yInc, z, ForgeDirection.UP) || world.isSideSolid(x, y + yInc, z, ForgeDirection.DOWN)) {
+                            isWet = false;
+                            break;
+                        }
+                    }
+                }
+
+                switch (Torch.getState(TE)) {
                     case LIT:
                         if (canDropState && isWet) {
                             Torch.setState(TE, State.SMOLDERING);
