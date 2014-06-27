@@ -581,7 +581,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
         side = isPositiveFace(side) ? 1 : side;
         Overlay overlay = OverlayHandler.getOverlayType(BlockProperties.getOverlay(TE, coverRendering));
 
-        IIcon icon = renderBlocks.getIconSafe(OverlayHandler.getOverlayIcon(overlay, side));
+        IIcon icon = OverlayHandler.getOverlayIcon(overlay, side);
 
         if (icon != null) {
             setColorAndRender(overlay.getItemStack(), x, y, z, side, icon);
