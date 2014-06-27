@@ -1,7 +1,5 @@
 package carpentersblocks.util;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.Block.SoundType;
 import net.minecraft.block.BlockBreakable;
@@ -25,6 +23,8 @@ import carpentersblocks.util.handler.DesignHandler;
 import carpentersblocks.util.handler.DyeHandler;
 import carpentersblocks.util.handler.OverlayHandler;
 import carpentersblocks.util.registry.FeatureRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public final class BlockProperties {
 

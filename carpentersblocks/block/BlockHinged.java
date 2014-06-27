@@ -2,17 +2,18 @@ package carpentersblocks.block;
 
 import java.util.ArrayList;
 import java.util.List;
-import carpentersblocks.data.Hinge;
-import carpentersblocks.tileentity.TEBase;
-import carpentersblocks.util.handler.ChatHandler;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import carpentersblocks.data.Hinge;
+import carpentersblocks.tileentity.TEBase;
+import carpentersblocks.util.handler.ChatHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockHinged extends BlockCoverable {
 

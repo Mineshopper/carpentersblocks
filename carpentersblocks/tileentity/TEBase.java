@@ -1,6 +1,5 @@
 package carpentersblocks.tileentity;
 
-import carpentersblocks.util.IProtected;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -10,6 +9,7 @@ import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import carpentersblocks.util.IProtected;
 
 public class TEBase extends TileEntity implements IProtected {
 
