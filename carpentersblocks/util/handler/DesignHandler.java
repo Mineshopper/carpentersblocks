@@ -75,7 +75,7 @@ public class DesignHandler {
             }
         }
 
-        ModLogger.log(Level.INFO, "Designs found: Bed[" + listBed.size() + "], Chisel[" + listChisel.size() + "], FlowerPot[" + listFlowerPot.size() + "], Tile[" + listTile.size() + "].");
+        ModLogger.log(Level.INFO, "Designs found: Bed(" + listBed.size() + "), Chisel(" + listChisel.size() + "), FlowerPot(" + listFlowerPot.size() + "), Tile(" + listTile.size() + ")");
 
         if (event.getSide().equals(Side.CLIENT)) {
 
@@ -113,22 +113,12 @@ public class DesignHandler {
     }
 
     @SideOnly(Side.CLIENT)
-    public static void registerDesigns(IIconRegister iconRegister)
-    {
-            if (FeatureRegistry.enableTile) {
-                for (String iconName : listTile) {
-                    IconRegistry.icon_design_tile.add(iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + PATH_TILE + iconName));
-                }
-            }
-    }
-
-    @SideOnly(Side.CLIENT)
     public static void registerDesignIcons(IIconRegister iconRegister)
     {
         for (String iconName : listBed) {
             IIcon[] icons = new IIcon[8];
             for (int count = 0; count < 8; ++count) {
-                icons[count] = iconRegister.registerIcon(CarpentersBlocksCachedResources.MODID.toLowerCase() + ":" + PATH_BED + "cache/" + iconName + "_" + count);
+                icons[count] = iconRegister.registerIcon(CarpentersBlocksCachedResources.MODID + ":" + PATH_BED + "cache/" + iconName + "_" + count);
             }
             IconRegistry.icon_design_bed.add(icons);
         }

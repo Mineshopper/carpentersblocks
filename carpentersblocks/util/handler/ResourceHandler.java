@@ -41,7 +41,7 @@ public class ResourceHandler {
             try {
                 if (createDirectory()) {
                     createZip(CarpentersBlocksCachedResources.resourceDir, CarpentersBlocksCachedResources.MODID + ".zip");
-                    ModLogger.log(Level.INFO, "Cached " + images.size() + " resource" + (images.size() != 1 ? "s." : "."));
+                    ModLogger.log(Level.INFO, "Cached " + images.size() + (images.size() != 1 ? " resources" : " resource"));
                     FMLClientHandler.instance().addModAsResource(modContainer);
                     Minecraft.getMinecraft().refreshResources();
                 }
