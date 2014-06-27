@@ -64,6 +64,12 @@ public class IconRegistry {
             icon_overlay_snow_side       = event.map.registerIcon(CarpentersBlocks.MODID + ":" + "overlay/overlay_snow_side");
             icon_overlay_mycelium_side   = event.map.registerIcon(CarpentersBlocks.MODID + ":" + "overlay/overlay_mycelium_side");
             icon_tile_blank              = event.map.registerIcon(CarpentersBlocks.MODID + ":" + "tile/blank");
+
+            icon_design_chisel.clear();
+            icon_design_bed.clear();
+            icon_design_flower_pot.clear();
+            icon_design_tile.clear();
+
             DesignHandler.registerDesignIcons(event.map);
 
         }
