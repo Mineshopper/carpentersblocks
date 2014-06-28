@@ -284,13 +284,18 @@ public final class BlockProperties {
         return false;
     }
 
+    private static ItemStack getCoverUnfiltered(TEBase TE, int side)
+    {
+    	return TE.cover[side] != null ? TE.cover[side] : new ItemStack(TE.getBlockType());
+    }
+
     @SideOnly(Side.CLIENT)
     /**
      * Returns untouched cover ItemStack for rendering purposes.
      */
     public static ItemStack getCoverForRendering(TEBase TE, int side)
     {
-        return TE.cover[side] != null ? TE.cover[side] : new ItemStack(TE.getBlockType());
+        return getCoverUnfiltered(TE, side);
     }
 
     /**
@@ -301,7 +306,7 @@ public final class BlockProperties {
      */
     public static ItemStack getCover(TEBase TE, int side)
     {
-        ItemStack itemStack = getCoverForRendering(TE, side);
+        ItemStack itemStack = getCoverUnfiltered(TE, side);
         Block block = toBlock(itemStack);
 
         return block.hasTileEntity(itemStack.getItemDamage()) && !(block instanceof BlockCoverable) ? new ItemStack(Blocks.planks) : itemStack;
