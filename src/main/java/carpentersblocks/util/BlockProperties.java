@@ -286,7 +286,7 @@ public final class BlockProperties {
 
     private static ItemStack getCoverUnfiltered(TEBase TE, int side)
     {
-    	return TE.cover[side] != null ? TE.cover[side] : new ItemStack(TE.getBlockType());
+        return TE.cover[side] != null ? TE.cover[side] : new ItemStack(TE.getBlockType());
     }
 
     @SideOnly(Side.CLIENT)

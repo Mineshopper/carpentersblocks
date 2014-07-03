@@ -24,7 +24,7 @@ public class CarpentersBlocksTab extends CreativeTabs {
     @Override
     public String getTranslatedTabLabel()
     {
-    	return I18n.format("itemGroup.carpentersBlocks.name", new Object[0]);
+        return I18n.format("itemGroup.carpentersBlocks.name", new Object[0]);
     }
 
 }
