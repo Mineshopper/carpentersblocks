@@ -45,7 +45,7 @@ public class ItemCarpentersChisel extends Item implements ICarpentersChisel {
     {
         return true;
     }
-    
+
     /**
      * Returns the strength of the stack against a given block. 1.0F base, (Quality+1)*2 if correct blocktype, 1.5F if
      * sword

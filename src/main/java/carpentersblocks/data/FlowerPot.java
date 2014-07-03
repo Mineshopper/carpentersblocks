@@ -29,7 +29,7 @@ public class FlowerPot {
         if (design > 0 && BlockProperties.hasCover(TE, 6)) {
             BlockProperties.setCover(TE, 6, 0, (ItemStack)null);
         }
-        
+
         BlockProperties.setData(TE, design);
     }
 

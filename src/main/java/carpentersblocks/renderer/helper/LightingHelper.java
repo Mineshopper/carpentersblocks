@@ -42,24 +42,24 @@ public class LightingHelper {
     private final int        RED               = 0;
     private final int        GREEN             = 1;
     private final int        BLUE              = 2;
-    
+
     public final float       LIGHTNESS_YN      = 0.5F;
     public final float       LIGHTNESS_YP      = 1.0F;
     public final float       LIGHTNESS_Z       = 0.8F;
     public final float       LIGHTNESS_X       = 0.6F;
-    
+
     public final float[]     LIGHTNESS         = new float[] { 0.5F, 1.0F, 0.8F, 0.8F, 0.6F, 0.6F };
 
     /**
      * Stores uncolored, ambient occlusion values for each corner of every face.
      */
     public float[] ao = new float[4];
-    
+
     /**
      * Stores brightness for all six faces.
      */
     public int[] brightness = new int[6];
-    
+
     public LightingHelper bind(BlockHandlerBase blockHandler)
     {
         clearLightnessOverride();
@@ -187,7 +187,7 @@ public class LightingHelper {
             }
 
         }
-        
+
         float lightness = hasLightnessOverride ? lightnessOverride : LIGHTNESS[side];
 
         tessellator.setBrightness(hasBrightnessOverride ? brightnessOverride : brightness[side]);
@@ -230,7 +230,7 @@ public class LightingHelper {
 
     /**
      * Takes two brightness inputs and returns average brightness.
-     * 
+     *
      * This is not currently used for local methods, but may
      * eventually provide mixed brightness levels based on render bounds.
      */

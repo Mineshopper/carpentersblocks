@@ -56,35 +56,35 @@ public class MigrationHelper {
 
     private static ItemStack[] getOverlaysAsItemStacks(TEBase TE)
     {
-    	ItemStack[] itemStack = new ItemStack[7];
-    	for (int idx = 0; idx < 7; ++idx) {
-    		if (BlockProperties.hasOverlay(TE, idx)) {
-    			itemStack[idx] = OverlayHandler.getItemStack(TE.overlay[idx]);
-    		}
-    	}
-    	return itemStack;
+        ItemStack[] itemStack = new ItemStack[7];
+        for (int idx = 0; idx < 7; ++idx) {
+            if (BlockProperties.hasOverlay(TE, idx)) {
+                itemStack[idx] = OverlayHandler.getItemStack(TE.overlay[idx]);
+            }
+        }
+        return itemStack;
     }
 
     private static ItemStack[] getCoversAsItemStacks(TEBase TE)
     {
-    	ItemStack[] itemStack = new ItemStack[7];
-    	for (int idx = 0; idx < 7; ++idx) {
-    		if (BlockProperties.hasCover(TE, idx)) {
-    			itemStack[idx] = new ItemStack(BlockProperties.getCoverID(TE, idx), 1, BlockProperties.getCoverMetadata(TE, idx));
-    		}
-    	}
-    	return itemStack;
+        ItemStack[] itemStack = new ItemStack[7];
+        for (int idx = 0; idx < 7; ++idx) {
+            if (BlockProperties.hasCover(TE, idx)) {
+                itemStack[idx] = new ItemStack(BlockProperties.getCoverID(TE, idx), 1, BlockProperties.getCoverMetadata(TE, idx));
+            }
+        }
+        return itemStack;
     }
 
     private static ItemStack[] getColorAsItemStacks(TEBase TE)
     {
-    	ItemStack[] itemStack = new ItemStack[7];
-    	for (int idx = 0; idx < 7; ++idx) {
-    		if (BlockProperties.hasDyeColor(TE, idx)) {
-    			itemStack[idx] = new ItemStack(Item.dyePowder, 1, 15 - TE.color[idx]);
-    		}
-    	}
-    	return itemStack;
+        ItemStack[] itemStack = new ItemStack[7];
+        for (int idx = 0; idx < 7; ++idx) {
+            if (BlockProperties.hasDyeColor(TE, idx)) {
+                itemStack[idx] = new ItemStack(Item.dyePowder, 1, 15 - TE.color[idx]);
+            }
+        }
+        return itemStack;
     }
 
     /**
@@ -92,10 +92,10 @@ public class MigrationHelper {
      */
     private static short filterData(TEBase TE)
     {
-    	Block block = TE.getBlockType();
-    	short data = TE.data;
+        Block block = TE.getBlockType();
+        short data = TE.data;
 
-		byte[] oldIdToNewId = {
+        byte[] oldIdToNewId = {
                 0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10,
                 11, 18, 14, 17, 13, 19, 15, 16, 12, 27, 23,
                 24, 20, 26, 22, 25, 21, 34, 30, 33, 29, 35,
@@ -104,13 +104,13 @@ public class MigrationHelper {
                 55, 56, 57, 58, 59, 60, 61, 62, 63, 64
         };
 
-    	if (block.equals(BlockRegistry.blockCarpentersSlope)) {
+        if (block.equals(BlockRegistry.blockCarpentersSlope)) {
             data = oldIdToNewId[data];
-    	} else if (block.equals(BlockRegistry.blockCarpentersStairs)) {
+        } else if (block.equals(BlockRegistry.blockCarpentersStairs)) {
             data = oldIdToNewId[data];
-    	}
+        }
 
-    	return data;
+        return data;
     }
 
 }

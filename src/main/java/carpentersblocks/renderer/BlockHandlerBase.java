@@ -560,7 +560,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
         }
 
         /* Render overlay on side. */
-        
+
         if (shouldRenderOverlay(block)) {
             renderOverlay(block, x, y, z, side, icon);
         }

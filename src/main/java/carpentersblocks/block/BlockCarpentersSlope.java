@@ -448,9 +448,9 @@ public class BlockCarpentersSlope extends BlockCoverable {
             } else {
                 return false;
             }
-            
+
         }
-        
+
         return super.shareFaces(TE_adj, TE_src, side_adj, side_src);
     }
 

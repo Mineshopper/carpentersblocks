@@ -129,7 +129,7 @@ public class BlockAdvancedLighting extends BlockHandlerBase {
          * LightingHelper calculates partial lighting using a full 1x1x1 cube space.
          * renderTemp is used to temporarily store partial bounds while lighting.
          */
-        
+
         switch (side) {
             case DOWN:
 

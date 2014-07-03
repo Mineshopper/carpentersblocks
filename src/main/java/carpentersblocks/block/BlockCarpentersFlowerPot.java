@@ -299,29 +299,29 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
 
                 int coverLight = super.getLightValue(world, x, y, z);
                 int potLight = lightValue[blockID];
-    
+
                 if (FlowerPotProperties.hasSoil(TE))
                 {
                     int soil_lightValue = lightValue[FlowerPotProperties.getSoilBlock(TE).blockID];
-    
+
                     if (soil_lightValue > potLight) {
                         potLight = soil_lightValue;
                     }
                 }
-    
+
                 if (FlowerPotProperties.hasPlant(TE))
                 {
                     int plant_lightValue = lightValue[FlowerPotProperties.getPlantBlock(TE).blockID];
-    
+
                     if (plant_lightValue > potLight) {
                         potLight = plant_lightValue;
                     }
                 }
-    
+
                 return coverLight > potLight ? coverLight : potLight;
 
             }
-            
+
         }
 
         return lightValue[blockID];

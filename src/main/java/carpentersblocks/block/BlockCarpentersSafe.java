@@ -267,7 +267,7 @@ public class BlockCarpentersSafe extends BlockCoverable {
             return super.getPlayerRelativeBlockHardness(entityPlayer, world, x, y, z);
         }
     }
-    
+
     /**
      * Location sensitive version of getExplosionRestance
      *

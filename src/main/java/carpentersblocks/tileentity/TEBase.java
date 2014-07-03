@@ -12,7 +12,7 @@ import net.minecraft.world.World;
 
 public class TEBase extends TileEntity {
 
-	/* Added for 1.7.2 migration. */
+    /* Added for 1.7.2 migration. */
 
     public ItemStack[] newCover   = new ItemStack[7];
     public ItemStack[] newDye     = new ItemStack[7];

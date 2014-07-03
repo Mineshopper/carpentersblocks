@@ -76,7 +76,7 @@ public class BlockCarpentersTorch extends BlockCoverable {
 
                 int coverLight = super.getLightValue(world, x, y, z);
                 int torchLight = lightValue[blockID];
-    
+
                 switch (Torch.getState(TE)) {
                     case LIT:
                         torchLight = 15;
@@ -86,11 +86,11 @@ public class BlockCarpentersTorch extends BlockCoverable {
                         break;
                     default: {}
                 }
-    
+
                 return coverLight > torchLight ? coverLight : torchLight;
-    
+
             }
-            
+
         }
 
         return lightValue[blockID];
