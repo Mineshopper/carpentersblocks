@@ -170,12 +170,10 @@ public class BlockCarpentersSafe extends BlockCoverable {
             TECarpentersSafe TE_safe = (TECarpentersSafe) TE;
             ItemStack itemStack = entityPlayer.getHeldItem();
 
-            if (itemStack != null && itemStack.getItem().equals(Item.ingotGold))
-            {
-                if (!TE_safe.hasUpgrade())
-                {
-                    if (TE_safe.incSizeInventory()) {
-                        world.markBlockForUpdate(x, y, z);
+            if (itemStack != null && itemStack.getItem().equals(Item.ingotGold)) {
+                if (!TE_safe.hasUpgrade()) {
+                    if (!TE_safe.hasUpgrade()) {
+                        TE_safe.setUpgrade();
                         result[DEC_INV] = true;
                         return result;
                     }
