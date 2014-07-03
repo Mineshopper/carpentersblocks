@@ -86,7 +86,7 @@ public class TECarpentersSafe extends TEBase implements ISidedInventory {
     @Override
     public ItemStack getStackInSlot(int slot)
     {
-    	return inventoryContents[slot];
+        return inventoryContents[slot];
     }
 
     /**
@@ -100,10 +100,10 @@ public class TECarpentersSafe extends TEBase implements ISidedInventory {
 
         if (inventoryContents[slot] != null) {
             if (inventoryContents[slot].stackSize <= size) {
-            	itemStack = inventoryContents[slot];
+                itemStack = inventoryContents[slot];
                 inventoryContents[slot] = null;
             } else {
-            	itemStack = inventoryContents[slot].splitStack(size);
+                itemStack = inventoryContents[slot].splitStack(size);
                 if (inventoryContents[slot].stackSize == 0) {
                     inventoryContents[slot] = null;
                 }
@@ -125,7 +125,7 @@ public class TECarpentersSafe extends TEBase implements ISidedInventory {
     @Override
     public ItemStack getStackInSlotOnClosing(int slot)
     {
-    	return null;
+        return null;
     }
 
     /**
@@ -164,9 +164,9 @@ public class TECarpentersSafe extends TEBase implements ISidedInventory {
         /* Compatibility code with older versions prior to v3.2.5 */
         if (nbt.hasKey("inventorySize")) {
             hasUpgrade = nbt.getInteger("inventorySize") > 27;
+        } else {
+            hasUpgrade = nbt.getBoolean(TAG_UPGRADE);
         }
-        
-        hasUpgrade = nbt.getBoolean(TAG_UPGRADE);
 
         NBTTagList nbttaglist = nbt.getTagList(TAG_ITEMS, 10);
         inventoryContents = new ItemStack[54];
@@ -220,7 +220,7 @@ public class TECarpentersSafe extends TEBase implements ISidedInventory {
     @Override
     public void openInventory()
     {
-    	Safe.setState(this, Safe.STATE_OPEN);
+        Safe.setState(this, Safe.STATE_OPEN);
     }
 
     @Override
@@ -253,14 +253,14 @@ public class TECarpentersSafe extends TEBase implements ISidedInventory {
     @Override
     public int[] getAccessibleSlotsFromSide(int side)
     {
-    	int sizeInventory = getSizeInventory();
-    	int[] accessibleSlots = new int[sizeInventory];
+        int sizeInventory = getSizeInventory();
+        int[] accessibleSlots = new int[sizeInventory];
 
-    	for (int idx = 0; idx < sizeInventory; ++idx) {
-    		accessibleSlots[idx] = idx;
-    	}
+        for (int idx = 0; idx < sizeInventory; ++idx) {
+            accessibleSlots[idx] = idx;
+        }
 
-    	return accessibleSlots;
+        return accessibleSlots;
     }
 
     @Override
