@@ -9,11 +9,15 @@ import carpentersblocks.data.Safe;
 
 public class TECarpentersSafe extends TEBase implements ISidedInventory {
 
+    private final String TAG_UPGRADE = "upgrade";
+    private final String TAG_SLOT    = "Slot";
+    private final String TAG_ITEMS   = "Items";
+
     /** Holds contents of block. */
     private ItemStack[] inventoryContents = new ItemStack[54];
 
-    /** Holds size of inventory. */
-    private int inventorySize = 27;
+    /** Whether safe holds 54 items opposed to only 27. */
+    private boolean hasUpgrade = false;
 
     /** Counts ticks. */
     private int tickCount;
@@ -41,48 +45,30 @@ public class TECarpentersSafe extends TEBase implements ISidedInventory {
      */
     public void updateEntity()
     {
-        if (!worldObj.isRemote)
-        {
+        if (!worldObj.isRemote) {
             if (++tickCount >= 20 || forceEntityUpdate) {
                 tickCount = 0;
                 if (contentsChanged) {
                     worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
-                    contentsChanged = false;
-                    forceEntityUpdate = false;
+                    contentsChanged = forceEntityUpdate = false;
                 }
             }
         }
     }
 
-    private static final int[] accessibleSlots = {
-         0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10,
-        11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
-        22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32,
-        33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43,
-        44, 45, 46, 47, 48, 49, 50, 51, 52, 53
-    };
-
     /**
-     * Returns whether safe has 54 item slots.
+     * Returns whether safe is upgraded to 54 slots (gold).
      */
     public boolean hasUpgrade()
     {
-        return inventorySize > 27;
+        return hasUpgrade;
     }
 
-    /**
-     * Sets inventory size.
-     * Returns false if size cannot be increased.
-     */
-    public boolean incSizeInventory()
+    public void setUpgrade()
     {
-        if (hasUpgrade()) {
-            return false;
-        } else {
-            inventorySize *= 2;
-            markDirty();
-            return true;
-        }
+        hasUpgrade = true;
+        markDirty();
+        getWorldObj().markBlockForUpdate(xCoord, yCoord, zCoord);
     }
 
     /**
@@ -91,7 +77,7 @@ public class TECarpentersSafe extends TEBase implements ISidedInventory {
     @Override
     public int getSizeInventory()
     {
-        return inventorySize;
+        return hasUpgrade ? 54 : 27;
     }
 
     /**
@@ -100,11 +86,7 @@ public class TECarpentersSafe extends TEBase implements ISidedInventory {
     @Override
     public ItemStack getStackInSlot(int slot)
     {
-        if (slot < inventoryContents.length) {
-            return inventoryContents[slot];
-        } else {
-            return null;
-        }
+    	return inventoryContents[slot];
     }
 
     /**
@@ -112,29 +94,27 @@ public class TECarpentersSafe extends TEBase implements ISidedInventory {
      * new stack.
      */
     @Override
-    public ItemStack decrStackSize(int slot, int numItems)
+    public ItemStack decrStackSize(int slot, int size)
     {
-        if (inventoryContents[slot] != null)
-        {
-            ItemStack itemStack;
+        ItemStack itemStack = null;
 
-            if (inventoryContents[slot].stackSize <= numItems) {
-                itemStack = inventoryContents[slot];
+        if (inventoryContents[slot] != null) {
+            if (inventoryContents[slot].stackSize <= size) {
+            	itemStack = inventoryContents[slot];
                 inventoryContents[slot] = null;
-                markDirty();
-                return itemStack;
             } else {
-                itemStack = inventoryContents[slot].splitStack(numItems);
-
+            	itemStack = inventoryContents[slot].splitStack(size);
                 if (inventoryContents[slot].stackSize == 0) {
                     inventoryContents[slot] = null;
                 }
-
-                markDirty();
-                return itemStack;
             }
-        } else {
+        }
+
+        if (itemStack == null) {
             return null;
+        } else {
+            markDirty();
+            return itemStack;
         }
     }
 
@@ -145,13 +125,7 @@ public class TECarpentersSafe extends TEBase implements ISidedInventory {
     @Override
     public ItemStack getStackInSlotOnClosing(int slot)
     {
-        if (inventoryContents[slot] != null) {
-            ItemStack itemstack = inventoryContents[slot];
-            inventoryContents[slot] = null;
-            return itemstack;
-        } else {
-            return null;
-        }
+    	return null;
     }
 
     /**
@@ -186,18 +160,22 @@ public class TECarpentersSafe extends TEBase implements ISidedInventory {
     public void readFromNBT(NBTTagCompound nbt)
     {
         super.readFromNBT(nbt);
-        NBTTagList nbttaglist = nbt.getTagList("Items", 10);
 
-        inventorySize = nbt.getInteger("inventorySize");
-        inventoryContents = new ItemStack[getSizeInventory()];
+        /* Compatibility code with older versions prior to v3.2.5 */
+        if (nbt.hasKey("inventorySize")) {
+            hasUpgrade = nbt.getInteger("inventorySize") > 27;
+        }
+        
+        hasUpgrade = nbt.getBoolean(TAG_UPGRADE);
 
-        for (int count = 0; count < nbttaglist.tagCount(); ++count)
-        {
-            NBTTagCompound nbttagcompound1 = nbttaglist.getCompoundTagAt(count);
-            int j = nbttagcompound1.getByte("Slot") & 255;
+        NBTTagList nbttaglist = nbt.getTagList(TAG_ITEMS, 10);
+        inventoryContents = new ItemStack[54];
 
+        for (int idx = 0; idx < nbttaglist.tagCount(); ++idx) {
+            NBTTagCompound nbt1 = nbttaglist.getCompoundTagAt(idx);
+            int j = nbt1.getByte(TAG_SLOT) & 255;
             if (j >= 0 && j < inventoryContents.length) {
-                inventoryContents[j] = ItemStack.loadItemStackFromNBT(nbttagcompound1);
+                inventoryContents[j] = ItemStack.loadItemStackFromNBT(nbt1);
             }
         }
     }
@@ -209,21 +187,21 @@ public class TECarpentersSafe extends TEBase implements ISidedInventory {
     public void writeToNBT(NBTTagCompound nbt)
     {
         super.writeToNBT(nbt);
+
+        nbt.setBoolean(TAG_UPGRADE, hasUpgrade);
+
         NBTTagList nbttaglist = new NBTTagList();
 
-        for (int idx = 0; idx < inventoryContents.length; ++idx)
-        {
-            if (inventoryContents[idx] != null)
-            {
+        for (int idx = 0; idx < inventoryContents.length; ++idx) {
+            if (inventoryContents[idx] != null) {
                 NBTTagCompound nbttagcompound1 = new NBTTagCompound();
-                nbttagcompound1.setByte("Slot", (byte) idx);
+                nbttagcompound1.setByte(TAG_SLOT, (byte) idx);
                 inventoryContents[idx].writeToNBT(nbttagcompound1);
                 nbttaglist.appendTag(nbttagcompound1);
             }
         }
 
-        nbt.setInteger("inventorySize", inventorySize);
-        nbt.setTag("Items", nbttaglist);
+        nbt.setTag(TAG_ITEMS, nbttaglist);
     }
 
     /**
@@ -232,7 +210,7 @@ public class TECarpentersSafe extends TEBase implements ISidedInventory {
     @Override
     public boolean isUseableByPlayer(EntityPlayer entityPlayer)
     {
-        if (worldObj.getTileEntity(xCoord, yCoord, zCoord) == this) {
+        if (worldObj.getTileEntity(xCoord, yCoord, zCoord).equals(this)) {
             return entityPlayer.getDistanceSq(xCoord + 0.5D, yCoord + 0.5D, zCoord + 0.5D) <= 64.0D;
         }
 
@@ -242,7 +220,7 @@ public class TECarpentersSafe extends TEBase implements ISidedInventory {
     @Override
     public void openInventory()
     {
-        Safe.setState(this, Safe.STATE_OPEN);
+    	Safe.setState(this, Safe.STATE_OPEN);
     }
 
     @Override
@@ -275,7 +253,14 @@ public class TECarpentersSafe extends TEBase implements ISidedInventory {
     @Override
     public int[] getAccessibleSlotsFromSide(int side)
     {
-        return accessibleSlots;
+    	int sizeInventory = getSizeInventory();
+    	int[] accessibleSlots = new int[sizeInventory];
+
+    	for (int idx = 0; idx < sizeInventory; ++idx) {
+    		accessibleSlots[idx] = idx;
+    	}
+
+    	return accessibleSlots;
     }
 
     @Override
@@ -291,7 +276,7 @@ public class TECarpentersSafe extends TEBase implements ISidedInventory {
     }
 
     @Override
-    public boolean isItemValidForSlot(int i, ItemStack itemstack)
+    public boolean isItemValidForSlot(int slot, ItemStack itemstack)
     {
         return true;
     }

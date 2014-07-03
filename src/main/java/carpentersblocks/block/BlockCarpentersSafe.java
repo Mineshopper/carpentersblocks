@@ -155,8 +155,8 @@ public class BlockCarpentersSafe extends BlockCoverable {
 
             if (itemStack != null && itemStack.getItem().equals(Items.gold_ingot)) {
                 if (!TE_safe.hasUpgrade()) {
-                    if (TE_safe.incSizeInventory()) {
-                        TE.getWorldObj().markBlockForUpdate(TE.xCoord, TE.yCoord, TE.zCoord);
+                    if (!TE_safe.hasUpgrade()) {
+                        TE_safe.setUpgrade();
                         decInv.add(true);
                         return;
                     }
