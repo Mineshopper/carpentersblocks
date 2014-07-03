@@ -1109,31 +1109,6 @@ public class BlockCoverable extends BlockContainer {
 
     @Override
     /**
-     * Determines if this block should render in this pass.
-     */
-    public boolean canRenderInPass(int pass)
-    {
-        // TODO: Uncomment code when alpha bugs are fixed.
-
-        //ForgeHooksClient.setRenderPass(pass);
-        //return true;
-
-        return super.canRenderInPass(pass);
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    /**
-     * Returns which pass should this block be rendered on. 0 for solids and 1 for alpha
-     */
-    public final int getRenderBlockPass()
-    {
-        // TODO: Change to 1 when alpha renderpass bugs are sorted out.
-        return 0;
-    }
-
-    @Override
-    /**
      * Is this block (a) opaque and (b) a full 1m cube?  This determines whether or not to render the shared face of two
      * adjacent blocks and also whether the player can attach torches, redstone wire, etc to this block.
      */

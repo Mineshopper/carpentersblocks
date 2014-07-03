@@ -14,7 +14,7 @@ public class FancyFluidsHelper {
     /**
      * Renders fancy fluids in block space.
      */
-    public static boolean render(BlockHandlerBase blockHandler, int x, int y, int z, int renderPass)
+    public static boolean render(BlockHandlerBase blockHandler, int x, int y, int z)
     {
         Block block_XN   = blockHandler.renderBlocks.blockAccess.getBlock(x - 1, y, z);
         Block block_XP   = blockHandler.renderBlocks.blockAccess.getBlock(x + 1, y, z);
@@ -116,7 +116,7 @@ public class FancyFluidsHelper {
             }
         }
 
-        if (fluidBlock != null && renderPass == fluidBlock.getRenderBlockPass() || diagFluidBlock != null && renderPass == diagFluidBlock.getRenderBlockPass())
+        if (fluidBlock != null && fluidBlock.getRenderBlockPass() == 0 || diagFluidBlock != null && diagFluidBlock.getRenderBlockPass() == 0)
         {
             boolean renderFluid = false;
 

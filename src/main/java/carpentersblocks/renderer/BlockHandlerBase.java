@@ -110,15 +110,8 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
     public boolean renderWorldBlock(IBlockAccess blockAccess, int x, int y, int z, Block block, int modelID, RenderBlocks renderBlocks)
     {
         VertexHelper.vertexCount = 0;
-
         TileEntity TE_default = blockAccess.getTileEntity(x, y, z);
 
-        /*
-         * A catch-all for bad render calls.  Could happen if tile entities aren't
-         * properly loaded when chunks are created, or with multi-block entities
-         * like the door or bed when created or destroyed, when TE does not yet exist
-         * or has already been removed.
-         */
         if (TE_default != null && TE_default instanceof TEBase) {
 
             TE = (TEBase) TE_default;
@@ -133,10 +126,8 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
 
             if (FeatureRegistry.enableFancyFluids) {
 
-                int renderPass = MinecraftForgeClient.getRenderPass();
-
-                if (renderPass >= 0 && Minecraft.isFancyGraphicsEnabled() && BlockProperties.hasCover(TE, 6)) {
-                    FancyFluidsHelper.render(this, x, y, z, renderPass);
+                if (BlockProperties.hasCover(TE, 6)) {
+                    FancyFluidsHelper.render(this, x, y, z);
                 }
 
             }
