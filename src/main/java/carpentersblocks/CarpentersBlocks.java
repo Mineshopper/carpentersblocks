@@ -28,7 +28,7 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 public class CarpentersBlocks {
 
     public static final String MODID = "CarpentersBlocks";
-    public static final String VERSION = "3.2.4";
+    public static final String VERSION = "3.2.5";
     public static FMLEventChannel channel;
     public static CreativeTabs creativeTab = new CarpentersBlocksTab(MODID);
     public static String modDir = "";
@@ -43,10 +43,7 @@ public class CarpentersBlocks {
     public void preInit(FMLPreInitializationEvent event)
     {
         channel = NetworkRegistry.INSTANCE.newEventDrivenChannel(MODID);
-
-        String srcPath = event.getSourceFile().getAbsolutePath().replace('\\', '/');
         modDir = FMLForgePlugin.RUNTIME_DEOBF ? FilenameUtils.getFullPathNoEndSeparator(event.getSourceFile().getAbsolutePath()) : new File("").getAbsolutePath() + "\\mods";
-
         Configuration config = new Configuration(event.getSuggestedConfigurationFile());
 
         config.load();
