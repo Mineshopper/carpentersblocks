@@ -151,20 +151,18 @@ public class BlockCarpentersSafe extends BlockCoverable {
         if (!Safe.isOpen(TE) && canPlayerActivate(TE, entityPlayer)) {
 
             TECarpentersSafe TE_safe = (TECarpentersSafe) TE;
-            ItemStack itemStack = entityPlayer.getHeldItem();
 
-            if (itemStack != null && itemStack.getItem().equals(Items.gold_ingot)) {
-                if (!TE_safe.hasUpgrade()) {
-                    if (!TE_safe.hasUpgrade()) {
-                        TE_safe.setUpgrade();
-                        decInv.add(true);
-                        return;
-                    }
+            if (entityPlayer.isSneaking()) {
+                ItemStack itemStack = entityPlayer.getHeldItem();
+                if (itemStack != null && itemStack.getItem().equals(Items.gold_ingot) && !TE_safe.hasUpgrade()) {
+                    TE_safe.setUpgrade();
+                    decInv.add(true);
+                    return;
                 }
             }
 
             if (!decInv.contains(true)) {
-                entityPlayer.displayGUIChest((TECarpentersSafe)TE);
+                entityPlayer.displayGUIChest(TE_safe);
             }
 
         } else {
