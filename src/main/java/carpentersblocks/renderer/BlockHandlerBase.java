@@ -10,7 +10,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
-import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import org.lwjgl.opengl.GL11;
@@ -117,7 +116,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
             TE = (TEBase) TE_default;
             srcBlock = block;
             this.renderBlocks = renderBlocks;
-            this.lightingHelper = new LightingHelper(renderBlocks);
+            lightingHelper = new LightingHelper(renderBlocks);
 
             renderCarpentersBlock(x, y, z);
             renderSideBlocks(x, y, z);

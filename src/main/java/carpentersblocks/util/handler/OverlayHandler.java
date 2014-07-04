@@ -33,7 +33,7 @@ public class OverlayHandler {
         }
 
         public ItemStack getItemStack() {
-            return this.itemStack;
+            return itemStack;
         }
     }
 

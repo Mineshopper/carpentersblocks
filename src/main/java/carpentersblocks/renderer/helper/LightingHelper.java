@@ -29,9 +29,6 @@ public class LightingHelper {
     public static final int     MAX_BRIGHTNESS         = 0xf000f0;
     public static final float[] LIGHTNESS              = { 0.5F, 1.0F, 0.8F, 0.8F, 0.6F, 0.6F };
 
-    /** Enforce grass block lighting properties. */
-    private boolean grassMode;
-
     /** Ambient occlusion values for all four corners of side. */
     public float[] ao = new float[4];
 
@@ -70,18 +67,6 @@ public class LightingHelper {
     public void clearLightnessOverride()
     {
         hasLightnessOverride = false;
-    }
-
-    /**
-     * Sets grass mode.
-     * <p>
-     * Used to enforce grass lighting properties.
-     *
-     * @param mode  grass mode
-     */
-    public void setGrassMode(boolean mode)
-    {
-        grassMode = mode;
     }
 
     /**

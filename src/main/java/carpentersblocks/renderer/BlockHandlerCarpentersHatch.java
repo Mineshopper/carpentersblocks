@@ -183,8 +183,6 @@ public class BlockHandlerCarpentersHatch extends BlockHandlerBase {
 
         Tessellator.instance.setBrightness(Blocks.glass.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y, z));
 
-        ItemStack glass = new ItemStack(Blocks.glass);
-
         if (path_on_x) {
 
             renderBlocks.setRenderBounds(0.1875F, 0.1875F, 0.0F, 0.8125F, 0.8125F, 1.0F);
@@ -368,8 +366,6 @@ public class BlockHandlerCarpentersHatch extends BlockHandlerBase {
         }
 
         Tessellator.instance.setBrightness(Blocks.glass.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y, z));
-
-        ItemStack glass = new ItemStack(Blocks.glass);
 
         if (path_on_x) {
 

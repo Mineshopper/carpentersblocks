@@ -6,6 +6,7 @@ import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
+
 import org.lwjgl.opengl.GL11;
 
 import carpentersblocks.entity.item.EntityCarpentersTile;
@@ -29,8 +30,8 @@ public class RenderCarpentersTile extends Render {
     {
         GL11.glPushMatrix();
         GL11.glTranslated(x, y, z);
-        this.bindTexture(getEntityTexture(entity));
-        this.render((EntityCarpentersTile) entity, (int) x, (int) y, (int) z);
+        bindTexture(getEntityTexture(entity));
+        render((EntityCarpentersTile) entity, (int) x, (int) y, (int) z);
         GL11.glPopMatrix();
     }
 

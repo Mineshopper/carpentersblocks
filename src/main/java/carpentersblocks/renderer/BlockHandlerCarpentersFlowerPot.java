@@ -6,7 +6,6 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
-import net.minecraft.world.World;
 import carpentersblocks.block.BlockCoverable;
 import carpentersblocks.renderer.helper.RenderHelperFlowerPot;
 import carpentersblocks.tileentity.TECarpentersFlowerPot;
@@ -194,10 +193,7 @@ public class BlockHandlerCarpentersFlowerPot extends BlockHandlerBase {
      */
     private void drawStackedBlocks(ItemStack itemStack, int x, int y, int z)
     {
-        World world = TE.getWorldObj();
-
         BlockProperties.setHostMetadata(TE, itemStack.getItemDamage());
-
         renderBlocks.setRenderBounds(0.375F, 0.0D, 0.375F, 0.625F, 0.25D, 0.625F);
         renderBlock(itemStack, x, y, z);
         renderBlocks.setRenderBounds(0.375F, 0.25D, 0.375F, 0.625F, 0.50D, 0.625F);
@@ -205,7 +201,6 @@ public class BlockHandlerCarpentersFlowerPot extends BlockHandlerBase {
         renderBlocks.setRenderBounds(0.375F, 0.50D, 0.375F, 0.625F, 0.75D, 0.625F);
         renderBlock(itemStack, x, y, z);
         renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
-
         BlockProperties.resetHostMetadata(TE);
     }
 
