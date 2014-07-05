@@ -1,6 +1,8 @@
 package carpentersblocks.proxy;
 
+import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.MinecraftForge;
+import carpentersblocks.CarpentersBlocksCachedResources;
 import carpentersblocks.renderer.BlockHandlerCarpentersBarrier;
 import carpentersblocks.renderer.BlockHandlerCarpentersBed;
 import carpentersblocks.renderer.BlockHandlerCarpentersBlock;
@@ -35,6 +37,8 @@ public class ClientProxy extends CommonProxy {
     {
         MinecraftForge.EVENT_BUS.register(new IconRegistry());
         EntityHandler.registerEntityRenderers();
+        FMLClientHandler.instance().addModAsResource(CarpentersBlocksCachedResources.instance);
+        Minecraft.getMinecraft().refreshResources();
 
         BlockRegistry.carpentersBlockRenderID = RenderingRegistry.getNextAvailableRenderId();
         RenderingRegistry.registerBlockHandler(BlockRegistry.carpentersBlockRenderID, new BlockHandlerCarpentersBlock());

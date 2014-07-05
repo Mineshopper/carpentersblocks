@@ -10,10 +10,12 @@ import java.util.zip.ZipFile;
 
 import javax.imageio.ImageIO;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.classloading.FMLForgePlugin;
+import net.minecraftforge.client.event.TextureStitchEvent;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.Level;
@@ -21,9 +23,9 @@ import org.apache.logging.log4j.Level;
 import carpentersblocks.CarpentersBlocks;
 import carpentersblocks.CarpentersBlocksCachedResources;
 import carpentersblocks.util.ModLogger;
+import carpentersblocks.util.registry.BlockRegistry;
 import carpentersblocks.util.registry.FeatureRegistry;
 import carpentersblocks.util.registry.IconRegistry;
-import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -75,21 +77,6 @@ public class DesignHandler {
         }
 
         ModLogger.log(Level.INFO, "Designs found: Bed(" + listBed.size() + "), Chisel(" + listChisel.size() + "), FlowerPot(" + listFlowerPot.size() + "), Tile(" + listTile.size() + ")");
-
-        if (event.getSide().equals(Side.CLIENT)) {
-
-            /* Create bed resources. */
-            for (String iconName : listBed)
-            {
-                ArrayList<BufferedImage> tempList = getBedIcons(iconName);
-                for (BufferedImage image : tempList) {
-                    ResourceHandler.addResource(iconName + "_" + tempList.indexOf(image), image);
-                }
-            }
-
-            ResourceHandler.addResources();
-
-        }
     }
 
     private static void processPath(String path)
@@ -112,22 +99,39 @@ public class DesignHandler {
     }
 
     @SideOnly(Side.CLIENT)
-    public static void registerDesignIcons(IIconRegister iconRegister)
+    public static void addResources(TextureStitchEvent.Pre event)
     {
-        for (String iconName : listBed) {
-            IIcon[] icons = new IIcon[8];
-            for (int count = 0; count < 8; ++count) {
-                icons[count] = iconRegister.registerIcon(CarpentersBlocksCachedResources.MODID + ":" + PATH_BED + "cache/" + iconName + "_" + count);
+        /* Create bed resources. */
+        for (String iconName : listBed)
+        {
+            ArrayList<BufferedImage> tempList = getBedIcons(iconName);
+            for (BufferedImage image : tempList) {
+                CarpentersBlocksCachedResources.instance.addResource("/textures/blocks/designs/bed/cache", iconName + "_" + tempList.indexOf(image), image);
             }
-            IconRegistry.icon_design_bed.add(icons);
+        }
+    }
+
+    @SideOnly(Side.CLIENT)
+    public static void registerIcons(IIconRegister iconRegister)
+    {
+        if (BlockRegistry.enableBed) {
+            for (String iconName : listBed) {
+                IIcon[] icons = new IIcon[8];
+                for (int count = 0; count < 8; ++count) {
+                    icons[count] = iconRegister.registerIcon(CarpentersBlocksCachedResources.MODID + ":" + PATH_BED + "cache/" + iconName + "_" + count);
+                }
+                IconRegistry.icon_design_bed.add(icons);
+            }
         }
         if (FeatureRegistry.enableChiselDesigns) {
             for (String iconName : listChisel) {
                 IconRegistry.icon_design_chisel.add(iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + PATH_CHISEL + iconName));
             }
         }
-        for (String iconName : listFlowerPot) {
-            IconRegistry.icon_design_flower_pot.add(iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + PATH_FLOWER_POT + iconName));
+        if (BlockRegistry.enableFlowerPot) {
+            for (String iconName : listFlowerPot) {
+                IconRegistry.icon_design_flower_pot.add(iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + PATH_FLOWER_POT + iconName));
+            }
         }
         if (FeatureRegistry.enableTile) {
             for (String iconName : listTile) {
@@ -183,7 +187,7 @@ public class DesignHandler {
         try
         {
             ResourceLocation resourceLocation = new ResourceLocation(CarpentersBlocks.MODID + ":textures/blocks/designs/bed/" + atlas + ".png");
-            BufferedImage image = ImageIO.read(FMLClientHandler.instance().getResourcePackFor(CarpentersBlocks.MODID).getInputStream(resourceLocation));
+            BufferedImage image = ImageIO.read(Minecraft.getMinecraft().getResourceManager().getResource(resourceLocation).getInputStream());
 
             int size = image.getWidth() / 3;
             int rows = image.getHeight() / size;
