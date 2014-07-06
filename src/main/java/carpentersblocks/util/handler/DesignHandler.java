@@ -10,12 +10,11 @@ import java.util.zip.ZipFile;
 
 import javax.imageio.ImageIO;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.classloading.FMLForgePlugin;
-import net.minecraftforge.client.event.TextureStitchEvent;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.Level;
@@ -99,14 +98,13 @@ public class DesignHandler {
     }
 
     @SideOnly(Side.CLIENT)
-    public static void addResources(TextureStitchEvent.Pre event)
+    public static void addResources(IResourceManager resourceManager)
     {
-        /* Create bed resources. */
         for (String iconName : listBed)
         {
-            ArrayList<BufferedImage> tempList = getBedIcons(iconName);
+            ArrayList<BufferedImage> tempList = getBedIcons(resourceManager, iconName);
             for (BufferedImage image : tempList) {
-                CarpentersBlocksCachedResources.instance.addResource("/textures/blocks/designs/bed/cache", iconName + "_" + tempList.indexOf(image), image);
+                CarpentersBlocksCachedResources.instance().addResource("/textures/blocks/designs/bed/cache", iconName + "_" + tempList.indexOf(image), image);
             }
         }
     }
@@ -180,14 +178,14 @@ public class DesignHandler {
     }
 
     @SideOnly(Side.CLIENT)
-    public static ArrayList<BufferedImage> getBedIcons(String atlas)
+    public static ArrayList<BufferedImage> getBedIcons(IResourceManager resourceManager, String atlas)
     {
         ArrayList<BufferedImage> imageList = new ArrayList<BufferedImage>();
 
         try
         {
             ResourceLocation resourceLocation = new ResourceLocation(CarpentersBlocks.MODID + ":textures/blocks/designs/bed/" + atlas + ".png");
-            BufferedImage image = ImageIO.read(Minecraft.getMinecraft().getResourceManager().getResource(resourceLocation).getInputStream());
+            BufferedImage image = ImageIO.read(resourceManager.getResource(resourceLocation).getInputStream());
 
             int size = image.getWidth() / 3;
             int rows = image.getHeight() / size;

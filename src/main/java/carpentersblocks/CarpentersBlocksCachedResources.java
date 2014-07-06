@@ -10,23 +10,27 @@ import java.util.zip.ZipOutputStream;
 import javax.imageio.ImageIO;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.IResourceManager;
+import net.minecraft.client.resources.IResourceManagerReloadListener;
+import net.minecraft.client.resources.SimpleReloadableResourceManager;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.Level;
 
 import carpentersblocks.util.ModLogger;
+import carpentersblocks.util.handler.DesignHandler;
+import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.client.FMLFileResourcePack;
-import cpw.mods.fml.client.FMLFolderResourcePack;
 import cpw.mods.fml.common.DummyModContainer;
 import cpw.mods.fml.common.ModMetadata;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class CarpentersBlocksCachedResources extends DummyModContainer {
+public class CarpentersBlocksCachedResources extends DummyModContainer implements IResourceManagerReloadListener {
 
-    public static final CarpentersBlocksCachedResources instance = new CarpentersBlocksCachedResources();
-    public static String MODID = "CarpentersBlocksCachedResources";
+    private static final CarpentersBlocksCachedResources INSTANCE = new CarpentersBlocksCachedResources();
+    public final static String MODID = "CarpentersBlocksCachedResources";
     public static String resourceDir = FilenameUtils.normalizeNoEndSeparator(Minecraft.getMinecraft().mcDataDir.getAbsolutePath()) + "\\mods\\" + CarpentersBlocks.MODID.toLowerCase();
 
     private CarpentersBlocksCachedResources()
@@ -38,6 +42,22 @@ public class CarpentersBlocksCachedResources extends DummyModContainer {
         meta.description = "Holds dynamically-created resources used with Carpenter's Blocks.";
     }
 
+    /**
+     * Initializes
+     */
+    public void init()
+    {
+        SimpleReloadableResourceManager resourceManager = (SimpleReloadableResourceManager) Minecraft.getMinecraft().getResourceManager();
+        FMLClientHandler.instance().addModAsResource(this);
+        resourceManager.reloadResourcePack(FMLClientHandler.instance().getResourcePackFor(MODID));
+        resourceManager.registerReloadListener(this);
+    }
+
+    public static CarpentersBlocksCachedResources instance()
+    {
+        return INSTANCE;
+    }
+
     @Override
     public File getSource()
     {
@@ -47,19 +67,16 @@ public class CarpentersBlocksCachedResources extends DummyModContainer {
     @Override
     public Class<?> getCustomResourcePackClass()
     {
-        return getSource().isDirectory() ? FMLFolderResourcePack.class : FMLFileResourcePack.class;
-    }
-
-    public void clearResources()
-    {
-        image.clear();
-        entry.clear();
+        return FMLFileResourcePack.class;
     }
 
     private ArrayList<BufferedImage> image = new ArrayList<BufferedImage>();
     private ArrayList<String> entry = new ArrayList<String>();
     private ArrayList<String> path = new ArrayList<String>();
 
+    /**
+     * Adds a resource to list to be added to resource pack.
+     */
     public void addResource(String path, String entry, BufferedImage bufferedImage)
     {
         this.path.add(path);
@@ -68,9 +85,9 @@ public class CarpentersBlocksCachedResources extends DummyModContainer {
     }
 
     /**
-     * Creates resource file, loads it, and refreshes resources.
+     * Creates final resource pack.
      */
-    public void createResources()
+    public void createResourcePack()
     {
         if (!image.isEmpty()) {
             try {
@@ -84,6 +101,9 @@ public class CarpentersBlocksCachedResources extends DummyModContainer {
         }
     }
 
+    /**
+     * Creates directory for resource file.
+     */
     private boolean createDirectory() throws Exception
     {
         File dir = new File(CarpentersBlocksCachedResources.resourceDir);
@@ -95,6 +115,9 @@ public class CarpentersBlocksCachedResources extends DummyModContainer {
         return dir.exists();
     }
 
+    /**
+     * Creates resource zip file.
+     */
     private void createZip(String dir, String fileName) throws Exception
     {
         File file = new File(dir, fileName);
@@ -109,6 +132,19 @@ public class CarpentersBlocksCachedResources extends DummyModContainer {
 
         out.flush();
         out.close();
+    }
+
+    /**
+     * Refreshes dynamic resources and creates new resource pack.
+     */
+    @Override
+    public void onResourceManagerReload(IResourceManager resourceManager)
+    {
+        path.clear();
+        entry.clear();
+        image.clear();
+        DesignHandler.addResources(resourceManager);
+        createResourcePack();
     }
 
 }

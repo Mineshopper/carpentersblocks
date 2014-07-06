@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import carpentersblocks.CarpentersBlocks;
-import carpentersblocks.CarpentersBlocksCachedResources;
 import carpentersblocks.util.handler.DesignHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
@@ -71,9 +70,6 @@ public class IconRegistry {
             icon_design_flower_pot.clear();
             icon_design_tile.clear();
 
-            CarpentersBlocksCachedResources.instance.clearResources();
-            DesignHandler.addResources(event);
-            CarpentersBlocksCachedResources.instance.createResources();
             DesignHandler.registerIcons(event.map);
 
         }
