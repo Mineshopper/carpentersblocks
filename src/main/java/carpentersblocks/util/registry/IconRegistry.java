@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import carpentersblocks.CarpentersBlocks;
+import carpentersblocks.CarpentersBlocksCachedResources;
 import carpentersblocks.util.handler.DesignHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
@@ -55,6 +56,8 @@ public class IconRegistry {
     {
         /** 0 = terrain.png, 1 = items.png */
         if (event.map.getTextureType() == 0) {
+
+            CarpentersBlocksCachedResources.INSTANCE.rebuildCache();
 
             icon_uncovered_solid         = event.map.registerIcon(CarpentersBlocks.MODID + ":" + "general/solid");
             icon_uncovered_full          = event.map.registerIcon(CarpentersBlocks.MODID + ":" + "general/full_frame");

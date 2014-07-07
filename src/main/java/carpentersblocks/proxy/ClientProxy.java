@@ -20,7 +20,7 @@ public class ClientProxy extends CommonProxy {
     {
         super.init(event);
         MinecraftForge.EVENT_BUS.register(new IconRegistry());
-        CarpentersBlocksCachedResources.instance().init();
+        CarpentersBlocksCachedResources.INSTANCE.init();
 
         if (FMLClientHandler.instance().hasOptifine()) {
             OptifineHandler.init();

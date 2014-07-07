@@ -104,7 +104,7 @@ public class DesignHandler {
         {
             ArrayList<BufferedImage> tempList = getBedIcons(resourceManager, iconName);
             for (BufferedImage image : tempList) {
-                CarpentersBlocksCachedResources.instance().addResource("/textures/blocks/designs/bed/cache", iconName + "_" + tempList.indexOf(image), image);
+                CarpentersBlocksCachedResources.INSTANCE.addResource("/textures/blocks/designs/bed/cache", iconName + "_" + tempList.indexOf(image), image);
             }
         }
     }
