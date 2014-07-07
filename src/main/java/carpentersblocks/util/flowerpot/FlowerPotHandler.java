@@ -13,9 +13,6 @@ import carpentersblocks.tileentity.TEBase;
 
 public class FlowerPotHandler {
 
-    public final static Map<String, Profile> plantProfile = new HashMap<String, Profile>();
-    public final static Map<Item, Block>     itemPlant = new HashMap<Item, Block>();
-
     public enum Profile {
         DOUBLEPLANT,
         THIN_DOUBLEPLANT,
@@ -28,21 +25,9 @@ public class FlowerPotHandler {
         LEAVES
     }
 
-    /**
-     * Initializes plant profiles.
-     */
-    public static void init()
-    {
-        /*
-         * Map Items with Blocks.
-         * Needed because Block.getBlockFromItem() won't return an object
-         * for these ItemStacks.
-         */
-
-        itemPlant.put(Items.carrot, Blocks.carrots );
-        itemPlant.put(Items.potato, Blocks.potatoes);
-        itemPlant.put(Items.reeds , Blocks.reeds   );
-        itemPlant.put(Items.wheat , Blocks.wheat   );
+    public final static Map<String, Profile> plantProfile;
+    static {
+        plantProfile = new HashMap<String, Profile>();
 
         /* Vanilla */
 
@@ -112,6 +97,16 @@ public class FlowerPotHandler {
         plantProfile.put("tile.extrabiomes.flower.5", Profile.THIN_YP);
         plantProfile.put("tile.extrabiomes.flower.6", Profile.THIN_YP);
         plantProfile.put("tile.extrabiomes.flower.7", Profile.THIN_YP);
+    }
+
+    /** Maps Items to Blocks. */
+    public final static Map<Item, Block> itemPlant;
+    static {
+        itemPlant = new HashMap<Item, Block>();
+        itemPlant.put(Items.carrot, Blocks.carrots );
+        itemPlant.put(Items.potato, Blocks.potatoes);
+        itemPlant.put(Items.reeds , Blocks.reeds   );
+        itemPlant.put(Items.wheat , Blocks.wheat   );
     }
 
     /**

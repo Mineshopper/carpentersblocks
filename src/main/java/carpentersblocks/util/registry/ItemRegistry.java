@@ -61,22 +61,18 @@ public class ItemRegistry {
             itemCarpentersHammer = new ItemCarpentersHammer().setUnlocalizedName("itemCarpentersHammer");
             GameRegistry.registerItem(itemCarpentersHammer, "itemCarpentersHammer");
         }
-
         if (enableChisel) {
             itemCarpentersChisel = new ItemCarpentersChisel().setUnlocalizedName("itemCarpentersChisel");
             GameRegistry.registerItem(itemCarpentersChisel, "itemCarpentersChisel");
         }
-
         if (BlockRegistry.enableDoor) {
             itemCarpentersDoor = new ItemCarpentersDoor().setUnlocalizedName("itemCarpentersDoor");
             GameRegistry.registerItem(itemCarpentersDoor, "itemCarpentersDoor");
         }
-
         if (BlockRegistry.enableBed) {
             itemCarpentersBed = new ItemCarpentersBed().setUnlocalizedName("itemCarpentersBed");
             GameRegistry.registerItem(itemCarpentersBed, "itemCarpentersBed");
         }
-
         if (FeatureRegistry.enableTile) {
             itemCarpentersTile = new ItemCarpentersTile().setUnlocalizedName("itemCarpentersTile");
             GameRegistry.registerItem(itemCarpentersTile, "itemCarpentersTile");
@@ -88,19 +84,15 @@ public class ItemRegistry {
         if (enableHammer) {
             GameRegistry.addRecipe(new ItemStack(itemCarpentersHammer, 1), new Object[] { "XX ", " YX", " Y ", 'X', Items.iron_ingot, 'Y', BlockRegistry.blockCarpentersBlock });
         }
-
         if (enableChisel) {
             GameRegistry.addRecipe(new ItemStack(itemCarpentersChisel, 1), new Object[] { "X", "Y", 'X', Items.iron_ingot, 'Y', BlockRegistry.blockCarpentersBlock });
         }
-
         if (BlockRegistry.enableDoor) {
             GameRegistry.addRecipe(new ItemStack(itemCarpentersDoor, BlockRegistry.recipeQuantityDoor), new Object[] { "XX", "XX", "XX", 'X', BlockRegistry.blockCarpentersBlock });
         }
-
         if (BlockRegistry.enableBed) {
             GameRegistry.addRecipe(new ItemStack(itemCarpentersBed, BlockRegistry.recipeQuantityBed), new Object[] { "XXX", "YYY", 'X', Blocks.wool, 'Y', BlockRegistry.blockCarpentersBlock });
         }
-
         if (FeatureRegistry.enableTile) {
             GameRegistry.addRecipe(new ItemStack(itemCarpentersTile, recipeQuantityTile), new Object[] { "XXX", "YYY", 'X', Blocks.hardened_clay, 'Y', BlockRegistry.blockCarpentersBlock });
         }

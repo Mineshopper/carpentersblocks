@@ -51,7 +51,7 @@ public class DesignHandler {
     }
 
     /**
-     * Builds file list.
+     * Processes design files.
      */
     public static void preInit(FMLPreInitializationEvent event)
     {

@@ -10,29 +10,25 @@ import net.minecraftforge.oredict.OreDictionary;
 
 public class DyeHandler {
 
-    public static Map dyeColor = new HashMap();
-
-    /**
-     * Initializes dye colors.
-     */
-    public static void init()
-    {
-        dyeColor.put(    "dyeBlack",  ItemDye.field_150922_c[0]);
-        dyeColor.put(      "dyeRed",  ItemDye.field_150922_c[1]);
-        dyeColor.put(    "dyeGreen",  ItemDye.field_150922_c[2]);
-        dyeColor.put(    "dyeBrown",  ItemDye.field_150922_c[3]);
-        dyeColor.put(     "dyeBlue",  ItemDye.field_150922_c[4]);
-        dyeColor.put(   "dyePurple",  ItemDye.field_150922_c[5]);
-        dyeColor.put(     "dyeCyan",  ItemDye.field_150922_c[6]);
-        dyeColor.put("dyeLightGray",  ItemDye.field_150922_c[7]);
-        dyeColor.put(     "dyeGray",  ItemDye.field_150922_c[8]);
-        dyeColor.put(     "dyePink",  ItemDye.field_150922_c[9]);
-        dyeColor.put(     "dyeLime", ItemDye.field_150922_c[10]);
-        dyeColor.put(   "dyeYellow", ItemDye.field_150922_c[11]);
-        dyeColor.put("dyeLightBlue", ItemDye.field_150922_c[12]);
-        dyeColor.put(  "dyeMagenta", ItemDye.field_150922_c[13]);
-        dyeColor.put(   "dyeOrange", ItemDye.field_150922_c[14]);
-        dyeColor.put(    "dyeWhite", ItemDye.field_150922_c[15]);
+    private final static Map<String, Integer> dyeMap;
+    static {
+        dyeMap = new HashMap<String, Integer>();
+        dyeMap.put("dyeBlack", ItemDye.field_150922_c[0]);
+        dyeMap.put("dyeRed", ItemDye.field_150922_c[1]);
+        dyeMap.put("dyeGreen", ItemDye.field_150922_c[2]);
+        dyeMap.put("dyeBrown", ItemDye.field_150922_c[3]);
+        dyeMap.put("dyeBlue", ItemDye.field_150922_c[4]);
+        dyeMap.put("dyePurple", ItemDye.field_150922_c[5]);
+        dyeMap.put("dyeCyan", ItemDye.field_150922_c[6]);
+        dyeMap.put("dyeLightGray", ItemDye.field_150922_c[7]);
+        dyeMap.put("dyeGray", ItemDye.field_150922_c[8]);
+        dyeMap.put("dyePink", ItemDye.field_150922_c[9]);
+        dyeMap.put("dyeLime", ItemDye.field_150922_c[10]);
+        dyeMap.put("dyeYellow", ItemDye.field_150922_c[11]);
+        dyeMap.put("dyeLightBlue", ItemDye.field_150922_c[12]);
+        dyeMap.put("dyeMagenta", ItemDye.field_150922_c[13]);
+        dyeMap.put("dyeOrange", ItemDye.field_150922_c[14]);
+        dyeMap.put("dyeWhite", ItemDye.field_150922_c[15]);
     }
 
     /**
@@ -78,7 +74,7 @@ public class DyeHandler {
     public static boolean isDye(ItemStack itemStack, boolean allowWhite)
     {
         String name = getOreDictName(itemStack);
-        return dyeColor.containsKey(name) ? (name.equals("dyeWhite") && !allowWhite ? false : true) : false;
+        return dyeMap.containsKey(name) ? (name.equals("dyeWhite") && !allowWhite ? false : true) : false;
     }
 
     /**
@@ -96,7 +92,7 @@ public class DyeHandler {
     {
         int color = 0xffffff;
 
-        Object dyeLookup = dyeColor.get(dye);
+        Object dyeLookup = dyeMap.get(dye);
 
         if (dyeLookup != null) {
             color = (Integer) dyeLookup;
