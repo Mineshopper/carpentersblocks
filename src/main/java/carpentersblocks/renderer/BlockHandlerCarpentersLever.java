@@ -11,7 +11,6 @@ import carpentersblocks.block.BlockCarpentersLever;
 import carpentersblocks.block.BlockCoverable;
 import carpentersblocks.data.Lever;
 import carpentersblocks.data.Lever.Axis;
-import carpentersblocks.renderer.helper.VertexHelper;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.registry.BlockRegistry;
 import carpentersblocks.util.registry.IconRegistry;
@@ -46,13 +45,12 @@ public class BlockHandlerCarpentersLever extends BlockHandlerBase {
     /**
      * Renders block
      */
-    protected void renderCarpentersBlock(int x, int y, int z)
+    protected boolean renderCarpentersBlock(int x, int y, int z)
     {
         renderBlocks.renderAllFaces = true;
-
         renderLever(getCoverForRendering(), x, y, z);
-
         renderBlocks.renderAllFaces = false;
+        return true;
     }
 
     /**
@@ -97,14 +95,14 @@ public class BlockHandlerCarpentersLever extends BlockHandlerBase {
         float vecX = 0.0625F;
         float vecY = 0.625F;
         float vecZ = 0.0625F;
-        vector[0] = renderBlocks.blockAccess.getWorldVec3Pool().getVecFromPool(-vecX, 0.0D, -vecZ);
-        vector[1] = renderBlocks.blockAccess.getWorldVec3Pool().getVecFromPool(vecX, 0.0D, -vecZ);
-        vector[2] = renderBlocks.blockAccess.getWorldVec3Pool().getVecFromPool(vecX, 0.0D, vecZ);
-        vector[3] = renderBlocks.blockAccess.getWorldVec3Pool().getVecFromPool(-vecX, 0.0D, vecZ);
-        vector[4] = renderBlocks.blockAccess.getWorldVec3Pool().getVecFromPool(-vecX, vecY, -vecZ);
-        vector[5] = renderBlocks.blockAccess.getWorldVec3Pool().getVecFromPool(vecX, vecY, -vecZ);
-        vector[6] = renderBlocks.blockAccess.getWorldVec3Pool().getVecFromPool(vecX, vecY, vecZ);
-        vector[7] = renderBlocks.blockAccess.getWorldVec3Pool().getVecFromPool(-vecX, vecY, vecZ);
+        vector[0] = Vec3.createVectorHelper(-vecX, 0.0D, -vecZ);
+        vector[1] = Vec3.createVectorHelper(vecX, 0.0D, -vecZ);
+        vector[2] = Vec3.createVectorHelper(vecX, 0.0D, vecZ);
+        vector[3] = Vec3.createVectorHelper(-vecX, 0.0D, vecZ);
+        vector[4] = Vec3.createVectorHelper(-vecX, vecY, -vecZ);
+        vector[5] = Vec3.createVectorHelper(vecX, vecY, -vecZ);
+        vector[6] = Vec3.createVectorHelper(vecX, vecY, vecZ);
+        vector[7] = Vec3.createVectorHelper(-vecX, vecY, vecZ);
 
         /* Set up lever handle rotation. */
 
@@ -232,8 +230,6 @@ public class BlockHandlerCarpentersLever extends BlockHandlerBase {
             tessellator.addVertexWithUV(vertex2.xCoord, vertex2.yCoord, vertex2.zCoord, uMax, vMax);
             tessellator.addVertexWithUV(vertex3.xCoord, vertex3.yCoord, vertex3.zCoord, uMax, vMin);
             tessellator.addVertexWithUV(vertex4.xCoord, vertex4.yCoord, vertex4.zCoord, uMin, vMin);
-
-            VertexHelper.vertexCount += 4;
         }
     }
 

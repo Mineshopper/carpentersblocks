@@ -7,7 +7,6 @@ import net.minecraft.util.IIcon;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.common.util.ForgeDirection;
 import carpentersblocks.data.Torch;
-import carpentersblocks.renderer.helper.VertexHelper;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.registry.IconRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -43,7 +42,7 @@ public class BlockHandlerCarpentersTorch extends BlockHandlerBase {
     /**
      * Renders block
      */
-    protected void renderCarpentersBlock(int x, int y, int z)
+    protected boolean renderCarpentersBlock(int x, int y, int z)
     {
         renderBlocks.renderAllFaces = true;
         disableAO = true;
@@ -53,6 +52,7 @@ public class BlockHandlerCarpentersTorch extends BlockHandlerBase {
 
         disableAO = false;
         renderBlocks.renderAllFaces = false;
+        return true;
     }
 
     @Override
@@ -101,14 +101,14 @@ public class BlockHandlerCarpentersTorch extends BlockHandlerBase {
         float vecZ = 0.0625F;
 
         vec3 = new Vec3[] {
-            renderBlocks.blockAccess.getWorldVec3Pool().getVecFromPool(-vecX, 0.5D, -vecZ),
-            renderBlocks.blockAccess.getWorldVec3Pool().getVecFromPool(vecX, 0.5D, -vecZ),
-            renderBlocks.blockAccess.getWorldVec3Pool().getVecFromPool(vecX, 0.5D, vecZ),
-            renderBlocks.blockAccess.getWorldVec3Pool().getVecFromPool(-vecX, 0.5D, vecZ),
-            renderBlocks.blockAccess.getWorldVec3Pool().getVecFromPool(-vecX, vecY, -vecZ),
-            renderBlocks.blockAccess.getWorldVec3Pool().getVecFromPool(vecX, vecY, -vecZ),
-            renderBlocks.blockAccess.getWorldVec3Pool().getVecFromPool(vecX, vecY, vecZ),
-            renderBlocks.blockAccess.getWorldVec3Pool().getVecFromPool(-vecX, vecY, vecZ)
+            Vec3.createVectorHelper(-vecX, 0.5D, -vecZ),
+            Vec3.createVectorHelper(vecX, 0.5D, -vecZ),
+            Vec3.createVectorHelper(vecX, 0.5D, vecZ),
+            Vec3.createVectorHelper(-vecX, 0.5D, vecZ),
+            Vec3.createVectorHelper(-vecX, vecY, -vecZ),
+            Vec3.createVectorHelper(vecX, vecY, -vecZ),
+            Vec3.createVectorHelper(vecX, vecY, vecZ),
+            Vec3.createVectorHelper(-vecX, vecY, vecZ)
         };
 
         setRotations(Torch.getFacing(TE), vec3, x, y, z);
@@ -128,14 +128,14 @@ public class BlockHandlerCarpentersTorch extends BlockHandlerBase {
         float vecZ = 0.0625F;
 
         vec3 = new Vec3[] {
-            renderBlocks.blockAccess.getWorldVec3Pool().getVecFromPool(-vecX, 0.0D, -vecZ),
-            renderBlocks.blockAccess.getWorldVec3Pool().getVecFromPool(vecX, 0.0D, -vecZ),
-            renderBlocks.blockAccess.getWorldVec3Pool().getVecFromPool(vecX, 0.0D, vecZ),
-            renderBlocks.blockAccess.getWorldVec3Pool().getVecFromPool(-vecX, 0.0D, vecZ),
-            renderBlocks.blockAccess.getWorldVec3Pool().getVecFromPool(-vecX, vecY, -vecZ),
-            renderBlocks.blockAccess.getWorldVec3Pool().getVecFromPool(vecX, vecY, -vecZ),
-            renderBlocks.blockAccess.getWorldVec3Pool().getVecFromPool(vecX, vecY, vecZ),
-            renderBlocks.blockAccess.getWorldVec3Pool().getVecFromPool(-vecX, vecY, vecZ)
+            Vec3.createVectorHelper(-vecX, 0.0D, -vecZ),
+            Vec3.createVectorHelper(vecX, 0.0D, -vecZ),
+            Vec3.createVectorHelper(vecX, 0.0D, vecZ),
+            Vec3.createVectorHelper(-vecX, 0.0D, vecZ),
+            Vec3.createVectorHelper(-vecX, vecY, -vecZ),
+            Vec3.createVectorHelper(vecX, vecY, -vecZ),
+            Vec3.createVectorHelper(vecX, vecY, vecZ),
+            Vec3.createVectorHelper(-vecX, vecY, vecZ)
         };
 
         setRotations(Torch.getFacing(TE), vec3, x, y, z);
@@ -267,8 +267,6 @@ public class BlockHandlerCarpentersTorch extends BlockHandlerBase {
         tessellator.addVertexWithUV(vertex2.xCoord, vertex2.yCoord, vertex2.zCoord, uMax, vMax);
         tessellator.addVertexWithUV(vertex3.xCoord, vertex3.yCoord, vertex3.zCoord, uMax, vMin);
         tessellator.addVertexWithUV(vertex4.xCoord, vertex4.yCoord, vertex4.zCoord, uMin, vMin);
-
-        VertexHelper.vertexCount += 4;
     }
 
 }

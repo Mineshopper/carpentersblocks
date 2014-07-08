@@ -357,7 +357,7 @@ public class BlockCarpentersCollapsibleBlock extends BlockCoverable {
             for (int quad = 0; quad < 4; ++quad)
             {
                 float[] bounds = CollapsibleUtil.genBounds(TE, quad);
-                colBox = AxisAlignedBB.getAABBPool().getAABB(x + bounds[0], y + bounds[1], z + bounds[2], x + bounds[3], y + bounds[4], z + bounds[5]);
+                colBox = AxisAlignedBB.getBoundingBox(x + bounds[0], y + bounds[1], z + bounds[2], x + bounds[3], y + bounds[4], z + bounds[5]);
 
                 if (axisAlignedBB.intersectsWith(colBox)) {
                     list.add(colBox);

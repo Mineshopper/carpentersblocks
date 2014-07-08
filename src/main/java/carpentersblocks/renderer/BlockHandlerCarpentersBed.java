@@ -28,7 +28,7 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase {
     /**
      * Renders bed
      */
-    protected void renderCarpentersBlock(int x, int y, int z)
+    protected boolean renderCarpentersBlock(int x, int y, int z)
     {
         renderBlocks.renderAllFaces = true;
 
@@ -52,6 +52,7 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase {
         suppressDyeColor = false;
 
         renderBlocks.renderAllFaces = false;
+        return true;
     }
 
     private void applyFrameDyeOverride()

@@ -485,7 +485,7 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
     /**
      * Renders slope.
      */
-    public void renderBaseBlock(ItemStack itemStack, int x, int y, int z)
+    public boolean renderBaseBlock(ItemStack itemStack, int x, int y, int z)
     {
         Slope slope = Slope.slopesList[BlockProperties.getMetadata(TE)];
 
@@ -552,6 +552,7 @@ public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
         RenderHelper.startDrawing(QUADS);
 
         renderBlocks.enableAO = false;
+        return true;
     }
 
     @Override

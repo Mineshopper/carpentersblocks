@@ -25,9 +25,6 @@ public class VertexHelper {
     public final static int LEFT_CENTER   = 6;
     public final static int RIGHT_CENTER  = 7;
 
-    /** Keeps track of vertices drawn per pass. */
-    public static int vertexCount = 0;
-
     /**
      * Offset used for faces.
      */
@@ -106,7 +103,6 @@ public class VertexHelper {
         }
 
         tessellator.addVertexWithUV(x, y, z, u, v);
-        ++vertexCount;
     }
 
 }

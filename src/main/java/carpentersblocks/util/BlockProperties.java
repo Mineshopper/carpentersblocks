@@ -23,8 +23,6 @@ import carpentersblocks.util.handler.DesignHandler;
 import carpentersblocks.util.handler.DyeHandler;
 import carpentersblocks.util.handler.OverlayHandler;
 import carpentersblocks.util.registry.FeatureRegistry;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public final class BlockProperties {
 
@@ -284,20 +282,6 @@ public final class BlockProperties {
         return false;
     }
 
-    private static ItemStack getCoverUnfiltered(TEBase TE, int side)
-    {
-        return TE.cover[side] != null ? TE.cover[side] : new ItemStack(TE.getBlockType());
-    }
-
-    @SideOnly(Side.CLIENT)
-    /**
-     * Returns untouched cover ItemStack for rendering purposes.
-     */
-    public static ItemStack getCoverForRendering(TEBase TE, int side)
-    {
-        return getCoverUnfiltered(TE, side);
-    }
-
     /**
      * Returns filtered cover ItemStack that is safe for calling block properties.
      *
@@ -306,7 +290,7 @@ public final class BlockProperties {
      */
     public static ItemStack getCover(TEBase TE, int side)
     {
-        ItemStack itemStack = getCoverUnfiltered(TE, side);
+        ItemStack itemStack = TE.cover[side] != null ? TE.cover[side] : new ItemStack(TE.getBlockType());
         Block block = toBlock(itemStack);
 
         return block.hasTileEntity(itemStack.getItemDamage()) && !(block instanceof BlockCoverable) ? new ItemStack(Blocks.planks) : itemStack;

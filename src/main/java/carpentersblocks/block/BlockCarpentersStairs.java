@@ -224,7 +224,7 @@ public class BlockCarpentersStairs extends BlockCoverable {
                 float[] bounds = stairsUtil.genBounds(box, stairs);
 
                 if (bounds != null) {
-                    colBox = AxisAlignedBB.getAABBPool().getAABB(x + bounds[0], y + bounds[1], z + bounds[2], x + bounds[3], y + bounds[4], z + bounds[5]);
+                    colBox = AxisAlignedBB.getBoundingBox(x + bounds[0], y + bounds[1], z + bounds[2], x + bounds[3], y + bounds[4], z + bounds[5]);
                 }
                 if (colBox != null && axisAlignedBB.intersectsWith(colBox)) {
                     list.add(colBox);

@@ -115,15 +115,15 @@ public class BlockCarpentersGate extends BlockCoverable {
                 return null;
             } else if (Gate.getFacing(TE) == Gate.FACING_ON_Z) {
                 if (Gate.getType(TE) == Gate.TYPE_VANILLA || Gate.getType(TE) == Gate.TYPE_WALL) {
-                    return AxisAlignedBB.getAABBPool().getAABB(x + 0.4375F, y, z, x + 0.5625F, y + 1.5F, z + 1.0F);
+                    return AxisAlignedBB.getBoundingBox(x + 0.4375F, y, z, x + 0.5625F, y + 1.5F, z + 1.0F);
                 } else {
-                    return AxisAlignedBB.getAABBPool().getAABB(x + 0.375F, y, z, x + 0.625F, y + 1.5F, z + 1.0F);
+                    return AxisAlignedBB.getBoundingBox(x + 0.375F, y, z, x + 0.625F, y + 1.5F, z + 1.0F);
                 }
             } else {
                 if (Gate.getType(TE) == Gate.TYPE_VANILLA || Gate.getType(TE) == Gate.TYPE_WALL) {
-                    return AxisAlignedBB.getAABBPool().getAABB(x, y, z + 0.4375F, x + 1.0F, y + 1.5F, z + 0.5625F);
+                    return AxisAlignedBB.getBoundingBox(x, y, z + 0.4375F, x + 1.0F, y + 1.5F, z + 0.5625F);
                 } else {
-                    return AxisAlignedBB.getAABBPool().getAABB(x, y, z + 0.375F, x + 1.0F, y + 1.5F, z + 0.625F);
+                    return AxisAlignedBB.getBoundingBox(x, y, z + 0.375F, x + 1.0F, y + 1.5F, z + 0.625F);
                 }
             }
 

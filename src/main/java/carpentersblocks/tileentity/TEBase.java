@@ -1,5 +1,7 @@
 package carpentersblocks.tileentity;
 
+import java.util.UUID;
+
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -9,7 +11,10 @@ import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import carpentersblocks.util.IProtected;
+import carpentersblocks.util.protection.IProtected;
+import carpentersblocks.util.protection.ProtectedUtil;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.relauncher.Side;
 
 public class TEBase extends TileEntity implements IProtected {
 
@@ -69,6 +74,11 @@ public class TEBase extends TileEntity implements IProtected {
         metadata = nbt.getShort(TAG_METADATA);
         design   = nbt.getString(TAG_DESIGN);
         owner    = nbt.getString(TAG_OWNER);
+
+        // TODO: Remove when player name-changing system is switched on
+        if (FMLCommonHandler.instance().getSide().equals(Side.SERVER)) {
+            ProtectedUtil.updateOwnerUUID(this);
+        }
     }
 
     @Override
@@ -178,16 +188,22 @@ public class TEBase extends TileEntity implements IProtected {
      * Sets owner of tile entity.
      */
     @Override
-    public void setOwner(String owner)
+    public void setOwner(UUID Id)
     {
-        this.owner = owner;
+        owner = Id.toString();
     }
 
     /**
      * Returns owner of tile entity.
      */
     @Override
-    public String getOwner()
+    public UUID getOwner() throws IllegalArgumentException
+    {
+        return UUID.fromString(owner);
+    }
+
+    @Override
+    public Object getOwnerRaw()
     {
         return owner;
     }

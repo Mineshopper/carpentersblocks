@@ -399,7 +399,7 @@ public class BlockCarpentersSlope extends BlockCoverable {
                     float[] dim = slopeUtil.genBounds(slope, slice, precision, pass);
 
                     if (dim != null) {
-                        box = AxisAlignedBB.getAABBPool().getAABB(x + dim[0], y + dim[1], z + dim[2], x + dim[3], y + dim[4], z + dim[5]);
+                        box = AxisAlignedBB.getBoundingBox(x + dim[0], y + dim[1], z + dim[2], x + dim[3], y + dim[4], z + dim[5]);
                     }
 
                     if (box != null && axisAlignedBB.intersectsWith(box)) {

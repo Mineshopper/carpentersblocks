@@ -1,6 +1,5 @@
 package carpentersblocks.block;
 
-import static net.minecraftforge.common.util.ForgeDirection.DOWN;
 import static net.minecraftforge.common.util.ForgeDirection.UP;
 
 import java.util.ArrayList;
@@ -37,11 +36,11 @@ import carpentersblocks.api.ICarpentersHammer;
 import carpentersblocks.renderer.helper.ParticleHelper;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
-import carpentersblocks.util.PlayerPermissions;
 import carpentersblocks.util.handler.DesignHandler;
 import carpentersblocks.util.handler.EventHandler;
 import carpentersblocks.util.handler.OverlayHandler;
 import carpentersblocks.util.handler.OverlayHandler.Overlay;
+import carpentersblocks.util.protection.PlayerPermissions;
 import carpentersblocks.util.registry.FeatureRegistry;
 import carpentersblocks.util.registry.IconRegistry;
 import carpentersblocks.util.registry.ItemRegistry;
@@ -996,7 +995,7 @@ public class BlockCoverable extends BlockContainer {
             TEBase TE = getTileEntity(world, x, y, z);
 
             if (TE != null) {
-                TE.setOwner(((EntityPlayer)entityLiving).getDisplayName());
+                TE.setOwner(entityLiving.getUniqueID());
             }
 
         }
@@ -1017,7 +1016,7 @@ public class BlockCoverable extends BlockContainer {
 
             Item item = itemStack.getItem();
             if (item instanceof ICarpentersHammer || item instanceof ICarpentersChisel) {
-                return -1.0F;
+                return -1;
             }
 
         }
@@ -1031,21 +1030,6 @@ public class BlockCoverable extends BlockContainer {
         } else {
             return super.getPlayerRelativeBlockHardness(entityPlayer, world, x, y, z);
         }
-    }
-
-    /**
-     * Get the rotations that can apply to the block at the specified coordinates. Null means no rotations are possible.
-     * Note, this is up to the block to decide. It may not be accurate or representative.
-     * @param worldObj The world
-     * @param x X position
-     * @param y Y position
-     * @param z Z position
-     * @return An array of valid axes to rotate around, or null for none or unknown
-     */
-    @Override
-    public ForgeDirection[] getValidRotations(World worldObj, int x, int y, int z)
-    {
-        return new ForgeDirection[] { UP, DOWN };
     }
 
     @Override

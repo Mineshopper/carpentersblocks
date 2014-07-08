@@ -300,14 +300,14 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
 
         if (TE != null && TE instanceof TECarpentersFlowerPot) {
 
-            AxisAlignedBB axisAlignedBB = AxisAlignedBB.getAABBPool().getAABB(x + 0.3125F, y, z + 0.3125F, x + 0.6875F, y + 0.375F, z + 0.6875F);
+            AxisAlignedBB axisAlignedBB = AxisAlignedBB.getBoundingBox(x + 0.3125F, y, z + 0.3125F, x + 0.6875F, y + 0.375F, z + 0.6875F);
 
             if (FlowerPotProperties.hasPlant(TE)) {
 
                 switch (FlowerPotHandler.getPlantProfile(TE)) {
                     case CACTUS:
                     case LEAVES:
-                        axisAlignedBB = AxisAlignedBB.getAABBPool().getAABB(x + 0.3125F, y, z + 0.3125F, x + 0.6875F, y + 0.99F, z + 0.6875F);
+                        axisAlignedBB = AxisAlignedBB.getBoundingBox(x + 0.3125F, y, z + 0.3125F, x + 0.6875F, y + 0.99F, z + 0.6875F);
                         break;
                     default: {}
                 }

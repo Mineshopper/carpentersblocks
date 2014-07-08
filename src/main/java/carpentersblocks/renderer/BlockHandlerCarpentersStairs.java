@@ -27,7 +27,7 @@ public class BlockHandlerCarpentersStairs extends BlockHandlerBase {
     /**
      * Renders stairs at the given coordinates
      */
-    protected void renderCarpentersBlock(int x, int y, int z)
+    protected boolean renderCarpentersBlock(int x, int y, int z)
     {
         ItemStack itemStack = getCoverForRendering();
 
@@ -47,14 +47,17 @@ public class BlockHandlerCarpentersStairs extends BlockHandlerBase {
                 renderBlock(itemStack, x, y, z);
             }
         }
+
+        return true;
     }
 
     @Override
     /**
      * Renders side covers (stair specific).
      */
-    protected void renderSideBlocks(int x, int y, int z)
+    protected boolean renderSideBlocks(int x, int y, int z)
     {
+        boolean result = false;
         renderBlocks.renderAllFaces = true;
 
         Stairs stairs = Stairs.stairsList[BlockProperties.getMetadata(TE)];
@@ -76,7 +79,7 @@ public class BlockHandlerCarpentersStairs extends BlockHandlerBase {
                         int[] renderOffset = getSideCoverRenderBounds(x, y, z, side);
 
                         if (clipSideCoverBoundsBasedOnState(stairs.stairsID, box, side)) {
-                            renderBlock(getCoverForRendering(), renderOffset[0], renderOffset[1], renderOffset[2]);
+                            result |= renderBlock(getCoverForRendering(), renderOffset[0], renderOffset[1], renderOffset[2]);
                         }
                     }
                 }
@@ -85,6 +88,7 @@ public class BlockHandlerCarpentersStairs extends BlockHandlerBase {
 
         renderBlocks.renderAllFaces = false;
         coverRendering = 6;
+        return result;
     }
 
     /**

@@ -47,7 +47,7 @@ public class BlockHandlerCarpentersFlowerPot extends BlockHandlerBase {
     /**
      * Renders block
      */
-    protected void renderCarpentersBlock(int x, int y, int z)
+    protected boolean renderCarpentersBlock(int x, int y, int z)
     {
         TECarpentersFlowerPot TE = (TECarpentersFlowerPot) renderBlocks.blockAccess.getTileEntity(x, y, z);
 
@@ -81,6 +81,7 @@ public class BlockHandlerCarpentersFlowerPot extends BlockHandlerBase {
         suppressDyeColor = false;
 
         renderBlocks.renderAllFaces = false;
+        return true;
     }
 
     /**

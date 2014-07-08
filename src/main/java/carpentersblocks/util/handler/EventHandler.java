@@ -75,46 +75,46 @@ public class EventHandler {
             }
 
             switch (event.action) {
-                case LEFT_CLICK_BLOCK:
+            case LEFT_CLICK_BLOCK:
 
-                    boolean toolEquipped = itemStack != null && (itemStack.getItem() instanceof ICarpentersHammer || itemStack.getItem() instanceof ICarpentersChisel);
+                boolean toolEquipped = itemStack != null && (itemStack.getItem() instanceof ICarpentersHammer || itemStack.getItem() instanceof ICarpentersChisel);
 
-                    /*
-                     * Creative mode doesn't normally invoke onBlockClicked(), but rather it tries
-                     * to destroy the block.
-                     *
-                     * We'll invoke it here when a Carpenter's tool is being held.
-                     */
+                /*
+                 * Creative mode doesn't normally invoke onBlockClicked(), but rather it tries
+                 * to destroy the block.
+                 *
+                 * We'll invoke it here when a Carpenter's tool is being held.
+                 */
 
-                    if (toolEquipped && eventEntityPlayer.capabilities.isCreativeMode) {
-                        block.onBlockClicked(eventEntityPlayer.worldObj, event.x, event.y, event.z, eventEntityPlayer);
+                if (toolEquipped && eventEntityPlayer.capabilities.isCreativeMode) {
+                    block.onBlockClicked(eventEntityPlayer.worldObj, event.x, event.y, event.z, eventEntityPlayer);
+                }
+
+                break;
+            case RIGHT_CLICK_BLOCK:
+
+                /*
+                 * To enable full functionality with the hammer, we need to override pretty
+                 * much everything that happens on sneak right-click.
+                 *
+                 * onBlockActivated() isn't called if the player is sneaking, so do it here.
+                 *
+                 * The server will receive the packet and attempt to alter the Carpenter's
+                 * block.  If nothing changes, vanilla behavior will resume - the Item(Block)
+                 * in the ItemStack (if applicable) will be created adjacent to block.
+                 */
+
+                if (eventEntityPlayer.isSneaking()) {
+
+                    if (!(itemStack != null && itemStack.getItem() instanceof ItemBlock && !BlockProperties.isOverlay(itemStack))) {
+                        event.setCanceled(true);
+                        PacketHandler.sendPacketToServer(PacketHandler.PACKET_BLOCK_ACTIVATED, event.x, event.y, event.z, event.face);
                     }
 
-                    break;
-                case RIGHT_CLICK_BLOCK:
+                }
 
-                    /*
-                     * To enable full functionality with the hammer, we need to override pretty
-                     * much everything that happens on sneak right-click.
-                     *
-                     * onBlockActivated() isn't called if the player is sneaking, so do it here.
-                     *
-                     * The server will receive the packet and attempt to alter the Carpenter's
-                     * block.  If nothing changes, vanilla behavior will resume - the Item(Block)
-                     * in the ItemStack (if applicable) will be created adjacent to block.
-                     */
-
-                    if (eventEntityPlayer.isSneaking()) {
-
-                        if (!(itemStack != null && itemStack.getItem() instanceof ItemBlock && !BlockProperties.isOverlay(itemStack))) {
-                            event.setCanceled(true);
-                            PacketHandler.sendPacketToServer(PacketHandler.PACKET_BLOCK_ACTIVATED, event.x, event.y, event.z, event.face);
-                        }
-
-                    }
-
-                    break;
-                default: {}
+                break;
+            default: {}
             }
 
         }
@@ -174,7 +174,7 @@ public class EventHandler {
             reachDist = ((EntityPlayerMP)entityPlayer).theItemInWorldManager.getBlockReachDistance();
         }
 
-        Vec3 vec1 = world.getWorldVec3Pool().getVecFromPool(xPos, yPos, zPos);
+        Vec3 vec1 = Vec3.createVectorHelper(xPos, yPos, zPos);
         Vec3 vec2 = vec1.addVector(xComp * reachDist, yComp * reachDist, zComp * reachDist);
 
         return world.rayTraceBlocks(vec1, vec2);
@@ -211,13 +211,10 @@ public class EventHandler {
                 ParticleHelper.spawnTileParticleAt(entity, itemStack);
             }
 
-            /* Adjust block slipperiness according to cover. */
+            /* Adjust block slipperiness. */
 
-            if (BlockProperties.toBlock(itemStack) instanceof BlockCoverable) {
-                TE.getBlockType().slipperiness = Blocks.dirt.slipperiness;
-            } else {
-                TE.getBlockType().slipperiness = BlockProperties.toBlock(itemStack).slipperiness;
-            }
+            Block coverBlock = BlockProperties.toBlock(itemStack);
+            TE.getBlockType().slipperiness = coverBlock instanceof BlockCoverable ? Blocks.planks.slipperiness : coverBlock.slipperiness;
 
         }
     }

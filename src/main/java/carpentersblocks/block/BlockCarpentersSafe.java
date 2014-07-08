@@ -20,8 +20,8 @@ import carpentersblocks.data.Safe;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.tileentity.TECarpentersSafe;
 import carpentersblocks.util.BlockProperties;
-import carpentersblocks.util.PlayerPermissions;
 import carpentersblocks.util.handler.ChatHandler;
+import carpentersblocks.util.protection.PlayerPermissions;
 import carpentersblocks.util.registry.BlockRegistry;
 import carpentersblocks.util.registry.IconRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -261,13 +261,11 @@ public class BlockCarpentersSafe extends BlockCoverable {
         TEBase TE = getTileEntity(world, x, y, z);
 
         if (TE != null) {
-
             if (Safe.isOpen(TE) || !PlayerPermissions.canPlayerEdit(TE, TE.xCoord, TE.yCoord, TE.zCoord, entityPlayer)) {
                 return -1; // Unbreakable
             } else {
                 return super.getPlayerRelativeBlockHardness(entityPlayer, world, x, y, z);
             }
-
         }
 
         return super.getPlayerRelativeBlockHardness(entityPlayer, world, x, y, z);

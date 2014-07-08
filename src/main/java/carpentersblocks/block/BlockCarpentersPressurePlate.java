@@ -241,7 +241,7 @@ public class BlockCarpentersPressurePlate extends BlockCoverable {
 
     private AxisAlignedBB getSensitiveAABB(int x, int y, int z)
     {
-        return AxisAlignedBB.getAABBPool().getAABB(x + 0.125F, y, z + 0.125F, x + 1.0F - 0.125F, y + 0.25D, z + 1.0F - 0.125F);
+        return AxisAlignedBB.getBoundingBox(x + 0.125F, y, z + 0.125F, x + 1.0F - 0.125F, y + 0.25D, z + 1.0F - 0.125F);
     }
 
     private void notifyNeighborsOfUpdate(World world, int x, int y, int z)

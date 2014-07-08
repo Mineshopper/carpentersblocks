@@ -19,9 +19,9 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import carpentersblocks.api.ICarpentersHammer;
 import carpentersblocks.util.BlockProperties;
-import carpentersblocks.util.PlayerPermissions;
 import carpentersblocks.util.handler.DesignHandler;
 import carpentersblocks.util.handler.DyeHandler;
+import carpentersblocks.util.protection.PlayerPermissions;
 import carpentersblocks.util.registry.IconRegistry;
 import carpentersblocks.util.registry.ItemRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -391,7 +391,7 @@ public class EntityCarpentersTile extends EntityBase {
     @Override
     public boolean shouldRenderInPass(int pass)
     {
-        // TODO: Switch to pass 1 when alpha rendering is fixed.
+        // Has absolutely no effect
         return pass == 0;
     }
 
