@@ -104,7 +104,7 @@ public class DesignHandler {
         {
             ArrayList<BufferedImage> tempList = getBedIcons(resourceManager, iconName);
             for (BufferedImage image : tempList) {
-                CarpentersBlocksCachedResources.INSTANCE.addResource("/textures/blocks/designs/bed/cache", iconName + "_" + tempList.indexOf(image), image);
+                CarpentersBlocksCachedResources.INSTANCE.addResource("/textures/blocks/designs/bed/cache/" + iconName + "_" + tempList.indexOf(image), image);
             }
         }
     }
@@ -116,7 +116,7 @@ public class DesignHandler {
             for (String iconName : listBed) {
                 IIcon[] icons = new IIcon[8];
                 for (int count = 0; count < 8; ++count) {
-                    icons[count] = iconRegister.registerIcon(CarpentersBlocksCachedResources.MODID + ":" + PATH_BED + "cache/" + iconName + "_" + count);
+                    icons[count] = iconRegister.registerIcon(CarpentersBlocksCachedResources.INSTANCE.getModId() + ":" + PATH_BED + "cache/" + iconName + "_" + count);
                 }
                 IconRegistry.icon_design_bed.add(icons);
             }
