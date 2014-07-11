@@ -25,7 +25,6 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.client.ForgeHooksClient;
-import net.minecraftforge.common.EnumPlantType;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.IPlantable;
@@ -957,13 +956,10 @@ public class BlockCoverable extends BlockContainer {
             	blockIDs.add(Block.sand.blockID);
             }
 
-            EnumPlantType plantType = plantable.getPlantType(world, x, y + 1, z);
-
-            switch (plantType)
+            switch (plantable.getPlantType(world, x, y + 1, z))
             {
                 case Desert: return blockIDs.contains(sand.blockID);
                 case Nether: return blockIDs.contains(slowSand.blockID);
-                case Crop:   return blockIDs.contains(tilledField.blockID);
                 case Plains: return blockIDs.contains(grass.blockID) || blockIDs.contains(dirt.blockID);
                 case Beach:
                     boolean isBeach = blockIDs.contains(Block.grass.blockID) || blockIDs.contains(Block.dirt.blockID) || blockIDs.contains(Block.sand.blockID);

@@ -6,13 +6,12 @@ import net.minecraft.nbt.NBTTagList;
 
 public class TECarpentersFlowerPot extends TEBase {
 
+	private final String TAG_PLANT_ITEMSTACKS = "pot_property";
     public final String TAG_SOIL  = "soil";
     public final String TAG_PLANT = "plant";
 
     public ItemStack soil;
     public ItemStack plant;
-
-    private final String TAG_PLANT_ITEMSTACKS = "plantitemstacks";
 
     @Override
     public void readFromNBT(NBTTagCompound nbt)
