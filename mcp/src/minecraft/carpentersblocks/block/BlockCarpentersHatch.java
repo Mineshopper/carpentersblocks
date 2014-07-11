@@ -21,6 +21,7 @@ import carpentersblocks.CarpentersBlocks;
 import carpentersblocks.data.Hatch;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
+import carpentersblocks.util.handler.ChatHandler;
 import carpentersblocks.util.registry.BlockRegistry;
 import carpentersblocks.util.registry.IconRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -28,13 +29,9 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockCarpentersHatch extends BlockCoverable {
 
-    public BlockCarpentersHatch(int blockID)
+    public BlockCarpentersHatch(int blockID, Material material)
     {
-        super(blockID, Material.wood);
-        setHardness(0.2F);
-        setUnlocalizedName("blockCarpentersHatch");
-        setCreativeTab(CarpentersBlocks.tabCarpentersBlocks);
-        setTextureName("carpentersblocks:general/solid");
+        super(blockID, material);
     }
 
     @SideOnly(Side.CLIENT)
@@ -45,11 +42,9 @@ public class BlockCarpentersHatch extends BlockCoverable {
      */
     public void registerIcons(IconRegister iconRegister)
     {
-        IconRegistry.icon_hatch_glass = iconRegister.registerIcon("carpentersblocks:hatch/hatch_glass");
-        IconRegistry.icon_hatch_french_glass = iconRegister.registerIcon("carpentersblocks:hatch/hatch_french_glass");
-        IconRegistry.icon_hatch_screen = iconRegister.registerIcon("carpentersblocks:hatch/hatch_screen");
-
-        super.registerIcons(iconRegister);
+        IconRegistry.icon_hatch_glass        = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "hatch/hatch_glass");
+        IconRegistry.icon_hatch_french_glass = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "hatch/hatch_french_glass");
+        IconRegistry.icon_hatch_screen       = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "hatch/hatch_screen");
     }
 
     @Override
@@ -58,10 +53,10 @@ public class BlockCarpentersHatch extends BlockCoverable {
      */
     protected boolean onHammerLeftClick(TEBase TE, EntityPlayer entityPlayer)
     {
-        BlockProperties.getData(TE);
+        BlockProperties.getMetadata(TE);
 
-        if (!TE.worldObj.isRemote) {
-            findNextSideSupportBlock(TE, TE.worldObj, TE.xCoord, TE.yCoord, TE.zCoord);
+        if (!TE.getWorldObj().isRemote) {
+            findNextSideSupportBlock(TE, TE.getWorldObj(), TE.xCoord, TE.yCoord, TE.zCoord);
         }
 
         return true;
@@ -91,10 +86,10 @@ public class BlockCarpentersHatch extends BlockCoverable {
 
             switch (rigidity) {
                 case Hatch.HINGED_NONRIGID:
-                    entityPlayer.addChatMessage("message.activation_wood.name");
+                    ChatHandler.sendMessageToPlayer("message.activation_wood.name", entityPlayer);
                     break;
                 case Hatch.HINGED_RIGID:
-                    entityPlayer.addChatMessage("message.activation_iron.name");
+                    ChatHandler.sendMessageToPlayer("message.activation_iron.name", entityPlayer);
             }
 
         }
@@ -106,15 +101,14 @@ public class BlockCarpentersHatch extends BlockCoverable {
     /**
      * Called upon block activation (right click on the block.)
      */
-    public boolean[] postOnBlockActivated(TEBase TE, World world, int x, int y, int z, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ)
+    protected void postOnBlockActivated(TEBase TE, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ, List<Boolean> altered, List<Boolean> decInv)
     {
         if (!activationRequiresRedstone(TE)) {
-            Hatch.setState(TE, Hatch.getState(TE) == Hatch.STATE_CLOSED ? Hatch.STATE_OPEN : Hatch.STATE_CLOSED);
-            boolean[] result = { true, false };
-            return result;
-        }
 
-        return super.postOnBlockActivated(TE, world, x, y, z, entityPlayer, side, hitX, hitY, hitZ);
+            Hatch.setState(TE, Hatch.getState(TE) == Hatch.STATE_CLOSED ? Hatch.STATE_OPEN : Hatch.STATE_CLOSED);
+            altered.add(true);
+
+        }
     }
 
     /**
@@ -131,41 +125,45 @@ public class BlockCarpentersHatch extends BlockCoverable {
      */
     public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
     {
-        TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
+        TEBase TE = getTileEntity(world, x, y, z);
 
-        boolean isHigh = Hatch.getPos(TE) == Hatch.POSITION_HIGH;
-        boolean isOpen = Hatch.getState(TE) == Hatch.STATE_OPEN;
-        int dir = Hatch.getDir(TE);
+        if (TE != null) {
 
-        float thickness = 0.1875F;
+            boolean isHigh = Hatch.getPos(TE) == Hatch.POSITION_HIGH;
+            boolean isOpen = Hatch.getState(TE) == Hatch.STATE_OPEN;
+            int dir = Hatch.getDir(TE);
 
-        /* Hidden type has reduced dimensions to assist in climbing */
-        if (Hatch.getType(TE) == Hatch.TYPE_HIDDEN) {
-            thickness = 0.125F;
-        }
+            float thickness = 0.1875F;
 
-        if (isHigh) {
-            setBlockBounds(0.0F, 1.0F - thickness, 0.0F, 1.0F, 1.0F, 1.0F);
-        } else {
-            setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, thickness, 1.0F);
-        }
-
-        if (isOpen)
-        {
-            switch (dir) {
-                case 0:
-                    setBlockBounds(0.0F, 0.0F, 1.0F - thickness, 1.0F, 1.0F, 1.0F);
-                    break;
-                case 1:
-                    setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, thickness);
-                    break;
-                case 2:
-                    setBlockBounds(1.0F - thickness, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
-                    break;
-                case 3:
-                    setBlockBounds(0.0F, 0.0F, 0.0F, thickness, 1.0F, 1.0F);
-                    break;
+            /* Hidden type has reduced dimensions to assist in climbing */
+            if (Hatch.getType(TE) == Hatch.TYPE_HIDDEN) {
+                thickness = 0.125F;
             }
+
+            if (isHigh) {
+                setBlockBounds(0.0F, 1.0F - thickness, 0.0F, 1.0F, 1.0F, 1.0F);
+            } else {
+                setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, thickness, 1.0F);
+            }
+
+            if (isOpen)
+            {
+                switch (dir) {
+                    case 0:
+                        setBlockBounds(0.0F, 0.0F, 1.0F - thickness, 1.0F, 1.0F, 1.0F);
+                        break;
+                    case 1:
+                        setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, thickness);
+                        break;
+                    case 2:
+                        setBlockBounds(1.0F - thickness, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
+                        break;
+                    case 3:
+                        setBlockBounds(0.0F, 0.0F, 0.0F, thickness, 1.0F, 1.0F);
+                        break;
+                }
+            }
+
         }
     }
 
@@ -187,12 +185,11 @@ public class BlockCarpentersHatch extends BlockCoverable {
      */
     public void onNeighborBlockChange(World world, int x, int y, int z, int blockID)
     {
-        if (!world.isRemote)
-        {
-            TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
+        if (!world.isRemote) {
 
-            if (TE != null)
-            {
+            TEBase TE = getTileEntity(world, x, y, z);
+
+            if (TE != null) {
 
                 int dir = Hatch.getDir(TE);
                 int state = Hatch.getState(TE);
@@ -215,17 +212,22 @@ public class BlockCarpentersHatch extends BlockCoverable {
                         break;
                 }
 
-                if (!(isValidSupportBlock(world, x, y, z, world.getBlockId(xOffset, y, zOffset), dir + 2) || world.isBlockSolidOnSide(xOffset, y, zOffset, ForgeDirection.getOrientation(dir + 2)))) {
+                Block blockOffset = Block.blocksList[world.getBlockId(xOffset, y, zOffset)];
+
+                if (blockOffset != null && !(isValidSupportBlock(world, x, y, z, blockOffset) || blockOffset.isBlockSolidOnSide(world, xOffset, y, zOffset, ForgeDirection.getOrientation(dir + 2)))) {
                     findNextSideSupportBlock(TE, world, x, y, z);
                 }
 
                 boolean isPowered = world.isBlockIndirectlyGettingPowered(x, y, z);
                 boolean isOpen = state == Hatch.STATE_OPEN;
+                Block block = Block.blocksList[blockID];
 
-                if (blockID > 0 && Block.blocksList[blockID].canProvidePower() && isPowered != isOpen) {
+                if (block != null && block.canProvidePower() && isPowered != isOpen) {
                     Hatch.setState(TE, state == Hatch.STATE_OPEN ? Hatch.STATE_CLOSED : Hatch.STATE_OPEN);
                 }
+
             }
+
         }
 
         super.onNeighborBlockChange(world, x, y, z, blockID);
@@ -269,14 +271,18 @@ public class BlockCarpentersHatch extends BlockCoverable {
      */
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack itemStack)
     {
-        TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
+        TEBase TE = getTileEntity(world, x, y, z);
 
-        int metadata = world.getBlockMetadata(x, y, z);
+        if (TE != null) {
 
-        Hatch.setDir(TE, metadata & 0x3);
+            int metadata = world.getBlockMetadata(x, y, z);
 
-        if ((metadata & 0x8) > 0) {
-            Hatch.setPos(TE, Hatch.POSITION_HIGH);
+            Hatch.setDir(TE, metadata & 0x3);
+
+            if ((metadata & 0x8) > 0) {
+                Hatch.setPos(TE, Hatch.POSITION_HIGH);
+            }
+
         }
 
         super.onBlockPlacedBy(world, x, y, z, entityLiving, itemStack);
@@ -288,15 +294,20 @@ public class BlockCarpentersHatch extends BlockCoverable {
      */
     public boolean canPlaceBlockOnSide(World world, int x, int y, int z, int side)
     {
+        Block block;
         switch (side) {
             case 2:
-                return isValidSupportBlock(world, x, y, z, world.getBlockId(x, y, z + 1), 3) || world.isBlockSolidOnSide(x, y, z + 1, ForgeDirection.getOrientation(ForgeDirection.OPPOSITES[3]));
+                block = Block.blocksList[world.getBlockId(x, y, z + 1)];
+                return block != null && (isValidSupportBlock(world, x, y, z, block) || block.isBlockSolidOnSide(world, x, y, z + 1, ForgeDirection.getOrientation(ForgeDirection.OPPOSITES[3])));
             case 3:
-                return isValidSupportBlock(world, x, y, z, world.getBlockId(x, y, z - 1), 2) || world.isBlockSolidOnSide(x, y, z - 1, ForgeDirection.getOrientation(ForgeDirection.OPPOSITES[2]));
+                block = Block.blocksList[world.getBlockId(x, y, z - 1)];
+                return block != null && (isValidSupportBlock(world, x, y, z, block) || block.isBlockSolidOnSide(world, x, y, z - 1, ForgeDirection.getOrientation(ForgeDirection.OPPOSITES[2])));
             case 4:
-                return isValidSupportBlock(world, x, y, z, world.getBlockId(x + 1, y, z), 5) || world.isBlockSolidOnSide(x + 1, y, z, ForgeDirection.getOrientation(ForgeDirection.OPPOSITES[5]));
+                block = Block.blocksList[world.getBlockId(x + 1, y, z)];
+                return block != null && (isValidSupportBlock(world, x, y, z, block) || block.isBlockSolidOnSide(world, x + 1, y, z, ForgeDirection.getOrientation(ForgeDirection.OPPOSITES[5])));
             case 5:
-                return isValidSupportBlock(world, x, y, z, world.getBlockId(x - 1, y, z), 4) || world.isBlockSolidOnSide(x - 1, y, z, ForgeDirection.getOrientation(ForgeDirection.OPPOSITES[4]));
+                block = Block.blocksList[world.getBlockId(x - 1, y, z)];
+                return block != null && (isValidSupportBlock(world, x, y, z, block) || block.isBlockSolidOnSide(world, x - 1, y, z, ForgeDirection.getOrientation(ForgeDirection.OPPOSITES[4])));
         }
 
         return false;
@@ -319,7 +330,7 @@ public class BlockCarpentersHatch extends BlockCoverable {
          * support block.  It will drop if nothing is found.
          */
         int count = 0;
-        while (!this.canPlaceBlockOnSide(world, x, y, z, dir + 2) && count < 4)
+        while (!canPlaceBlockOnSide(world, x, y, z, dir + 2) && count < 4)
         {
             if (++dir > 3) {
                 dir = 0;
@@ -337,28 +348,37 @@ public class BlockCarpentersHatch extends BlockCoverable {
     }
 
     @Override
+    /**
+     * Checks if a player or entity can use this block to 'climb' like a ladder.
+     *
+     * @param world The current world
+     * @param x X Position
+     * @param y Y position
+     * @param z Z position
+     * @param entity The entity trying to use the ladder, CAN be null.
+     * @return True if the block should act like a ladder
+     */
     public boolean isLadder(World world, int x, int y, int z, EntityLivingBase entityLiving)
     {
-        TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
+        TEBase TE = getTileEntity(world, x, y, z);
 
-        return Hatch.getType(TE) == Hatch.TYPE_HIDDEN &&
-                Hatch.getPos(TE) == Hatch.POSITION_HIGH &&
-                Hatch.getState(TE) == Hatch.STATE_OPEN;
+        return TE != null &&
+               Hatch.getType(TE) == Hatch.TYPE_HIDDEN &&
+               Hatch.getPos(TE) == Hatch.POSITION_HIGH &&
+               Hatch.getState(TE) == Hatch.STATE_OPEN;
     }
 
     /**
      * Checks if the block ID is a valid support block for the hatch to connect with. If it is not the hatch is
      * dropped into the world.
      */
-    private boolean isValidSupportBlock(World world, int x, int y, int z, int blockID, int side)
+    private boolean isValidSupportBlock(World world, int x, int y, int z, Block block)
     {
-        Block block = Block.blocksList[blockID];
-
         return block == Block.glowStone ||
-                block instanceof BlockCarpentersStairs ||
-                block instanceof BlockCarpentersBlock ||
-                block instanceof BlockHalfSlab ||
-                block instanceof BlockStairs;
+               block instanceof BlockCarpentersStairs ||
+               block instanceof BlockCarpentersBlock ||
+               block instanceof BlockHalfSlab ||
+               block instanceof BlockStairs;
     }
 
     @Override

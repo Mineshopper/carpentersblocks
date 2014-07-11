@@ -2,9 +2,9 @@ package carpentersblocks.renderer;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.ForgeDirection;
 import carpentersblocks.data.Gate;
-import carpentersblocks.util.BlockProperties;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -15,13 +15,16 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
     @Override
     public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderBlocks)
     {
+        /* Sides */
+
         renderBlocks.setRenderBounds(0.0D, 0.3125D, 0.4375D, 0.125D, 1.0D, 0.5625D);
         super.renderInventoryBlock(block, metadata, modelID, renderBlocks);
-
-        renderBlocks.setRenderBounds(0.125D, 0.5D, 0.4375D, 0.875D, 0.9375D, 0.5625D);
+        renderBlocks.setRenderBounds(0.875D, 0.3125D, 0.4375D, 1.0D, 1.0D, 0.5625D);
         super.renderInventoryBlock(block, metadata, modelID, renderBlocks);
 
-        renderBlocks.setRenderBounds(0.875D, 0.3125D, 0.4375D, 1.0D, 1.0D, 0.5625D);
+        /* Center */
+
+        renderBlocks.setRenderBounds(0.125D, 0.5D, 0.4375D, 0.875D, 0.9375D, 0.5625D);
         super.renderInventoryBlock(block, metadata, modelID, renderBlocks);
     }
 
@@ -29,37 +32,35 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
     /**
      * Renders gate
      */
-    protected boolean renderCarpentersBlock(int x, int y, int z)
+    protected void renderCarpentersBlock(int x, int y, int z)
     {
         renderBlocks.renderAllFaces = true;
 
-        Block block = BlockProperties.getCoverBlock(TE, 6);
+        ItemStack itemStack = getCoverForRendering();
         int type = Gate.getType(TE);
 
         switch (type) {
             case Gate.TYPE_PICKET:
-                renderPicketGate(block, x, y, z);
+                renderPicketGate(itemStack, x, y, z);
                 break;
             case Gate.TYPE_PLANK_VERTICAL:
-                renderVerticalPlankGate(block, x, y, z);
+                renderVerticalPlankGate(itemStack, x, y, z);
                 break;
             case Gate.TYPE_WALL:
-                renderWallGate(block, x, y, z);
+                renderWallGate(itemStack, x, y, z);
                 break;
             default: // Gate.VANILLA
-                renderVanillaGate(block, x, y, z);
+                renderVanillaGate(itemStack, x, y, z);
                 break;
         }
 
         renderBlocks.renderAllFaces = false;
-
-        return true;
     }
 
     /**
      * Renders gate at given coordinates
      */
-    private void renderVanillaGate(Block block, int x, int y, int z)
+    private void renderVanillaGate(ItemStack itemStack, int x, int y, int z)
     {
         boolean isGateOpen = Gate.getState(TE) == Gate.STATE_OPEN;
         int dir = Gate.getDirOpen(TE);
@@ -74,8 +75,11 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
 
         float yPlankOffset = Gate.getType(TE) * 0.0625F;
 
-        boolean isGateAbove = renderBlocks.blockAccess.getBlockId(x, y + 1, z) == srcBlock.blockID;
-        boolean isGateBelow = renderBlocks.blockAccess.getBlockId(x, y - 1, z) == srcBlock.blockID;
+        Block blockYN = Block.blocksList[renderBlocks.blockAccess.getBlockId(x, y - 1, z)];
+        Block blockYP = Block.blocksList[renderBlocks.blockAccess.getBlockId(x, y + 1, z)];
+
+        boolean isGateAbove = blockYP != null && blockYP.equals(srcBlock);
+        boolean isGateBelow = blockYN != null && blockYN.equals(srcBlock);
 
         boolean joinPlanks = Gate.getType(TE) == Gate.TYPE_VANILLA_X3;
 
@@ -84,16 +88,16 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
         if (facing == Gate.FACING_ON_X)
         {
             renderBlocks.setRenderBounds(0.0F, isGateBelow ? 0.0F : y_Low - yPlankOffset, 0.4375F, 0.125F, isGateAbove ? 1.0F : y_High, 0.5625F);
-            renderBlock(block, x, y, z);
+            renderBlock(itemStack, x, y, z);
             renderBlocks.setRenderBounds(0.875F, isGateBelow ? 0.0F : y_Low - yPlankOffset, 0.4375F, 1.0F, isGateAbove ? 1.0F : y_High, 0.5625F);
-            renderBlock(block, x, y, z);
+            renderBlock(itemStack, x, y, z);
         }
         else
         {
             renderBlocks.setRenderBounds(0.4375F, isGateBelow ? 0.0F : y_Low - yPlankOffset, 0.0F, 0.5625F, isGateAbove ? 1.0F : y_High, 0.125F);
-            renderBlock(block, x, y, z);
+            renderBlock(itemStack, x, y, z);
             renderBlocks.setRenderBounds(0.4375F, isGateBelow ? 0.0F : y_Low - yPlankOffset, 0.875F, 0.5625F, isGateAbove ? 1.0F : y_High, 1.0F);
-            renderBlock(block, x, y, z);
+            renderBlock(itemStack, x, y, z);
         }
 
         if (isGateOpen)
@@ -105,24 +109,24 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
                     if (!joinPlanks) {
 
                         renderBlocks.setRenderBounds(0.8125D, isGateBelow ? 0.0F : y_Low2 - yPlankOffset, 0.0D, 0.9375D, isGateAbove ? 1.0F : y_High2, 0.125D);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                         renderBlocks.setRenderBounds(0.8125D, isGateBelow ? 0.0F : y_Low2 - yPlankOffset, 0.875D, 0.9375D, isGateAbove ? 1.0F : y_High2, 1.0D);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                         renderBlocks.setRenderBounds(0.5625D, y_Low2 - yPlankOffset, 0.0D, 0.8125D, y_High3, 0.125D);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                         renderBlocks.setRenderBounds(0.5625D, y_Low2 - yPlankOffset, 0.875D, 0.8125D, y_High3, 1.0D);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                         renderBlocks.setRenderBounds(0.5625D, y_Low3 - yPlankOffset, 0.0D, 0.8125D, y_High2, 0.125D);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                         renderBlocks.setRenderBounds(0.5625D, y_Low3 - yPlankOffset, 0.875D, 0.8125D, y_High2, 1.0D);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
 
                     } else {
 
                         renderBlocks.setRenderBounds(0.5625D, isGateBelow ? 0.0F : 0.1875F, 0.0D, 0.9375D, isGateAbove ? 1.0F : y_High2, 0.125D);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                         renderBlocks.setRenderBounds(0.5625D, isGateBelow ? 0.0F : 0.1875F, 0.875D, 0.9375D, isGateAbove ? 1.0F : y_High2, 1.0D);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
 
                     }
 
@@ -132,24 +136,24 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
                     if (!joinPlanks) {
 
                         renderBlocks.setRenderBounds(0.0625D, isGateBelow ? 0.0F : y_Low2 - yPlankOffset, 0.0D, 0.1875D, isGateAbove ? 1.0F : y_High2, 0.125D);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                         renderBlocks.setRenderBounds(0.0625D, isGateBelow ? 0.0F : y_Low2 - yPlankOffset, 0.875D, 0.1875D, isGateAbove ? 1.0F : y_High2, 1.0D);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                         renderBlocks.setRenderBounds(0.1875D, y_Low2 - yPlankOffset, 0.0D, 0.4375D, y_High3, 0.125D);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                         renderBlocks.setRenderBounds(0.1875D, y_Low2 - yPlankOffset, 0.875D, 0.4375D, y_High3, 1.0D);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                         renderBlocks.setRenderBounds(0.1875D, y_Low3 - yPlankOffset, 0.0D, 0.4375D, y_High2, 0.125D);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                         renderBlocks.setRenderBounds(0.1875D, y_Low3 - yPlankOffset, 0.875D, 0.4375D, y_High2, 1.0D);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
 
                     } else {
 
                         renderBlocks.setRenderBounds(0.0625D, isGateBelow ? 0.0F : y_Low2 - yPlankOffset, 0.0D, 0.4375D, isGateAbove ? 1.0F : y_High2, 0.125D);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                         renderBlocks.setRenderBounds(0.0625D, isGateBelow ? 0.0F : y_Low2 - yPlankOffset, 0.875D, 0.4375D, isGateAbove ? 1.0F : y_High2, 1.0D);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
 
                     }
 
@@ -162,24 +166,24 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
                     if (!joinPlanks) {
 
                         renderBlocks.setRenderBounds(0.0D, isGateBelow ? 0.0F : y_Low2 - yPlankOffset, 0.8125D, 0.125D, isGateAbove ? 1.0F : y_High2, 0.9375D);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                         renderBlocks.setRenderBounds(0.875D, isGateBelow ? 0.0F : y_Low2 - yPlankOffset, 0.8125D, 1.0D, isGateAbove ? 1.0F : y_High2, 0.9375D);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                         renderBlocks.setRenderBounds(0.0D, y_Low2 - yPlankOffset, 0.5625D, 0.125D, y_High3, 0.8125D);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                         renderBlocks.setRenderBounds(0.875D, y_Low2 - yPlankOffset, 0.5625D, 1.0D, y_High3, 0.8125D);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                         renderBlocks.setRenderBounds(0.0D, y_Low3 - yPlankOffset, 0.5625D, 0.125D, y_High2, 0.8125D);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                         renderBlocks.setRenderBounds(0.875D, y_Low3 - yPlankOffset, 0.5625D, 1.0D, y_High2, 0.8125D);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
 
                     } else {
 
                         renderBlocks.setRenderBounds(0.875D, isGateBelow ? 0.0F : y_Low2 - yPlankOffset, 0.5625D, 1.0D, isGateAbove ? 1.0F : y_High2, 0.9375D);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                         renderBlocks.setRenderBounds(0.0D, isGateBelow ? 0.0F : y_Low2 - yPlankOffset, 0.5625D, 0.125D, isGateAbove ? 1.0F : y_High2, 0.9375D);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
 
                     }
 
@@ -189,24 +193,24 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
                     if (!joinPlanks) {
 
                         renderBlocks.setRenderBounds(0.0D, isGateBelow ? 0.0F : y_Low2 - yPlankOffset, 0.0625D, 0.125D, isGateAbove ? 1.0F : y_High2, 0.1875D);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                         renderBlocks.setRenderBounds(0.875D, isGateBelow ? 0.0F : y_Low2 - yPlankOffset, 0.0625D, 1.0D, isGateAbove ? 1.0F : y_High2, 0.1875D);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                         renderBlocks.setRenderBounds(0.0D, y_Low2 - yPlankOffset, 0.1875D, 0.125D, y_High3, 0.4375D);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                         renderBlocks.setRenderBounds(0.875D, y_Low2 - yPlankOffset, 0.1875D, 1.0D, y_High3, 0.4375D);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                         renderBlocks.setRenderBounds(0.0D, y_Low3 - yPlankOffset, 0.1875D, 0.125D, y_High2, 0.4375D);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                         renderBlocks.setRenderBounds(0.875D, y_Low3 - yPlankOffset, 0.1875D, 1.0D, y_High2, 0.4375D);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
 
                     } else {
 
                         renderBlocks.setRenderBounds(0.875D, isGateBelow ? 0.0F : y_Low2 - yPlankOffset, 0.0625D, 1.0D, isGateAbove ? 1.0F : y_High2, 0.4375D);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                         renderBlocks.setRenderBounds(0.0D, isGateBelow ? 0.0F : y_Low2 - yPlankOffset, 0.0625D, 0.125D, isGateAbove ? 1.0F : y_High2, 0.4375D);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
 
                     }
 
@@ -220,22 +224,22 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
                 if (!joinPlanks) {
 
                     renderBlocks.setRenderBounds(0.375F, isGateBelow ? 0.0F : y_Low2 - yPlankOffset, 0.4375F, 0.5F, isGateAbove ? 1.0F : y_High2, 0.5625F);
-                    renderBlock(block, x, y, z); // Center Post
+                    renderBlock(itemStack, x, y, z); // Center Post
                     renderBlocks.setRenderBounds(0.5F, isGateBelow ? 0.0F : y_Low2 - yPlankOffset, 0.4375F, 0.625F, isGateAbove ? 1.0F : y_High2, 0.5625F);
-                    renderBlock(block, x, y, z); // Center Post
+                    renderBlock(itemStack, x, y, z); // Center Post
                     renderBlocks.setRenderBounds(0.625F, y_Low2 - yPlankOffset, 0.4375F, 0.875F, y_High3, 0.5625F);
-                    renderBlock(block, x, y, z);
+                    renderBlock(itemStack, x, y, z);
                     renderBlocks.setRenderBounds(0.625F, y_Low3 - yPlankOffset, 0.4375F, 0.875F, y_High2, 0.5625F);
-                    renderBlock(block, x, y, z);
+                    renderBlock(itemStack, x, y, z);
                     renderBlocks.setRenderBounds(0.125F, y_Low2 - yPlankOffset, 0.4375F, 0.375F, y_High3, 0.5625F);
-                    renderBlock(block, x, y, z);
+                    renderBlock(itemStack, x, y, z);
                     renderBlocks.setRenderBounds(0.125F, y_Low3 - yPlankOffset, 0.4375F, 0.375F, y_High2, 0.5625F);
-                    renderBlock(block, x, y, z);
+                    renderBlock(itemStack, x, y, z);
 
                 } else {
 
                     renderBlocks.setRenderBounds(0.125F, isGateBelow ? 0.0F : y_Low2 - yPlankOffset, 0.4375F, 0.875F, isGateAbove ? 1.0F : y_High2, 0.5625F);
-                    renderBlock(block, x, y, z);
+                    renderBlock(itemStack, x, y, z);
 
                 }
 
@@ -245,22 +249,22 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
                 if (!joinPlanks) {
 
                     renderBlocks.setRenderBounds(0.4375F, isGateBelow ? 0.0F : y_Low2 - yPlankOffset, 0.375F, 0.5625F, isGateAbove ? 1.0F : y_High2, 0.5F);
-                    renderBlock(block, x, y, z); // Center Post
+                    renderBlock(itemStack, x, y, z); // Center Post
                     renderBlocks.setRenderBounds(0.4375F, isGateBelow ? 0.0F : y_Low2 - yPlankOffset, 0.5F, 0.5625F, isGateAbove ? 1.0F : y_High2, 0.625F);
-                    renderBlock(block, x, y, z); // Center Post
+                    renderBlock(itemStack, x, y, z); // Center Post
                     renderBlocks.setRenderBounds(0.4375F, y_Low2 - yPlankOffset, 0.625F, 0.5625F, y_High3, 0.875F);
-                    renderBlock(block, x, y, z);
+                    renderBlock(itemStack, x, y, z);
                     renderBlocks.setRenderBounds(0.4375F, y_Low3 - yPlankOffset, 0.625F, 0.5625F, y_High2, 0.875F);
-                    renderBlock(block, x, y, z);
+                    renderBlock(itemStack, x, y, z);
                     renderBlocks.setRenderBounds(0.4375F, y_Low2 - yPlankOffset, 0.125F, 0.5625F, y_High3, 0.375F);
-                    renderBlock(block, x, y, z);
+                    renderBlock(itemStack, x, y, z);
                     renderBlocks.setRenderBounds(0.4375F, y_Low3 - yPlankOffset, 0.125F, 0.5625F, y_High2, 0.375F);
-                    renderBlock(block, x, y, z);
+                    renderBlock(itemStack, x, y, z);
 
                 } else {
 
                     renderBlocks.setRenderBounds(0.4375F, isGateBelow ? 0.0F : y_Low2 - yPlankOffset, 0.125F, 0.5625F, isGateAbove ? 1.0F : y_High2, 0.875F);
-                    renderBlock(block, x, y, z);
+                    renderBlock(itemStack, x, y, z);
 
                 }
 
@@ -273,7 +277,7 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
     /**
      * Renders gate at given coordinates
      */
-    private void renderPicketGate(Block block, int x, int y, int z)
+    private void renderPicketGate(ItemStack itemStack, int x, int y, int z)
     {
         boolean isGateOpen = Gate.getState(TE) == Gate.STATE_OPEN;
         int dir = Gate.getDirOpen(TE);
@@ -286,8 +290,11 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
         float z_Low = 0.0F;
         float z_High = 1.0F;
 
-        boolean isGateAbove = renderBlocks.blockAccess.getBlockId(x, y + 1, z) == srcBlock.blockID;
-        boolean isGateBelow = renderBlocks.blockAccess.getBlockId(x, y - 1, z) == srcBlock.blockID;
+        Block blockYN = Block.blocksList[renderBlocks.blockAccess.getBlockId(x, y - 1, z)];
+        Block blockYP = Block.blocksList[renderBlocks.blockAccess.getBlockId(x, y + 1, z)];
+
+        boolean isGateAbove = blockYP != null && blockYP.equals(srcBlock);
+        boolean isGateBelow = blockYN != null && blockYN.equals(srcBlock);
 
         if (isGateOpen)
         {
@@ -306,11 +313,11 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
                         y_Low = 0.625F;
                         y_High = 0.6875F;
                         renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                         z_Low = 0.8125F;
                         z_High = 0.9375F;
                         renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                     }
 
                     // Render bottom beam
@@ -320,11 +327,11 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
                         z_Low = 0.0625F;
                         z_High = 0.1875F;
                         renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                         z_Low = 0.8125F;
                         z_High = 0.9375F;
                         renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                     }
 
                     /* Render vertical slats */
@@ -353,19 +360,19 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
                         z_Low = 0.0F;
                         z_High = 0.0625F;
                         renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                         z_Low += 0.1875F;
                         z_High += 0.1875F;
                         renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                         z_Low = 0.75F;
                         z_High = 0.8125F;
                         renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                         z_Low += 0.1875F;
                         z_High += 0.1875F;
                         renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                     }
                 }
                 else
@@ -381,11 +388,11 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
                         y_Low = 0.625F;
                         y_High = 0.6875F;
                         renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                         z_Low = 0.8125F;
                         z_High = 0.9375F;
                         renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                     }
 
                     // Render bottom beam
@@ -395,11 +402,11 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
                         z_Low = 0.0625F;
                         z_High = 0.1875F;
                         renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                         z_Low = 0.8125F;
                         z_High = 0.9375F;
                         renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                     }
 
                     /* Render vertical slats */
@@ -428,19 +435,19 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
                         z_Low = 0.0F;
                         z_High = 0.0625F;
                         renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                         z_Low += 0.1875F;
                         z_High += 0.1875F;
                         renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                         z_Low = 0.75F;
                         z_High = 0.8125F;
                         renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                         z_Low += 0.1875F;
                         z_High += 0.1875F;
                         renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                     }
                 }
             }
@@ -459,11 +466,11 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
                         y_Low = 0.625F;
                         y_High = 0.6875F;
                         renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                         x_Low = 0.8125F;
                         x_High = 0.9375F;
                         renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                     }
 
                     // Render bottom beam
@@ -473,11 +480,11 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
                         y_Low = 0.1875F;
                         y_High = 0.25F;
                         renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                         x_Low = 0.8125F;
                         x_High = 0.9375F;
                         renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                     }
 
                     /* Render vertical slats */
@@ -506,19 +513,19 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
                         x_Low = 0.0F;
                         x_High = 0.0625F;
                         renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                         x_Low += 0.1875F;
                         x_High += 0.1875F;
                         renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                         x_Low = 0.75F;
                         x_High = 0.8125F;
                         renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                         x_Low += 0.1875F;
                         x_High += 0.1875F;
                         renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                     }
                 }
                 else
@@ -534,11 +541,11 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
                         y_Low = 0.625F;
                         y_High = 0.6875F;
                         renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                         x_Low = 0.8125F;
                         x_High = 0.9375F;
                         renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                     }
 
                     // Render bottom beam
@@ -548,11 +555,11 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
                         y_Low = 0.1875F;
                         y_High = 0.25F;
                         renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                         x_Low = 0.8125F;
                         x_High = 0.9375F;
                         renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                     }
 
                     /* Render vertical slats */
@@ -581,19 +588,19 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
                         x_Low = 0.0F;
                         x_High = 0.0625F;
                         renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                         x_Low += 0.1875F;
                         x_High += 0.1875F;
                         renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                         x_Low = 0.75F;
                         x_High = 0.8125F;
                         renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                         x_Low += 0.1875F;
                         x_High += 0.1875F;
                         renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                     }
                 }
             }
@@ -612,7 +619,7 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
                     y_Low = 0.625F;
                     y_High = 0.6875F;
                     renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                    renderBlock(block, x, y, z);
+                    renderBlock(itemStack, x, y, z);
                 }
 
                 // Render bottom beam
@@ -620,7 +627,7 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
                     y_Low = 0.1875F;
                     y_High = 0.25F;
                     renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                    renderBlock(block, x, y, z);
+                    renderBlock(itemStack, x, y, z);
                 }
 
                 /* Render vertical slats */
@@ -660,11 +667,11 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
                     z_Low = 0.5625F;
                     z_High = 0.625F;
                     renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                    renderBlock(block, x, y, z);
+                    renderBlock(itemStack, x, y, z);
                     z_Low -= 0.1875F;
                     z_High -= 0.1875F;
                     renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                    renderBlock(block, x, y, z);
+                    renderBlock(itemStack, x, y, z);
                 }
             }
             else
@@ -679,7 +686,7 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
                     y_Low = 0.625F;
                     y_High = 0.6875F;
                     renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                    renderBlock(block, x, y, z);
+                    renderBlock(itemStack, x, y, z);
                 }
 
                 // Render bottom beam
@@ -687,7 +694,7 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
                     y_Low = 0.1875F;
                     y_High = 0.25F;
                     renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                    renderBlock(block, x, y, z);
+                    renderBlock(itemStack, x, y, z);
                 }
 
                 /* Render vertical slats */
@@ -727,11 +734,11 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
                     x_Low = 0.5625F;
                     x_High = 0.625F;
                     renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                    renderBlock(block, x, y, z);
+                    renderBlock(itemStack, x, y, z);
                     x_Low -= 0.1875F;
                     x_High -= 0.1875F;
                     renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                    renderBlock(block, x, y, z);
+                    renderBlock(itemStack, x, y, z);
                 }
             }
         }
@@ -742,7 +749,7 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
     /**
      * Renders gate at given coordinates
      */
-    private void renderVerticalPlankGate(Block block, int x, int y, int z)
+    private void renderVerticalPlankGate(ItemStack itemStack, int x, int y, int z)
     {
         boolean isGateOpen = Gate.getState(TE) == Gate.STATE_OPEN;
         int dir = Gate.getDirOpen(TE);
@@ -755,8 +762,11 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
         float z_Low = 0.0F;
         float z_High = 1.0F;
 
-        boolean isGateAbove = renderBlocks.blockAccess.getBlockId(x, y + 1, z) == srcBlock.blockID;
-        boolean isGateBelow = renderBlocks.blockAccess.getBlockId(x, y - 1, z) == srcBlock.blockID;
+        Block blockYN = Block.blocksList[renderBlocks.blockAccess.getBlockId(x, y - 1, z)];
+        Block blockYP = Block.blocksList[renderBlocks.blockAccess.getBlockId(x, y + 1, z)];
+
+        boolean isGateAbove = blockYP != null && blockYP.equals(srcBlock);
+        boolean isGateBelow = blockYN != null && blockYN.equals(srcBlock);
 
         if (isGateOpen)
         {
@@ -775,11 +785,11 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
                         y_Low = 0.75F;
                         y_High = 0.875F;
                         renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                         z_Low = 0.8125F;
                         z_High = 0.9375F;
                         renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                     }
 
                     // Render bottom beam
@@ -789,11 +799,11 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
                         z_Low = 0.0625F;
                         z_High = 0.1875F;
                         renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                         z_Low = 0.8125F;
                         z_High = 0.9375F;
                         renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                     }
 
                     /* Render vertical slats */
@@ -818,19 +828,19 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
                         }
 
                         renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                         z_Low += 0.1875F;
                         z_High += 0.1875F;
                         renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                         z_Low = 0.75F;
                         z_High = 0.8125F;
                         renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                         z_Low += 0.1875F;
                         z_High += 0.1875F;
                         renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                     }
                 }
                 else
@@ -846,11 +856,11 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
                         y_Low = 0.75F;
                         y_High = 0.875F;
                         renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                         z_Low = 0.8125F;
                         z_High = 0.9375F;
                         renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                     }
 
                     // Render bottom beam
@@ -860,11 +870,11 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
                         z_Low = 0.0625F;
                         z_High = 0.1875F;
                         renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                         z_Low = 0.8125F;
                         z_High = 0.9375F;
                         renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                     }
 
                     /* Render vertical slats */
@@ -889,19 +899,19 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
                         }
 
                         renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                         z_Low += 0.1875F;
                         z_High += 0.1875F;
                         renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                         z_Low = 0.75F;
                         z_High = 0.8125F;
                         renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                         z_Low += 0.1875F;
                         z_High += 0.1875F;
                         renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                     }
                 }
             }
@@ -920,11 +930,11 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
                         y_Low = 0.75F;
                         y_High = 0.875F;
                         renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                         x_Low = 0.8125F;
                         x_High = 0.9375F;
                         renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                     }
 
                     // Render bottom beam
@@ -934,11 +944,11 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
                         y_Low = 0.125F;
                         y_High = 0.25F;
                         renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                         x_Low = 0.8125F;
                         x_High = 0.9375F;
                         renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                     }
 
                     /* Render vertical slats */
@@ -963,19 +973,19 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
                         }
 
                         renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                         x_Low += 0.1875F;
                         x_High += 0.1875F;
                         renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                         x_Low = 0.75F;
                         x_High = 0.8125F;
                         renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                         x_Low += 0.1875F;
                         x_High += 0.1875F;
                         renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                     }
                 }
                 else
@@ -991,11 +1001,11 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
                         y_Low = 0.75F;
                         y_High = 0.875F;
                         renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                         x_Low = 0.8125F;
                         x_High = 0.9375F;
                         renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                     }
 
                     // Render bottom beam
@@ -1005,11 +1015,11 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
                         y_Low = 0.125F;
                         y_High = 0.25F;
                         renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                         x_Low = 0.8125F;
                         x_High = 0.9375F;
                         renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                     }
 
                     /* Render vertical slats */
@@ -1034,19 +1044,19 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
                         }
 
                         renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                         x_Low += 0.1875F;
                         x_High += 0.1875F;
                         renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                         x_Low = 0.75F;
                         x_High = 0.8125F;
                         renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                         x_Low += 0.1875F;
                         x_High += 0.1875F;
                         renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(block, x, y, z);
+                        renderBlock(itemStack, x, y, z);
                     }
                 }
             }
@@ -1065,7 +1075,7 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
                     y_Low = 0.75F;
                     y_High = 0.875F;
                     renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                    renderBlock(block, x, y, z);
+                    renderBlock(itemStack, x, y, z);
                 }
 
                 // Render bottom beam
@@ -1073,7 +1083,7 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
                     y_Low = 0.125F;
                     y_High = 0.25F;
                     renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                    renderBlock(block, x, y, z);
+                    renderBlock(itemStack, x, y, z);
                 }
 
                 /* Render vertical slats */
@@ -1101,11 +1111,11 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
                     z_Low = 0.5625F;
                     z_High = 0.625F;
                     renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                    renderBlock(block, x, y, z);
+                    renderBlock(itemStack, x, y, z);
                     z_Low -= 0.1875F;
                     z_High -= 0.1875F;
                     renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                    renderBlock(block, x, y, z);
+                    renderBlock(itemStack, x, y, z);
                 }
             }
             else
@@ -1120,7 +1130,7 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
                     y_Low = 0.75F;
                     y_High = 0.875F;
                     renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                    renderBlock(block, x, y, z);
+                    renderBlock(itemStack, x, y, z);
                 }
 
                 // Render bottom beam
@@ -1128,7 +1138,7 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
                     y_Low = 0.125F;
                     y_High = 0.25F;
                     renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                    renderBlock(block, x, y, z);
+                    renderBlock(itemStack, x, y, z);
                 }
 
                 /* Render planks */
@@ -1156,11 +1166,11 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
                     x_Low = 0.5625F;
                     x_High = 0.625F;
                     renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                    renderBlock(block, x, y, z);
+                    renderBlock(itemStack, x, y, z);
                     x_Low -= 0.1875F;
                     x_High -= 0.1875F;
                     renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                    renderBlock(block, x, y, z);
+                    renderBlock(itemStack, x, y, z);
                 }
             }
         }
@@ -1171,7 +1181,7 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
     /**
      * Renders gate at given coordinates
      */
-    private void renderWallGate(Block block, int x, int y, int z)
+    private void renderWallGate(ItemStack itemStack, int x, int y, int z)
     {
         boolean isGateOpen = Gate.getState(TE) == Gate.STATE_OPEN;
         int dir = Gate.getDirOpen(TE);
@@ -1184,8 +1194,11 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
         float z_Low = 0.0F;
         float z_High = 1.0F;
 
-        boolean isGateAbove = renderBlocks.blockAccess.getBlockId(x, y + 1, z) == srcBlock.blockID;
-        y_High = isGateAbove || renderBlocks.blockAccess.isBlockSolidOnSide(x, y + 1, z, ForgeDirection.DOWN, true) ? 1.0F : 0.8125F;
+        renderBlocks.blockAccess.getBlockId(x, y - 1, z);
+        Block blockYP = Block.blocksList[renderBlocks.blockAccess.getBlockId(x, y + 1, z)];
+
+        boolean isGateAbove = blockYP != null && blockYP.equals(srcBlock);
+        y_High = isGateAbove || blockYP != null && blockYP.isBlockSolidOnSide(TE.getWorldObj(), x, y + 1, z, ForgeDirection.DOWN) ? 1.0F : 0.8125F;
 
         if (isGateOpen)
         {
@@ -1196,22 +1209,22 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
                     x_Low = 0.5F;
                     z_High = 0.125F;
                     renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                    renderBlock(block, x, y, z);
+                    renderBlock(itemStack, x, y, z);
                     z_Low = 0.875F;
                     z_High = 1.0F;
                     renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                    renderBlock(block, x, y, z);
+                    renderBlock(itemStack, x, y, z);
                 }
                 else
                 {
                     x_High = 0.5F;
                     z_High = 0.125F;
                     renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                    renderBlock(block, x, y, z);
+                    renderBlock(itemStack, x, y, z);
                     z_Low = 0.875F;
                     z_High = 1.0F;
                     renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                    renderBlock(block, x, y, z);
+                    renderBlock(itemStack, x, y, z);
                 }
             }
             else
@@ -1221,22 +1234,22 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
                     x_High = 0.125F;
                     z_Low = 0.5F;
                     renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                    renderBlock(block, x, y, z);
+                    renderBlock(itemStack, x, y, z);
                     x_Low = 0.875F;
                     x_High = 1.0F;
                     renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                    renderBlock(block, x, y, z);
+                    renderBlock(itemStack, x, y, z);
                 }
                 else
                 {
                     x_High = 0.125F;
                     z_High = 0.5F;
                     renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                    renderBlock(block, x, y, z);
+                    renderBlock(itemStack, x, y, z);
                     x_Low = 0.875F;
                     x_High = 1.0F;
                     renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                    renderBlock(block, x, y, z);
+                    renderBlock(itemStack, x, y, z);
                 }
             }
         }
@@ -1247,14 +1260,14 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
                 z_Low = 0.4375F;
                 z_High = 0.5625F;
                 renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                renderBlock(block, x, y, z);
+                renderBlock(itemStack, x, y, z);
             }
             else
             {
                 x_Low = 0.4375F;
                 x_High = 0.5625F;
                 renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                renderBlock(block, x, y, z);
+                renderBlock(itemStack, x, y, z);
             }
         }
 

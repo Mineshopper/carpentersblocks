@@ -23,12 +23,12 @@ public class StairsTransform {
         Block block_ZN = Block.blocksList[world.getBlockId(x, y, z - 1)];
         Block block_ZP = Block.blocksList[world.getBlockId(x, y, z + 1)];
 
-        Stairs stairs_XN = block_XN != null && block_XN instanceof BlockCarpentersStairs ? Stairs.stairsList[BlockProperties.getData((TEBase) world.getBlockTileEntity(x - 1, y, z))] : null;
-        Stairs stairs_XP = block_XP != null && block_XP instanceof BlockCarpentersStairs ? Stairs.stairsList[BlockProperties.getData((TEBase) world.getBlockTileEntity(x + 1, y, z))] : null;
-        Stairs stairs_YN = block_YN != null && block_YN instanceof BlockCarpentersStairs ? Stairs.stairsList[BlockProperties.getData((TEBase) world.getBlockTileEntity(x, y - 1, z))] : null;
-        Stairs stairs_YP = block_YP != null && block_YP instanceof BlockCarpentersStairs ? Stairs.stairsList[BlockProperties.getData((TEBase) world.getBlockTileEntity(x, y + 1, z))] : null;
-        Stairs stairs_ZN = block_ZN != null && block_ZN instanceof BlockCarpentersStairs ? Stairs.stairsList[BlockProperties.getData((TEBase) world.getBlockTileEntity(x, y, z - 1))] : null;
-        Stairs stairs_ZP = block_ZP != null && block_ZP instanceof BlockCarpentersStairs ? Stairs.stairsList[BlockProperties.getData((TEBase) world.getBlockTileEntity(x, y, z + 1))] : null;
+        Stairs stairs_XN = block_XN != null && block_XN instanceof BlockCarpentersStairs ? Stairs.stairsList[BlockProperties.getMetadata((TEBase) world.getBlockTileEntity(x - 1, y, z))] : null;
+        Stairs stairs_XP = block_XP != null && block_XP instanceof BlockCarpentersStairs ? Stairs.stairsList[BlockProperties.getMetadata((TEBase) world.getBlockTileEntity(x + 1, y, z))] : null;
+        Stairs stairs_YN = block_YN != null && block_YN instanceof BlockCarpentersStairs ? Stairs.stairsList[BlockProperties.getMetadata((TEBase) world.getBlockTileEntity(x, y - 1, z))] : null;
+        Stairs stairs_YP = block_YP != null && block_YP instanceof BlockCarpentersStairs ? Stairs.stairsList[BlockProperties.getMetadata((TEBase) world.getBlockTileEntity(x, y + 1, z))] : null;
+        Stairs stairs_ZN = block_ZN != null && block_ZN instanceof BlockCarpentersStairs ? Stairs.stairsList[BlockProperties.getMetadata((TEBase) world.getBlockTileEntity(x, y, z - 1))] : null;
+        Stairs stairs_ZP = block_ZP != null && block_ZP instanceof BlockCarpentersStairs ? Stairs.stairsList[BlockProperties.getMetadata((TEBase) world.getBlockTileEntity(x, y, z + 1))] : null;
 
         /* Transform into normal side. */
 
@@ -192,10 +192,10 @@ public class StairsTransform {
         Block block_ZN = Block.blocksList[world.getBlockId(x, y, z - 1)];
         Block block_ZP = Block.blocksList[world.getBlockId(x, y, z + 1)];
 
-        Stairs stairs_XN = block_XN != null && block_XN instanceof BlockCarpentersStairs ? Stairs.stairsList[BlockProperties.getData((TEBase) world.getBlockTileEntity(x - 1, y, z))] : null;
-        Stairs stairs_XP = block_XP != null && block_XP instanceof BlockCarpentersStairs ? Stairs.stairsList[BlockProperties.getData((TEBase) world.getBlockTileEntity(x + 1, y, z))] : null;
-        Stairs stairs_ZN = block_ZN != null && block_ZN instanceof BlockCarpentersStairs ? Stairs.stairsList[BlockProperties.getData((TEBase) world.getBlockTileEntity(x, y, z - 1))] : null;
-        Stairs stairs_ZP = block_ZP != null && block_ZP instanceof BlockCarpentersStairs ? Stairs.stairsList[BlockProperties.getData((TEBase) world.getBlockTileEntity(x, y, z + 1))] : null;
+        Stairs stairs_XN = block_XN != null && block_XN instanceof BlockCarpentersStairs ? Stairs.stairsList[BlockProperties.getMetadata((TEBase) world.getBlockTileEntity(x - 1, y, z))] : null;
+        Stairs stairs_XP = block_XP != null && block_XP instanceof BlockCarpentersStairs ? Stairs.stairsList[BlockProperties.getMetadata((TEBase) world.getBlockTileEntity(x + 1, y, z))] : null;
+        Stairs stairs_ZN = block_ZN != null && block_ZN instanceof BlockCarpentersStairs ? Stairs.stairsList[BlockProperties.getMetadata((TEBase) world.getBlockTileEntity(x, y, z - 1))] : null;
+        Stairs stairs_ZP = block_ZP != null && block_ZP instanceof BlockCarpentersStairs ? Stairs.stairsList[BlockProperties.getMetadata((TEBase) world.getBlockTileEntity(x, y, z + 1))] : null;
 
         Stairs stairs = Stairs.stairsList[stairsID];
 
@@ -208,19 +208,19 @@ public class StairsTransform {
 
             if (stairs_ZN != null && stairs.isPositive == stairs_ZN.isPositive) {
                 if (stairs_ZN.facings.contains(ForgeDirection.NORTH)) {
-                    BlockProperties.setData(TE_ZN, stairs.isPositive ? Stairs.ID_NORMAL_EXT_POS_NW : Stairs.ID_NORMAL_EXT_NEG_NW);
+                    BlockProperties.setMetadata(TE_ZN, stairs.isPositive ? Stairs.ID_NORMAL_EXT_POS_NW : Stairs.ID_NORMAL_EXT_NEG_NW);
                 }
                 if (stairs_ZN.facings.contains(ForgeDirection.SOUTH)) {
-                    BlockProperties.setData(TE_ZN, stairs.isPositive ? Stairs.ID_NORMAL_INT_POS_SW : Stairs.ID_NORMAL_INT_NEG_SW);
+                    BlockProperties.setMetadata(TE_ZN, stairs.isPositive ? Stairs.ID_NORMAL_INT_POS_SW : Stairs.ID_NORMAL_INT_NEG_SW);
                 }
             }
 
             if (stairs_ZP != null && stairs.isPositive == stairs_ZP.isPositive) {
                 if (stairs_ZP.facings.contains(ForgeDirection.SOUTH)) {
-                    BlockProperties.setData(TE_ZP, stairs.isPositive ? Stairs.ID_NORMAL_EXT_POS_SW : Stairs.ID_NORMAL_EXT_NEG_SW);
+                    BlockProperties.setMetadata(TE_ZP, stairs.isPositive ? Stairs.ID_NORMAL_EXT_POS_SW : Stairs.ID_NORMAL_EXT_NEG_SW);
                 }
                 if (stairs_ZP.facings.contains(ForgeDirection.NORTH)) {
-                    BlockProperties.setData(TE_ZP, stairs.isPositive ? Stairs.ID_NORMAL_INT_POS_NW : Stairs.ID_NORMAL_INT_NEG_NW);
+                    BlockProperties.setMetadata(TE_ZP, stairs.isPositive ? Stairs.ID_NORMAL_INT_POS_NW : Stairs.ID_NORMAL_INT_NEG_NW);
                 }
             }
 
@@ -230,19 +230,19 @@ public class StairsTransform {
 
             if (stairs_ZN != null && stairs.isPositive == stairs_ZN.isPositive) {
                 if (stairs_ZN.facings.contains(ForgeDirection.NORTH)) {
-                    BlockProperties.setData(TE_ZN, stairs.isPositive ? Stairs.ID_NORMAL_EXT_POS_NE : Stairs.ID_NORMAL_EXT_NEG_NE);
+                    BlockProperties.setMetadata(TE_ZN, stairs.isPositive ? Stairs.ID_NORMAL_EXT_POS_NE : Stairs.ID_NORMAL_EXT_NEG_NE);
                 }
                 if (stairs_ZN.facings.contains(ForgeDirection.SOUTH)) {
-                    BlockProperties.setData(TE_ZN, stairs.isPositive ? Stairs.ID_NORMAL_INT_POS_SE : Stairs.ID_NORMAL_INT_NEG_SE);
+                    BlockProperties.setMetadata(TE_ZN, stairs.isPositive ? Stairs.ID_NORMAL_INT_POS_SE : Stairs.ID_NORMAL_INT_NEG_SE);
                 }
             }
 
             if (stairs_ZP != null && stairs.isPositive == stairs_ZP.isPositive) {
                 if (stairs_ZP.facings.contains(ForgeDirection.SOUTH)) {
-                    BlockProperties.setData(TE_ZP, stairs.isPositive ? Stairs.ID_NORMAL_EXT_POS_SE : Stairs.ID_NORMAL_EXT_NEG_SE);
+                    BlockProperties.setMetadata(TE_ZP, stairs.isPositive ? Stairs.ID_NORMAL_EXT_POS_SE : Stairs.ID_NORMAL_EXT_NEG_SE);
                 }
                 if (stairs_ZP.facings.contains(ForgeDirection.NORTH)) {
-                    BlockProperties.setData(TE_ZP, stairs.isPositive ? Stairs.ID_NORMAL_INT_POS_NE : Stairs.ID_NORMAL_INT_NEG_NE);
+                    BlockProperties.setMetadata(TE_ZP, stairs.isPositive ? Stairs.ID_NORMAL_INT_POS_NE : Stairs.ID_NORMAL_INT_NEG_NE);
                 }
             }
 
@@ -252,19 +252,19 @@ public class StairsTransform {
 
             if (stairs_XN != null && stairs.isPositive == stairs_XN.isPositive) {
                 if (stairs_XN.facings.contains(ForgeDirection.WEST)) {
-                    BlockProperties.setData(TE_XN, stairs.isPositive ? Stairs.ID_NORMAL_EXT_POS_NW : Stairs.ID_NORMAL_EXT_NEG_NW);
+                    BlockProperties.setMetadata(TE_XN, stairs.isPositive ? Stairs.ID_NORMAL_EXT_POS_NW : Stairs.ID_NORMAL_EXT_NEG_NW);
                 }
                 if (stairs_XN.facings.contains(ForgeDirection.EAST)) {
-                    BlockProperties.setData(TE_XN, stairs.isPositive ? Stairs.ID_NORMAL_INT_POS_NE : Stairs.ID_NORMAL_INT_NEG_NE);
+                    BlockProperties.setMetadata(TE_XN, stairs.isPositive ? Stairs.ID_NORMAL_INT_POS_NE : Stairs.ID_NORMAL_INT_NEG_NE);
                 }
             }
 
             if (stairs_XP != null && stairs.isPositive == stairs_XP.isPositive) {
                 if (stairs_XP.facings.contains(ForgeDirection.EAST)) {
-                    BlockProperties.setData(TE_XP, stairs.isPositive ? Stairs.ID_NORMAL_EXT_POS_NE : Stairs.ID_NORMAL_EXT_NEG_NE);
+                    BlockProperties.setMetadata(TE_XP, stairs.isPositive ? Stairs.ID_NORMAL_EXT_POS_NE : Stairs.ID_NORMAL_EXT_NEG_NE);
                 }
                 if (stairs_XP.facings.contains(ForgeDirection.WEST)) {
-                    BlockProperties.setData(TE_XP, stairs.isPositive ? Stairs.ID_NORMAL_INT_POS_NW : Stairs.ID_NORMAL_INT_NEG_NW);
+                    BlockProperties.setMetadata(TE_XP, stairs.isPositive ? Stairs.ID_NORMAL_INT_POS_NW : Stairs.ID_NORMAL_INT_NEG_NW);
                 }
             }
 
@@ -274,19 +274,19 @@ public class StairsTransform {
 
             if (stairs_XN != null && stairs.isPositive == stairs_XN.isPositive) {
                 if (stairs_XN.facings.contains(ForgeDirection.WEST)) {
-                    BlockProperties.setData(TE_XN, stairs.isPositive ? Stairs.ID_NORMAL_EXT_POS_SW : Stairs.ID_NORMAL_EXT_NEG_SW);
+                    BlockProperties.setMetadata(TE_XN, stairs.isPositive ? Stairs.ID_NORMAL_EXT_POS_SW : Stairs.ID_NORMAL_EXT_NEG_SW);
                 }
                 if (stairs_XN.facings.contains(ForgeDirection.EAST)) {
-                    BlockProperties.setData(TE_XN, stairs.isPositive ? Stairs.ID_NORMAL_INT_POS_SE : Stairs.ID_NORMAL_INT_NEG_SE);
+                    BlockProperties.setMetadata(TE_XN, stairs.isPositive ? Stairs.ID_NORMAL_INT_POS_SE : Stairs.ID_NORMAL_INT_NEG_SE);
                 }
             }
 
             if (stairs_XP != null && stairs.isPositive == stairs_XP.isPositive) {
                 if (stairs_XP.facings.contains(ForgeDirection.EAST)) {
-                    BlockProperties.setData(TE_XP, stairs.isPositive ? Stairs.ID_NORMAL_EXT_POS_SE : Stairs.ID_NORMAL_EXT_NEG_SE);
+                    BlockProperties.setMetadata(TE_XP, stairs.isPositive ? Stairs.ID_NORMAL_EXT_POS_SE : Stairs.ID_NORMAL_EXT_NEG_SE);
                 }
                 if (stairs_XP.facings.contains(ForgeDirection.WEST)) {
-                    BlockProperties.setData(TE_XP, stairs.isPositive ? Stairs.ID_NORMAL_INT_POS_SW : Stairs.ID_NORMAL_INT_NEG_SW);
+                    BlockProperties.setMetadata(TE_XP, stairs.isPositive ? Stairs.ID_NORMAL_INT_POS_SW : Stairs.ID_NORMAL_INT_NEG_SW);
                 }
             }
 

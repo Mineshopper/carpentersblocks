@@ -25,6 +25,9 @@ public class VertexHelper {
     public final static int LEFT_CENTER   = 6;
     public final static int RIGHT_CENTER  = 7;
 
+    /** Keeps track of vertices drawn per pass. */
+    public static int vertexCount = 0;
+
     /**
      * Offset used for faces.
      */
@@ -54,7 +57,7 @@ public class VertexHelper {
     public static boolean iconHasFloatingHeight(Icon icon)
     {
         return icon == BlockGrass.getIconSideOverlay() ||
-                icon.getIconName().contains("overlay/overlay_") && icon.getIconName().endsWith("_side");
+               icon.getIconName().contains("overlay/overlay_") && icon.getIconName().endsWith("_side");
     }
 
     /**
@@ -64,7 +67,7 @@ public class VertexHelper {
     {
         Tessellator tessellator = Tessellator.instance;
 
-        if (renderBlocks.enableAO)
+        if (renderBlocks != null && renderBlocks.enableAO)
         {
             switch(vertex) {
                 case BOTTOM_CENTER:
@@ -103,6 +106,7 @@ public class VertexHelper {
         }
 
         tessellator.addVertexWithUV(x, y, z, u, v);
+        ++vertexCount;
     }
 
 }

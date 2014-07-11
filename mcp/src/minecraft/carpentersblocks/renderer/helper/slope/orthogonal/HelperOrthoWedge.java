@@ -1,11 +1,5 @@
 package carpentersblocks.renderer.helper.slope.orthogonal;
 
-import static net.minecraftforge.common.ForgeDirection.DOWN;
-import static net.minecraftforge.common.ForgeDirection.EAST;
-import static net.minecraftforge.common.ForgeDirection.NORTH;
-import static net.minecraftforge.common.ForgeDirection.SOUTH;
-import static net.minecraftforge.common.ForgeDirection.UP;
-import static net.minecraftforge.common.ForgeDirection.WEST;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.util.Icon;
 import net.minecraftforge.common.ForgeDirection;
@@ -22,7 +16,7 @@ public class HelperOrthoWedge extends RenderHelper {
      */
     public static void renderFaceYNeg(RenderBlocks renderBlocks, int slopeID, double x, double y, double z, Icon icon)
     {
-        prepareRender(renderBlocks, DOWN, x, y, z, icon);
+        prepareRender(renderBlocks, ForgeDirection.DOWN, x, y, z, icon);
 
         switch (slopeID)
         {
@@ -62,7 +56,7 @@ public class HelperOrthoWedge extends RenderHelper {
      */
     public static void renderFaceYPos(RenderBlocks renderBlocks, int slopeID, double x, double y, double z, Icon icon)
     {
-        prepareRender(renderBlocks, UP, x, y, z, icon);
+        prepareRender(renderBlocks, ForgeDirection.UP, x, y, z, icon);
 
         switch (slopeID)
         {
@@ -102,7 +96,7 @@ public class HelperOrthoWedge extends RenderHelper {
      */
     public static void renderFaceZNeg(RenderBlocks renderBlocks, int slopeID, double x, double y, double z, Icon icon)
     {
-        prepareRender(renderBlocks, NORTH, x, y, z, icon);
+        prepareRender(renderBlocks, ForgeDirection.NORTH, x, y, z, icon);
 
         boolean floatingHeight = iconHasFloatingHeight(icon);
         Slope slope = Slope.slopesList[slopeID];
@@ -135,7 +129,7 @@ public class HelperOrthoWedge extends RenderHelper {
      */
     public static void renderFaceZPos(RenderBlocks renderBlocks, int slopeID, double x, double y, double z, Icon icon)
     {
-        prepareRender(renderBlocks, SOUTH, x, y, z, icon);
+        prepareRender(renderBlocks, ForgeDirection.SOUTH, x, y, z, icon);
 
         boolean floatingHeight = iconHasFloatingHeight(icon);
         Slope slope = Slope.slopesList[slopeID];
@@ -168,7 +162,7 @@ public class HelperOrthoWedge extends RenderHelper {
      */
     public static void renderFaceXNeg(RenderBlocks renderBlocks, int slopeID, double x, double y, double z, Icon icon)
     {
-        prepareRender(renderBlocks, WEST, x, y, z, icon);
+        prepareRender(renderBlocks, ForgeDirection.WEST, x, y, z, icon);
 
         boolean floatingHeight = iconHasFloatingHeight(icon);
         Slope slope = Slope.slopesList[slopeID];
@@ -201,7 +195,7 @@ public class HelperOrthoWedge extends RenderHelper {
      */
     public static void renderFaceXPos(RenderBlocks renderBlocks, int slopeID, double x, double y, double z, Icon icon)
     {
-        prepareRender(renderBlocks, EAST, x, y, z, icon);
+        prepareRender(renderBlocks, ForgeDirection.EAST, x, y, z, icon);
 
         boolean floatingHeight = iconHasFloatingHeight(icon);
         Slope slope = Slope.slopesList[slopeID];

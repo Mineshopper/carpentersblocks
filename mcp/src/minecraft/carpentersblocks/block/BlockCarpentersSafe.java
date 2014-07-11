@@ -1,5 +1,7 @@
 package carpentersblocks.block;
 
+import java.util.List;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
@@ -16,7 +18,8 @@ import carpentersblocks.data.Safe;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.tileentity.TECarpentersSafe;
 import carpentersblocks.util.BlockProperties;
-import carpentersblocks.util.handler.EventHandler;
+import carpentersblocks.util.PlayerPermissions;
+import carpentersblocks.util.handler.ChatHandler;
 import carpentersblocks.util.registry.BlockRegistry;
 import carpentersblocks.util.registry.IconRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -24,13 +27,9 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockCarpentersSafe extends BlockCoverable {
 
-    public BlockCarpentersSafe(int blockID)
+    public BlockCarpentersSafe(int blockID, Material material)
     {
-        super(blockID, Material.wood);
-        setUnlocalizedName("blockCarpentersSafe");
-        setCreativeTab(CarpentersBlocks.tabCarpentersBlocks);
-        setHardness(2.5F);
-        setTextureName("carpentersblocks:general/solid");
+        super(blockID, material);
     }
 
     @SideOnly(Side.CLIENT)
@@ -41,33 +40,16 @@ public class BlockCarpentersSafe extends BlockCoverable {
      */
     public void registerIcons(IconRegister iconRegister)
     {
-        IconRegistry.icon_safe_light = iconRegister.registerIcon("carpentersblocks:safe/safe_light");
-
-        super.registerIcons(iconRegister);
-    }
-
-    /**
-     * Returns whether player is allowed to make alterations to this block.
-     * This does not include block activation.  For that, use canPlayerActivate().
-     */
-    @Override
-    protected boolean canPlayerEdit(TEBase TE, EntityLivingBase entityLiving)
-    {
-        if (isOp(entityLiving)) {
-            return true;
-        } else {
-            return ((EntityPlayer)entityLiving).canPlayerEdit(TE.xCoord, TE.yCoord, TE.zCoord, EventHandler.eventFace, entityLiving.getHeldItem()) &&
-                    TE.isOwner(entityLiving);
-        }
+        IconRegistry.icon_safe_light = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "safe/safe_light");
     }
 
     /**
      * Returns whether player is allowed to activate this block.
      */
     @Override
-    protected boolean canPlayerActivate(TEBase TE, EntityLivingBase entityLiving)
+    protected boolean canPlayerActivate(TEBase TE, EntityPlayer entityPlayer)
     {
-        return isOp(entityLiving) || TE.isOwner(entityLiving) || !Safe.isLocked(TE);
+        return PlayerPermissions.canPlayerEdit(TE, TE.xCoord, TE.yCoord, TE.zCoord, entityPlayer) || !Safe.isLocked(TE);
     }
 
     @Override
@@ -106,9 +88,9 @@ public class BlockCarpentersSafe extends BlockCoverable {
             }
 
             if (locked) {
-                entityPlayer.addChatMessage("message.safe_lock.name");
+                ChatHandler.sendMessageToPlayer("message.safe_lock.name", entityPlayer);
             } else {
-                entityPlayer.addChatMessage("message.safe_unlock.name");
+                ChatHandler.sendMessageToPlayer("message.safe_unlock.name", entityPlayer);
             }
 
             return true;
@@ -125,16 +107,16 @@ public class BlockCarpentersSafe extends BlockCoverable {
 
             switch (autoPerm) {
                 case Safe.AUTOMATION_ALL:
-                    entityPlayer.addChatMessage("message.automation_all.name");
+                    ChatHandler.sendMessageToPlayer("message.automation_all.name", entityPlayer);
                     break;
                 case Safe.AUTOMATION_DISABLED:
-                    entityPlayer.addChatMessage("message.automation_disabled.name");
+                    ChatHandler.sendMessageToPlayer("message.automation_disabled.name", entityPlayer);
                     break;
                 case Safe.AUTOMATION_RECEIVE:
-                    entityPlayer.addChatMessage("message.automation_insert.name");
+                    ChatHandler.sendMessageToPlayer("message.automation_insert.name", entityPlayer);
                     break;
                 case Safe.AUTOMATION_SEND:
-                    entityPlayer.addChatMessage("message.automation_extract.name");
+                    ChatHandler.sendMessageToPlayer("message.automation_extract.name", entityPlayer);
                     break;
             }
 
@@ -149,9 +131,11 @@ public class BlockCarpentersSafe extends BlockCoverable {
      */
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack itemStack)
     {
-        TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
+        TEBase TE = getTileEntity(world, x, y, z);
 
-        Safe.setFacing(TE, BlockProperties.getOppositeFacing(entityLiving));
+        if (TE != null) {
+            Safe.setFacing(TE, BlockProperties.getOppositeFacing(entityLiving));
+        }
 
         super.onBlockPlacedBy(world, x, y, z, entityLiving, itemStack);
     }
@@ -160,33 +144,28 @@ public class BlockCarpentersSafe extends BlockCoverable {
     /**
      * Called upon block activation (right click on the block.)
      */
-    protected boolean[] postOnBlockActivated(TEBase TE, World world, int x, int y, int z, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ)
+    protected void postOnBlockActivated(TEBase TE, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ, List<Boolean> altered, List<Boolean> decInv)
     {
-        int DEC_INV = 1;
-        boolean[] result = { true, false };
-
         if (!Safe.isOpen(TE) && canPlayerActivate(TE, entityPlayer)) {
 
             TECarpentersSafe TE_safe = (TECarpentersSafe) TE;
-            ItemStack itemStack = entityPlayer.getHeldItem();
 
-            if (itemStack != null && itemStack.getItem().equals(Item.ingotGold)) {
-                if (!TE_safe.hasUpgrade()) {
-                    if (!TE_safe.hasUpgrade()) {
-                        TE_safe.setUpgrade();
-                        result[DEC_INV] = true;
-                        return result;
-                    }
+            if (entityPlayer.isSneaking()) {
+                ItemStack itemStack = entityPlayer.getHeldItem();
+                if (itemStack != null && itemStack.getItem().equals(Item.ingotGold) && !TE_safe.hasUpgrade()) {
+                    TE_safe.setUpgrade();
+                    decInv.add(true);
+                    return;
                 }
             }
 
-            if (!result[DEC_INV]) {
-                entityPlayer.displayGUIChest((TECarpentersSafe)TE);
+            if (!decInv.contains(true)) {
+                entityPlayer.displayGUIChest(TE_safe);
             }
 
         } else {
 
-            entityPlayer.addChatMessage("message.block_lock.name");
+            ChatHandler.sendMessageToPlayer("message.block_lock.name", entityPlayer);
 
         }
 
@@ -194,7 +173,26 @@ public class BlockCarpentersSafe extends BlockCoverable {
          * Safe should always return true because it either warns the player
          * that it is locked, or it returns the GUI.
          */
-        return result;
+        altered.add(true);
+    }
+
+    /**
+     * Location sensitive version of getExplosionRestance
+     *
+     * @param par1Entity The entity that caused the explosion
+     * @param world The current world
+     * @param x X Position
+     * @param y Y Position
+     * @param z Z Position
+     * @param explosionX Explosion source X Position
+     * @param explosionY Explosion source X Position
+     * @param explosionZ Explosion source X Position
+     * @return The amount of the explosion absorbed.
+     */
+    @Override
+    public float getExplosionResistance(Entity entity, World world, int x, int y, int z, double explosionX, double explosionY, double explosionZ)
+    {
+        return Block.bedrock.getExplosionResistance(entity);
     }
 
     @Override
@@ -210,13 +208,12 @@ public class BlockCarpentersSafe extends BlockCoverable {
      */
     public boolean isBlockSolidOnSide(World world, int x, int y, int z, ForgeDirection side)
     {
-        if (isValid(world, x, y, z)) {
+        TEBase TE = getTileEntity(world, x, y, z);
 
+        if (TE != null) {
             if (isBlockSolid(world, x, y, z)) {
-                TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
                 return side != Safe.getFacing(TE);
             }
-
         }
 
         return false;
@@ -226,9 +223,9 @@ public class BlockCarpentersSafe extends BlockCoverable {
     /**
      * ejects contained items into the world, and notifies neighbours of an update, as appropriate
      */
-    public void breakBlock(World world, int x, int y, int z, int par5, int metadata)
+    public void breakBlock(World world, int x, int y, int z, int blockID, int metadata)
     {
-        TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
+        TEBase TE = getSimpleTileEntity(world, x, y, z);
 
         if (TE != null) {
 
@@ -249,7 +246,7 @@ public class BlockCarpentersSafe extends BlockCoverable {
 
         }
 
-        super.breakBlock(world, x, y, z, par5, metadata);
+        super.breakBlock(world, x, y, z, blockID, metadata);
     }
 
     @Override
@@ -259,32 +256,15 @@ public class BlockCarpentersSafe extends BlockCoverable {
      */
     public float getPlayerRelativeBlockHardness(EntityPlayer entityPlayer, World world, int x, int y, int z)
     {
-        TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
+        TEBase TE = getTileEntity(world, x, y, z);
 
-        if (Safe.isOpen(TE) || !canPlayerEdit(TE, entityPlayer)) {
-            return -1; // Unbreakable
-        } else {
-            return super.getPlayerRelativeBlockHardness(entityPlayer, world, x, y, z);
+        if (TE != null) {
+            if (Safe.isOpen(TE) || !PlayerPermissions.canPlayerEdit(TE, TE.xCoord, TE.yCoord, TE.zCoord, entityPlayer)) {
+            	return -1; // Unbreakable
+            }
         }
-    }
 
-    /**
-     * Location sensitive version of getExplosionRestance
-     *
-     * @param par1Entity The entity that caused the explosion
-     * @param world The current world
-     * @param x X Position
-     * @param y Y Position
-     * @param z Z Position
-     * @param explosionX Explosion source X Position
-     * @param explosionY Explosion source X Position
-     * @param explosionZ Explosion source X Position
-     * @return The amount of the explosion absorbed.
-     */
-    @Override
-    public float getExplosionResistance(Entity entity, World world, int x, int y, int z, double explosionX, double explosionY, double explosionZ)
-    {
-        return Block.bedrock.getExplosionResistance(entity);
+        return super.getPlayerRelativeBlockHardness(entityPlayer, world, x, y, z);
     }
 
     @Override

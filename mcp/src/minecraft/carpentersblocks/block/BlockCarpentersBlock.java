@@ -9,25 +9,35 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.Icon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
-import carpentersblocks.CarpentersBlocks;
 import carpentersblocks.data.Slab;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.handler.EventHandler;
 import carpentersblocks.util.registry.BlockRegistry;
+import carpentersblocks.util.registry.IconRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockCarpentersBlock extends BlockCoverable {
 
-    public BlockCarpentersBlock(int blockID)
+    public BlockCarpentersBlock(int blockID, Material material)
     {
-        super(blockID, Material.wood);
-        setHardness(0.2F);
-        setUnlocalizedName("blockCarpentersBlock");
-        setCreativeTab(CarpentersBlocks.tabCarpentersBlocks);
-        setTextureName("carpentersblocks:general/quartered_frame");
+        super(blockID, material);
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    /**
+     * Returns a base icon that doesn't rely on blockIcon, which
+     * is set prior to texture stitch events.
+     */
+    public Icon getIcon()
+    {
+        return IconRegistry.icon_uncovered_quartered;
     }
 
     @Override
@@ -36,13 +46,13 @@ public class BlockCarpentersBlock extends BlockCoverable {
      */
     protected boolean onHammerLeftClick(TEBase TE, EntityPlayer entityPlayer)
     {
-        int data = BlockProperties.getData(TE);
+        int data = BlockProperties.getMetadata(TE);
 
         if (++data > Slab.SLAB_Z_POS) {
             data = Slab.BLOCK_FULL;
         }
 
-        BlockProperties.setData(TE, data);
+        BlockProperties.setMetadata(TE, data);
 
         return true;
     }
@@ -53,7 +63,7 @@ public class BlockCarpentersBlock extends BlockCoverable {
      */
     protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer)
     {
-        int data = BlockProperties.getData(TE);
+        int data = BlockProperties.getMetadata(TE);
 
         if (data == Slab.BLOCK_FULL) {
             switch (EventHandler.eventFace)
@@ -81,7 +91,7 @@ public class BlockCarpentersBlock extends BlockCoverable {
             data = Slab.BLOCK_FULL;
         }
 
-        BlockProperties.setData(TE, data);
+        BlockProperties.setMetadata(TE, data);
 
         return true;
     }
@@ -92,9 +102,9 @@ public class BlockCarpentersBlock extends BlockCoverable {
      */
     public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
     {
-        TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
+        TEBase TE = getTileEntity(world, x, y, z);
 
-        int data = BlockProperties.getData(TE);
+        int data = BlockProperties.getMetadata(TE);
 
         float[][] bounds = {
                 { 0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F }, // FULL BLOCK
@@ -126,39 +136,30 @@ public class BlockCarpentersBlock extends BlockCoverable {
      */
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack itemStack)
     {
-        TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
+        TEBase TE = getTileEntity(world, x, y, z);
 
-        int data = Slab.BLOCK_FULL;
+        if (TE != null) {
 
-        // If shift key is down, skip auto-orientation
-        if (!entityLiving.isSneaking())
-        {
-            /*
-             * Match block type with adjacent type if possible
-             */
-            TEBase TE_YN = world.getBlockId(x, y - 1, z) == blockID ? (TEBase)world.getBlockTileEntity(x, y - 1, z) : null;
-            TEBase TE_YP = world.getBlockId(x, y + 1, z) == blockID ? (TEBase)world.getBlockTileEntity(x, y + 1, z) : null;
-            TEBase TE_XN = world.getBlockId(x - 1, y, z) == blockID ? (TEBase)world.getBlockTileEntity(x - 1, y, z) : null;
-            TEBase TE_XP = world.getBlockId(x + 1, y, z) == blockID ? (TEBase)world.getBlockTileEntity(x + 1, y, z) : null;
-            TEBase TE_ZN = world.getBlockId(x, y, z - 1) == blockID ? (TEBase)world.getBlockTileEntity(x, y, z - 1) : null;
-            TEBase TE_ZP = world.getBlockId(x, y, z + 1) == blockID ? (TEBase)world.getBlockTileEntity(x, y, z + 1) : null;
+            int data = Slab.BLOCK_FULL;
 
-            if (TE_YN != null) {
-                data = BlockProperties.getData(TE_YN);
-            } else if (TE_YP != null) {
-                data = BlockProperties.getData(TE_YP);
-            } else if (TE_XN != null) {
-                data = BlockProperties.getData(TE_XN);
-            } else if (TE_XP != null) {
-                data = BlockProperties.getData(TE_XP);
-            } else if (TE_ZN != null) {
-                data = BlockProperties.getData(TE_ZN);
-            } else if (TE_ZP != null) {
-                data = BlockProperties.getData(TE_ZP);
+            if (!entityLiving.isSneaking()) {
+
+                /* Match block type with adjacent type if possible. */
+
+                TEBase[] TE_list = getAdjacentTileEntities(world, x, y, z);
+
+                for (TEBase TE_current : TE_list) {
+                    if (TE_current != null) {
+                        if (TE_current.getBlockType().equals(this)) {
+                            data = BlockProperties.getMetadata(TE_current);
+                        }
+                    }
+                }
+
             }
-        }
 
-        BlockProperties.setData(TE, data);
+            BlockProperties.setMetadata(TE, data);
+        }
 
         super.onBlockPlacedBy(world, x, y, z, entityLiving, itemStack);
     }
@@ -171,11 +172,6 @@ public class BlockCarpentersBlock extends BlockCoverable {
      */
     public boolean isBlockNormalCube(World world, int x, int y, int z)
     {
-        if (isValid(world, x, y, z)) {
-            TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
-            return BlockProperties.getData(TE) == Slab.BLOCK_FULL;
-        }
-
         return false;
     }
 
@@ -185,12 +181,13 @@ public class BlockCarpentersBlock extends BlockCoverable {
      */
     public boolean isBlockSolidOnSide(World world, int x, int y, int z, ForgeDirection side)
     {
-        if (isValid(world, x, y, z)) {
+        TEBase TE = getTileEntity(world, x, y, z);
+
+        if (TE != null) {
 
             if (isBlockSolid(world, x, y, z)) {
 
-                TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
-                int data = BlockProperties.getData(TE);
+                int data = BlockProperties.getMetadata(TE);
 
                 if (data == Slab.BLOCK_FULL) {
                     return true;
@@ -224,21 +221,20 @@ public class BlockCarpentersBlock extends BlockCoverable {
     {
         if (TE_adj.getBlockType() == this)
         {
-            Block block_src = Block.blocksList[TE_src.worldObj.getBlockId(TE_src.xCoord, TE_src.yCoord, TE_src.zCoord)];
+            Block block_src = TE_src.getBlockType();
 
-            block_src.setBlockBoundsBasedOnState(TE_src.worldObj, TE_src.xCoord, TE_src.yCoord, TE_src.zCoord);
+            block_src.setBlockBoundsBasedOnState(TE_src.getWorldObj(), TE_src.xCoord, TE_src.yCoord, TE_src.zCoord);
 
-            double[] bounds_src =
-                {
+            double[] bounds_src = {
                     block_src.getBlockBoundsMinX(),
                     block_src.getBlockBoundsMinY(),
                     block_src.getBlockBoundsMinZ(),
                     block_src.getBlockBoundsMaxX(),
                     block_src.getBlockBoundsMaxY(),
                     block_src.getBlockBoundsMaxZ()
-                };
+            };
 
-            setBlockBoundsBasedOnState(TE_adj.worldObj, TE_adj.xCoord, TE_adj.yCoord, TE_adj.zCoord);
+            setBlockBoundsBasedOnState(TE_adj.getWorldObj(), TE_adj.xCoord, TE_adj.yCoord, TE_adj.zCoord);
 
             /*
              * Check whether faces meet and their dimensions match.

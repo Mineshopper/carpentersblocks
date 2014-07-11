@@ -21,44 +21,34 @@ public class Stairs {
      * stairsID
      */
 
-    /*
-     * Stairs IDs.
-     *
-     * IDs 0 - 11 are set arbitrarily when
-     * block is placed in world.
-     *
-     * IDs 12 - 27 are mixed to retain compatibility
-     * with older versions.
-     */
-
-    public final static byte ID_NORMAL_SE = 0;
-    public final static byte ID_NORMAL_NW = 1;
-    public final static byte ID_NORMAL_NE = 2;
-    public final static byte ID_NORMAL_SW = 3;
-    public final static byte ID_NORMAL_NEG_N = 4;
-    public final static byte ID_NORMAL_NEG_S = 5;
-    public final static byte ID_NORMAL_NEG_W = 6;
-    public final static byte ID_NORMAL_NEG_E = 7;
-    public final static byte ID_NORMAL_POS_N = 8;
-    public final static byte ID_NORMAL_POS_S = 9;
-    public final static byte ID_NORMAL_POS_W = 10;
-    public final static byte ID_NORMAL_POS_E = 11;
-    public final static byte ID_NORMAL_INT_NEG_SE = 19;
-    public final static byte ID_NORMAL_INT_NEG_NW = 15;
-    public final static byte ID_NORMAL_INT_NEG_NE = 13;
-    public final static byte ID_NORMAL_INT_NEG_SW = 17;
-    public final static byte ID_NORMAL_INT_POS_SE = 18;
-    public final static byte ID_NORMAL_INT_POS_NW = 14;
-    public final static byte ID_NORMAL_INT_POS_NE = 12;
-    public final static byte ID_NORMAL_INT_POS_SW = 16;
-    public final static byte ID_NORMAL_EXT_NEG_SE = 23;
-    public final static byte ID_NORMAL_EXT_NEG_NW = 27;
-    public final static byte ID_NORMAL_EXT_NEG_NE = 25;
-    public final static byte ID_NORMAL_EXT_NEG_SW = 21;
-    public final static byte ID_NORMAL_EXT_POS_SE = 22;
-    public final static byte ID_NORMAL_EXT_POS_NW = 26;
-    public final static byte ID_NORMAL_EXT_POS_NE = 24;
-    public final static byte ID_NORMAL_EXT_POS_SW = 20;
+    public final static byte ID_NORMAL_SE         = 0;
+    public final static byte ID_NORMAL_NW         = 1;
+    public final static byte ID_NORMAL_NE         = 2;
+    public final static byte ID_NORMAL_SW         = 3;
+    public final static byte ID_NORMAL_NEG_N      = 4;
+    public final static byte ID_NORMAL_NEG_S      = 5;
+    public final static byte ID_NORMAL_NEG_W      = 6;
+    public final static byte ID_NORMAL_NEG_E      = 7;
+    public final static byte ID_NORMAL_POS_N      = 8;
+    public final static byte ID_NORMAL_POS_S      = 9;
+    public final static byte ID_NORMAL_POS_W      = 10;
+    public final static byte ID_NORMAL_POS_E      = 11;
+    public final static byte ID_NORMAL_INT_NEG_SE = 12;
+    public final static byte ID_NORMAL_INT_NEG_NW = 13;
+    public final static byte ID_NORMAL_INT_NEG_NE = 14;
+    public final static byte ID_NORMAL_INT_NEG_SW = 15;
+    public final static byte ID_NORMAL_INT_POS_SE = 16;
+    public final static byte ID_NORMAL_INT_POS_NW = 17;
+    public final static byte ID_NORMAL_INT_POS_NE = 18;
+    public final static byte ID_NORMAL_INT_POS_SW = 19;
+    public final static byte ID_NORMAL_EXT_NEG_SE = 20;
+    public final static byte ID_NORMAL_EXT_NEG_NW = 21;
+    public final static byte ID_NORMAL_EXT_NEG_NE = 22;
+    public final static byte ID_NORMAL_EXT_NEG_SW = 23;
+    public final static byte ID_NORMAL_EXT_POS_SE = 24;
+    public final static byte ID_NORMAL_EXT_POS_NW = 25;
+    public final static byte ID_NORMAL_EXT_POS_NE = 26;
+    public final static byte ID_NORMAL_EXT_POS_SW = 27;
 
     public enum Type
     {

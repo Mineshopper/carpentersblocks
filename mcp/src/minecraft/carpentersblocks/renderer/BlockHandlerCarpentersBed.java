@@ -1,18 +1,22 @@
 package carpentersblocks.renderer;
 
 import net.minecraft.block.Block;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.Icon;
 import net.minecraftforge.common.ForgeDirection;
 import carpentersblocks.data.Bed;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
-import carpentersblocks.util.bed.BedDesignHandler;
+import carpentersblocks.util.handler.DesignHandler;
+import carpentersblocks.util.handler.DyeHandler;
 import carpentersblocks.util.registry.IconRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class BlockHandlerCarpentersBed extends BlockHandlerBase {
+
+    private Icon[] icon_design;
 
     @Override
     public boolean shouldRender3DInInventory()
@@ -24,627 +28,420 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase {
     /**
      * Renders bed
      */
-    protected boolean renderCarpentersBlock(int x, int y, int z)
+    protected void renderCarpentersBlock(int x, int y, int z)
     {
-        Block block = BlockProperties.getCoverBlock(TE, 6);
-        renderNormalBed(block, x, y, z);
+        renderBlocks.renderAllFaces = true;
 
-        return true;
-    }
+        ItemStack itemStack = getCoverForRendering();
 
-    private void renderNormalBed(Block block, int x, int y, int z)
-    {
-        ForgeDirection dir = Bed.getDirection(TE);
-
-        disableAO = true;
-
-        boolean isHead = Bed.isHeadOfBed(TE);
-
-        TEBase TE_opp = Bed.getOppositeTE(TE);
-
-        boolean isOccupied = Bed.isOccupied(TE);
-        int blanketColor = 0;
-        int frameColor = 0;
-
-        /*
-         * The bed piece will render before it's companion
-         * is created, and just after it is destroyed.
-         * Therefore, we must null check it.
-         */
-        if (TE_opp != null)
-        {
-            isOccupied |= Bed.isOccupied(TE_opp);
-
-            /*
-             * Get bed dye colors.
-             *
-             * Blanket color is foot dye color.
-             * Frame color is head dye color.
-             */
-            blanketColor = BlockProperties.getDyeColor(isHead ? TE_opp : TE, 6);
-            frameColor = BlockProperties.getDyeColor(isHead ? TE : TE_opp, 6);
+        if (hasDesign()) {
+            icon_design = IconRegistry.icon_design_bed.get(DesignHandler.listBed.indexOf(BlockProperties.getDesign(TE)));
         }
 
-        int design = Bed.getDesign(TE);
+        if (renderPass == PASS_OPAQUE) {
+        	renderFabricComponents(new ItemStack(Block.cloth), x, y, z);
+        }
 
-        boolean hasCustomBlanket = design > 0 && BedDesignHandler.hasBlanket[design];
+        applyFrameDyeOverride();
 
-        Icon icon_pillow = hasCustomBlanket && BedDesignHandler.hasPillow[design] ? IconRegistry.icon_bed_pillow_custom[design] : IconRegistry.icon_bed_pillow;
+        switch (Bed.getType(TE)) {
+            case Bed.TYPE_NORMAL:
+                renderNormalFrame(itemStack, x, y, z);
+                break;
+        }
 
-        /* Check for adjacent bed pieces that can connect. */
+        clearDyeOverride();
+        suppressDyeColor = false;
 
-        boolean bedParallelPos = false;
-        boolean bedParallelNeg = false;
+        renderBlocks.renderAllFaces = false;
+    }
 
-        if (dir.equals(ForgeDirection.NORTH) || dir.equals(ForgeDirection.SOUTH))
-        {
+    private void applyFrameDyeOverride()
+    {
+        TEBase TE_temp = isHead() ? TE : Bed.getOppositeTE(TE);
 
-            if (renderBlocks.blockAccess.getBlockId(x + 1, y, z) == srcBlock.blockID) {
-                TEBase TE_adj = (TEBase) renderBlocks.blockAccess.getBlockTileEntity(x + 1,  y,  z);
-                bedParallelPos = Bed.isHeadOfBed(TE) == Bed.isHeadOfBed(TE_adj) && Bed.getDirection(TE) == Bed.getDirection(TE_adj);
+        if (TE_temp != null) {
+            if (BlockProperties.hasDye(TE_temp, 6)) {
+                setDyeOverride(DyeHandler.getColor(BlockProperties.getDye(TE_temp, 6)));
+            } else {
+                suppressDyeColor = true;
             }
-            if (renderBlocks.blockAccess.getBlockId(x - 1, y, z) == srcBlock.blockID) {
-                TEBase TE_adj = (TEBase) renderBlocks.blockAccess.getBlockTileEntity(x - 1,  y,  z);
-                bedParallelNeg = Bed.isHeadOfBed(TE) == Bed.isHeadOfBed(TE_adj) && Bed.getDirection(TE) == Bed.getDirection(TE_adj);
+        }
+    }
+
+    private boolean isOccupied()
+    {
+        TEBase TE_opp = Bed.getOppositeTE(TE);
+
+        if (TE_opp != null && Bed.isOccupied(TE_opp)) {
+            return true;
+        } else {
+            return Bed.isOccupied(TE);
+        }
+    }
+
+    private boolean isHead()
+    {
+        return Bed.isHeadOfBed(TE);
+    }
+
+    private int getBlanketDyeMetadata()
+    {
+        TEBase TE_temp = isHead() ? Bed.getOppositeTE(TE) : TE;
+
+        if (TE_temp != null && BlockProperties.hasDye(TE_temp, coverRendering)) {
+            return DyeHandler.getVanillaDmgValue(BlockProperties.getDye(TE_temp, coverRendering));
+        } else {
+            return 0;
+        }
+    }
+
+    private ForgeDirection getDirection()
+    {
+        return Bed.getDirection(TE);
+    }
+
+    private boolean hasDesign()
+    {
+        return BlockProperties.hasDesign(TE);
+    }
+
+    private boolean isParallelPosSide()
+    {
+        Block blockXP = Block.blocksList[renderBlocks.blockAccess.getBlockId(TE.xCoord + 1, TE.yCoord, TE.zCoord)];
+        Block blockZP = Block.blocksList[renderBlocks.blockAccess.getBlockId(TE.xCoord, TE.yCoord, TE.zCoord + 1)];
+
+        if (getDirection().ordinal() < 4 && blockXP != null && blockXP.equals(srcBlock)) {
+            TEBase TE_adj = (TEBase) renderBlocks.blockAccess.getBlockTileEntity(TE.xCoord + 1, TE.yCoord, TE.zCoord);
+            return Bed.isHeadOfBed(TE) == Bed.isHeadOfBed(TE_adj) && Bed.getDirection(TE) == Bed.getDirection(TE_adj);
+        } else if (blockZP != null && blockZP.equals(srcBlock)) {
+            TEBase TE_adj = (TEBase) renderBlocks.blockAccess.getBlockTileEntity(TE.xCoord, TE.yCoord, TE.zCoord + 1);
+            return Bed.isHeadOfBed(TE) == Bed.isHeadOfBed(TE_adj) && Bed.getDirection(TE) == Bed.getDirection(TE_adj);
+        } else {
+            return false;
+        }
+    }
+
+    private boolean isParallelNegSide()
+    {
+        Block blockXN = Block.blocksList[renderBlocks.blockAccess.getBlockId(TE.xCoord - 1, TE.yCoord, TE.zCoord)];
+        Block blockZN = Block.blocksList[renderBlocks.blockAccess.getBlockId(TE.xCoord, TE.yCoord, TE.zCoord - 1)];
+
+        if (getDirection().ordinal() < 4 && blockXN != null && blockXN.equals(srcBlock)) {
+            TEBase TE_adj = (TEBase) renderBlocks.blockAccess.getBlockTileEntity(TE.xCoord - 1, TE.yCoord, TE.zCoord);
+            return Bed.isHeadOfBed(TE) == Bed.isHeadOfBed(TE_adj) && Bed.getDirection(TE) == Bed.getDirection(TE_adj);
+        } else if (blockZN != null && blockZN.equals(srcBlock)) {
+            TEBase TE_adj = (TEBase) renderBlocks.blockAccess.getBlockTileEntity(TE.xCoord, TE.yCoord, TE.zCoord - 1);
+            return Bed.isHeadOfBed(TE) == Bed.isHeadOfBed(TE_adj) && Bed.getDirection(TE) == Bed.getDirection(TE_adj);
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Renders fabric components of bed.
+     *
+     * @param x
+     * @param y
+     * @param z
+     */
+    private void renderFabricComponents(ItemStack itemStack, int x, int y, int z)
+    {
+        suppressDyeColor = true;
+        suppressOverlay = true;
+        suppressChiselDesign = true;
+
+        int[] rotateTop = { 2, 0, 1, 3 };
+        renderBlocks.uvRotateTop = renderBlocks.uvRotateBottom = rotateTop[getDirection().ordinal() - 2];
+
+        if (isHead()) {
+            renderPillow(itemStack, x, y, z);
+        }
+
+        renderBlanket(itemStack, x, y, z);
+        renderBlocks.uvRotateTop = renderBlocks.uvRotateBottom = 0;
+        renderMattress(itemStack, x, y, z);
+
+        suppressDyeColor = false;
+        suppressOverlay = false;
+        suppressChiselDesign = false;
+    }
+
+    private void renderPillow(ItemStack itemStack, int x, int y, int z)
+    {
+        Icon icon_pillow = hasDesign() ? icon_design[0] : IconRegistry.icon_bed_pillow;
+        setIconOverride(6, icon_pillow);
+        renderBlocks.setRenderBounds(0.125D, 0.5625D, 0.1875D, 0.875D, 0.6875D, 0.5625D);
+        rotateBounds(renderBlocks, getDirection());
+        renderBlock(itemStack, x, y, z);
+        clearIconOverride(6);
+    }
+
+    private void renderBlanket(ItemStack itemStack, int x, int y, int z)
+    {
+        ForgeDirection dir = getDirection();
+        boolean isHead = isHead();
+        float yOffset = isOccupied() ? 0.125F : 0.375F;
+        tessellator.addTranslation(0.0F, -yOffset, 0.0F);
+
+        if (hasDesign()) {
+
+            int[] idxHead = { 2, 2, 2, 7, 1, 3 };
+            int[] idxFoot = { 5, 5, 2, 7, 4, 6 };
+            int[][] idxRot = { { 3, 2, 5, 4 }, { 2, 3, 4, 5 }, { 4, 5, 3, 2 }, { 5, 4, 2, 3 } };
+            int valDir = dir.ordinal() - 2;
+
+            /** 0 = head, 1 = foot */
+            Icon[][] icon = {
+                {
+                    icon_design[idxHead[0]],
+                    icon_design[idxHead[1]],
+                    icon_design[idxHead[idxRot[valDir][0]]],
+                    icon_design[idxHead[idxRot[valDir][1]]],
+                    icon_design[idxHead[idxRot[valDir][2]]],
+                    icon_design[idxHead[idxRot[valDir][3]]]
+                },
+                {
+                    icon_design[idxFoot[0]],
+                    icon_design[idxFoot[1]],
+                    icon_design[idxFoot[idxRot[valDir][0]]],
+                    icon_design[idxFoot[idxRot[valDir][1]]],
+                    icon_design[idxFoot[idxRot[valDir][2]]],
+                    icon_design[idxFoot[idxRot[valDir][3]]]
+                }
+            };
+
+            int idx = isHead ? 0 : 1;
+            for (int side = 0; side < 6; ++side) {
+                setIconOverride(side, icon[idx][side]);
             }
+
+        }
+
+        double yMin = 0.6875D;
+        double yTop = 0.9375D;
+
+        if (isHead) {
+
+            itemStack.setItemDamage(getBlanketDyeMetadata());
+            renderBlocks.setRenderBounds(0.0D, yMin, 0.5D, 0.0625D, yTop, 1.0D);
+            rotateBounds(renderBlocks, dir);
+            renderBlock(itemStack, x, y, z);
+            renderBlocks.setRenderBounds(0.0D, yTop, 0.5D, 1.0D, 1.0D, 1.0D);
+            rotateBounds(renderBlocks, dir);
+            renderBlock(itemStack, x, y, z);
+            renderBlocks.setRenderBounds(0.9375D, yMin, 0.5D, 1.0D, yTop, 1.0D);
+            rotateBounds(renderBlocks, dir);
+            renderBlock(itemStack, x, y, z);
+            itemStack.setItemDamage(15);
 
         } else {
 
-            if (renderBlocks.blockAccess.getBlockId(x, y, z + 1) == srcBlock.blockID) {
-                TEBase TE_adj = (TEBase) renderBlocks.blockAccess.getBlockTileEntity(x,  y, z + 1);
-                bedParallelPos = Bed.isHeadOfBed(TE) == Bed.isHeadOfBed(TE_adj) && Bed.getDirection(TE) == Bed.getDirection(TE_adj);
-            }
-            if (renderBlocks.blockAccess.getBlockId(x, y, z - 1) == srcBlock.blockID) {
-                TEBase TE_adj = (TEBase) renderBlocks.blockAccess.getBlockTileEntity(x,  y, z - 1);
-                bedParallelNeg = Bed.isHeadOfBed(TE) == Bed.isHeadOfBed(TE_adj) && Bed.getDirection(TE) == Bed.getDirection(TE_adj);
-            }
+            itemStack.setItemDamage(getBlanketDyeMetadata());
+            renderBlocks.setRenderBounds(0.0D, yMin, 0.0D, 0.0625D, yTop, 1.0D);
+            rotateBounds(renderBlocks, dir);
+            renderBlock(itemStack, x, y, z);
+            renderBlocks.setRenderBounds(0.0D, yTop, 0.0D, 1.0D, 1.0D, 1.0D);
+            rotateBounds(renderBlocks, dir);
+            renderBlock(itemStack, x, y, z);
+            renderBlocks.setRenderBounds(0.9375D, yMin, 0.0D, 1.0D, yTop, 1.0D);
+            rotateBounds(renderBlocks, dir);
+            renderBlock(itemStack, x, y, z);
+            renderBlocks.setRenderBounds(0.0625D, yMin, 0.9375D, 0.9375D, yTop, 1.0D);
+            rotateBounds(renderBlocks, dir);
+            renderBlock(itemStack, x, y, z);
+            itemStack.setItemDamage(15);
 
         }
 
-        switch (dir)
-        {
-            case NORTH: // -Z
-            {
-                if (isHead) {
+        clearIconOverride(6);
+        tessellator.addTranslation(0.0F, yOffset, 0.0F);
+    }
 
-                    if (shouldRenderBlock(block))
-                    {
-                        // Render headboard
-                        renderBlocks.setRenderBounds(0.125D, 0.1875D, 0.875D, 0.875D, 0.875D, 1.0D);
-                        renderBlock(block, x, y, z);
+    private void renderMattress(ItemStack itemStack, int x, int y, int z)
+    {
+        boolean isHead = isHead();
+        boolean bedParallelNeg = isParallelNegSide();
+        boolean bedParallelPos = isParallelPosSide();
 
-                        // Render legs
-                        renderBlocks.setRenderBounds(0.0D, bedParallelNeg ? 0.1875D : 0.0D, 0.875D, 0.125D, bedParallelNeg ? 0.875D : 1.0D, 1.0D);
-                        renderBlock(block, x, y, z);
-                        renderBlocks.setRenderBounds(0.875D, bedParallelPos ? 0.1875D : 0.0D, 0.875D, 1.0D, bedParallelPos ? 0.875D : 1.0D, 1.0D);
-                        renderBlock(block, x, y, z);
+        itemStack.setItemDamage(0);
 
-                        // Render support board
-                        renderBlocks.setRenderBounds(0.0D, 0.1875D, 0.0D, 1.0D, 0.3125D, 0.875D);
-                        renderBlock(block, x, y, z);
-                    }
-
-                    if (shouldRenderOpaque())
-                    {
-                        suppressDyeColor = true;
-                        suppressOverlay = true;
-                        suppressPattern = true;
-
-                        // Render mattress
-                        setMetadataOverride(0);
-                        renderBlocks.setRenderBounds(bedParallelNeg ? 0.0D : 0.0625D, 0.3125D, 0.0D, bedParallelPos ? 1.0D : 0.9375D, 0.5625D, 0.875D);
-                        renderBlock(Block.cloth, x, y, z);
-                        clearMetadataOverride();
-
-                        // Render pillow
-                        renderBlocks.uvRotateTop = 2;
-                        setIconOverride(6, icon_pillow);
-                        renderBlocks.setRenderBounds(0.125D, 0.5625D, 0.4375D, 0.875D, 0.6875D, 0.8125D);
-                        renderBlock(Block.cloth, x, y, z);
-                        clearIconOverride(6);
-                        renderBlocks.uvRotateTop = 0;
-
-                        // Render blanket
-                        if (!hasCustomBlanket)
-                        {
-                            disableAO = false;
-                            setMetadataOverride(blanketColor);
-                            renderBlocks.setRenderBounds(0.0D, isOccupied ? 0.4375D : 0.3125D, 0.0D, 0.0625D, isOccupied ? 0.8125D : 0.5625D, 0.5D);
-                            renderBlock(Block.cloth, x, y, z);
-                            renderBlocks.setRenderBounds(0.0D, isOccupied ? 0.8125D : 0.5625D, 0.0D, 1.0D, isOccupied ? 0.875D : 0.625D, 0.5D);
-                            renderBlock(Block.cloth, x, y, z);
-                            renderBlocks.setRenderBounds(0.9375D, isOccupied ? 0.4375D : 0.3125D, 0.0D, 1.0D, isOccupied ? 0.8125D : 0.5625D, 0.5D);
-                            renderBlock(Block.cloth, x, y, z);
-                            clearMetadataOverride();
-                            disableAO = true;
-                        }
-
-                        suppressDyeColor = false;
-                        suppressOverlay = false;
-                        suppressPattern = false;
-                    }
-
-                } else {
-
-                    if (shouldRenderBlock(block))
-                    {
-                        setDyeColorOverride(frameColor);
-
-                        // Render legs
-                        if (!bedParallelNeg) {
-                            renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 0.125D, 0.1875D, 0.125D);
-                            renderBlock(block, x, y, z);
-                        }
-                        if (!bedParallelPos) {
-                            renderBlocks.setRenderBounds(0.875D, 0.0D, 0.0D, 1.0D, 0.1875D, 0.125D);
-                            renderBlock(block, x, y, z);
-                        }
-
-                        // Render support board
-                        renderBlocks.setRenderBounds(0.0D, 0.1875D, 0.0D, 1.0D, 0.3125D, 1.0D);
-                        renderBlock(block, x, y, z);
-
-                        clearDyeColorOverride();
-                    }
-
-                    if (shouldRenderOpaque())
-                    {
-                        suppressDyeColor = true;
-                        suppressOverlay = true;
-                        suppressPattern = true;
-
-                        // Render mattress
-                        setMetadataOverride(0);
-                        renderBlocks.setRenderBounds(bedParallelNeg ? 0.0D : 0.0625D, 0.3125D, 0.0625D, bedParallelPos ? 1.0D : 0.9375D, 0.5625D, 1.0D);
-                        renderBlock(Block.cloth, x, y, z);
-                        clearMetadataOverride();
-
-                        // Render blanket
-                        if (!hasCustomBlanket)
-                        {
-                            disableAO = false;
-                            setMetadataOverride(blanketColor);
-                            renderBlocks.setRenderBounds(0.0D, isOccupied ? 0.4375D : 0.3125D, 0.0D, 0.0625D, isOccupied ? 0.8125D : 0.5625D, 1.0D);
-                            renderBlock(Block.cloth, x, y, z);
-                            renderBlocks.setRenderBounds(0.0D, isOccupied ? 0.8125D : 0.5625D, 0.0D, 1.0D, isOccupied ? 0.875D : 0.625D, 1.0D);
-                            renderBlock(Block.cloth, x, y, z);
-                            renderBlocks.setRenderBounds(0.9375D, isOccupied ? 0.4375D : 0.3125D, 0.0D, 1.0D, isOccupied ? 0.8125D : 0.5625D, 1.0D);
-                            renderBlock(Block.cloth, x, y, z);
-                            renderBlocks.setRenderBounds(0.0625D, isOccupied ? 0.4375D : 0.3125D, 0.0D, 0.9375D, isOccupied ? 0.8125D : 0.5625D, 0.0625D);
-                            renderBlock(Block.cloth, x, y, z);
-                            clearMetadataOverride();
-                            disableAO = true;
-                        }
-
-                        suppressDyeColor = false;
-                        suppressOverlay = false;
-                        suppressPattern = false;
-                    }
-
-                }
+        switch (getDirection()) {
+            case NORTH:
+                renderBlocks.setRenderBounds(bedParallelNeg ? 0.0D : 0.0625D, 0.3125D, isHead ? 0.0D : 0.0625D, bedParallelPos ? 1.0D : 0.9375D, 0.5625D, isHead ? 0.875D : 1.0D);
                 break;
-            }
-            case SOUTH: // +Z
-            {
-                if (isHead) {
-
-                    if (shouldRenderBlock(block))
-                    {
-                        // Render headboard
-                        renderBlocks.setRenderBounds(0.125D, 0.1875D, 0.0D, 0.875D, 0.875D, 0.125D);
-                        renderBlock(block, x, y, z);
-
-                        // Render legs
-                        renderBlocks.setRenderBounds(0.0D, bedParallelNeg ? 0.1875D : 0.0D, 0.0D, 0.125D, bedParallelNeg ? 0.875D : 1.0D, 0.125D);
-                        renderBlock(block, x, y, z);
-                        renderBlocks.setRenderBounds(0.875D, bedParallelPos ? 0.1875D : 0.0D, 0.0D, 1.0D, bedParallelPos ? 0.875D : 1.0D, 0.125D);
-                        renderBlock(block, x, y, z);
-
-                        // Render support board
-                        renderBlocks.setRenderBounds(0.0D, 0.1875D, 0.125D, 1.0D, 0.3125D, 1.0D);
-                        renderBlock(block, x, y, z);
-                    }
-
-                    if (shouldRenderOpaque())
-                    {
-                        suppressDyeColor = true;
-                        suppressOverlay = true;
-                        suppressPattern = true;
-
-                        // Render mattress
-                        setMetadataOverride(0);
-                        renderBlocks.setRenderBounds(bedParallelNeg ? 0.0D : 0.0625D, 0.3125D, 0.125D, bedParallelPos ? 1.0D : 0.9375D, 0.5625D, 1.0D);
-                        renderBlock(Block.cloth, x, y, z);
-                        clearMetadataOverride();
-
-                        // Render pillow
-                        setIconOverride(6, icon_pillow);
-                        renderBlocks.setRenderBounds(0.125D, 0.5625D, 0.1875D, 0.875D, 0.6875D, 0.5625D);
-                        renderBlock(Block.cloth, x, y, z);
-                        clearIconOverride(6);
-                        renderBlocks.uvRotateTop = 0;
-
-                        // Render blanket
-                        if (!hasCustomBlanket)
-                        {
-                            disableAO = false;
-                            setMetadataOverride(blanketColor);
-                            renderBlocks.setRenderBounds(0.0D, isOccupied ? 0.4375D : 0.3125D, 0.5D, 0.0625D, isOccupied ? 0.8125D : 0.5625D, 1.0D);
-                            renderBlock(Block.cloth, x, y, z);
-                            renderBlocks.setRenderBounds(0.0D, isOccupied ? 0.8125D : 0.5625D, 0.5D, 1.0D, isOccupied ? 0.875D : 0.625D, 1.0D);
-                            renderBlock(Block.cloth, x, y, z);
-                            renderBlocks.setRenderBounds(0.9375D, isOccupied ? 0.4375D : 0.3125D, 0.5D, 1.0D, isOccupied ? 0.8125D : 0.5625D, 1.0D);
-                            renderBlock(Block.cloth, x, y, z);
-                            clearMetadataOverride();
-                            disableAO = true;
-                        }
-
-                        suppressDyeColor = false;
-                        suppressOverlay = false;
-                        suppressPattern = false;
-                    }
-
-                } else {
-
-                    if (shouldRenderBlock(block))
-                    {
-                        setDyeColorOverride(frameColor);
-
-                        // Render legs
-                        if (!bedParallelNeg) {
-                            renderBlocks.setRenderBounds(0.0D, 0.0D, 0.875D, 0.125D, 0.1875D, 1.0D);
-                            renderBlock(block, x, y, z);
-                        }
-                        if (!bedParallelPos) {
-                            renderBlocks.setRenderBounds(0.875D, 0.0D, 0.875D, 1.0D, 0.1875D, 1.0D);
-                            renderBlock(block, x, y, z);
-                        }
-
-                        // Render support board
-                        renderBlocks.setRenderBounds(0.0D, 0.1875D, 0.0D, 1.0D, 0.3125D, 1.0D);
-                        renderBlock(block, x, y, z);
-
-                        clearDyeColorOverride();
-                    }
-
-                    if (shouldRenderOpaque())
-                    {
-                        suppressDyeColor = true;
-                        suppressOverlay = true;
-                        suppressPattern = true;
-
-                        // Render mattress
-                        setMetadataOverride(0);
-                        renderBlocks.setRenderBounds(bedParallelNeg ? 0.0D : 0.0625D, 0.3125D, 0.0D, bedParallelPos ? 1.0D : 0.9375D, 0.5625D, 0.9375D);
-                        renderBlock(Block.cloth, x, y, z);
-                        clearMetadataOverride();
-
-                        // Render blanket
-                        if (!hasCustomBlanket)
-                        {
-                            disableAO = false;
-                            setMetadataOverride(blanketColor);
-                            renderBlocks.setRenderBounds(0.0D, isOccupied ? 0.4375D : 0.3125D, 0.0D, 0.0625D, isOccupied ? 0.8125D : 0.5625D, 1.0D);
-                            renderBlock(Block.cloth, x, y, z);
-                            renderBlocks.setRenderBounds(0.0D, isOccupied ? 0.8125D : 0.5625D, 0.0D, 1.0D, isOccupied ? 0.875D : 0.625D, 1.0D);
-                            renderBlock(Block.cloth, x, y, z);
-                            renderBlocks.setRenderBounds(0.9375D, isOccupied ? 0.4375D : 0.3125D, 0.0D, 1.0D, isOccupied ? 0.8125D : 0.5625D, 1.0D);
-                            renderBlock(Block.cloth, x, y, z);
-                            renderBlocks.setRenderBounds(0.0625D, isOccupied ? 0.4375D : 0.3125D, 0.9375D, 0.9375D, isOccupied ? 0.8125D : 0.5625D, 1.0D);
-                            renderBlock(Block.cloth, x, y, z);
-                            clearMetadataOverride();
-                            disableAO = true;
-                        }
-
-                        suppressDyeColor = false;
-                        suppressOverlay = false;
-                        suppressPattern = false;
-                    }
-
-                }
+            case SOUTH:
+                renderBlocks.setRenderBounds(bedParallelNeg ? 0.0D : 0.0625D, 0.3125D, isHead ? 0.125D : 0.0D, bedParallelPos ? 1.0D : 0.9375D, 0.5625D, isHead ? 1.0D : 0.9375D);
                 break;
-            }
-            case WEST: // -X
-            {
-                if (isHead) {
-
-                    if (shouldRenderBlock(block))
-                    {
-                        // Render headboard
-                        renderBlocks.setRenderBounds(0.875D, 0.1875D, 0.125D, 1.0D, 0.875D, 0.875D);
-                        renderBlock(block, x, y, z);
-
-                        // Render legs
-                        renderBlocks.setRenderBounds(0.875D, bedParallelNeg ? 0.1875D : 0.0D, 0.0D, 1.0D, bedParallelNeg ? 0.875D : 1.0D, 0.125D);
-                        renderBlock(block, x, y, z);
-                        renderBlocks.setRenderBounds(0.875D, bedParallelPos ? 0.1875D : 0.0D, 0.875D, 1.0D, bedParallelPos ? 0.875D : 1.0D, 1.0D);
-                        renderBlock(block, x, y, z);
-
-                        // Render support board
-                        renderBlocks.setRenderBounds(0.0D, 0.1875D, 0.0D, 0.875D, 0.3125D, 1.0D);
-                        renderBlock(block, x, y, z);
-                    }
-
-                    if (shouldRenderOpaque())
-                    {
-                        suppressDyeColor = true;
-                        suppressOverlay = true;
-                        suppressPattern = true;
-
-                        // Render mattress
-                        setMetadataOverride(0);
-                        renderBlocks.setRenderBounds(0.0D, 0.3125D, bedParallelNeg ? 0.0D : 0.0625D, 0.875D, 0.5625D, bedParallelPos ? 1.0D : 0.9375D);
-                        renderBlock(Block.cloth, x, y, z);
-                        clearMetadataOverride();
-
-                        // Render pillow
-                        renderBlocks.uvRotateTop = 1;
-                        setIconOverride(6, icon_pillow);
-                        renderBlocks.setRenderBounds(0.4375D, 0.5625D, 0.125D, 0.8125D, 0.6875D, 0.875D);
-                        renderBlock(Block.cloth, x, y, z);
-                        clearIconOverride(6);
-                        renderBlocks.uvRotateTop = 0;
-
-                        // Render blanket
-                        if (!hasCustomBlanket)
-                        {
-                            disableAO = false;
-                            setMetadataOverride(blanketColor);
-                            renderBlocks.setRenderBounds(0.0D, isOccupied ? 0.4375D : 0.3125D, 0.0D, 0.5D, isOccupied ? 0.8125D : 0.5625D, 0.0625D);
-                            renderBlock(Block.cloth, x, y, z);
-                            renderBlocks.setRenderBounds(0.0D, isOccupied ? 0.8125D : 0.5625D, 0.0D, 0.5D, isOccupied ? 0.875D : 0.625D, 1.0D);
-                            renderBlock(Block.cloth, x, y, z);
-                            renderBlocks.setRenderBounds(0.0D, isOccupied ? 0.4375D : 0.3125D, 0.9375D, 0.5D, isOccupied ? 0.8125D : 0.5625D, 1.0D);
-                            renderBlock(Block.cloth, x, y, z);
-                            clearMetadataOverride();
-                            disableAO = true;
-                        }
-
-                        suppressDyeColor = false;
-                        suppressOverlay = false;
-                        suppressPattern = false;
-                    }
-
-                } else {
-
-                    if (shouldRenderBlock(block))
-                    {
-                        setDyeColorOverride(frameColor);
-
-                        // Render legs
-                        if (!bedParallelNeg) {
-                            renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 0.125D, 0.1875D, 0.125D);
-                            renderBlock(block, x, y, z);
-                        }
-                        if (!bedParallelPos) {
-                            renderBlocks.setRenderBounds(0.0D, 0.0D, 0.875D, 0.125D, 0.1875D, 1.0D);
-                            renderBlock(block, x, y, z);
-                        }
-
-                        // Render support board
-                        renderBlocks.setRenderBounds(0.0D, 0.1875D, 0.0D, 1.0D, 0.3125D, 1.0D);
-                        renderBlock(block, x, y, z);
-
-                        clearDyeColorOverride();
-                    }
-
-                    if (shouldRenderOpaque())
-                    {
-                        suppressDyeColor = true;
-                        suppressOverlay = true;
-                        suppressPattern = true;
-
-                        // Render mattress
-                        setMetadataOverride(0);
-                        renderBlocks.setRenderBounds(0.0625D, 0.3125D, bedParallelNeg ? 0.0D : 0.0625D, 1.0D, 0.5625D, bedParallelPos ? 1.0D : 0.9375D);
-                        renderBlock(Block.cloth, x, y, z);
-                        clearMetadataOverride();
-
-                        // Render blanket
-                        if (!hasCustomBlanket)
-                        {
-                            disableAO = false;
-                            setMetadataOverride(blanketColor);
-                            renderBlocks.setRenderBounds(0.0D, isOccupied ? 0.4375D : 0.3125D, 0.0D, 1.0D, isOccupied ? 0.8125D : 0.5625D, 0.0625D);
-                            renderBlock(Block.cloth, x, y, z);
-                            renderBlocks.setRenderBounds(0.0D, isOccupied ? 0.8125D : 0.5625D, 0.0D, 1.0D, isOccupied ? 0.875D : 0.625D, 1.0D);
-                            renderBlock(Block.cloth, x, y, z);
-                            renderBlocks.setRenderBounds(0.0D, isOccupied ? 0.4375D : 0.3125D, 0.9375D, 1.0D, isOccupied ? 0.8125D : 0.5625D, 1.0D);
-                            renderBlock(Block.cloth, x, y, z);
-                            renderBlocks.setRenderBounds(0.0D, isOccupied ? 0.4375D : 0.3125D, 0.0625D, 0.0625D, isOccupied ? 0.8125D : 0.5625D, 0.9375D);
-                            renderBlock(Block.cloth, x, y, z);
-                            clearMetadataOverride();
-                            disableAO = true;
-                        }
-
-                        suppressDyeColor = false;
-                        suppressOverlay = false;
-                        suppressPattern = false;
-                    }
-
-                }
+            case WEST:
+                renderBlocks.setRenderBounds(isHead ? 0.0D : 0.0625D, 0.3125D, bedParallelNeg ? 0.0D : 0.0625D, isHead ? 0.875D : 1.0D, 0.5625D, bedParallelPos ? 1.0D : 0.9375D);
                 break;
-            }
-            default: // EAST +X
-            {
-                if (isHead) {
-
-                    if (shouldRenderBlock(block))
-                    {
-                        // Render headboard
-                        renderBlocks.setRenderBounds(0.0D, 0.1875D, 0.125D, 0.125D, 0.875D, 0.875D);
-                        renderBlock(block, x, y, z);
-
-                        // Render legs
-                        renderBlocks.setRenderBounds(0.0D, bedParallelNeg ? 0.1875D : 0.0D, 0.0D, 0.125D, bedParallelNeg ? 0.875D : 1.0D, 0.125D);
-                        renderBlock(block, x, y, z);
-                        renderBlocks.setRenderBounds(0.0D, bedParallelPos ? 0.1875D : 0.0D, 0.875D, 0.125D, bedParallelPos ? 0.875D : 1.0D, 1.0D);
-                        renderBlock(block, x, y, z);
-
-                        // Render support board
-                        renderBlocks.setRenderBounds(0.125D, 0.1875D, 0.0D, 1.0D, 0.3125D, 1.0D);
-                        renderBlock(block, x, y, z);
-                    }
-
-                    if (shouldRenderOpaque())
-                    {
-                        suppressDyeColor = true;
-                        suppressOverlay = true;
-                        suppressPattern = true;
-
-                        // Render mattress
-                        setMetadataOverride(0);
-                        renderBlocks.setRenderBounds(0.125D, 0.3125D, bedParallelNeg ? 0.0D : 0.0625D, 1.0D, 0.5625D, bedParallelPos ? 1.0D : 0.9375D);
-                        renderBlock(Block.cloth, x, y, z);
-                        clearMetadataOverride();
-
-                        // Render pillow
-                        renderBlocks.uvRotateTop = 3;
-                        setIconOverride(6, icon_pillow);
-                        renderBlocks.setRenderBounds(0.1875D, 0.5625D, 0.125D, 0.5625D, 0.6875D, 0.875D);
-                        renderBlock(Block.cloth, x, y, z);
-                        clearIconOverride(6);
-                        renderBlocks.uvRotateTop = 0;
-
-                        // Render blanket
-                        if (!hasCustomBlanket)
-                        {
-                            disableAO = false;
-                            setMetadataOverride(blanketColor);
-                            renderBlocks.setRenderBounds(0.5D, isOccupied ? 0.4375D : 0.3125D, 0.0D, 1.0D, isOccupied ? 0.8125D : 0.5625D, 0.0625D);
-                            renderBlock(Block.cloth, x, y, z);
-                            renderBlocks.setRenderBounds(0.5D, isOccupied ? 0.8125D : 0.5625D, 0.0D, 1.0D, isOccupied ? 0.875D : 0.625D, 1.0D);
-                            renderBlock(Block.cloth, x, y, z);
-                            renderBlocks.setRenderBounds(0.5D, isOccupied ? 0.4375D : 0.3125D, 0.9375D, 1.0D, isOccupied ? 0.8125D : 0.5625D, 1.0D);
-                            renderBlock(Block.cloth, x, y, z);
-                            clearMetadataOverride();
-                            disableAO = true;
-                        }
-
-                        suppressDyeColor = false;
-                        suppressOverlay = false;
-                        suppressPattern = false;
-                    }
-
-                } else {
-
-                    if (shouldRenderBlock(block))
-                    {
-                        setDyeColorOverride(frameColor);
-
-                        // Render legs
-                        if (!bedParallelNeg) {
-                            renderBlocks.setRenderBounds(0.875D, 0.0D, 0.0D, 1.0D, 0.1875D, 0.125D);
-                            renderBlock(block, x, y, z);
-                        }
-                        if (!bedParallelPos) {
-                            renderBlocks.setRenderBounds(0.875D, 0.0D, 0.875D, 1.0D, 0.1875D, 1.0D);
-                            renderBlock(block, x, y, z);
-                        }
-
-                        // Render support board
-                        renderBlocks.setRenderBounds(0.0D, 0.1875D, 0.0D, 1.0D, 0.3125D, 1.0D);
-                        renderBlock(block, x, y, z);
-
-                        clearDyeColorOverride();
-                    }
-
-                    if (shouldRenderOpaque())
-                    {
-                        suppressDyeColor = true;
-                        suppressOverlay = true;
-                        suppressPattern = true;
-
-                        // Render mattress
-                        setMetadataOverride(0);
-                        renderBlocks.setRenderBounds(0.0D, 0.3125D, bedParallelNeg ? 0.0D : 0.0625D, 0.9375D, 0.5625D, bedParallelPos ? 1.0D : 0.9375D);
-                        renderBlock(Block.cloth, x, y, z);
-                        clearMetadataOverride();
-
-                        // Render blanket
-                        if (!hasCustomBlanket)
-                        {
-                            disableAO = false;
-                            setMetadataOverride(blanketColor);
-                            renderBlocks.setRenderBounds(0.0D, isOccupied ? 0.4375D : 0.3125D, 0.0D, 1.0D, isOccupied ? 0.8125D : 0.5625D, 0.0625D);
-                            renderBlock(Block.cloth, x, y, z);
-                            renderBlocks.setRenderBounds(0.0D, isOccupied ? 0.8125D : 0.5625D, 0.0D, 1.0D, isOccupied ? 0.875D : 0.625D, 1.0D);
-                            renderBlock(Block.cloth, x, y, z);
-                            renderBlocks.setRenderBounds(0.0D, isOccupied ? 0.4375D : 0.3125D, 0.9375D, 1.0D, isOccupied ? 0.8125D : 0.5625D, 1.0D);
-                            renderBlock(Block.cloth, x, y, z);
-                            renderBlocks.setRenderBounds(0.9375D, isOccupied ? 0.4375D : 0.3125D, 0.0625D, 1.0D, isOccupied ? 0.8125D : 0.5625D, 0.9375D);
-                            renderBlock(Block.cloth, x, y, z);
-                            clearMetadataOverride();
-                            disableAO = true;
-                        }
-
-                        suppressDyeColor = false;
-                        suppressOverlay = false;
-                        suppressPattern = false;
-                    }
-
-                }
+            case EAST:
+                renderBlocks.setRenderBounds(isHead ? 0.125D : 0.0D, 0.3125D, bedParallelNeg ? 0.0D : 0.0625D, isHead ? 1.0D : 0.9375D, 0.5625D, bedParallelPos ? 1.0D : 0.9375D);
                 break;
-            }
+            default: {}
         }
 
-        disableAO = false;
+        renderBlock(itemStack, x, y, z);
+    }
 
-        if (shouldRenderOpaque())
+    private void renderNormalFrame(ItemStack itemStack, int x, int y, int z)
+    {
+        boolean isHead = isHead();
+        boolean bedParallelNeg = isParallelNegSide();
+        boolean bedParallelPos = isParallelPosSide();
+
+        switch (getDirection())
         {
-            /*
-             * If this bed has a blanket design, we'll render part of the blanket
-             * here to fill in the gaps (face at head of bed, bottom side).
-             */
-            if (hasCustomBlanket)
+            case NORTH:
             {
-                setMetadataOverride(blanketColor);
-                suppressDyeColor = true;
-                suppressOverlay = true;
-                suppressPattern = true;
+                if (isHead) {
 
-                if (isHead)
-                {
-                    switch (dir)
-                    {
-                        case NORTH: // -Z
-                            renderBlocks.setRenderBounds(0.0D, isOccupied ? 0.4375D : 0.3125D, 0.0D, 1.0D, isOccupied ? 0.875D : 0.625D, 0.5D);
-                            lightingHelper.setLightnessOverride(lightingHelper.LIGHTNESS_Z);
-                            delegateSideRender(Block.cloth, x, y, z, SOUTH);
-                            break;
-                        case SOUTH: // +Z
-                            renderBlocks.setRenderBounds(0.0D, isOccupied ? 0.4375D : 0.3125D, 0.5D, 1.0D, isOccupied ? 0.875D : 0.625D, 1.0D);
-                            lightingHelper.setLightnessOverride(lightingHelper.LIGHTNESS_Z);
-                            delegateSideRender(Block.cloth, x, y, z, NORTH);
-                            break;
-                        case WEST:     // -X
-                            renderBlocks.setRenderBounds(0.0D, isOccupied ? 0.4375D : 0.3125D, 0.0D, 0.5D, isOccupied ? 0.875D : 0.625D, 1.0D);
-                            lightingHelper.setLightnessOverride(lightingHelper.LIGHTNESS_X);
-                            delegateSideRender(Block.cloth, x, y, z, EAST);
-                            break;
-                        default:     // EAST +X
-                            renderBlocks.setRenderBounds(0.5D, isOccupied ? 0.4375D : 0.3125D, 0.0D, 1.0D, isOccupied ? 0.875D : 0.625D, 1.0D);
-                            lightingHelper.setLightnessOverride(lightingHelper.LIGHTNESS_X);
-                            delegateSideRender(Block.cloth, x, y, z, WEST);
-                            break;
-                    }
+                    // Render headboard
+                    renderBlocks.setRenderBounds(0.125D, 0.1875D, 0.875D, 0.875D, 0.875D, 1.0D);
+                    renderBlock(itemStack, x, y, z);
 
-                    lightingHelper.setLightnessOverride(lightingHelper.LIGHTNESS_YN);
-                    delegateSideRender(Block.cloth, x, y, z, DOWN);
+                    // Render legs
+                    renderBlocks.setRenderBounds(0.0D, bedParallelNeg ? 0.1875D : 0.0D, 0.875D, 0.125D, bedParallelNeg ? 0.875D : 1.0D, 1.0D);
+                    renderBlock(itemStack, x, y, z);
+                    renderBlocks.setRenderBounds(0.875D, bedParallelPos ? 0.1875D : 0.0D, 0.875D, 1.0D, bedParallelPos ? 0.875D : 1.0D, 1.0D);
+                    renderBlock(itemStack, x, y, z);
+
+                    // Render support board
+                    renderBlocks.setRenderBounds(0.0D, 0.1875D, 0.0D, 1.0D, 0.3125D, 0.875D);
+                    renderBlock(itemStack, x, y, z);
 
                 } else {
 
-                    lightingHelper.setLightnessOverride(lightingHelper.LIGHTNESS_YN);
-                    delegateSideRender(Block.cloth, x, y, z, DOWN);
+                    // Render legs
+                    if (!bedParallelNeg) {
+                        renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 0.125D, 0.1875D, 0.125D);
+                        renderBlock(itemStack, x, y, z);
+                    }
+                    if (!bedParallelPos) {
+                        renderBlocks.setRenderBounds(0.875D, 0.0D, 0.0D, 1.0D, 0.1875D, 0.125D);
+                        renderBlock(itemStack, x, y, z);
+                    }
+
+                    // Render support board
+                    renderBlocks.setRenderBounds(0.0D, 0.1875D, 0.0D, 1.0D, 0.3125D, 1.0D);
+                    renderBlock(itemStack, x, y, z);
 
                 }
-
-                lightingHelper.clearLightnessOverride();
-                suppressDyeColor = false;
-                suppressOverlay = false;
-                suppressPattern = false;
-                clearMetadataOverride();
+                break;
             }
+            case SOUTH:
+            {
+                if (isHead) {
+
+                    // Render headboard
+                    renderBlocks.setRenderBounds(0.125D, 0.1875D, 0.0D, 0.875D, 0.875D, 0.125D);
+                    renderBlock(itemStack, x, y, z);
+
+                    // Render legs
+                    renderBlocks.setRenderBounds(0.0D, bedParallelNeg ? 0.1875D : 0.0D, 0.0D, 0.125D, bedParallelNeg ? 0.875D : 1.0D, 0.125D);
+                    renderBlock(itemStack, x, y, z);
+                    renderBlocks.setRenderBounds(0.875D, bedParallelPos ? 0.1875D : 0.0D, 0.0D, 1.0D, bedParallelPos ? 0.875D : 1.0D, 0.125D);
+                    renderBlock(itemStack, x, y, z);
+
+                    // Render support board
+                    renderBlocks.setRenderBounds(0.0D, 0.1875D, 0.125D, 1.0D, 0.3125D, 1.0D);
+                    renderBlock(itemStack, x, y, z);
+
+                } else {
+
+                    // Render legs
+                    if (!bedParallelNeg) {
+                        renderBlocks.setRenderBounds(0.0D, 0.0D, 0.875D, 0.125D, 0.1875D, 1.0D);
+                        renderBlock(itemStack, x, y, z);
+                    }
+                    if (!bedParallelPos) {
+                        renderBlocks.setRenderBounds(0.875D, 0.0D, 0.875D, 1.0D, 0.1875D, 1.0D);
+                        renderBlock(itemStack, x, y, z);
+                    }
+
+                    // Render support board
+                    renderBlocks.setRenderBounds(0.0D, 0.1875D, 0.0D, 1.0D, 0.3125D, 1.0D);
+                    renderBlock(itemStack, x, y, z);
+
+                }
+                break;
+            }
+            case WEST:
+            {
+                if (isHead) {
+
+                    // Render headboard
+                    renderBlocks.setRenderBounds(0.875D, 0.1875D, 0.125D, 1.0D, 0.875D, 0.875D);
+                    renderBlock(itemStack, x, y, z);
+
+                    // Render legs
+                    renderBlocks.setRenderBounds(0.875D, bedParallelNeg ? 0.1875D : 0.0D, 0.0D, 1.0D, bedParallelNeg ? 0.875D : 1.0D, 0.125D);
+                    renderBlock(itemStack, x, y, z);
+                    renderBlocks.setRenderBounds(0.875D, bedParallelPos ? 0.1875D : 0.0D, 0.875D, 1.0D, bedParallelPos ? 0.875D : 1.0D, 1.0D);
+                    renderBlock(itemStack, x, y, z);
+
+                    // Render support board
+                    renderBlocks.setRenderBounds(0.0D, 0.1875D, 0.0D, 0.875D, 0.3125D, 1.0D);
+                    renderBlock(itemStack, x, y, z);
+
+                } else {
+
+                    // Render legs
+                    if (!bedParallelNeg) {
+                        renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 0.125D, 0.1875D, 0.125D);
+                        renderBlock(itemStack, x, y, z);
+                    }
+                    if (!bedParallelPos) {
+                        renderBlocks.setRenderBounds(0.0D, 0.0D, 0.875D, 0.125D, 0.1875D, 1.0D);
+                        renderBlock(itemStack, x, y, z);
+                    }
+
+                    // Render support board
+                    renderBlocks.setRenderBounds(0.0D, 0.1875D, 0.0D, 1.0D, 0.3125D, 1.0D);
+                    renderBlock(itemStack, x, y, z);
+
+                }
+                break;
+            }
+            case EAST:
+            {
+                if (isHead) {
+
+                    // Render headboard
+                    renderBlocks.setRenderBounds(0.0D, 0.1875D, 0.125D, 0.125D, 0.875D, 0.875D);
+                    renderBlock(itemStack, x, y, z);
+
+                    // Render legs
+                    renderBlocks.setRenderBounds(0.0D, bedParallelNeg ? 0.1875D : 0.0D, 0.0D, 0.125D, bedParallelNeg ? 0.875D : 1.0D, 0.125D);
+                    renderBlock(itemStack, x, y, z);
+                    renderBlocks.setRenderBounds(0.0D, bedParallelPos ? 0.1875D : 0.0D, 0.875D, 0.125D, bedParallelPos ? 0.875D : 1.0D, 1.0D);
+                    renderBlock(itemStack, x, y, z);
+
+                    // Render support board
+                    renderBlocks.setRenderBounds(0.125D, 0.1875D, 0.0D, 1.0D, 0.3125D, 1.0D);
+                    renderBlock(itemStack, x, y, z);
+
+                } else {
+
+                    // Render legs
+                    if (!bedParallelNeg) {
+                        renderBlocks.setRenderBounds(0.875D, 0.0D, 0.0D, 1.0D, 0.1875D, 0.125D);
+                        renderBlock(itemStack, x, y, z);
+                    }
+                    if (!bedParallelPos) {
+                        renderBlocks.setRenderBounds(0.875D, 0.0D, 0.875D, 1.0D, 0.1875D, 1.0D);
+                        renderBlock(itemStack, x, y, z);
+                    }
+
+                    // Render support board
+                    renderBlocks.setRenderBounds(0.0D, 0.1875D, 0.0D, 1.0D, 0.3125D, 1.0D);
+                    renderBlock(itemStack, x, y, z);
+
+                }
+                break;
+            }
+            default: { }
         }
     }
 

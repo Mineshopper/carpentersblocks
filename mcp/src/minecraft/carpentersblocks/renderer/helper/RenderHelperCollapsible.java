@@ -1,12 +1,8 @@
 package carpentersblocks.renderer.helper;
 
-import static net.minecraftforge.common.ForgeDirection.EAST;
-import static net.minecraftforge.common.ForgeDirection.NORTH;
-import static net.minecraftforge.common.ForgeDirection.SOUTH;
-import static net.minecraftforge.common.ForgeDirection.UP;
-import static net.minecraftforge.common.ForgeDirection.WEST;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.util.Icon;
+import net.minecraftforge.common.ForgeDirection;
 import carpentersblocks.util.collapsible.CollapsibleUtil;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -19,14 +15,14 @@ public class RenderHelperCollapsible extends RenderHelper {
      */
     public static void renderSlopeYPosZNeg(RenderBlocks renderBlocks, double x, double y, double z, Icon icon)
     {
-        prepareRender(renderBlocks, UP, x, y, z, icon);
+        prepareRender(renderBlocks, ForgeDirection.UP, x, y, z, icon);
 
         double uTM = uTR - (uTR - uTL) / 2;
         double xMid = xMax - (xMax - xMin) / 2;
 
-        setupVertex(renderBlocks, xMid, yMin + CollapsibleUtil.CENTER_YMAX, zMax, uTM, vTR, TOP_CENTER  );
-        setupVertex(renderBlocks, xMax, yMin + CollapsibleUtil.offset_XZPN, zMin, uBL, vBL, NORTHEAST   );
-        setupVertex(renderBlocks, xMin, yMin + CollapsibleUtil.offset_XZNN, zMin, uBR, vBR, NORTHWEST   );
+        setupVertex(renderBlocks, xMid, y + CollapsibleUtil.CENTER_YMAX, zMax, uTM, vTR, TOP_CENTER  );
+        setupVertex(renderBlocks, xMax, y + CollapsibleUtil.offset_XZPN, zMin, uBL, vBL, NORTHEAST   );
+        setupVertex(renderBlocks, xMin, y + CollapsibleUtil.offset_XZNN, zMin, uBR, vBR, NORTHWEST   );
     }
 
     /**
@@ -34,14 +30,14 @@ public class RenderHelperCollapsible extends RenderHelper {
      */
     public static void renderSlopeYPosZPos(RenderBlocks renderBlocks, double x, double y, double z, Icon icon)
     {
-        prepareRender(renderBlocks, UP, x, y, z, icon);
+        prepareRender(renderBlocks, ForgeDirection.UP, x, y, z, icon);
 
         double uBM = uBR - (uBR - uBL) / 2;
         double xMid = xMax - (xMax - xMin) / 2;
 
-        setupVertex(renderBlocks, xMax, yMin + CollapsibleUtil.offset_XZPP, zMax, uTL, vTL, SOUTHEAST    );
-        setupVertex(renderBlocks, xMid, yMin + CollapsibleUtil.CENTER_YMAX, zMin, uBM, vBR, BOTTOM_CENTER);
-        setupVertex(renderBlocks, xMin, yMin + CollapsibleUtil.offset_XZNP, zMax, uTR, vTR, SOUTHWEST    );
+        setupVertex(renderBlocks, xMax, y + CollapsibleUtil.offset_XZPP, zMax, uTL, vTL, SOUTHEAST    );
+        setupVertex(renderBlocks, xMid, y + CollapsibleUtil.CENTER_YMAX, zMin, uBM, vBR, BOTTOM_CENTER);
+        setupVertex(renderBlocks, xMin, y + CollapsibleUtil.offset_XZNP, zMax, uTR, vTR, SOUTHWEST    );
     }
 
     /**
@@ -49,14 +45,14 @@ public class RenderHelperCollapsible extends RenderHelper {
      */
     public static void renderSlopeXNegYPos(RenderBlocks renderBlocks, double x, double y, double z, Icon icon)
     {
-        prepareRender(renderBlocks, UP, x, y, z, icon);
+        prepareRender(renderBlocks, ForgeDirection.UP, x, y, z, icon);
 
         double vLM = vBL - (vBL - vTL) / 2;
         double zMid = zMax - (zMax - zMin) / 2;
 
-        setupVertex(renderBlocks, xMax, yMin + CollapsibleUtil.CENTER_YMAX, zMid, uBL, vLM, LEFT_CENTER );
-        setupVertex(renderBlocks, xMin, yMin + CollapsibleUtil.offset_XZNN, zMin, uBR, vBR, NORTHWEST   );
-        setupVertex(renderBlocks, xMin, yMin + CollapsibleUtil.offset_XZNP, zMax, uTR, vTR, SOUTHWEST   );
+        setupVertex(renderBlocks, xMax, y + CollapsibleUtil.CENTER_YMAX, zMid, uBL, vLM, LEFT_CENTER );
+        setupVertex(renderBlocks, xMin, y + CollapsibleUtil.offset_XZNN, zMin, uBR, vBR, NORTHWEST   );
+        setupVertex(renderBlocks, xMin, y + CollapsibleUtil.offset_XZNP, zMax, uTR, vTR, SOUTHWEST   );
     }
 
     /**
@@ -64,14 +60,14 @@ public class RenderHelperCollapsible extends RenderHelper {
      */
     public static void renderSlopeXPosYPos(RenderBlocks renderBlocks, double x, double y, double z, Icon icon)
     {
-        prepareRender(renderBlocks, UP, x, y, z, icon);
+        prepareRender(renderBlocks, ForgeDirection.UP, x, y, z, icon);
 
         double vRM = vBR - (vBR - vTR) / 2;
         double zMid = zMax - (zMax - zMin) / 2;
 
-        setupVertex(renderBlocks, xMax, yMin + CollapsibleUtil.offset_XZPP, zMax, uTL, vTL, SOUTHEAST   );
-        setupVertex(renderBlocks, xMax, yMin + CollapsibleUtil.offset_XZPN, zMin, uBL, vBL, NORTHEAST   );
-        setupVertex(renderBlocks, xMin, yMin + CollapsibleUtil.CENTER_YMAX, zMid, uBR, vRM, RIGHT_CENTER);
+        setupVertex(renderBlocks, xMax, y + CollapsibleUtil.offset_XZPP, zMax, uTL, vTL, SOUTHEAST   );
+        setupVertex(renderBlocks, xMax, y + CollapsibleUtil.offset_XZPN, zMin, uBL, vBL, NORTHEAST   );
+        setupVertex(renderBlocks, xMin, y + CollapsibleUtil.CENTER_YMAX, zMid, uBR, vRM, RIGHT_CENTER);
     }
 
     /**
@@ -79,7 +75,7 @@ public class RenderHelperCollapsible extends RenderHelper {
      */
     public static void renderFaceZNeg(RenderBlocks renderBlocks, double x, double y, double z, Icon icon)
     {
-        prepareRender(renderBlocks, NORTH, x, y, z, icon);
+        prepareRender(renderBlocks, ForgeDirection.NORTH, x, y, z, icon);
 
         if (iconHasFloatingHeight(icon)) {
             vBL = vTL - (vTL - vBL) * CollapsibleUtil.offset_XZPN;
@@ -100,7 +96,7 @@ public class RenderHelperCollapsible extends RenderHelper {
      */
     public static void renderFaceZPos(RenderBlocks renderBlocks, double x, double y, double z, Icon icon)
     {
-        prepareRender(renderBlocks, SOUTH, x, y, z, icon);
+        prepareRender(renderBlocks, ForgeDirection.SOUTH, x, y, z, icon);
 
         if (iconHasFloatingHeight(icon)) {
             vBL = vTL - (vTL - vBL) * CollapsibleUtil.offset_XZNP;
@@ -121,7 +117,7 @@ public class RenderHelperCollapsible extends RenderHelper {
      */
     public static void renderFaceXNeg(RenderBlocks renderBlocks, double x, double y, double z, Icon icon)
     {
-        prepareRender(renderBlocks, WEST, x, y, z, icon);
+        prepareRender(renderBlocks, ForgeDirection.WEST, x, y, z, icon);
 
         if (iconHasFloatingHeight(icon)) {
             vBL = vTL - (vTL - vBL) * CollapsibleUtil.offset_XZNN;
@@ -142,7 +138,7 @@ public class RenderHelperCollapsible extends RenderHelper {
      */
     public static void renderFaceXPos(RenderBlocks renderBlocks, double x, double y, double z, Icon icon)
     {
-        prepareRender(renderBlocks, EAST, x, y, z, icon);
+        prepareRender(renderBlocks, ForgeDirection.EAST, x, y, z, icon);
 
         if (iconHasFloatingHeight(icon)) {
             vBL = vTL - (vTL - vBL) * CollapsibleUtil.offset_XZPP;

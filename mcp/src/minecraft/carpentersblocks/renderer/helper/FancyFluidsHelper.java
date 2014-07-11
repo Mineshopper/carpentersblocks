@@ -2,10 +2,10 @@ package carpentersblocks.renderer.helper;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFluid;
-import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.fluids.IFluidBlock;
-import carpentersblocks.tileentity.TEBase;
+import carpentersblocks.renderer.BlockHandlerBase;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -15,16 +15,18 @@ public class FancyFluidsHelper {
     /**
      * Renders fancy fluids in block space.
      */
-    public static boolean render(TEBase TE, LightingHelper lightingHelper, RenderBlocks renderBlocks, int x, int y, int z, int renderPass)
+    public static boolean render(BlockHandlerBase blockHandler, int x, int y, int z)
     {
-        Block block_XN   = !renderBlocks.blockAccess.isAirBlock(x - 1, y, z) ? Block.blocksList[renderBlocks.blockAccess.getBlockId(x - 1, y, z)] : null;
-        Block block_XP   = !renderBlocks.blockAccess.isAirBlock(x + 1, y, z) ? Block.blocksList[renderBlocks.blockAccess.getBlockId(x + 1, y, z)] : null;
-        Block block_ZN   = !renderBlocks.blockAccess.isAirBlock(x, y, z - 1) ? Block.blocksList[renderBlocks.blockAccess.getBlockId(x, y, z - 1)] : null;
-        Block block_ZP   = !renderBlocks.blockAccess.isAirBlock(x, y, z + 1) ? Block.blocksList[renderBlocks.blockAccess.getBlockId(x, y, z + 1)] : null;
-        Block block_XZNP = !renderBlocks.blockAccess.isAirBlock(x - 1, y, z + 1) ? Block.blocksList[renderBlocks.blockAccess.getBlockId(x - 1, y, z + 1)] : null;
-        Block block_XZPP = !renderBlocks.blockAccess.isAirBlock(x + 1, y, z + 1) ? Block.blocksList[renderBlocks.blockAccess.getBlockId(x + 1, y, z + 1)] : null;
-        Block block_XZNN = !renderBlocks.blockAccess.isAirBlock(x - 1, y, z - 1) ? Block.blocksList[renderBlocks.blockAccess.getBlockId(x - 1, y, z - 1)] : null;
-        Block block_XZPN = !renderBlocks.blockAccess.isAirBlock(x + 1, y, z - 1) ? Block.blocksList[renderBlocks.blockAccess.getBlockId(x + 1, y, z - 1)] : null;
+        World world = blockHandler.TE.getWorldObj();
+
+        Block block_XN   = Block.blocksList[world.getBlockId(x - 1, y, z)];
+        Block block_XP   = Block.blocksList[world.getBlockId(x + 1, y, z)];
+        Block block_ZN   = Block.blocksList[world.getBlockId(x, y, z - 1)];
+        Block block_ZP   = Block.blocksList[world.getBlockId(x, y, z + 1)];
+        Block block_XZNP = Block.blocksList[world.getBlockId(x - 1, y, z + 1)];
+        Block block_XZPP = Block.blocksList[world.getBlockId(x + 1, y, z + 1)];
+        Block block_XZNN = Block.blocksList[world.getBlockId(x - 1, y, z - 1)];
+        Block block_XZPN = Block.blocksList[world.getBlockId(x + 1, y, z - 1)];
 
         boolean isFluid_XN   = block_XN != null ? block_XN instanceof BlockFluid || block_XN instanceof IFluidBlock : false;
         boolean isFluid_XP   = block_XP != null ? block_XP instanceof BlockFluid || block_XP instanceof IFluidBlock : false;
@@ -35,10 +37,12 @@ public class FancyFluidsHelper {
         boolean isFluid_XZNN = block_XZNN != null ? block_XZNN instanceof BlockFluid || block_XZNN instanceof IFluidBlock : false;
         boolean isFluid_XZPN = block_XZPN != null ? block_XZPN instanceof BlockFluid || block_XZPN instanceof IFluidBlock : false;
 
-        boolean isSolid_XN = renderBlocks.blockAccess.isBlockSolidOnSide(x, y, z, ForgeDirection.WEST, true);
-        boolean isSolid_XP = renderBlocks.blockAccess.isBlockSolidOnSide(x, y, z, ForgeDirection.EAST, true);
-        boolean isSolid_ZN = renderBlocks.blockAccess.isBlockSolidOnSide(x, y, z, ForgeDirection.NORTH, true);
-        boolean isSolid_ZP = renderBlocks.blockAccess.isBlockSolidOnSide(x, y, z, ForgeDirection.SOUTH, true);
+        Block block = Block.blocksList[world.getBlockId(x, y, z)];
+
+        boolean isSolid_XN = block.isBlockSolidOnSide(world, x, y, z, ForgeDirection.WEST);
+        boolean isSolid_XP = block.isBlockSolidOnSide(world, x, y, z, ForgeDirection.EAST);
+        boolean isSolid_ZN = block.isBlockSolidOnSide(world, x, y, z, ForgeDirection.NORTH);
+        boolean isSolid_ZP = block.isBlockSolidOnSide(world, x, y, z, ForgeDirection.SOUTH);
 
         int metadata = 0;
         int diagMetadata = 0;
@@ -50,72 +54,72 @@ public class FancyFluidsHelper {
             switch (count) {
                 case 2:
                     if (isFluid_ZN && !isSolid_ZN) {
-                        fluidBlock = Block.blocksList[renderBlocks.blockAccess.getBlockId(x, y, z - 1)];
-                        if (metadata < renderBlocks.blockAccess.getBlockMetadata(x, y, z - 1)) {
-                            metadata = renderBlocks.blockAccess.getBlockMetadata(x, y, z - 1);
+                        fluidBlock = Block.blocksList[world.getBlockId(x, y, z - 1)];
+                        if (metadata < world.getBlockMetadata(x, y, z - 1)) {
+                            metadata = world.getBlockMetadata(x, y, z - 1);
                         }
                     }
                     break;
                 case 3:
                     if (isFluid_ZP && !isSolid_ZP) {
-                        fluidBlock = Block.blocksList[renderBlocks.blockAccess.getBlockId(x, y, z + 1)];
-                        if (metadata < renderBlocks.blockAccess.getBlockMetadata(x, y, z + 1)) {
-                            metadata = renderBlocks.blockAccess.getBlockMetadata(x, y, z + 1);
+                        fluidBlock = Block.blocksList[world.getBlockId(x, y, z + 1)];
+                        if (metadata < world.getBlockMetadata(x, y, z + 1)) {
+                            metadata = world.getBlockMetadata(x, y, z + 1);
                         }
                     }
                     break;
                 case 4:
                     if (isFluid_XN && !isSolid_XN) {
-                        fluidBlock = Block.blocksList[renderBlocks.blockAccess.getBlockId(x - 1, y, z)];
-                        if (metadata < renderBlocks.blockAccess.getBlockMetadata(x - 1, y, z)) {
-                            metadata = renderBlocks.blockAccess.getBlockMetadata(x - 1, y, z);
+                        fluidBlock = Block.blocksList[world.getBlockId(x - 1, y, z)];
+                        if (metadata < world.getBlockMetadata(x - 1, y, z)) {
+                            metadata = world.getBlockMetadata(x - 1, y, z);
                         }
                     }
                     break;
                 case 5:
                     if (isFluid_XP && !isSolid_XP) {
-                        fluidBlock = Block.blocksList[renderBlocks.blockAccess.getBlockId(x + 1, y, z)];
-                        if (metadata < renderBlocks.blockAccess.getBlockMetadata(x + 1, y, z)) {
-                            metadata = renderBlocks.blockAccess.getBlockMetadata(x + 1, y, z);
+                        fluidBlock = Block.blocksList[world.getBlockId(x + 1, y, z)];
+                        if (metadata < world.getBlockMetadata(x + 1, y, z)) {
+                            metadata = world.getBlockMetadata(x + 1, y, z);
                         }
                     }
                     break;
                 case 6:
                     if (isFluid_XZPN)  {
-                        diagFluidBlock = Block.blocksList[renderBlocks.blockAccess.getBlockId(x + 1, y, z - 1)];
-                        if (diagMetadata < renderBlocks.blockAccess.getBlockMetadata(x + 1, y, z - 1)) {
-                            diagMetadata = renderBlocks.blockAccess.getBlockMetadata(x + 1, y, z - 1);
+                        diagFluidBlock = Block.blocksList[world.getBlockId(x + 1, y, z - 1)];
+                        if (diagMetadata < world.getBlockMetadata(x + 1, y, z - 1)) {
+                            diagMetadata = world.getBlockMetadata(x + 1, y, z - 1);
                         }
                     }
                     break;
                 case 7:
                     if (isFluid_XZPP) {
-                        diagFluidBlock = Block.blocksList[renderBlocks.blockAccess.getBlockId(x + 1, y, z + 1)];
-                        if (diagMetadata < renderBlocks.blockAccess.getBlockMetadata(x + 1, y, z + 1)) {
-                            diagMetadata = renderBlocks.blockAccess.getBlockMetadata(x + 1, y, z + 1);
+                        diagFluidBlock = Block.blocksList[world.getBlockId(x + 1, y, z + 1)];
+                        if (diagMetadata < world.getBlockMetadata(x + 1, y, z + 1)) {
+                            diagMetadata = world.getBlockMetadata(x + 1, y, z + 1);
                         }
                     }
                     break;
                 case 8:
                     if (isFluid_XZNN) {
-                        diagFluidBlock = Block.blocksList[renderBlocks.blockAccess.getBlockId(x - 1, y, z - 1)];
-                        if (diagMetadata < renderBlocks.blockAccess.getBlockMetadata(x - 1, y, z - 1)) {
-                            diagMetadata = renderBlocks.blockAccess.getBlockMetadata(x - 1, y, z - 1);
+                        diagFluidBlock = Block.blocksList[world.getBlockId(x - 1, y, z - 1)];
+                        if (diagMetadata < world.getBlockMetadata(x - 1, y, z - 1)) {
+                            diagMetadata = world.getBlockMetadata(x - 1, y, z - 1);
                         }
                     }
                     break;
                 case 9:
                     if (isFluid_XZNP) {
-                        diagFluidBlock = Block.blocksList[renderBlocks.blockAccess.getBlockId(x - 1, y, z + 1)];
-                        if (diagMetadata < renderBlocks.blockAccess.getBlockMetadata(x - 1, y, z + 1)) {
-                            diagMetadata = renderBlocks.blockAccess.getBlockMetadata(x - 1, y, z + 1);
+                        diagFluidBlock = Block.blocksList[world.getBlockId(x - 1, y, z + 1)];
+                        if (diagMetadata < world.getBlockMetadata(x - 1, y, z + 1)) {
+                            diagMetadata = world.getBlockMetadata(x - 1, y, z + 1);
                         }
                     }
                     break;
             }
         }
 
-        if (fluidBlock != null && renderPass == fluidBlock.getRenderBlockPass() || diagFluidBlock != null && renderPass == diagFluidBlock.getRenderBlockPass())
+        if (fluidBlock != null && fluidBlock.getRenderBlockPass() == 0 || diagFluidBlock != null && diagFluidBlock.getRenderBlockPass() == 0)
         {
             boolean renderFluid = false;
 
@@ -132,8 +136,8 @@ public class FancyFluidsHelper {
                     case 2:
                         if (
                                 !isSolid_ZP &&
-                                isFluid_ZP || !renderBlocks.blockAccess.isBlockSolidOnSide(x, y, z + 1, ForgeDirection.NORTH, true) &&
-                                (isFluid_XZNP && !renderBlocks.blockAccess.isBlockSolidOnSide(x, y, z + 1, ForgeDirection.WEST, true) || isFluid_XZPP && !renderBlocks.blockAccess.isBlockSolidOnSide(x, y, z + 1, ForgeDirection.EAST, true))
+                                isFluid_ZP || !block_ZP.isBlockSolidOnSide(world, x, y, z + 1, ForgeDirection.NORTH) &&
+                                (isFluid_XZNP && !block_ZP.isBlockSolidOnSide(world, x, y, z + 1, ForgeDirection.WEST) || isFluid_XZPP && !block_ZP.isBlockSolidOnSide(world, x, y, z + 1, ForgeDirection.EAST))
                                 ) {
                             renderFluid = true;
                         }
@@ -141,8 +145,8 @@ public class FancyFluidsHelper {
                     case 3:
                         if (
                                 !isSolid_ZN &&
-                                isFluid_ZN || !renderBlocks.blockAccess.isBlockSolidOnSide(x, y, z - 1, ForgeDirection.SOUTH, true) &&
-                                (isFluid_XZNN && !renderBlocks.blockAccess.isBlockSolidOnSide(x, y, z - 1, ForgeDirection.WEST, true) || isFluid_XZPN && !renderBlocks.blockAccess.isBlockSolidOnSide(x, y, z - 1, ForgeDirection.EAST, true))
+                                isFluid_ZN || !block_ZP.isBlockSolidOnSide(world, x, y, z - 1, ForgeDirection.SOUTH) &&
+                                (isFluid_XZNN && !block_ZP.isBlockSolidOnSide(world, x, y, z - 1, ForgeDirection.WEST) || isFluid_XZPN && !block_ZP.isBlockSolidOnSide(world, x, y, z - 1, ForgeDirection.EAST))
                                 ) {
                             renderFluid = true;
                         }
@@ -150,8 +154,8 @@ public class FancyFluidsHelper {
                     case 4:
                         if (
                                 !isSolid_XP &&
-                                isFluid_XP || !renderBlocks.blockAccess.isBlockSolidOnSide(x + 1, y, z, ForgeDirection.WEST, true) &&
-                                (isFluid_XZPP && !renderBlocks.blockAccess.isBlockSolidOnSide(x + 1, y, z, ForgeDirection.SOUTH, true) || isFluid_XZPN && !renderBlocks.blockAccess.isBlockSolidOnSide(x + 1, y, z, ForgeDirection.NORTH, true))
+                                isFluid_XP || !block_XP.isBlockSolidOnSide(world, x + 1, y, z, ForgeDirection.WEST) &&
+                                (isFluid_XZPP && !block_XP.isBlockSolidOnSide(world, x + 1, y, z, ForgeDirection.SOUTH) || isFluid_XZPN && !block_XP.isBlockSolidOnSide(world, x + 1, y, z, ForgeDirection.NORTH))
                                 ) {
                             renderFluid = true;
                         }
@@ -159,8 +163,8 @@ public class FancyFluidsHelper {
                     case 5:
                         if (
                                 !isSolid_XN &&
-                                isFluid_XN || !renderBlocks.blockAccess.isBlockSolidOnSide(x - 1, y, z, ForgeDirection.EAST, true) &&
-                                (isFluid_XZNP && !renderBlocks.blockAccess.isBlockSolidOnSide(x - 1, y, z, ForgeDirection.SOUTH, true) || isFluid_XZNN && !renderBlocks.blockAccess.isBlockSolidOnSide(x - 1, y, z, ForgeDirection.NORTH, true))
+                                isFluid_XN || !block_XN.isBlockSolidOnSide(world, x - 1, y, z, ForgeDirection.EAST) &&
+                                (isFluid_XZNP && !block_XN.isBlockSolidOnSide(world, x - 1, y, z, ForgeDirection.SOUTH) || isFluid_XZNN && !block_XN.isBlockSolidOnSide(world, x - 1, y, z, ForgeDirection.NORTH))
                                 ) {
                             renderFluid = true;
                         }
@@ -192,9 +196,9 @@ public class FancyFluidsHelper {
                 if (!fluidBlock.hasTileEntity(metadata) && metadata == 0)
                 {
                     double fluidHeight = (fluidBlock instanceof BlockFluid ? 1.0D - 1.0F / 9.0F : 0.875F) - 0.0010000000474974513D;
-                    renderBlocks.setRenderBounds(minX, offset, minZ, maxX, fluidHeight, maxZ);
-                    float rgb[] = lightingHelper.getBlockRGB(fluidBlock, x, y, z);
-                    renderBlocks.renderStandardBlockWithColorMultiplier(fluidBlock, x, y, z, rgb[0], rgb[1], rgb[2]);
+                    blockHandler.renderBlocks.setRenderBounds(minX, offset, minZ, maxX, fluidHeight, maxZ);
+                    float rgb[] = blockHandler.getBlockRGB(fluidBlock, metadata, x, y, z, 1, null);
+                    blockHandler.renderBlocks.renderStandardBlockWithColorMultiplier(fluidBlock, x, y, z, rgb[0], rgb[1], rgb[2]);
                     return true;
                 }
             }

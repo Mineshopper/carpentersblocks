@@ -6,8 +6,10 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet250CustomPayload;
@@ -15,24 +17,76 @@ import carpentersblocks.CarpentersBlocks;
 import carpentersblocks.block.BlockCarpentersSlope;
 import cpw.mods.fml.common.network.IPacketHandler;
 import cpw.mods.fml.common.network.Player;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class PacketHandler implements IPacketHandler {
 
-    public final static int PACKET_DAMAGE_SLOPE_IN_SLOT = 0;
+    public static final byte PACKET_SLOPE_SELECT    = 0;
+    public static final byte PACKET_BLOCK_ACTIVATED = 1;
 
     @Override
     public void onPacketData(INetworkManager manager, Packet250CustomPayload packet, Player player)
     {
         if (packet.channel.equals(CarpentersBlocks.MODID)) {
 
-            DataInputStream inputStream = new DataInputStream(new ByteArrayInputStream(packet.data));
+            EntityPlayer entityPlayer = (EntityPlayer) player;
+            ItemStack itemStack = entityPlayer.getHeldItem();
+            DataInputStream bbis = new DataInputStream(new ByteArrayInputStream(packet.data));
 
-            switch (getEventId(inputStream)) {
-                case PACKET_DAMAGE_SLOPE_IN_SLOT:
-                    damageSlopeInSlot(inputStream, (EntityPlayer) player);
+            switch (getEventId(bbis)) {
+                case PACKET_SLOPE_SELECT:
+
+                    if (itemStack != null) {
+                        try {
+                        	int maxDmg = BlockCarpentersSlope.slopeType.length - 1;
+                        	int itemDmg = itemStack.getItemDamage();
+                        	itemDmg += bbis.readBoolean() ? 1 : -1;
+
+                        	if (itemDmg > maxDmg) {
+                        		itemDmg = 0;
+                        	} else if (itemDmg < 0) {
+                        		itemDmg = maxDmg;
+                        	}
+
+                        	itemStack.setItemDamage(itemDmg);
+                        } catch (IOException e) { }
+                    }
+
                     break;
+                case PACKET_BLOCK_ACTIVATED:
+
+                    try {
+
+                        int x = bbis.readInt();
+                        int y = bbis.readInt();
+                        int z = bbis.readInt();
+                        int side = bbis.readInt();
+
+                        Block block = Block.blocksList[entityPlayer.worldObj.getBlockId(x, y, z)];
+
+                        if (block != null) {
+
+                            boolean result = block.onBlockActivated(entityPlayer.worldObj, x, y, z, entityPlayer, side, 1.0F, 1.0F, 1.0F);
+
+                            if (!result) {
+
+                                if (itemStack != null && itemStack.getItem() instanceof ItemBlock) {
+
+                                    itemStack.tryPlaceItemIntoWorld(entityPlayer, entityPlayer.worldObj, x, y, z, side, 1.0F, 1.0F, 1.0F);
+
+                                    if (!entityPlayer.capabilities.isCreativeMode && --itemStack.stackSize <= 0) {
+                                        entityPlayer.inventory.setInventorySlotContents(entityPlayer.inventory.currentItem, (ItemStack)null);
+                                    }
+
+                                }
+
+                            }
+
+                        }
+
+                    } catch (IOException e) { }
+
+                    break;
+                default: {}
             }
 
         }
@@ -53,72 +107,35 @@ public class PacketHandler implements IPacketHandler {
         return packetId;
     }
 
-    /**
-     * Updates player inventory slot with new ItemStack.
-     * Used to dynamically adjust slope type with mouse event.
-     */
-    public static void damageSlopeInSlot(DataInputStream inputStream, EntityPlayer entityPlayer)
+    public static void sendPacketToServer(int packetId, Object ... obj)
     {
         try {
 
-            inputStream.readInt();
-            boolean damage = inputStream.readBoolean();
-
-            ItemStack itemStack = entityPlayer.getHeldItem();
-
-            if (itemStack != null) {
-
-                if (damage) {
-
-                    if (itemStack.getItemDamage() >= BlockCarpentersSlope.slopeType.length - 1) {
-                        itemStack.setItemDamage(0);
-                    } else {
-                        itemStack.setItemDamage(itemStack.getItemDamage() + 1);
-                    }
-
-                } else {
-
-                    if (itemStack.getItemDamage() <= 0) {
-                        itemStack.setItemDamage(BlockCarpentersSlope.slopeType.length - 1);
-                    } else {
-                        itemStack.setItemDamage(itemStack.getItemDamage() - 1);
-                    }
-
-                }
-
+            Packet250CustomPayload packet = new Packet250CustomPayload();
+            ByteArrayOutputStream bos = new ByteArrayOutputStream(8);
+            DataOutputStream outputStream = new DataOutputStream(bos);
+            outputStream.writeInt(packetId);
+            switch (packetId) {
+                case PACKET_SLOPE_SELECT:
+                    outputStream.writeBoolean((Boolean) obj[0]);
+                    break;
+                case PACKET_BLOCK_ACTIVATED:
+                    outputStream.writeInt((Integer) obj[0]);
+                    outputStream.writeInt((Integer) obj[1]);
+                    outputStream.writeInt((Integer) obj[2]);
+                    outputStream.writeInt((Integer) obj[3]);
+                    break;
+                default:
+                    break;
             }
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+            packet.channel = CarpentersBlocks.MODID;
+            packet.data = bos.toByteArray();
+            packet.length = bos.size();
 
-    @SideOnly(Side.CLIENT)
-    /**
-     * Tells server to set slope damage in given slot.
-     * When damage is true, increases damage; decreases damage for false.
-     * Used to dynamically adjust slope type with mouse event.
-     */
-    public static void damageSlopeInSlot(int slot, boolean damage)
-    {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream(8);
-        DataOutputStream outputStream = new DataOutputStream(bos);
+            Minecraft.getMinecraft().getNetHandler().addToSendQueue(packet);
 
-        Packet250CustomPayload packet = new Packet250CustomPayload();
-
-        try {
-            outputStream.writeInt(PACKET_DAMAGE_SLOPE_IN_SLOT);
-            outputStream.writeInt(slot);
-            outputStream.writeBoolean(damage);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-
-        packet.channel = CarpentersBlocks.MODID;
-        packet.data = bos.toByteArray();
-        packet.length = bos.size();
-
-        Minecraft.getMinecraft().getNetHandler().addToSendQueue(packet);
+        } catch (IOException e) { }
     }
 
 }

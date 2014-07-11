@@ -21,16 +21,6 @@ public class Slope {
      * slopeID
      */
 
-    /*
-     * Slope IDs.
-     *
-     * IDs 0 - 11 are set arbitrarily when
-     * block is placed in world.
-     *
-     * IDs 12 - 45 are mixed to retain compatibility
-     * with older versions.
-     */
-
     public final static byte ID_WEDGE_SE          = 0;
     public final static byte ID_WEDGE_NW          = 1;
     public final static byte ID_WEDGE_NE          = 2;
@@ -43,40 +33,40 @@ public class Slope {
     public final static byte ID_WEDGE_POS_S       = 9;
     public final static byte ID_WEDGE_POS_W       = 10;
     public final static byte ID_WEDGE_POS_E       = 11;
-    public final static byte ID_WEDGE_INT_NEG_SE  = 19;
-    public final static byte ID_WEDGE_INT_NEG_NW  = 15;
-    public final static byte ID_WEDGE_INT_NEG_NE  = 13;
-    public final static byte ID_WEDGE_INT_NEG_SW  = 17;
-    public final static byte ID_WEDGE_INT_POS_SE  = 18;
-    public final static byte ID_WEDGE_INT_POS_NW  = 14;
-    public final static byte ID_WEDGE_INT_POS_NE  = 12;
-    public final static byte ID_WEDGE_INT_POS_SW  = 16;
-    public final static byte ID_WEDGE_EXT_NEG_SE  = 23;
-    public final static byte ID_WEDGE_EXT_NEG_NW  = 27;
-    public final static byte ID_WEDGE_EXT_NEG_NE  = 25;
-    public final static byte ID_WEDGE_EXT_NEG_SW  = 21;
-    public final static byte ID_WEDGE_EXT_POS_SE  = 22;
-    public final static byte ID_WEDGE_EXT_POS_NW  = 26;
-    public final static byte ID_WEDGE_EXT_POS_NE  = 24;
-    public final static byte ID_WEDGE_EXT_POS_SW  = 20;
-    public final static byte ID_OBL_INT_NEG_SE    = 35;
-    public final static byte ID_OBL_INT_NEG_NW    = 31;
-    public final static byte ID_OBL_INT_NEG_NE    = 29;
-    public final static byte ID_OBL_INT_NEG_SW    = 33;
-    public final static byte ID_OBL_INT_POS_SE    = 34;
-    public final static byte ID_OBL_INT_POS_NW    = 30;
-    public final static byte ID_OBL_INT_POS_NE    = 28;
-    public final static byte ID_OBL_INT_POS_SW    = 32;
-    public final static byte ID_OBL_EXT_NEG_SE    = 39;
-    public final static byte ID_OBL_EXT_NEG_NW    = 43;
-    public final static byte ID_OBL_EXT_NEG_NE    = 41;
-    public final static byte ID_OBL_EXT_NEG_SW    = 37;
-    public final static byte ID_OBL_EXT_POS_SE    = 38;
-    public final static byte ID_OBL_EXT_POS_NW    = 42;
-    public final static byte ID_OBL_EXT_POS_NE    = 40;
-    public final static byte ID_OBL_EXT_POS_SW    = 36;
-    public final static byte ID_PRISM_NEG         = 45;
-    public final static byte ID_PRISM_POS         = 44;
+    public final static byte ID_WEDGE_INT_NEG_SE  = 12;
+    public final static byte ID_WEDGE_INT_NEG_NW  = 13;
+    public final static byte ID_WEDGE_INT_NEG_NE  = 14;
+    public final static byte ID_WEDGE_INT_NEG_SW  = 15;
+    public final static byte ID_WEDGE_INT_POS_SE  = 16;
+    public final static byte ID_WEDGE_INT_POS_NW  = 17;
+    public final static byte ID_WEDGE_INT_POS_NE  = 18;
+    public final static byte ID_WEDGE_INT_POS_SW  = 19;
+    public final static byte ID_WEDGE_EXT_NEG_SE  = 20;
+    public final static byte ID_WEDGE_EXT_NEG_NW  = 21;
+    public final static byte ID_WEDGE_EXT_NEG_NE  = 22;
+    public final static byte ID_WEDGE_EXT_NEG_SW  = 23;
+    public final static byte ID_WEDGE_EXT_POS_SE  = 24;
+    public final static byte ID_WEDGE_EXT_POS_NW  = 25;
+    public final static byte ID_WEDGE_EXT_POS_NE  = 26;
+    public final static byte ID_WEDGE_EXT_POS_SW  = 27;
+    public final static byte ID_OBL_INT_NEG_SE    = 28;
+    public final static byte ID_OBL_INT_NEG_NW    = 29;
+    public final static byte ID_OBL_INT_NEG_NE    = 30;
+    public final static byte ID_OBL_INT_NEG_SW    = 31;
+    public final static byte ID_OBL_INT_POS_SE    = 32;
+    public final static byte ID_OBL_INT_POS_NW    = 33;
+    public final static byte ID_OBL_INT_POS_NE    = 34;
+    public final static byte ID_OBL_INT_POS_SW    = 35;
+    public final static byte ID_OBL_EXT_NEG_SE    = 36;
+    public final static byte ID_OBL_EXT_NEG_NW    = 37;
+    public final static byte ID_OBL_EXT_NEG_NE    = 38;
+    public final static byte ID_OBL_EXT_NEG_SW    = 39;
+    public final static byte ID_OBL_EXT_POS_SE    = 40;
+    public final static byte ID_OBL_EXT_POS_NW    = 41;
+    public final static byte ID_OBL_EXT_POS_NE    = 42;
+    public final static byte ID_OBL_EXT_POS_SW    = 43;
+    public final static byte ID_PRISM_NEG         = 44;
+    public final static byte ID_PRISM_POS         = 45;
     public final static byte ID_PRISM_1P_POS_N    = 46;
     public final static byte ID_PRISM_1P_POS_S    = 47;
     public final static byte ID_PRISM_1P_POS_W    = 48;

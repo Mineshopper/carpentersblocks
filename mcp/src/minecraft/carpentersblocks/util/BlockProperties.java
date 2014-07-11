@@ -11,31 +11,97 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemDye;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
-import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import carpentersblocks.CarpentersBlocks;
+import carpentersblocks.block.BlockCoverable;
 import carpentersblocks.tileentity.TEBase;
+import carpentersblocks.util.handler.DesignHandler;
+import carpentersblocks.util.handler.DyeHandler;
 import carpentersblocks.util.handler.OverlayHandler;
 import carpentersblocks.util.registry.FeatureRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
-public class BlockProperties {
+public final class BlockProperties {
+
+    private BlockProperties() { }
 
     public final static StepSound stepSound = new StepSound(CarpentersBlocks.MODID, 1.0F, 1.0F);
+    public final static int       MASK_DEFAULT_ICON = 0x10;
+
+    public static boolean isMetadataDefaultIcon(int metadata)
+    {
+        return (metadata & MASK_DEFAULT_ICON) > 0;
+    }
+
+    /**
+     * Adds additional data to unused bits in ItemStack metadata to
+     * identify special properties for ItemStack.
+     *
+     * Tells BlockCoverable class to retrieve block icon rather than
+     * default blank icon.
+     *
+     * @param itemStack
+     * @param mask
+     */
+    public static void prepareItemStackForRendering(ItemStack itemStack)
+    {
+        if (toBlock(itemStack) instanceof BlockCoverable) {
+            itemStack.setItemDamage(itemStack.getItemDamage() | MASK_DEFAULT_ICON);
+        }
+    }
+
+    /**
+     * Sets host metadata to match ItemStack damage value.
+     *
+     * Most often used when retrieving properties for side covers,
+     * or any ItemStack in general besides base cover (side == 6).
+     */
+    public static void setHostMetadata(TEBase TE, int metadata)
+    {
+        TE.getWorldObj().setBlockMetadataWithNotify(TE.xCoord, TE.yCoord, TE.zCoord, metadata, 4);
+    }
+
+    /**
+     * Resets host block metadata.
+     */
+    public static void resetHostMetadata(TEBase TE)
+    {
+        TE.getWorldObj().setBlockMetadataWithNotify(TE.xCoord, TE.yCoord, TE.zCoord, BlockProperties.getCover(TE, 6).getItemDamage(), 4);
+    }
+
+    /**
+     * Takes an ItemStack and returns block, or null if ItemStack
+     * does not contain a block.
+     */
+    public static Block toBlock(ItemStack itemStack)
+    {
+        if (itemStack != null && itemStack.getItem() instanceof ItemBlock) {
+            return Block.blocksList[itemStack.itemID];
+        } else {
+            return null;
+        }
+    }
 
     /**
      * Returns depth of side cover.
      */
     public static float getSideCoverDepth(TEBase TE, int side)
     {
-        if (getOverlay(TE, side) == OverlayHandler.OVERLAY_SNOW) {
-            return 0.125F;
-        } else {
-            return 0.0625F;
+        if (side == 1 && hasCover(TE, side)) {
+
+            Block block = toBlock(getCover(TE, side));
+
+            if (block.equals(Block.snow) || block.equals(Block.blockSnow)) {
+                return 0.125F;
+            }
+
         }
+
+        return 0.0625F;
     }
 
     /**
@@ -67,22 +133,6 @@ public class BlockProperties {
     }
 
     /**
-     * Returns RGB of dye metadata.
-     */
-    public static float[] getDyeRGB(int metadata)
-    {
-        int color = ItemDye.dyeColors[15 - metadata];
-
-        float red = (color >> 16 & 255) / 255.0F;
-        float green = (color >> 8 & 255) / 255.0F;
-        float blue = (color & 255) / 255.0F;
-
-        float[] rgb = { red, green, blue };
-
-        return rgb;
-    }
-
-    /**
      * Will suppress block updates.
      */
     private static boolean suppressUpdate = false;
@@ -92,44 +142,67 @@ public class BlockProperties {
      */
     public static void ejectEntity(TEBase TE, ItemStack itemStack)
     {
-        if (!TE.worldObj.isRemote)
-        {
-            float offset = 0.7F;
-            double xRand = TE.worldObj.rand.nextFloat() * offset + (1.0F - offset) * 0.5D;
-            double yRand = TE.worldObj.rand.nextFloat() * offset + (1.0F - offset) * 0.2D + 0.6D;
-            double zRand = TE.worldObj.rand.nextFloat() * offset + (1.0F - offset) * 0.5D;
+        World world = TE.getWorldObj();
 
-            EntityItem entityEjectedItem = new EntityItem(TE.worldObj, TE.xCoord + xRand, TE.yCoord + yRand, TE.zCoord + zRand, itemStack);
+        if (!world.isRemote) {
+
+            itemStack.stackSize = 1;
+
+            float offset = 0.7F;
+            double xRand = world.rand.nextFloat() * offset + (1.0F - offset) * 0.5D;
+            double yRand = world.rand.nextFloat() * offset + (1.0F - offset) * 0.2D + 0.6D;
+            double zRand = world.rand.nextFloat() * offset + (1.0F - offset) * 0.5D;
+
+            EntityItem entityEjectedItem = new EntityItem(world, TE.xCoord + xRand, TE.yCoord + yRand, TE.zCoord + zRand, itemStack);
 
             entityEjectedItem.delayBeforeCanPickup = 10;
-            TE.worldObj.spawnEntityInWorld(entityEjectedItem);
+            world.spawnEntityInWorld(entityEjectedItem);
+
         }
     }
 
-    /**
-     * Returns whether block has an owner.
-     * This is mainly for older blocks before ownership was implemented.
-     */
-    public static boolean hasOwner(TEBase TE)
+    public static boolean hasDesign(TEBase TE)
     {
-        return !TE.getOwner().equals("");
+        return DesignHandler.getListForType(getBlockDesignType(TE)).contains(getDesign(TE));
     }
 
-    /**
-     * Returns owner of block.
-     */
-    public static String getOwner(TEBase TE)
+    public static String getDesign(TEBase TE)
     {
-        return TE.getOwner();
+        return TE.design;
     }
 
-    /**
-     * Sets owner of block.
-     */
-    public static void setOwner(TEBase TE, EntityLivingBase entityPlayer)
+    public static boolean setDesign(TEBase TE, String name)
     {
-        TE.setOwner(entityPlayer.getEntityName());
-        TE.worldObj.markBlockForUpdate(TE.xCoord, TE.yCoord, TE.zCoord);
+        if (!TE.design.equals(name)) {
+            TE.design = name;
+            if (!suppressUpdate) {
+                TE.getWorldObj().markBlockForUpdate(TE.xCoord, TE.yCoord, TE.zCoord);
+            }
+            return true;
+        }
+
+        return false;
+    }
+
+    public static boolean clearDesign(TEBase TE)
+    {
+        return setDesign(TE, "");
+    }
+
+    public static String getBlockDesignType(TEBase TE)
+    {
+        String name = TE.getBlockType().getUnlocalizedName();
+        return name.substring(new String("tile.blockCarpenters").length()).toLowerCase();
+    }
+
+    public static boolean setNextDesign(TEBase TE)
+    {
+        return setDesign(TE, DesignHandler.getNext(getBlockDesignType(TE), getDesign(TE)));
+    }
+
+    public static boolean setPrevDesign(TEBase TE)
+    {
+        return setDesign(TE, DesignHandler.getPrev(getBlockDesignType(TE), getDesign(TE)));
     }
 
     /**
@@ -137,25 +210,21 @@ public class BlockProperties {
      * The blocks that utilize this property are mostly atypical, and
      * must be added manually.
      */
-    public static boolean blockRotates(Block block)
+    public static boolean blockRotates(ItemStack itemStack)
     {
+        Block block = toBlock(itemStack);
+
         return block instanceof BlockQuartz ||
-                block instanceof BlockRotatedPillar;
+               block instanceof BlockRotatedPillar;
     }
 
     /**
      * Plays block sound.
+     * Reduced volume is for damaging a block, versus full volume for placement or destruction.
      */
-    public static void playBlockSound(TEBase TE, Block block)
+    public static void playBlockSound(World world, ItemStack itemStack, int x, int y, int z, boolean reducedVolume)
     {
-        playBlockSound(TE.worldObj, block, TE.xCoord, TE.yCoord, TE.zCoord);
-    }
-
-    /**
-     * Plays block sound.
-     */
-    public static void playBlockSound(World world, Block block, int x, int y, int z)
-    {
+        Block block = toBlock(itemStack);
         world.playSoundEffect(x + 0.5F, y + 0.5F, z + 0.5F, block.stepSound.getPlaceSound(), block.stepSound.getVolume() + 1.0F / 2.0F, block.stepSound.getPitch() * 0.8F);
     }
 
@@ -166,41 +235,25 @@ public class BlockProperties {
     public static boolean hasAttribute(TEBase TE, int side)
     {
         return hasCover(TE, side) ||
-                hasDyeColor(TE, side) ||
-                hasOverlay(TE, side);
+               hasDye(TE, side) ||
+               hasOverlay(TE, side);
     }
 
     /**
      * Strips side of all properties.
      */
-    public static void clearAttributes(TEBase TE, int side)
+    public static void ejectAttributes(TEBase TE, int side)
     {
         suppressUpdate = true;
 
-        setDyeColor(TE, side, 0);
+        setCover(TE, side, (ItemStack)null);
+        setDye(TE, side, (ItemStack)null);
         setOverlay(TE, side, (ItemStack)null);
-        setCover(TE, side, 0, (ItemStack)null);
-        setPattern(TE, side, 0);
+        setChiselDesign(TE, side, "");
 
         suppressUpdate = false;
 
-        TE.worldObj.markBlockForUpdate(TE.xCoord, TE.yCoord, TE.zCoord);
-    }
-
-    /**
-     * Returns cover block ID.
-     */
-    public static int getCoverID(TEBase TE, int side)
-    {
-        return TE.cover[side] & 0xfff;
-    }
-
-    /**
-     * Returns cover block metadata.
-     */
-    public static int getCoverMetadata(TEBase TE, int side)
-    {
-        return (TE.cover[side] & 0xf000) >>> 12;
+        TE.getWorldObj().markBlockForUpdate(TE.xCoord, TE.yCoord, TE.zCoord);
     }
 
     /**
@@ -209,12 +262,8 @@ public class BlockProperties {
      */
     public static boolean hasCover(TEBase TE, int side)
     {
-        int coverID = getCoverID(TE, side);
-        int metadata = getCoverMetadata(TE, side);
-
-        return coverID > 0 &&
-                Block.blocksList[coverID] != null &&
-                isCover(new ItemStack(coverID, 1, metadata));
+        return TE.cover[side] != null &&
+               isCover(TE.cover[side]);
     }
 
     /**
@@ -231,30 +280,32 @@ public class BlockProperties {
         return false;
     }
 
-    /**
-     * Returns cover block.
-     */
-    public static Block getCoverBlock(IBlockAccess world, int side, int x, int y, int z)
+    private static ItemStack getCoverUnfiltered(TEBase TE, int side)
     {
-        TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
+        return TE.cover[side] != null ? TE.cover[side] : new ItemStack(TE.getBlockType());
+    }
 
-        return getCoverBlock(TE, side);
+    @SideOnly(Side.CLIENT)
+    /**
+     * Returns untouched cover ItemStack for rendering purposes.
+     */
+    public static ItemStack getCoverForRendering(TEBase TE, int side)
+    {
+        return getCoverUnfiltered(TE, side);
     }
 
     /**
-     * Returns cover block.
+     * Returns filtered cover ItemStack that is safe for calling block properties.
+     *
+     * This is needed to avoid calling properties for covers that have NBTTagCompounds,
+     * which may rely on data that does not exist.
      */
-    public static Block getCoverBlock(TEBase TE, int side)
+    public static ItemStack getCover(TEBase TE, int side)
     {
-        Block coverBlock;
+        ItemStack itemStack = getCoverUnfiltered(TE, side);
+        Block block = toBlock(itemStack);
 
-        if (hasCover(TE, side)) {
-            coverBlock = Block.blocksList[getCoverID(TE, side)];
-        } else {
-            coverBlock = Block.blocksList[TE.worldObj.getBlockId(TE.xCoord, TE.yCoord, TE.zCoord)];
-        }
-
-        return coverBlock;
+        return block.hasTileEntity(itemStack.getItemDamage()) && !(block instanceof BlockCoverable) ? new ItemStack(Block.planks) : itemStack;
     }
 
     /**
@@ -262,15 +313,16 @@ public class BlockProperties {
      */
     public static boolean isCover(ItemStack itemStack)
     {
-        if (itemStack.getItem() instanceof ItemBlock && !isOverlay(itemStack))
-        {
-            Block block = Block.blocksList[itemStack.getItem().itemID];
+        if (itemStack.getItem() instanceof ItemBlock && !isOverlay(itemStack)) {
 
-            if (block.hasTileEntity(itemStack.getItemDamage()) && FeatureRegistry.restrictTileEntityAsCover) {
-                return false;
-            } else {
-                return block.renderAsNormalBlock() || block instanceof BlockHalfSlab || block instanceof BlockPane || block instanceof BlockBreakable;
-            }
+            Block block = Block.blocksList[itemStack.itemID];
+
+            return block.renderAsNormalBlock() ||
+                   block instanceof BlockHalfSlab ||
+                   block instanceof BlockPane ||
+                   block instanceof BlockBreakable ||
+                   FeatureRegistry.coverExceptions.contains(itemStack.getDisplayName());
+
         }
 
         return false;
@@ -282,21 +334,21 @@ public class BlockProperties {
      */
     public static ItemStack getFilteredBlock(World world, ItemStack itemStack)
     {
-        if (itemStack != null)
-        {
-            Block block = Block.blocksList[itemStack.itemID];
+        if (itemStack != null) {
 
-            int itemDropped = block.idDropped(itemStack.getItemDamage(), world.rand, /* Fortune */ 0);
+            Block block = toBlock(itemStack);
             int damageDropped = block.damageDropped(itemStack.getItemDamage());
+            Item itemDropped = Item.itemsList[block.idDropped(itemStack.getItemDamage(), world.rand, /* Fortune */ 0)];
 
             /*
              * Check if block drops itself, and, if so, correct the damage value
              * to the block's default.
              */
 
-            if (itemStack.itemID == itemDropped && damageDropped != itemStack.getItemDamage()) {
+            if (itemDropped != null && itemDropped.equals(itemStack.getItem()) && damageDropped != itemStack.getItemDamage()) {
                 itemStack.setItemDamage(damageDropped);
             }
+
         }
 
         return itemStack;
@@ -305,73 +357,99 @@ public class BlockProperties {
     /**
      * Sets cover block.
      */
-    public static boolean setCover(TEBase TE, int side, int metadata, ItemStack itemStack)
+    public static boolean setCover(TEBase TE, int side, ItemStack itemStack)
     {
+        World world = TE.getWorldObj();
+
         if (hasCover(TE, side)) {
-            ejectEntity(TE, getFilteredBlock(TE.worldObj, new ItemStack(getCoverID(TE, side), 1, getCoverMetadata(TE, side))));
+            ejectEntity(TE, getFilteredBlock(world, TE.cover[side]));
         }
+
+        TE.cover[side] = itemStack;
 
         int blockID = itemStack == null ? 0 : itemStack.itemID;
-
-        TE.cover[side] = (short) (blockID + (metadata << 12));
+        int metadata = itemStack == null ? 0 : itemStack.getItemDamage();
 
         if (side == 6) {
-            TE.worldObj.setBlockMetadataWithNotify(TE.xCoord, TE.yCoord, TE.zCoord, metadata, 0);
+            world.setBlockMetadataWithNotify(TE.xCoord, TE.yCoord, TE.zCoord, metadata, 0);
         }
 
-        TE.worldObj.notifyBlocksOfNeighborChange(TE.xCoord, TE.yCoord, TE.zCoord, blockID);
-        TE.worldObj.markBlockForUpdate(TE.xCoord, TE.yCoord, TE.zCoord);
+        world.notifyBlocksOfNeighborChange(TE.xCoord, TE.yCoord, TE.zCoord, blockID);
+        world.markBlockForUpdate(TE.xCoord, TE.yCoord, TE.zCoord);
 
         return true;
     }
 
     /**
-     * Get block data.
-     * Will handle signed data types automatically.
+     * Get extended metadata for Carpenter's block.
+     *
+     * @deprecated  Provided until Smart Moving updates.
+     *    Replaced by {@link #getMetadata(TEBase)}
+     * @return extended metadata
      */
+    @Deprecated
     public final static int getData(TEBase TE)
     {
-        return TE.data & 0xffff;
+        return getMetadata(TE);
+    }
+
+    /**
+     * Get extended metadata for Carpenter's block.
+     *
+     * @return
+     */
+    public final static int getMetadata(TEBase TE)
+    {
+        return TE.metadata & 0xffff;
     }
 
     /**
      * Set block data.
-     * Will do nothing if data is not altered.
      */
-    public static void setData(TEBase TE, int data)
+    public static boolean setMetadata(TEBase TE, int data)
     {
-        /* No need to update if data hasn't changed. */
-        if (data != getData(TE))
-        {
-            TE.data = (short) data;
-
+        if (data != getMetadata(TE)) {
+            TE.metadata = (short) data;
             if (!suppressUpdate) {
-                TE.worldObj.markBlockForUpdate(TE.xCoord, TE.yCoord, TE.zCoord);
+                TE.getWorldObj().markBlockForUpdate(TE.xCoord, TE.yCoord, TE.zCoord);
             }
+            return true;
         }
+
+        return false;
+    }
+
+    /**
+     * Returns true if ItemStack is a dye.
+     */
+    public static boolean isDye(ItemStack itemStack, boolean allowWhite)
+    {
+        return itemStack.getItem() != null &&
+               DyeHandler.isDye(itemStack, allowWhite);
     }
 
     /**
      * Returns whether side has cover.
      */
-    public static boolean hasDyeColor(TEBase TE, int side)
+    public static boolean hasDye(TEBase TE, int side)
     {
-        return TE.color[side] > 0;
+        return TE.dye[side] != null &&
+               isDye(TE.dye[side], true);
     }
 
     /**
      * Sets color for side.
      */
-    public static boolean setDyeColor(TEBase TE, int side, int metadata)
+    public static boolean setDye(TEBase TE, int side, ItemStack itemStack)
     {
-        if (TE.color[side] > 0) {
-            ejectEntity(TE, new ItemStack(Item.dyePowder, 1, 15 - TE.color[side]));
+        if (TE.dye[side] != null) {
+            ejectEntity(TE, TE.dye[side]);
         }
 
-        TE.color[side] = (byte) metadata;
+        TE.dye[side] = itemStack;
 
         if (!suppressUpdate) {
-            TE.worldObj.markBlockForUpdate(TE.xCoord, TE.yCoord, TE.zCoord);
+            TE.getWorldObj().markBlockForUpdate(TE.xCoord, TE.yCoord, TE.zCoord);
         }
 
         return true;
@@ -380,9 +458,9 @@ public class BlockProperties {
     /**
      * Returns dye color for side.
      */
-    public static int getDyeColor(TEBase TE, int side)
+    public static ItemStack getDye(TEBase TE, int side)
     {
-        return TE.color[side];
+        return TE.dye[side];
     }
 
     /**
@@ -391,13 +469,13 @@ public class BlockProperties {
     public static boolean setOverlay(TEBase TE, int side, ItemStack itemStack)
     {
         if (hasOverlay(TE, side)) {
-            ejectEntity(TE, OverlayHandler.getItemStack(TE.overlay[side]));
+            ejectEntity(TE, TE.overlay[side]);
         }
 
-        TE.overlay[side] = (byte) OverlayHandler.getKey(itemStack);
+        TE.overlay[side] = itemStack;
 
         if (!suppressUpdate) {
-            TE.worldObj.markBlockForUpdate(TE.xCoord, TE.yCoord, TE.zCoord);
+            TE.getWorldObj().markBlockForUpdate(TE.xCoord, TE.yCoord, TE.zCoord);
         }
 
         return true;
@@ -406,7 +484,7 @@ public class BlockProperties {
     /**
      * Returns overlay.
      */
-    public static int getOverlay(TEBase TE, int side)
+    public static ItemStack getOverlay(TEBase TE, int side)
     {
         return TE.overlay[side];
     }
@@ -416,7 +494,8 @@ public class BlockProperties {
      */
     public static boolean hasOverlay(TEBase TE, int side)
     {
-        return TE.overlay[side] > 0;
+        return TE.overlay[side] != null &&
+               isOverlay(TE.overlay[side]);
     }
 
     /**
@@ -424,37 +503,40 @@ public class BlockProperties {
      */
     public static boolean isOverlay(ItemStack itemStack)
     {
-        return OverlayHandler.overlayMap.containsValue(itemStack.itemID);
+        return itemStack.getItem() != null &&
+               OverlayHandler.overlayMap.containsKey(itemStack.getDisplayName());
     }
 
     /**
      * Returns whether block has pattern.
      */
-    public static boolean hasPattern(TEBase TE, int side)
+    public static boolean hasChiselDesign(TEBase TE, int side)
     {
-        return getPattern(TE, side) > 0;
+        return DesignHandler.listChisel.contains(getChiselDesign(TE, side));
     }
 
     /**
      * Returns pattern.
      */
-    public static int getPattern(TEBase TE, int side)
+    public static String getChiselDesign(TEBase TE, int side)
     {
-        return TE.pattern[side] & 0xffff;
+        return TE.chiselDesign[side];
     }
 
     /**
      * Sets pattern.
      */
-    public static boolean setPattern(TEBase TE, int side, int pattern)
+    public static boolean setChiselDesign(TEBase TE, int side, String iconName)
     {
-        TE.pattern[side] = (byte) pattern;
-
-        if (!suppressUpdate) {
-            TE.worldObj.markBlockForUpdate(TE.xCoord, TE.yCoord, TE.zCoord);
+        if (!TE.chiselDesign.equals(iconName)) {
+            TE.chiselDesign[side] = iconName;
+            if (!suppressUpdate) {
+                TE.getWorldObj().markBlockForUpdate(TE.xCoord, TE.yCoord, TE.zCoord);
+            }
+            return true;
         }
 
-        return true;
+        return false;
     }
 
 }

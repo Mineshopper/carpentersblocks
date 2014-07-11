@@ -1,5 +1,6 @@
 package carpentersblocks.block;
 
+import java.util.List;
 import java.util.Random;
 
 import net.minecraft.block.Block;
@@ -7,10 +8,13 @@ import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemDye;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.Icon;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
@@ -19,7 +23,6 @@ import carpentersblocks.data.FlowerPot;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.tileentity.TECarpentersFlowerPot;
 import carpentersblocks.util.BlockProperties;
-import carpentersblocks.util.flowerpot.FlowerPotDesignHandler;
 import carpentersblocks.util.flowerpot.FlowerPotHandler;
 import carpentersblocks.util.flowerpot.FlowerPotProperties;
 import carpentersblocks.util.handler.EventHandler;
@@ -30,30 +33,17 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockCarpentersFlowerPot extends BlockCoverable {
 
-    public BlockCarpentersFlowerPot(int blockID)
+    public BlockCarpentersFlowerPot(int blockID, Material material)
     {
-        super(blockID, Material.wood);
-        setHardness(0.5F);
-        setStepSound(soundPowderFootstep);
-        setUnlocalizedName("blockCarpentersFlowerPot");
-        setCreativeTab(CarpentersBlocks.tabCarpentersBlocks);
-        setTextureName("carpentersblocks:general/solid");
+        super(blockID, material);
     }
 
     @SideOnly(Side.CLIENT)
     @Override
     public void registerIcons(IconRegister iconRegister)
     {
-        for (int numIcon = 0; numIcon < FlowerPotDesignHandler.maxNum; ++numIcon) {
-            if (FlowerPotDesignHandler.hasDesign[numIcon]) {
-                IconRegistry.icon_flower_pot_design[numIcon] = iconRegister.registerIcon("carpentersblocks:flowerpot/design/design_" + numIcon);
-            }
-        }
-
-        IconRegistry.icon_flower_pot = iconRegister.registerIcon("carpentersblocks:flowerpot/flower_pot");
-        IconRegistry.icon_flower_pot_glass = iconRegister.registerIcon("carpentersblocks:flowerpot/flower_pot_glass");
-
-        super.registerIcons(iconRegister);
+        IconRegistry.icon_flower_pot       = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "flowerpot/flower_pot");
+        IconRegistry.icon_flower_pot_glass = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "flowerpot/flower_pot_glass");
     }
 
     @SideOnly(Side.CLIENT)
@@ -77,6 +67,31 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
 
     @Override
     /**
+     * Cycle backward through bed designs.
+     */
+    protected boolean onHammerLeftClick(TEBase TE, EntityPlayer entityPlayer)
+    {
+        BlockProperties.setPrevDesign(TE);
+        return true;
+    }
+
+    @Override
+    /**
+     * Cycle forward through designs or set to no design.
+     */
+    protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer)
+    {
+        if (entityPlayer.isSneaking()) {
+            BlockProperties.clearDesign(TE);
+        } else {
+            BlockProperties.setNextDesign(TE);
+        }
+
+        return true;
+    }
+
+    @Override
+    /**
      * Sneak-click removes plant and/or soil.
      */
     protected boolean preOnBlockClicked(TEBase TE, World world, int x, int y, int z, EntityPlayer entityPlayer)
@@ -85,14 +100,19 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
 
             if (EventHandler.hitY > 0.375F) {
 
+                if (FlowerPot.isEnriched(TE)) {
+                    FlowerPot.setEnrichment(TE, false);
+                    return true;
+                }
+
                 if (FlowerPotProperties.hasPlant(TE)) {
-                    return FlowerPotProperties.setPlant((TECarpentersFlowerPot)TE, (ItemStack)null);
+                    return FlowerPotProperties.setPlant(TE, (ItemStack)null);
                 }
 
             } else if (FlowerPotProperties.hasSoil(TE)) {
 
                 if (EventHandler.eventFace == 1 && EventHandler.hitX > 0.375F && EventHandler.hitX < 0.625F && EventHandler.hitZ > 0.375F && EventHandler.hitZ < 0.625F) {
-                    return FlowerPotProperties.setSoil((TECarpentersFlowerPot)TE, (ItemStack)null);
+                    return FlowerPotProperties.setSoil(TE, (ItemStack)null);
                 }
 
             }
@@ -104,47 +124,21 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
 
     @Override
     /**
-     * Cycle backward through bed designs.
-     */
-    protected boolean onHammerLeftClick(TEBase TE, EntityPlayer entityPlayer)
-    {
-        int design = FlowerPotDesignHandler.getPrev(FlowerPot.getDesign(TE));
-        FlowerPot.setDesign(TE, design);
-
-        return true;
-    }
-
-    @Override
-    /**
-     * Cycle forward through designs or set to no design.
-     */
-    protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer)
-    {
-        if (entityPlayer.isSneaking()) {
-            FlowerPot.setDesign(TE, 0);
-        } else {
-            int design = FlowerPotDesignHandler.getNext(FlowerPot.getDesign(TE));
-            FlowerPot.setDesign(TE, design);
-        }
-
-        return true;
-    }
-
-    @Override
-    /**
      * Everything contained in this will run before default onBlockActivated events take place,
      * but after the player has been verified to have permission to edit block.
      */
-    protected boolean[] preOnBlockActivated(TEBase TE, World world, int x, int y, int z, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ)
+    protected void preOnBlockActivated(TEBase TE, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ, List<Boolean> altered, List<Boolean> decInv)
     {
-        ItemStack itemStack = entityPlayer.getCurrentEquippedItem();
+        ItemStack itemStack = entityPlayer.getHeldItem();
 
-        int ALTERED = 0;
-        int DEC_INV = 1;
-        boolean[] result = { false, false };
+        World world = TE.getWorldObj();
 
-        if (itemStack != null)
-        {
+        int x = TE.xCoord;
+        int y = TE.yCoord;
+        int z = TE.zCoord;
+
+        if (itemStack != null) {
+
             boolean hasCover = BlockProperties.hasCover(TE, 6);
             boolean hasOverlay = BlockProperties.hasOverlay(TE, 6);
             boolean soilAreaClicked = side == 1 && hitX > 0.375F && hitX < 0.625F && hitZ > 0.375F && hitZ < 0.625F;
@@ -158,40 +152,56 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
                  */
                 if (!soilAreaClicked) {
                     if (!hasCover && BlockProperties.isCover(itemStack) || !hasOverlay && BlockProperties.isOverlay(itemStack)) {
-                        return super.preOnBlockActivated(TE, world, x, y, z, entityPlayer, side, hitX, hitY, hitZ);
+                        return;
                     }
                 }
 
-                if (!FlowerPotProperties.hasPlant(TE))
-                {
-                    if (FlowerPotProperties.isPlant(itemStack))
-                    {
-                        FlowerPotProperties.setPlant((TECarpentersFlowerPot)TE, itemStack);
-                        result[ALTERED] = true;
-                        result[DEC_INV] = true;
+                if (!FlowerPotProperties.hasPlant(TE)) {
+
+                    if (FlowerPotProperties.isPlant(itemStack)) {
+
+                        int angle = MathHelper.floor_double((entityPlayer.rotationYaw + 180.0F) * 16.0F / 360.0F + 0.5D) & 15;
+
+                        FlowerPot.setAngle(TE, angle);
+                        FlowerPotProperties.setPlant(TE, itemStack);
+                        altered.add(decInv.add(true));
                     }
+
+                } else {
+
+                    if (itemStack.getItem().equals(Item.dyePowder) && itemStack.getItemDamage() == 15) {
+
+                        if (!FlowerPot.isEnriched(TE) && FlowerPotProperties.isPlantColorable(TE)) {
+
+                            FlowerPot.setEnrichment(TE, true);
+                            altered.add(decInv.add(true));
+
+                            /* Play fertilize sound. */
+                            world.playAuxSFX(2005, x, y, z, 0);
+
+                            /* Spawn fertilize effect. */
+                            ItemDye.func_96603_a(world, x, y, z, 15);
+
+                        }
+
+                    }
+
                 }
 
             } else {
 
-                if (FlowerPotProperties.isSoil(itemStack))
-                {
-                    if (hasCover || soilAreaClicked)
-                    {
-                        FlowerPotProperties.setSoil((TECarpentersFlowerPot)TE, itemStack);
-                        result[ALTERED] = true;
-                        result[DEC_INV] = true;
+                if (FlowerPotProperties.isSoil(itemStack)) {
+
+                    if (hasCover || soilAreaClicked) {
+                        FlowerPotProperties.setSoil(TE, itemStack);
+                        altered.add(decInv.add(true));
                     }
+
                 }
 
             }
-        }
 
-        if (result[ALTERED]) {
-            BlockProperties.playBlockSound(TE, BlockProperties.getCoverBlock(TE, 6));
         }
-
-        return result;
     }
 
     @Override
@@ -201,21 +211,26 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
      */
     public void onNeighborBlockChange(World world, int x, int y, int z, int blockID)
     {
-        if (!world.isRemote)
-        {
-            if (!canPlaceBlockOnSide(world, x, y, z, 1)) {
-                dropBlockAsItem(world, x, y, z, world.getBlockMetadata(x, y, z), 0);
-                world.setBlockToAir(x, y, z);
+        if (!world.isRemote) {
+
+            TEBase TE = getTileEntity(world, x, y, z);
+
+            if (TE != null) {
+                if (!canPlaceBlockOnSide(world, x, y, z, 1)) {
+                    dropBlockAsItem(world, x, y, z, world.getBlockMetadata(x, y, z), 0);
+                    world.setBlockToAir(x, y, z);
+                }
             }
+
         }
 
         super.onNeighborBlockChange(world, x, y, z, blockID);
     }
 
-    @Override
     /**
      * Checks to see if its valid to put this block at the specified coordinates. Args: world, x, y, z
      */
+    @Override
     public boolean canPlaceBlockAt(World world, int x, int y, int z)
     {
         Block block_YN = Block.blocksList[world.getBlockId(x, y - 1, z)];
@@ -233,22 +248,26 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
      */
     public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
     {
-        TECarpentersFlowerPot TE = (TECarpentersFlowerPot) world.getBlockTileEntity(x, y, z);
+        TEBase TE = getTileEntity(world, x, y, z);
 
-        if (FlowerPotProperties.hasPlant(TE)) {
+        if (TE != null && TE instanceof TECarpentersFlowerPot) {
 
-            switch (FlowerPotHandler.getPlantProfile(TE)) {
-                case CACTUS:
-                case LEAVES:
-                    setBlockBounds(0.3125F, 0.0F, 0.3125F, 0.6875F, 0.99F, 0.6875F);
-                    break;
-                default:
-                    setBlockBounds(0.3125F, 0.0F, 0.3125F, 0.6875F, 0.75F, 0.6875F);
+            if (FlowerPotProperties.hasPlant(TE)) {
+
+                switch (FlowerPotHandler.getPlantProfile(TE)) {
+                    case CACTUS:
+                    case LEAVES:
+                        setBlockBounds(0.3125F, 0.0F, 0.3125F, 0.6875F, 0.99F, 0.6875F);
+                        break;
+                    default:
+                        setBlockBounds(0.3125F, 0.0F, 0.3125F, 0.6875F, 0.75F, 0.6875F);
+                }
+
+            } else {
+
+                setBlockBounds(0.3125F, 0.0F, 0.3125F, 0.6875F, 0.375F, 0.6875F);
+
             }
-
-        } else {
-
-            setBlockBounds(0.3125F, 0.0F, 0.3125F, 0.6875F, 0.375F, 0.6875F);
 
         }
     }
@@ -260,9 +279,9 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
      */
     public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int x, int y, int z)
     {
-        if (isValid(world, x, y, z)) {
+        TEBase TE = getTileEntity(world, x, y, z);
 
-            TECarpentersFlowerPot TE = (TECarpentersFlowerPot) world.getBlockTileEntity(x, y, z);
+        if (TE != null && TE instanceof TECarpentersFlowerPot) {
 
             AxisAlignedBB axisAlignedBB = AxisAlignedBB.getAABBPool().getAABB(x + 0.3125F, y, z + 0.3125F, x + 0.6875F, y + 0.375F, z + 0.6875F);
 
@@ -291,36 +310,34 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
      */
     public int getLightValue(IBlockAccess world, int x, int y, int z)
     {
-        if (isValid(world, x, y, z)) {
+        TEBase TE = getTileEntity(world, x, y, z);
 
-            TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
+        if (TE != null && TE instanceof TECarpentersFlowerPot) {
 
-            if (TE != null && TE instanceof TECarpentersFlowerPot) {
+            int coverLight = super.getLightValue(world, x, y, z);
+            int potLight = lightValue[blockID];
 
-                int coverLight = super.getLightValue(world, x, y, z);
-                int potLight = lightValue[blockID];
+            if (FlowerPotProperties.hasSoil(TE)) {
 
-                if (FlowerPotProperties.hasSoil(TE))
-                {
-                    int soil_lightValue = lightValue[FlowerPotProperties.getSoilBlock(TE).blockID];
+                int soil_lightValue = lightValue[FlowerPotProperties.getSoil(TE).itemID];
 
-                    if (soil_lightValue > potLight) {
-                        potLight = soil_lightValue;
-                    }
+                if (soil_lightValue > potLight) {
+                    potLight = soil_lightValue;
                 }
-
-                if (FlowerPotProperties.hasPlant(TE))
-                {
-                    int plant_lightValue = lightValue[FlowerPotProperties.getPlantBlock(TE).blockID];
-
-                    if (plant_lightValue > potLight) {
-                        potLight = plant_lightValue;
-                    }
-                }
-
-                return coverLight > potLight ? coverLight : potLight;
 
             }
+
+            if (FlowerPotProperties.hasPlant(TE)) {
+
+                int plant_lightValue = lightValue[FlowerPotProperties.getPlant(TE).itemID];
+
+                if (plant_lightValue > potLight) {
+                    potLight = plant_lightValue;
+                }
+
+            }
+
+            return coverLight > potLight ? coverLight : potLight;
 
         }
 
@@ -333,16 +350,20 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
      */
     public void onEntityCollidedWithBlock(World world, int x, int y, int z, Entity entity)
     {
-        TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
+        TEBase TE = getTileEntity(world, x, y, z);
 
-        if (TE != null && TE instanceof TECarpentersFlowerPot)
-        {
-            if (FlowerPotProperties.hasPlant(TE))
-            {
-                world.setBlockMetadataWithNotify(x, y, z, FlowerPotProperties.getPlantMetadata((TECarpentersFlowerPot)TE), 4);
-                FlowerPotProperties.getPlantBlock(TE).onEntityCollidedWithBlock(world, x, y, z, entity);
-                world.setBlockMetadataWithNotify(x, y, z, BlockProperties.getCoverMetadata(TE, 6), 4);
+        if (TE != null && TE instanceof TECarpentersFlowerPot) {
+
+            if (FlowerPotProperties.hasPlant(TE)) {
+
+                ItemStack itemStack = FlowerPotProperties.getPlant(TE);
+
+                BlockProperties.setHostMetadata(TE, itemStack.getItemDamage());
+                FlowerPotProperties.toBlock(itemStack).onEntityCollidedWithBlock(world, x, y, z, entity);
+                BlockProperties.resetHostMetadata(TE);
+
             }
+
         }
 
         super.onEntityCollidedWithBlock(world, x, y, z, entity);
@@ -361,7 +382,7 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
     @Override
     protected boolean canCoverBase(TEBase TE, World world, int x, int y, int z)
     {
-        return !FlowerPotProperties.hasDesign(TE);
+        return !BlockProperties.hasDesign(TE);
     }
 
     @Override
@@ -371,33 +392,33 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
      */
     public void randomDisplayTick(World world, int x, int y, int z, Random random)
     {
-        if (isValid(world, x, y, z)) {
+        TEBase TE = getTileEntity(world, x, y, z);
 
-            TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
+        if (TE != null && TE instanceof TECarpentersFlowerPot) {
 
-            if (TE != null && TE instanceof TECarpentersFlowerPot) {
+            /*
+             * Metadata at coordinates are for the base cover only.
+             * We need to set it for appropriate attributes in order
+             * to get accurate results.
+             */
 
-                /*
-                 * Metadata at coordinates are for the base cover only.
-                 * We need to set it for appropriate attributes in order
-                 * to get accurate results.
-                 */
+            if (FlowerPotProperties.hasPlant(TE)) {
 
-                if (FlowerPotProperties.hasPlant(TE)) {
+                ItemStack itemStack = FlowerPotProperties.getPlant(TE);
 
-                    world.setBlockMetadataWithNotify(x, y, z, FlowerPotProperties.getPlantMetadata((TECarpentersFlowerPot) TE), 4);
-                    FlowerPotProperties.getPlantBlock(TE).randomDisplayTick(world, x, y, z, random);
-                    world.setBlockMetadataWithNotify(x, y, z, BlockProperties.getCoverMetadata(TE, 6), 4);
+                BlockProperties.setHostMetadata(TE, itemStack.getItemDamage());
+                FlowerPotProperties.toBlock(itemStack).randomDisplayTick(world, x, y, z, random);
+                BlockProperties.resetHostMetadata(TE);
 
-                }
+            }
 
-                if (FlowerPotProperties.hasSoil(TE)) {
+            if (FlowerPotProperties.hasSoil(TE)) {
 
-                    world.setBlockMetadataWithNotify(x, y, z, FlowerPotProperties.getSoilMetadata((TECarpentersFlowerPot) TE), 4);
-                    FlowerPotProperties.getSoilBlock(TE).randomDisplayTick(world, x, y, z, random);
-                    world.setBlockMetadataWithNotify(x, y, z, BlockProperties.getCoverMetadata(TE, 6), 4);
+                ItemStack itemStack = FlowerPotProperties.getSoil(TE);
 
-                }
+                BlockProperties.setHostMetadata(TE, itemStack.getItemDamage());
+                BlockProperties.toBlock(itemStack).randomDisplayTick(world, x, y, z, random);
+                BlockProperties.resetHostMetadata(TE);
 
             }
 
@@ -410,21 +431,25 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
     /**
      * Ejects contained items into the world, and notifies neighbors of an update, as appropriate
      */
-    public void breakBlock(World world, int x, int y, int z, int var5, int metadata)
+    public void breakBlock(World world, int x, int y, int z, int blockID, int metadata)
     {
-        TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
+        TEBase TE = getSimpleTileEntity(world, x, y, z);
 
-        if (TE != null && TE instanceof TECarpentersFlowerPot)
-        {
+        if (TE != null && TE instanceof TECarpentersFlowerPot) {
+
+            if (FlowerPot.isEnriched(TE)) {
+                FlowerPot.setEnrichment(TE, false);
+            }
             if (FlowerPotProperties.hasPlant(TE)) {
-                FlowerPotProperties.setPlant((TECarpentersFlowerPot)TE, (ItemStack)null);
+                FlowerPotProperties.setPlant(TE, (ItemStack)null);
             }
             if (FlowerPotProperties.hasSoil(TE)) {
-                FlowerPotProperties.setSoil((TECarpentersFlowerPot)TE, (ItemStack)null);
+                FlowerPotProperties.setSoil(TE, (ItemStack)null);
             }
+
         }
 
-        super.breakBlock(world, x, y, z, var5, metadata);
+        super.breakBlock(world, x, y, z, blockID, metadata);
     }
 
     @Override

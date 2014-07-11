@@ -2,6 +2,7 @@ package carpentersblocks.renderer;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.ForgeDirection;
 import carpentersblocks.block.BlockCarpentersBarrier;
 import carpentersblocks.data.Barrier;
@@ -17,15 +18,17 @@ public class BlockHandlerCarpentersBarrier extends BlockHandlerBase {
     @Override
     public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderBlocks)
     {
+        /* Vertical posts */
+
         renderBlocks.setRenderBounds(0.125D, 0.0D, 0.375D, 0.375D, 1.0D, 0.625D);
         super.renderInventoryBlock(block, metadata, modelID, renderBlocks);
-
         renderBlocks.setRenderBounds(0.625D, 0.0D, 0.375D, 0.875D, 1.0D, 0.625D);
         super.renderInventoryBlock(block, metadata, modelID, renderBlocks);
 
+        /* Horizontal planks */
+
         renderBlocks.setRenderBounds(0.0D, 0.8125D, 0.4375D, 1.0D, 0.9375D, 0.5625D);
         super.renderInventoryBlock(block, metadata, modelID, renderBlocks);
-
         renderBlocks.setRenderBounds(0.0D, 0.4375D, 0.4375D, 1.0D, 0.5625D, 0.5625D);
         super.renderInventoryBlock(block, metadata, modelID, renderBlocks);
     }
@@ -34,26 +37,24 @@ public class BlockHandlerCarpentersBarrier extends BlockHandlerBase {
     /**
      * Renders barrier
      */
-    protected boolean renderCarpentersBlock(int x, int y, int z)
+    protected void renderCarpentersBlock(int x, int y, int z)
     {
         int type = Barrier.getType(TE);
-        Block block = BlockProperties.getCoverBlock(TE, 6);
+        ItemStack itemStack = getCoverForRendering();
 
         switch (type) {
             case Barrier.TYPE_PICKET:
-                renderPicketFence(block, x, y, z);
+                renderPicketFence(itemStack, x, y, z);
                 break;
             case Barrier.TYPE_PLANK_VERTICAL:
-                renderVerticalPlankFence(block, x, y, z);
+                renderVerticalPlankFence(itemStack, x, y, z);
                 break;
             case Barrier.TYPE_WALL:
-                renderWall(block, x, y, z);
+                renderWall(itemStack, x, y, z);
                 break;
             default:
-                renderFence(block, x, y, z);
+                renderFence(itemStack, x, y, z);
         }
-
-        return true;
     }
 
     /**
@@ -61,7 +62,9 @@ public class BlockHandlerCarpentersBarrier extends BlockHandlerBase {
      */
     private boolean isPostAt(int x, int y, int z)
     {
-        if (renderBlocks.blockAccess.getBlockId(x, y, z) == BlockRegistry.blockCarpentersBarrierID)
+        Block block = Block.blocksList[renderBlocks.blockAccess.getBlockId(x, y, z)];
+
+        if (block != null && block.equals(BlockRegistry.blockCarpentersBarrier))
         {
             TEBase TE = (TEBase) renderBlocks.blockAccess.getBlockTileEntity(x, y, z);
 
@@ -88,7 +91,7 @@ public class BlockHandlerCarpentersBarrier extends BlockHandlerBase {
     /**
      * Renders vanilla fence at given coordinates
      */
-    private void renderFence(Block block, int x, int y, int z)
+    private void renderFence(ItemStack itemStack, int x, int y, int z)
     {
         BlockCarpentersBarrier blockRef = (BlockCarpentersBarrier) BlockRegistry.blockCarpentersBarrier;
 
@@ -114,7 +117,7 @@ public class BlockHandlerCarpentersBarrier extends BlockHandlerBase {
         // Render center post
         if (isPostAt(x, y, z) || isPostAt(x, y + 1, z)) {
             renderBlocks.setRenderBounds(z_Low, 0.0D, z_Low, z_High, y_High, z_High);
-            renderBlock(block, x, y, z);
+            renderBlock(itemStack, x, y, z);
         }
 
         z_Low = 0.4375F;
@@ -130,12 +133,12 @@ public class BlockHandlerCarpentersBarrier extends BlockHandlerBase {
 
         if (connect_XN || connect_XP) {
             renderBlocks.setRenderBounds(x_Low, joinPlanks ? 0.1875F : y_Low - yPlankOffset, z_Low, x_High, y_High, z_High);
-            renderBlock(block, x, y, z);
+            renderBlock(itemStack, x, y, z);
         }
 
         if (connect_ZN || connect_ZP) {
             renderBlocks.setRenderBounds(z_Low, joinPlanks ? 0.1875F : y_Low - yPlankOffset, zLow1, z_High, y_High, zHigh1);
-            renderBlock(block, x, y, z);
+            renderBlock(itemStack, x, y, z);
         }
 
         /* Skip rendering lower plank if planks are joined. */
@@ -149,12 +152,12 @@ public class BlockHandlerCarpentersBarrier extends BlockHandlerBase {
 
             if (connect_XN || connect_XP) {
                 renderBlocks.setRenderBounds(x_Low, y_Low - yPlankOffset, z_Low, x_High, y_High, z_High);
-                renderBlock(block, x, y, z);
+                renderBlock(itemStack, x, y, z);
             }
 
             if (connect_ZN || connect_ZP) {
                 renderBlocks.setRenderBounds(z_Low, y_Low - yPlankOffset, zLow1, z_High, y_High, zHigh1);
-                renderBlock(block, x, y, z);
+                renderBlock(itemStack, x, y, z);
             }
         }
 
@@ -164,9 +167,9 @@ public class BlockHandlerCarpentersBarrier extends BlockHandlerBase {
     /**
      * Renders picket fence block at given coordinates
      */
-    private void renderPicketFence(Block block, int x, int y, int z)
+    private void renderPicketFence(ItemStack itemStack, int x, int y, int z)
     {
-        BlockProperties.getData(TE);
+        BlockProperties.getMetadata(TE);
         BlockCarpentersBarrier blockRef = (BlockCarpentersBarrier) BlockRegistry.blockCarpentersBarrier;
         float x_Low = 0.0F;
         float x_High = 0.0F;
@@ -182,8 +185,11 @@ public class BlockHandlerCarpentersBarrier extends BlockHandlerBase {
         boolean connect_ZN = blockRef.canConnectBarrierTo(TE, renderBlocks.blockAccess, x, y, z - 1, ForgeDirection.SOUTH);
         boolean connect_ZP = blockRef.canConnectBarrierTo(TE, renderBlocks.blockAccess, x, y, z + 1, ForgeDirection.NORTH);
 
-        boolean isBarrierAbove = renderBlocks.blockAccess.getBlockId(x, y + 1, z) == BlockRegistry.blockCarpentersBarrierID;
-        boolean isBarrierBelow = renderBlocks.blockAccess.getBlockId(x, y - 1, z) == BlockRegistry.blockCarpentersBarrierID;
+        Block blockYN = Block.blocksList[renderBlocks.blockAccess.getBlockId(x, y - 1, z)];
+        Block blockYP = Block.blocksList[renderBlocks.blockAccess.getBlockId(x, y + 1, z)];
+
+        boolean isBarrierAbove = blockYP != null && blockYP.equals(BlockRegistry.blockCarpentersBarrier);
+        boolean isBarrierBelow = blockYN != null && blockYN.equals(BlockRegistry.blockCarpentersBarrier);
 
         z_Low = 0.4375F;
         z_High = 0.5625F;
@@ -192,7 +198,7 @@ public class BlockHandlerCarpentersBarrier extends BlockHandlerBase {
         // Render center post
         if (isPostAt(x, y, z)) {
             renderBlocks.setRenderBounds(z_Low, 0.0D, z_Low, z_High, y_High, z_High);
-            renderBlock(block, x, y, z);
+            renderBlock(itemStack, x, y, z);
         }
 
         z_Low = 0.4375F;
@@ -210,12 +216,12 @@ public class BlockHandlerCarpentersBarrier extends BlockHandlerBase {
         {
             if (connect_XN || connect_XP) {
                 renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                renderBlock(block, x, y, z);
+                renderBlock(itemStack, x, y, z);
             }
 
             if (connect_ZN || connect_ZP) {
                 renderBlocks.setRenderBounds(z_Low, y_Low, zLow1, z_High, y_High, zHigh1);
-                renderBlock(block, x, y, z);
+                renderBlock(itemStack, x, y, z);
             }
         }
 
@@ -228,12 +234,12 @@ public class BlockHandlerCarpentersBarrier extends BlockHandlerBase {
 
             if (connect_XN || connect_XP) {
                 renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                renderBlock(block, x, y, z);
+                renderBlock(itemStack, x, y, z);
             }
 
             if (connect_ZN || connect_ZP) {
                 renderBlocks.setRenderBounds(z_Low, y_Low, zLow1, z_High, y_High, zHigh1);
-                renderBlock(block, x, y, z);
+                renderBlock(itemStack, x, y, z);
             }
         }
 
@@ -253,13 +259,13 @@ public class BlockHandlerCarpentersBarrier extends BlockHandlerBase {
         z_High = 0.625F;
         if (!connect_ZP) {
             renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-            renderBlock(block, x, y, z);
+            renderBlock(itemStack, x, y, z);
         }
         z_Low -= 0.1875F;
         z_High -= 0.1875F;
         if (!connect_ZN) {
             renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-            renderBlock(block, x, y, z);
+            renderBlock(itemStack, x, y, z);
         }
 
         z_Low = 0.4375F;
@@ -268,13 +274,13 @@ public class BlockHandlerCarpentersBarrier extends BlockHandlerBase {
         x_High = 0.625F;
         if (!connect_XP) {
             renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-            renderBlock(block, x, y, z);
+            renderBlock(itemStack, x, y, z);
         }
         x_Low -= 0.1875F;
         x_High -= 0.1875F;
         if (!connect_XN) {
             renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-            renderBlock(block, x, y, z);
+            renderBlock(itemStack, x, y, z);
         }
 
         if (connect_XN)
@@ -286,11 +292,11 @@ public class BlockHandlerCarpentersBarrier extends BlockHandlerBase {
             z_High = 0.625F;
             z_Low = 0.5625F;
             renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-            renderBlock(block, x, y, z);
+            renderBlock(itemStack, x, y, z);
             z_Low -= 0.1875F;
             z_High -= 0.1875F;
             renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-            renderBlock(block, x, y, z);
+            renderBlock(itemStack, x, y, z);
 
             // Render outside plank
             y_High = connect_YP ? 1.0F : 0.8125F;
@@ -299,11 +305,11 @@ public class BlockHandlerCarpentersBarrier extends BlockHandlerBase {
             z_High = 0.625F;
             z_Low = 0.5625F;
             renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-            renderBlock(block, x, y, z);
+            renderBlock(itemStack, x, y, z);
             z_Low -= 0.1875F;
             z_High -= 0.1875F;
             renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-            renderBlock(block, x, y, z);
+            renderBlock(itemStack, x, y, z);
         }
 
         if (connect_XP)
@@ -315,11 +321,11 @@ public class BlockHandlerCarpentersBarrier extends BlockHandlerBase {
             z_High = 0.625F;
             z_Low = 0.5625F;
             renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-            renderBlock(block, x, y, z);
+            renderBlock(itemStack, x, y, z);
             z_Low -= 0.1875F;
             z_High -= 0.1875F;
             renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-            renderBlock(block, x, y, z);
+            renderBlock(itemStack, x, y, z);
 
             // Render outside plank
             y_High = connect_YP ? 1.0F : 0.8125F;
@@ -328,11 +334,11 @@ public class BlockHandlerCarpentersBarrier extends BlockHandlerBase {
             z_High = 0.625F;
             z_Low = 0.5625F;
             renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-            renderBlock(block, x, y, z);
+            renderBlock(itemStack, x, y, z);
             z_Low -= 0.1875F;
             z_High -= 0.1875F;
             renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-            renderBlock(block, x, y, z);
+            renderBlock(itemStack, x, y, z);
         }
 
         if (connect_ZN)
@@ -344,11 +350,11 @@ public class BlockHandlerCarpentersBarrier extends BlockHandlerBase {
             x_High = 0.625F;
             x_Low = 0.5625F;
             renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-            renderBlock(block, x, y, z);
+            renderBlock(itemStack, x, y, z);
             x_Low -= 0.1875F;
             x_High -= 0.1875F;
             renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-            renderBlock(block, x, y, z);
+            renderBlock(itemStack, x, y, z);
 
             // Render outside plank
             y_High = connect_YP ? 1.0F : 0.8125F;
@@ -357,11 +363,11 @@ public class BlockHandlerCarpentersBarrier extends BlockHandlerBase {
             x_High = 0.625F;
             x_Low = 0.5625F;
             renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-            renderBlock(block, x, y, z);
+            renderBlock(itemStack, x, y, z);
             x_Low -= 0.1875F;
             x_High -= 0.1875F;
             renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-            renderBlock(block, x, y, z);
+            renderBlock(itemStack, x, y, z);
         }
 
         if (connect_ZP)
@@ -373,11 +379,11 @@ public class BlockHandlerCarpentersBarrier extends BlockHandlerBase {
             x_High = 0.625F;
             x_Low = 0.5625F;
             renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-            renderBlock(block, x, y, z);
+            renderBlock(itemStack, x, y, z);
             x_Low -= 0.1875F;
             x_High -= 0.1875F;
             renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-            renderBlock(block, x, y, z);
+            renderBlock(itemStack, x, y, z);
 
             // Render outside plank
             y_High = connect_YP ? 1.0F : 0.8125F;
@@ -386,11 +392,11 @@ public class BlockHandlerCarpentersBarrier extends BlockHandlerBase {
             x_High = 0.625F;
             x_Low = 0.5625F;
             renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-            renderBlock(block, x, y, z);
+            renderBlock(itemStack, x, y, z);
             x_Low -= 0.1875F;
             x_High -= 0.1875F;
             renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-            renderBlock(block, x, y, z);
+            renderBlock(itemStack, x, y, z);
         }
 
         blockRef.setBlockBoundsBasedOnState(renderBlocks.blockAccess, x, y, z);
@@ -399,9 +405,9 @@ public class BlockHandlerCarpentersBarrier extends BlockHandlerBase {
     /**
      * Renders wall block at given coordinates
      */
-    private void renderWall(Block block, int x, int y, int z)
+    private void renderWall(ItemStack itemStack, int x, int y, int z)
     {
-        BlockProperties.getData(TE);
+        BlockProperties.getMetadata(TE);
         BlockCarpentersBarrier blockRef = (BlockCarpentersBarrier) BlockRegistry.blockCarpentersBarrier;
 
         boolean connect_XN = blockRef.canConnectBarrierTo(TE, renderBlocks.blockAccess, x - 1, y, z, ForgeDirection.EAST);
@@ -418,7 +424,7 @@ public class BlockHandlerCarpentersBarrier extends BlockHandlerBase {
 
         if (isPostAt(x, y, z) || isPostAt(x, y + 1, z)) {
             renderBlocks.setRenderBounds(0.25D, 0.0D, 0.25D, 0.75D, 1.0D, 0.75D);
-            renderBlock(block, x, y, z);
+            renderBlock(itemStack, x, y, z);
         }
 
         /* Render connecting wall pieces */
@@ -426,34 +432,34 @@ public class BlockHandlerCarpentersBarrier extends BlockHandlerBase {
         if (connect_XN)
         {
             renderBlocks.setRenderBounds(0.0D, 0.0D, 0.3125D, 0.5D, connect_YP && connect_XYNP ? 1.0F : 0.8125D, 0.6875D);
-            renderBlock(block, x, y, z);
+            renderBlock(itemStack, x, y, z);
         }
 
         if (connect_XP)
         {
             renderBlocks.setRenderBounds(0.5D, 0.0D, 0.3125D, 1.0D, connect_YP && connect_XYPP ? 1.0D : 0.8125D, 0.6875D);
-            renderBlock(block, x, y, z);
+            renderBlock(itemStack, x, y, z);
         }
 
         if (connect_ZN)
         {
             renderBlocks.setRenderBounds(0.3125D, 0.0D, 0.0D, 0.6875D, connect_YP && connect_YZPN ? 1.0D : 0.8125D, 0.5D);
-            renderBlock(block, x, y, z);
+            renderBlock(itemStack, x, y, z);
         }
 
         if (connect_ZP)
         {
             renderBlocks.setRenderBounds(0.3125D, 0.0D, 0.5D, 0.6875D, connect_YP && connect_YZPP ? 1.0D : 0.8125D, 1.0D);
-            renderBlock(block, x, y, z);
+            renderBlock(itemStack, x, y, z);
         }
     }
 
     /**
      * Renders wall block at given coordinates
      */
-    private void renderVerticalPlankFence(Block block, int x, int y, int z)
+    private void renderVerticalPlankFence(ItemStack itemStack, int x, int y, int z)
     {
-        BlockProperties.getData(TE);
+        BlockProperties.getMetadata(TE);
         BlockCarpentersBarrier blockRef = (BlockCarpentersBarrier) BlockRegistry.blockCarpentersBarrier;
 
         float x_Low = 0.0F;
@@ -469,8 +475,11 @@ public class BlockHandlerCarpentersBarrier extends BlockHandlerBase {
         boolean connect_ZN = blockRef.canConnectBarrierTo(TE, renderBlocks.blockAccess, x, y, z - 1, ForgeDirection.SOUTH);
         boolean connect_ZP = blockRef.canConnectBarrierTo(TE, renderBlocks.blockAccess, x, y, z + 1, ForgeDirection.NORTH);
 
-        boolean isBarrierAbove = renderBlocks.blockAccess.getBlockId(x, y + 1, z) == BlockRegistry.blockCarpentersBarrierID;
-        boolean isBarrierBelow = renderBlocks.blockAccess.getBlockId(x, y - 1, z) == BlockRegistry.blockCarpentersBarrierID;
+        Block blockYN = Block.blocksList[renderBlocks.blockAccess.getBlockId(x, y - 1, z)];
+        Block blockYP = Block.blocksList[renderBlocks.blockAccess.getBlockId(x, y + 1, z)];
+
+        boolean isBarrierAbove = blockYP != null && blockYP.equals(BlockRegistry.blockCarpentersBarrier);
+        boolean isBarrierBelow = blockYN != null && blockYN.equals(BlockRegistry.blockCarpentersBarrier);
 
         /* Center post */
 
@@ -486,7 +495,7 @@ public class BlockHandlerCarpentersBarrier extends BlockHandlerBase {
         // Render center post
         if (isPostAt(x, y, z)) {
             renderBlocks.setRenderBounds(z_Low, 0.0D, z_Low, z_High, y_High, z_High);
-            renderBlock(block, x, y, z);
+            renderBlock(itemStack, x, y, z);
         }
 
         /* Horizontal supports */
@@ -506,12 +515,12 @@ public class BlockHandlerCarpentersBarrier extends BlockHandlerBase {
         if (!isBarrierAbove) {
             if (connect_XN || connect_XP) {
                 renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                renderBlock(block, x, y, z);
+                renderBlock(itemStack, x, y, z);
             }
 
             if (connect_ZN || connect_ZP) {
                 renderBlocks.setRenderBounds(z_Low, y_Low, z_Min, z_High, y_High, z_Max);
-                renderBlock(block, x, y, z);
+                renderBlock(itemStack, x, y, z);
             }
         }
 
@@ -523,12 +532,12 @@ public class BlockHandlerCarpentersBarrier extends BlockHandlerBase {
 
             if (connect_XN || connect_XP) {
                 renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                renderBlock(block, x, y, z);
+                renderBlock(itemStack, x, y, z);
             }
 
             if (connect_ZN || connect_ZP) {
                 renderBlocks.setRenderBounds(z_Low, y_Low, z_Min, z_High, y_High, z_Max);
-                renderBlock(block, x, y, z);
+                renderBlock(itemStack, x, y, z);
             }
         }
 
@@ -545,11 +554,11 @@ public class BlockHandlerCarpentersBarrier extends BlockHandlerBase {
             z_High = 0.625F;
             z_Low = 0.5625F;
             renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-            renderBlock(block, x, y, z);
+            renderBlock(itemStack, x, y, z);
             z_Low -= 0.1875F;
             z_High -= 0.1875F;
             renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-            renderBlock(block, x, y, z);
+            renderBlock(itemStack, x, y, z);
 
             // Render outside plank
             x_High = 0.1875F;
@@ -557,11 +566,11 @@ public class BlockHandlerCarpentersBarrier extends BlockHandlerBase {
             z_High = 0.625F;
             z_Low = 0.5625F;
             renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-            renderBlock(block, x, y, z);
+            renderBlock(itemStack, x, y, z);
             z_Low -= 0.1875F;
             z_High -= 0.1875F;
             renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-            renderBlock(block, x, y, z);
+            renderBlock(itemStack, x, y, z);
         }
 
         if (connect_XP)
@@ -572,11 +581,11 @@ public class BlockHandlerCarpentersBarrier extends BlockHandlerBase {
             z_High = 0.625F;
             z_Low = 0.5625F;
             renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-            renderBlock(block, x, y, z);
+            renderBlock(itemStack, x, y, z);
             z_Low -= 0.1875F;
             z_High -= 0.1875F;
             renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-            renderBlock(block, x, y, z);
+            renderBlock(itemStack, x, y, z);
 
             // Render outside plank
             x_Low = 0.8125F;
@@ -584,11 +593,11 @@ public class BlockHandlerCarpentersBarrier extends BlockHandlerBase {
             z_High = 0.625F;
             z_Low = 0.5625F;
             renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-            renderBlock(block, x, y, z);
+            renderBlock(itemStack, x, y, z);
             z_Low -= 0.1875F;
             z_High -= 0.1875F;
             renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-            renderBlock(block, x, y, z);
+            renderBlock(itemStack, x, y, z);
         }
 
         if (connect_ZN)
@@ -599,11 +608,11 @@ public class BlockHandlerCarpentersBarrier extends BlockHandlerBase {
             x_High = 0.625F;
             x_Low = 0.5625F;
             renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-            renderBlock(block, x, y, z);
+            renderBlock(itemStack, x, y, z);
             x_Low -= 0.1875F;
             x_High -= 0.1875F;
             renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-            renderBlock(block, x, y, z);
+            renderBlock(itemStack, x, y, z);
 
             // Render outside plank
             z_High = 0.1875F;
@@ -611,11 +620,11 @@ public class BlockHandlerCarpentersBarrier extends BlockHandlerBase {
             x_High = 0.625F;
             x_Low = 0.5625F;
             renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-            renderBlock(block, x, y, z);
+            renderBlock(itemStack, x, y, z);
             x_Low -= 0.1875F;
             x_High -= 0.1875F;
             renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-            renderBlock(block, x, y, z);
+            renderBlock(itemStack, x, y, z);
         }
 
         if (connect_ZP)
@@ -626,11 +635,11 @@ public class BlockHandlerCarpentersBarrier extends BlockHandlerBase {
             x_High = 0.625F;
             x_Low = 0.5625F;
             renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-            renderBlock(block, x, y, z);
+            renderBlock(itemStack, x, y, z);
             x_Low -= 0.1875F;
             x_High -= 0.1875F;
             renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-            renderBlock(block, x, y, z);
+            renderBlock(itemStack, x, y, z);
 
             // Render outside plank
             z_Low = 0.8125F;
@@ -638,11 +647,11 @@ public class BlockHandlerCarpentersBarrier extends BlockHandlerBase {
             x_High = 0.625F;
             x_Low = 0.5625F;
             renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-            renderBlock(block, x, y, z);
+            renderBlock(itemStack, x, y, z);
             x_Low -= 0.1875F;
             x_High -= 0.1875F;
             renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-            renderBlock(block, x, y, z);
+            renderBlock(itemStack, x, y, z);
         }
 
         blockRef.setBlockBoundsBasedOnState(renderBlocks.blockAccess, x, y, z);

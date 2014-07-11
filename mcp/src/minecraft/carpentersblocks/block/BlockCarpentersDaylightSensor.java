@@ -11,6 +11,7 @@ import carpentersblocks.CarpentersBlocks;
 import carpentersblocks.data.DaylightSensor;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.tileentity.TECarpentersDaylightSensor;
+import carpentersblocks.util.handler.ChatHandler;
 import carpentersblocks.util.registry.BlockRegistry;
 import carpentersblocks.util.registry.IconRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -18,14 +19,10 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockCarpentersDaylightSensor extends BlockCoverable {
 
-    public BlockCarpentersDaylightSensor(int blockID)
+    public BlockCarpentersDaylightSensor(int blockID, Material material)
     {
-        super(blockID, Material.wood);
-        setHardness(0.2F);
-        setUnlocalizedName("blockCarpentersDaylightSensor");
-        setCreativeTab(CarpentersBlocks.tabCarpentersBlocks);
+        super(blockID, material);
         setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.25F, 1.0F);
-        setTextureName("carpentersblocks:general/solid");
     }
 
     @SideOnly(Side.CLIENT)
@@ -36,9 +33,7 @@ public class BlockCarpentersDaylightSensor extends BlockCoverable {
      */
     public void registerIcons(IconRegister iconRegister)
     {
-        IconRegistry.icon_daylight_sensor_glass_top = iconRegister.registerIcon("carpentersblocks:daylightsensor/daylight_sensor_glass_top");
-
-        super.registerIcons(iconRegister);
+        IconRegistry.icon_daylight_sensor_glass_top = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "daylightsensor/daylight_sensor_glass_top");
     }
 
     @Override
@@ -53,11 +48,10 @@ public class BlockCarpentersDaylightSensor extends BlockCoverable {
 
         switch (polarity) {
             case DaylightSensor.POLARITY_POSITIVE:
-                entityPlayer.addChatMessage("message.polarity_pos.name");
+                ChatHandler.sendMessageToPlayer("message.polarity_pos.name", entityPlayer);
                 break;
             case DaylightSensor.POLARITY_NEGATIVE:
-                entityPlayer.addChatMessage("message.polarity_neg.name");
-                break;
+                ChatHandler.sendMessageToPlayer("message.polarity_neg.name", entityPlayer);
         }
 
         return true;
@@ -72,9 +66,9 @@ public class BlockCarpentersDaylightSensor extends BlockCoverable {
         int sensitivity = DaylightSensor.setNextSensitivity(TE);
 
         if (sensitivity == DaylightSensor.SENSITIVITY_SLEEP) {
-            entityPlayer.addChatMessage("message.sensitivity_sleep.name");
+            ChatHandler.sendMessageToPlayer("message.sensitivity_sleep.name", entityPlayer);
         } else {
-            entityPlayer.addChatMessage("message.sensitivity_monsters.name");
+            ChatHandler.sendMessageToPlayer("message.sensitivity_monsters.name", entityPlayer);
         }
 
         return true;
@@ -88,27 +82,35 @@ public class BlockCarpentersDaylightSensor extends BlockCoverable {
      */
     public int isProvidingWeakPower(IBlockAccess world, int x, int y, int z, int side)
     {
-        TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
+        TEBase TE = getTileEntity(world, x, y, z);
 
-        return DaylightSensor.isActive(TE) ? 15 : 0;
+        if (TE != null) {
+            return DaylightSensor.isActive(TE) ? 15 : 0;
+        }
+
+        return 0;
     }
 
     public void updateLightLevel(World world, int x, int y, int z)
     {
         if (!world.provider.hasNoSky)
         {
-            TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
+            TEBase TE = getTileEntity(world, x, y, z);
 
-            int temp_lightValue = DaylightSensor.getLightLevel(TE);
-            int lightValue = world.getSavedLightValue(EnumSkyBlock.Sky, x, y, z) - world.skylightSubtracted;
+            if (TE != null) {
 
-            if (world.isThundering()) {
-                lightValue = 7;
-            }
+                int temp_lightValue = DaylightSensor.getLightLevel(TE);
+                int lightValue = world.getSavedLightValue(EnumSkyBlock.Sky, x, y, z) - world.skylightSubtracted;
 
-            if (temp_lightValue != lightValue) {
-                DaylightSensor.setLightLevel(TE, lightValue);
-                world.notifyBlocksOfNeighborChange(x, y, z, blockID);
+                if (world.isThundering()) {
+                    lightValue = 7;
+                }
+
+                if (temp_lightValue != lightValue) {
+                    DaylightSensor.setLightLevel(TE, lightValue);
+                    world.notifyBlocksOfNeighborChange(x, y, z, blockID);
+                }
+
             }
         }
     }

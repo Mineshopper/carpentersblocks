@@ -12,7 +12,7 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
-import carpentersblocks.CarpentersBlocks;
+import net.minecraftforge.common.RotationHelper;
 import carpentersblocks.data.Barrier;
 import carpentersblocks.data.Gate;
 import carpentersblocks.tileentity.TEBase;
@@ -22,13 +22,9 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockCarpentersBarrier extends BlockCoverable {
 
-    public BlockCarpentersBarrier(int blockID)
+    public BlockCarpentersBarrier(int blockID, Material material)
     {
-        super(blockID, Material.wood);
-        setHardness(0.2F);
-        setUnlocalizedName("blockCarpentersBarrier");
-        setCreativeTab(CarpentersBlocks.tabCarpentersBlocks);
-        setTextureName("carpentersblocks:general/solid");
+        super(blockID, material);
     }
 
     @Override
@@ -85,30 +81,30 @@ public class BlockCarpentersBarrier extends BlockCoverable {
      */
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack itemStack)
     {
-        TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
+        TEBase TE = getTileEntity(world, x, y, z);
 
-        /*
-         * Match gate type with adjacent type or barrier type if possible
-         */
-        TEBase TE_YN = world.getBlockId(x, y - 1, z) == blockID || world.getBlockId(x, y - 1, z) == BlockRegistry.blockCarpentersGateID ? (TEBase)world.getBlockTileEntity(x, y - 1, z) : null;
-        TEBase TE_YP = world.getBlockId(x, y + 1, z) == blockID || world.getBlockId(x, y + 1, z) == BlockRegistry.blockCarpentersGateID ? (TEBase)world.getBlockTileEntity(x, y + 1, z) : null;
-        TEBase TE_XN = world.getBlockId(x - 1, y, z) == blockID || world.getBlockId(x - 1, y, z) == BlockRegistry.blockCarpentersGateID ? (TEBase)world.getBlockTileEntity(x - 1, y, z) : null;
-        TEBase TE_XP = world.getBlockId(x + 1, y, z) == blockID || world.getBlockId(x + 1, y, z) == BlockRegistry.blockCarpentersGateID ? (TEBase)world.getBlockTileEntity(x + 1, y, z) : null;
-        TEBase TE_ZN = world.getBlockId(x, y, z - 1) == blockID || world.getBlockId(x, y, z - 1) == BlockRegistry.blockCarpentersGateID ? (TEBase)world.getBlockTileEntity(x, y, z - 1) : null;
-        TEBase TE_ZP = world.getBlockId(x, y, z + 1) == blockID || world.getBlockId(x, y, z + 1) == BlockRegistry.blockCarpentersGateID ? (TEBase)world.getBlockTileEntity(x, y, z + 1) : null;
+        if (TE != null) {
 
-        if (TE_YN != null) {
-            Barrier.setType(TE, world.getBlockId(x, y - 1, z) == blockID ? Barrier.getType(TE_YN) : Gate.getType(TE_YN));
-        } else if (TE_YP != null) {
-            Barrier.setType(TE, world.getBlockId(x, y + 1, z) == blockID ? Barrier.getType(TE_YP) : Gate.getType(TE_YP));
-        } else if (TE_XN != null) {
-            Barrier.setType(TE, world.getBlockId(x - 1, y, z) == blockID ? Barrier.getType(TE_XN) : Gate.getType(TE_XN));
-        } else if (TE_XP != null) {
-            Barrier.setType(TE, world.getBlockId(x + 1, y, z) == blockID ? Barrier.getType(TE_XP) : Gate.getType(TE_XP));
-        } else if (TE_ZN != null) {
-            Barrier.setType(TE, world.getBlockId(x, y, z - 1) == blockID ? Barrier.getType(TE_ZN) : Gate.getType(TE_ZN));
-        } else if (TE_ZP != null) {
-            Barrier.setType(TE, world.getBlockId(x, y, z + 1) == blockID ? Barrier.getType(TE_ZP) : Gate.getType(TE_ZP));
+            /* Match block type with adjacent type if possible. */
+
+            TEBase[] TE_list = getAdjacentTileEntities(world, x, y, z);
+
+            for (TEBase TE_current : TE_list) {
+
+                if (TE_current != null) {
+
+                    Block block = TE_current.getBlockType();
+
+                    if (block.equals(this)) {
+                        Barrier.setType(TE, Barrier.getType(TE_current));
+                    } else if (block.equals(BlockRegistry.blockCarpentersGate)) {
+                        Barrier.setType(TE, Gate.getType(TE_current));
+                    }
+
+                }
+
+            }
+
         }
 
         super.onBlockPlacedBy(world, x, y, z, entityLiving, itemStack);
@@ -121,7 +117,7 @@ public class BlockCarpentersBarrier extends BlockCoverable {
      */
     public void addCollisionBoxesToList(World world, int x, int y, int z, AxisAlignedBB axisAlignedBB, List list, Entity entity)
     {
-        TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
+        TEBase TE = getTileEntity(world, x, y, z);
 
         boolean connect_ZN = canConnectBarrierTo(TE, world, x, y, z - 1, ForgeDirection.SOUTH);
         boolean connect_ZP = canConnectBarrierTo(TE, world, x, y, z + 1, ForgeDirection.NORTH);
@@ -181,7 +177,7 @@ public class BlockCarpentersBarrier extends BlockCoverable {
      */
     public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
     {
-        TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
+        TEBase TE = getTileEntity(world, x, y, z);
         int type = Barrier.getType(TE);
 
         boolean connect_ZN = canConnectBarrierTo(TE, world, x, y, z - 1, ForgeDirection.SOUTH);
@@ -258,26 +254,24 @@ public class BlockCarpentersBarrier extends BlockCoverable {
      */
     public boolean canConnectBarrierTo(TEBase TE, IBlockAccess world, int x, int y, int z, ForgeDirection side)
     {
-        int blockID = world.getBlockId(x, y, z);
+        Block block = Block.blocksList[world.getBlockId(x, y, z)];
 
-        if (blockID > 0)
-        {
-            Block block = Block.blocksList[world.getBlockId(x, y, z)];
+        if (block != null) {
 
-            /*
-             * For the top side, make it create post if block is flower pot, torch, etc.
-             */
+            /* For the top side, make it create post if block is flower pot, torch, etc. */
+
             if (side == ForgeDirection.UP) {
                 if (block != null && block.blockMaterial == Material.circuits) {
                     return true;
                 }
             } else {
-                if (world.getBlockId(x, y, z) == this.blockID || blockID == BlockRegistry.blockCarpentersGateID) {
+                if (block.equals(this) || block.equals(BlockRegistry.blockCarpentersGate)) {
                     return true;
+                } else {
+                    return block.isBlockSolidOnSide(TE.worldObj, x, y, z, side) && Barrier.getPost(TE) != Barrier.HAS_POST;
                 }
-
-                return block.isBlockSolidOnSide(TE.worldObj, x, y, z, side) && Barrier.getPost(TE) != Barrier.HAS_POST;
             }
+
         }
 
         return false;
@@ -290,6 +284,25 @@ public class BlockCarpentersBarrier extends BlockCoverable {
     public boolean canPlaceTorchOnTop(World world, int x, int y, int z)
     {
         return true;
+    }
+
+    /**
+     * Rotate the block. For vanilla blocks this rotates around the axis passed in (generally, it should be the "face" that was hit).
+     * Note: for mod blocks, this is up to the block and modder to decide. It is not mandated that it be a rotation around the
+     * face, but could be a rotation to orient *to* that face, or a visiting of possible rotations.
+     * The method should return true if the rotation was successful though.
+     *
+     * @param worldObj The world
+     * @param x X position
+     * @param y Y position
+     * @param z Z position
+     * @param axis The axis to rotate around
+     * @return True if the rotation was successful, False if the rotation failed, or is not possible
+     */
+    @Override
+    public boolean rotateBlock(World world, int x, int y, int z, ForgeDirection axis)
+    {
+        return RotationHelper.rotateVanillaBlock(this, world, x, y, z, axis);
     }
 
     @Override

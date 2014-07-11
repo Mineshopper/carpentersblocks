@@ -1,6 +1,7 @@
 package carpentersblocks.data;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.world.World;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
 
@@ -38,7 +39,7 @@ public class Hatch {
      */
     public static int getType(TEBase TE)
     {
-        return BlockProperties.getData(TE) & 0x7;
+        return BlockProperties.getMetadata(TE) & 0x7;
     }
 
     /**
@@ -46,10 +47,10 @@ public class Hatch {
      */
     public static void setType(TEBase TE, int type)
     {
-        int temp = BlockProperties.getData(TE) & 0xfff8;
+        int temp = BlockProperties.getMetadata(TE) & 0xfff8;
         temp |= type;
 
-        BlockProperties.setData(TE, temp);
+        BlockProperties.setMetadata(TE, temp);
     }
 
     /**
@@ -57,7 +58,7 @@ public class Hatch {
      */
     public static int getPos(TEBase TE)
     {
-        int temp = BlockProperties.getData(TE) & 0x8;
+        int temp = BlockProperties.getMetadata(TE) & 0x8;
         return temp >> 3;
     }
 
@@ -66,10 +67,10 @@ public class Hatch {
      */
     public static void setPos(TEBase TE, int position)
     {
-        int temp = BlockProperties.getData(TE) & 0xfff7;
+        int temp = BlockProperties.getMetadata(TE) & 0xfff7;
         temp |= position << 3;
 
-        BlockProperties.setData(TE, temp);
+        BlockProperties.setMetadata(TE, temp);
     }
 
     /**
@@ -77,7 +78,7 @@ public class Hatch {
      */
     public static int getState(TEBase TE)
     {
-        int temp = BlockProperties.getData(TE) & 0x10;
+        int temp = BlockProperties.getMetadata(TE) & 0x10;
         return temp >> 4;
     }
 
@@ -86,14 +87,16 @@ public class Hatch {
      */
     public static void setState(TEBase TE, int state)
     {
-        int temp = BlockProperties.getData(TE) & 0xffef;
+        int temp = BlockProperties.getMetadata(TE) & 0xffef;
         temp |= state << 4;
 
-        if (!TE.worldObj.isRemote) {
-            TE.worldObj.playAuxSFXAtEntity((EntityPlayer)null, 1003, TE.xCoord, TE.yCoord, TE.zCoord, 0);
+        World world = TE.getWorldObj();
+
+        if (!world.isRemote) {
+            world.playAuxSFXAtEntity((EntityPlayer)null, 1003, TE.xCoord, TE.yCoord, TE.zCoord, 0);
         }
 
-        BlockProperties.setData(TE, temp);
+        BlockProperties.setMetadata(TE, temp);
     }
 
     /**
@@ -101,7 +104,7 @@ public class Hatch {
      */
     public static int getDir(TEBase TE)
     {
-        int temp = BlockProperties.getData(TE) & 0x60;
+        int temp = BlockProperties.getMetadata(TE) & 0x60;
         return temp >> 5;
     }
 
@@ -110,10 +113,10 @@ public class Hatch {
      */
     public static void setDir(TEBase TE, int dir)
     {
-        int temp = BlockProperties.getData(TE) & 0xff9f;
+        int temp = BlockProperties.getMetadata(TE) & 0xff9f;
         temp |= dir << 5;
 
-        BlockProperties.setData(TE, temp);
+        BlockProperties.setMetadata(TE, temp);
     }
 
     /**
@@ -121,7 +124,7 @@ public class Hatch {
      */
     public static int getRigidity(TEBase TE)
     {
-        int temp = BlockProperties.getData(TE) & 0x80;
+        int temp = BlockProperties.getMetadata(TE) & 0x80;
         return temp >> 7;
     }
 
@@ -130,10 +133,10 @@ public class Hatch {
      */
     public static void setRigidity(TEBase TE, int rigid)
     {
-        int temp = BlockProperties.getData(TE) & 0xff7f;
+        int temp = BlockProperties.getMetadata(TE) & 0xff7f;
         temp |= rigid << 7;
 
-        BlockProperties.setData(TE, temp);
+        BlockProperties.setMetadata(TE, temp);
     }
 
 }

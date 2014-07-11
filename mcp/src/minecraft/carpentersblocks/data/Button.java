@@ -1,6 +1,7 @@
 package carpentersblocks.data;
 
 import net.minecraft.block.material.Material;
+import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
@@ -25,7 +26,7 @@ public class Button {
      */
     public static ForgeDirection getFacing(TEBase TE)
     {
-        return ForgeDirection.getOrientation(BlockProperties.getData(TE) & 0x7);
+        return ForgeDirection.getOrientation(BlockProperties.getMetadata(TE) & 0x7);
     }
 
     /**
@@ -33,10 +34,10 @@ public class Button {
      */
     public static void setFacing(TEBase TE, int side)
     {
-        int temp = BlockProperties.getData(TE) & 0xfff8;
+        int temp = BlockProperties.getMetadata(TE) & 0xfff8;
         temp |= side;
 
-        BlockProperties.setData(TE, temp);
+        BlockProperties.setMetadata(TE, temp);
     }
 
     /**
@@ -44,7 +45,7 @@ public class Button {
      */
     public static int getState(TEBase TE)
     {
-        int temp = BlockProperties.getData(TE) & 0x8;
+        int temp = BlockProperties.getMetadata(TE) & 0x8;
         return temp >> 3;
     }
 
@@ -53,19 +54,21 @@ public class Button {
      */
     public static void setState(TEBase TE, int state, boolean playSound)
     {
-        int temp = BlockProperties.getData(TE) & 0xfff7;
+        int temp = BlockProperties.getMetadata(TE) & 0xfff7;
         temp |= state << 3;
 
+        World world = TE.getWorldObj();
+
         if (
-                !TE.worldObj.isRemote &&
-                BlockProperties.getCoverBlock(TE, 6).blockMaterial != Material.cloth &&
+                !world.isRemote &&
+                BlockProperties.toBlock(BlockProperties.getCover(TE, 6)).blockMaterial != Material.cloth &&
                 playSound &&
                 getState(TE) != state
                 ) {
-            TE.worldObj.playSoundEffect(TE.xCoord + 0.5D, TE.yCoord + 0.5D, TE.zCoord + 0.5D, "random.click", 0.3F, getState(TE) == STATE_ON ? 0.5F : 0.6F);
+            world.playSoundEffect(TE.xCoord + 0.5D, TE.yCoord + 0.5D, TE.zCoord + 0.5D, "random.click", 0.3F, getState(TE) == STATE_ON ? 0.5F : 0.6F);
         }
 
-        BlockProperties.setData(TE, temp);
+        BlockProperties.setMetadata(TE, temp);
     }
 
     /**
@@ -73,7 +76,7 @@ public class Button {
      */
     public static int getPolarity(TEBase TE)
     {
-        int temp = BlockProperties.getData(TE) & 0x10;
+        int temp = BlockProperties.getMetadata(TE) & 0x10;
         return temp >> 4;
     }
 
@@ -82,10 +85,10 @@ public class Button {
      */
     public static void setPolarity(TEBase TE, int polarity)
     {
-        int temp = BlockProperties.getData(TE) & 0xffef;
+        int temp = BlockProperties.getMetadata(TE) & 0xffef;
         temp |= polarity << 4;
 
-        BlockProperties.setData(TE, temp);
+        BlockProperties.setMetadata(TE, temp);
     }
 
     /**
@@ -96,7 +99,7 @@ public class Button {
      */
     public static boolean isReady(TEBase TE)
     {
-        return (BlockProperties.getData(TE) & 0x20) > 1;
+        return (BlockProperties.getMetadata(TE) & 0x20) > 1;
     }
 
     /**
@@ -104,10 +107,10 @@ public class Button {
      */
     public static void setReady(TEBase TE)
     {
-        int temp = BlockProperties.getData(TE) & 0xffdf;
+        int temp = BlockProperties.getMetadata(TE) & 0xffdf;
         temp |= 1 << 5;
 
-        BlockProperties.setData(TE, temp);
+        BlockProperties.setMetadata(TE, temp);
     }
 
 }

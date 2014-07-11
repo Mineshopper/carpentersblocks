@@ -1,32 +1,30 @@
 package carpentersblocks.util.handler;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.logging.Level;
 
 import net.minecraft.block.Block;
 import net.minecraft.world.IBlockAccess;
 import carpentersblocks.util.ModLogger;
-import carpentersblocks.util.registry.FeatureRegistry;
 
 public class OptifineHandler {
 
+    public static boolean enableOptifineIntegration = false;
     private static Method getColorMultiplier;
 
     /**
      * Initializes Optifine integration.
      * If reflection fails, will return false.
      */
-    public static boolean init()
+    public static void init()
     {
         try {
             Class<?> CustomColorizer = Class.forName("CustomColorizer");
             getColorMultiplier = CustomColorizer.getMethod("getColorMultiplier", Block.class, IBlockAccess.class, int.class, int.class, int.class);
             ModLogger.log(Level.INFO, "Optifine integration successful.");
-            return true;
+            enableOptifineIntegration = true;
         } catch (Exception e) {
             ModLogger.log(Level.WARNING, "Optifine integration failed: " + e.getMessage());
-            return false;
         }
     }
 
@@ -36,10 +34,10 @@ public class OptifineHandler {
         try {
             int tempColorMultiplier = (Integer) getColorMultiplier.invoke(null, block, blockAccess, x, y, z);
             colorMultiplier = tempColorMultiplier;
-        } catch (InvocationTargetException e) {
+        } catch (Exception e) {
             ModLogger.log(Level.WARNING, "Block custom coloring failed, disabling Optifine integration: " + e.getMessage());
-            FeatureRegistry.enableOptifineIntegration = false;
-        } catch (Exception E) {}
+            enableOptifineIntegration = false;
+        }
 
         return colorMultiplier;
     }

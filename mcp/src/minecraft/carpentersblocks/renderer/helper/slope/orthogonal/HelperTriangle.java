@@ -1,11 +1,8 @@
 package carpentersblocks.renderer.helper.slope.orthogonal;
 
-import static net.minecraftforge.common.ForgeDirection.EAST;
-import static net.minecraftforge.common.ForgeDirection.NORTH;
-import static net.minecraftforge.common.ForgeDirection.SOUTH;
-import static net.minecraftforge.common.ForgeDirection.WEST;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.util.Icon;
+import net.minecraftforge.common.ForgeDirection;
 import carpentersblocks.renderer.helper.RenderHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -20,7 +17,7 @@ public class HelperTriangle extends RenderHelper {
     {
         boolean floatingHeight = iconHasFloatingHeight(icon);
 
-        prepareRender(renderBlocks, NORTH, x, y, z, icon);
+        prepareRender(renderBlocks, ForgeDirection.NORTH, x, y, z, icon);
 
         setupVertex(renderBlocks, xMax, yMin, zMin, uBL, floatingHeight ? vTL : vBL, BOTTOM_LEFT );
         setupVertex(renderBlocks, xMin, yMin, zMin, uBR,                        vBR, BOTTOM_RIGHT);
@@ -35,7 +32,7 @@ public class HelperTriangle extends RenderHelper {
         boolean floatingHeight = iconHasFloatingHeight(icon);
 
         renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 0.5D, 0.5D, 1.0D);
-        prepareRender(renderBlocks, NORTH, x, y, z, icon);
+        prepareRender(renderBlocks, ForgeDirection.NORTH, x, y, z, icon);
 
         setupVertex(renderBlocks, xMax, yMax, zMin, uTL,                        vTL, TOP_LEFT    );
         setupVertex(renderBlocks, xMax, yMin, zMin, uBL,                        vBL, BOTTOM_LEFT );
@@ -49,7 +46,7 @@ public class HelperTriangle extends RenderHelper {
     {
         boolean floatingHeight = iconHasFloatingHeight(icon);
 
-        prepareRender(renderBlocks, SOUTH, x, y, z, icon);
+        prepareRender(renderBlocks, ForgeDirection.SOUTH, x, y, z, icon);
 
         setupVertex(renderBlocks, xMin, yMin, zMax, uBL, floatingHeight ? vTL: vBL, BOTTOM_LEFT );
         setupVertex(renderBlocks, xMax, yMin, zMax, uBR,                       vBR, BOTTOM_RIGHT);
@@ -63,7 +60,7 @@ public class HelperTriangle extends RenderHelper {
     {
         boolean floatingHeight = iconHasFloatingHeight(icon);
 
-        prepareRender(renderBlocks, SOUTH, x, y, z, icon);
+        prepareRender(renderBlocks, ForgeDirection.SOUTH, x, y, z, icon);
 
         setupVertex(renderBlocks, xMin, yMin, zMax, uBL,                        vBL, BOTTOM_LEFT );
         setupVertex(renderBlocks, xMax, yMin, zMax, uBR, floatingHeight ? vTR : vBR, BOTTOM_RIGHT);
@@ -77,7 +74,7 @@ public class HelperTriangle extends RenderHelper {
     {
         boolean floatingHeight = iconHasFloatingHeight(icon);
 
-        prepareRender(renderBlocks, WEST, x, y, z, icon);
+        prepareRender(renderBlocks, ForgeDirection.WEST, x, y, z, icon);
 
         setupVertex(renderBlocks, xMin, yMin, zMin, uBL, floatingHeight ? vTL : vBL, BOTTOM_LEFT );
         setupVertex(renderBlocks, xMin, yMin, zMax, uBR,                        vBR, BOTTOM_RIGHT);
@@ -91,7 +88,7 @@ public class HelperTriangle extends RenderHelper {
     {
         boolean floatingHeight = iconHasFloatingHeight(icon);
 
-        prepareRender(renderBlocks, WEST, x, y, z, icon);
+        prepareRender(renderBlocks, ForgeDirection.WEST, x, y, z, icon);
 
         setupVertex(renderBlocks, xMin, yMax, zMin, uTL,                        vTL, TOP_LEFT    );
         setupVertex(renderBlocks, xMin, yMin, zMin, uBL,                        vBL, BOTTOM_LEFT );
@@ -105,7 +102,7 @@ public class HelperTriangle extends RenderHelper {
     {
         boolean floatingHeight = iconHasFloatingHeight(icon);
 
-        prepareRender(renderBlocks, EAST, x, y, z, icon);
+        prepareRender(renderBlocks, ForgeDirection.EAST, x, y, z, icon);
 
         setupVertex(renderBlocks, xMax, yMin, zMax, uBL, floatingHeight ? vTL : vBL, BOTTOM_LEFT );
         setupVertex(renderBlocks, xMax, yMin, zMin, uBR,                        vBR, BOTTOM_RIGHT);
@@ -119,7 +116,7 @@ public class HelperTriangle extends RenderHelper {
     {
         boolean floatingHeight = iconHasFloatingHeight(icon);
 
-        prepareRender(renderBlocks, EAST, x, y, z, icon);
+        prepareRender(renderBlocks, ForgeDirection.EAST, x, y, z, icon);
 
         setupVertex(renderBlocks, xMax, yMax, zMax, uTL,                        vTL, TOP_LEFT    );
         setupVertex(renderBlocks, xMax, yMin, zMax, uBL,                        vBL, BOTTOM_LEFT );

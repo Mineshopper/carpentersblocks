@@ -1,11 +1,8 @@
 package carpentersblocks.renderer.helper.slope.oblique;
 
-import static net.minecraftforge.common.ForgeDirection.EAST;
-import static net.minecraftforge.common.ForgeDirection.NORTH;
-import static net.minecraftforge.common.ForgeDirection.SOUTH;
-import static net.minecraftforge.common.ForgeDirection.WEST;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.util.Icon;
+import net.minecraftforge.common.ForgeDirection;
 import carpentersblocks.data.Slope;
 import carpentersblocks.renderer.helper.RenderHelper;
 import cpw.mods.fml.relauncher.Side;
@@ -19,7 +16,7 @@ public class HelperCorner extends RenderHelper {
      */
     public static void renderSlopeZNeg(RenderBlocks renderBlocks, int slopeID, double x, double y, double z, Icon icon)
     {
-        prepareRender(renderBlocks, NORTH, x, y, z, icon);
+        prepareRender(renderBlocks, ForgeDirection.NORTH, x, y, z, icon);
 
         switch (slopeID)
         {
@@ -71,7 +68,7 @@ public class HelperCorner extends RenderHelper {
      */
     public static void renderSlopeZPos(RenderBlocks renderBlocks, int slopeID, double x, double y, double z, Icon icon)
     {
-        prepareRender(renderBlocks, SOUTH, x, y, z, icon);
+        prepareRender(renderBlocks, ForgeDirection.SOUTH, x, y, z, icon);
 
         switch (slopeID)
         {
@@ -123,7 +120,7 @@ public class HelperCorner extends RenderHelper {
      */
     public static void renderSlopeXNeg(RenderBlocks renderBlocks, int slopeID, double x, double y, double z, Icon icon)
     {
-        prepareRender(renderBlocks, WEST, x, y, z, icon);
+        prepareRender(renderBlocks, ForgeDirection.WEST, x, y, z, icon);
 
         switch (slopeID)
         {
@@ -175,7 +172,7 @@ public class HelperCorner extends RenderHelper {
      */
     public static void renderSlopeXPos(RenderBlocks renderBlocks, int slopeID, double x, double y, double z, Icon icon)
     {
-        prepareRender(renderBlocks, EAST, x, y, z, icon);
+        prepareRender(renderBlocks, ForgeDirection.EAST, x, y, z, icon);
 
         switch (slopeID)
         {

@@ -2,13 +2,15 @@ package carpentersblocks.renderer;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.Icon;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.common.ForgeDirection;
-import carpentersblocks.block.BlockCoverable;
 import carpentersblocks.block.BlockCarpentersLever;
+import carpentersblocks.block.BlockCoverable;
 import carpentersblocks.data.Lever;
 import carpentersblocks.data.Lever.Axis;
+import carpentersblocks.renderer.helper.VertexHelper;
 import carpentersblocks.util.BlockProperties;
 import carpentersblocks.util.registry.BlockRegistry;
 import carpentersblocks.util.registry.IconRegistry;
@@ -28,10 +30,12 @@ public class BlockHandlerCarpentersLever extends BlockHandlerBase {
     /**
      * Override to provide custom icons.
      */
-    protected Icon getUniqueIcon(Block block, int side, Icon icon)
+    protected Icon getUniqueIcon(ItemStack itemStack, int side, Icon icon)
     {
+        Block block = BlockProperties.toBlock(itemStack);
+
         if (block instanceof BlockCoverable) {
-            return IconRegistry.icon_solid;
+            return IconRegistry.icon_uncovered_solid;
         } else {
             return icon;
         }
@@ -41,23 +45,19 @@ public class BlockHandlerCarpentersLever extends BlockHandlerBase {
     /**
      * Renders block
      */
-    protected boolean renderCarpentersBlock(int x, int y, int z)
+    protected void renderCarpentersBlock(int x, int y, int z)
     {
         renderBlocks.renderAllFaces = true;
 
-        Block block = BlockProperties.getCoverBlock(TE, 6);
-
-        renderLever(block, x, y, z);
+        renderLever(getCoverForRendering(), x, y, z);
 
         renderBlocks.renderAllFaces = false;
-
-        return true;
     }
 
     /**
      * Renders lever.
      */
-    private boolean renderLever(Block block, int x, int y, int z)
+    private void renderLever(ItemStack itemStack, int x, int y, int z)
     {
         /* Set block bounds and render lever base. */
 
@@ -65,19 +65,19 @@ public class BlockHandlerCarpentersLever extends BlockHandlerBase {
         blockRef.setBlockBoundsBasedOnState(renderBlocks.blockAccess, x, y, z);
 
         renderBlocks.setRenderBoundsFromBlock(blockRef);
-        renderBlock(block, x, y, z);
+        renderBlock(itemStack, x, y, z);
 
         /* Render lever handle. */
 
-        renderLeverHandle(x, y, z);
-
-        return true;
+        if (renderPass == PASS_OPAQUE) {
+        	renderLeverHandle(x, y, z);
+        }
     }
 
     /**
      * Renders the lever handle.
      */
-    private boolean renderLeverHandle(int x, int y, int z)
+    private void renderLeverHandle(int x, int y, int z)
     {
         Tessellator tessellator = Tessellator.instance;
         tessellator.setBrightness(Block.dirt.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y, z));
@@ -233,9 +233,9 @@ public class BlockHandlerCarpentersLever extends BlockHandlerBase {
             tessellator.addVertexWithUV(vertex2.xCoord, vertex2.yCoord, vertex2.zCoord, uMax, vMax);
             tessellator.addVertexWithUV(vertex3.xCoord, vertex3.yCoord, vertex3.zCoord, uMax, vMin);
             tessellator.addVertexWithUV(vertex4.xCoord, vertex4.yCoord, vertex4.zCoord, uMin, vMin);
-        }
 
-        return true;
+            VertexHelper.vertexCount += 4;
+        }
     }
 
 }

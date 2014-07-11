@@ -1,34 +1,41 @@
 package carpentersblocks.tileentity;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.Packet132TileEntityData;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import carpentersblocks.util.IProtected;
 
-public class TEBase extends TileEntity {
+public class TEBase extends TileEntity implements IProtected {
 
-    /* Added for 1.7.2 migration. */
+    private final String TAG_COVER         = "cover";
+    private final String TAG_DYE           = "dye";
+    private final String TAG_OVERLAY       = "overlay";
+    private final String TAG_ITEMSTACKS    = "itemstacks";
+    private final String TAG_METADATA      = "metadata";
+    private final String TAG_OWNER         = "owner";
+    private final String TAG_CHISEL_DESIGN = "chiselDesign";
+    private final String TAG_DESIGN        = "design";
 
-    public ItemStack[] newCover   = new ItemStack[7];
-    public ItemStack[] newDye     = new ItemStack[7];
-    public ItemStack[] newOverlay = new ItemStack[7];
+    public ItemStack[] cover   = new ItemStack[7];
+    public ItemStack[] dye     = new ItemStack[7];
+    public ItemStack[] overlay = new ItemStack[7];
 
-    /* MC 1.6.4 fields. */
+    /** Chisel design for each side and base block. */
+    public String[] chiselDesign = { "", "", "", "", "", "", "" };
 
-    public short[] cover  = new short[7];
-    public byte[] pattern = new byte[7];
-    public byte[] color   = new byte[7];
-    public byte[] overlay = new byte[7];
+    /** Holds specific block information like facing, states, etc. */
+    public short metadata;
 
-    /** Holds information like direction, block type, etc. */
-    public short data;
+    /** Design name. */
+    public String design = "";
 
-    /** Holds name of player that created tile entity. */
+    /** Owner of tile entity. */
     private String owner = "";
 
     @Override
@@ -36,20 +43,37 @@ public class TEBase extends TileEntity {
     {
         super.readFromNBT(nbt);
 
-        for (int count = 0; count < 7; ++count) {
-            cover[count] = nbt.getShort("cover_" + count);
+        /* Convert old data to new format */
+        if (nbt.hasKey("data")) {
+            MigrationHelper.readFromNBT(this, nbt);
         }
 
-        pattern = nbt.getByteArray("pattern");
-        color = nbt.getByteArray("color");
-        overlay = nbt.getByteArray("overlay");
-        data = nbt.getShort("data");
+        NBTTagList itemstack_list = nbt.getTagList(TAG_ITEMSTACKS);
 
-        /* For compatibility with versions prior to 1.9.7 */
+        cover   = new ItemStack[7];
+        dye     = new ItemStack[7];
+        overlay = new ItemStack[7];
 
-        if (nbt.hasKey("owner")) {
-            owner = nbt.getString("owner");
+        for (int idx = 0; idx < itemstack_list.tagCount(); ++idx)
+        {
+            NBTTagCompound nbt1 = (NBTTagCompound)itemstack_list.tagAt(idx);
+
+            if (((NBTTagCompound)itemstack_list.tagAt(idx)).hasKey(TAG_COVER)) {
+                cover[nbt1.getByte(TAG_COVER)] = ItemStack.loadItemStackFromNBT(nbt1);
+            } else if (((NBTTagCompound)itemstack_list.tagAt(idx)).hasKey(TAG_DYE)) {
+                dye[nbt1.getByte(TAG_DYE)] = ItemStack.loadItemStackFromNBT(nbt1);
+            } else if (((NBTTagCompound)itemstack_list.tagAt(idx)).hasKey(TAG_OVERLAY)) {
+                overlay[nbt1.getByte(TAG_OVERLAY)] = ItemStack.loadItemStackFromNBT(nbt1);
+            }
         }
+
+        for (int idx = 0; idx < 7; ++idx) {
+            chiselDesign[idx] = nbt.getString(TAG_CHISEL_DESIGN + "_" + idx);
+        }
+
+        metadata = nbt.getShort(TAG_METADATA);
+        design   = nbt.getString(TAG_DESIGN);
+        owner    = nbt.getString(TAG_OWNER);
     }
 
     @Override
@@ -57,19 +81,39 @@ public class TEBase extends TileEntity {
     {
         super.writeToNBT(nbt);
 
-        for (int count = 0; count < 7; ++count) {
-            nbt.setShort("cover_" + count, cover[count]);
+        NBTTagList list = new NBTTagList();
+
+        for (byte side = 0; side < 7; ++side)
+        {
+            if (cover[side] != null) {
+                NBTTagCompound nbt1 = new NBTTagCompound();
+                nbt1.setByte(TAG_COVER, side);
+                cover[side].writeToNBT(nbt1);
+                list.appendTag(nbt1);
+            }
+            if (dye[side] != null) {
+                NBTTagCompound nbt1 = new NBTTagCompound();
+                nbt1.setByte(TAG_DYE, side);
+                dye[side].writeToNBT(nbt1);
+                list.appendTag(nbt1);
+            }
+            if (overlay[side] != null) {
+                NBTTagCompound nbt1 = new NBTTagCompound();
+                nbt1.setByte(TAG_OVERLAY, side);
+                overlay[side].writeToNBT(nbt1);
+                list.appendTag(nbt1);
+            }
         }
 
-        nbt.setByteArray("pattern", pattern);
-        nbt.setByteArray("color", color);
-        nbt.setByteArray("overlay", overlay);
-        nbt.setShort("data", data);
-        nbt.setString("owner", owner);
+        nbt.setTag(TAG_ITEMSTACKS, list);
 
-        /* For compatibility when migrating to Carpenter's Blocks for MC 1.7+ */
+        for (int idx = 0; idx < 7; ++idx) {
+            nbt.setString(TAG_CHISEL_DESIGN + "_" + idx, chiselDesign[idx]);
+        }
 
-        MigrationHelper.writeToNBT(this, nbt);
+        nbt.setShort(TAG_METADATA, metadata);
+        nbt.setString(TAG_DESIGN, design);
+        nbt.setString(TAG_OWNER, owner);
     }
 
     @Override
@@ -112,7 +156,7 @@ public class TEBase extends TileEntity {
      * @param oldMeta The old metadata of the block
      * @param newMeta The new metadata of the block (May be the same)
      * @param world Current world
-     * @param x X Postion
+     * @param x X Position
      * @param y Y Position
      * @param z Z Position
      * @return True to remove the old tile entity, false to keep it in tact {and create a new one if the new values specify to}
@@ -120,20 +164,24 @@ public class TEBase extends TileEntity {
     @Override
     public boolean shouldRefresh(int oldID, int newID, int oldMeta, int newMeta, World world, int x, int y, int z)
     {
+        /*
+         * This is a curious method.
+         *
+         * Essentially, when doing most block logic server-side, changes
+         * to blocks will momentarily "flash" to their default state
+         * when rendering client-side.  This is most noticeable when adding
+         * or removing covers for the first time.
+         *
+         * Making the tile entity refresh only when the block is first created
+         * is not only reasonable, but fixes this behavior.
+         */
         return oldID != newID;
-    }
-
-    /**
-     * Returns true if entityPlayer is owner of tile entity.
-     */
-    public boolean isOwner(EntityLivingBase entityLiving)
-    {
-        return owner.equals(entityLiving.getEntityName()) || owner.equals("");
     }
 
     /**
      * Sets owner of tile entity.
      */
+    @Override
     public void setOwner(String owner)
     {
         this.owner = owner;
@@ -142,6 +190,7 @@ public class TEBase extends TileEntity {
     /**
      * Returns owner of tile entity.
      */
+    @Override
     public String getOwner()
     {
         return owner;

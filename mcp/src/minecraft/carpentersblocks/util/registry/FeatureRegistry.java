@@ -1,78 +1,67 @@
 package carpentersblocks.util.registry;
 
+import java.util.ArrayList;
+
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.Property;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 
 public class FeatureRegistry {
 
-    public static boolean enableCovers                 = true;
-    public static boolean enableOverlays               = true;
-    public static boolean enableSideCovers             = true;
-    public static boolean enableDyeColors              = true;
-    public static boolean enablePatterns               = true;
-    public static boolean enableFancyFluids            = true;
-    public static boolean enableTorchWeatherEffects    = true;
-    public static boolean enableBlockOwnership         = true;
-    public static boolean enableMCPatcherCompatibility = false;
-    public static boolean enablePlantColorOverride     = true;
-    public static boolean enableZFightingFix           = false;
-    public static boolean enableOptifineIntegration    = true;
-    public static boolean enableExtendedPlantSupport   = true;
-    public static boolean restrictTileEntityAsCover    = true;
+    public static boolean enableCovers              = true;
+    public static boolean enableOverlay             = true;
+    public static boolean enableSideCovers          = true;
+    public static boolean enableDye                 = true;
+    public static boolean enableChiselDesigns       = true;
+    public static boolean enableFancyFluids         = true;
+    public static boolean enableTorchWeatherEffects = true;
+    public static boolean enableOwnership           = true;
+    public static boolean enableTile                = true;
+
+    public static ArrayList<String> overlayItems    = new ArrayList<String>();
+    public static ArrayList<String> coverExceptions = new ArrayList<String>();
 
     public static int slopeSmoothness = 2;
 
     /**
      * Initializes configuration properties.
      */
-    public static void initFeatures(FMLPreInitializationEvent event, Configuration config)
+    public static void preInit(FMLPreInitializationEvent event, Configuration config)
     {
-        enableCovers     = config.get("features",      "Enable Covers",     enableCovers).getBoolean(enableCovers);
-        enableOverlays   = config.get("features",    "Enable Overlays",   enableOverlays).getBoolean(enableOverlays);
-        enableSideCovers = config.get("features", "Enable Side Covers", enableSideCovers).getBoolean(enableSideCovers);
-        enableDyeColors  = config.get("features",  "Enable Dye Colors",  enableDyeColors).getBoolean(enableDyeColors);
-        enablePatterns   = config.get("features",    "Enable Patterns",   enablePatterns).getBoolean(enablePatterns);
+        enableCovers        = config.get("features",      "Enable Covers",        enableCovers).getBoolean(enableCovers);
+        enableOverlay       = config.get("features",    "Enable Overlays",       enableOverlay).getBoolean(enableOverlay);
+        enableSideCovers    = config.get("features", "Enable Side Covers",    enableSideCovers).getBoolean(enableSideCovers);
+        enableDye           = config.get("features",  "Enable Dye Colors",           enableDye).getBoolean(enableDye);
+        enableChiselDesigns = config.get("features",    "Enable Patterns", enableChiselDesigns).getBoolean(enableChiselDesigns);
+        enableTile          = config.get("features",        "Enable Tile",          enableTile).getBoolean(enableTile);
 
         Property fancyFluidsProp = config.get("features", "Enable Fancy Fluids", enableFancyFluids);
         fancyFluidsProp.comment = "When enabled, unobstructed stationary fluid adjacent to block will render in the same space.\nNote: this only takes effect when Fancy Graphics are enabled.";
         enableFancyFluids = fancyFluidsProp.getBoolean(enableFancyFluids);
 
-        Property blockOwnershipProp = config.get("features", "Enable Block Ownership", enableBlockOwnership);
-        blockOwnershipProp.comment = "This will prevent players besides you and server operators from editing your blocks.\nNote: this does not protect blocks against destruction (intentional), and may allow activation if appropriate. Also, the Carpenter's Safe is not affected by this.";
-        enableBlockOwnership = blockOwnershipProp.getBoolean(enableBlockOwnership);
+        Property ownershipProp = config.get("features", "Enable Ownership", enableOwnership);
+        ownershipProp.comment = "This will prevent players besides you and server operators from editing your objects.\nNote: this does not protect objects against destruction (intentional), and may allow activation if appropriate. Also, the Carpenter's Safe is not affected by this.";
+        enableOwnership = ownershipProp.getBoolean(enableOwnership);
 
-        Property ZFightingFixProp = config.get("rendering", "Enable Z-Fighting Fix", enableZFightingFix);
-        ZFightingFixProp.comment = "This resolves z-fighting with chiseled patterns that may occur with Optifine or other client-side performance mods.\nNote: this will likely cause all Carpenter's Blocks to be invisible behind ice or water.";
-        enableZFightingFix = ZFightingFixProp.getBoolean(enableZFightingFix);
-
-        Property optifineIntegrationProp = config.get("rendering", "Enable Optifine Integration", enableOptifineIntegration);
-        optifineIntegrationProp.comment = "Provides integration with Optifine's block coloring methods.\nNote: this is needed to support Custom Colors.";
-        enableOptifineIntegration = optifineIntegrationProp.getBoolean(enableOptifineIntegration);
-
-        Property slopeSmoothnessProp = config.get("slope", "Smoothness", slopeSmoothness);
+        Property slopeSmoothnessProp = config.get("features", "Smoothness", slopeSmoothness);
         slopeSmoothnessProp.comment = "This controls the smoothness of the slope faces.\nNote: smoothness of 2 is similar to stairs, while a value above 25 is generally fluid.";
         slopeSmoothness = slopeSmoothnessProp.getInt(slopeSmoothness);
 
-        Property torchWeatherEffectsProp = config.get("torch", "Enable Torch Weather Effects", enableTorchWeatherEffects);
+        Property torchWeatherEffectsProp = config.get("features", "Enable Torch Weather Effects", enableTorchWeatherEffects);
         torchWeatherEffectsProp.comment = "This controls whether torches extinguish themselves when exposed to rain or snow.";
         enableTorchWeatherEffects = torchWeatherEffectsProp.getBoolean(enableTorchWeatherEffects);
 
-        Property MCPatcherProp = config.get("rendering", "Enable MCPatcher Compatibility", enableMCPatcherCompatibility);
-        MCPatcherProp.comment = "This will fix block texture issues caused by MCPatcher.";
-        enableMCPatcherCompatibility = MCPatcherProp.getBoolean(enableMCPatcherCompatibility);
+        Property overlayList = config.get("features", "Overlay Definitions", new String[] { "Seeds:grass", "Snowball:snow", "String:web", "Vines:vine", "Wheat:hay", "Mushroom:mycelium" });
+        overlayList.comment = "This maps items to overlays.\nItems are prefixed with display names.\nOverlay suffixes are :grass, :snow, :web, :vine, :hay, :mycelium";
+        for (String item : overlayList.getStringList()) {
+            overlayItems.add(item);
+        }
 
-        Property extendedPlantSupportProp = config.get("features", "Extended Plant Support", enableExtendedPlantSupport);
-        extendedPlantSupportProp.comment = "This enables most plants to be planted on covered or overlaid Carpenter's blocks.";
-        enableExtendedPlantSupport = extendedPlantSupportProp.getBoolean(enableExtendedPlantSupport);
-
-        Property plantColorOverrideProp = config.get("flower pot", "Override Biome Coloring", enablePlantColorOverride);
-        plantColorOverrideProp.comment = "Set to true to override biome-colored plants to a lively green.";
-        enablePlantColorOverride = plantColorOverrideProp.getBoolean(enablePlantColorOverride);
-
-        Property restrictTileEntityAsCoverProp = config.get("cover restriction", "Restrict covers that have tile entities", restrictTileEntityAsCover);
-        restrictTileEntityAsCoverProp.comment = "Setting this to false will allow nearly any block to be used as cover.  Results will vary, and crashes may occur if disabled.";
-        restrictTileEntityAsCover = restrictTileEntityAsCoverProp.getBoolean(restrictTileEntityAsCover);
+        Property coverExceptionList = config.get("features", "Cover Exceptions", new String[] { "Silverwood Planks", "Greatwood Planks" });
+        coverExceptionList.comment = "This allows restricted blocks to be used as covers.\nAdd your own by supplying the display name for the block.";
+        for (String item : coverExceptionList.getStringList()) {
+            coverExceptions.add(item);
+        }
     }
 
 }

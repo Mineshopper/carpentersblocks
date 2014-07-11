@@ -1,7 +1,8 @@
 package carpentersblocks.block;
 
-import static net.minecraftforge.common.ForgeDirection.NORTH;
-import static net.minecraftforge.common.ForgeDirection.SOUTH;
+import java.util.List;
+
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.EntityLivingBase;
@@ -17,6 +18,7 @@ import carpentersblocks.data.Lever;
 import carpentersblocks.data.Lever.Axis;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
+import carpentersblocks.util.handler.ChatHandler;
 import carpentersblocks.util.registry.BlockRegistry;
 import carpentersblocks.util.registry.IconRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -24,13 +26,9 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockCarpentersLever extends BlockCoverable {
 
-    public BlockCarpentersLever(int blockID)
+    public BlockCarpentersLever(int blockID, Material material)
     {
-        super(blockID, Material.circuits);
-        setHardness(0.2F);
-        setUnlocalizedName("blockCarpentersLever");
-        setCreativeTab(CarpentersBlocks.tabCarpentersBlocks);
-        setTextureName("carpentersblocks:general/solid");
+        super(blockID, material);
     }
 
     @SideOnly(Side.CLIENT)
@@ -41,9 +39,7 @@ public class BlockCarpentersLever extends BlockCoverable {
      */
     public void registerIcons(IconRegister iconRegister)
     {
-        IconRegistry.icon_lever = iconRegister.registerIcon("carpentersblocks:lever/lever");
-
-        super.registerIcons(iconRegister);
+        IconRegistry.icon_lever = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "lever/lever");
     }
 
     @SideOnly(Side.CLIENT)
@@ -63,18 +59,18 @@ public class BlockCarpentersLever extends BlockCoverable {
      */
     protected boolean onHammerLeftClick(TEBase TE, EntityPlayer entityPlayer)
     {
-        BlockProperties.getData(TE);
+        BlockProperties.getMetadata(TE);
         int polarity = Lever.getPolarity(TE) == Lever.POLARITY_POSITIVE ? Lever.POLARITY_NEGATIVE : Lever.POLARITY_POSITIVE;
 
         Lever.setPolarity(TE, polarity);
-        notifySideNeighbor(TE.worldObj, TE.xCoord, TE.yCoord, TE.zCoord, ForgeDirection.OPPOSITES[Lever.getFacing(TE).ordinal()]);
+        notifySideNeighbor(TE.getWorldObj(), TE.xCoord, TE.yCoord, TE.zCoord, ForgeDirection.OPPOSITES[Lever.getFacing(TE).ordinal()]);
 
         switch (polarity) {
             case Lever.POLARITY_POSITIVE:
-                entityPlayer.addChatMessage("message.polarity_pos.name");
+                ChatHandler.sendMessageToPlayer("message.polarity_pos.name", entityPlayer);
                 break;
             case Lever.POLARITY_NEGATIVE:
-                entityPlayer.addChatMessage("message.polarity_neg.name");
+                ChatHandler.sendMessageToPlayer("message.polarity_neg.name", entityPlayer);
         }
 
         return true;
@@ -97,8 +93,9 @@ public class BlockCarpentersLever extends BlockCoverable {
     public boolean canPlaceBlockOnSide(World world, int x, int y, int z, int side)
     {
         ForgeDirection dir = ForgeDirection.getOrientation(side);
+        Block blockOffset = Block.blocksList[world.getBlockId(x - dir.offsetX, y - dir.offsetY, z - dir.offsetZ)];
 
-        return world.isBlockSolidOnSide(x - dir.offsetX, y - dir.offsetY, z - dir.offsetZ, dir);
+        return blockOffset == null ? false : blockOffset.isBlockSolidOnSide(world, x - dir.offsetX, y - dir.offsetY, z - dir.offsetZ, dir);
     }
 
     @Override
@@ -116,24 +113,29 @@ public class BlockCarpentersLever extends BlockCoverable {
      */
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack itemStack)
     {
-        TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
-        int facing = world.getBlockMetadata(x, y, z);
+        TEBase TE = getTileEntity(world, x, y, z);
 
-        Lever.setFacing(TE, facing);
-        Lever.setReady(TE);
+        if (TE != null) {
 
-        /* For vertical facings, set axis rotation. */
-        if (facing < 2)
-        {
-            ForgeDirection dir = BlockProperties.getDirectionFromFacing(BlockProperties.getOppositeFacing(entityLiving));
+            int facing = world.getBlockMetadata(x, y, z);
 
-            if (dir.equals(NORTH) || dir.equals(SOUTH)) {
-                Lever.setAxis(TE, Axis.Z);
+            Lever.setFacing(TE, facing);
+            Lever.setReady(TE);
+
+            /* For vertical facings, set axis rotation. */
+            if (facing < 2)
+            {
+                ForgeDirection dir = BlockProperties.getDirectionFromFacing(BlockProperties.getOppositeFacing(entityLiving));
+
+                if (dir.equals(ForgeDirection.NORTH) || dir.equals(ForgeDirection.SOUTH)) {
+                    Lever.setAxis(TE, Axis.Z);
+                }
+            } else {
+                if (facing == ForgeDirection.NORTH.ordinal() || facing == ForgeDirection.SOUTH.ordinal()) {
+                    Lever.setAxis(TE, Axis.Z);
+                }
             }
-        } else {
-            if (facing == NORTH.ordinal() || facing == SOUTH.ordinal()) {
-                Lever.setAxis(TE, Axis.Z);
-            }
+
         }
 
         super.onBlockPlacedBy(world, x, y, z, entityLiving, itemStack);
@@ -146,12 +148,12 @@ public class BlockCarpentersLever extends BlockCoverable {
      */
     public void onNeighborBlockChange(World world, int x, int y, int z, int blockID)
     {
-        if (!world.isRemote)
-        {
-            TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
+        if (!world.isRemote) {
 
-            if (TE != null)
-            {
+            TEBase TE = getTileEntity(world, x, y, z);
+
+            if (TE != null) {
+
                 if (Lever.isReady(TE))
                 {
                     ForgeDirection facing = Lever.getFacing(TE);
@@ -161,7 +163,9 @@ public class BlockCarpentersLever extends BlockCoverable {
                         world.setBlockToAir(x, y, z);
                     }
                 }
+
             }
+
         }
 
         super.onNeighborBlockChange(world, x, y, z, blockID);
@@ -173,60 +177,64 @@ public class BlockCarpentersLever extends BlockCoverable {
      */
     public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
     {
-        TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
+        TEBase TE = getTileEntity(world, x, y, z);
 
-        ForgeDirection facing = Lever.getFacing(TE);
-        Axis axis = Lever.getAxis(TE);
+        if (TE != null) {
 
-        float offset = 0.1875F;
+            ForgeDirection facing = Lever.getFacing(TE);
+            Axis axis = Lever.getAxis(TE);
 
-        switch (facing) {
-            case DOWN:
-                if (axis.equals(Axis.X)) {
-                    setBlockBounds(0.2F, 1.0F - offset, 0.5F - offset, 0.8F, 1.0F, 0.5F + offset);
-                } else {
-                    setBlockBounds(0.5F - offset, 1.0F - offset, 0.2F, 0.5F + offset, 1.0F, 0.8F);
-                }
-                break;
-            case UP:
-                if (axis.equals(Axis.X)) {
-                    setBlockBounds(0.2F, 0.0F, 0.5F - offset, 0.8F, offset, 0.5F + offset);
-                } else {
-                    setBlockBounds(0.5F - offset, 0.0F, 0.2F, 0.5F + offset, offset, 0.8F);
-                }
-                break;
-            case NORTH:
-                setBlockBounds(0.5F - offset, 0.2F, 1.0F - offset, 0.5F + offset, 0.8F, 1.0F);
-                break;
-            case SOUTH:
-                setBlockBounds(0.5F - offset, 0.2F, 0.0F, 0.5F + offset, 0.8F, offset);
-                break;
-            case WEST:
-                setBlockBounds(1.0F - offset, 0.2F, 0.5F - offset, 1.0F, 0.8F, 0.5F + offset);
-                break;
-            case EAST:
-                setBlockBounds(0.0F, 0.2F, 0.5F - offset, offset, 0.8F, 0.5F + offset);
-                break;
-            default: {}
+            float offset = 0.1875F;
+
+            switch (facing) {
+                case DOWN:
+                    if (axis.equals(Axis.X)) {
+                        setBlockBounds(0.2F, 1.0F - offset, 0.5F - offset, 0.8F, 1.0F, 0.5F + offset);
+                    } else {
+                        setBlockBounds(0.5F - offset, 1.0F - offset, 0.2F, 0.5F + offset, 1.0F, 0.8F);
+                    }
+                    break;
+                case UP:
+                    if (axis.equals(Axis.X)) {
+                        setBlockBounds(0.2F, 0.0F, 0.5F - offset, 0.8F, offset, 0.5F + offset);
+                    } else {
+                        setBlockBounds(0.5F - offset, 0.0F, 0.2F, 0.5F + offset, offset, 0.8F);
+                    }
+                    break;
+                case NORTH:
+                    setBlockBounds(0.5F - offset, 0.2F, 1.0F - offset, 0.5F + offset, 0.8F, 1.0F);
+                    break;
+                case SOUTH:
+                    setBlockBounds(0.5F - offset, 0.2F, 0.0F, 0.5F + offset, 0.8F, offset);
+                    break;
+                case WEST:
+                    setBlockBounds(1.0F - offset, 0.2F, 0.5F - offset, 1.0F, 0.8F, 0.5F + offset);
+                    break;
+                case EAST:
+                    setBlockBounds(0.0F, 0.2F, 0.5F - offset, offset, 0.8F, 0.5F + offset);
+                    break;
+                default: {}
+            }
+
         }
-
     }
 
     @Override
     /**
      * Called upon block activation.
      */
-    public boolean[] postOnBlockActivated(TEBase TE, World world, int x, int y, int z, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ)
+    protected void postOnBlockActivated(TEBase TE, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ, List<Boolean> altered, List<Boolean> decInv)
     {
         ForgeDirection facing = Lever.getFacing(TE);
 
         Lever.setState(TE, isActive(TE) ? Lever.STATE_OFF : Lever.STATE_ON, true);
 
-        world.notifyBlocksOfNeighborChange(x, y, z, blockID);
-        notifySideNeighbor(world, x, y, z, facing.ordinal());
+        World world = TE.getWorldObj();
 
-        boolean[] result = { true, false };
-        return result;
+        world.notifyBlocksOfNeighborChange(TE.xCoord, TE.yCoord, TE.zCoord, blockID);
+        notifySideNeighbor(world, TE.xCoord, TE.yCoord, TE.zCoord, facing.ordinal());
+
+        altered.add(true);
     }
 
     /**
@@ -245,9 +253,8 @@ public class BlockCarpentersLever extends BlockCoverable {
      */
     public int isProvidingWeakPower(IBlockAccess world, int x, int y, int z, int side)
     {
-        TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
-
-        return getPowerSupply(TE);
+        TEBase TE = getTileEntity(world, x, y, z);
+        return TE == null ? 0 : getPowerSupply(TE);
     }
 
     @Override
@@ -257,9 +264,8 @@ public class BlockCarpentersLever extends BlockCoverable {
      */
     public int isProvidingStrongPower(IBlockAccess world, int x, int y, int z, int side)
     {
-        TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
-
-        return Lever.getFacing(TE).ordinal() == side ? getPowerSupply(TE) : 0;
+        TEBase TE = getTileEntity(world, x, y, z);
+        return TE == null ? 0 : Lever.getFacing(TE).ordinal() == side ? getPowerSupply(TE) : 0;
     }
 
     /**
@@ -304,19 +310,18 @@ public class BlockCarpentersLever extends BlockCoverable {
     /**
      * Ejects contained items into the world, and notifies neighbours of an update, as appropriate
      */
-    public void breakBlock(World world, int x, int y, int z, int par5, int metadata)
+    public void breakBlock(World world, int x, int y, int z, int blockID, int metadata)
     {
-        TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
+        TEBase TE = getSimpleTileEntity(world, x, y, z);
 
-        if (TE != null)
-        {
+        if (TE != null) {
             if (isActive(TE)) {
                 world.notifyBlocksOfNeighborChange(x, y, z, blockID);
                 notifySideNeighbor(world, x, y, z, Lever.getFacing(TE).ordinal());
             }
         }
 
-        super.breakBlock(world, x, y, z, par5, metadata);
+        super.breakBlock(world, x, y, z, blockID, metadata);
     }
 
     @Override

@@ -4,7 +4,6 @@ import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import carpentersblocks.CarpentersBlocks;
 import carpentersblocks.api.ICarpentersHammer;
@@ -18,9 +17,8 @@ public class ItemCarpentersHammer extends Item implements ICarpentersHammer {
     public ItemCarpentersHammer(int itemID)
     {
         super(itemID);
-        setUnlocalizedName("itemCarpentersHammer");
         setMaxStackSize(1);
-        setCreativeTab(CarpentersBlocks.tabCarpentersBlocks);
+        setCreativeTab(CarpentersBlocks.creativeTab);
 
         if (ItemRegistry.itemCarpentersToolsDamageable) {
             setMaxDamage(ItemRegistry.itemCarpentersToolsUses);
@@ -31,7 +29,7 @@ public class ItemCarpentersHammer extends Item implements ICarpentersHammer {
     @Override
     public void registerIcons(IconRegister iconRegister)
     {
-        itemIcon = iconRegister.registerIcon("carpentersblocks:hammer");
+        itemIcon = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "hammer");
     }
 
     @Override
@@ -46,14 +44,10 @@ public class ItemCarpentersHammer extends Item implements ICarpentersHammer {
         return true;
     }
 
-    /**
-     * Returns the strength of the stack against a given block. 1.0F base, (Quality+1)*2 if correct blocktype, 1.5F if
-     * sword
-     */
     @Override
-    public float getStrVsBlock(ItemStack itemStack, Block block)
+    public boolean canHarvestBlock(Block blockToBeHarvested)
     {
-        return block instanceof BlockCoverable ? 1.0001F : super.getStrVsBlock(itemStack, block);
+        return blockToBeHarvested instanceof BlockCoverable ? true : false;
     }
 
 }

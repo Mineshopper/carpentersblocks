@@ -28,22 +28,22 @@ tile.blockCarpentersSafe.name=Ciesielski sejf
 tile.blockCarpentersFlowerPot.name=Ciesielska doniczka
 
 # MESSAGES
-message.polarity_pos.name=\u00a76POLARYZACJA: \u00a7fProste wyjście redstone.
-message.polarity_neg.name=\u00a76POLARYZACJA: \u00a7fOdwrócone wyjście redstone.
-message.activation_day.name=\u00a76AKTYWACJA: \u00a7fAktywowane w dzień.
-message.activation_night.name=\u00a76AKTYWACJA: \u00a7fAktywowane nocą.
-message.activation_iron.name=\u00a76AKTYWACJA: \u00a7fDrzwi będą się zachowywać jak żelazne.
-message.activation_wood.name=\u00a76AKTYWACJA: \u00a7fDrzwi będą się zachowywać jak drewniane.
-message.trigger_player.name=\u00a76WYZWALANIE: \u00a7fAktywowane tylko przez graczy.
-message.trigger_monster.name=\u00a76WYZWALANIE: \u00a7fAktywowane tylko przez potwory.
-message.trigger_animal.name=\u00a76WYZWALANIE: \u00a7fAktywowane tylko przez zwierzęta.
-message.trigger_all.name=\u00a76WYZWALANIE: \u00a7fAktywowane przez wszystkie postacie.
-message.safe_lock.name=\u00a76STEROWANIE: \u00a7fSejf zabezpieczony.
-message.safe_unlock.name=\u00a76STEROWANIE: \u00a7fSejf odbezpieczony.
-message.automation_all.name=\u00a76AUTOMATYKA: \u00a7fPrzedmioty mogą być wkładane i wyciągane.
-message.automation_disabled.name=\u00a76AUTOMATYKA: \u00a7fWyłączona.
-message.automation_insert.name=\u00a76AUTOMATYKA: \u00a7fPrzedmioty mogą być tylko wkładane.
-message.automation_extract.name=\u00a76AUTOMATYKA: \u00a7fPrzedmioty mogą by tyko wyciągane.
-message.block_lock.name=\u00a76STEROWANIE: \u00a7fTen blok jest zablokowany.
+message.polarity_pos.name=POLARYZACJA: Proste wyjście redstone.
+message.polarity_neg.name=POLARYZACJA: Odwrócone wyjście redstone.
+message.activation_day.name=AKTYWACJA: Aktywowane w dzień.
+message.activation_night.name=AKTYWACJA: Aktywowane nocą.
+message.activation_iron.name=AKTYWACJA: Drzwi będą się zachowywać jak żelazne.
+message.activation_wood.name=AKTYWACJA: Drzwi będą się zachowywać jak drewniane.
+message.trigger_player.name=WYZWALANIE: Aktywowane tylko przez graczy.
+message.trigger_monster.name=WYZWALANIE: Aktywowane tylko przez potwory.
+message.trigger_animal.name=WYZWALANIE: Aktywowane tylko przez zwierzęta.
+message.trigger_all.name=WYZWALANIE: Aktywowane przez wszystkie postacie.
+message.safe_lock.name=STEROWANIE: Sejf zabezpieczony.
+message.safe_unlock.name=STEROWANIE: Sejf odbezpieczony.
+message.automation_all.name=AUTOMATYKA: Przedmioty mogą być wkładane i wyciągane.
+message.automation_disabled.name=AUTOMATYKA: Wyłączona.
+message.automation_insert.name=AUTOMATYKA: Przedmioty mogą być tylko wkładane.
+message.automation_extract.name=AUTOMATYKA: Przedmioty mogą by tyko wyciągane.
+message.block_lock.name=STEROWANIE: Ten blok jest zablokowany.
 
 # </file>

@@ -1,5 +1,6 @@
 package carpentersblocks.data;
 
+import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
@@ -25,7 +26,7 @@ public class Torch {
      */
     public static ForgeDirection getFacing(TEBase TE)
     {
-        return ForgeDirection.getOrientation(BlockProperties.getData(TE) & 0x7);
+        return ForgeDirection.getOrientation(BlockProperties.getMetadata(TE) & 0x7);
     }
 
     /**
@@ -33,10 +34,10 @@ public class Torch {
      */
     public static void setFacing(TEBase TE, int side)
     {
-        int temp = BlockProperties.getData(TE) & 0xfff8;
+        int temp = BlockProperties.getMetadata(TE) & 0xfff8;
         temp |= side;
 
-        BlockProperties.setData(TE, temp);
+        BlockProperties.setMetadata(TE, temp);
     }
 
     /**
@@ -44,7 +45,7 @@ public class Torch {
      */
     public static State getState(TEBase TE)
     {
-        int temp = BlockProperties.getData(TE) & 0x18;
+        int temp = BlockProperties.getMetadata(TE) & 0x18;
         int val = temp >> 3;
 
         return val == State.LIT.ordinal() ? State.LIT : val == State.SMOLDERING.ordinal() ? State.SMOLDERING : State.UNLIT;
@@ -57,13 +58,14 @@ public class Torch {
     {
         if (state.ordinal() > getState(TE).ordinal()) {
             double[] headCoords = getHeadCoordinates(TE);
-            TE.worldObj.playSoundEffect(headCoords[0], headCoords[1], headCoords[2], "random.fizz", 0.5F, 2.6F + (TE.worldObj.rand.nextFloat() - TE.worldObj.rand.nextFloat()) * 0.8F);
+            World world = TE.getWorldObj();
+            world.playSoundEffect(headCoords[0], headCoords[1], headCoords[2], "random.fizz", 0.5F, 2.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
         }
 
-        int temp = BlockProperties.getData(TE) & 0xffe7;
+        int temp = BlockProperties.getMetadata(TE) & 0xffe7;
         temp |= state.ordinal() << 3;
 
-        BlockProperties.setData(TE, temp);
+        BlockProperties.setMetadata(TE, temp);
     }
 
     /**
@@ -74,7 +76,7 @@ public class Torch {
      */
     public static boolean isReady(TEBase TE)
     {
-        return (BlockProperties.getData(TE) & 0x20) > 0;
+        return (BlockProperties.getMetadata(TE) & 0x20) > 0;
     }
 
     /**
@@ -82,10 +84,10 @@ public class Torch {
      */
     public static void setReady(TEBase TE)
     {
-        int temp = BlockProperties.getData(TE) & 0xffdf;
+        int temp = BlockProperties.getMetadata(TE) & 0xffdf;
         temp |= 1 << 5;
 
-        BlockProperties.setData(TE, temp);
+        BlockProperties.setMetadata(TE, temp);
     }
 
     /**

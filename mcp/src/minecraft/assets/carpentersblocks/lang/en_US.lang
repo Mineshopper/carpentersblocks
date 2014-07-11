@@ -8,6 +8,7 @@ item.itemCarpentersHammer.name=Carpenter's Hammer
 item.itemCarpentersChisel.name=Carpenter's Chisel
 item.itemCarpentersDoor.name=Carpenter's Door
 item.itemCarpentersBed.name=Carpenter's Bed
+item.itemCarpentersTile.name=Carpenter's Tile
 
 # BLOCKS
 tile.blockCarpentersBarrier.name=Carpenter's Barrier
@@ -32,23 +33,26 @@ tile.blockCarpentersTorch.name=Carpenter's Torch
 tile.blockCarpentersSafe.name=Carpenter's Safe
 tile.blockCarpentersFlowerPot.name=Carpenter's Flower Pot
 
+# ENTITIES
+entity.CarpentersTile.name=Carpenter's Tile
+
 # MESSAGES
-message.polarity_pos.name=\u00a76POLARITY: \u00a7fNormal redstone output.
-message.polarity_neg.name=\u00a76POLARITY: \u00a7fInverted redstone output.
-message.activation_iron.name=\u00a76ACTIVATION: \u00a7fWill behave like an iron door.
-message.activation_wood.name=\u00a76ACTIVATION: \u00a7fWill behave like a wooden door.
-message.trigger_player.name=\u00a76TRIGGER: \u00a7fOnly activate for players.
-message.trigger_monster.name=\u00a76TRIGGER: \u00a7fOnly activate for monsters.
-message.trigger_animal.name=\u00a76TRIGGER: \u00a7fOnly activate for animals.
-message.trigger_all.name=\u00a76TRIGGER: \u00a7fActivate for all entities.
-message.safe_lock.name=\u00a76CONTROL: \u00a7fSafe locked.
-message.safe_unlock.name=\u00a76CONTROL: \u00a7fSafe unlocked.
-message.automation_all.name=\u00a76AUTOMATION: \u00a7fItems can be inserted and extracted.
-message.automation_disabled.name=\u00a76AUTOMATION: \u00a7fDisabled.
-message.automation_insert.name=\u00a76AUTOMATION: \u00a7fItems can be inserted only.
-message.automation_extract.name=\u00a76AUTOMATION: \u00a7fItems can be extracted only.
-message.block_lock.name=\u00a76CONTROL: \u00a7fThis block is locked.
-message.sensitivity_sleep.name=\u00a76SENSITIVITY: \u00a7fToggles state at player sleep threshold (sunrise and sunset).
-message.sensitivity_monsters.name=\u00a76SENSITIVITY: \u00a7fToggles state at monster spawn light threshold (including storms).
+message.polarity_pos.name=POLARITY: Normal redstone output.
+message.polarity_neg.name=POLARITY: Inverted redstone output.
+message.activation_iron.name=ACTIVATION: Will behave like an iron door.
+message.activation_wood.name=ACTIVATION: Will behave like a wooden door.
+message.trigger_player.name=TRIGGER: Only activate for players.
+message.trigger_monster.name=TRIGGER: Only activate for monsters.
+message.trigger_animal.name=TRIGGER: Only activate for animals.
+message.trigger_all.name=TRIGGER: Activate for all entities.
+message.safe_lock.name=CONTROL: Safe locked.
+message.safe_unlock.name=CONTROL: Safe unlocked.
+message.automation_all.name=AUTOMATION: Items can be inserted and extracted.
+message.automation_disabled.name=AUTOMATION: Disabled.
+message.automation_insert.name=AUTOMATION: Items can be inserted only.
+message.automation_extract.name=AUTOMATION: Items can be extracted only.
+message.block_lock.name=CONTROL: This block is locked.
+message.sensitivity_sleep.name=SENSITIVITY: Toggles state at player sleep threshold (sunrise and sunset).
+message.sensitivity_monsters.name=SENSITIVITY: Toggles state at monster spawn light threshold (including storms).
 
 # </file>

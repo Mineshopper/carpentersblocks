@@ -1,5 +1,7 @@
 package carpentersblocks.data;
 
+import net.minecraft.block.Block;
+import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
@@ -11,17 +13,17 @@ public class Bed {
      * 16-bit data components:
      *
      * [0]     [00]       [00000000]  [0]         [0000]
-     * isHead  Direction  Design      isOccupied  Type
+     * isHead  Direction  Unused      isOccupied  Type
      */
 
-    public final static byte TYPE_NORMAL = 0;
+    public final static byte TYPE_NORMAL   = 0;
 
     /**
      * Returns type.
      */
     public final static int getType(TEBase TE)
     {
-        return BlockProperties.getData(TE) & 0xf;
+        return BlockProperties.getMetadata(TE) & 0xf;
     }
 
     /**
@@ -29,30 +31,10 @@ public class Bed {
      */
     public static void setType(TEBase TE, int type)
     {
-        int temp = BlockProperties.getData(TE) & 0xfff0;
+        int temp = BlockProperties.getMetadata(TE) & 0xfff0;
         temp |= type;
 
-        BlockProperties.setData(TE, temp);
-    }
-
-    /**
-     * Returns design.
-     */
-    public static int getDesign(TEBase TE)
-    {
-        int temp = BlockProperties.getData(TE) & 0x1fe0;
-        return temp >> 5;
-    }
-
-    /**
-     * Sets design.
-     */
-    public static void setDesign(TEBase TE, int design)
-    {
-        int temp = BlockProperties.getData(TE) & 0xe01f;
-        temp |= design << 5;
-
-        BlockProperties.setData(TE, temp);
+        BlockProperties.setMetadata(TE, temp);
     }
 
     /**
@@ -60,7 +42,7 @@ public class Bed {
      */
     public static boolean isOccupied(TEBase TE)
     {
-        int temp = BlockProperties.getData(TE) & 0x10;
+        int temp = BlockProperties.getMetadata(TE) & 0x10;
 
         return temp != 0;
     }
@@ -70,13 +52,13 @@ public class Bed {
      */
     public static void setOccupied(TEBase TE, boolean isOccupied)
     {
-        int temp = BlockProperties.getData(TE) & 0xffef;
+        int temp = BlockProperties.getMetadata(TE) & 0xffef;
 
         if (isOccupied) {
             temp |= 1 << 4;
         }
 
-        BlockProperties.setData(TE, temp);
+        BlockProperties.setMetadata(TE, temp);
     }
 
     /**
@@ -97,8 +79,11 @@ public class Bed {
             z = TE.zCoord - dir.offsetZ;
         }
 
-        if (TE.worldObj.getBlockId(x, TE.yCoord, z) == BlockRegistry.blockCarpentersBedID) {
-            return (TEBase) TE.worldObj.getBlockTileEntity(x, TE.yCoord, z);
+        World world = TE.getWorldObj();
+        Block blockOffset = Block.blocksList[world.getBlockId(x, TE.yCoord, z)];
+
+        if (blockOffset != null && blockOffset.equals(BlockRegistry.blockCarpentersBed)) {
+            return (TEBase) world.getBlockTileEntity(x, TE.yCoord, z);
         } else {
             return null;
         }
@@ -109,7 +94,7 @@ public class Bed {
      */
     public static boolean isHeadOfBed(TEBase TE)
     {
-        int temp = BlockProperties.getData(TE) & 0x8000;
+        int temp = BlockProperties.getMetadata(TE) & 0x8000;
 
         return temp != 0;
     }
@@ -119,10 +104,10 @@ public class Bed {
      */
     public static void setHeadOfBed(TEBase TE)
     {
-        int temp = BlockProperties.getData(TE) & 0x7fff;
+        int temp = BlockProperties.getMetadata(TE) & 0x7fff;
         temp |= 1 << 15;
 
-        BlockProperties.setData(TE, temp);
+        BlockProperties.setMetadata(TE, temp);
     }
 
     /**
@@ -130,7 +115,7 @@ public class Bed {
      */
     public static ForgeDirection getDirection(TEBase TE)
     {
-        int facing = BlockProperties.getData(TE) & 0x6000;
+        int facing = BlockProperties.getMetadata(TE) & 0x6000;
 
         return BlockProperties.getDirectionFromFacing(facing >> 13);
     }
@@ -141,10 +126,10 @@ public class Bed {
      */
     public static void setDirection(TEBase TE, int facing)
     {
-        int temp = BlockProperties.getData(TE) & 0x9fff;
+        int temp = BlockProperties.getMetadata(TE) & 0x9fff;
         temp |= facing << 13;
 
-        BlockProperties.setData(TE, temp);
+        BlockProperties.setMetadata(TE, temp);
     }
 
 }

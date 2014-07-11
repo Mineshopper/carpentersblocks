@@ -28,7 +28,7 @@ public class Barrier {
      */
     public static int getType(TEBase TE)
     {
-        return BlockProperties.getData(TE) & 0xf;
+        return BlockProperties.getMetadata(TE) & 0xf;
     }
 
     /**
@@ -36,10 +36,10 @@ public class Barrier {
      */
     public static void setType(TEBase TE, int type)
     {
-        int temp = BlockProperties.getData(TE) & 0xfff0;
+        int temp = BlockProperties.getMetadata(TE) & 0xfff0;
         temp |= type;
 
-        BlockProperties.setData(TE, temp);
+        BlockProperties.setMetadata(TE, temp);
     }
 
     /**
@@ -47,7 +47,7 @@ public class Barrier {
      */
     public static int getPost(TEBase TE)
     {
-        return BlockProperties.getData(TE) >> 4;
+        return BlockProperties.getMetadata(TE) >> 4;
     }
 
     /**
@@ -55,10 +55,10 @@ public class Barrier {
      */
     public static void setPost(TEBase TE, int post)
     {
-        int temp = BlockProperties.getData(TE) & 0xffef;
+        int temp = BlockProperties.getMetadata(TE) & 0xffef;
         temp |= post << 4;
 
-        BlockProperties.setData(TE, temp);
+        BlockProperties.setMetadata(TE, temp);
     }
 
 }

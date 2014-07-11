@@ -1,9 +1,9 @@
 package carpentersblocks.util;
 
+import net.minecraft.client.resources.I18n;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import carpentersblocks.util.registry.ItemRegistry;
-import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -24,7 +24,7 @@ public class CarpentersBlocksTab extends CreativeTabs {
     @Override
     public String getTranslatedTabLabel()
     {
-        return LanguageRegistry.instance().getStringLocalization("itemGroup.carpentersBlocks.name");
+        return I18n.getStringParams("itemGroup.carpentersBlocks.name", new Object[0]);
     }
 
 }

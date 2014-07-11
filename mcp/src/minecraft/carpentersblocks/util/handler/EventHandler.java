@@ -2,7 +2,7 @@ package carpentersblocks.util.handler;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemBlock;
@@ -18,12 +18,14 @@ import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.PlaySoundAtEntityEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import carpentersblocks.CarpentersBlocks;
 import carpentersblocks.api.ICarpentersChisel;
 import carpentersblocks.api.ICarpentersHammer;
 import carpentersblocks.block.BlockCoverable;
 import carpentersblocks.renderer.helper.ParticleHelper;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
+import carpentersblocks.util.handler.OverlayHandler.Overlay;
 import carpentersblocks.util.registry.BlockRegistry;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -42,65 +44,76 @@ public class EventHandler {
     /** Stores entity that hit block. */
     public static EntityPlayer eventEntityPlayer;
 
-    /** This is an offset used for blockIcon. */
-    public final static int BLOCKICON_BASE_ID = 1000;
-
     @ForgeSubscribe
     /**
      * Used to store side clicked and also forces onBlockActivated
      * event when entityPlayer is sneaking and activates block with the
      * Carpenter's Hammer.
      */
-    public void playerInteractEvent(PlayerInteractEvent event)
+    public void onPlayerInteractEvent(PlayerInteractEvent event)
     {
-        int blockID = event.entity.worldObj.getBlockId(event.x, event.y, event.z);
+        Block block = Block.blocksList[event.entity.worldObj.getBlockId(event.x, event.y, event.z)];
 
-        if (blockID > 0 && Block.blocksList[blockID] instanceof BlockCoverable)
-        {
-            BlockCoverable block = (BlockCoverable) Block.blocksList[blockID];
+        if (block != null && block instanceof BlockCoverable) {
 
             eventFace = event.face;
             eventEntityPlayer = event.entityPlayer;
 
             ItemStack itemStack = eventEntityPlayer.getHeldItem();
 
-            MovingObjectPosition object = getMovingObjectPositionFromPlayer(eventEntityPlayer.worldObj, eventEntityPlayer, false);
+            MovingObjectPosition object = getMovingObjectPositionFromPlayer(eventEntityPlayer.worldObj, eventEntityPlayer);
 
-            if (object != null)
-            {
-                Vec3 vec = object.hitVec;
-                hitX = (float)vec.xCoord - event.x;
-                hitY = (float)vec.yCoord - event.y;
-                hitZ = (float)vec.zCoord - event.z;
+            if (object != null) {
+                hitX = (float)object.hitVec.xCoord - event.x;
+                hitY = (float)object.hitVec.yCoord - event.y;
+                hitZ = (float)object.hitVec.zCoord - event.z;
+            } else {
+                hitX = hitY = hitZ = 1.0F;
             }
 
-            boolean toolEquipped = itemStack != null && (itemStack.getItem() instanceof ICarpentersHammer || itemStack.getItem() instanceof ICarpentersChisel);
+            switch (event.action) {
+                case LEFT_CLICK_BLOCK:
 
-            if (event.action.equals(PlayerInteractEvent.Action.LEFT_CLICK_BLOCK)) {
+                    boolean toolEquipped = itemStack != null && (itemStack.getItem() instanceof ICarpentersHammer || itemStack.getItem() instanceof ICarpentersChisel);
 
-                /*
-                 * Creative mode won't call onBlockClicked() because it will try to destroy the block.
-                 * We'll invoke it here when a Carpenter's tool is being held.
-                 */
+                    /*
+                     * Creative mode doesn't normally invoke onBlockClicked(), but rather it tries
+                     * to destroy the block.
+                     *
+                     * We'll invoke it here when a Carpenter's tool is being held.
+                     */
 
-                if (toolEquipped && eventEntityPlayer.capabilities.isCreativeMode) {
-                    block.onBlockClicked(eventEntityPlayer.worldObj, event.x, event.y, event.z, eventEntityPlayer);
-                }
+                    if (toolEquipped && eventEntityPlayer.capabilities.isCreativeMode) {
+                        block.onBlockClicked(eventEntityPlayer.worldObj, event.x, event.y, event.z, eventEntityPlayer);
+                    }
 
-            } else if (toolEquipped) {
+                    break;
+                case RIGHT_CLICK_BLOCK:
 
-                /*
-                 * onBlockActivated() isn't called if the player is sneaking.
-                 * We'll invoke it here.  It's not able to adjust the player's
-                 * inventory for operations such as decrementing an itemstack,
-                 * so we're limiting it to tool actions only.
-                 */
+                    /*
+                     * To enable full functionality with the hammer, we need to override pretty
+                     * much everything that happens on sneak right-click.
+                     *
+                     * onBlockActivated() isn't called if the player is sneaking, so do it here.
+                     *
+                     * The server will receive the packet and attempt to alter the Carpenter's
+                     * block.  If nothing changes, vanilla behavior will resume - the Item(Block)
+                     * in the ItemStack (if applicable) will be created adjacent to block.
+                     */
 
-                if (eventEntityPlayer.isSneaking()) {
-                    block.onBlockActivated(eventEntityPlayer.worldObj, event.x, event.y, event.z, eventEntityPlayer, eventFace, 1.0F, 1.0F, 1.0F);
-                }
+                    if (eventEntityPlayer.isSneaking()) {
 
+                        if (!(itemStack != null && itemStack.getItem() instanceof ItemBlock && !BlockProperties.isOverlay(itemStack))) {
+                            event.setCanceled(true);
+                            PacketHandler.sendPacketToServer(PacketHandler.PACKET_BLOCK_ACTIVATED, event.x, event.y, event.z, event.face);
+                        }
+
+                    }
+
+                    break;
+                default: {}
             }
+
         }
     }
 
@@ -109,7 +122,7 @@ public class EventHandler {
     /**
      * Grabs mouse scroll events for slope selection.
      */
-    public void mouseEvent(MouseEvent event)
+    public void onMouseEvent(MouseEvent event)
     {
         EntityPlayer entityPlayer = Minecraft.getMinecraft().thePlayer;
 
@@ -127,7 +140,7 @@ public class EventHandler {
                     return;
                 }
 
-                PacketHandler.damageSlopeInSlot(entityPlayer.inventory.currentItem, event.dwheel == 120);
+                PacketHandler.sendPacketToServer(PacketHandler.PACKET_SLOPE_SELECT, event.dwheel == 120);
 
             }
 
@@ -135,125 +148,146 @@ public class EventHandler {
     }
 
     /**
-     * Copied from Item.class.
      * Returns the MovingObjectPosition of block hit by player.
+     * Adapted from protected method of same name in Item.class.
      */
-    private MovingObjectPosition getMovingObjectPositionFromPlayer(World world, EntityPlayer entityPlayer, boolean right_click_boat_held)
+    private MovingObjectPosition getMovingObjectPositionFromPlayer(World world, EntityPlayer entityPlayer)
     {
-        float f = 1.0F;
-        float f1 = entityPlayer.prevRotationPitch + (entityPlayer.rotationPitch - entityPlayer.prevRotationPitch) * f;
-        float f2 = entityPlayer.prevRotationYaw + (entityPlayer.rotationYaw - entityPlayer.prevRotationYaw) * f;
-        double d0 = entityPlayer.prevPosX + (entityPlayer.posX - entityPlayer.prevPosX) * f;
-        double d1 = entityPlayer.prevPosY + (entityPlayer.posY - entityPlayer.prevPosY) * f + (world.isRemote ? entityPlayer.getEyeHeight() - entityPlayer.getDefaultEyeHeight() : entityPlayer.getEyeHeight()); // isRemote check to revert changes to ray trace position due to adding the eye height clientside and player yOffset differences
-        double d2 = entityPlayer.prevPosZ + (entityPlayer.posZ - entityPlayer.prevPosZ) * f;
-        Vec3 vec3 = world.getWorldVec3Pool().getVecFromPool(d0, d1, d2);
-        float f3 = MathHelper.cos(-f2 * 0.017453292F - (float)Math.PI);
-        float f4 = MathHelper.sin(-f2 * 0.017453292F - (float)Math.PI);
-        float f5 = -MathHelper.cos(-f1 * 0.017453292F);
-        float f6 = MathHelper.sin(-f1 * 0.017453292F);
-        float f7 = f4 * f5;
-        float f8 = f3 * f5;
-        double d3 = 5.0D;
-        if (entityPlayer instanceof EntityPlayerMP)
-        {
-            d3 = ((EntityPlayerMP)entityPlayer).theItemInWorldManager.getBlockReachDistance();
+        double xPos = entityPlayer.prevPosX + (entityPlayer.posX - entityPlayer.prevPosX);
+        double yPos = entityPlayer.prevPosY + (entityPlayer.posY - entityPlayer.prevPosY) + (world.isRemote ? entityPlayer.getEyeHeight() - entityPlayer.getDefaultEyeHeight() : entityPlayer.getEyeHeight());
+        double zPos = entityPlayer.prevPosZ + (entityPlayer.posZ - entityPlayer.prevPosZ);
+
+        float pitch = entityPlayer.prevRotationPitch + (entityPlayer.rotationPitch - entityPlayer.prevRotationPitch);
+        float yaw = entityPlayer.prevRotationYaw + (entityPlayer.rotationYaw - entityPlayer.prevRotationYaw);
+
+        float commonComp = -MathHelper.cos(-pitch * 0.017453292F);
+
+        float xComp = MathHelper.sin(-yaw * 0.017453292F - (float)Math.PI) * commonComp;
+        float yComp = MathHelper.sin(-pitch * 0.017453292F);
+        float zComp = MathHelper.cos(-yaw * 0.017453292F - (float)Math.PI) * commonComp;
+        double reachDist = 5.0D;
+
+        if (entityPlayer instanceof EntityPlayerMP) {
+            reachDist = ((EntityPlayerMP)entityPlayer).theItemInWorldManager.getBlockReachDistance();
         }
-        Vec3 vec31 = vec3.addVector(f7 * d3, f6 * d3, f8 * d3);
-        return world.rayTraceBlocks_do_do(vec3, vec31, right_click_boat_held, !right_click_boat_held);
+
+        Vec3 vec1 = world.getWorldVec3Pool().getVecFromPool(xPos, yPos, zPos);
+        Vec3 vec2 = vec1.addVector(xComp * reachDist, yComp * reachDist, zComp * reachDist);
+
+        return world.clip(vec1, vec2);
     }
 
     @ForgeSubscribe
-    public void livingUpdateEvent(LivingUpdateEvent event)
+    public void onLivingUpdateEvent(LivingUpdateEvent event)
     {
-        EntityLivingBase entity = event.entityLiving;
+        Entity entity = event.entityLiving;
         World world = entity.worldObj;
 
         int x = MathHelper.floor_double(entity.posX);
         int y = MathHelper.floor_double(entity.posY - 0.20000000298023224D - entity.yOffset);
         int z = MathHelper.floor_double(entity.posZ);
 
-        int blockId = world.getBlockId(x, y, z);
+        Block block = Block.blocksList[world.getBlockId(x, y, z)];
 
-        if (blockId > 0 && Block.blocksList[blockId] instanceof BlockCoverable) {
+        if (block != null && block instanceof BlockCoverable) {
 
             TEBase TE = (TEBase) world.getBlockTileEntity(x, y, z);
             int effectiveSide = BlockProperties.hasCover(TE, 1) ? 1 : 6;
-            Block block = BlockProperties.getCoverBlock(TE, effectiveSide);
+            ItemStack itemStack = BlockProperties.getCover(TE, effectiveSide);
+
+            if (BlockProperties.hasOverlay(TE, effectiveSide)) {
+                Overlay overlay = OverlayHandler.getOverlayType(BlockProperties.getOverlay(TE, effectiveSide));
+                if (OverlayHandler.coversFullSide(overlay, 1)) {
+                    itemStack = overlay.getItemStack();
+                }
+            }
 
             /* Spawn sprint particles client-side. */
 
             if (world.isRemote && entity.isSprinting() && !entity.isInWater()) {
-                int metadata = block instanceof BlockCoverable ? BLOCKICON_BASE_ID : BlockProperties.getCoverMetadata(TE, effectiveSide);
-                ParticleHelper.spawnTileParticleAt(world, entity, OverlayHandler.getBlockFromOverlay(TE, effectiveSide, block).blockID, metadata);
+                ParticleHelper.spawnTileParticleAt(entity, itemStack);
             }
 
             /* Adjust block slipperiness according to cover. */
 
-            TE.getBlockType().slipperiness = !BlockProperties.hasCover(TE, effectiveSide) ? Block.wood.slipperiness : OverlayHandler.getBlockFromOverlay(TE, effectiveSide, block).slipperiness;
-
-        }
-    }
-
-    @SideOnly(Side.CLIENT)
-    @ForgeSubscribe
-    public void SoundEvent(PlaySoundEvent event)
-    {
-        if (event != null && event.name != null)
-        {
-            if (event.name.contains("carpentersblock"))
-            {
-                if (FMLCommonHandler.instance().getSide() == Side.CLIENT)
-                {
-                    World world = FMLClientHandler.instance().getClient().theWorld;
-                    int x = MathHelper.floor_float(event.x);
-                    int y = MathHelper.floor_float(event.y);
-                    int z = MathHelper.floor_float(event.z);
-                    int blockID = world.getBlockId(x, y, z);
-
-                    if (blockID > 0 && Block.blocksList[blockID] instanceof BlockCoverable) {
-
-                        Block block = BlockProperties.getCoverBlock((TEBase)world.getBlockTileEntity(x, y, z), 6);
-
-                        if (block instanceof BlockCoverable) {
-                            event.result = event.manager.soundPoolSounds.getRandomSoundFromSoundPool(event.name.startsWith("dig.") ? Block.soundWoodFootstep.getBreakSound() : event.name.startsWith("place.") ? Block.soundWoodFootstep.getPlaceSound() : Block.soundWoodFootstep.getStepSound());
-                        } else {
-                            event.result = event.manager.soundPoolSounds.getRandomSoundFromSoundPool(event.name.startsWith("dig.") ? block.stepSound.getBreakSound() : event.name.startsWith("place.") ? block.stepSound.getPlaceSound() : block.stepSound.getStepSound());
-                        }
-
-                    } else {
-
-                        event.result = event.manager.soundPoolSounds.getRandomSoundFromSoundPool(Block.soundWoodFootstep.getBreakSound());
-
-                    }
-                }
+            if (BlockProperties.toBlock(itemStack) instanceof BlockCoverable) {
+                TE.getBlockType().slipperiness = Block.dirt.slipperiness;
+            } else {
+                TE.getBlockType().slipperiness = BlockProperties.toBlock(itemStack).slipperiness;
             }
+
         }
     }
 
     @SideOnly(Side.CLIENT)
     @ForgeSubscribe
-    public void StepSoundInterrupt(PlaySoundAtEntityEvent event)
+    public void onSoundEvent(PlaySoundEvent event)
     {
-        if (event != null && event.name != null)
-        {
-            if (event.name.startsWith("step.carpentersblock"))
-            {
-                int x = MathHelper.floor_double(event.entity.posX);
-                int y = MathHelper.floor_double(event.entity.posY - 0.20000000298023224D - event.entity.yOffset);
-                int z = MathHelper.floor_double(event.entity.posZ);
+        if (event != null && event.name != null && event.name.contains(CarpentersBlocks.MODID)) {
 
-                TileEntity TE = event.entity.worldObj.getBlockTileEntity(x, y, z);
+            if (FMLCommonHandler.instance().getSide() == Side.CLIENT) {
 
-                if (TE != null && TE instanceof TEBase)
-                {
-                    Block block = BlockProperties.getCoverBlock((TEBase) TE, 6);
+                World world = FMLClientHandler.instance().getClient().theWorld;
+                int x = MathHelper.floor_float(event.x);
+                int y = MathHelper.floor_float(event.y);
+                int z = MathHelper.floor_float(event.z);
+                world.getBlockId(x, y, z);
+
+                Block block = Block.blocksList[world.getBlockId(x, y, z)];
+
+                if (block != null) {
+
+                    TileEntity TE = world.getBlockTileEntity(x, y, z);
+
+                    if (TE != null && TE instanceof TEBase) {
+                        block = BlockProperties.toBlock(BlockProperties.getCover((TEBase) TE, 6));
+                    }
 
                     if (block instanceof BlockCoverable) {
-                        event.name = Block.soundWoodFootstep.getStepSound();
-                    } else if (block.stepSound != null) {
-                        event.name = block.stepSound.getStepSound();
+                        block = Block.planks;
                     }
+
+                    event.result = event.manager.soundPoolSounds.getRandomSoundFromSoundPool(block.stepSound.getBreakSound());
+
                 }
+
+            }
+
+        }
+    }
+
+    /**
+     * Override sounds when walking on block.
+     *
+     * @param event
+     */
+    @SideOnly(Side.CLIENT)
+    @ForgeSubscribe
+    public void onPlaySoundAtEntityEvent(PlaySoundAtEntityEvent event)
+    {
+        if (event != null && event.name != null && event.name.contains(CarpentersBlocks.MODID)) {
+
+            int x = MathHelper.floor_double(event.entity.posX);
+            int y = MathHelper.floor_double(event.entity.posY - 0.20000000298023224D - event.entity.yOffset);
+            int z = MathHelper.floor_double(event.entity.posZ);
+
+            Block block = Block.blocksList[event.entity.worldObj.getBlockId(x, y, z)];
+            String prefix = event.name.substring(0, event.name.indexOf(".") + 1);
+
+            if (block != null && block instanceof BlockCoverable) {
+
+                block = BlockProperties.toBlock(BlockProperties.getCover((TEBase) event.entity.worldObj.getBlockTileEntity(x, y, z), 6));
+
+                if (block instanceof BlockCoverable) {
+                    event.name = prefix + Block.planks.stepSound.stepSoundName;
+                } else if (block.stepSound != null) {
+                    event.name = prefix + block.stepSound.stepSoundName;
+                }
+
+            } else {
+
+                event.name = prefix + Block.planks.stepSound.stepSoundName;
+
             }
         }
     }
