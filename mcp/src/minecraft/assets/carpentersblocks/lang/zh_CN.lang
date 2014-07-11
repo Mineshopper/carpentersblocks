@@ -1,0 +1,50 @@
+# Carpenter's Blocks Language File = Simplified Chinese
+
+# CREATIVE TAB
+itemGroup.carpentersBlocks.name=Carpenter's Blocks
+
+# ITEMS
+item.itemCarpentersHammer.name=木匠锤
+item.itemCarpentersChisel.name=木匠凿
+item.itemCarpentersDoor.name=木匠门
+item.itemCarpentersBed.name=木匠床
+
+# BLOCKS
+tile.blockCarpentersBarrier.name=木匠栅栏
+tile.blockCarpentersBed.name=木匠床
+tile.blockCarpentersBlock.name=木匠方块
+tile.blockCarpentersButton.name=木匠按钮
+tile.blockCarpentersDaylightSensor.name=木匠阳光传感器
+tile.blockCarpentersCollapsibleBlock.name=木匠折叠方块
+tile.blockCarpentersDoor.name=木匠门
+tile.blockCarpentersGate.name=木匠栅栏门
+tile.blockCarpentersHatch.name=木匠活板门
+tile.blockCarpentersLadder.name=木匠梯子
+tile.blockCarpentersLever.name=木匠拉杆
+tile.blockCarpentersPressurePlate.name=木匠压力盘
+tile.blockCarpentersSlope.name=木匠斜坡
+tile.blockCarpentersStairs.name=木匠楼梯
+tile.blockCarpentersTorch.name=木匠火把
+tile.blockCarpentersSafe.name=木匠保险箱
+tile.blockCarpentersFlowerPot.name=木匠花盆
+
+# MESSAGES
+message.polarity_pos.name=\u00a76输出相: \u00a7f标准红石信号输出.
+message.polarity_neg.name=\u00a76输出相: \u00a7f反相红石信号输出.
+message.activation_day.name=\u00a76激活条件: \u00a7f白昼时激活.
+message.activation_night.name=\u00a76激活条件: \u00a7f夜晚时激活.
+message.activation_iron.name=\u00a76激活条件: \u00a7f类似铁门需要信号控制.
+message.activation_wood.name=\u00a76激活条件: \u00a7f类似木门不需要信号控制.
+message.trigger_player.name=\u00a76触发条件: \u00a7f只能由玩家触发.
+message.trigger_monster.name=\u00a76触发条件: \u00a7f只能由怪物触发.
+message.trigger_animal.name=\u00a76触发条件: \u00a7f只能由动物触发.
+message.trigger_all.name=\u00a76触发条件: \u00a7f任何实体均可触发.
+message.safe_lock.name=\u00a76控制: \u00a7f保险箱已锁.
+message.safe_unlock.name=\u00a76控制: \u00a7f保险箱已解锁.
+message.automation_all.name=\u00a76自动: \u00a7f可以放入取出物品.
+message.automation_disabled.name=\u00a76自动: \u00a7f禁用.
+message.automation_insert.name=\u00a76自动: \u00a7f仅能放入物品.
+message.automation_extract.name=\u00a76自动: \u00a7f仅能取出物品.
+message.block_lock.name=\u00a76控制: \u00a7f该方块已锁.
+
+# </file>

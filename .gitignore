@@ -3,4 +3,14 @@
 !.gitignore
 !LICENSE-carpentersblocks.txt
 !README.md
-!mcp/src/minecraft/carpentersblocks/
+
+!/mcp
+/mcp/*
+!/mcp/src
+/mcp/src/*
+!/mcp/src/minecraft
+/mcp/src/minecraft/*
+!/mcp/src/minecraft/carpentersblocks
+!/mcp/src/minecraft/assets
+/mcp/src/minecraft/assets/*
+!/mcp/src/minecraft/assets/carpentersblocks
