@@ -119,7 +119,7 @@ public class FancyFluidsHelper {
             }
         }
 
-        if (fluidBlock != null && fluidBlock.getRenderBlockPass() == 0 || diagFluidBlock != null && diagFluidBlock.getRenderBlockPass() == 0)
+        if (fluidBlock != null && fluidBlock.getRenderBlockPass() == blockHandler.renderPass || diagFluidBlock != null && diagFluidBlock.getRenderBlockPass() == blockHandler.renderPass)
         {
             boolean renderFluid = false;
 
