@@ -1,7 +1,6 @@
 # Ignore everything in the root with exceptions.
 /*
 !.gitignore
-!build.gradle
 !LICENSE-carpentersblocks.txt
 !README.md
-!src/
+!mcp/src/minecraft/carpentersblocks
