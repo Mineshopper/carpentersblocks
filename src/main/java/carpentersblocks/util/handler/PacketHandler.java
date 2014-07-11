@@ -35,7 +35,17 @@ public class PacketHandler {
             case PACKET_SLOPE_SELECT:
 
                 if (itemStack != null) {
-                    itemStack.setItemDamage((itemStack.getItemDamage() + (bbis.readBoolean() ? 1 : -1)) % BlockCarpentersSlope.slopeType.length);
+                    int maxDmg = BlockCarpentersSlope.slopeType.length - 1;
+                    int itemDmg = itemStack.getItemDamage();
+                    itemDmg += bbis.readBoolean() ? 1 : -1;
+
+                    if (itemDmg > maxDmg) {
+                        itemDmg = 0;
+                    } else if (itemDmg < 0) {
+                        itemDmg = maxDmg;
+                    }
+
+                    itemStack.setItemDamage(itemDmg);
                 }
 
                 break;
