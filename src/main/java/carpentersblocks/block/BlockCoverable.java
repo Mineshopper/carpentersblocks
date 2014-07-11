@@ -1,8 +1,5 @@
 package carpentersblocks.block;
 
-import static net.minecraftforge.common.util.ForgeDirection.DOWN;
-import static net.minecraftforge.common.util.ForgeDirection.UP;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -28,7 +25,6 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.EnumPlantType;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -914,12 +910,12 @@ public class BlockCoverable extends BlockContainer {
      * @param x X Position
      * @param y Y Position
      * @param z Z position
-     * @param side The direction relative to the given position the plant wants to be, typically its UP
+     * @param dir The direction relative to the given position the plant wants to be, typically its UP
      * @param plantable The plant that wants to check
      * @return True to allow the plant to be planted/stay.
      */
     @Override
-    public boolean canSustainPlant(IBlockAccess world, int x, int y, int z, ForgeDirection side, IPlantable plantable)
+    public boolean canSustainPlant(IBlockAccess world, int x, int y, int z, ForgeDirection dir, IPlantable plantable)
     {
         TEBase TE = getTileEntity(world, x, y, z);
 
@@ -927,7 +923,7 @@ public class BlockCoverable extends BlockContainer {
 
             /* If side is not solid, it can't sustain a plant. */
 
-            if (!isSideSolid(world, x, y, z, side)) {
+            if (!isSideSolid(world, x, y, z, dir)) {
                 return false;
             }
 
@@ -938,23 +934,30 @@ public class BlockCoverable extends BlockContainer {
 
             List<Block> blocks = new ArrayList<Block>();
 
-            for (int side1 = 1; side1 < 7; side1 += 5) {
-                if (BlockProperties.hasCover(TE, side1)) {
-                    blocks.add(BlockProperties.toBlock(BlockProperties.getCover(TE, side1)));
+            for (int side = 1; side < 7; side += 5) {
+                if (BlockProperties.hasCover(TE, side)) {
+                    blocks.add(BlockProperties.toBlock(BlockProperties.getCover(TE, side)));
                 }
-                if (BlockProperties.hasOverlay(TE, side1)) {
-                    blocks.add(BlockProperties.toBlock(OverlayHandler.getOverlayType(BlockProperties.getOverlay(TE, side1)).getItemStack()));
+                if (BlockProperties.hasOverlay(TE, side)) {
+                    blocks.add(BlockProperties.toBlock(OverlayHandler.getOverlayType(BlockProperties.getOverlay(TE, side)).getItemStack()));
                 }
             }
 
-            EnumPlantType plantType = plantable.getPlantType(world, x, y + 1, z);
+            /* Add types using cover material */
 
-            switch (plantType)
+            Material material = BlockProperties.toBlock(BlockProperties.getCover(TE, 6)).getMaterial();
+            if (material.equals(Material.grass)) {
+                blocks.add(Blocks.grass);
+            } else if (material.equals(Material.ground)) {
+                blocks.add(Blocks.dirt);
+            } else if (material.equals(Material.sand)) {
+                blocks.add(Blocks.sand);
+            }
+
+            switch (plantable.getPlantType(world, x, y + 1, z))
             {
                 case Desert: return blocks.contains(Blocks.sand);
                 case Nether: return blocks.contains(Blocks.soul_sand);
-                case Crop:   return blocks.contains(Blocks.farmland);
-                case Cave:   return isSideSolid(world, x, y, z, UP);
                 case Plains: return blocks.contains(Blocks.grass) || blocks.contains(Blocks.dirt);
                 case Beach:
                     boolean isBeach = blocks.contains(Blocks.grass) || blocks.contains(Blocks.dirt) || blocks.contains(Blocks.sand);
@@ -963,12 +966,11 @@ public class BlockCoverable extends BlockContainer {
                                        world.getBlock(x,     y, z - 1).getMaterial() == Material.water ||
                                        world.getBlock(x,     y, z + 1).getMaterial() == Material.water;
                     return isBeach && hasWater;
-                default:
-                    break;
+                default: {}
             }
         }
 
-        return super.canSustainPlant(world, x, y, z, side, plantable);
+        return super.canSustainPlant(world, x, y, z, dir, plantable);
     }
 
     /**
@@ -1031,21 +1033,6 @@ public class BlockCoverable extends BlockContainer {
         } else {
             return super.getPlayerRelativeBlockHardness(entityPlayer, world, x, y, z);
         }
-    }
-
-    /**
-     * Get the rotations that can apply to the block at the specified coordinates. Null means no rotations are possible.
-     * Note, this is up to the block to decide. It may not be accurate or representative.
-     * @param worldObj The world
-     * @param x X position
-     * @param y Y position
-     * @param z Z position
-     * @return An array of valid axes to rotate around, or null for none or unknown
-     */
-    @Override
-    public ForgeDirection[] getValidRotations(World worldObj, int x, int y, int z)
-    {
-        return new ForgeDirection[] { UP, DOWN };
     }
 
     @Override
