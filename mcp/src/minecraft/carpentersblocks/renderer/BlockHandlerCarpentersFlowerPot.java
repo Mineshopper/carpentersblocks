@@ -71,8 +71,10 @@ public class BlockHandlerCarpentersFlowerPot extends BlockHandlerBase {
             renderSoil(FlowerPotProperties.getSoil(TE), x, y, z);
         }
 
-        if (FlowerPotProperties.hasPlant(TE)) {
-            renderPlant(FlowerPotProperties.getPlant(TE), x, y, z);
+        if (renderPass == PASS_OPAQUE) {
+	        if (FlowerPotProperties.hasPlant(TE)) {
+	            renderPlant(FlowerPotProperties.getPlant(TE), x, y, z);
+	        }
         }
 
         suppressOverlay = false;

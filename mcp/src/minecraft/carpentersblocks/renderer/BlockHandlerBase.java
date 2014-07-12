@@ -130,7 +130,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
 
             if (FeatureRegistry.enableFancyFluids) {
                 if (BlockProperties.hasCover(TE, 6)) {
-                    FancyFluidsHelper.render(this, x, y, z);
+                    FancyFluidsHelper.render(TE, renderBlocks, x, y, z);
                 }
             }
 
@@ -526,36 +526,31 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
 	        setRotation(side, tempRotation);
         }
 
-        /* Render decorations */
+        /* Render BlockGrass side overlay here, if needed. */
+
+        boolean temp_dye_state = suppressDyeColor;
+        suppressDyeColor = true;
+
+        // Add grass overlay to BlockGrass automatically
+        if (block.equals(Block.grass) && side > 0 && !isPositiveFace(side)) {
+            if (Minecraft.isFancyGraphicsEnabled()) {
+                setColorAndRender(new ItemStack(Block.grass), x, y, z, side, BlockGrass.getIconSideOverlay());
+            } else {
+                setColorAndRender(new ItemStack(Block.dirt), x, y, z, side, IconRegistry.icon_overlay_fast_grass_side);
+            }
+        }
 
         if (renderPass == PASS_ALPHA) {
-
-	        /* Render BlockGrass side overlay here, if needed. */
-
-	        if (block.equals(Block.grass) && side > 0 && !isPositiveFace(side)) {
-	            if (Minecraft.isFancyGraphicsEnabled()) {
-	                setColorAndRender(new ItemStack(Block.grass), x, y, z, side, BlockGrass.getIconSideOverlay());
-	            } else {
-	                setColorAndRender(new ItemStack(Block.dirt), x, y, z, side, IconRegistry.icon_overlay_fast_grass_side);
-	            }
-	        }
-
-	        /* Render overlays and chisel designs. */
-
-	        boolean temp_dye_state = suppressDyeColor;
-	        suppressDyeColor = true;
-
 	        if (!suppressChiselDesign && BlockProperties.hasChiselDesign(TE, coverRendering)) {
 	            renderChiselDesign(x, y, z, side);
 	        }
-
-	        if (!suppressOverlay && BlockProperties.hasOverlay(TE, coverRendering)) {
-	            renderOverlay(block, x, y, z, side);
-	        }
-
-	        suppressDyeColor = temp_dye_state;
-
         }
+
+        if (!suppressOverlay && BlockProperties.hasOverlay(TE, coverRendering)) {
+            renderOverlay(block, x, y, z, side);
+        }
+
+        suppressDyeColor = temp_dye_state;
     }
 
     /**
