@@ -5,55 +5,62 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import carpentersblocks.util.handler.OverlayHandler;
 import carpentersblocks.util.registry.BlockRegistry;
 
 public class MigrationHelper {
 
-    private static final String TAG_COVER            = "cover";
-    private static final String TAG_DYE              = "dye";
-    private static final String TAG_OVERLAY          = "overlay";
-    private static final String TAG_ITEMSTACKS       = "itemstacks";
-    private static final String TAG_METADATA         = "metadata";
-    private static final String TAG_SOIL             = "soil";
-    private static final String TAG_PLANT            = "plant";
-    private static final String TAG_PLANT_ITEMSTACKS = "plantitemstacks";
+	boolean containsCache = false;
+	boolean containsFlowerPotCache = false;
+
+    private final String TAG_COVER            = "cover";
+    private final String TAG_DYE              = "dye";
+    private final String TAG_OVERLAY          = "overlay";
+    private final String TAG_ITEMSTACKS       = "itemstacks";
+    private final String TAG_METADATA         = "metadata";
+    private final String TAG_SOIL             = "soil";
+    private final String TAG_PLANT            = "plant";
+    private final String TAG_PLANT_ITEMSTACKS = "plantitemstacks";
+
+    private short[] cachedCover  = new short[7];
+    private byte[] cachedColor   = new byte[7];
+    private byte[] cachedOverlay = new byte[7];
+    private short cachedData;
+
+    private short cachedPlant;
+    private short cachedSoil;
 
     /**
-     * Prepares the tile entity for migration to MC 1.7.2.
+     * Store old NBT values for conversion later.
      */
-    public static void readFromFlowerPotNBT(TECarpentersFlowerPot TE, NBTTagCompound nbt)
+    public void cacheNBT(NBTTagCompound nbt)
     {
-        NBTTagList list = new NBTTagList();
-
-        if (hasSoil(nbt)) {
-            TE.soil = getSoil(nbt);
-            NBTTagCompound nbt1 = new NBTTagCompound();
-            nbt1.setByte(TAG_SOIL, (byte) 200);
-            TE.soil.writeToNBT(nbt1);
-            list.appendTag(nbt1);
-        }
-        if (hasPlant(nbt)) {
-            TE.plant = getPlant(nbt);
-            NBTTagCompound nbt1 = new NBTTagCompound();
-            nbt1.setByte(TAG_PLANT, (byte) 201);
-            TE.plant.writeToNBT(nbt1);
-            list.appendTag(nbt1);
+        for (int count = 0; count < 7; ++count) {
+            cachedCover[count] = nbt.getShort("cover_" + count);
         }
 
-        nbt.setTag(TAG_PLANT_ITEMSTACKS, list);
+        cachedColor = nbt.getByteArray("color");
+        cachedOverlay = nbt.getByteArray("overlay");
+        cachedData = nbt.getShort("data");
+        containsCache = true;
+    }
+
+    public void cacheFlowerPotNBT(NBTTagCompound nbt)
+    {
+    	cachedPlant = nbt.getShort("plant");
+    	cachedSoil = nbt.getShort("soil");
+    	containsFlowerPotCache = true;
     }
 
     /**
-     * Prepares the tile entity for migration to MC 1.7.2.
+     * Write new values to NBT using cached values.
      */
-    public static void readFromNBT(TEBase TE, NBTTagCompound nbt)
+    public void writeToNBT(TEBase TE, NBTTagCompound nbt)
     {
         NBTTagList list = new NBTTagList();
 
-        TE.cover = getCoversAsItemStacks(nbt);
-        TE.dye = getColorAsItemStacks(nbt);
-        TE.overlay = getOverlaysAsItemStacks(nbt, TE);
+        TE.cover = getCoversAsItemStacks();
+        TE.dye = getColorAsItemStacks();
+        TE.overlay = getOverlaysAsItemStacks();
 
         for (byte side = 0; side < 7; ++side)
         {
@@ -77,38 +84,76 @@ public class MigrationHelper {
             }
         }
 
+        short data = filterData(TE, cachedData);
+        TE.metadata = data;
+        nbt.setShort(TAG_METADATA, data);
+
         nbt.setTag(TAG_ITEMSTACKS, list);
-        nbt.setShort(TAG_METADATA, filterData(TE, nbt.getShort("data")));
     }
 
-    private static ItemStack[] getOverlaysAsItemStacks(NBTTagCompound nbt, TEBase TE)
+    /**
+     * Prepares the tile entity for migration to MC 1.7.2.
+     */
+    public void writeFlowerPotToNBT(TECarpentersFlowerPot TE, NBTTagCompound nbt)
     {
+        NBTTagList list = new NBTTagList();
+
+        if (hasBlock(cachedSoil)) {
+        	TE.soil = new ItemStack(getBlockId(cachedSoil), 1, getBlockMetadata(cachedSoil));
+            NBTTagCompound nbt1 = new NBTTagCompound();
+            nbt1.setByte(TAG_SOIL, (byte) 0);
+            TE.soil.writeToNBT(nbt1);
+            list.appendTag(nbt1);
+        }
+        if (hasBlock(cachedPlant)) {
+        	TE.plant = new ItemStack(getBlockId(cachedPlant), 1, getBlockMetadata(cachedPlant));
+            NBTTagCompound nbt1 = new NBTTagCompound();
+            nbt1.setByte(TAG_PLANT, (byte) 0);
+            TE.plant.writeToNBT(nbt1);
+            list.appendTag(nbt1);
+        }
+
+        nbt.setTag(TAG_PLANT_ITEMSTACKS, list);
+    }
+
+    private ItemStack[] getOverlaysAsItemStacks()
+    {
+    	ItemStack[] overlayStack = {
+    			null,
+    			new ItemStack(Item.seeds),
+    			new ItemStack(Item.snowball),
+    			new ItemStack(Item.silk),
+    			new ItemStack(Block.vine),
+    			new ItemStack(Item.wheat),
+    			new ItemStack(Block.mushroomBrown)
+    	};
+
         ItemStack[] itemStack = new ItemStack[7];
         for (int idx = 0; idx < 7; ++idx) {
-            if (hasOverlay(nbt, idx)) {
-                itemStack[idx] = OverlayHandler.getOverlayType(TE.overlay[idx]).getItemStack();
+            if (hasData(cachedOverlay[idx])) {
+                itemStack[idx] = overlayStack[cachedOverlay[idx]];
             }
         }
         return itemStack;
     }
 
-    private static ItemStack[] getCoversAsItemStacks(NBTTagCompound nbt)
+    private ItemStack[] getCoversAsItemStacks()
     {
         ItemStack[] itemStack = new ItemStack[7];
         for (int idx = 0; idx < 7; ++idx) {
-            if (hasCover(nbt, idx)) {
-                itemStack[idx] = getCover(nbt, idx);
+            if (hasBlock(cachedCover[idx])) {
+                itemStack[idx] = new ItemStack(getBlockId(cachedCover[idx]), 1, getBlockMetadata(cachedCover[idx]));
             }
         }
         return itemStack;
     }
 
-    private static ItemStack[] getColorAsItemStacks(NBTTagCompound nbt)
+    private ItemStack[] getColorAsItemStacks()
     {
         ItemStack[] itemStack = new ItemStack[7];
         for (int idx = 0; idx < 7; ++idx) {
-            if (hasDyeColor(nbt, idx)) {
-                itemStack[idx] = new ItemStack(Item.dyePowder, 1, 15 - nbt.getByteArray("color")[idx]);
+            if (hasData(cachedColor[idx])) {
+                itemStack[idx] = new ItemStack(Item.dyePowder, 1, 15 - cachedColor[idx]);
             }
         }
         return itemStack;
@@ -117,157 +162,56 @@ public class MigrationHelper {
     /**
      * Filters old data and returns the result.
      */
-    private static short filterData(TEBase TE, short data)
+    private short filterData(TEBase TE, short data)
     {
         Block block = TE.getBlockType();
-
-        byte[] oldIdToNewId = {
-                0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10,
-                11, 18, 14, 17, 13, 19, 15, 16, 12, 27, 23,
-                24, 20, 26, 22, 25, 21, 34, 30, 33, 29, 35,
-                31, 32, 28, 43, 39, 40, 36, 42, 38, 41, 37,
-                45, 44, 46, 47, 48, 49, 50, 51, 52, 53, 54,
-                55, 56, 57, 58, 59, 60, 61, 62, 63, 64
-        };
-
-        if (block.equals(BlockRegistry.blockCarpentersSlope)) {
-            data = oldIdToNewId[data];
-        } else if (block.equals(BlockRegistry.blockCarpentersStairs)) {
-            data = oldIdToNewId[data];
+        if (block.equals(BlockRegistry.blockCarpentersSlope) || block.equals(BlockRegistry.blockCarpentersStairs)) {
+            byte[] oldIdToNewId = {
+                    0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10,
+                    11, 18, 14, 17, 13, 19, 15, 16, 12, 27, 23,
+                    24, 20, 26, 22, 25, 21, 34, 30, 33, 29, 35,
+                    31, 32, 28, 43, 39, 40, 36, 42, 38, 41, 37,
+                    45, 44, 46, 47, 48, 49, 50, 51, 52, 53, 54,
+                    55, 56, 57, 58, 59, 60, 61, 62, 63, 64
+            };
+            return oldIdToNewId[data];
+        } else {
+        	return data;
         }
-
-        return data;
-    }
-
-    ////// OLD FLOWERPOT CONVERSION CODE
-
-    /**
-     * Returns soil block ID.
-     */
-    private static int getSoilID(NBTTagCompound nbt)
-    {
-        return nbt.getShort("soil") & 0xfff;
     }
 
     /**
-     * Returns soil block metadata.
+     * Returns block ID.
      */
-    private static int getSoilMetadata(NBTTagCompound nbt)
+    private int getBlockId(Short data)
     {
-        return (nbt.getShort("soil") & 0xf000) >>> 12;
+        return data & 0xfff;
     }
 
     /**
-     * Returns plant block ID.
+     * Returns block metadata.
      */
-    private static int getPlantID(NBTTagCompound nbt)
+    private int getBlockMetadata(Short data)
     {
-        return nbt.getShort("plant") & 0xfff;
+        return (data & 0xf000) >>> 12;
     }
 
     /**
-     * Returns plant block metadata.
+     * Returns true if data represents a valid block.
      */
-    private static int getPlantMetadata(NBTTagCompound nbt)
+    private boolean hasBlock(Short data)
     {
-        return (nbt.getShort("plant") & 0xf000) >>> 12;
-    }
-
-    /**
-     * Returns soil block.
-     */
-    private static ItemStack getSoil(NBTTagCompound nbt)
-    {
-        return new ItemStack(getSoilID(nbt), 1, getSoilMetadata(nbt));
-    }
-
-    /**
-     * Returns plant block.
-     */
-    private static ItemStack getPlant(NBTTagCompound nbt)
-    {
-        return new ItemStack(getPlantID(nbt), 1, getPlantMetadata(nbt));
-    }
-
-    /**
-     * Returns whether pot has soil.
-     */
-    private static boolean hasSoil(NBTTagCompound nbt)
-    {
-        int blockID = getSoilID(nbt);
-        getSoilMetadata(nbt);
-
+        int blockID = getBlockId(data);
         return blockID > 0 &&
                Block.blocksList[blockID] != null;
     }
 
     /**
-     * Returns whether pot has plant.
+     * Returns true if data contains useful information.
      */
-    private static boolean hasPlant(NBTTagCompound nbt)
+    private boolean hasData(byte data)
     {
-        int blockID = getPlantID(nbt);
-        getPlantMetadata(nbt);
-
-        return blockID > 0 &&
-               Block.blocksList[blockID] != null;
-    }
-
-    ////// OLD CONVERSION CODE
-
-    /**
-     * Returns cover block ID.
-     */
-    private static int getCoverID(NBTTagCompound nbt, int side)
-    {
-        return nbt.getShort("cover_" + side) & 0xfff;
-    }
-
-    /**
-     * Returns cover block metadata.
-     */
-    private static int getCoverMetadata(NBTTagCompound nbt, int side)
-    {
-        return (nbt.getShort("cover_" + side) & 0xf000) >>> 12;
-    }
-
-    /**
-     * Returns whether block has a cover.
-     * Checks if block ID exists and whether it is a valid cover block.
-     */
-    private static boolean hasCover(NBTTagCompound nbt, int side)
-    {
-        int coverID = getCoverID(nbt, side);
-
-        return coverID > 0 && Block.blocksList[coverID] != null;
-    }
-
-    /**
-     * Returns cover block.
-     */
-    private static ItemStack getCover(NBTTagCompound nbt, int side)
-    {
-        if (hasCover(nbt, side)) {
-            new ItemStack(getCoverID(nbt, side), 1, getCoverMetadata(nbt, side));
-        }
-
-        return null;
-    }
-
-    /**
-     * Returns whether side has cover.
-     */
-    private static boolean hasDyeColor(NBTTagCompound nbt, int side)
-    {
-        return nbt.getByteArray("color")[side] > 0;
-    }
-
-    /**
-     * Returns whether block has overlay.
-     */
-    private static boolean hasOverlay(NBTTagCompound nbt, int side)
-    {
-        return nbt.getByteArray("overlay")[side] > 0;
+    	return data > 0;
     }
 
 }

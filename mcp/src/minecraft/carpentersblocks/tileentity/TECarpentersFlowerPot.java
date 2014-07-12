@@ -18,9 +18,8 @@ public class TECarpentersFlowerPot extends TEBase {
     {
         super.readFromNBT(nbt);
 
-        /* Convert old data to new format */
         if (nbt.hasKey("data")) {
-            MigrationHelper.readFromFlowerPotNBT(this, nbt);
+        	migrationHelper.cacheFlowerPotNBT(nbt);
         }
 
         NBTTagList list = nbt.getTagList(TAG_PLANT_ITEMSTACKS);
@@ -43,22 +42,32 @@ public class TECarpentersFlowerPot extends TEBase {
     {
         super.writeToNBT(nbt);
 
-        NBTTagList list = new NBTTagList();
+        if (migrationHelper.containsFlowerPotCache) {
 
-        if (soil != null) {
-            NBTTagCompound nbt1 = new NBTTagCompound();
-            nbt1.setByte(TAG_SOIL, (byte) 0);
-            soil.writeToNBT(nbt1);
-            list.appendTag(nbt1);
-        }
-        if (plant != null) {
-            NBTTagCompound nbt1 = new NBTTagCompound();
-            nbt1.setByte(TAG_PLANT, (byte) 0);
-            plant.writeToNBT(nbt1);
-            list.appendTag(nbt1);
-        }
+        	migrationHelper.writeFlowerPotToNBT(this, nbt);
+        	migrationHelper.containsFlowerPotCache = false;
+        	getWorldObj().markBlockForUpdate(xCoord, yCoord, zCoord);
 
-        nbt.setTag(TAG_PLANT_ITEMSTACKS, list);
+        } else {
+
+	        NBTTagList list = new NBTTagList();
+
+	        if (soil != null) {
+	            NBTTagCompound nbt1 = new NBTTagCompound();
+	            nbt1.setByte(TAG_SOIL, (byte) 0);
+	            soil.writeToNBT(nbt1);
+	            list.appendTag(nbt1);
+	        }
+	        if (plant != null) {
+	            NBTTagCompound nbt1 = new NBTTagCompound();
+	            nbt1.setByte(TAG_PLANT, (byte) 0);
+	            plant.writeToNBT(nbt1);
+	            list.appendTag(nbt1);
+	        }
+
+	        nbt.setTag(TAG_PLANT_ITEMSTACKS, list);
+
+        }
     }
 
 }
