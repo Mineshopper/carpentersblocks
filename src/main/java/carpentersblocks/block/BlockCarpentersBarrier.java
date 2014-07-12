@@ -256,22 +256,18 @@ public class BlockCarpentersBarrier extends BlockCoverable {
     {
         Block block = world.getBlock(x, y, z);
 
-        if (block != null) {
+        /* For the top side, make it create post if block is flower pot, torch, etc. */
 
-            /* For the top side, make it create post if block is flower pot, torch, etc. */
-
-            if (side == ForgeDirection.UP) {
-                if (block != null && block.getMaterial() == Material.circuits) {
-                    return true;
-                }
-            } else {
-                if (block.equals(this) || block.equals(BlockRegistry.blockCarpentersGate)) {
-                    return true;
-                } else {
-                    return block.isSideSolid(world, x, y, z, side) && Barrier.getPost(TE) != Barrier.HAS_POST;
-                }
+        if (side == ForgeDirection.UP) {
+            if (block.getMaterial().equals(Material.circuits)) {
+                return true;
             }
-
+        } else {
+            if (block.equals(this) || block.equals(BlockRegistry.blockCarpentersGate)) {
+                return true;
+            } else {
+                return block.isSideSolid(world, x, y, z, side) && Barrier.getPost(TE) != Barrier.HAS_POST;
+            }
         }
 
         return false;

@@ -40,7 +40,7 @@ public class BlockHandlerCarpentersHatch extends BlockHandlerBase {
     /**
      * Renders block
      */
-    protected boolean renderCarpentersBlock(int x, int y, int z)
+    protected void renderCarpentersBlock(int x, int y, int z)
     {
         renderBlocks.renderAllFaces = true;
 
@@ -66,7 +66,6 @@ public class BlockHandlerCarpentersHatch extends BlockHandlerBase {
         }
 
         renderBlocks.renderAllFaces = false;
-        return true;
     }
 
     /**

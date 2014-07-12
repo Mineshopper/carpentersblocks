@@ -8,8 +8,8 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
+import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.IFluidBlock;
 import carpentersblocks.tileentity.TEBase;
@@ -29,24 +29,19 @@ public class FancyFluidsHelper {
 
         if (itemStack != null) {
 
-            Block block = Block.getBlockFromItem(itemStack.getItem());
+            Block block = BlockProperties.toBlock(itemStack);
+            int metadata = itemStack.getItemDamage();
 
-            // TODO: Allow alpha rendered blocks when available
-
-            if (block != null && block.getRenderBlockPass() == 0)
+            if (block.getRenderBlockPass() == MinecraftForgeClient.getRenderPass())
             {
-                int metadata = itemStack.getItemDamage();
-                if (!block.hasTileEntity(metadata))
+                if (!block.hasTileEntity(metadata) && metadata == 0)
                 {
-                    double fluidHeight = (block instanceof BlockLiquid ? 1.0D - 1.0F / 9.0F : 0.875F) - 0.0010000000474974513D;
-                    renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, fluidHeight, 1.0D);
-                    BlockProperties.setHostMetadata(TE, metadata);
-                    IIcon icon = block.getIcon(1, metadata);
                     LightingHelper lightingHelper = new LightingHelper(renderBlocks);
                     lightingHelper.setupLightingYPos(itemStack, x, y, z);
-                    lightingHelper.setupColor(x, y, z, 1, new float[] { 1.0F, 1.0F, 1.0F }, icon);
-                    RenderHelper.renderFaceYPos(renderBlocks, x, y, z, icon);
-                    BlockProperties.resetHostMetadata(TE);
+                    lightingHelper.setupColor(x, y, z, 1, 16777215, null);
+                    double fluidHeight = (block instanceof BlockLiquid ? 1.0D - 1.0F / 9.0F : 0.875F) - 0.0010000000474974513D;
+                    renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, fluidHeight, 1.0D);
+                    RenderHelper.renderFaceYPos(renderBlocks, x, y, z, block.getIcon(1, metadata));
                     return true;
                 }
             }
@@ -62,6 +57,7 @@ public class FancyFluidsHelper {
     public static ItemStack getFluidBlock(IBlockAccess world, int x, int y, int z)
     {
         int[][] offsetXZ = {{0, -1}, {0, 1}, {-1, 0}, {1, 0}, {-1, -1}, {-1, 1}, {1, 1}, {1, -1}};
+
         ForgeDirection[][][] route = {
                 { { NORTH } },
                 { { SOUTH } },
@@ -76,8 +72,8 @@ public class FancyFluidsHelper {
         for (int idx = 0; idx < offsetXZ.length; ++idx) {
 
             Block block = world.getBlock(x + offsetXZ[idx][0], y, z + offsetXZ[idx][1]);
-            if (block instanceof BlockLiquid || block instanceof IFluidBlock) {
 
+            if (block instanceof BlockLiquid || block instanceof IFluidBlock) {
                 if (idx < 4) {
                     if (!world.isSideSolid(x, y, z, route[idx][0][0], false)) {
                         return new ItemStack(block, world.getBlockMetadata(x + offsetXZ[idx][0], y, z + offsetXZ[idx][1]));
@@ -92,7 +88,6 @@ public class FancyFluidsHelper {
                         }
                     }
                 }
-
             }
 
         }

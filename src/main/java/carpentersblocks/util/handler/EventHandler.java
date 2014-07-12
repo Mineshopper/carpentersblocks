@@ -57,7 +57,7 @@ public class EventHandler {
     {
         Block block = event.entity.worldObj.getBlock(event.x, event.y, event.z);
 
-        if (block != null && block instanceof BlockCoverable) {
+        if (block instanceof BlockCoverable) {
 
             eventFace = event.face;
             eventEntityPlayer = event.entityPlayer;
@@ -75,46 +75,46 @@ public class EventHandler {
             }
 
             switch (event.action) {
-            case LEFT_CLICK_BLOCK:
+                case LEFT_CLICK_BLOCK:
 
-                boolean toolEquipped = itemStack != null && (itemStack.getItem() instanceof ICarpentersHammer || itemStack.getItem() instanceof ICarpentersChisel);
+                    boolean toolEquipped = itemStack != null && (itemStack.getItem() instanceof ICarpentersHammer || itemStack.getItem() instanceof ICarpentersChisel);
 
-                /*
-                 * Creative mode doesn't normally invoke onBlockClicked(), but rather it tries
-                 * to destroy the block.
-                 *
-                 * We'll invoke it here when a Carpenter's tool is being held.
-                 */
+                    /*
+                     * Creative mode doesn't normally invoke onBlockClicked(), but rather it tries
+                     * to destroy the block.
+                     *
+                     * We'll invoke it here when a Carpenter's tool is being held.
+                     */
 
-                if (toolEquipped && eventEntityPlayer.capabilities.isCreativeMode) {
-                    block.onBlockClicked(eventEntityPlayer.worldObj, event.x, event.y, event.z, eventEntityPlayer);
-                }
-
-                break;
-            case RIGHT_CLICK_BLOCK:
-
-                /*
-                 * To enable full functionality with the hammer, we need to override pretty
-                 * much everything that happens on sneak right-click.
-                 *
-                 * onBlockActivated() isn't called if the player is sneaking, so do it here.
-                 *
-                 * The server will receive the packet and attempt to alter the Carpenter's
-                 * block.  If nothing changes, vanilla behavior will resume - the Item(Block)
-                 * in the ItemStack (if applicable) will be created adjacent to block.
-                 */
-
-                if (eventEntityPlayer.isSneaking()) {
-
-                    if (!(itemStack != null && itemStack.getItem() instanceof ItemBlock && !BlockProperties.isOverlay(itemStack))) {
-                        event.setCanceled(true);
-                        PacketHandler.sendPacketToServer(PacketHandler.PACKET_BLOCK_ACTIVATED, event.x, event.y, event.z, event.face);
+                    if (toolEquipped && eventEntityPlayer.capabilities.isCreativeMode) {
+                        block.onBlockClicked(eventEntityPlayer.worldObj, event.x, event.y, event.z, eventEntityPlayer);
                     }
 
-                }
+                    break;
+                case RIGHT_CLICK_BLOCK:
 
-                break;
-            default: {}
+                    /*
+                     * To enable full functionality with the hammer, we need to override pretty
+                     * much everything that happens on sneak right-click.
+                     *
+                     * onBlockActivated() isn't called if the player is sneaking, so do it here.
+                     *
+                     * The server will receive the packet and attempt to alter the Carpenter's
+                     * block.  If nothing changes, vanilla behavior will resume - the Item(Block)
+                     * in the ItemStack (if applicable) will be created adjacent to block.
+                     */
+
+                    if (eventEntityPlayer.isSneaking()) {
+
+                        if (!(itemStack != null && itemStack.getItem() instanceof ItemBlock && !BlockProperties.isOverlay(itemStack))) {
+                            event.setCanceled(true);
+                            PacketHandler.sendPacketToServer(PacketHandler.PACKET_BLOCK_ACTIVATED, event.x, event.y, event.z, event.face);
+                        }
+
+                    }
+
+                    break;
+                default: {}
             }
 
         }
@@ -133,7 +133,7 @@ public class EventHandler {
 
             ItemStack itemStack = entityPlayer.getHeldItem();
 
-            if (itemStack != null && itemStack.getItem() instanceof ItemBlock && Block.getBlockFromItem(itemStack.getItem()).equals(BlockRegistry.blockCarpentersSlope)) {
+            if (itemStack != null && itemStack.getItem() instanceof ItemBlock && BlockProperties.toBlock(itemStack).equals(BlockRegistry.blockCarpentersSlope)) {
 
                 if (event.dwheel == 120) {
                     entityPlayer.inventory.currentItem = ++entityPlayer.inventory.currentItem;
@@ -190,9 +190,7 @@ public class EventHandler {
         int y = MathHelper.floor_double(entity.posY - 0.20000000298023224D - entity.yOffset);
         int z = MathHelper.floor_double(entity.posZ);
 
-        Block block = world.getBlock(x, y, z);
-
-        if (block != null && block instanceof BlockCoverable) {
+        if (world.getBlock(x, y, z) instanceof BlockCoverable) {
 
             TEBase TE = (TEBase) world.getTileEntity(x, y, z);
             int effectiveSide = BlockProperties.hasCover(TE, 1) ? 1 : 6;
@@ -211,10 +209,13 @@ public class EventHandler {
                 ParticleHelper.spawnTileParticleAt(entity, itemStack);
             }
 
-            /* Adjust block slipperiness. */
+            /* Adjust block slipperiness according to cover. */
 
-            Block coverBlock = BlockProperties.toBlock(itemStack);
-            TE.getBlockType().slipperiness = coverBlock instanceof BlockCoverable ? Blocks.planks.slipperiness : coverBlock.slipperiness;
+            if (BlockProperties.toBlock(itemStack) instanceof BlockCoverable) {
+                TE.getBlockType().slipperiness = Blocks.dirt.slipperiness;
+            } else {
+                TE.getBlockType().slipperiness = BlockProperties.toBlock(itemStack).slipperiness;
+            }
 
         }
     }
@@ -269,7 +270,7 @@ public class EventHandler {
             Block block = event.entity.worldObj.getBlock(x, y, z);
             String prefix = event.name.substring(0, event.name.indexOf(".") + 1);
 
-            if (block != null && block instanceof BlockCoverable) {
+            if (block instanceof BlockCoverable) {
 
                 block = BlockProperties.toBlock(BlockProperties.getCover((TEBase) event.entity.worldObj.getTileEntity(x, y, z), 6));
 

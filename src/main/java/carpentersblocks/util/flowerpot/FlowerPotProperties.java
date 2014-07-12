@@ -24,7 +24,7 @@ public class FlowerPotProperties {
         if (plant != null) {
             return (Block) plant;
         } else {
-            return Block.getBlockFromItem(itemStack.getItem());
+            return BlockProperties.toBlock(itemStack);
         }
     }
 
@@ -69,14 +69,15 @@ public class FlowerPotProperties {
      */
     public static boolean isSoil(ItemStack itemStack)
     {
-        Block block = Block.getBlockFromItem(itemStack.getItem());
-
-        if (itemStack.getItem() instanceof ItemBlock && !block.hasTileEntity(itemStack.getItemDamage())) {
-            Material material = block.getMaterial();
-            return material.equals(Material.grass) || material.equals(Material.ground) || material.equals(Material.sand);
-        } else {
-            return false;
+        if (itemStack.getItem() instanceof ItemBlock) {
+            Block block = BlockProperties.toBlock(itemStack);
+            if (!block.hasTileEntity(itemStack.getItemDamage())) {
+                Material material = block.getMaterial();
+                return material.equals(Material.grass) || material.equals(Material.ground) || material.equals(Material.sand);
+            }
         }
+
+        return false;
     }
 
     /**
@@ -99,9 +100,7 @@ public class FlowerPotProperties {
         ((TECarpentersFlowerPot)TE).soil = itemStack;
 
         World world = TE.getWorldObj();
-        Block block = itemStack == null ? null : Block.getBlockFromItem(itemStack.getItem());
-
-        world.notifyBlocksOfNeighborChange(TE.xCoord, TE.yCoord, TE.zCoord, block);
+        world.notifyBlocksOfNeighborChange(TE.xCoord, TE.yCoord, TE.zCoord, BlockProperties.toBlock(itemStack));
         world.markBlockForUpdate(TE.xCoord, TE.yCoord, TE.zCoord);
 
         return true;
@@ -122,7 +121,7 @@ public class FlowerPotProperties {
      */
     public static boolean isPlant(ItemStack itemStack)
     {
-        Block block = Block.getBlockFromItem(itemStack.getItem());
+        Block block = BlockProperties.toBlock(itemStack);
 
         if (!block.equals(Blocks.air)) {
             if (!block.hasTileEntity(itemStack.getItemDamage())) {
@@ -155,9 +154,7 @@ public class FlowerPotProperties {
         ((TECarpentersFlowerPot)TE).plant = itemStack;
 
         World world = TE.getWorldObj();
-        Block block = itemStack == null ? null : Block.getBlockFromItem(itemStack.getItem());
-
-        world.notifyBlocksOfNeighborChange(TE.xCoord, TE.yCoord, TE.zCoord, block);
+        world.notifyBlocksOfNeighborChange(TE.xCoord, TE.yCoord, TE.zCoord, BlockProperties.toBlock(itemStack));
         world.markBlockForUpdate(TE.xCoord, TE.yCoord, TE.zCoord);
 
         return true;

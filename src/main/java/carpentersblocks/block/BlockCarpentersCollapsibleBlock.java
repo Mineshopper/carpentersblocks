@@ -240,8 +240,7 @@ public class BlockCarpentersCollapsibleBlock extends BlockCoverable {
             return 1;
         }
 
-        double height = block.getBlockBoundsMaxY() * 15.0 + 1.0;
-        return (int)height;
+        return (int) (block.getBlockBoundsMaxY() * 15.0 + 1.0);
     }
 
     @Override

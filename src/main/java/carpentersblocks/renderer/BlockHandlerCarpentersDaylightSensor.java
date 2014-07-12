@@ -61,60 +61,60 @@ public class BlockHandlerCarpentersDaylightSensor extends BlockHandlerBase {
     /**
      * Renders block
      */
-    protected boolean renderCarpentersBlock(int x, int y, int z)
+    protected void renderCarpentersBlock(int x, int y, int z)
     {
         renderBlocks.renderAllFaces = true;
 
-        suppressDyeColor = true;
-        suppressOverlay = true;
-        suppressChiselDesign = true;
+            suppressDyeColor = true;
+            suppressOverlay = true;
+            suppressChiselDesign = true;
 
-        /* Render glass inlay */
+            /* Render glass inlay */
 
-        ItemStack glass = new ItemStack(Blocks.glass);
-        renderBlocks.enableAO = getEnableAO(glass);
+            ItemStack glass = new ItemStack(Blocks.glass);
+            renderBlocks.enableAO = getEnableAO(glass);
 
-        renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 0.25D, 1.0D);
-        lightingHelper.setupLightingYPos(glass, x, y, z);
-        lightingHelper.setupColor(x, y, z, 1, getBlockRGB(BlockProperties.toBlock(glass), 0, x, y, z, 1, null), null);
-        RenderHelper.renderFaceYPos(renderBlocks, x, y, z, IconRegistry.icon_daylight_sensor_glass_top);
+            renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 0.25D, 1.0D);
+            lightingHelper.setupLightingYPos(glass, x, y, z);
+            lightingHelper.setupColor(x, y, z, 1, getBlockColor(BlockProperties.toBlock(glass), 0, x, y, z, 1, null), null);
+            RenderHelper.renderFaceYPos(renderBlocks, x, y, z, IconRegistry.icon_daylight_sensor_glass_top);
 
-        renderBlocks.enableAO = false;
+            renderBlocks.enableAO = false;
 
-        /* Render lapis inlay */
+            /* Render lapis inlay */
 
-        renderBlocks.setRenderBounds(0.125D, 0.0625D, 0.125D, 0.875D, 0.1875D, 0.875D);
-        renderBlock(new ItemStack(Blocks.lapis_block), x, y, z);
+            renderBlocks.setRenderBounds(0.125D, 0.0625D, 0.125D, 0.875D, 0.1875D, 0.875D);
+            renderBlock(new ItemStack(Blocks.lapis_block), x, y, z);
 
-        /* Render bordering redstone inlay */
+            /* Render bordering redstone inlay */
 
-        boolean isActive = DaylightSensor.isActive(TE);
+            boolean isActive = DaylightSensor.isActive(TE);
 
-        if (isActive) {
-            disableAO = true;
-            lightingHelper.setBrightnessOverride(LightingHelper.MAX_BRIGHTNESS);
-        } else {
-            lightingHelper.setLightnessOverride(0.5F);
-        }
+            if (isActive) {
+                disableAO = true;
+                lightingHelper.setBrightnessOverride(LightingHelper.MAX_BRIGHTNESS);
+            } else {
+                lightingHelper.setLightnessOverride(0.5F);
+            }
 
-        ItemStack redstone = new ItemStack(Blocks.redstone_block);
+            ItemStack redstone = new ItemStack(Blocks.redstone_block);
 
-        renderBlocks.setRenderBounds(0.0625D, 0.0625D, 0.0625D, 0.125D, 0.1875D, 0.9375D);
-        renderBlock(redstone, x, y, z);
-        renderBlocks.setRenderBounds(0.875D, 0.0625D, 0.0625D, 0.9375D, 0.1875D, 0.9375D);
-        renderBlock(redstone, x, y, z);
-        renderBlocks.setRenderBounds(0.0625D, 0.0625D, 0.0625D, 0.9375D, 0.1875D, 0.125D);
-        renderBlock(redstone, x, y, z);
-        renderBlocks.setRenderBounds(0.0625D, 0.0625D, 0.875D, 0.9375D, 0.1875D, 0.9375D);
-        renderBlock(redstone, x, y, z);
+            renderBlocks.setRenderBounds(0.0625D, 0.0625D, 0.0625D, 0.125D, 0.1875D, 0.9375D);
+            renderBlock(redstone, x, y, z);
+            renderBlocks.setRenderBounds(0.875D, 0.0625D, 0.0625D, 0.9375D, 0.1875D, 0.9375D);
+            renderBlock(redstone, x, y, z);
+            renderBlocks.setRenderBounds(0.0625D, 0.0625D, 0.0625D, 0.9375D, 0.1875D, 0.125D);
+            renderBlock(redstone, x, y, z);
+            renderBlocks.setRenderBounds(0.0625D, 0.0625D, 0.875D, 0.9375D, 0.1875D, 0.9375D);
+            renderBlock(redstone, x, y, z);
 
-        lightingHelper.clearLightnessOverride();
-        lightingHelper.clearBrightnessOverride();
-        disableAO = false;
+            lightingHelper.clearLightnessOverride();
+            lightingHelper.clearBrightnessOverride();
+            disableAO = false;
 
-        suppressDyeColor = false;
-        suppressOverlay = false;
-        suppressChiselDesign = false;
+            suppressDyeColor = false;
+            suppressOverlay = false;
+            suppressChiselDesign = false;
 
         /* Render coverBlock walls and bottom */
 
@@ -132,7 +132,6 @@ public class BlockHandlerCarpentersDaylightSensor extends BlockHandlerBase {
         renderBlock(itemStack, x, y, z);
 
         renderBlocks.renderAllFaces = false;
-        return true;
     }
 
 }

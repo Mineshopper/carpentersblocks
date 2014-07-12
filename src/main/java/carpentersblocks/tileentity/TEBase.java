@@ -27,9 +27,9 @@ public class TEBase extends TileEntity implements IProtected {
     private final String TAG_CHISEL_DESIGN = "chiselDesign";
     private final String TAG_DESIGN        = "design";
 
-    public ItemStack[] cover        = new ItemStack[7];
-    public ItemStack[] dye          = new ItemStack[7];
-    public ItemStack[] overlay      = new ItemStack[7];
+    public ItemStack[] cover   = new ItemStack[7];
+    public ItemStack[] dye     = new ItemStack[7];
+    public ItemStack[] overlay = new ItemStack[7];
 
     /** Chisel design for each side and base block. */
     public String[] chiselDesign = { "", "", "", "", "", "", "" };

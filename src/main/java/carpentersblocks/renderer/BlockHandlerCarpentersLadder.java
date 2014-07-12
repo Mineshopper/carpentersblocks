@@ -39,7 +39,7 @@ public class BlockHandlerCarpentersLadder extends BlockHandlerBase {
     /**
      * Renders ladder.
      */
-    protected boolean renderCarpentersBlock(int x, int y, int z)
+    protected void renderCarpentersBlock(int x, int y, int z)
     {
         renderBlocks.renderAllFaces = true;
 
@@ -220,7 +220,6 @@ public class BlockHandlerCarpentersLadder extends BlockHandlerBase {
         }
 
         renderBlocks.renderAllFaces = false;
-        return true;
     }
 
 }

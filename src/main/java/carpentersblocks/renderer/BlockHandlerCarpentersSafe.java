@@ -186,7 +186,7 @@ public class BlockHandlerCarpentersSafe extends BlockHandlerBase {
     /**
      * Renders safe.
      */
-    protected boolean renderCarpentersBlock(int x, int y, int z)
+    protected void renderCarpentersBlock(int x, int y, int z)
     {
         renderBlocks.renderAllFaces = true;
 
@@ -244,7 +244,6 @@ public class BlockHandlerCarpentersSafe extends BlockHandlerBase {
         clearIconOverride(6);
 
         renderBlocks.renderAllFaces = false;
-        return true;
     }
 
     private void drawBox(ItemStack itemStack, int x, int y, int z, int box)

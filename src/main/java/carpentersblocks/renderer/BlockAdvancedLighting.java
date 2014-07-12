@@ -227,21 +227,18 @@ public class BlockAdvancedLighting extends BlockHandlerBase {
     /**
      * Renders the base cover block.
      */
-    protected boolean renderBaseBlock(ItemStack itemStack, int x, int y, int z)
-    {
-        return false;
-    }
+    protected void renderBaseBlock(ItemStack itemStack, int x, int y, int z) { }
 
     @Override
     /**
      * Renders the block.
      */
-    protected final boolean renderBlock(ItemStack itemStack, int x, int y, int z)
+    protected final void renderBlock(ItemStack itemStack, int x, int y, int z)
     {
         if (coverRendering != 6) {
-            return super.renderBlock(itemStack, x, y, z);
+            super.renderBlock(itemStack, x, y, z);
         } else {
-            return renderBaseBlock(itemStack, x, y, z);
+            renderBaseBlock(itemStack, x, y, z);
         }
     }
 
