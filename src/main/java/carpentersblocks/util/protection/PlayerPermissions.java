@@ -1,4 +1,4 @@
-package carpentersblocks.util;
+package carpentersblocks.util.protection;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;

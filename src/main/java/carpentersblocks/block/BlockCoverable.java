@@ -25,6 +25,7 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -33,11 +34,11 @@ import carpentersblocks.api.ICarpentersHammer;
 import carpentersblocks.renderer.helper.ParticleHelper;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
-import carpentersblocks.util.PlayerPermissions;
 import carpentersblocks.util.handler.DesignHandler;
 import carpentersblocks.util.handler.EventHandler;
 import carpentersblocks.util.handler.OverlayHandler;
 import carpentersblocks.util.handler.OverlayHandler.Overlay;
+import carpentersblocks.util.protection.PlayerPermissions;
 import carpentersblocks.util.registry.FeatureRegistry;
 import carpentersblocks.util.registry.IconRegistry;
 import carpentersblocks.util.registry.ItemRegistry;
@@ -1078,6 +1079,16 @@ public class BlockCoverable extends BlockContainer {
         }
 
         return super.shouldSideBeRendered(world, x, y, z, side);
+    }
+
+    @Override
+    /**
+     * Determines if this block should render in this pass.
+     */
+    public boolean canRenderInPass(int pass)
+    {
+        ForgeHooksClient.setRenderPass(pass);
+        return super.canRenderInPass(pass);
     }
 
     /**

@@ -9,7 +9,7 @@ import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import carpentersblocks.util.IProtected;
+import carpentersblocks.util.protection.IProtected;
 
 public class TEBase extends TileEntity implements IProtected {
 
