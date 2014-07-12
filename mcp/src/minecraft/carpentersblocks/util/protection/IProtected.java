@@ -1,4 +1,4 @@
-package carpentersblocks.util;
+package carpentersblocks.util.protection;
 
 public interface IProtected {
 

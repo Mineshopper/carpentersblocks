@@ -4,7 +4,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
-import carpentersblocks.util.IProtected;
+import carpentersblocks.util.protection.IProtected;
 
 public class EntityBase extends Entity implements IProtected {
 
