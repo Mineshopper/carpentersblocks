@@ -6,9 +6,7 @@ import io.netty.buffer.Unpooled;
 
 import java.io.IOException;
 
-import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.NetHandlerPlayServer;
@@ -56,26 +54,15 @@ public class PacketHandler {
                 int z = bbis.readInt();
                 int side = bbis.readInt();
 
-                Block block = entityPlayer.worldObj.getBlock(x, y, z);
+                boolean result = entityPlayer.worldObj.getBlock(x, y, z).onBlockActivated(entityPlayer.worldObj, x, y, z, entityPlayer, side, 1.0F, 1.0F, 1.0F);
 
-                if (block != Blocks.air) {
-
-                    boolean result = block.onBlockActivated(entityPlayer.worldObj, x, y, z, entityPlayer, side, 1.0F, 1.0F, 1.0F);
-
-                    if (!result) {
-
-                        if (itemStack != null && itemStack.getItem() instanceof ItemBlock) {
-
-                            itemStack.tryPlaceItemIntoWorld(entityPlayer, entityPlayer.worldObj, x, y, z, side, 1.0F, 1.0F, 1.0F);
-
-                            if (!entityPlayer.capabilities.isCreativeMode && --itemStack.stackSize <= 0) {
-                                entityPlayer.inventory.setInventorySlotContents(entityPlayer.inventory.currentItem, (ItemStack)null);
-                            }
-
+                if (!result) {
+                    if (itemStack != null && itemStack.getItem() instanceof ItemBlock) {
+                        itemStack.tryPlaceItemIntoWorld(entityPlayer, entityPlayer.worldObj, x, y, z, side, 1.0F, 1.0F, 1.0F);
+                        if (!entityPlayer.capabilities.isCreativeMode && --itemStack.stackSize <= 0) {
+                            entityPlayer.inventory.setInventorySlotContents(entityPlayer.inventory.currentItem, (ItemStack)null);
                         }
-
                     }
-
                 }
 
                 break;

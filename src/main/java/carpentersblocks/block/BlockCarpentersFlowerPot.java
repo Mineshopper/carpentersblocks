@@ -251,12 +251,7 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
     public boolean canPlaceBlockAt(World world, int x, int y, int z)
     {
         Block block_YN = world.getBlock(x, y - 1, z);
-
-        if (block_YN != null) {
-            return block_YN.isSideSolid(world, x, y - 1, z, ForgeDirection.UP) || block_YN.canPlaceTorchOnTop(world, x, y - 1, z);
-        } else {
-            return false;
-        }
+        return block_YN.isSideSolid(world, x, y - 1, z, ForgeDirection.UP) || block_YN.canPlaceTorchOnTop(world, x, y - 1, z);
     }
 
     @Override

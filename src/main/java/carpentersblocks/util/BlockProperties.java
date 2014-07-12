@@ -75,7 +75,7 @@ public final class BlockProperties {
     }
 
     /**
-     * Takes an ItemStack and returns block, or null if ItemStack
+     * Takes an ItemStack and returns block, or air block if ItemStack
      * does not contain a block.
      */
     public static Block toBlock(ItemStack itemStack)
@@ -83,7 +83,7 @@ public final class BlockProperties {
         if (itemStack != null && itemStack.getItem() instanceof ItemBlock) {
             return Block.getBlockFromItem(itemStack.getItem());
         } else {
-            return null;
+            return Blocks.air;
         }
     }
 
@@ -319,7 +319,7 @@ public final class BlockProperties {
     {
         if (itemStack.getItem() instanceof ItemBlock && !isOverlay(itemStack)) {
 
-            Block block = Block.getBlockFromItem(itemStack.getItem());
+            Block block = toBlock(itemStack);
 
             return block.renderAsNormalBlock() ||
                    block instanceof BlockSlab ||
@@ -340,7 +340,7 @@ public final class BlockProperties {
     {
         if (itemStack != null) {
 
-            Block block = Block.getBlockFromItem(itemStack.getItem());
+            Block block = toBlock(itemStack);
             int damageDropped = block.damageDropped(itemStack.getItemDamage());
             Item itemDropped = block.getItemDropped(itemStack.getItemDamage(), world.rand, /* Fortune */ 0);
 
@@ -371,7 +371,7 @@ public final class BlockProperties {
 
         TE.cover[side] = itemStack;
 
-        Block block = itemStack == null ? TE.getBlockType() : Block.getBlockFromItem(itemStack.getItem());
+        Block block = itemStack == null ? TE.getBlockType() : toBlock(itemStack);
         int metadata = itemStack == null ? 0 : itemStack.getItemDamage();
 
         if (side == 6) {

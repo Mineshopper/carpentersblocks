@@ -1,6 +1,5 @@
 package carpentersblocks.util.stairs;
 
-import net.minecraft.block.Block;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import carpentersblocks.block.BlockCarpentersStairs;
@@ -16,19 +15,12 @@ public class StairsTransform {
      */
     public static int transformStairs(World world, int stairsID, int x, int y, int z)
     {
-        Block block_XN = world.getBlock(x - 1, y, z);
-        Block block_XP = world.getBlock(x + 1, y, z);
-        Block block_YN = world.getBlock(x, y - 1, z);
-        Block block_YP = world.getBlock(x, y + 1, z);
-        Block block_ZN = world.getBlock(x, y, z - 1);
-        Block block_ZP = world.getBlock(x, y, z + 1);
-
-        Stairs stairs_XN = block_XN != null && block_XN instanceof BlockCarpentersStairs ? Stairs.stairsList[BlockProperties.getMetadata((TEBase) world.getTileEntity(x - 1, y, z))] : null;
-        Stairs stairs_XP = block_XP != null && block_XP instanceof BlockCarpentersStairs ? Stairs.stairsList[BlockProperties.getMetadata((TEBase) world.getTileEntity(x + 1, y, z))] : null;
-        Stairs stairs_YN = block_YN != null && block_YN instanceof BlockCarpentersStairs ? Stairs.stairsList[BlockProperties.getMetadata((TEBase) world.getTileEntity(x, y - 1, z))] : null;
-        Stairs stairs_YP = block_YP != null && block_YP instanceof BlockCarpentersStairs ? Stairs.stairsList[BlockProperties.getMetadata((TEBase) world.getTileEntity(x, y + 1, z))] : null;
-        Stairs stairs_ZN = block_ZN != null && block_ZN instanceof BlockCarpentersStairs ? Stairs.stairsList[BlockProperties.getMetadata((TEBase) world.getTileEntity(x, y, z - 1))] : null;
-        Stairs stairs_ZP = block_ZP != null && block_ZP instanceof BlockCarpentersStairs ? Stairs.stairsList[BlockProperties.getMetadata((TEBase) world.getTileEntity(x, y, z + 1))] : null;
+        Stairs stairs_XN = world.getBlock(x - 1, y, z) instanceof BlockCarpentersStairs ? Stairs.stairsList[BlockProperties.getMetadata((TEBase) world.getTileEntity(x - 1, y, z))] : null;
+        Stairs stairs_XP = world.getBlock(x + 1, y, z) instanceof BlockCarpentersStairs ? Stairs.stairsList[BlockProperties.getMetadata((TEBase) world.getTileEntity(x + 1, y, z))] : null;
+        Stairs stairs_YN = world.getBlock(x, y - 1, z) instanceof BlockCarpentersStairs ? Stairs.stairsList[BlockProperties.getMetadata((TEBase) world.getTileEntity(x, y - 1, z))] : null;
+        Stairs stairs_YP = world.getBlock(x, y + 1, z) instanceof BlockCarpentersStairs ? Stairs.stairsList[BlockProperties.getMetadata((TEBase) world.getTileEntity(x, y + 1, z))] : null;
+        Stairs stairs_ZN = world.getBlock(x, y, z - 1) instanceof BlockCarpentersStairs ? Stairs.stairsList[BlockProperties.getMetadata((TEBase) world.getTileEntity(x, y, z - 1))] : null;
+        Stairs stairs_ZP = world.getBlock(x, y, z + 1) instanceof BlockCarpentersStairs ? Stairs.stairsList[BlockProperties.getMetadata((TEBase) world.getTileEntity(x, y, z + 1))] : null;
 
         /* Transform into normal side. */
 
@@ -187,15 +179,10 @@ public class StairsTransform {
      */
     public static void transformAdjacentStairs(World world, int stairsID, int x, int y, int z)
     {
-        Block block_XN = world.getBlock(x - 1, y, z);
-        Block block_XP = world.getBlock(x + 1, y, z);
-        Block block_ZN = world.getBlock(x, y, z - 1);
-        Block block_ZP = world.getBlock(x, y, z + 1);
-
-        Stairs stairs_XN = block_XN != null && block_XN instanceof BlockCarpentersStairs ? Stairs.stairsList[BlockProperties.getMetadata((TEBase) world.getTileEntity(x - 1, y, z))] : null;
-        Stairs stairs_XP = block_XP != null && block_XP instanceof BlockCarpentersStairs ? Stairs.stairsList[BlockProperties.getMetadata((TEBase) world.getTileEntity(x + 1, y, z))] : null;
-        Stairs stairs_ZN = block_ZN != null && block_ZN instanceof BlockCarpentersStairs ? Stairs.stairsList[BlockProperties.getMetadata((TEBase) world.getTileEntity(x, y, z - 1))] : null;
-        Stairs stairs_ZP = block_ZP != null && block_ZP instanceof BlockCarpentersStairs ? Stairs.stairsList[BlockProperties.getMetadata((TEBase) world.getTileEntity(x, y, z + 1))] : null;
+        Stairs stairs_XN = world.getBlock(x - 1, y, z) instanceof BlockCarpentersStairs ? Stairs.stairsList[BlockProperties.getMetadata((TEBase) world.getTileEntity(x - 1, y, z))] : null;
+        Stairs stairs_XP = world.getBlock(x + 1, y, z) instanceof BlockCarpentersStairs ? Stairs.stairsList[BlockProperties.getMetadata((TEBase) world.getTileEntity(x + 1, y, z))] : null;
+        Stairs stairs_ZN = world.getBlock(x, y, z - 1) instanceof BlockCarpentersStairs ? Stairs.stairsList[BlockProperties.getMetadata((TEBase) world.getTileEntity(x, y, z - 1))] : null;
+        Stairs stairs_ZP = world.getBlock(x, y, z + 1) instanceof BlockCarpentersStairs ? Stairs.stairsList[BlockProperties.getMetadata((TEBase) world.getTileEntity(x, y, z + 1))] : null;
 
         Stairs stairs = Stairs.stairsList[stairsID];
 

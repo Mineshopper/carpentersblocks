@@ -79,53 +79,23 @@ public class BlockCarpentersLadder extends BlockCoverable {
 
         switch (ForgeDirection.getOrientation(side)) {
             case DOWN:
-
                 block = world.getBlock(x, y + 1, z);
-
-                if (block != null) {
-                    return block.isSideSolid(world, x, y + 1, z, ForgeDirection.UP) || block.equals(this) && Ladder.isFreestanding((TEBase) world.getTileEntity(x, y + 1, z));
-                }
-
+                return block.isSideSolid(world, x, y + 1, z, ForgeDirection.UP) || block.equals(this) && Ladder.isFreestanding((TEBase) world.getTileEntity(x, y + 1, z));
             case UP:
-
                 block = world.getBlock(x, y - 1, z);
-
-                if (block != null) {
-                    return block.isSideSolid(world, x, y - 1, z, ForgeDirection.DOWN) || block.equals(this) && Ladder.isFreestanding((TEBase) world.getTileEntity(x, y - 1, z));
-                }
-
+                return block.isSideSolid(world, x, y - 1, z, ForgeDirection.DOWN) || block.equals(this) && Ladder.isFreestanding((TEBase) world.getTileEntity(x, y - 1, z));
             case NORTH:
-
                 block = world.getBlock(x, y, z + 1);
-
-                if (block != null) {
-                    return block.isSideSolid(world, x, y, z + 1, ForgeDirection.SOUTH);
-                }
-
+                return block.isSideSolid(world, x, y, z + 1, ForgeDirection.SOUTH);
             case SOUTH:
-
                 block = world.getBlock(x, y, z - 1);
-
-                if (block != null) {
-                    return block.isSideSolid(world, x, y, z - 1, ForgeDirection.NORTH);
-                }
-
+                return block.isSideSolid(world, x, y, z - 1, ForgeDirection.NORTH);
             case WEST:
-
                 block = world.getBlock(x + 1, y, z);
-
-                if (block != null) {
-                    return block.isSideSolid(world, x + 1, y, z, ForgeDirection.EAST);
-                }
-
+                return block.isSideSolid(world, x + 1, y, z, ForgeDirection.EAST);
             case EAST:
-
                 block = world.getBlock(x - 1, y, z);
-
-                if (block != null) {
-                    return block.isSideSolid(world, x - 1, y, z, ForgeDirection.WEST);
-                }
-
+                return block.isSideSolid(world, x - 1, y, z, ForgeDirection.WEST);
             default:
                 return false;
         }
@@ -164,12 +134,9 @@ public class BlockCarpentersLadder extends BlockCoverable {
 
                 TEBase TE_adj = null;
 
-                Block block_YN = world.getBlock(x, y - 1, z);
-                Block block_YP = world.getBlock(x, y + 1, z);
-
-                if (block_YN != null && block_YN.equals(this)) {
+                if (world.getBlock(x, y - 1, z).equals(this)) {
                     TE_adj = (TEBase) world.getTileEntity(x, y - 1, z);
-                } else if (block_YP != null && block_YN.equals(this)) {
+                } else if (world.getBlock(x, y + 1, z).equals(this)) {
                     TE_adj = (TEBase) world.getTileEntity(x, y + 1, z);
                 }
 

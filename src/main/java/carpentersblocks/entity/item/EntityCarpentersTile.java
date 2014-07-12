@@ -3,7 +3,6 @@ package carpentersblocks.entity.item;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -406,9 +405,7 @@ public class EntityCarpentersTile extends EntityBase {
         int y_offset = MathHelper.floor_double(posY) - dir.offsetY;
         int z_offset = MathHelper.floor_double(posZ) - dir.offsetZ;
 
-        Block block = worldObj.getBlock(x_offset, y_offset, z_offset);
-
-        return !(block != null && !block.isSideSolid(worldObj, x_offset, y_offset, z_offset, dir));
+        return worldObj.getBlock(x_offset, y_offset, z_offset).isSideSolid(worldObj, x_offset, y_offset, z_offset, dir);
     }
 
     /**

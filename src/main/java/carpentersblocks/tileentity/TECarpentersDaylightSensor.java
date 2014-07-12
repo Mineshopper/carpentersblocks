@@ -23,11 +23,9 @@ public class TECarpentersDaylightSensor extends TEBase {
     {
         if (worldObj != null && !worldObj.isRemote && worldObj.getTotalWorldTime() % 20L == 0L)
         {
-            blockType = getBlockType();
-
-            if (blockType != null) {
-                if (getBlockType() instanceof BlockCarpentersDaylightSensor) {
-                    ((BlockCarpentersDaylightSensor) getBlockType()).updateLightLevel(worldObj, xCoord, yCoord, zCoord);
+            if (getBlockType() != null) {
+                if (blockType instanceof BlockCarpentersDaylightSensor) {
+                    ((BlockCarpentersDaylightSensor) blockType).updateLightLevel(worldObj, xCoord, yCoord, zCoord);
                 }
             }
         }

@@ -440,53 +440,49 @@ public class BlockCoverable extends BlockContainer {
                             int y_offset = y + dir.offsetY;
                             int z_offset = z + dir.offsetZ;
 
-                            if (world.getBlock(x_offset, y_offset, z_offset) != null)
+                            Block adjBlock = world.getBlock(x_offset, y_offset, z_offset);
+                            ForgeDirection adj_side = ForgeDirection.getOrientation(ForgeDirection.OPPOSITES[side]);
+
+                            if (adjBlock.isSideSolid(world, x_offset, y_offset, z_offset, adj_side))
                             {
-                                Block adjBlock = world.getBlock(x_offset, y_offset, z_offset);
-                                ForgeDirection adj_side = ForgeDirection.getOrientation(ForgeDirection.OPPOSITES[side]);
-
-                                if (adjBlock.isSideSolid(world, x_offset, y_offset, z_offset, adj_side)) {
-
-                                    switch (adj_side) {
-                                        case DOWN:
-                                            if (adjBlock.getBlockBoundsMinY() < sideCoverDepth) {
-                                                BlockProperties.ejectAttributes(TE, side);
-                                            }
-                                            break;
-                                        case UP:
-                                            if (adjBlock.getBlockBoundsMaxY() > 1.0F - sideCoverDepth) {
-                                                BlockProperties.ejectAttributes(TE, side);
-                                            }
-                                            break;
-                                        case NORTH:
-                                            if (adjBlock.getBlockBoundsMinZ() < sideCoverDepth) {
-                                                BlockProperties.ejectAttributes(TE, side);
-                                            }
-                                            break;
-                                        case SOUTH:
-                                            if (adjBlock.getBlockBoundsMaxZ() > 1.0F - sideCoverDepth) {
-                                                BlockProperties.ejectAttributes(TE, side);
-                                            }
-                                            break;
-                                        case WEST:
-                                            if (adjBlock.getBlockBoundsMinX() < sideCoverDepth) {
-                                                BlockProperties.ejectAttributes(TE, side);
-                                            }
-                                            break;
-                                        case EAST:
-                                            if (adjBlock.getBlockBoundsMaxX() > 1.0F - sideCoverDepth) {
-                                                BlockProperties.ejectAttributes(TE, side);
-                                            }
-                                            break;
-                                        default: {}
-                                    }
+                                switch (adj_side) {
+                                    case DOWN:
+                                        if (adjBlock.getBlockBoundsMinY() < sideCoverDepth) {
+                                            BlockProperties.ejectAttributes(TE, side);
+                                        }
+                                        break;
+                                    case UP:
+                                        if (adjBlock.getBlockBoundsMaxY() > 1.0F - sideCoverDepth) {
+                                            BlockProperties.ejectAttributes(TE, side);
+                                        }
+                                        break;
+                                    case NORTH:
+                                        if (adjBlock.getBlockBoundsMinZ() < sideCoverDepth) {
+                                            BlockProperties.ejectAttributes(TE, side);
+                                        }
+                                        break;
+                                    case SOUTH:
+                                        if (adjBlock.getBlockBoundsMaxZ() > 1.0F - sideCoverDepth) {
+                                            BlockProperties.ejectAttributes(TE, side);
+                                        }
+                                        break;
+                                    case WEST:
+                                        if (adjBlock.getBlockBoundsMinX() < sideCoverDepth) {
+                                            BlockProperties.ejectAttributes(TE, side);
+                                        }
+                                        break;
+                                    case EAST:
+                                        if (adjBlock.getBlockBoundsMaxX() > 1.0F - sideCoverDepth) {
+                                            BlockProperties.ejectAttributes(TE, side);
+                                        }
+                                        break;
+                                    default: {}
                                 }
                             }
                         }
                     }
                 }
             }
-
         }
     }
 

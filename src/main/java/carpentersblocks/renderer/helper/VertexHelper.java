@@ -61,6 +61,15 @@ public class VertexHelper {
     }
 
     /**
+     * Adds vertex to Tessellator and increments draw count.
+     */
+    public static void drawVertex(RenderBlocks renderBlocks, double x, double y, double z, double u, double v)
+    {
+        Tessellator.instance.addVertexWithUV(x, y, z, u, v);
+        ++vertexCount;
+    }
+
+    /**
      * Applies brightness, color, and adds vertex through tessellator
      */
     public static void setupVertex(RenderBlocks renderBlocks, double x, double y, double z, double u, double v, int vertex)
@@ -105,8 +114,7 @@ public class VertexHelper {
             }
         }
 
-        tessellator.addVertexWithUV(x, y, z, u, v);
-        ++vertexCount;
+        drawVertex(renderBlocks, x, y, z, u, v);
     }
 
 }

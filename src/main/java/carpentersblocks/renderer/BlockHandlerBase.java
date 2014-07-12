@@ -10,6 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
+import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import org.lwjgl.opengl.GL11;
@@ -35,12 +36,15 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
 
-    protected static final int DOWN  = 0;
-    protected static final int UP    = 1;
-    protected static final int NORTH = 2;
-    protected static final int SOUTH = 3;
-    protected static final int WEST  = 4;
-    protected static final int EAST  = 5;
+    public static int PASS_OPAQUE = 0;
+    public static int PASS_ALPHA  = 1;
+
+    public static final int DOWN  = 0;
+    public static final int UP    = 1;
+    public static final int NORTH = 2;
+    public static final int SOUTH = 3;
+    public static final int WEST  = 4;
+    public static final int EAST  = 5;
 
     public Tessellator    tessellator = Tessellator.instance;
     public RenderBlocks   renderBlocks;
@@ -55,6 +59,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
     public int            dyeOverride;
     public boolean[]      hasIconOverride   = new boolean[6];
     public IIcon[]        iconOverride      = new IIcon[6];
+    public int            renderPass;
 
     /** 0-5 are side covers, with 6 being the block itself. */
     public int            coverRendering    = 6;
@@ -109,6 +114,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
     public boolean renderWorldBlock(IBlockAccess blockAccess, int x, int y, int z, Block block, int modelID, RenderBlocks renderBlocks)
     {
         VertexHelper.vertexCount = 0;
+        renderPass = MinecraftForgeClient.getRenderPass();
         TileEntity TE_default = blockAccess.getTileEntity(x, y, z);
 
         if (TE_default != null && TE_default instanceof TEBase) {
@@ -121,14 +127,10 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
             renderCarpentersBlock(x, y, z);
             renderSideBlocks(x, y, z);
 
-            /* Will render a fluid block in this space if valid. */
-
-            if (FeatureRegistry.enableFancyFluids) {
-
+            if (Minecraft.isFancyGraphicsEnabled() && FeatureRegistry.enableFancyFluids) {
                 if (BlockProperties.hasCover(TE, 6)) {
-                    FancyFluidsHelper.render(this, x, y, z);
+                    VertexHelper.vertexCount += FancyFluidsHelper.render(TE, renderBlocks, x, y, z) ? 1 : 0;
                 }
-
             }
 
         }
@@ -603,18 +605,18 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
      */
     public void setColorAndRender(ItemStack itemStack, int x, int y, int z, int side, IIcon icon)
     {
-        float[] rgb = getBlockRGB(BlockProperties.toBlock(itemStack), itemStack.getItemDamage(), x, y, z, side, icon);
+        int color = getBlockColor(BlockProperties.toBlock(itemStack), itemStack.getItemDamage(), x, y, z, side, icon);
 
         if (!suppressDyeColor && (BlockProperties.hasDye(TE, coverRendering) || hasDyeOverride)) {
-            rgb = hasDyeOverride ? LightingHelper.getRGB(dyeOverride) : LightingHelper.getRGB(DyeHandler.getColor(BlockProperties.getDye(TE, coverRendering)));
+            color = hasDyeOverride ? dyeOverride : DyeHandler.getColor(BlockProperties.getDye(TE, coverRendering));
         }
 
-        lightingHelper.setupColor(x, y, z, side, rgb, icon);
+        lightingHelper.setupColor(x, y, z, side, color, icon);
         render(x, y, z, side, icon);
     }
 
     /**
-     * Returns float array with RGB values for block.  Color is most
+     * Returns integer color value for block.  Color is most
      * commonly different for {@link Blocks#grass}
      * <p>
      * If using our custom render helpers, be sure to use {@link #applyAnaglyph(float[])}.
@@ -624,19 +626,19 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
      * @param x  the x coordinate
      * @param y  the y coordinate
      * @param z  the z coordinate
-     * @return a float array with rgb values
+     * @return a color integer
      */
-    public float[] getBlockRGB(Block block, int metadata, int x, int y, int z, int side, IIcon icon)
+    public int getBlockColor(Block block, int metadata, int x, int y, int z, int side, IIcon icon)
     {
         BlockProperties.setHostMetadata(TE, metadata);
-        float rgb[] = LightingHelper.getRGB(OptifineHandler.enableOptifineIntegration ? OptifineHandler.getColorMultiplier(block, renderBlocks.blockAccess, x, y, z) : block.colorMultiplier(renderBlocks.blockAccess, x, y, z));
+        int color = OptifineHandler.enableOptifineIntegration ? OptifineHandler.getColorMultiplier(block, renderBlocks.blockAccess, x, y, z) : block.colorMultiplier(renderBlocks.blockAccess, x, y, z);
         BlockProperties.resetHostMetadata(TE);
 
         if (block.equals(Blocks.grass) && !isPositiveFace(side) && !icon.equals(BlockGrass.getIconSideOverlay())) {
-            rgb[0] = rgb[1] = rgb[2] = 1.0F;
+            color = 16777215;
         }
 
-        return rgb;
+        return color;
     }
 
     /**

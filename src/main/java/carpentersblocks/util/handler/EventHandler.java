@@ -57,7 +57,7 @@ public class EventHandler {
     {
         Block block = event.entity.worldObj.getBlock(event.x, event.y, event.z);
 
-        if (block != null && block instanceof BlockCoverable) {
+        if (block instanceof BlockCoverable) {
 
             eventFace = event.face;
             eventEntityPlayer = event.entityPlayer;
@@ -133,7 +133,7 @@ public class EventHandler {
 
             ItemStack itemStack = entityPlayer.getHeldItem();
 
-            if (itemStack != null && itemStack.getItem() instanceof ItemBlock && Block.getBlockFromItem(itemStack.getItem()).equals(BlockRegistry.blockCarpentersSlope)) {
+            if (itemStack != null && itemStack.getItem() instanceof ItemBlock && BlockProperties.toBlock(itemStack).equals(BlockRegistry.blockCarpentersSlope)) {
 
                 if (event.dwheel == 120) {
                     entityPlayer.inventory.currentItem = ++entityPlayer.inventory.currentItem;
@@ -190,9 +190,7 @@ public class EventHandler {
         int y = MathHelper.floor_double(entity.posY - 0.20000000298023224D - entity.yOffset);
         int z = MathHelper.floor_double(entity.posZ);
 
-        Block block = world.getBlock(x, y, z);
-
-        if (block != null && block instanceof BlockCoverable) {
+        if (world.getBlock(x, y, z) instanceof BlockCoverable) {
 
             TEBase TE = (TEBase) world.getTileEntity(x, y, z);
             int effectiveSide = BlockProperties.hasCover(TE, 1) ? 1 : 6;
@@ -272,7 +270,7 @@ public class EventHandler {
             Block block = event.entity.worldObj.getBlock(x, y, z);
             String prefix = event.name.substring(0, event.name.indexOf(".") + 1);
 
-            if (block != null && block instanceof BlockCoverable) {
+            if (block instanceof BlockCoverable) {
 
                 block = BlockProperties.toBlock(BlockProperties.getCover((TEBase) event.entity.worldObj.getTileEntity(x, y, z), 6));
 

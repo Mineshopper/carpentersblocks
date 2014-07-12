@@ -127,15 +127,11 @@ public class BlockCarpentersTorch extends BlockCoverable {
     public boolean canPlaceBlockOnSide(World world, int x, int y, int z, int side)
     {
         if (side > 0) {
-
             ForgeDirection dir = ForgeDirection.getOrientation(side);
-            Block block = world.getBlock(x, y - 1, z);
-
-            return world.getBlock(x - dir.offsetX, y - dir.offsetY, z - dir.offsetZ).isSideSolid(world, x - dir.offsetX, y - dir.offsetY, z - dir.offsetZ, dir) || side == 1 && block != null && block.canPlaceTorchOnTop(world, x, y, z);
-
+            return world.getBlock(x - dir.offsetX, y - dir.offsetY, z - dir.offsetZ).isSideSolid(world, x - dir.offsetX, y - dir.offsetY, z - dir.offsetZ, dir) || side == 1 && world.getBlock(x, y - 1, z).canPlaceTorchOnTop(world, x, y, z);
+        } else {
+            return false;
         }
-
-        return false;
     }
 
     @Override
