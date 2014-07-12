@@ -25,6 +25,7 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -1079,6 +1080,16 @@ public class BlockCoverable extends BlockContainer {
         }
 
         return super.shouldSideBeRendered(world, x, y, z, side);
+    }
+
+    @Override
+    /**
+     * Determines if this block should render in this pass.
+     */
+    public boolean canRenderInPass(int pass)
+    {
+        ForgeHooksClient.setRenderPass(pass);
+        return super.canRenderInPass(pass);
     }
 
     /**
