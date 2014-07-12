@@ -9,8 +9,8 @@ import carpentersblocks.util.registry.BlockRegistry;
 
 public class MigrationHelper {
 
-	boolean containsCache = false;
-	boolean containsFlowerPotCache = false;
+    boolean containsCache = false;
+    boolean containsFlowerPotCache = false;
 
     private final String TAG_COVER            = "cover";
     private final String TAG_DYE              = "dye";
@@ -46,9 +46,9 @@ public class MigrationHelper {
 
     public void cacheFlowerPotNBT(NBTTagCompound nbt)
     {
-    	cachedPlant = nbt.getShort("plant");
-    	cachedSoil = nbt.getShort("soil");
-    	containsFlowerPotCache = true;
+        cachedPlant = nbt.getShort("plant");
+        cachedSoil = nbt.getShort("soil");
+        containsFlowerPotCache = true;
     }
 
     /**
@@ -99,14 +99,14 @@ public class MigrationHelper {
         NBTTagList list = new NBTTagList();
 
         if (hasBlock(cachedSoil)) {
-        	TE.soil = new ItemStack(getBlockId(cachedSoil), 1, getBlockMetadata(cachedSoil));
+            TE.soil = new ItemStack(getBlockId(cachedSoil), 1, getBlockMetadata(cachedSoil));
             NBTTagCompound nbt1 = new NBTTagCompound();
             nbt1.setByte(TAG_SOIL, (byte) 0);
             TE.soil.writeToNBT(nbt1);
             list.appendTag(nbt1);
         }
         if (hasBlock(cachedPlant)) {
-        	TE.plant = new ItemStack(getBlockId(cachedPlant), 1, getBlockMetadata(cachedPlant));
+            TE.plant = new ItemStack(getBlockId(cachedPlant), 1, getBlockMetadata(cachedPlant));
             NBTTagCompound nbt1 = new NBTTagCompound();
             nbt1.setByte(TAG_PLANT, (byte) 0);
             TE.plant.writeToNBT(nbt1);
@@ -118,15 +118,15 @@ public class MigrationHelper {
 
     private ItemStack[] getOverlaysAsItemStacks()
     {
-    	ItemStack[] overlayStack = {
-    			null,
-    			new ItemStack(Item.seeds),
-    			new ItemStack(Item.snowball),
-    			new ItemStack(Item.silk),
-    			new ItemStack(Block.vine),
-    			new ItemStack(Item.wheat),
-    			new ItemStack(Block.mushroomBrown)
-    	};
+        ItemStack[] overlayStack = {
+                null,
+                new ItemStack(Item.seeds),
+                new ItemStack(Item.snowball),
+                new ItemStack(Item.silk),
+                new ItemStack(Block.vine),
+                new ItemStack(Item.wheat),
+                new ItemStack(Block.mushroomBrown)
+        };
 
         ItemStack[] itemStack = new ItemStack[7];
         for (int idx = 0; idx < 7; ++idx) {
@@ -176,7 +176,7 @@ public class MigrationHelper {
             };
             return oldIdToNewId[data];
         } else {
-        	return data;
+            return data;
         }
     }
 
@@ -211,7 +211,7 @@ public class MigrationHelper {
      */
     private boolean hasData(byte data)
     {
-    	return data > 0;
+        return data > 0;
     }
 
 }

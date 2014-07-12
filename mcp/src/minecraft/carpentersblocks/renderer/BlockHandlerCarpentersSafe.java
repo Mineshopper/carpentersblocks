@@ -203,46 +203,46 @@ public class BlockHandlerCarpentersSafe extends BlockHandlerBase {
 
         if (renderPass == PASS_ALPHA) {
 
-	        /* Begin drawing the capacity light strip. */
+            /* Begin drawing the capacity light strip. */
 
-	        setIconOverride(6, IconRegistry.icon_safe_light);
+            setIconOverride(6, IconRegistry.icon_safe_light);
 
-	        double yMin = 0.125D;
-	        double yMax = 0.1875D;
-	        int capacity = getCapacityIlluminated();
+            double yMin = 0.125D;
+            double yMax = 0.1875D;
+            int capacity = getCapacityIlluminated();
 
-	        suppressDyeColor = true;
-	        suppressOverlay = true;
-	        suppressChiselDesign = true;
-	        disableAO = true;
+            suppressDyeColor = true;
+            suppressOverlay = true;
+            suppressChiselDesign = true;
+            disableAO = true;
 
-	        for (int box = 0; box < numCapacity; ++box)
-	        {
-	            if (box + 1 <= capacity) {
-	                lightingHelper.setLightnessOverride(1.0F);
-	                lightingHelper.setBrightnessOverride(LightingHelper.MAX_BRIGHTNESS);
-	                lightingHelper.setColorOverride(LIGHT_BLUE_ACTIVE);
-	            } else {
-	                lightingHelper.setColorOverride(LIGHT_BLUE_INACTIVE);
-	            }
+            for (int box = 0; box < numCapacity; ++box)
+            {
+                if (box + 1 <= capacity) {
+                    lightingHelper.setLightnessOverride(1.0F);
+                    lightingHelper.setBrightnessOverride(LightingHelper.MAX_BRIGHTNESS);
+                    lightingHelper.setColorOverride(LIGHT_BLUE_ACTIVE);
+                } else {
+                    lightingHelper.setColorOverride(LIGHT_BLUE_INACTIVE);
+                }
 
-	            renderBlocks.setRenderBounds(0.125D, yMin, 0.9375D, 0.25D, yMax, 1.0D);
-	            rotateBounds(renderBlocks, facing);
-	            renderBlock(new ItemStack(Block.ice), x, y, z);
-	            lightingHelper.clearColorOverride();
-	            lightingHelper.clearBrightnessOverride();
-	            lightingHelper.clearLightnessOverride();
+                renderBlocks.setRenderBounds(0.125D, yMin, 0.9375D, 0.25D, yMax, 1.0D);
+                rotateBounds(renderBlocks, facing);
+                renderBlock(new ItemStack(Block.ice), x, y, z);
+                lightingHelper.clearColorOverride();
+                lightingHelper.clearBrightnessOverride();
+                lightingHelper.clearLightnessOverride();
 
-	            yMin += 0.0625D;
-	            yMax += 0.0625D;
-	        }
+                yMin += 0.0625D;
+                yMax += 0.0625D;
+            }
 
-	        disableAO = false;
-	        suppressDyeColor = false;
-	        suppressOverlay = false;
-	        suppressChiselDesign = false;
+            disableAO = false;
+            suppressDyeColor = false;
+            suppressOverlay = false;
+            suppressChiselDesign = false;
 
-	        clearIconOverride(6);
+            clearIconOverride(6);
 
         }
 
@@ -274,52 +274,52 @@ public class BlockHandlerCarpentersSafe extends BlockHandlerBase {
                 break;
             case BLOCKTYPE_GREEN_LIGHT:
 
-            	if (renderPass == PASS_ALPHA) {
+                if (renderPass == PASS_ALPHA) {
 
-	                disableAO = true;
-	                setIconOverride(6, IconRegistry.icon_safe_light);
+                    disableAO = true;
+                    setIconOverride(6, IconRegistry.icon_safe_light);
 
-	                if (isLocked) {
-	                    lightingHelper.setColorOverride(LIGHT_GREEN_INACTIVE);
-	                } else {
-	                    lightingHelper.setLightnessOverride(1.0F);
-	                    lightingHelper.setBrightnessOverride(LightingHelper.MAX_BRIGHTNESS);
-	                    lightingHelper.setColorOverride(LIGHT_GREEN_ACTIVE);
-	                }
+                    if (isLocked) {
+                        lightingHelper.setColorOverride(LIGHT_GREEN_INACTIVE);
+                    } else {
+                        lightingHelper.setLightnessOverride(1.0F);
+                        lightingHelper.setBrightnessOverride(LightingHelper.MAX_BRIGHTNESS);
+                        lightingHelper.setColorOverride(LIGHT_GREEN_ACTIVE);
+                    }
 
-	                renderBlock(new ItemStack(Block.ice), x, y, z);
-	                lightingHelper.clearColorOverride();
-	                lightingHelper.clearBrightnessOverride();
-	                lightingHelper.clearLightnessOverride();
-	                clearIconOverride(6);
-	                disableAO = false;
+                    renderBlock(new ItemStack(Block.ice), x, y, z);
+                    lightingHelper.clearColorOverride();
+                    lightingHelper.clearBrightnessOverride();
+                    lightingHelper.clearLightnessOverride();
+                    clearIconOverride(6);
+                    disableAO = false;
 
-            	}
+                }
 
                 break;
             case BLOCKTYPE_RED_LIGHT:
 
-            	if (renderPass == PASS_ALPHA) {
+                if (renderPass == PASS_ALPHA) {
 
-	                disableAO = true;
-	                setIconOverride(6, IconRegistry.icon_safe_light);
+                    disableAO = true;
+                    setIconOverride(6, IconRegistry.icon_safe_light);
 
-	                if (isLocked) {
-	                    lightingHelper.setLightnessOverride(1.0F);
-	                    lightingHelper.setBrightnessOverride(LightingHelper.MAX_BRIGHTNESS);
-	                    lightingHelper.setColorOverride(LIGHT_RED_ACTIVE);
-	                } else {
-	                    lightingHelper.setColorOverride(LIGHT_RED_INACTIVE);
-	                }
+                    if (isLocked) {
+                        lightingHelper.setLightnessOverride(1.0F);
+                        lightingHelper.setBrightnessOverride(LightingHelper.MAX_BRIGHTNESS);
+                        lightingHelper.setColorOverride(LIGHT_RED_ACTIVE);
+                    } else {
+                        lightingHelper.setColorOverride(LIGHT_RED_INACTIVE);
+                    }
 
-	                renderBlock(new ItemStack(Block.ice), x, y, z);
-	                lightingHelper.clearColorOverride();
-	                lightingHelper.clearBrightnessOverride();
-	                lightingHelper.clearLightnessOverride();
-	                clearIconOverride(6);
-	                disableAO = false;
+                    renderBlock(new ItemStack(Block.ice), x, y, z);
+                    lightingHelper.clearColorOverride();
+                    lightingHelper.clearBrightnessOverride();
+                    lightingHelper.clearLightnessOverride();
+                    clearIconOverride(6);
+                    disableAO = false;
 
-            	}
+                }
 
                 break;
             default:

@@ -94,8 +94,8 @@ public class BlockHandlerCarpentersCollapsibleBlock extends BlockAdvancedLightin
         /* Render top slopes. */
 
         if (srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x, y + 1, z, UP) || !CollapsibleUtil.isFullHeight(TE)) {
-        	RenderHelper.startDrawing(TRIANGLES);
-        	prepareTopFace(itemStack, x, y, z);
+            RenderHelper.startDrawing(TRIANGLES);
+            prepareTopFace(itemStack, x, y, z);
         }
 
         /* Render all other faces. */

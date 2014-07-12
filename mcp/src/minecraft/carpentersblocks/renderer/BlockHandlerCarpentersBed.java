@@ -39,7 +39,7 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase {
         }
 
         if (renderPass == PASS_OPAQUE) {
-        	renderFabricComponents(new ItemStack(Block.cloth), x, y, z);
+            renderFabricComponents(new ItemStack(Block.cloth), x, y, z);
         }
 
         applyFrameDyeOverride();

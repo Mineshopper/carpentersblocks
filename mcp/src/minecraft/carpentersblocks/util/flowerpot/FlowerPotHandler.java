@@ -104,7 +104,7 @@ public class FlowerPotHandler {
      */
     public static Profile getPlantProfile(TEBase TE)
     {
-    	return getPlantProfile(FlowerPotProperties.getPlant(TE));
+        return getPlantProfile(FlowerPotProperties.getPlant(TE));
     }
 
     /**

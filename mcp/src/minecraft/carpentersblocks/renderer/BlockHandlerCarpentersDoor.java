@@ -300,41 +300,41 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
         }
 
         if (renderPass == PASS_OPAQUE) {
-	        Icon icon;
+            Icon icon;
 
-	        if (isBottom) {
-	            icon = IconRegistry.icon_door_french_glass_bottom;
-	        } else {
-	            icon = IconRegistry.icon_door_french_glass_top;
-	        }
+            if (isBottom) {
+                icon = IconRegistry.icon_door_french_glass_bottom;
+            } else {
+                icon = IconRegistry.icon_door_french_glass_top;
+            }
 
-	        VertexHelper.setOffset(-(1 - path_offset));
-	        Tessellator.instance.setBrightness(Block.glass.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y, z));
+            VertexHelper.setOffset(-(1 - path_offset));
+            Tessellator.instance.setBrightness(Block.glass.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y, z));
 
-	        if (path_on_x) {
+            if (path_on_x) {
 
-	            renderBlocks.setRenderBounds(0.0F, isBottom ? 0.1875F : 0.0F, 0.1875F, 1.0F, isBottom ? 1.0F : 0.8125F, 0.8125F);
-	            Tessellator.instance.setColorOpaque_F(0.6F, 0.6F, 0.6F);
+                renderBlocks.setRenderBounds(0.0F, isBottom ? 0.1875F : 0.0F, 0.1875F, 1.0F, isBottom ? 1.0F : 0.8125F, 0.8125F);
+                Tessellator.instance.setColorOpaque_F(0.6F, 0.6F, 0.6F);
 
-	            RenderHelper.renderFaceXNeg(renderBlocks, x, y, z, icon);
+                RenderHelper.renderFaceXNeg(renderBlocks, x, y, z, icon);
 
-	            // TODO: Revisit when alpha pass is properly implemented.
-	            VertexHelper.setOffset(-path_offset);
-	            RenderHelper.renderFaceXPos(renderBlocks, x, y, z, icon);
+                // TODO: Revisit when alpha pass is properly implemented.
+                VertexHelper.setOffset(-path_offset);
+                RenderHelper.renderFaceXPos(renderBlocks, x, y, z, icon);
 
-	        } else {
+            } else {
 
-	            renderBlocks.setRenderBounds(0.1875F, isBottom ? 0.1875F : 0.0F, 0.0F, 0.8125F, isBottom ? 1.0F : 0.8125F, 1.0F);
-	            Tessellator.instance.setColorOpaque_F(0.8F, 0.8F, 0.8F);
+                renderBlocks.setRenderBounds(0.1875F, isBottom ? 0.1875F : 0.0F, 0.0F, 0.8125F, isBottom ? 1.0F : 0.8125F, 1.0F);
+                Tessellator.instance.setColorOpaque_F(0.8F, 0.8F, 0.8F);
 
-	            RenderHelper.renderFaceZNeg(renderBlocks, x, y, z, icon);
+                RenderHelper.renderFaceZNeg(renderBlocks, x, y, z, icon);
 
-	            // TODO: Revisit when alpha pass is properly implemented.
-	            VertexHelper.setOffset(-path_offset);
-	            RenderHelper.renderFaceZPos(renderBlocks, x, y, z, icon);
-	        }
+                // TODO: Revisit when alpha pass is properly implemented.
+                VertexHelper.setOffset(-path_offset);
+                RenderHelper.renderFaceZPos(renderBlocks, x, y, z, icon);
+            }
 
-	        VertexHelper.clearOffset();
+            VertexHelper.clearOffset();
         }
 
         renderHandle(new ItemStack(Block.blockIron), x, y, z, true, true);
@@ -995,43 +995,43 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerBase {
         }
 
         if (renderPass == PASS_OPAQUE) {
-	        int type = Hinge.getType(TE);
-	        Icon icon;
+            int type = Hinge.getType(TE);
+            Icon icon;
 
-	        if (isBottom) {
-	            icon = type == Hinge.TYPE_SCREEN_TALL ? IconRegistry.icon_door_screen_tall : IconRegistry.icon_door_glass_tall_bottom;
-	        } else {
-	            icon = type == Hinge.TYPE_SCREEN_TALL ? IconRegistry.icon_door_screen_tall : IconRegistry.icon_door_glass_tall_top;
-	        }
+            if (isBottom) {
+                icon = type == Hinge.TYPE_SCREEN_TALL ? IconRegistry.icon_door_screen_tall : IconRegistry.icon_door_glass_tall_bottom;
+            } else {
+                icon = type == Hinge.TYPE_SCREEN_TALL ? IconRegistry.icon_door_screen_tall : IconRegistry.icon_door_glass_tall_top;
+            }
 
-	        VertexHelper.setOffset(-(1 - path_offset));
-	        Tessellator.instance.setBrightness(Block.glass.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y, z));
+            VertexHelper.setOffset(-(1 - path_offset));
+            Tessellator.instance.setBrightness(Block.glass.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y, z));
 
-	        if (path_on_x) {
+            if (path_on_x) {
 
-	            renderBlocks.setRenderBounds(0.0F, isBottom ? 0.1875F : 0.0F, 0.1875F, 1.0F, isBottom ? 1.0F : 0.8125F, 0.8125F);
-	            Tessellator.instance.setColorOpaque_F(0.6F, 0.6F, 0.6F);
+                renderBlocks.setRenderBounds(0.0F, isBottom ? 0.1875F : 0.0F, 0.1875F, 1.0F, isBottom ? 1.0F : 0.8125F, 0.8125F);
+                Tessellator.instance.setColorOpaque_F(0.6F, 0.6F, 0.6F);
 
-	            RenderHelper.renderFaceXNeg(renderBlocks, x, y, z, icon);
+                RenderHelper.renderFaceXNeg(renderBlocks, x, y, z, icon);
 
-	            // TODO: Revisit when alpha pass is properly implemented.
-	            VertexHelper.setOffset(-path_offset);
-	            RenderHelper.renderFaceXPos(renderBlocks, x, y, z, icon);
+                // TODO: Revisit when alpha pass is properly implemented.
+                VertexHelper.setOffset(-path_offset);
+                RenderHelper.renderFaceXPos(renderBlocks, x, y, z, icon);
 
-	        } else {
+            } else {
 
-	            renderBlocks.setRenderBounds(0.1875F, isBottom ? 0.1875F : 0.0F, 0.0F, 0.8125F, isBottom ? 1.0F : 0.8125F, 1.0F);
-	            Tessellator.instance.setColorOpaque_F(0.8F, 0.8F, 0.8F);
+                renderBlocks.setRenderBounds(0.1875F, isBottom ? 0.1875F : 0.0F, 0.0F, 0.8125F, isBottom ? 1.0F : 0.8125F, 1.0F);
+                Tessellator.instance.setColorOpaque_F(0.8F, 0.8F, 0.8F);
 
-	            RenderHelper.renderFaceZNeg(renderBlocks, x, y, z, icon);
+                RenderHelper.renderFaceZNeg(renderBlocks, x, y, z, icon);
 
-	            // TODO: Revisit when alpha pass is properly implemented.
-	            VertexHelper.setOffset(-path_offset);
-	            RenderHelper.renderFaceZPos(renderBlocks, x, y, z, icon);
+                // TODO: Revisit when alpha pass is properly implemented.
+                VertexHelper.setOffset(-path_offset);
+                RenderHelper.renderFaceZPos(renderBlocks, x, y, z, icon);
 
-	        }
+            }
 
-	        VertexHelper.clearOffset();
+            VertexHelper.clearOffset();
         }
 
         renderHandle(new ItemStack(Block.blockIron), x, y, z, true, true);

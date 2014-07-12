@@ -169,7 +169,7 @@ public class BlockCarpentersLadder extends BlockCoverable {
 
                 if (block_YN != null && block_YN.equals(this)) {
                     TE_adj = (TEBase) world.getBlockTileEntity(x, y - 1, z);
-                } else if (block_YP != null && block_YN.equals(this)) {
+                } else if (block_YP != null && block_YP.equals(this)) {
                     TE_adj = (TEBase) world.getBlockTileEntity(x, y + 1, z);
                 }
 

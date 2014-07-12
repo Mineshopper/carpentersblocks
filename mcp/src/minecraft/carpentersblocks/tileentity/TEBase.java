@@ -47,7 +47,7 @@ public class TEBase extends TileEntity implements IProtected {
         super.readFromNBT(nbt);
 
         if (nbt.hasKey("data")) {
-        	migrationHelper.cacheNBT(nbt);
+            migrationHelper.cacheNBT(nbt);
         }
 
         NBTTagList itemstack_list = nbt.getTagList(TAG_ITEMSTACKS);
@@ -85,43 +85,43 @@ public class TEBase extends TileEntity implements IProtected {
 
         if (migrationHelper.containsCache) {
 
-        	migrationHelper.writeToNBT(this, nbt);
-        	migrationHelper.containsCache = false;
-        	getWorldObj().markBlockForUpdate(xCoord, yCoord, zCoord);
+            migrationHelper.writeToNBT(this, nbt);
+            migrationHelper.containsCache = false;
+            getWorldObj().markBlockForUpdate(xCoord, yCoord, zCoord);
 
         } else {
 
-	        NBTTagList list = new NBTTagList();
+            NBTTagList list = new NBTTagList();
 
-	        for (byte side = 0; side < 7; ++side)
-	        {
-	            if (cover[side] != null) {
-	                NBTTagCompound nbt1 = new NBTTagCompound();
-	                nbt1.setByte(TAG_COVER, side);
-	                cover[side].writeToNBT(nbt1);
-	                list.appendTag(nbt1);
-	            }
-	            if (dye[side] != null) {
-	                NBTTagCompound nbt1 = new NBTTagCompound();
-	                nbt1.setByte(TAG_DYE, side);
-	                dye[side].writeToNBT(nbt1);
-	                list.appendTag(nbt1);
-	            }
-	            if (overlay[side] != null) {
-	                NBTTagCompound nbt1 = new NBTTagCompound();
-	                nbt1.setByte(TAG_OVERLAY, side);
-	                overlay[side].writeToNBT(nbt1);
-	                list.appendTag(nbt1);
-	            }
-	        }
+            for (byte side = 0; side < 7; ++side)
+            {
+                if (cover[side] != null) {
+                    NBTTagCompound nbt1 = new NBTTagCompound();
+                    nbt1.setByte(TAG_COVER, side);
+                    cover[side].writeToNBT(nbt1);
+                    list.appendTag(nbt1);
+                }
+                if (dye[side] != null) {
+                    NBTTagCompound nbt1 = new NBTTagCompound();
+                    nbt1.setByte(TAG_DYE, side);
+                    dye[side].writeToNBT(nbt1);
+                    list.appendTag(nbt1);
+                }
+                if (overlay[side] != null) {
+                    NBTTagCompound nbt1 = new NBTTagCompound();
+                    nbt1.setByte(TAG_OVERLAY, side);
+                    overlay[side].writeToNBT(nbt1);
+                    list.appendTag(nbt1);
+                }
+            }
 
-	        nbt.setTag(TAG_ITEMSTACKS, list);
+            nbt.setTag(TAG_ITEMSTACKS, list);
 
-	        for (int idx = 0; idx < 7; ++idx) {
-	            nbt.setString(TAG_CHISEL_DESIGN + "_" + idx, chiselDesign[idx]);
-	        }
+            for (int idx = 0; idx < 7; ++idx) {
+                nbt.setString(TAG_CHISEL_DESIGN + "_" + idx, chiselDesign[idx]);
+            }
 
-	        nbt.setShort(TAG_METADATA, metadata);
+            nbt.setShort(TAG_METADATA, metadata);
         }
 
         nbt.setString(TAG_DESIGN, design);

@@ -938,10 +938,10 @@ public class BlockCoverable extends BlockContainer {
 
             for (int side = 1; side < 7; side += 5) {
                 if (BlockProperties.hasCover(TE, side)) {
-                	blockIDs.add(BlockProperties.toBlock(BlockProperties.getCover(TE, side)).blockID);
+                    blockIDs.add(BlockProperties.toBlock(BlockProperties.getCover(TE, side)).blockID);
                 }
                 if (BlockProperties.hasOverlay(TE, side)) {
-                	blockIDs.add(BlockProperties.toBlock(OverlayHandler.getOverlayType(BlockProperties.getOverlay(TE, side)).getItemStack()).blockID);
+                    blockIDs.add(BlockProperties.toBlock(OverlayHandler.getOverlayType(BlockProperties.getOverlay(TE, side)).getItemStack()).blockID);
                 }
             }
 
@@ -949,11 +949,11 @@ public class BlockCoverable extends BlockContainer {
 
             Material material = BlockProperties.toBlock(BlockProperties.getCover(TE, 6)).blockMaterial;
             if (material.equals(Material.grass)) {
-            	blockIDs.add(Block.grass.blockID);
+                blockIDs.add(Block.grass.blockID);
             } else if (material.equals(Material.ground)) {
-            	blockIDs.add(Block.dirt.blockID);
+                blockIDs.add(Block.dirt.blockID);
             } else if (material.equals(Material.sand)) {
-            	blockIDs.add(Block.sand.blockID);
+                blockIDs.add(Block.sand.blockID);
             }
 
             switch (plantable.getPlantType(world, x, y + 1, z))
@@ -964,7 +964,7 @@ public class BlockCoverable extends BlockContainer {
                 case Beach:
                     boolean isBeach = blockIDs.contains(Block.grass.blockID) || blockIDs.contains(Block.dirt.blockID) || blockIDs.contains(Block.sand.blockID);
                     boolean hasWater = world.getBlockMaterial(x - 1, y, z    ).equals(Material.water) ||
-                            		   world.getBlockMaterial(x + 1, y, z    ).equals(Material.water) ||
+                                       world.getBlockMaterial(x + 1, y, z    ).equals(Material.water) ||
                                        world.getBlockMaterial(x,     y, z - 1).equals(Material.water) ||
                                        world.getBlockMaterial(x,     y, z + 1).equals(Material.water);
                     return isBeach && hasWater;

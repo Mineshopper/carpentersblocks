@@ -126,11 +126,9 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
             renderCarpentersBlock(x, y, z);
             renderSideBlocks(x, y, z);
 
-            /* Will render a fluid block in this space if valid. */
-
-            if (FeatureRegistry.enableFancyFluids) {
+            if (Minecraft.isFancyGraphicsEnabled() && FeatureRegistry.enableFancyFluids) {
                 if (BlockProperties.hasCover(TE, 6)) {
-                    FancyFluidsHelper.render(TE, renderBlocks, x, y, z);
+                    VertexHelper.vertexCount += FancyFluidsHelper.render(TE, renderBlocks, x, y, z) ? 1 : 0;
                 }
             }
 
@@ -514,16 +512,16 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
         /* Render side */
 
         boolean doRender = block instanceof BlockCoverable && renderPass == PASS_OPAQUE ||
-        		           block.getRenderBlockPass() == renderPass ||
-        		           renderBlocks.hasOverrideBlockTexture();
+                           block.getRenderBlockPass() == renderPass ||
+                           renderBlocks.hasOverrideBlockTexture();
 
         if (doRender) {
-	        int tempRotation = getRotation(side);
-	        if (BlockProperties.blockRotates(itemStack)) {
-	            setDirectionalRotation(side);
-	        }
-	        setColorAndRender(itemStack, x, y, z, side, icon);
-	        setRotation(side, tempRotation);
+            int tempRotation = getRotation(side);
+            if (BlockProperties.blockRotates(itemStack)) {
+                setDirectionalRotation(side);
+            }
+            setColorAndRender(itemStack, x, y, z, side, icon);
+            setRotation(side, tempRotation);
         }
 
         /* Render BlockGrass side overlay here, if needed. */
@@ -541,9 +539,9 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
         }
 
         if (renderPass == PASS_ALPHA) {
-	        if (!suppressChiselDesign && BlockProperties.hasChiselDesign(TE, coverRendering)) {
-	            renderChiselDesign(x, y, z, side);
-	        }
+            if (!suppressChiselDesign && BlockProperties.hasChiselDesign(TE, coverRendering)) {
+                renderChiselDesign(x, y, z, side);
+            }
         }
 
         if (!suppressOverlay && BlockProperties.hasOverlay(TE, coverRendering)) {
@@ -611,18 +609,18 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
      */
     public void setColorAndRender(ItemStack itemStack, int x, int y, int z, int side, Icon icon)
     {
-        float[] rgb = getBlockRGB(BlockProperties.toBlock(itemStack), itemStack.getItemDamage(), x, y, z, side, icon);
+        int color = getBlockColor(BlockProperties.toBlock(itemStack), itemStack.getItemDamage(), x, y, z, side, icon);
 
         if (!suppressDyeColor && (BlockProperties.hasDye(TE, coverRendering) || hasDyeOverride)) {
-            rgb = hasDyeOverride ? LightingHelper.getRGB(dyeOverride) : LightingHelper.getRGB(DyeHandler.getColor(BlockProperties.getDye(TE, coverRendering)));
+            color = hasDyeOverride ? dyeOverride : DyeHandler.getColor(BlockProperties.getDye(TE, coverRendering));
         }
 
-        lightingHelper.setupColor(x, y, z, side, rgb, icon);
+        lightingHelper.setupColor(x, y, z, side, color, icon);
         render(x, y, z, side, icon);
     }
 
     /**
-     * Returns float array with RGB values for block.  Color is most
+     * Returns integer color value for block.  Color is most
      * commonly different for {@link Blocks#grass}
      * <p>
      * If using our custom render helpers, be sure to use {@link #applyAnaglyph(float[])}.
@@ -632,19 +630,19 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
      * @param x  the x coordinate
      * @param y  the y coordinate
      * @param z  the z coordinate
-     * @return a float array with rgb values
+     * @return a color integer
      */
-    public float[] getBlockRGB(Block block, int metadata, int x, int y, int z, int side, Icon icon)
+    public int getBlockColor(Block block, int metadata, int x, int y, int z, int side, Icon icon)
     {
         BlockProperties.setHostMetadata(TE, metadata);
-        float rgb[] = LightingHelper.getRGB(OptifineHandler.enableOptifineIntegration ? OptifineHandler.getColorMultiplier(block, renderBlocks.blockAccess, x, y, z) : block.colorMultiplier(renderBlocks.blockAccess, x, y, z));
+        int color = OptifineHandler.enableOptifineIntegration ? OptifineHandler.getColorMultiplier(block, renderBlocks.blockAccess, x, y, z) : block.colorMultiplier(renderBlocks.blockAccess, x, y, z);
         BlockProperties.resetHostMetadata(TE);
 
         if (block.equals(Block.grass) && !isPositiveFace(side) && !icon.equals(BlockGrass.getIconSideOverlay())) {
-            rgb[0] = rgb[1] = rgb[2] = 1.0F;
+            color = 16777215;
         }
 
-        return rgb;
+        return color;
     }
 
     /**

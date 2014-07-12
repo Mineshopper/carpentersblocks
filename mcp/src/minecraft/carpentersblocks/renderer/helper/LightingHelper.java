@@ -145,11 +145,12 @@ public class LightingHelper {
      * @param grassMode  affects how color is applied to faces for grass block only
      * @return a float array with rgb values
      */
-    public void setupColor(int x, int y, int z, int side, float[] rgb, Icon icon)
+    public void setupColor(int x, int y, int z, int side, int color, Icon icon)
     {
         Tessellator tessellator = Tessellator.instance;
         float lightness = hasLightnessOverride ? lightnessOverride : LIGHTNESS[side];
         tessellator.setBrightness(hasBrightnessOverride ? brightnessOverride : brightness);
+        float[] rgb = getRGB(color);
 
         if (hasColorOverride && !renderBlocks.hasOverrideBlockTexture()) {
             rgb = getRGB(colorOverride);

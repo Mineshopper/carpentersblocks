@@ -68,14 +68,15 @@ public class FlowerPotProperties {
      */
     public static boolean isSoil(ItemStack itemStack)
     {
-        Block block = toBlock(itemStack);
-
-        if (itemStack.getItem() instanceof ItemBlock && !block.hasTileEntity(itemStack.getItemDamage())) {
-            Material material = block.blockMaterial;
-            return material.equals(Material.grass) || material.equals(Material.ground) || material.equals(Material.sand);
-        } else {
-            return false;
+        if (itemStack.getItem() instanceof ItemBlock) {
+            Block block = BlockProperties.toBlock(itemStack);
+            if (block != null && !block.hasTileEntity(itemStack.getItemDamage())) {
+                Material material = block.blockMaterial;
+                return material.equals(Material.grass) || material.equals(Material.ground) || material.equals(Material.sand);
+            }
         }
+
+        return false;
     }
 
     /**

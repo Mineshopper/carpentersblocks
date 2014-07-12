@@ -48,9 +48,7 @@ public class BlockHandlerCarpentersLever extends BlockHandlerBase {
     protected void renderCarpentersBlock(int x, int y, int z)
     {
         renderBlocks.renderAllFaces = true;
-
         renderLever(getCoverForRendering(), x, y, z);
-
         renderBlocks.renderAllFaces = false;
     }
 
@@ -70,7 +68,7 @@ public class BlockHandlerCarpentersLever extends BlockHandlerBase {
         /* Render lever handle. */
 
         if (renderPass == PASS_OPAQUE) {
-        	renderLeverHandle(x, y, z);
+            renderLeverHandle(x, y, z);
         }
     }
 
@@ -229,12 +227,10 @@ public class BlockHandlerCarpentersLever extends BlockHandlerBase {
                     break;
             }
 
-            tessellator.addVertexWithUV(vertex1.xCoord, vertex1.yCoord, vertex1.zCoord, uMin, vMax);
-            tessellator.addVertexWithUV(vertex2.xCoord, vertex2.yCoord, vertex2.zCoord, uMax, vMax);
-            tessellator.addVertexWithUV(vertex3.xCoord, vertex3.yCoord, vertex3.zCoord, uMax, vMin);
-            tessellator.addVertexWithUV(vertex4.xCoord, vertex4.yCoord, vertex4.zCoord, uMin, vMin);
-
-            VertexHelper.vertexCount += 4;
+            VertexHelper.drawVertex(renderBlocks, vertex1.xCoord, vertex1.yCoord, vertex1.zCoord, uMin, vMax);
+            VertexHelper.drawVertex(renderBlocks, vertex2.xCoord, vertex2.yCoord, vertex2.zCoord, uMax, vMax);
+            VertexHelper.drawVertex(renderBlocks, vertex3.xCoord, vertex3.yCoord, vertex3.zCoord, uMax, vMin);
+            VertexHelper.drawVertex(renderBlocks, vertex4.xCoord, vertex4.yCoord, vertex4.zCoord, uMin, vMin);
         }
     }
 

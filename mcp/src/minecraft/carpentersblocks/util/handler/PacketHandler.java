@@ -37,17 +37,17 @@ public class PacketHandler implements IPacketHandler {
 
                     if (itemStack != null) {
                         try {
-                        	int maxDmg = BlockCarpentersSlope.slopeType.length - 1;
-                        	int itemDmg = itemStack.getItemDamage();
-                        	itemDmg += bbis.readBoolean() ? 1 : -1;
+                            int maxDmg = BlockCarpentersSlope.slopeType.length - 1;
+                            int itemDmg = itemStack.getItemDamage();
+                            itemDmg += bbis.readBoolean() ? 1 : -1;
 
-                        	if (itemDmg > maxDmg) {
-                        		itemDmg = 0;
-                        	} else if (itemDmg < 0) {
-                        		itemDmg = maxDmg;
-                        	}
+                            if (itemDmg > maxDmg) {
+                                itemDmg = 0;
+                            } else if (itemDmg < 0) {
+                                itemDmg = maxDmg;
+                            }
 
-                        	itemStack.setItemDamage(itemDmg);
+                            itemStack.setItemDamage(itemDmg);
                         } catch (IOException e) { }
                     }
 

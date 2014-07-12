@@ -260,7 +260,7 @@ public class BlockCarpentersSafe extends BlockCoverable {
 
         if (TE != null) {
             if (Safe.isOpen(TE) || !PlayerPermissions.canPlayerEdit(TE, TE.xCoord, TE.yCoord, TE.zCoord, entityPlayer)) {
-            	return -1; // Unbreakable
+                return -1; // Unbreakable
             }
         }
 
