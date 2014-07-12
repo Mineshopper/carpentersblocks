@@ -12,7 +12,7 @@ public class CollapsibleUtil {
     public static double offset_XZPN;
     public static double offset_XZPP;
 
-    private static boolean isFullyCollapsed(TEBase TE)
+    public static boolean isFullyCollapsed(TEBase TE)
     {
         int combinedHeight = Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZNN) +
                              Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZNP) +
@@ -20,6 +20,16 @@ public class CollapsibleUtil {
                              Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZPP);
 
         return combinedHeight == 16 * 4;
+    }
+
+    public static boolean isFullHeight(TEBase TE)
+    {
+        int combinedHeight = Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZNN) +
+                             Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZNP) +
+                             Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZPN) +
+                             Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZPP);
+
+        return combinedHeight == 0;
     }
 
     /**
