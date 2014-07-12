@@ -48,9 +48,10 @@ public class CommonProxy {
         /* Register Tile Entities */
 
         GameRegistry.registerTileEntity(                    TEBase.class,          "TileEntityCarpentersBlock");
-        GameRegistry.registerTileEntity(                    TEBase.class,          "TileEntityCarpentersSlope"); // Mapping prior to MC 1.7+ migration
+        GameRegistry.registerTileEntity(                    TEBase.class,          "TileEntityCarpentersSlope"); // Compatibility mapping
+        GameRegistry.registerTileEntity(                    TEBase.class,            "TileEntityCarpentersBed"); // Compatibility mapping
         GameRegistry.registerTileEntity(TECarpentersDaylightSensor.class, "TileEntityCarpentersDaylightSensor");
-        GameRegistry.registerTileEntity(TECarpentersDaylightSensor.class,            "TileEntityCarpentersExt"); // Mapping prior to MC 1.7+ migration
+        GameRegistry.registerTileEntity(TECarpentersDaylightSensor.class,            "TileEntityCarpentersExt"); // Compatibility mapping
         GameRegistry.registerTileEntity(     TECarpentersFlowerPot.class,      "TileEntityCarpentersFlowerPot");
         GameRegistry.registerTileEntity(          TECarpentersSafe.class,           "TileEntityCarpentersSafe");
         GameRegistry.registerTileEntity(         TECarpentersTorch.class,          "TileEntityCarpentersTorch");
