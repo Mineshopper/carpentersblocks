@@ -24,6 +24,8 @@ import carpentersblocks.CarpentersBlocks;
 import carpentersblocks.api.ICarpentersChisel;
 import carpentersblocks.api.ICarpentersHammer;
 import carpentersblocks.block.BlockCoverable;
+import carpentersblocks.network.PacketActivateBlock;
+import carpentersblocks.network.PacketSlopeSelect;
 import carpentersblocks.renderer.helper.ParticleHelper;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.util.BlockProperties;
@@ -108,7 +110,7 @@ public class EventHandler {
 
                         if (!(itemStack != null && itemStack.getItem() instanceof ItemBlock && !BlockProperties.isOverlay(itemStack))) {
                             event.setCanceled(true);
-                            PacketHandler.sendPacketToServer(PacketHandler.PACKET_BLOCK_ACTIVATED, event.x, event.y, event.z, event.face);
+                            PacketHandler.sendPacketToServer(new PacketActivateBlock(event.x, event.y, event.z, event.face));
                         }
 
                     }
@@ -143,7 +145,7 @@ public class EventHandler {
                     return;
                 }
 
-                PacketHandler.sendPacketToServer(PacketHandler.PACKET_SLOPE_SELECT, event.dwheel == 120);
+                PacketHandler.sendPacketToServer(new PacketSlopeSelect(event.dwheel == 120));
 
             }
 
@@ -174,7 +176,7 @@ public class EventHandler {
             reachDist = ((EntityPlayerMP)entityPlayer).theItemInWorldManager.getBlockReachDistance();
         }
 
-        Vec3 vec1 = world.getWorldVec3Pool().getVecFromPool(xPos, yPos, zPos);
+        Vec3 vec1 = Vec3.createVectorHelper(xPos, yPos, zPos);
         Vec3 vec2 = vec1.addVector(xComp * reachDist, yComp * reachDist, zComp * reachDist);
 
         return world.rayTraceBlocks(vec1, vec2);
