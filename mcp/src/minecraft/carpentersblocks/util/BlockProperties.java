@@ -235,6 +235,8 @@ public final class BlockProperties {
             default:
                 if (isDye(itemStack, true)) {
                     block = Block.sand;
+                } else if (block == null) {
+                    block = Block.planks;
                 }
         }
 
