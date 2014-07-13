@@ -620,7 +620,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
     }
 
     /**
-     * Returns integer color value for block.  Color is most
+     * Returns a integer with hex for 0xrrggbb for block.  Color is most
      * commonly different for {@link Blocks#grass}
      * <p>
      * If using our custom render helpers, be sure to use {@link #applyAnaglyph(float[])}.
@@ -630,7 +630,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
      * @param x  the x coordinate
      * @param y  the y coordinate
      * @param z  the z coordinate
-     * @return a color integer
+     * @return a integer with hex for 0xrrggbb
      */
     public int getBlockColor(Block block, int metadata, int x, int y, int z, int side, Icon icon)
     {

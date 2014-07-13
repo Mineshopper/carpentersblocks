@@ -140,17 +140,17 @@ public class LightingHelper {
      * @param y  the y coordinate
      * @param z  the z coordinate
      * @param side  the side
-     * @param primaryRGB  the primary color
+     * @param hexColor  the primary color
      * @param icon  the icon
      * @param grassMode  affects how color is applied to faces for grass block only
      * @return a float array with rgb values
      */
-    public void setupColor(int x, int y, int z, int side, int color, Icon icon)
+    public void setupColor(int x, int y, int z, int side, int hexColor, Icon icon)
     {
         Tessellator tessellator = Tessellator.instance;
         float lightness = hasLightnessOverride ? lightnessOverride : LIGHTNESS[side];
         tessellator.setBrightness(hasBrightnessOverride ? brightnessOverride : brightness);
-        float[] rgb = getRGB(color);
+        float[] rgb = getRGB(hexColor);
 
         if (hasColorOverride && !renderBlocks.hasOverrideBlockTexture()) {
             rgb = getRGB(colorOverride);

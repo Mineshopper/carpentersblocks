@@ -67,7 +67,7 @@ public class DyeHandler {
     }
 
     /**
-     * Returns color value based on ItemStack.
+     * Returns a integer with hex for 0xrrggbb based on ItemStack.
      */
     public static int getColor(ItemStack itemStack)
     {
@@ -75,7 +75,7 @@ public class DyeHandler {
     }
 
     /**
-     * Returns color value based on ore dictionary name.
+     * Returns a integer with hex for 0xrrggbb based on ore dictionary name.
      */
     public static int getColor(String dye)
     {
