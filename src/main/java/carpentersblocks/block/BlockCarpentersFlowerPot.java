@@ -9,7 +9,6 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
-import net.minecraft.item.ItemDye;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
@@ -20,6 +19,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import carpentersblocks.CarpentersBlocks;
 import carpentersblocks.data.FlowerPot;
+import carpentersblocks.network.PacketEnrichPlant;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.tileentity.TECarpentersFlowerPot;
 import carpentersblocks.util.BlockProperties;
@@ -27,6 +27,7 @@ import carpentersblocks.util.flowerpot.FlowerPotHandler;
 import carpentersblocks.util.flowerpot.FlowerPotHandler.Profile;
 import carpentersblocks.util.flowerpot.FlowerPotProperties;
 import carpentersblocks.util.handler.EventHandler;
+import carpentersblocks.util.handler.PacketHandler;
 import carpentersblocks.util.registry.BlockRegistry;
 import carpentersblocks.util.registry.IconRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -132,12 +133,6 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
     {
         ItemStack itemStack = entityPlayer.getHeldItem();
 
-        World world = TE.getWorldObj();
-
-        int x = TE.xCoord;
-        int y = TE.yCoord;
-        int z = TE.zCoord;
-
         if (itemStack != null) {
 
             boolean hasCover = BlockProperties.hasCover(TE, 6);
@@ -168,25 +163,6 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
                         altered.add(decInv.add(true));
                     }
 
-                } else {
-
-                    if (itemStack.getItem().equals(Items.dye) && itemStack.getItemDamage() == 15) {
-
-                        if (!FlowerPot.isEnriched(TE) && FlowerPotProperties.isPlantColorable(TE)) {
-
-                            FlowerPot.setEnrichment(TE, true);
-                            altered.add(decInv.add(true));
-
-                            /* Play fertilize sound. */
-                            world.playAuxSFX(2005, x, y, z, 0);
-
-                            /* Spawn fertilize effect. */
-                            ItemDye.func_150918_a(world, x, y, z, 15);
-
-                        }
-
-                    }
-
                 }
 
             } else {
@@ -203,6 +179,42 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
             }
 
         }
+    }
+
+    @Override
+    /**
+     * Called upon block activation (right click on the block.)
+     */
+    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ)
+    {
+        /*
+         * Need to handle plant enrichment here since the properties
+         * needing to be compared against are client-side only.
+         *
+         * Client will send relevant properties to the server using a packet,
+         * and from there the server will determine if plant should be affected.
+         */
+
+        if (world.isRemote) {
+
+            TEBase TE = getTileEntity(world, x, y, z);
+
+            if (TE != null) {
+
+                ItemStack itemStack = entityPlayer.getCurrentEquippedItem();
+
+                if (itemStack != null && itemStack.getItem().equals(Items.dye) && itemStack.getItemDamage() == 15) {
+                    if (!FlowerPot.isEnriched(TE) && FlowerPotProperties.isPlantColorable(TE)) {
+                        PacketHandler.sendPacketToServer(new PacketEnrichPlant(x, y, z, FlowerPotProperties.getPlantColor(TE)));
+                        return true;
+                    }
+                }
+
+            }
+
+        }
+
+        return super.onBlockActivated(world, x, y, z, entityPlayer, side, hitX, hitY, hitZ);
     }
 
     @Override
