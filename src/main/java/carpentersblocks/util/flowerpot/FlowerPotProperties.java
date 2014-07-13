@@ -11,6 +11,8 @@ import net.minecraftforge.common.IShearable;
 import carpentersblocks.tileentity.TEBase;
 import carpentersblocks.tileentity.TECarpentersFlowerPot;
 import carpentersblocks.util.BlockProperties;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class FlowerPotProperties {
 
@@ -28,6 +30,7 @@ public class FlowerPotProperties {
         }
     }
 
+    @SideOnly(Side.CLIENT)
     /**
      * Returns plant color.
      */
@@ -46,6 +49,7 @@ public class FlowerPotProperties {
         return color1 < color2 ? color1 : color2;
     }
 
+    @SideOnly(Side.CLIENT)
     /**
      * Returns whether plant can be colored - leaves, grass, etc.
      */
