@@ -169,7 +169,7 @@ public class BlockCoverable extends BlockContainer {
     /**
      * Called when the block is clicked by a player. Args: x, y, z, entityPlayer
      */
-    public final void onBlockClicked(World world, int x, int y, int z, EntityPlayer entityPlayer)
+    public void onBlockClicked(World world, int x, int y, int z, EntityPlayer entityPlayer)
     {
         if (!world.isRemote) {
 
@@ -240,7 +240,7 @@ public class BlockCoverable extends BlockContainer {
     /**
      * Called upon block activation (right click on the block.)
      */
-    public final boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ)
+    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ)
     {
         ItemStack itemStack = entityPlayer.getCurrentEquippedItem();
 
@@ -335,11 +335,14 @@ public class BlockCoverable extends BlockContainer {
 
                     } else {
 
-                        BlockProperties.playBlockSound(TE.getWorldObj(), BlockProperties.getCover(TE, 6), TE.xCoord, TE.yCoord, TE.zCoord, true);
                         damageItemWithChance(world, entityPlayer);
                         onNeighborBlockChange(world, x, y, z, this);
                         world.notifyBlocksOfNeighborChange(x, y, z, this);
 
+                    }
+
+                    if (altered.contains(true)) {
+                        BlockProperties.playBlockSound(TE.getWorldObj(), itemStack, TE.xCoord, TE.yCoord, TE.zCoord, false);
                     }
 
                     if (decInv.contains(true)) {

@@ -10,22 +10,31 @@ public class TECarpentersTorch extends TEBase {
 
     @Override
     /**
-     * Torch events are handled server-side.  The client won't receive
-     * particle spawn events, and so must be handled by the client here.
-     * This simply handles spawning the big smoke particle when rain or snow
-     * lowers the torch state.
+     * Called when you receive a TileEntityData packet for the location this
+     * TileEntity is currently in. On the client, the NetworkManager will always
+     * be the remote server. On the server, it will be whomever is responsible for
+     * sending the packet.
+     *
+     * @param net The NetworkManager the packet originated from
+     * @param pkt The data packet
      */
     public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt)
     {
-        if (worldObj != null && worldObj.isRemote)
-        {
+        if (getWorldObj().isRemote) {
+
             State existing_state = Torch.getState(this);
 
             super.onDataPacket(net, pkt);
 
+            /*
+             * The server doesn't send particle spawn packets, so it
+             * has to be handled client-side.
+             */
+
             if (Torch.getState(this).ordinal() > existing_state.ordinal()) {
                 ParticleHelper.spawnTorchBigSmoke(this);
             }
+
         }
     }
 
