@@ -169,7 +169,7 @@ public class BlockCoverable extends BlockContainer {
     /**
      * Called when the block is clicked by a player. Args: x, y, z, entityPlayer
      */
-    public final void onBlockClicked(World world, int x, int y, int z, EntityPlayer entityPlayer)
+    public void onBlockClicked(World world, int x, int y, int z, EntityPlayer entityPlayer)
     {
         if (!world.isRemote) {
 
@@ -240,7 +240,7 @@ public class BlockCoverable extends BlockContainer {
     /**
      * Called upon block activation (right click on the block.)
      */
-    public final boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ)
+    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ)
     {
         ItemStack itemStack = entityPlayer.getCurrentEquippedItem();
 
@@ -335,11 +335,14 @@ public class BlockCoverable extends BlockContainer {
 
                     } else {
 
-                        BlockProperties.playBlockSound(TE.getWorldObj(), BlockProperties.getCover(TE, 6), TE.xCoord, TE.yCoord, TE.zCoord, true);
                         damageItemWithChance(world, entityPlayer);
                         onNeighborBlockChange(world, x, y, z, this);
                         world.notifyBlocksOfNeighborChange(x, y, z, this);
 
+                    }
+
+                    if (altered.contains(true)) {
+                        BlockProperties.playBlockSound(TE.getWorldObj(), itemStack, TE.xCoord, TE.yCoord, TE.zCoord, false);
                     }
 
                     if (decInv.contains(true)) {
@@ -907,12 +910,12 @@ public class BlockCoverable extends BlockContainer {
      * @param x X Position
      * @param y Y Position
      * @param z Z position
-     * @param dir The direction relative to the given position the plant wants to be, typically its UP
+     * @param side The direction relative to the given position the plant wants to be, typically its UP
      * @param plantable The plant that wants to check
      * @return True to allow the plant to be planted/stay.
      */
     @Override
-    public boolean canSustainPlant(IBlockAccess world, int x, int y, int z, ForgeDirection dir, IPlantable plantable)
+    public boolean canSustainPlant(IBlockAccess world, int x, int y, int z, ForgeDirection side, IPlantable plantable)
     {
         TEBase TE = getTileEntity(world, x, y, z);
 
@@ -920,7 +923,7 @@ public class BlockCoverable extends BlockContainer {
 
             /* If side is not solid, it can't sustain a plant. */
 
-            if (!isSideSolid(world, x, y, z, dir)) {
+            if (!isSideSolid(world, x, y, z, side)) {
                 return false;
             }
 
@@ -931,12 +934,12 @@ public class BlockCoverable extends BlockContainer {
 
             List<Block> blocks = new ArrayList<Block>();
 
-            for (int side = 1; side < 7; side += 5) {
-                if (BlockProperties.hasCover(TE, side)) {
-                    blocks.add(BlockProperties.toBlock(BlockProperties.getCover(TE, side)));
+            for (int side1 = 1; side1 < 7; side1 += 5) {
+                if (BlockProperties.hasCover(TE, side1)) {
+                    blocks.add(BlockProperties.toBlock(BlockProperties.getCover(TE, side1)));
                 }
-                if (BlockProperties.hasOverlay(TE, side)) {
-                    blocks.add(BlockProperties.toBlock(OverlayHandler.getOverlayType(BlockProperties.getOverlay(TE, side)).getItemStack()));
+                if (BlockProperties.hasOverlay(TE, side1)) {
+                    blocks.add(BlockProperties.toBlock(OverlayHandler.getOverlayType(BlockProperties.getOverlay(TE, side1)).getItemStack()));
                 }
             }
 
@@ -963,11 +966,12 @@ public class BlockCoverable extends BlockContainer {
                                        world.getBlock(x,     y, z - 1).getMaterial() == Material.water ||
                                        world.getBlock(x,     y, z + 1).getMaterial() == Material.water;
                     return isBeach && hasWater;
-                default: {}
+                default:
+                    break;
             }
         }
 
-        return super.canSustainPlant(world, x, y, z, dir, plantable);
+        return super.canSustainPlant(world, x, y, z, side, plantable);
     }
 
     /**
@@ -1016,7 +1020,7 @@ public class BlockCoverable extends BlockContainer {
 
             Item item = itemStack.getItem();
             if (item instanceof ICarpentersHammer || item instanceof ICarpentersChisel) {
-                return -1.0F;
+                return -1;
             }
 
         }

@@ -31,8 +31,13 @@ public class FlowerPot {
      */
     public static void setEnrichment(TEBase TE, boolean enriched)
     {
-        if (isEnriched(TE) && !enriched) {
-            BlockProperties.ejectEntity(TE, new ItemStack(Items.dye, 1, 15));
+        if (isEnriched(TE) != enriched) {
+            if (enriched) {
+                /* Play fertilize sound. */
+                TE.getWorldObj().playAuxSFX(2005, TE.xCoord, TE.yCoord, TE.zCoord, 0);
+            } else {
+                BlockProperties.ejectEntity(TE, new ItemStack(Items.dye, 1, 15));
+            }
         }
 
         int temp = BlockProperties.getMetadata(TE) & 0xefff;
