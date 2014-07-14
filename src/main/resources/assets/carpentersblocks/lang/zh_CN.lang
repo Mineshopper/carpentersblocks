@@ -1,7 +1,7 @@
 # Carpenter's Blocks Language File = Simplified Chinese
 
 # CREATIVE TAB
-itemGroup.carpentersBlocks.name=木匠方块
+itemGroup.carpentersBlocks.name=Carpenter's Blocks
 
 # ITEMS
 item.itemCarpentersHammer.name=木匠锤
@@ -26,8 +26,8 @@ tile.blockCarpentersPressurePlate.name=木匠压力盘
 tile.blockCarpentersSlope.wedge.name=木匠楔形斜坡
 tile.blockCarpentersSlope.obliqueInterior.name=木匠内倾斜坡
 tile.blockCarpentersSlope.obliqueExterior.name=木匠外倾斜坡
-tile.blockCarpentersSlope.prism.name=木匠棱柱斜坡
-tile.blockCarpentersSlope.prismWedge.name=木匠棱柱楔形斜坡
+tile.blockCarpentersSlope.prism.name=木匠棱斜坡
+tile.blockCarpentersSlope.prismWedge.name=木匠棱楔形斜坡
 tile.blockCarpentersStairs.name=木匠楼梯
 tile.blockCarpentersTorch.name=木匠火把
 tile.blockCarpentersSafe.name=木匠保险箱
@@ -35,6 +35,7 @@ tile.blockCarpentersFlowerPot.name=木匠花盆
 
 # ENTITIES
 entity.CarpentersTile.name=木匠瓷砖
+
 # MESSAGES
 message.polarity_pos.name=输出相: 标准红石信号输出.
 message.polarity_neg.name=输出相: 反相红石信号输出.
@@ -47,7 +48,6 @@ message.trigger_all.name=触发条件: 任何实体均可触发.
 message.safe_lock.name=控制: 保险箱已锁.
 message.safe_unlock.name=控制: 保险箱已解锁.
 message.automation_all.name=自动: 可以放入取出物品.
-
 message.automation_disabled.name=自动: 禁用.
 message.automation_insert.name=自动: 仅能放入物品.
 message.automation_extract.name=自动: 仅能取出物品.
