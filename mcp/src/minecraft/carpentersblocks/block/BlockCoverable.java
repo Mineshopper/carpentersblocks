@@ -66,14 +66,13 @@ public class BlockCoverable extends BlockContainer {
     public void registerIcons(IconRegister iconRegister) { }
 
     @SideOnly(Side.CLIENT)
-    public
     /**
      * Returns a base icon that doesn't rely on blockIcon, which
      * is set prior to texture stitch events.
      *
      * @return default icon
      */
-    Icon getIcon()
+    public Icon getIcon()
     {
         return IconRegistry.icon_uncovered_solid;
     }
