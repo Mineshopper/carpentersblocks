@@ -5,10 +5,9 @@
     <meta charset='utf-8' />
     <meta http-equiv="X-UA-Compatible" content="chrome=1" />
     <meta name="description" content="Carpentersblocks : A Minecraft mod." />
-
     <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
-
-    <title>Carpentersblocks</title>
+    <script src="javascripts/jquery-2.1.1.min.js"></script>
+    <title>Carpenter's Blocks</title>
   </head>
 
   <body>
@@ -16,15 +15,12 @@
     <!-- HEADER -->
     <div id="header_wrap" class="outer">
         <header class="inner">
-          <a id="forkme_banner" href="https://github.com/Mineshopper/carpentersblocks">View on GitHub</a>
+          <a id="forkme_banner" href="https://github.com/Mineshopper/carpentersblocks" target="_blank">View on GitHub</a>
 
-          <h1 id="project_title">Carpentersblocks</h1>
-          <h2 id="project_tagline">A Minecraft mod.</h2>
+          <h1 id="project_title">Carpenter's Blocks</h1>
+          <h2 id="project_tagline">Customize your Minecraft world.</h2>
 
-            <section id="downloads">
-              <a class="zip_download_link" href="https://github.com/Mineshopper/carpentersblocks/zipball/master">Download this project as a .zip file</a>
-              <a class="tar_download_link" href="https://github.com/Mineshopper/carpentersblocks/tarball/master">Download this project as a tar.gz file</a>
-            </section>
+         <section id="cbimage"></section>
         </header>
     </div>
 
@@ -32,58 +28,1290 @@
     <div id="main_content_wrap" class="outer">
       <section id="main_content" class="inner">
         <h3>
-<a name="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages"><span class="octicon octicon-link"></span></a>Welcome to GitHub Pages.</h3>
+<a name="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages"><span class="octicon octicon-link"></span></a>Description</h3>
 
-<p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
+<p>This mod adds slopes and a custom variety of vanilla-inspired blocks to Minecraft. The custom nature of these blocks allows players to cover them using most solid blocks in the game. Once covered, they look and act just like the block they're mimicking, but in entirely new shapes! For example, make some obsidian stairs that are resistant to explosions. Or, make glowstone take the shape of a pyramid top. With Carpenter's Blocks, building takes on new possibilities!</p>
 
-<pre><code>$ cd your_repo_root/repo_name
-$ git fetch origin
-$ git checkout gh-pages
-</code></pre>
+<h3><a name="designer-templates" class="anchor" href="#designer-templates"><span class="octicon octicon-link"></span></a>Downloads</h3>
 
-<p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
+<div id="download-container">
+   <div id="development-header" class="text-shadow">
+      Development (for privileged <a href="http://www.patreon.com/mineshopper" class="patron text-shadow" target="_blank">Patrons</a> only)
+   </div>
+   <div id="download-content">   
+      <span id="label-warn">!</span><span style="font-style: italic;">There are currently no development builds.</span>
+   </div>
+</div>
 
-<h3>
-<a name="designer-templates" class="anchor" href="#designer-templates"><span class="octicon octicon-link"></span></a>Designer Templates</h3>
+<div id="download-container">
+   <div id="stable-header" class="text-shadow">
+      Stable (Recommended)
+   </div>
+   <div id="download-content">
+      <span id="label">1.7.10</span><a href="">Carpenter's Blocks 3.2.5</a> <div class="expand">View Changelog</div>
+      <div class="hidden">
+         <ul>
+            <li>This is changelog stuff</li>
+            <li>This is changelog stuff</li>
+         </ul>
+      </div>
+      <span id="label">1.7.2</span>Carpenter's Blocks 3.2.5<br>
+      <span id="label">1.6.4</span>Carpenter's Blocks 3.2.5<br>
+      <span id="label">1.5.2</span>Carpenter's Blocks 1.9.9
+   </div>
+</div>
 
-<p>We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.</p>
+<div id="download-container">
+   <div id="legacy-header" class="text-shadow">
+      Legacy
+   </div>
+   <div id="download-content">
+      Legacy versions can be found by browsing the <a href="http://adf.ly/dMfV4" target="_blank">root download folder</a>.<br>
+      <div class="expand">View Complete Changelog (it's large)</div>
+      <div class="hidden">
+         
+         <ul id="changelog">
+            <span id="label">3.2.0 06/22/2014</span>
+            <li>Design system refactored; existing chisel patterns and designs excluding Tiles will be wiped from blocks.</li>
+            <li>Resource cache is now created at runtime and stored in mods folder under "/<MCVersion>/carpentersblocks".</li>
+            <li>Bed designs now have simplified template, and no longer require expensive rendering techniques.</li>
+            <li>Collapsible block rendering modified to allow seamless connections. [elpocko]</li>
+            <li>Collapsible block auto-sloping is now more aware of surroundings. [elpocko]</li>
+            <li>Proper ambient occlusion support added for Collapsible block.</li>
+            <li>Fixed bed frame dye and grass coloring issues.</li>
+            <li>Migration support added for moving 1.6.4 worlds to 1.7.2. (See new section below for instructions)</li>
+         </ul>
+         
+         <ul id="changelog">
+            <span id="label">3.1.6 06/13/2014</span>
+            <li>Fixed dye crash introduced in Forge build 1113.  Must use build 1118 to get correct dye coloration.</li>
+            <li>Removed tile entity restriction for covers (some blocks may look unusual as covers).</li>
+            <li>Added config option to add cover exceptions with Thaumcraft planks added by default.</li>
+            <li>Fixed block sounds playing incorrectly, and sound-related errors in console.</li>
+            <li>Cleaned up configuration and made custom overlay items easier to add.</li>
+            <li>NOTE: I advise deleting your existing config and starting fresh.</li>
+         </ul>
 
-<h3>
-<a name="rather-drive-stick" class="anchor" href="#rather-drive-stick"><span class="octicon octicon-link"></span></a>Rather Drive Stick?</h3>
+         <ul id="changelog">
+            <span id="label">3.1.5 05/31/2014</span>
+            <li>Fixed a bug causing some covers to crash when removed from block.</li>
+            <li>Tweaked a lot of code to help prevent door crashes, render crashes, and more.</li>
+            <li>Refactored here and there.</li>
+         </ul>
 
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
+         <ul id="changelog">
+            <span id="label">3.1.4 04/25/2014</span>
+            <li>Added protection against MoC-related crashes.</li>
+            <li>Fixed door and bed permission problems in survival.</li>
+            <li>Fixed safe inventory rendering bug.</li>
+            <li>Further tweaks to sneak right-click behavior.</li>
+         </ul>
 
-<h3>
-<a name="authors-and-contributors" class="anchor" href="#authors-and-contributors"><span class="octicon octicon-link"></span></a>Authors and Contributors</h3>
+         <ul id="changelog">
+            <span id="label">3.1.3 04/23/2014</span>
+            <li>Fixed vine and mycelium overlays not working.</li>
+            <li>Cover block sounds reimplemented (Forge build 1060 now required).</li>
+            <li>Door and bed permissions issues resolved.</li>
+            <li>Cover restrictions adjusted to only accept full blocks (no panes or slabs).</li>
+            <li>Tool-block interaction sounds improved.</li>
+            <li>Wrinkles in sneak right-click system ironed out.</li>
+            <li>Fix hammer and chisel damaging blocks.</li>
+            <li>Tile no longer ejects with hammer if clicked by non-owners.</li>
+         </ul>
 
-<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
+         <ul id="changelog">
+            <span id="label">3.1.2 04/10/2014</span>
+            <li>Added some missing protection against crashes when removing blocks.</li>
+            <li>Block texture loading refactored; should hopefully eliminate invisible blocks.</li>
+            <li>Tiles can now only be dyed if the player is sneaking (like blocks).</li>
+            <li>Tiles no longer play dye sound if not changing color attribute.</li>
+         </ul>
 
-<h3>
-<a name="support-or-contact" class="anchor" href="#support-or-contact"><span class="octicon octicon-link"></span></a>Support or Contact</h3>
+         <ul id="changelog">
+            <span id="label">3.1.1 04/08/2014</span>
+            <li>Fixed dye crash.</li>
+         </ul>
 
-<p>Having trouble with Pages? Check out the documentation at <a href="http://help.github.com/pages">http://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
-      </section>
+         <ul id="changelog">
+            <span id="label">3.1.0 04/04/2014</span>
+            <li>Added Carpenters Tile (inspired by Kaevators Wallpaper Mod).</li>
+            <li>Kaevator wallpaper textures made available as add-on pack.</li>
+            <li>Fixed pick block on bed returning vanilla bed.</li>
+            <li>Removed MCPatcher compatibility, as it appears to no longer be needed.</li>
+         </ul>
+
+         <ul id="changelog">
+            <span id="label">3.0.4 03/27/2014</span>
+            <li>Fixed a dupe bug.</li>
+         </ul>
+
+         <ul id="changelog">
+            <span id="label">3.0.3 03/25/2014</span>
+            <li>Fixed rendering problems when using Optifine.</li>
+            <li>Player now must be sneaking to apply overlays and dyes.</li>
+            <li>Fixed chisel patterns above 127 crashing client.</li>
+            <li>Fixed dark glass insets on doors and hatches (for good).</li>
+            <li>Fixed stairs and slopes improperly rotating or switching types when using hammer.</li>
+            <li>Fixed chisel patterns rendering green on top.</li>
+         </ul>
+
+         <ul id="changelog">
+            <span id="label">3.0.2 03/22/2014</span>
+            <li>Fixed server crash when producing block particles.</li>
+            <li>Fixed block slipperiness bug.</li>
+            <li>Cleaned up overlay code.</li>
+         </ul>
+
+         <ul id="changelog">
+            <span id="label">3.0.1 03/22/2014</span>
+            <li>Fixed pressure plate activation problems.</li>
+         </ul>
+
+         <ul id="changelog">
+            <span id="label">3.0.0 03/22/2014</span>
+            <li>First release for MC 1.7.2, significant changes made (no backwards compatibility).</li>
+            <li>Block dye system now uses OreDictionary, should support mod dyes.</li>
+            <li>Both vanilla mushrooms can now be used for mycelium overlay.</li>
+            <li>Flower pot support added for all new vanilla plants, sunflower can face any direction.</li>
+            <li>Flower pot biome-coloring override is now enforced by using bonemeal on plant.</li>
+            <li>Alpha pass rendering is disabled for the time being.</li>
+            <li>Cover sounds are disabled for the time being.</li>
+            <li>Overlay items can now be specified in the config file.</li>
+         </ul>
+
+         <ul id="changelog">
+            <span id="label">2.1.2 06/22/2014</span>
+            <li>Now properly converts slopes and stairs when migrating to 1.7.2.</li>
+         </ul>
+
+         <ul id="changelog">
+            <span id="label">2.1.1 06/21/2014</span>
+            <li>Added migration code to assist in converting 1.6.4 worlds to 1.7.2.</li>
+         </ul>
+
+         <ul id="changelog">
+            <span id="label">2.1.0 05/21/2014</span>
+            <li>Added config option to allow blocks with tile entities as covers.</li>
+         </ul>
+
+         <ul id="changelog">
+            <span id="label">2.0.9 05/20/2014</span>
+            <li>Fixed MoC-related crashes.</li>
+         </ul>
+
+         <ul id="changelog">
+            <span id="label">2.0.8 03/21/2014</span>
+            <li>Fixed visual anomalies when changing block properties.</li>
+         </ul>
+
+         <ul id="changelog">
+            <span id="label">2.0.7 03/19/2014</span>
+            <li>Attempt to fix BoP crash issue and food + block interaction issues.</li>
+         </ul>
+
+         <ul id="changelog">
+            <span id="label">2.0.6 03/14/2014</span>
+            <li>[PATCH 3/15] Fixed adventure mode preventing block left-click actions.</li>
+            <li>Fixed slope brightness problems.</li>
+            <li>Fixed oblique slope uncovered face textures not connecting.</li>
+            <li>Fixed faces sometimes rendering when they should not.</li>
+         </ul>
+
+         <ul id="changelog">
+            <span id="label">2.0.5 03/12/2014</span>
+            <li>Fixed BoP-related block right-click crashes.</li>
+            <li>Fixed slopes becoming unusually dark and/or lighting strangely.</li>
+            <li>Fixed possible ItemStack crash with slopes.</li>
+            <li>Safe will no longer be destroyed by explosions.</li>
+            <li>Fixed chisel patterns not rendering on a few blocks.</li>
+         </ul>
+
+         <ul id="changelog">
+            <span id="label">2.0.4 02/27/2014</span>
+            <li>Corrected flower pot not dropping when it should.</li>
+            <li>Corrected weird click behaviors, including double messages.</li>
+            <li>Fixed some more crashes when neighbor blocks change their light properties.</li>
+         </ul>
+
+         <ul id="changelog">
+            <span id="label">2.0.3 02/21/2014</span>
+            <li>Removed some vanilla ambient occlusion lighting code to fix lighting anomalies.</li>
+            <li>Added dynamic partial depth ambient occlusion (defaulted with smooth lighting).</li>
+            <li>Added BlockRotatedPillar as rotatable block (hay bale, and maybe others).</li>
+            <li>Removed opaque cover requirement for chiseling blocks.</li>
+            <li>Slope recipe altered.</li>
+            <li>Barrier recipe altered.</li>
+            <li>Slope selection is now possible when slope is held; hold sneak and use scroll wheel.</li>
+            <li>Prism slopes now automatically connect to each other.</li>
+            <li>Pyramid slope renamed to prism slope; is now base prism form.</li>
+            <li>Fixed flower pot placement crashes.</li>
+            <li>Fixed bug causing Ars Magica 2 ores to drop incorrect blocks.</li>
+            <li>Cleaned up and tweaked slope and stair placement code.</li>
+            <li>Fixed possible getLightValue crash.</li>
+            <li>Fixed possible Carpenters Block client-side crash.</li>
+         </ul>
+
+         <ul id="changelog">
+            <span id="label">2.0.2 01/31/2014</span>
+            <li>Fixed ladder placement related crashes.</li>
+            <li>Fixed tile entity update conditions throwing warnings in log.</li>
+            <li>Fixed daylight sensor inventory rendering sometimes crashing client.</li>
+            <li>Added location-sensitive light opacity to full Carpenters Blocks, should hopefully prevent lightning from striking through blocks.</li>
+         </ul>
+
+         <ul id="changelog">
+            <span id="label">2.0.1 01/30/2014</span>
+            <li>Fixed gate crash.</li>
+         </ul>
+
+         <ul id="changelog">
+            <span id="label">2.0.0 01/26/2014</span>
+            <li>Cleaned up and fixed smooth lighting being wrong or incomplete for top and bottom faces.</li>
+            <li>Cleaned up smooth brightness on collapsible top face.</li>
+            <li>Cleaned up slope lighting issues from recent changes.</li>
+            <li>Block break speed now takes into account item strength versus the cover block.</li>
+            <li>Safe will no longer visually begin cracking if being destroyed by player that does not have edit permission.</li>
+            <li>Darkness with block breaking texture brightness on slopes and collapsible block corrected.</li>
+            <li>Adjusted default block IDs to be FTB-friendly.</li>
+            <li>Torch can now be crafted with charcoal.</li>
+            <li>Torch will no longer extinguish in dry biomes.</li>
+            <li>Possible fix for getEnableAO() crash.</li>
+            <li>Door and bed (multiblock) placement should no longer cause crashes under any circumstances.</li>
+            <li>Icon-related inventory rendering crashes should no longer occur.</li>
+            <li>Revised general edit permissions.</li>
+            <li>Revised Safe edit permissions.</li>
+            <li>Safe render updates should now only occur once per second, at most.</li>
+            <li>Cover rotation data now resets before block ejection.</li>
+            <li>Oblique sloped faces now have aligned textures. Uncovered texture unified.</li>
+            <li>Refactored and bug-fixed texture rotation code.</li>
+            <li>Fixed bug where pointing at block prevents food right-click behavior.</li>
+            <li>Fixed various rendering problems when z-fighting fix is enabled.</li>
+            <li>Fixed players in adventure mode being unable to activate blocks.</li>
+            <li>Fixed collision boxes for North and West facing wedge roof prisms.</li>
+            <li>Fixed safe rotation discrepancy in code; rotate your existing safes with hammer left-click.</li>
+            <li>Base blocks now inherit slipperiness from covers.</li>
+         </ul>
+
+         <ul id="changelog">
+            <span id="label">1.9.9 01/01/2014</span>
+            <li>[PATCH] Uncovered blocks can now catch fire.</li>
+            <li>[PATCH] Bed designs can now be cleared with hammer sneak right-click.</li>
+            <li>[HOTFIX] Corrected flower pot plant rendering for a couple Biomes O Plenty plants.</li>
+            <li>[HOTFIX] Fixed flower pot not decrementing itemstack when plant is placed.</li>
+            <li>Added Carpenters Flower Pot (formerly Painters Flower Pot).</li>
+            <li>Flower pot components can now be altered independently.</li>
+            <li>You can now add your own flower pot designs.</li>
+            <li>Dye colors now use RGB from vanilla dyes.</li>
+            <li>Side covers now do depth checks before popping off.</li>
+            <li>Collapsible block given proper shading and slope creation.</li>
+            <li>Collapsible block hammer behavior improved. Left-click raises corner, right-click lowers corner.</li>
+            <li>Fixed possible crashes in the way block solidity checks are performed.</li>
+            <li>Added hammer right-click sensitivity setting to daylight sensor.</li>
+         </ul>
+
+         <ul id="changelog">
+            <span id="label">1.9.8 12/21/2013</span>
+            <li>Slope rendering and lighting overhauled, again.</li>
+            <li>Added 5 more slope types with 19 new pieces.</li>
+            <li>Tool stack size set to 1.</li>
+            <li>Fixed MC 1.5+ version being broken on server, and not playing some sounds client-side.</li>
+            <li>Cover blocks that have icon issues will now use missing icon texture.</li>
+            <li>Configuration file has a new setting to correct MCPatcher texture problems.</li>
+            <li>Slope raytracing no longer broken by setting block bounds (breaks all the time).</li>
+            <li>Fixed sprint particle handling causing massive lag spikes.</li>
+            <li>Cover particles now side- and overlay-sensitive.</li>
+            <li>Fixed torches not being placable on certain blocks.</li>
+            <li>Fixed collapsible block top face solidity check not working.</li>
+         </ul>
+
+         <ul id="changelog">
+            <span id="label">1.9.7 12/10/2013</span>
+            <li>[PATCH] Added new language files and fixed gray vine overlays.</li>
+            <li>[HOTFIX] Fixed safe automation bugs.</li>
+            <li>[HOTFIX] Added null protection to sound event handler.</li>
+            <li>Added config option to disable hammer in case a different hammer is enforced through API.</li>
+            <li>Daylight Sensor now has a unique look and recipe.</li>
+            <li>Fixed side covers not using correct texture on stairs (v1.9.6 bug).</li>
+            <li>Added Carpenters Safe.</li>
+            <li>Added block ownership config setting (set to true by default).</li>
+            <li>Fixed long-standing chat message bugs.</li>
+            <li>Moved all block click methods server-side to improve accuracy.</li>
+            <li>Cover sounds now mostly working.</li>
+            <li>Inventory rendering changes to hatch.</li>
+            <li>Fixed configuration comments not being created.</li>
+            <li>Added missing Carpenters Block disabling code.</li>
+            <li>Bed special rendering checks separated from the other blocks, may improve performance.</li>
+            <li>Fixed torch sides sometimes being very dark.</li>
+         </ul>
+
+         <ul id="changelog">
+            <span id="label">1.9.6 12/07/2013</span>
+            <li>Added torch config option to disable weather effects (enforced server-side only).</li>
+            <li>Corrected door (and possibly bed) blocks from appearing in mods like NEI. [Tarig]</li>
+            <li>Hidden hatch dimensions reduced and can now be climbed when opening downward.</li>
+            <li>Torch recipe quantity reduced to 4 torches.</li>
+            <li>Corrected incorrect torch side lighting.</li>
+            <li>Corrected incorrect lever side lighting.</li>
+            <li>Directional blocks (logs, pumpkins, quartz) now set direction based on player facing.</li>
+            <li>Sprinting particle and sound support added for covers. [Eurymachus, Tarig]</li>
+            <li>Some cover sound code added for block interaction with tools.</li>
+            <li>Added simple API for adding your own hammer or chisel. [LordMau5]</li>
+            <li>Rendering code decoupled, a lot.</li>
+            <li>Added code to prevent most of the NPEs reported.</li>
+            <li>Fixed slopes and stairs not auto-cornering in 75% of cases.</li>
+         </ul>
+
+         <ul id="changelog">
+            <span id="label">1.9.5 11/10/2013</span>
+            <li>Added Carpenters Torch.</li>
+            <li>[HOTFIX] Corrected crash when clicking door without item in hand.</li>
+            <li>[HOTFIX] Fixed some torch particles not showing up.</li>
+         </ul>
+
+         <ul id="changelog">
+            <span id="label">1.9.4 11/08/2013</span>
+            <li>Added chance to damage Hammer for Collapsible Block.</li>
+            <li>Fixed abnormal pressure plate behavior and cleaned up code.</li>
+            <li>Button code refactored, some bugs fixed.</li>
+            <li>Lever code refactored, some bugs fixed.</li>
+            <li>Fixed textures not rotating (bugged in v1.9.2).</li>
+         </ul>
+
+         <ul id="changelog">
+            <span id="label">1.9.3 10/25/2013</span>
+            <li>Added Collapsible Block.</li>
+            <li>Improved bounding box for pyramid slopes.</li>
+            <li>Fixed directional blocks facing opposite of side clicked.</li>
+         </ul>
+
+         <ul id="changelog">
+            <span id="label">1.92 10/20/2013</span>
+            <li>Interactions with covered blocks no longer risks throwing crash.</li>
+            <li>Corrected miscellaneous crashes.</li>
+            <li>Beds and ladders decoupled from metadata - further reduces likelihood of crashes.</li>
+            <li>Block cover hit particles added.</li>
+         </ul>
+
+         <ul id="changelog">
+            <span id="label">1.91 09/28/2013</span>
+            <li>[HOTFIX] Fixed array out of bounds crash.</li>
+            <li>All blocks and most slopes now support directional metadata.</li>
+            <li>Side cover directional blocks determine direction based on player pitch and yaw.</li>
+            <li>Improved side click detection for sloped faces (thanks Tarig).</li>
+         </ul>
+
+         <ul id="changelog">
+            <span id="label"></span>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+         </ul>
+
+>> Version 1.9 Changelog
+
+09/24/2013
+- Slopes code, rendering and lighting system rewritten.
+- Side render checking improved across the board.
+- Stairs code rewritten.
+- Fixed hay side overlay not adjusting height with block.
+- Interior oblique slopes now use a mix of other slope hitboxes to closely match shape.
+- Removed pointless cover collision detection, was culprit of some crashes.
+
+         <ul id="changelog">
+            <span id="label"></span>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+         </ul>
+
+>> Version 1.87 Changelog
+
+09/17/2013
+- Fixed hammer messages not appearing when left clicking.
+- Fixed long unnoticed slope hitbox ray tracing bug.
+- Updated zh_CN.lang.
+- Added ru_RU.lang localization.
+
+         <ul id="changelog">
+            <span id="label"></span>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+         </ul>
+
+>> Version 1.86 Changelog
+
+09/13/2013
+- Blocks now correctly output redstone signal according to cover properties.
+- Added Carpenters Ladder.
+- Fixed chisel left click cycling pattern twice.
+- [HOTFIX] Fixed Carpenters Hammer left click server-side code mishap.
+- [HOTFIX] Updated de_DE.lang localization.
+
+         <ul id="changelog">
+            <span id="label"></span>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+         </ul>
+
+>> Version 1.85 Changelog
+
+09/11/2013
+- Corrected high tick latency caused by ineffectual update code (thanks bstramke and demon012).
+- Minor adjustments here and there.
+- [PRIOR HOTFIX] Fixed bed designs being broken in MC 1.6+.
+- [PRIOR HOTFIX] Fixed overly aggressive fail-safe code in a couple handlers (Plants, Optifine).
+
+         <ul id="changelog">
+            <span id="label"></span>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+         </ul>
+
+>> Version 1.84 Changelog
+
+09/08/2013
+- Tweaked barrier post generation some more to correct some missing posts.
+- Minor bug fixes, optimizations, code clean-up.
+- Added language support.
+- Added de_DE localization.
+- Added block placement sound for Carpenters Bed and Door.
+- Fixed corner slopes forming obliques when they should form regular corners.
+- Fixed some z-fighting on beds.
+- Newly placed doors now copy rigidity of neighboring, connected doors.
+
+         <ul id="changelog">
+            <span id="label"></span>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+         </ul>
+
+>> Version 1.83 Changelog
+
+08/30/2013
+- Fixed casting crash fix causing blanket on bed to not raise in some cases.
+- Improved rendering code to better handle offset face AO lighting.
+- Replaced sticks in chisel and hammer recipes with Carpenters Blocks to eliminate conflicts.
+- Vanilla icon rotation code rewritten to correct texture alignment bugs (a better implementation).
+- Carpenters Bed switched to fast lighting like vanilla bed to stop ugly shading.
+- Customization added for Carpenters Bed - use the hammer. Add your own designs!
+- Cleaned up chisel pattern handling code and corrected a bug when cycling through patterns.
+- Corrected NPE when placing wrath lamps near block, I think.
+
+         <ul id="changelog">
+            <span id="label"></span>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+         </ul>
+
+>> Version 1.82 Changelog
+
+08/25/2013
+- Added Carpenters Bed with dyeable blanket.
+- Fixed barrier above another barrier creating post on bottom barrier.
+
+         <ul id="changelog">
+            <span id="label"></span>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+         </ul>
+
+>> Version 1.81 Changelog
+
+08/22/2013
+- Carpenters Door and Lever given their own icons.
+- Fixed z-FightingFix config option causing glass and screen in doors/hatches to render twice.
+- Fixed blocks throwing crash when destroyed with a tool.
+- Fixed plants being plantable on non-solid surfaces.
+- [HOTFIX] Cleaned up and fixed some bugs in barrier post generation code.
+
+         <ul id="changelog">
+            <span id="label"></span>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+         </ul>
+
+>> Version 1.8 Changelog
+
+08/21/2013
+- Applying covers now plays accompanying block placement sound.
+- Most plants should now be plantable on Carpenters Blocks (still no mushrooms, though).
+- Side covers are now unique - can be customized independent from base block.
+- Dye colors no longer alter color on patterns or overlays.
+- Top covers no longer use height adjustment to conceal pressure plates (just cover both the same).
+- Carpenters Doors and Hatches now have configurable redstone behavior (sneak right click with hammer).
+- Optimized, bug-fixed and cleaned up door code.
+- Chisel left/right click now cycles forwards or backwards through patterns. Sneak left click with chisel clears pattern.
+- Shifted code execution for covers, overlays, dye colors and patterns between client and server to resolve problematic behavior.
+- Converted console output to FML logging system.
+- Fixed hatch handles inadvertently using custom renderer.
+- Grass blocks used as covers now pre-render grass overlays to correct rendering conflicts with other overlays.
+- Hammer behavior altered when interacting with gates and fences. Test it out, and try sneak-right-click.
+- Vanilla gate and barrier type with thickest plank sub-type now render a single plank instead of many smaller ones.
+- Forcing a fence post on barriers now prevents connections to solid faces.
+- Fixed a bug in side render checks causing invisible sides.
+- Fixed bug causing side covers on slopes to sometimes have invisible sides.
+- Fixed barriers making non-valid connections to neighboring blocks.
+
+         <ul id="changelog">
+            <span id="label"></span>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+         </ul>
+
+>> Version 1.77 Changelog
+
+08/10/2013
+- Reverted some code for Carpenters Hatch to prevent unintended state changes.
+- Corrected covers, overlays and patterns covering the top of Carpenters Daylight Sensor.
+- Corrected slope sides not rendering when they should.
+- Solid sides of slopes now support side covers (sloped and partial faces are never considered solid).
+- Miscellaneous code clean-up.
+
+         <ul id="changelog">
+            <span id="label"></span>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+         </ul>
+
+>> Version 1.76 Changelog
+
+08/07/2013
+- Overlays now will always render on both passes to resolve layering problems.
+- Added support for up to 256 custom chisel patterns (look at README in pattern image folder).
+- Added optional z-fighting fix for chiseled patterns in config file.
+- Side render checking system cleaned up and working 100%, I think.
+- Miscellaneous code clean-up.
+
+         <ul id="changelog">
+            <span id="label"></span>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+         </ul>
+
+>> Version 1.75 Changelog
+
+08/05/2013
+- Corrected item IDs being shifted from settings in config file.
+- Tweaked side render checks to handle matching non-opaque covers.
+- Tweaked cover checks to allow more blocks as covers.
+- Overlays no longer render on unrendered sides.
+- Patterns can now only be applied to opaque, covered blocks.
+
+         <ul id="changelog">
+            <span id="label"></span>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+         </ul>
+
+>> Version 1.74 Changelog
+
+08/02/2013
+- Pressure plates now use their reduced collision area for activation.
+- Fixed unexpected behavior when double doors were placed in a row.
+- Double doors now behave like a single entity regarding activation sound and redstone state change.
+- If any part of a door or double door set is iron material, it will now require redstone current for activation.
+
+         <ul id="changelog">
+            <span id="label"></span>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+         </ul>
+
+>> Version 1.73 Changelog
+
+07/31/2013
+- Carpenters Doors covered with iron material now require redstone activation.
+- Added max smooth lighting support for top and bottom block faces.
+- Fixed some box overlap in french doors.
+- Ambient occlusion support added for all doors and hatches.
+
+         <ul id="changelog">
+            <span id="label"></span>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+         </ul>
+
+>> Version 1.72 Changelog
+
+07/30/2013
+- [PRIOR HOTFIX] Corrected serverside crash.
+- Added Carpenters Door with six door types.
+- Added four new matching hatch types.
+- Made half slabs a valid cover once again.
+- Made hatches always placeable against Carpenters Block.
+- Chiseled patterns will now continue patterns from any neighboring Carpenters block.
+
+         <ul id="changelog">
+            <span id="label"></span>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+         </ul>
+
+>> Version 1.71 Changelog
+
+07/27/2013
+- [PRIOR HOTFIX] Dyed blocks now eject the dye when breaking blocks.
+- Fixed Carpenters Block auto-orientation sneak override missing.
+- Block restriction config option removed - using a better default checking system.
+- Fixed bugs that caused block and side covers to potentially render in incorrect pass.
+- Added configuration option to disable tool damage.
+- Rewrote icon handling to fix 3D switching and related texture bugs.
+- Fixed solid block side render checks not working.
+- Made buttons, levers and pressure plates silent if covered with cloth.
+
+         <ul id="changelog">
+            <span id="label"></span>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+         </ul>
+
+>> Version 1.7 Changelog
+
+07/22/2013
+- Added Carpenters Chisel - used to carve patterns into Carpenters Blocks.
+- Added mycelium overlay using a brown mushroom; however, cannot plant mushrooms on overlay (no control over this).
+- Fixed bug in auto-cornering code for slopes and stairs.
+- Added config option to loosen cover block restrictions - enabled by default.
+- Wall gates and barriers will now extend to solid faces above them.
+- Overlays now render during alpha pass to enable shading support.
+- Configuration options added to control rendering overlays, patterns and dye colors on side covers.
+- Textures tweaked.
+- Block no longer needs to be covered to support plants - it only needs a grass overlay (thought I already did this...).
+- Carpenters Hammer and Carpenters Chisel have 200 uses each, and are repairable.
+- Top side cover depth adjusted slightly to eliminate z-fighting with pressures plates.
+- Fancy fluids tweaked to correct fluid heights - TE restriction for fluids also put in place.
+- Fixed Carpenters Hatch incorrectly determining solid sides of blocks.
+- Fixed Carpenters Daylight Sensor collision bug.
+
+         <ul id="changelog">
+            <span id="label"></span>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+         </ul>
+
+>> Version 1.64 Changelog
+
+07/20/2013
+- Sorted out Forge liquid dependency issues for MC 1.5+.
+- Fixed block breaking animation being bugged for most blocks.
+- Improved fluid side detection, and restricted Fancy Fluids to fancy graphics only.
+- Fixed lighting anomalies with fancy fluids.
+- Carpenters Block and Carpenters Stairs given more in-depth side render checks.
+
+         <ul id="changelog">
+            <span id="label"></span>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+         </ul>
+
+>> Version 1.63 Changelog
+
+07/18/2013
+- [PRIOR HOTFIX] Side cover application moved server-side to prevent dupe bug.
+- [PRIOR HOTFIX] Recipes made ore dictionary compatible.
+- Block covers will now render separately in their respective render passes.
+- Fancy fluids support added. Will only look correct if adjacent fluids are still (non-flowing).
+- Fixed posts randomly generating while standing by a barrier.
+- Barrier rendering code cleaned up and optimized.
+
+         <ul id="changelog">
+            <span id="label"></span>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+         </ul>
+
+>> Version 1.62 Changelog
+
+07/15/2013
+- Fixed Carpenters Hatch throwing casting errors on placement.
+- Altered slope recipe and quantity.
+- Removed Carpenters Block recipe that used all sticks.
+- Added adjustable recipe quantities in config file.
+- Connecting redstone wire fix on Carpenters Block reverted. Fixes lighting issue with slabs.
+- Fixed old bug affecting grass covers and coloration in fast lighting.
+
+         <ul id="changelog">
+            <span id="label"></span>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+         </ul>
+
+>> Version 1.61 Changelog
+
+07/14/2013
+- Side covers now output their full light level.
+- Fixed collision glitches with Carpenters Block when formed into vertical slabs.
+- Cleaned up some unnecessary code.
+- Fixed block not updating lighting when ejecting covers and side covers.
+
+         <ul id="changelog">
+            <span id="label"></span>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+         </ul>
+
+>> Version 1.6 Changelog
+
+07/13/2013
+- Side covers added - full support on Carpenters Block and Stairs.
+- Redstone now properly propagates through a full Carpenters Block.
+- Redstone wires now connect properly on and around a full Carpenters Block.
+- Added ability to dye and retrieve dye powders back from Carpenters Blocks.
+- Right-click behavior on activatable blocks fixed 100%... I think.
+- TE data extended, will automatically convert old data for you.
+- Reverted fix for Railcraft-related casting crashes - was preventing blocks from ejecting on breakBlock.
+- Added alternate recipe for Carpenters Block and adjusted quantities.
+- Added Carpenters Hatch.
+- Fixed bug where stairs would sometimes become invalid when cycling through types with the hammer.
+- Z-fighting fix once again reverted. Will return eventually.
+- More configuration options added to config file.
+- Minor texture tweaks.
+
+         <ul id="changelog">
+            <span id="label"></span>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+         </ul>
+
+>> Version 1.53 Changelog
+
+07/04/2013
+- Fixed Carpenters Block collision issues.
+- Made Carpenters Daylight Sensor top texture use vanilla texture when uncovered.
+
+         <ul id="changelog">
+            <span id="label"></span>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+         </ul>
+
+>> Version 1.52 Changelog
+
+07/02/2013
+- Added Carpenters Daylight Sensor block with adjustable polarity.
+- Fixed item rendering appearance of buttons and pressure plates.
+- Reorganized block initialization in config file to prevent self-blockID-conflicts with old configs.
+- Altered many of the recipes and quantities.
+- [HOTFIXED 7/03] Corrected some slope and stairs auto-transformation bugs.
+
+         <ul id="changelog">
+            <span id="label"></span>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+         </ul>
+
+>> Version 1.51 Changelog
+
+07/02/2013
+- Pressure plates, levers and buttons now properly update neighboring blocks when changing polarity.
+- Pressure plates no longer cycle on/off when entity remains on block.
+
+         <ul id="changelog">
+            <span id="label"></span>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+         </ul>
+
+>> Version 1.5 Changelog
+
+07/01/2013
+- Added adjustable vanilla gate planks.
+- Added picket fence gate.
+- Added vertical plank fence gate.
+- Added wall gate.
+- Added Carpenters Lever with adjustable polarity.
+- Added Carpenters Button with adjustable polarity.
+- Added Carpenters Pressure Plate with adjustable polarity and trigger type.
+- Fix for z-fighting tweaked and reimplemented, but still not 100%.
+- Config file reorganized and cleaned up.
+- Added hay overlay (vanilla MC 1.6 top texture included for MC 1.5 version).
+- Barrier posts now only form at corners and intersections. Right click with hammer to force a post.
+
+         <ul id="changelog">
+            <span id="label"></span>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+         </ul>
+
+>> Version 1.44 Changelog
+
+06/22/2013
+- Fixed broken stair transformation code.
+
+         <ul id="changelog">
+            <span id="label"></span>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+         </ul>
+
+>> Version 1.43 Changelog
+
+06/21/2013
+- Added side-facing stairs (existing stairs will likely change).
+- Fixed overlays and covers not ejecting from destroyed blocks under some circumstances.
+- Improved ambient occlusion lighting for slopes.
+- Reverted z-fighting fix, for now - was not working 100%.
+- Fixed adjoining slope sides not rendering under certain circumstances.
+
+         <ul id="changelog">
+            <span id="label"></span>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+         </ul>
+
+>> Version 1.42 Changelog
+
+06/18/2013
+- Fixed some more TE related crashes.
+- Fixed gate incorrectly activating under certain conditions.
+
+         <ul id="changelog">
+            <span id="label"></span>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+         </ul>
+
+>> Version 1.41 Changelog
+
+06/17/2013
+- Fixed collision bug with Carpenters Block in full and slab forms.
+- Fixed sloped sides using wrong texture.
+- Removed some forgotten debug messages.
+- Fixed reported casting crashes.
+- Ejected overlays and covers tweaked to work more like Jukebox when ejecting records.
+
+         <ul id="changelog">
+            <span id="label"></span>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+         </ul>
+
+>> Version 1.4 Changelog
+
+06/13/2013
+- Grass sides now render on all block pieces, regardless of block size or max height.
+- Stairs rewritten; will auto-corner and retain shape in the same manner as slopes.
+- Overlays added. Cover any Carpenters Block with snow, grass, web, or vine.
+- Fixed vanilla lighting bug for this mods blocks.
+- Fixed vanilla texture offset/rotation bug for this mods blocks.
+- Fixed casting crash and right click crash with gates.
+- Rendering code cleaned up and optimized.
+- Z-fighting fixed for all blocks.
+- Added Carpenters Block (can be clicked with hammer to form slab).
+- Blocks now inherit power output of cover block.
+- Picket fence now extends to connect with solid block above.
+- Gate right click behavior improved.
+- Blocks support plants if soil cover can sustain them. Grass overlays are treated as grass.
+
+         <ul id="changelog">
+            <span id="label"></span>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+         </ul>
+
+>> Version 1.3 Changelog
+
+06/05/2013
+- Mod name changed to Carpenters Blocks.
+- All parts of mod made modular, cleaned up, and made more robust.
+- Missing covers will no longer crash client; instead will discard cover data.
+- Blocks now inherit cover explosion resistance, and other miscellaneous properties I ran across.
+- Carpenters Stairs added.
+- Carpenters Barrier added (fence, wall, etc).
+- Carpenters Gate added.
+- Added picket fence.
+- Added vertical plank fence.
+- Added adjustable vanilla fence planks.
+- Light value of cover no longer saved in tile entity (minor memory savings).
+- Creative tab added.
+- Fixed slope sides not rendering under certain side-render checks.
+- Fixed interior oblique corner slope collision boxes not generating fully.
+- Added exterior oblique corner slope transformation code.
+
+         <ul id="changelog">
+            <span id="label"></span>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+         </ul>
+
+>> Version 1.25 Changelog
+
+05/26/2013
+- Carpenters Hammer logic rewritten. See hammer image above or read "How To."
+- Potential lighting bug on slope replacement or removal corrected.
+- Double hit sound when left clicking a block with the Carpenters Hammer while in creative mode fixed.
+- Slope hitbox precision is now configurable (to make slopes smoother). Oblique interiors are excluded.
+- Slope placement logic has top/bottom bias to reduce accidental placement of side slopes.
+- Compatibility with Optifine Custom Colors added.
+- Slope will now inherit solidness from cover block (semi-works).
+- Some more transform code added to easily build a stack of side slopes.
+- Wedge shaped sides of slopes now do render checking (only visible faces will render).
+- Fixed uncovered slopes becoming invisible behind ice blocks.
+
+         <ul id="changelog">
+            <span id="label"></span>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+         </ul>
+
+>> Version 1.24 Changelog
+
+05/17/2013
+- More natural quadrant-based algorithm in place to determine what slope to create when right-clicking on a side face of a block.
+- Render code clean-up.
+- Auto-cornering rewritten and behaves much better overall.
+- Carpenters Hammer now works in creative mode as intended.
+
+         <ul id="changelog">
+            <span id="label"></span>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+         </ul>
+
+>> Version 1.23 Changelog
+
+05/15/2013
+- Slope auto-cornering altered to prevent accidental cornering when constructing rooftops.
+- Slope light bug fixed. Was present in multiplayer when a client besides you covered a slope in glowstone or other light-emitting block.
+- Four new slope recipes added, and old recipe removed; it now mimics the shape of the slope piece.
+
+         <ul id="changelog">
+            <span id="label"></span>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+         </ul>
+
+>> Version 1.22 Changelog
+
+05/10/2013
+- Slope now inherits hardness, explosion resistance, flammability and fire spread speed from cover block.
+- Hammer logic improved.
+- Ambient occlusion for exterior oblique corners tweaked.
+- Slope now renders as a slope in the inventory and player hand.
+- Auto-assign ID feature removed. Better safe than sorry if problems occur.
+- Ice added as a valid cover.
+- Block breaking animation fixed.
+- Full solid faces of slopes now support torches, redstone wire, etc (but not vine).
+- Using Forge runtime deobfuscation now to support MC version 1.5+.
+
+         <ul id="changelog">
+            <span id="label"></span>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+         </ul>
+
+>> Version 1.21 Changelog
+
+05/08/2013
+- Added item Carpenters Hammer. It replaces shift-click function to cycle through slope types.
+- Added 18 new oblique corners. Make them by left-clicking a normal corner with the Carpenters Hammer.
+- Added two pyramid pieces.
+- Slope texturing hard coded to side texture except for positive slopes when covered with grass-type blocks.
+- Removed log side texture config option.
+
+         <ul id="changelog">
+            <span id="label"></span>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+         </ul>
+
+>> Version 1.2 Changelog
+
+05/02/2013
+- Updated for Minecraft 1.5.2.
+
+         <ul id="changelog">
+            <span id="label"></span>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+         </ul>
+
+>> Version 1.1 Changelog
+
+05/01/2013
+- Render code rewritten to correct stretched textures on certain hardware.
+- Bug in grass coloring on fast lighting fixed.
+
+         <ul id="changelog">
+            <span id="label"></span>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+         </ul>
+
+>> Version 1.0 Changelog
+
+04/29/2013
+- Initial release.
+      </div>
+   </div>
+</div>
+
+<h3><a name="designer-templates" class="anchor" href="#designer-templates"><span class="octicon octicon-link"></span></a>Migrating 1.6.X worlds to 1.7.X</h3>
+
+
+
     </div>
 
     <!-- FOOTER  -->
     <div id="footer_wrap" class="outer">
       <footer class="inner">
-        <p class="copyright">Carpentersblocks maintained by <a href="https://github.com/Mineshopper">Mineshopper</a></p>
-        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+        <p class="copyright">Carpenter's Blocks is maintained by <a href="https://github.com/Mineshopper" target="_blank">Mineshopper</a></p>
       </footer>
     </div>
 
-              <script type="text/javascript">
-            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-          </script>
-          <script type="text/javascript">
-            try {
-              var pageTracker = _gat._getTracker("UA-52814519-1");
-            pageTracker._trackPageview();
-            } catch(err) {}
-          </script>
+    <script type="text/javascript">
+    
+      var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+      document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
 
+      try {
+        var pageTracker = _gat._getTracker("UA-52814519-1");
+         pageTracker._trackPageview();
+      } catch(err) {}
+
+      $('.expand').click(function() {
+         $(this).next('div').slideToggle("fast");
+      });
+      
+    </script>
 
   </body>
 </html>

@@ -254,6 +254,109 @@ form {
   padding: 20px;
 }
 
+#download-container {
+   width: 100%;
+   margin-top: 20px;
+   background-color: white;
+   border-radius: 3px;
+   box-shadow: 0 0 10px rgba(0,0,0,.1);
+}
+
+#download-content {
+   padding: 5px;
+}
+
+.expand {
+   color: gray;
+   cursor: pointer;
+   display: inline-block;
+}
+
+.expand:hover {
+   color: black;
+   text-decoration: underline;
+}
+
+.hidden {
+   display: none;
+   background-color: rgba(0,0,0,0.05);
+   padding: 5px;
+   margin: 5px;
+   border-radius: 5px;
+}
+
+#changelog {
+   margin: 0;
+   padding: 0;
+}
+
+#development-header {
+   background-color: #fe5900;
+   border-top-left-radius: 3px;
+   border-bottom-right-radius: 3px;
+   display: inline-block;
+   padding: 5px 10px 5px 10px;
+   color: white;
+}
+
+#stable-header {
+   background-color: #00d05b;
+   border-top-left-radius: 3px;
+   border-bottom-right-radius: 3px;
+   display: inline-block;
+   padding: 5px 10px 5px 10px;
+   color: white;
+}
+
+#legacy-header {
+   background-color: #37a9e7;
+   border-top-left-radius: 3px;
+   border-bottom-right-radius: 3px;
+   display: inline-block;
+   padding: 5px 10px 5px 10px;
+   color: white;
+}
+
+.text-shadow {
+   text-shadow: 1px 1px 3px rgba(0,0,0,0.75);
+}
+
+.patron {
+   color: gold;
+}
+
+.patron:hover, .patron:active {
+   text-decoration: none;
+   color: white;
+}
+
+.whitebox {
+   background-color: white;
+   padding: 10px;
+   width: 100%;
+   box-shadow: 0 0 10px rgba(0,0,0,.1);
+}
+
+#label {
+   padding: 2px 5px 2px 5px;
+   background-color: orange;
+   border-radius: 2px;
+   color: white;
+   font-family: Arial, Helvetica, sans-serif;
+   font-size: small;
+   margin-right: 5px;
+}
+
+#label-warn {
+   padding: 2px 10px 2px 10px;
+   background-color: #ff4040;
+   border-radius: 2px;
+   color: white;
+   font-family: Impact, sans-serif;
+   font-size: small;
+   margin-right: 5px;
+}
+
 /*******************************************************************************
 Full-Width Styles
 *******************************************************************************/
@@ -277,11 +380,16 @@ Full-Width Styles
   z-index: 10;
   padding: 10px 50px 10px 10px;
   color: #fff;
-  background: url('../images/blacktocat.png') #0090ff no-repeat 95% 50%;
+  background: url('../images/blacktocat.png') #5e5042 no-repeat 95% 50%;
   font-weight: 700;
   box-shadow: 0 0 10px rgba(0,0,0,.5);
   border-bottom-left-radius: 2px;
   border-bottom-right-radius: 2px;
+}
+
+#forkme_banner:hover {
+   text-decoration: none;
+   background-color: #7b6857;
 }
 
 #header_wrap {
@@ -299,57 +407,28 @@ Full-Width Styles
 
 #project_title {
   margin: 0;
-  color: #fff;
-  font-size: 42px;
+  color: gold;
+  font-size: 55px;
   font-weight: 700;
   text-shadow: #111 0px 0px 10px;
 }
 
 #project_tagline {
-  color: #fff;
+  color: gray;
+  margin-left: 2px;
   font-size: 24px;
   font-weight: 300;
-  background: none;
   text-shadow: #111 0px 0px 10px;
 }
 
-#downloads {
+#cbimage {
   position: absolute;
-  width: 210px;
+  width: 208px;
+  height: 230px;
   z-index: 10;
-  bottom: -40px;
-  right: 0;
-  height: 70px;
-  background: url('../images/icon_download.png') no-repeat 0% 90%;
-}
-
-.zip_download_link {
-  display: block;
-  float: right;
-  width: 90px;
-  height:70px;
-  text-indent: -5000px;
-  overflow: hidden;
-  background: url(../images/sprite_download.png) no-repeat bottom left;
-}
-
-.tar_download_link {
-  display: block;
-  float: right;
-  width: 90px;
-  height:70px;
-  text-indent: -5000px;
-  overflow: hidden;
-  background: url(../images/sprite_download.png) no-repeat bottom right;
-  margin-left: 10px;
-}
-
-.zip_download_link:hover {
-  background: url(../images/sprite_download.png) no-repeat top left;
-}
-
-.tar_download_link:hover {
-  background: url(../images/sprite_download.png) no-repeat top right;
+  bottom: -80px;
+  right: 20px;
+  background: url('../images/bannerImage.png') no-repeat;
 }
 
 #main_content_wrap {
@@ -372,12 +451,12 @@ Full-Width Styles
 Small Device Styles
 *******************************************************************************/
 
-@media screen and (max-width: 480px) {
+@media screen and (max-width: 640px) {
   body {
     font-size:14px;
   }
 
-  #downloads {
+  #cbimage {
     display: none;
   }
 
