@@ -55,7 +55,7 @@ Navbar
    height: 25px;
    color: white;
    background-color: #5e5042;
-   font-size: x-large;
+   font-size: large;
    padding: 10px;
    border-radius: 5px;
    cursor: pointer;
@@ -117,8 +117,6 @@ p {
 a {
   text-decoration: none;
   color: #007edf;
-  text-shadow: none;
-
   transition: color 0.5s ease;
   transition: text-shadow 0.5s ease;
   -webkit-transition: color 0.5s ease;
@@ -129,11 +127,6 @@ a {
   -o-transition: text-shadow 0.5s ease;
   -ms-transition: color 0.5s ease;
   -ms-transition: text-shadow 0.5s ease;
-}
-
-footer a {
-  color: #F2F2F2;
-  text-decoration: underline;
 }
 
 img {
@@ -357,7 +350,7 @@ Full-Width Styles
 
 .inner {
   position: relative;
-  max-width: 640px;
+  max-width: 1024px;
   padding: 20px 10px;
   margin: 0 auto;
 }
@@ -392,7 +385,7 @@ Full-Width Styles
 }
 
 #header_wrap .inner {
-  padding: 50px 10px 30px 10px;
+  padding: 20px 10px 20px 10px;
 }
 
 #project_title {
@@ -412,12 +405,8 @@ Full-Width Styles
 }
 
 #cbimage {
-  position: absolute;
-  width: 208px;
   height: 230px;
-  z-index: 10;
-  bottom: -80px;
-  right: -50px;
+  width: 208px;
   background: url('../images/bannerImage.png') no-repeat;
 }
 
@@ -431,12 +420,6 @@ Full-Width Styles
   padding-top: 40px;
 }
 
-#footer_wrap {
-  background: #212121;
-}
-
-
-
 /*******************************************************************************
 Small Device Styles
 *******************************************************************************/
@@ -445,18 +428,18 @@ Small Device Styles
   body {
     font-size:14px;
   }
-
+  
   #cbimage {
-    display: none;
+   display: none;
   }
 
   .inner {
-    min-width: 320px;
-    max-width: 480px;
+    min-width: 480px;
+    max-width: 640px;
   }
 
   #project_title {
-  font-size: 32px;
+   font-size: 32px;
   }
 
   h1 {
@@ -481,12 +464,6 @@ Small Device Styles
 
   h6 {
     font-size: 12px;
-  }
-
-  code, pre {
-    min-width: 320px;
-    max-width: 480px;
-    font-size: 11px;
   }
 
 }
