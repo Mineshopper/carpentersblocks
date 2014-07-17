@@ -47,6 +47,35 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockCoverable extends BlockContainer {
 
+    protected class ActionResult {
+
+        public ItemStack itemStack;
+        public boolean playSound = true;
+        public boolean altered = false;
+        public boolean decInv = false;
+
+        public ActionResult setSoundSource(ItemStack itemStack) {
+            this.itemStack = itemStack;
+            return this;
+        }
+
+        public ActionResult setNoSound() {
+            playSound = false;
+            return this;
+        }
+
+        public ActionResult setAltered() {
+            altered = true;
+            return this;
+        }
+
+        public ActionResult decInventory() {
+            decInv = true;
+            return this;
+        }
+
+    }
+
     /**
      * Class constructor.
      *
@@ -170,68 +199,73 @@ public class BlockCoverable extends BlockContainer {
      */
     public void onBlockClicked(World world, int x, int y, int z, EntityPlayer entityPlayer)
     {
-        if (!world.isRemote) {
-
+        if (!world.isRemote)
+        {
             TEBase TE = getTileEntity(world, x, y, z);
 
-            if (PlayerPermissions.canPlayerEdit(TE, TE.xCoord, TE.yCoord, TE.zCoord, entityPlayer)) {
+            if (TE != null)
+            {
+                if (PlayerPermissions.canPlayerEdit(TE, TE.xCoord, TE.yCoord, TE.zCoord, entityPlayer))
+                {
+                    ActionResult actionResult = new ActionResult();
+                    ItemStack itemStack = entityPlayer.getCurrentEquippedItem();
 
-                ItemStack itemStack = entityPlayer.getCurrentEquippedItem();
+                    if (itemStack != null) {
 
-                if (itemStack != null) {
+                        int effectiveSide = BlockProperties.hasCover(TE, EventHandler.eventFace) ? EventHandler.eventFace : 6;
+                        Item item = itemStack.getItem();
 
-                    int effectiveSide = BlockProperties.hasCover(TE, EventHandler.eventFace) ? EventHandler.eventFace : 6;
-                    Item item = itemStack.getItem();
+                        if (item instanceof ICarpentersHammer && ((ICarpentersHammer)item).canUseHammer(world, entityPlayer)) {
 
-                    if (item instanceof ICarpentersHammer && ((ICarpentersHammer)item).canUseHammer(world, entityPlayer)) {
+                            preOnBlockClicked(TE, world, x, y, z, entityPlayer, actionResult);
 
-                        List<Boolean> altered = new ArrayList<Boolean>();
+                            if (!actionResult.altered) {
 
-                        altered.add(preOnBlockClicked(TE, world, x, y, z, entityPlayer));
+                                if (entityPlayer.isSneaking()) {
 
-                        if (!altered.contains(true)) {
+                                    if (BlockProperties.hasOverlay(TE, effectiveSide)) {
+                                        BlockProperties.setOverlay(TE, effectiveSide, (ItemStack)null);
+                                        actionResult.setAltered();
+                                    } else if (BlockProperties.hasDye(TE, effectiveSide)) {
+                                        BlockProperties.setDye(TE, effectiveSide, (ItemStack)null);
+                                        actionResult.setAltered();
+                                    } else if (BlockProperties.hasCover(TE, effectiveSide)) {
+                                        BlockProperties.setCover(TE, effectiveSide, (ItemStack)null);
+                                        BlockProperties.setChiselDesign(TE, effectiveSide, "");
+                                        actionResult.setAltered();
+                                    }
+
+                                } else {
+
+                                    onHammerLeftClick(TE, entityPlayer);
+                                    actionResult.setAltered();
+
+                                }
+
+                            }
+
+                            if (actionResult.altered) {
+                                onNeighborBlockChange(world, x, y, z, this);
+                                world.notifyBlocksOfNeighborChange(x, y, z, this);
+                            }
+
+                        } else if (item instanceof ICarpentersChisel && ((ICarpentersChisel)item).canUseChisel(world, entityPlayer)) {
 
                             if (entityPlayer.isSneaking()) {
 
-                                if (BlockProperties.hasOverlay(TE, effectiveSide)) {
-                                    altered.add(BlockProperties.setOverlay(TE, effectiveSide, (ItemStack)null));
-                                } else if (BlockProperties.hasDye(TE, effectiveSide)) {
-                                    altered.add(BlockProperties.setDye(TE, effectiveSide, (ItemStack)null));
-                                } else if (BlockProperties.hasCover(TE, effectiveSide)) {
-                                    altered.add(BlockProperties.setCover(TE, effectiveSide, (ItemStack)null));
-                                    altered.add(BlockProperties.setChiselDesign(TE, effectiveSide, ""));
+                                if (BlockProperties.hasChiselDesign(TE, effectiveSide)) {
+                                    BlockProperties.setChiselDesign(TE, effectiveSide, "");
                                 }
 
-                            } else {
+                            } else if (BlockProperties.hasCover(TE, effectiveSide)) {
 
-                                altered.add(onHammerLeftClick(TE, entityPlayer));
+                                onChiselClick(TE, effectiveSide, true);
 
                             }
-
-                        }
-
-                        if (altered.contains(true)) {
-                            onNeighborBlockChange(world, x, y, z, this);
-                            world.notifyBlocksOfNeighborChange(x, y, z, this);
-                        }
-
-                    } else if (item instanceof ICarpentersChisel && ((ICarpentersChisel)item).canUseChisel(world, entityPlayer)) {
-
-                        if (entityPlayer.isSneaking()) {
-
-                            if (BlockProperties.hasChiselDesign(TE, effectiveSide)) {
-                                BlockProperties.setChiselDesign(TE, effectiveSide, "");
-                            }
-
-                        } else if (BlockProperties.hasCover(TE, effectiveSide)) {
-
-                            onChiselClick(TE, effectiveSide, true);
-
                         }
                     }
                 }
             }
-
         }
     }
 
@@ -253,31 +287,33 @@ public class BlockCoverable extends BlockContainer {
 
             if (TE != null) {
 
-                List<Boolean> altered = new ArrayList<Boolean>();
+                ActionResult actionResult = new ActionResult();
 
                 if (canPlayerActivate(TE, entityPlayer)) {
-
-                    List<Boolean> decInv = new ArrayList<Boolean>();
 
                     /* Sides 0-5 are side covers, and 6 is the base block. */
                     int effectiveSide = BlockProperties.hasCover(TE, side) ? side : 6;
 
-                    preOnBlockActivated(TE, entityPlayer, side, hitX, hitY, hitZ, altered, decInv);
+                    preOnBlockActivated(TE, entityPlayer, side, hitX, hitY, hitZ, actionResult);
 
                     if (PlayerPermissions.canPlayerEdit(TE, TE.xCoord, TE.yCoord, TE.zCoord, entityPlayer)) {
 
-                        if (!altered.contains(true)) {
+                        if (!actionResult.altered) {
 
                             if (itemStack != null) {
 
                                 if (itemStack.getItem() instanceof ICarpentersHammer && ((ICarpentersHammer)itemStack.getItem()).canUseHammer(world, entityPlayer)) {
 
-                                    altered.add(onHammerRightClick(TE, entityPlayer));
+                                    if (onHammerRightClick(TE, entityPlayer)) {
+                                        actionResult.setAltered();
+                                    }
 
                                 } else if (ItemRegistry.enableChisel && itemStack.getItem() instanceof ICarpentersChisel && ((ICarpentersChisel)itemStack.getItem()).canUseChisel(world, entityPlayer)) {
 
                                     if (BlockProperties.hasCover(TE, effectiveSide)) {
-                                        altered.add(onChiselClick(TE, effectiveSide, false));
+                                        if (onChiselClick(TE, effectiveSide, false)) {
+                                            actionResult.setAltered();
+                                        }
                                     }
 
                                 } else if (FeatureRegistry.enableCovers && canCoverBase(TE, world, x, y, z) && BlockProperties.isCover(itemStack)) {
@@ -299,26 +335,34 @@ public class BlockCoverable extends BlockContainer {
 
                                     if (!BlockProperties.hasCover(TE, 6)) {
 
-                                        altered.add(decInv.add(BlockProperties.setCover(TE, 6, tempStack)));
+                                        if (BlockProperties.setCover(TE, 6, tempStack)) {
+                                            actionResult.setAltered().decInventory();
+                                        }
 
                                     } else if (FeatureRegistry.enableSideCovers) {
 
                                         if (!BlockProperties.hasCover(TE, side) && canCoverSide(TE, world, x, y, z, side)) {
-                                            altered.add(decInv.add(BlockProperties.setCover(TE, side, tempStack)));
+                                            if (BlockProperties.setCover(TE, side, tempStack)) {
+                                                actionResult.setAltered().decInventory();
+                                            }
                                         }
 
                                     }
 
-                                } else if (entityPlayer.isSneaking() && FeatureRegistry.enableOverlay && BlockProperties.isOverlay(itemStack)) {
+                                } else if (entityPlayer.isSneaking()) {
 
-                                    if (!BlockProperties.hasOverlay(TE, effectiveSide) && (effectiveSide < 6 && BlockProperties.hasCover(TE, effectiveSide) || effectiveSide == 6)) {
-                                        altered.add(decInv.add(BlockProperties.setOverlay(TE, effectiveSide, itemStack)));
-                                    }
-
-                                } else if (entityPlayer.isSneaking() && FeatureRegistry.enableDye && BlockProperties.isDye(itemStack, false)) {
-
-                                    if (!BlockProperties.hasDye(TE, effectiveSide)) {
-                                        altered.add(decInv.add(BlockProperties.setDye(TE, effectiveSide, itemStack)));
+                                    if (FeatureRegistry.enableOverlay && BlockProperties.isOverlay(itemStack)) {
+                                        if (!BlockProperties.hasOverlay(TE, effectiveSide) && (effectiveSide < 6 && BlockProperties.hasCover(TE, effectiveSide) || effectiveSide == 6)) {
+                                            if (BlockProperties.setOverlay(TE, effectiveSide, itemStack)) {
+                                                actionResult.setAltered().decInventory().setSoundSource(itemStack);
+                                            }
+                                        }
+                                    } else if (FeatureRegistry.enableDye && BlockProperties.isDye(itemStack, false)) {
+                                        if (!BlockProperties.hasDye(TE, effectiveSide)) {
+                                            if (BlockProperties.setDye(TE, effectiveSide, itemStack)) {
+                                                actionResult.setAltered().decInventory().setSoundSource(itemStack);
+                                            }
+                                        }
                                     }
 
                                 }
@@ -326,25 +370,26 @@ public class BlockCoverable extends BlockContainer {
                         }
                     }
 
-                    if (!altered.contains(true)) {
+                    if (!actionResult.altered) {
 
-                        if (canPlayerActivate(TE, entityPlayer)) {
-                            postOnBlockActivated(TE, entityPlayer, side, hitX, hitY, hitZ, altered, decInv);
-                        }
+                        postOnBlockActivated(TE, entityPlayer, side, hitX, hitY, hitZ, actionResult);
 
                     } else {
 
+                        if (actionResult.itemStack == null) {
+                            actionResult.setSoundSource(BlockProperties.getCover(TE, 6));
+                        }
                         damageItemWithChance(world, entityPlayer);
                         onNeighborBlockChange(world, x, y, z, this);
                         world.notifyBlocksOfNeighborChange(x, y, z, this);
 
                     }
 
-                    if (altered.contains(true)) {
-                        BlockProperties.playBlockSound(TE.getWorldObj(), itemStack, TE.xCoord, TE.yCoord, TE.zCoord, false);
+                    if (actionResult.playSound) {
+                        BlockProperties.playBlockSound(TE.getWorldObj(), actionResult.itemStack, TE.xCoord, TE.yCoord, TE.zCoord, false);
                     }
 
-                    if (decInv.contains(true)) {
+                    if (actionResult.decInv) {
                         if (!entityPlayer.capabilities.isCreativeMode && --itemStack.stackSize <= 0) {
                             entityPlayer.inventory.setInventorySlotContents(entityPlayer.inventory.currentItem, (ItemStack)null);
                         }
@@ -352,7 +397,7 @@ public class BlockCoverable extends BlockContainer {
 
                 }
 
-                return altered.contains(true);
+                return actionResult.altered;
 
             }
         }
@@ -1148,14 +1193,18 @@ public class BlockCoverable extends BlockContainer {
      * This method is configured on as as-needed basis.
      * It's calling order is not guaranteed.
      */
-    protected boolean preOnBlockClicked(TEBase TE, World world, int x, int y, int z, EntityPlayer entityPlayer)
-    {
-        return false;
-    }
+    protected void preOnBlockClicked(TEBase TE, World world, int x, int y, int z, EntityPlayer entityPlayer, ActionResult actionResult) {}
 
-    protected void preOnBlockActivated(TEBase TE, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ, List<Boolean> altered, List<Boolean> decInv) {}
+    /**
+     * Called before cover or decoration checks are performed.
+     */
+    protected void preOnBlockActivated(TEBase TE, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ, ActionResult actionResult) {}
 
-    protected void postOnBlockActivated(TEBase TE, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ, List<Boolean> altered, List<Boolean> decInv) {}
+    /**
+     * Called if cover and decoration checks have been performed but
+     * returned no changes.
+     */
+    protected void postOnBlockActivated(TEBase TE, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ, ActionResult actionResult) {}
 
     protected boolean onHammerLeftClick(TEBase TE, EntityPlayer entityPlayer)
     {
