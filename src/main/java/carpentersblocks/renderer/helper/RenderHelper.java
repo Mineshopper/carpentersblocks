@@ -1,5 +1,6 @@
 package carpentersblocks.renderer.helper;
 
+import net.minecraft.block.BlockGrass;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.IIcon;
@@ -96,6 +97,10 @@ public class RenderHelper extends VertexHelper {
      */
     protected static void prepareRender(RenderBlocks renderBlocks, ForgeDirection side, double x, double y, double z, IIcon icon)
     {
+        /* Enforce default floating icons */
+
+        floatingIcon |= icon == BlockGrass.getIconSideOverlay() || icon.getIconName().contains("overlay/overlay_") && icon.getIconName().endsWith("_side");
+
         boolean customBounds = renderBlocks == null;
 
         /* Set render bounds with offset. */
@@ -261,8 +266,8 @@ public class RenderHelper extends VertexHelper {
 
                         uMin = icon.getInterpolatedU(16.0D - renderMaxX * 16.0D);
                         uMax = icon.getInterpolatedU(16.0D - renderMinX * 16.0D);
-                        vMin = icon.getInterpolatedV(16.0D - (iconHasFloatingHeight(icon) ? 1.0D - (renderMaxY - renderMinY) : renderMinY) * 16.0D);
-                        vMax = icon.getInterpolatedV(16.0D - (iconHasFloatingHeight(icon) ? 1.0D : renderMaxY) * 16.0D);
+                        vMin = icon.getInterpolatedV(16.0D - (floatingIcon ? 1.0D - (renderMaxY - renderMinY) : renderMinY) * 16.0D);
+                        vMax = icon.getInterpolatedV(16.0D - (floatingIcon ? 1.0D : renderMaxY) * 16.0D);
 
                         setCornerUV(uMin, vMax, uMin, vMin, uMax, vMin, uMax, vMax);
 
@@ -313,8 +318,8 @@ public class RenderHelper extends VertexHelper {
 
                         uMin = icon.getInterpolatedU(renderMinX * 16.0D);
                         uMax = icon.getInterpolatedU(renderMaxX * 16.0D);
-                        vMin = icon.getInterpolatedV(16.0D - (iconHasFloatingHeight(icon) ? 1.0D - (renderMaxY - renderMinY) : renderMinY) * 16.0D);
-                        vMax = icon.getInterpolatedV(16.0D - (iconHasFloatingHeight(icon) ? 1.0D : renderMaxY) * 16.0D);
+                        vMin = icon.getInterpolatedV(16.0D - (floatingIcon ? 1.0D - (renderMaxY - renderMinY) : renderMinY) * 16.0D);
+                        vMax = icon.getInterpolatedV(16.0D - (floatingIcon ? 1.0D : renderMaxY) * 16.0D);
 
                         setCornerUV(uMin, vMax, uMin, vMin, uMax, vMin, uMax, vMax);
 
@@ -365,8 +370,8 @@ public class RenderHelper extends VertexHelper {
 
                         uMin = icon.getInterpolatedU(renderMinZ * 16.0D);
                         uMax = icon.getInterpolatedU(renderMaxZ * 16.0D);
-                        vMax = icon.getInterpolatedV(16.0D - (iconHasFloatingHeight(icon) ? 1.0D : renderMaxY) * 16.0D);
-                        vMin = icon.getInterpolatedV(16.0D - (iconHasFloatingHeight(icon) ? 1.0D - (renderMaxY - renderMinY) : renderMinY) * 16.0D);
+                        vMax = icon.getInterpolatedV(16.0D - (floatingIcon ? 1.0D : renderMaxY) * 16.0D);
+                        vMin = icon.getInterpolatedV(16.0D - (floatingIcon ? 1.0D - (renderMaxY - renderMinY) : renderMinY) * 16.0D);
 
                         setCornerUV(uMin, vMax, uMin, vMin, uMax, vMin, uMax, vMax);
 
@@ -417,8 +422,8 @@ public class RenderHelper extends VertexHelper {
 
                         uMin = icon.getInterpolatedU(16.0D - renderMaxZ * 16.0D);
                         uMax = icon.getInterpolatedU(16.0D - renderMinZ * 16.0D);
-                        vMax = icon.getInterpolatedV(16.0D - (iconHasFloatingHeight(icon) ? 1.0D : renderMaxY) * 16.0D);
-                        vMin = icon.getInterpolatedV(16.0D - (iconHasFloatingHeight(icon) ? 1.0D - (renderMaxY - renderMinY) : renderMinY) * 16.0D);
+                        vMax = icon.getInterpolatedV(16.0D - (floatingIcon ? 1.0D : renderMaxY) * 16.0D);
+                        vMin = icon.getInterpolatedV(16.0D - (floatingIcon ? 1.0D - (renderMaxY - renderMinY) : renderMinY) * 16.0D);
 
                         setCornerUV(uMin, vMax, uMin, vMin, uMax, vMin, uMax, vMax);
 
