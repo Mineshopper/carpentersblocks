@@ -19,22 +19,22 @@
       <div id="header_wrap" class="outer">
          <header class="inner">
 
-            <h1 id="project_title">Carpenter's Blocks</h1>
-            <h2 id="project_tagline">Customize your Minecraft world.</h2>
-            <section id="nav">
-               <ul>
-                  <li onclick="location.href='index.html'">Home</li>
-                  <li onclick="location.href='downloads.html'">Downloads</li>
-                  <li onclick="location.href='recipes.html'">Recipes</li>
-                  <li onclick="location.href='howto.html'">How To</li>
-               </ul>
-            </section>
-
-            <div style="float: right; display: inline;">
-               <a id="viewgit_banner" href="https://github.com/Mineshopper/carpentersblocks" target="_blank">View on GitHub</a><br>
-               <section id="cbimage"></section>
+            <div style="float: left;">
+               <h1 id="project_title">Carpenter's Blocks</h1>
+               <h2 id="project_tagline">Customize your Minecraft world.</h2>
+               <section id="nav">
+                  <ul class="text-shadow">
+                     <li onclick="location.href='index.html'">Home</li>
+                     <li onclick="location.href='downloads.html'">Downloads</li>
+                     <li onclick="location.href='recipes.html'">Recipes</li>
+                     <li onclick="location.href='howto.html'">How To</li>
+                     <li onclick="window.open('https://github.com/Mineshopper/carpentersblocks')">View on GitHub</li>
+                  </ul>
+               </section>
             </div>
 
+            <img src="../images/bannerImage.png" style="width: 150px; padding-left: 20px;"></img>
+                  
          </header>
       </div>
 
@@ -53,17 +53,15 @@
 <h4>Builds</h4>
 
 <div id="download-container">
-   <div id="development-header" class="text-shadow">
-      Development (for <a href="http://www.patreon.com/mineshopper" class="patron text-shadow" target="_blank">Patrons</a> only)
+   <div id="stable-header" class="text-shadow">
+      Latest Builds
    </div>
    <div id="download-content">
-      <div style="display: none;">
-         <span id="label-warn">!</span><span style="font-style: italic;">There are currently no development builds.</span>
-      </div>
-      
-      <span id="label-minecraft">1.7.10</span>
-      <span id="label-forge">10.13.0.1180</span>
-      Carpenter's Blocks 3.2.5 <div class="expand">View Changelog</div><br>
+      <span id="label-minecraft" class="tooltip animate blue" data-tool="This is a development version, and may contain bugs.">DEV</span>
+      <span id="label-minecraft" title="Minecraft version.">1.7.10</span>
+      <span id="label-forge" title="The minimum Forge build required.">10.13.0.1180</span>
+      Carpenter's Blocks 3.2.5
+      <div class="expand">Changelog</div><br>
       <div class="hidden">
          <ul id="changelog">
             <li>Refactored safe code to help prevent crashes.</li>
@@ -80,7 +78,8 @@
             <li>Forge build requirement set at 1180.</li>
          </ul>
       </div>
-      
+
+      <span id="label-minecraft">DEV</span>
       <span id="label-minecraft">1.7.2</span>
       <span id="label-forge">10.12.2.1121</span>
       Carpenter's Blocks 3.2.5
@@ -101,28 +100,50 @@
          </ul>
       </div>
       
-      <span id="label-minecraft">1.6.4</span>
-      <span id="label-forge">9.11.1.965</span>
-      Carpenter's Blocks 3.2.5 <div class="expand">View Changelog</div><br>
+      <span id="label-minecraft">STABLE</span>
+      <span id="label-minecraft">1.7.2</span>
+      <span id="label-forge">10.12.2.1121</span>
+      Carpenter's Blocks 3.2.4
+      <div class="expand">Changelog</div><br>
       <div class="hidden">
          <ul id="changelog">
-            <li>Backported from master branch and brought up to date.</li>
-            <li>Fixed flower pot soil and plant not migrating to 1.7.</li>
-            <li>Upgraded Forge build requirement to 965.</li>
+            <li>Changes.</li>
+         </ul>
+      </div>
+
+      <span id="label-minecraft">DEV</span>
+      <span id="label-minecraft">1.6.4</span>
+      <span id="label-forge">9.11.1.965</span>
+      Carpenter's Blocks 3.2.5
+      <div class="expand">Changelog</div><br>
+      <div class="hidden">
+         <ul id="changelog">
+            <li>Changes.</li>
+         </ul>
+      </div>
+
+      <span id="label-minecraft">STABLE</span>
+      <span id="label-minecraft">1.6.4</span>
+      <span id="label-forge">9.11.1.965</span>
+      Carpenter's Blocks 2.1.2
+      <div class="expand">Changelog</div><br>
+      <div class="hidden">
+         <ul id="changelog">
+            <li>Changes.</li>
+         </ul>
+      </div>
+
+      <span id="label-minecraft">STABLE</span>
+      <span id="label-minecraft">1.5.2</span>
+      <span id="label-forge">7.8.1.738</span>
+      Carpenter's Blocks 1.9.9
+      <div class="expand">Changelog</div><br>
+      <div class="hidden">
+         <ul id="changelog">
+            <li>Changes.</li>
          </ul>
       </div>
       
-   </div>
-</div>
-
-<div id="download-container">
-   <div id="stable-header" class="text-shadow">
-      Stable (Recommended)
-   </div>
-   <div id="download-content">
-      <span id="label-minecraft">1.7.2</span>Carpenter's Blocks 3.2.4<br>
-      <span id="label-minecraft">1.6.4</span>Carpenter's Blocks 2.1.2<br>
-      <span id="label-minecraft">1.5.2</span>Carpenter's Blocks 1.9.9
    </div>
 </div>
 

@@ -40,6 +40,69 @@ table {
 }
 
 /*******************************************************************************
+Tooltips and Labels
+*******************************************************************************/
+
+/** tooltip styles
+  * based on http://www.flatypo.net/tutorials/how-to-create-animated-tooltips-css3-hiperlink/ 
+ **/
+.tooltip{
+  position: relative;
+  display: inline;
+}
+.tooltip:after{
+  display: block;
+  visibility: hidden;
+  position: absolute;
+  bottom: 0;
+  left: 20%;
+  opacity: 0;
+  content: attr(data-tool); /* might also use attr(title) */
+  height: auto;
+  min-width: 100px;
+  padding: 5px 8px;
+  z-index: 999;
+  color: #fff;
+  text-decoration: none;
+  text-align: center;
+  background: rgba(0,0,0,0.85);
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+}
+
+.tooltip:before {
+  position: absolute;
+  visibility: hidden;
+  width: 0;
+  height: 0;
+  left: 50%;
+  bottom: 0px;
+  opacity: 0;
+  content: "";
+  border-style: solid;
+  border-bottom-width: 0;
+  border-color: rgba(0,0,0,0.85) transparent transparent transparent;
+}
+.tooltip:hover:after{ visibility: visible; opacity: 1; bottom: 20px; }
+.tooltip:hover:before{ visibility: visible; opacity: 1; bottom: 14px; }
+
+.tooltip.animate:after, a.tooltip.animate:before {
+  -webkit-transition: all 0.2s ease-in-out;
+  -moz-transition: all 0.2s ease-in-out;
+  -ms-transition: all 0.2s ease-in-out;
+  -o-transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
+}
+
+/* tooltip colors (add your own!) */
+.tooltip.blue:after { background:#5f87c2; }
+.tooltip.blue:before { border-color: #5f87c2 transparent transparent transparent; }
+.tooltip.bottom.blue:before{ border-color: transparent transparent #5f87c2 transparent; }
+.tooltip.right.blue:before { border-color: transparent #5f87c2 transparent transparent; }
+.tooltip.left.blue:before { border-color: transparent transparent transparent #5f87c2; }
+
+/*******************************************************************************
 Navbar
 *******************************************************************************/
 
@@ -51,8 +114,7 @@ Navbar
 }
 
 #nav ul li {
-   display: inline;
-   height: 25px;
+   display: inline-block;
    color: white;
    background-color: #5e5042;
    font-size: large;
@@ -130,18 +192,7 @@ a {
 }
 
 img {
-  position: relative;
-  margin: 0 auto;
   max-width: 100%;
-  padding: 5px;
-  margin: 10px 0 10px 0;
-  border: 1px solid #ebebeb;
-
-  box-shadow: 0 0 5px #ebebeb;
-  -webkit-box-shadow: 0 0 5px #ebebeb;
-  -moz-box-shadow: 0 0 5px #ebebeb;
-  -o-box-shadow: 0 0 5px #ebebeb;
-  -ms-box-shadow: 0 0 5px #ebebeb;
 }
 
 p img {
@@ -355,26 +406,6 @@ Full-Width Styles
   margin: 0 auto;
 }
 
-#viewgit_banner {
-  display: block;
-  position: absolute;
-  top:0;
-  right: 10px;
-  z-index: 10;
-  padding: 10px 50px 10px 10px;
-  color: #fff;
-  background: url('../images/blacktocat.png') #5e5042 no-repeat 95% 50%;
-  font-weight: 700;
-  box-shadow: 0 0 10px rgba(0,0,0,.5);
-  border-bottom-left-radius: 2px;
-  border-bottom-right-radius: 2px;
-}
-
-#viewgit_banner:hover {
-   text-decoration: none;
-   background-color: #7b6857;
-}
-
 #header_wrap {
   background: #212121;
   background: -moz-linear-gradient(top, #373737, #212121);
@@ -389,7 +420,7 @@ Full-Width Styles
 }
 
 #project_title {
-  margin: 0;
+  margin: -10px 0 -15px 0;
   color: gold;
   font-size: 55px;
   font-weight: 700;
@@ -399,15 +430,17 @@ Full-Width Styles
 #project_tagline {
   color: gray;
   margin-left: 2px;
+  padding-bottom: 5px;
   font-size: 24px;
   font-weight: 300;
   text-shadow: #111 0px 0px 10px;
 }
 
-#cbimage {
-  height: 230px;
-  width: 208px;
+.banner-image {
+  border: 1px solid red;
+  width: 100px;
   background: url('../images/bannerImage.png') no-repeat;
+  background-size: contain;
 }
 
 #main_content_wrap {
