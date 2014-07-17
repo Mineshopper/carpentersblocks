@@ -1,7 +1,5 @@
 package carpentersblocks.block;
 
-import java.util.List;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityLivingBase;
@@ -66,7 +64,7 @@ public class BlockCarpentersGate extends BlockCoverable {
     /**
      * Opens or closes gate on right click.
      */
-    protected void postOnBlockActivated(TEBase TE, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ, List<Boolean> altered, List<Boolean> decInv)
+    protected void postOnBlockActivated(TEBase TE, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ, ActionResult actionResult)
     {
         if (Gate.getState(TE) == Gate.STATE_OPEN) {
 
@@ -88,7 +86,7 @@ public class BlockCarpentersGate extends BlockCoverable {
 
         }
 
-        altered.add(true);
+        actionResult.setAltered().setNoSound();
     }
 
     @Override
@@ -115,15 +113,15 @@ public class BlockCarpentersGate extends BlockCoverable {
                 return null;
             } else if (Gate.getFacing(TE) == Gate.FACING_ON_Z) {
                 if (Gate.getType(TE) == Gate.TYPE_VANILLA || Gate.getType(TE) == Gate.TYPE_WALL) {
-                    return AxisAlignedBB.getAABBPool().getAABB(x + 0.4375F, y, z, x + 0.5625F, y + 1.5F, z + 1.0F);
+                    return AxisAlignedBB.getBoundingBox(x + 0.4375F, y, z, x + 0.5625F, y + 1.5F, z + 1.0F);
                 } else {
-                    return AxisAlignedBB.getAABBPool().getAABB(x + 0.375F, y, z, x + 0.625F, y + 1.5F, z + 1.0F);
+                    return AxisAlignedBB.getBoundingBox(x + 0.375F, y, z, x + 0.625F, y + 1.5F, z + 1.0F);
                 }
             } else {
                 if (Gate.getType(TE) == Gate.TYPE_VANILLA || Gate.getType(TE) == Gate.TYPE_WALL) {
-                    return AxisAlignedBB.getAABBPool().getAABB(x, y, z + 0.4375F, x + 1.0F, y + 1.5F, z + 0.5625F);
+                    return AxisAlignedBB.getBoundingBox(x, y, z + 0.4375F, x + 1.0F, y + 1.5F, z + 0.5625F);
                 } else {
-                    return AxisAlignedBB.getAABBPool().getAABB(x, y, z + 0.375F, x + 1.0F, y + 1.5F, z + 0.625F);
+                    return AxisAlignedBB.getBoundingBox(x, y, z + 0.375F, x + 1.0F, y + 1.5F, z + 0.625F);
                 }
             }
 

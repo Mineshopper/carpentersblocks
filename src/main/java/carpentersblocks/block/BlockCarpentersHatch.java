@@ -102,13 +102,11 @@ public class BlockCarpentersHatch extends BlockCoverable {
     /**
      * Called upon block activation (right click on the block.)
      */
-    protected void postOnBlockActivated(TEBase TE, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ, List<Boolean> altered, List<Boolean> decInv)
+    protected void postOnBlockActivated(TEBase TE, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ, ActionResult actionResult)
     {
         if (!activationRequiresRedstone(TE)) {
-
             Hatch.setState(TE, Hatch.getState(TE) == Hatch.STATE_CLOSED ? Hatch.STATE_OPEN : Hatch.STATE_CLOSED);
-            altered.add(true);
-
+            actionResult.setAltered().setNoSound();
         }
     }
 
