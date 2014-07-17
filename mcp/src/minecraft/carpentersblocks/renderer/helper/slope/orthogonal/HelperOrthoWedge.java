@@ -98,18 +98,17 @@ public class HelperOrthoWedge extends RenderHelper {
     {
         prepareRender(renderBlocks, ForgeDirection.NORTH, x, y, z, icon);
 
-        boolean floatingHeight = iconHasFloatingHeight(icon);
         Slope slope = Slope.slopesList[slopeID];
 
         if (slope.isPositive) {
             if (slope.facings.contains(ForgeDirection.WEST)) {
-                setupVertex(renderBlocks, xMax, yMax, zMin, uTL,                        vTL, TOP_LEFT    );
-                setupVertex(renderBlocks, xMax, yMin, zMin, uBL,                        vBL, BOTTOM_LEFT );
-                setupVertex(renderBlocks, xMin, yMin, zMin, uBR, floatingHeight ? vTR : vBR, BOTTOM_RIGHT);
+                setupVertex(renderBlocks, xMax, yMax, zMin, uTL,                      vTL, TOP_LEFT    );
+                setupVertex(renderBlocks, xMax, yMin, zMin, uBL,                      vBL, BOTTOM_LEFT );
+                setupVertex(renderBlocks, xMin, yMin, zMin, uBR, floatingIcon ? vTR : vBR, BOTTOM_RIGHT);
             } else {
-                setupVertex(renderBlocks, xMax, yMin, zMin, uBL, floatingHeight ? vTL : vBL, BOTTOM_LEFT );
-                setupVertex(renderBlocks, xMin, yMin, zMin, uBR,                        vBR, BOTTOM_RIGHT);
-                setupVertex(renderBlocks, xMin, yMax, zMin, uTR,                        vTR, TOP_RIGHT   );
+                setupVertex(renderBlocks, xMax, yMin, zMin, uBL, floatingIcon ? vTL : vBL, BOTTOM_LEFT );
+                setupVertex(renderBlocks, xMin, yMin, zMin, uBR,                      vBR, BOTTOM_RIGHT);
+                setupVertex(renderBlocks, xMin, yMax, zMin, uTR,                      vTR, TOP_RIGHT   );
             }
         } else {
             if (slope.facings.contains(ForgeDirection.WEST)) {
@@ -131,18 +130,17 @@ public class HelperOrthoWedge extends RenderHelper {
     {
         prepareRender(renderBlocks, ForgeDirection.SOUTH, x, y, z, icon);
 
-        boolean floatingHeight = iconHasFloatingHeight(icon);
         Slope slope = Slope.slopesList[slopeID];
 
         if (slope.isPositive) {
             if (slope.facings.contains(ForgeDirection.WEST)) {
-                setupVertex(renderBlocks, xMin, yMin, zMax, uBL, floatingHeight ? vTL : vBL, BOTTOM_LEFT );
-                setupVertex(renderBlocks, xMax, yMin, zMax, uBR,                        vBR, BOTTOM_RIGHT);
-                setupVertex(renderBlocks, xMax, yMax, zMax, uTR,                        vTR, TOP_RIGHT   );
+                setupVertex(renderBlocks, xMin, yMin, zMax, uBL, floatingIcon ? vTL : vBL, BOTTOM_LEFT );
+                setupVertex(renderBlocks, xMax, yMin, zMax, uBR,                      vBR, BOTTOM_RIGHT);
+                setupVertex(renderBlocks, xMax, yMax, zMax, uTR,                      vTR, TOP_RIGHT   );
             } else {
-                setupVertex(renderBlocks, xMin, yMax, zMax, uTL,                        vTL, TOP_LEFT    );
-                setupVertex(renderBlocks, xMin, yMin, zMax, uBL,                        vBL, BOTTOM_LEFT );
-                setupVertex(renderBlocks, xMax, yMin, zMax, uBR, floatingHeight ? vTR : vBR, BOTTOM_RIGHT);
+                setupVertex(renderBlocks, xMin, yMax, zMax, uTL,                      vTL, TOP_LEFT    );
+                setupVertex(renderBlocks, xMin, yMin, zMax, uBL,                      vBL, BOTTOM_LEFT );
+                setupVertex(renderBlocks, xMax, yMin, zMax, uBR, floatingIcon ? vTR : vBR, BOTTOM_RIGHT);
             }
         } else {
             if (slope.facings.contains(ForgeDirection.WEST)) {
@@ -164,18 +162,17 @@ public class HelperOrthoWedge extends RenderHelper {
     {
         prepareRender(renderBlocks, ForgeDirection.WEST, x, y, z, icon);
 
-        boolean floatingHeight = iconHasFloatingHeight(icon);
         Slope slope = Slope.slopesList[slopeID];
 
         if (slope.isPositive) {
             if (slope.facings.contains(ForgeDirection.NORTH)) {
-                setupVertex(renderBlocks, xMin, yMin, zMin, uBL, floatingHeight ? vTL : vBL, BOTTOM_LEFT );
-                setupVertex(renderBlocks, xMin, yMin, zMax, uBR,                        vBR, BOTTOM_RIGHT);
-                setupVertex(renderBlocks, xMin, yMax, zMax, uTR,                        vTR, TOP_RIGHT   );
+                setupVertex(renderBlocks, xMin, yMin, zMin, uBL, floatingIcon ? vTL : vBL, BOTTOM_LEFT );
+                setupVertex(renderBlocks, xMin, yMin, zMax, uBR,                      vBR, BOTTOM_RIGHT);
+                setupVertex(renderBlocks, xMin, yMax, zMax, uTR,                      vTR, TOP_RIGHT   );
             } else {
-                setupVertex(renderBlocks, xMin, yMax, zMin, uTL,                        vTL, TOP_LEFT    );
-                setupVertex(renderBlocks, xMin, yMin, zMin, uBL,                        vBL, BOTTOM_LEFT );
-                setupVertex(renderBlocks, xMin, yMin, zMax, uBR, floatingHeight ? vTR : vBR, BOTTOM_RIGHT);
+                setupVertex(renderBlocks, xMin, yMax, zMin, uTL,                      vTL, TOP_LEFT    );
+                setupVertex(renderBlocks, xMin, yMin, zMin, uBL,                      vBL, BOTTOM_LEFT );
+                setupVertex(renderBlocks, xMin, yMin, zMax, uBR, floatingIcon ? vTR : vBR, BOTTOM_RIGHT);
             }
         } else {
             if (slope.facings.contains(ForgeDirection.NORTH)) {
@@ -197,18 +194,17 @@ public class HelperOrthoWedge extends RenderHelper {
     {
         prepareRender(renderBlocks, ForgeDirection.EAST, x, y, z, icon);
 
-        boolean floatingHeight = iconHasFloatingHeight(icon);
         Slope slope = Slope.slopesList[slopeID];
 
         if (slope.isPositive) {
             if (slope.facings.contains(ForgeDirection.NORTH)) {
-                setupVertex(renderBlocks, xMax, yMax, zMax, uTL,                        vTL, TOP_LEFT    );
-                setupVertex(renderBlocks, xMax, yMin, zMax, uBL,                        vBL, BOTTOM_LEFT );
-                setupVertex(renderBlocks, xMax, yMin, zMin, uBR, floatingHeight ? vTR : vBR, BOTTOM_RIGHT);
+                setupVertex(renderBlocks, xMax, yMax, zMax, uTL,                      vTL, TOP_LEFT    );
+                setupVertex(renderBlocks, xMax, yMin, zMax, uBL,                      vBL, BOTTOM_LEFT );
+                setupVertex(renderBlocks, xMax, yMin, zMin, uBR, floatingIcon ? vTR : vBR, BOTTOM_RIGHT);
             } else {
-                setupVertex(renderBlocks, xMax, yMin, zMax, uBL, floatingHeight ? vTL : vBL, BOTTOM_LEFT );
-                setupVertex(renderBlocks, xMax, yMin, zMin, uBR,                        vBR, BOTTOM_RIGHT);
-                setupVertex(renderBlocks, xMax, yMax, zMin, uTR,                        vTR, TOP_RIGHT   );
+                setupVertex(renderBlocks, xMax, yMin, zMax, uBL, floatingIcon ? vTL : vBL, BOTTOM_LEFT );
+                setupVertex(renderBlocks, xMax, yMin, zMin, uBR,                      vBR, BOTTOM_RIGHT);
+                setupVertex(renderBlocks, xMax, yMax, zMin, uTR,                      vTR, TOP_RIGHT   );
             }
         } else {
             if (slope.facings.contains(ForgeDirection.NORTH)) {

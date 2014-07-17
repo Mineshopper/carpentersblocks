@@ -77,7 +77,7 @@ public class RenderHelperCollapsible extends RenderHelper {
     {
         prepareRender(renderBlocks, ForgeDirection.NORTH, x, y, z, icon);
 
-        if (iconHasFloatingHeight(icon)) {
+        if (floatingIcon) {
             vBL = vTL - (vTL - vBL) * CollapsibleUtil.offset_XZPN;
             vBR = vTR - (vTR - vBR) * CollapsibleUtil.offset_XZNN;
         } else {
@@ -98,7 +98,7 @@ public class RenderHelperCollapsible extends RenderHelper {
     {
         prepareRender(renderBlocks, ForgeDirection.SOUTH, x, y, z, icon);
 
-        if (iconHasFloatingHeight(icon)) {
+        if (floatingIcon) {
             vBL = vTL - (vTL - vBL) * CollapsibleUtil.offset_XZNP;
             vBR = vTR - (vTR - vBR) * CollapsibleUtil.offset_XZPP;
         } else {
@@ -119,7 +119,7 @@ public class RenderHelperCollapsible extends RenderHelper {
     {
         prepareRender(renderBlocks, ForgeDirection.WEST, x, y, z, icon);
 
-        if (iconHasFloatingHeight(icon)) {
+        if (floatingIcon) {
             vBL = vTL - (vTL - vBL) * CollapsibleUtil.offset_XZNN;
             vBR = vTR - (vTR - vBR) * CollapsibleUtil.offset_XZNP;
         } else {
@@ -140,7 +140,7 @@ public class RenderHelperCollapsible extends RenderHelper {
     {
         prepareRender(renderBlocks, ForgeDirection.EAST, x, y, z, icon);
 
-        if (iconHasFloatingHeight(icon)) {
+        if (floatingIcon) {
             vBL = vTL - (vTL - vBL) * CollapsibleUtil.offset_XZPP;
             vBR = vTR - (vTR - vBR) * CollapsibleUtil.offset_XZPN;
         } else {
