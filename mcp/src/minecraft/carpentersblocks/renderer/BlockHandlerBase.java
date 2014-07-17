@@ -526,10 +526,6 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
 
         /* Render BlockGrass side overlay here, if needed. */
 
-        boolean temp_dye_state = suppressDyeColor;
-        suppressDyeColor = true;
-
-        // Add grass overlay to BlockGrass automatically
         if (block.equals(Block.grass) && side > 0 && !isPositiveFace(side)) {
             if (Minecraft.isFancyGraphicsEnabled()) {
                 setColorAndRender(new ItemStack(Block.grass), x, y, z, side, BlockGrass.getIconSideOverlay());
@@ -537,6 +533,11 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
                 setColorAndRender(new ItemStack(Block.dirt), x, y, z, side, IconRegistry.icon_overlay_fast_grass_side);
             }
         }
+
+        /* Render decorations. */
+
+        boolean temp_dye_state = suppressDyeColor;
+        suppressDyeColor = true;
 
         if (renderPass == PASS_ALPHA) {
             if (!suppressChiselDesign && BlockProperties.hasChiselDesign(TE, coverRendering)) {
