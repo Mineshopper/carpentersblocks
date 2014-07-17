@@ -75,13 +75,11 @@ public class BlockHinged extends BlockCoverable {
     /**
      * Opens or closes hinge on right click.
      */
-    protected void postOnBlockActivated(TEBase TE, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ, List<Boolean> altered, List<Boolean> decInv)
+    protected void postOnBlockActivated(TEBase TE, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ, ActionResult actionResult)
     {
         if (!activationRequiresRedstone(TE)) {
-
             setHingeState(TE, Hinge.getState(TE) == Hinge.STATE_OPEN ? Hinge.STATE_CLOSED : Hinge.STATE_OPEN);
-            altered.add(true);
-
+            actionResult.setAltered().setNoSound();
         }
     }
 

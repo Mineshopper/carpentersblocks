@@ -1,7 +1,6 @@
 package carpentersblocks.block;
 
 import java.util.Iterator;
-import java.util.List;
 import java.util.Random;
 
 import net.minecraft.block.material.Material;
@@ -88,8 +87,9 @@ public class BlockCarpentersBed extends BlockCoverable {
     /**
      * Called upon block activation (right click on the block.)
      */
-    protected void postOnBlockActivated(TEBase TE, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ, List<Boolean> altered, List<Boolean> decInv)
+    protected void postOnBlockActivated(TEBase TE, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ, ActionResult actionResult)
     {
+        actionResult.setAltered();
         World world = TE.getWorldObj();
 
         int x = TE.xCoord;
@@ -104,7 +104,6 @@ public class BlockCarpentersBed extends BlockCoverable {
                 x = TE_opp.xCoord;
                 z = TE_opp.zCoord;
             } else {
-                altered.add(true);
                 return;
             }
 
@@ -136,7 +135,6 @@ public class BlockCarpentersBed extends BlockCoverable {
                 if (entityPlayer1 != null) {
 
                     ChatHandler.sendMessageToPlayer("tile.bed.occupied", entityPlayer, false);
-                    altered.add(true);
                     return;
 
                 }
@@ -167,8 +165,6 @@ public class BlockCarpentersBed extends BlockCoverable {
             world.newExplosion((Entity)null, x + 0.5F, y + 0.5F, z + 0.5F, 5.0F, true, true);
 
         }
-
-        altered.add(true);
     }
 
     @Override

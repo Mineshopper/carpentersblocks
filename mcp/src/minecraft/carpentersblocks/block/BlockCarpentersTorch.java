@@ -1,6 +1,5 @@
 package carpentersblocks.block;
 
-import java.util.List;
 import java.util.Random;
 
 import net.minecraft.block.Block;
@@ -64,7 +63,7 @@ public class BlockCarpentersTorch extends BlockCoverable {
      * Called when block is activated (right-click), before normal processing resumes.
      */
     @Override
-    protected void preOnBlockActivated(TEBase TE, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ, List<Boolean> altered, List<Boolean> decInv)
+    protected void preOnBlockActivated(TEBase TE, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ, ActionResult actionResult)
     {
         ItemStack itemStack = entityPlayer.getHeldItem();
 
@@ -73,7 +72,7 @@ public class BlockCarpentersTorch extends BlockCoverable {
                 Block block = BlockProperties.toBlock(itemStack);
                 if (block.equals(BlockRegistry.blockCarpentersTorch) || block.equals(Block.torchWood)) {
                     Torch.setState(TE, State.LIT);
-                    altered.add(true);
+                    actionResult.setAltered();
                 }
             }
         }

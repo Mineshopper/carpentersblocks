@@ -1,7 +1,5 @@
 package carpentersblocks.block;
 
-import java.util.List;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
@@ -144,8 +142,10 @@ public class BlockCarpentersSafe extends BlockCoverable {
     /**
      * Called upon block activation (right click on the block.)
      */
-    protected void postOnBlockActivated(TEBase TE, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ, List<Boolean> altered, List<Boolean> decInv)
+    protected void postOnBlockActivated(TEBase TE, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ, ActionResult actionResult)
     {
+        actionResult.setAltered();
+
         if (!Safe.isOpen(TE) && canPlayerActivate(TE, entityPlayer)) {
 
             TECarpentersSafe TE_safe = (TECarpentersSafe) TE;
@@ -154,12 +154,13 @@ public class BlockCarpentersSafe extends BlockCoverable {
                 ItemStack itemStack = entityPlayer.getHeldItem();
                 if (itemStack != null && itemStack.getItem().equals(Item.ingotGold) && !TE_safe.hasUpgrade()) {
                     TE_safe.setUpgrade();
-                    decInv.add(true);
+                    actionResult.decInventory().setSoundSource(itemStack);
                     return;
                 }
             }
 
-            if (!decInv.contains(true)) {
+            if (!actionResult.decInv) {
+                actionResult.setNoSound();
                 entityPlayer.displayGUIChest(TE_safe);
             }
 
@@ -168,12 +169,6 @@ public class BlockCarpentersSafe extends BlockCoverable {
             ChatHandler.sendMessageToPlayer("message.block_lock.name", entityPlayer);
 
         }
-
-        /*
-         * Safe should always return true because it either warns the player
-         * that it is locked, or it returns the GUI.
-         */
-        altered.add(true);
     }
 
     /**

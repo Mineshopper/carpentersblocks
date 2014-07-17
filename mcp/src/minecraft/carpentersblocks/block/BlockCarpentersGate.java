@@ -1,7 +1,5 @@
 package carpentersblocks.block;
 
-import java.util.List;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityLivingBase;
@@ -66,7 +64,7 @@ public class BlockCarpentersGate extends BlockCoverable {
     /**
      * Opens or closes gate on right click.
      */
-    protected void postOnBlockActivated(TEBase TE, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ, List<Boolean> altered, List<Boolean> decInv)
+    protected void postOnBlockActivated(TEBase TE, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ, ActionResult actionResult)
     {
         if (Gate.getState(TE) == Gate.STATE_OPEN) {
 
@@ -88,7 +86,7 @@ public class BlockCarpentersGate extends BlockCoverable {
 
         }
 
-        altered.add(true);
+        actionResult.setAltered().setNoSound();
     }
 
     @Override

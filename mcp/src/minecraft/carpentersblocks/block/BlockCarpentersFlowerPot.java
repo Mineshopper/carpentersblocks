@@ -1,6 +1,5 @@
 package carpentersblocks.block;
 
-import java.util.List;
 import java.util.Random;
 
 import net.minecraft.block.Block;
@@ -95,32 +94,35 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
     /**
      * Sneak-click removes plant and/or soil.
      */
-    protected boolean preOnBlockClicked(TEBase TE, World world, int x, int y, int z, EntityPlayer entityPlayer)
+    protected void preOnBlockClicked(TEBase TE, World world, int x, int y, int z, EntityPlayer entityPlayer, ActionResult actionResult)
     {
         if (entityPlayer.isSneaking()) {
 
             if (EventHandler.hitY > 0.375F) {
 
                 if (FlowerPot.isEnriched(TE)) {
+                    actionResult.setSoundSource(new ItemStack(Block.sand));
                     FlowerPot.setEnrichment(TE, false);
-                    return true;
+                    actionResult.setAltered();
                 }
 
                 if (FlowerPotProperties.hasPlant(TE)) {
-                    return FlowerPotProperties.setPlant(TE, (ItemStack)null);
+                    actionResult.setSoundSource(FlowerPotProperties.getPlant(TE));
+                    FlowerPotProperties.setPlant(TE, (ItemStack)null);
+                    actionResult.setAltered();
                 }
 
             } else if (FlowerPotProperties.hasSoil(TE)) {
 
                 if (EventHandler.eventFace == 1 && EventHandler.hitX > 0.375F && EventHandler.hitX < 0.625F && EventHandler.hitZ > 0.375F && EventHandler.hitZ < 0.625F) {
-                    return FlowerPotProperties.setSoil(TE, (ItemStack)null);
+                    actionResult.setSoundSource(FlowerPotProperties.getSoil(TE));
+                    FlowerPotProperties.setSoil(TE, (ItemStack)null);
+                    actionResult.setAltered();
                 }
 
             }
 
         }
-
-        return false;
     }
 
     @Override
@@ -128,7 +130,7 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
      * Everything contained in this will run before default onBlockActivated events take place,
      * but after the player has been verified to have permission to edit block.
      */
-    protected void preOnBlockActivated(TEBase TE, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ, List<Boolean> altered, List<Boolean> decInv)
+    protected void preOnBlockActivated(TEBase TE, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ, ActionResult actionResult)
     {
         ItemStack itemStack = entityPlayer.getHeldItem();
 
@@ -154,12 +156,10 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
                 if (!FlowerPotProperties.hasPlant(TE)) {
 
                     if (FlowerPotProperties.isPlant(itemStack)) {
-
                         int angle = MathHelper.floor_double((entityPlayer.rotationYaw + 180.0F) * 16.0F / 360.0F + 0.5D) & 15;
-
                         FlowerPot.setAngle(TE, angle);
                         FlowerPotProperties.setPlant(TE, itemStack);
-                        altered.add(decInv.add(true));
+                        actionResult.setAltered().setSoundSource(itemStack).decInventory();
                     }
 
                 }
@@ -170,7 +170,7 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
 
                     if (hasCover || soilAreaClicked) {
                         FlowerPotProperties.setSoil(TE, itemStack);
-                        altered.add(decInv.add(true));
+                        actionResult.setAltered().setSoundSource(itemStack).decInventory();
                     }
 
                 }
