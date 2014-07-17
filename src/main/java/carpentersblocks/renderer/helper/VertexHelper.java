@@ -1,9 +1,7 @@
 package carpentersblocks.renderer.helper;
 
-import net.minecraft.block.BlockGrass;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.util.IIcon;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -25,6 +23,9 @@ public class VertexHelper {
     public final static int LEFT_CENTER   = 6;
     public final static int RIGHT_CENTER  = 7;
 
+    public static boolean  floatingIcon     = false;
+    private static boolean floatingIconLock = false;
+
     /** Keeps track of vertices drawn per pass. */
     public static int vertexCount = 0;
 
@@ -32,6 +33,22 @@ public class VertexHelper {
      * Offset used for faces.
      */
     protected static double offset = 0.0D;
+
+    /**
+     * Sets floating icon flag.
+     */
+    public static void lockFloatingIcon()
+    {
+        floatingIcon = floatingIconLock = true;
+    }
+
+    /**
+     * Clears floating icon flag.
+     */
+    public static void unlockFloatingIcon()
+    {
+        floatingIcon = floatingIconLock = false;
+    }
 
     /**
      * Sets offset for drawing face.
@@ -47,17 +64,6 @@ public class VertexHelper {
     public static void clearOffset()
     {
         offset = 0.0D;
-    }
-
-    /**
-     * Returns whether icon top adjusts with render height.
-     * This will set the render helpers to translate the icon
-     * down with yMax.
-     */
-    public static boolean iconHasFloatingHeight(IIcon icon)
-    {
-        return icon == BlockGrass.getIconSideOverlay() ||
-               icon.getIconName().contains("overlay/overlay_") && icon.getIconName().endsWith("_side");
     }
 
     /**
@@ -115,6 +121,10 @@ public class VertexHelper {
         }
 
         drawVertex(renderBlocks, x, y, z, u, v);
+
+        if (!floatingIconLock) {
+            floatingIcon = false;
+        }
     }
 
 }
