@@ -225,25 +225,23 @@ public final class BlockProperties {
      */
     public static void playBlockSound(World world, ItemStack itemStack, int x, int y, int z, boolean reducedVolume)
     {
-        Block block = toBlock(itemStack);
+        if (itemStack != null) {
 
-        switch (OverlayHandler.getOverlayType(itemStack)) {
-            case GRASS:
-            case HAY:
-            case SNOW:
+            Block block;
+
+            if (itemStack.getItem() instanceof ItemBlock) {
+                block = toBlock(itemStack);
+            } else {
                 block = Blocks.sand;
-                break;
-            default:
-                if (isDye(itemStack, true)) {
-                    block = Blocks.sand;
-                }
+            }
+
+            SoundType soundType = block.stepSound;
+            float volume = (soundType.getVolume() + 1.0F) / (reducedVolume ? 8.0F : 2.0F);
+            float pitch = soundType.getPitch() * 0.8F;
+
+            world.playSoundEffect(x + 0.5F, y + 0.5F, z + 0.5F, soundType.func_150496_b(), volume, pitch);
+
         }
-
-        SoundType soundType = block.stepSound;
-        float volume = (soundType.getVolume() + 1.0F) / (reducedVolume ? 8.0F : 2.0F);
-        float pitch = soundType.getPitch() * 0.8F;
-
-        world.playSoundEffect(x + 0.5F, y + 0.5F, z + 0.5F, soundType.func_150496_b(), volume, pitch);
     }
 
     /**
