@@ -1,3 +1,7 @@
 _site
-*.bat
-*.db
+
+/*.bat
+
+/*.db
+
+/*.bat
