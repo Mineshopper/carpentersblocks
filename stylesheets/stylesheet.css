@@ -58,11 +58,6 @@ figcaption {
    font-size: large;
 }
 
-#changelog {
-   margin: 0;
-   padding: 0;
-}
-
 #changelog-full {
    background-color: white;
    padding: 5px;
@@ -121,14 +116,6 @@ figcaption {
    text-align: center;
 }
 
-.hidden {
-   display: none;
-   background-color: rgba(0,0,0,0.05);
-   padding: 5px;
-   margin: 10px;
-   border-radius: 5px;
-}
-
 .text-shadow {
    text-shadow: 1px 1px 3px rgba(0,0,0,0.75);
 }
@@ -152,6 +139,13 @@ figcaption {
   max-width: 1024px;
   padding: 20px;
   margin: 0 auto;
+}
+
+.collapsed {
+   display: none;
+   list-style:none;
+   margin: 0;
+   padding: 10px 5px 0px 0px;
 }
 
 /*******************************************************************************

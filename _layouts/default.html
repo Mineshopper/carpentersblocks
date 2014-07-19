@@ -56,8 +56,8 @@
             pageTracker._trackPageview();
          } catch(err) {}
          $('.expand').click(function() {
-            $(this).next('div').toggle();
-         });
+            $(this).next('.collapsed').slideToggle("fast");
+         })
          $(function () {
             $('.label').tooltip();
          });         

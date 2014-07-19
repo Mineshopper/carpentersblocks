@@ -3,6 +3,7 @@ layout: default
 title: Downloads
 label-begin-forge: <span class="label label-info" data-toggle="tooltip" data-placement="top" title="The minimum required version of Forge">
 label-begin-minecraft: <span class="label label-primary" data-toggle="tooltip" data-placement="top" title="The required version of Minecraft">
+label-begin-release: <span class="label label-default" data-toggle="tooltip" data-placement="top" title="The release date">
 label-end: </span>
 label-dev: <span class="label label-danger" data-toggle="tooltip" data-placement="top" title="This is a development build and may contain critical bugs">DEV</span>
 label-stable: <span class="label label-success" data-toggle="tooltip" data-placement="top" title="This build has been tested and considered stable">STABLE</span>
@@ -45,6 +46,7 @@ label-stable: <span class="label label-success" data-toggle="tooltip" data-place
          {{ page.label-dev }}
          {{ page.label-begin-minecraft }}MC 1.7.10{{ page.label-end }}
          {{ page.label-begin-forge }}FORGE 10.13.0.1180{{ page.label-end }}
+         {{ page.label-begin-release }}RELEASED 07/19/2014{{ page.label-end }}
       </div>
    </div>
    <div style="display: table-row;">
@@ -52,7 +54,7 @@ label-stable: <span class="label label-success" data-toggle="tooltip" data-place
          <button onclick="window.open('http://adf.ly/qQNnZ')">Download</button>
          <button onclick="window.open('https://www.dropbox.com/s/uvnv8bzlq9ld4u6/Carpenter%27s%20Blocks%20v3.2.5%20%5BDEV%5D%20-%20MC%201.7.10.zip?dl=1')">Mirror</button>
          <button class="expand">View Changelog</button>
-         <div class="hidden">
+         <div class="collapsed">
             <ul id="changelog">
                <li>Refactored safe code to help prevent crashes.</li>
                <li>Now must sneak to apply safe upgrade.</li>
@@ -82,6 +84,7 @@ label-stable: <span class="label label-success" data-toggle="tooltip" data-place
          {{ page.label-dev }}
          {{ page.label-begin-minecraft }}MC 1.7.2{{ page.label-end }}
          {{ page.label-begin-forge }}FORGE 10.12.2.1121{{ page.label-end }}
+         {{ page.label-begin-release }}RELEASED 07/19/2014{{ page.label-end }}
       </div>
    </div>
    <div style="display: table-row;">
@@ -89,7 +92,7 @@ label-stable: <span class="label label-success" data-toggle="tooltip" data-place
          <button onclick="window.open('http://adf.ly/qQNks')">Download</button>
          <button onclick="window.open('https://www.dropbox.com/s/r300sdp18f5rku5/Carpenter%27s%20Blocks%20v3.2.5%20%5BDEV%5D%20-%20MC%201.7.2.zip?dl=1')">Mirror</button>
          <button class="expand">View Changelog</button>
-         <div class="hidden">
+         <div class="collapsed">
             <ul id="changelog">
                <li>Refactored safe code to help prevent crashes.</li>
                <li>Now must sneak to apply safe upgrade.</li>
@@ -116,6 +119,7 @@ label-stable: <span class="label label-success" data-toggle="tooltip" data-place
          {{ page.label-stable }}
          {{ page.label-begin-minecraft }}MC 1.7.2{{ page.label-end }}
          {{ page.label-begin-forge }}FORGE 10.12.2.1121{{ page.label-end }}
+         {{ page.label-begin-release }}RELEASED 06/27/2014{{ page.label-end }}
       </div>
    </div>
    <div style="display: table-row;">
@@ -123,7 +127,7 @@ label-stable: <span class="label label-success" data-toggle="tooltip" data-place
          <button onclick="window.open('http://adf.ly/qQNqs')">Download</button>
          <button onclick="window.open('https://www.dropbox.com/s/5sz0nwpl3wcphkq/Carpenter%27s%20Blocks%20v3.2.4%20-%20MC%201.7%2B.zip?dl=1')">Mirror</button>
          <button class="expand">View Changelog</button>
-         <div class="hidden">
+         <div class="collapsed">
             <ul id="changelog">
                <li>Fixed server-side cover crash.</li>
             </ul>
@@ -141,6 +145,7 @@ label-stable: <span class="label label-success" data-toggle="tooltip" data-place
          {{ page.label-dev }}
          {{ page.label-begin-minecraft }}MC 1.6.4{{ page.label-end }}
          {{ page.label-begin-forge }}FORGE 9.11.1.965{{ page.label-end }}
+         {{ page.label-begin-release }}RELEASED 07/19/2014{{ page.label-end }}
       </div>
    </div>
    <div style="display: table-row;">
@@ -148,7 +153,7 @@ label-stable: <span class="label label-success" data-toggle="tooltip" data-place
          <button onclick="window.open('http://adf.ly/qQNhd')">Download</button>
          <button onclick="window.open('https://www.dropbox.com/s/rqysrbpv2pdbx2j/Carpenter%27s%20Blocks%20v3.2.5%20%5BDEV%5D%20-%20MC%201.6.4.zip?dl=1')">Mirror</button>
          <button class="expand">View Changelog</button>
-         <div class="hidden">
+         <div class="collapsed">
             <ul id="changelog">
                <li>Backported from master branch and brought up to date.</li>
                <li>Fixed flower pot soil and plant not migrating to 1.7.</li>
@@ -166,6 +171,7 @@ label-stable: <span class="label label-success" data-toggle="tooltip" data-place
          {{ page.label-stable }}
          {{ page.label-begin-minecraft }}MC 1.6.4{{ page.label-end }}
          {{ page.label-begin-forge }}FORGE 9.11.1.965{{ page.label-end }}
+         {{ page.label-begin-release }}RELEASED 06/22/2014{{ page.label-end }}
       </div>
    </div>
    <div style="display: table-row;">
@@ -173,7 +179,7 @@ label-stable: <span class="label label-success" data-toggle="tooltip" data-place
          <button onclick="window.open('http://adf.ly/qQO2P')">Download</button>
          <button onclick="window.open('https://www.dropbox.com/s/uyo6q00fihytg1n/Carpenter%27s%20Blocks%20v2.1.2%20-%20MC%201.6.4.zip?dl=1')">Mirror</button>
          <button class="expand">View Changelog</button>
-         <div class="hidden">
+         <div class="collapsed">
             <ul id="changelog">
                <li>Now properly converts slopes and stairs when migrating to 1.7.2.</li>
             </ul>
@@ -191,6 +197,7 @@ label-stable: <span class="label label-success" data-toggle="tooltip" data-place
          {{ page.label-stable }}
          {{ page.label-begin-minecraft }}MC 1.5.2{{ page.label-end }}
          {{ page.label-begin-forge }}FORGE 7.8.1.738{{ page.label-end }}
+         {{ page.label-begin-release }}RELEASED 01/01/2014{{ page.label-end }}
       </div>
    </div>
    <div style="display: table-row;">
@@ -198,7 +205,7 @@ label-stable: <span class="label label-success" data-toggle="tooltip" data-place
          <button onclick="window.open('http://adf.ly/qQO5V')">Download</button>
          <button onclick="window.open('https://www.dropbox.com/s/sgpy24defk36w1j/Carpenter%27s%20Blocks%20v1.9.9%20-%20MC%201.5.2.zip?dl=1')">Mirror</button>
          <button class="expand">View Changelog</button>
-         <div class="hidden">
+         <div class="collapsed">
             <ul id="changelog">
                <li>[PATCH] Uncovered blocks can now catch fire.</li>
                <li>[PATCH] Bed designs can now be cleared with hammer sneak right-click.</li>
@@ -231,7 +238,7 @@ label-stable: <span class="label label-success" data-toggle="tooltip" data-place
          <button onclick="window.open('')">Download</button>
          <button onclick="window.open('')">Mirror</button>
          <button class="expand">View Changelog</button>
-         <div class="hidden">
+         <div class="collapsed">
             <ul id="changelog">
                <li>CHANGES</li>
             </ul>
