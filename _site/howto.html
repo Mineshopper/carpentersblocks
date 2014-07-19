@@ -5,10 +5,12 @@
       <meta charset='utf-8' />
       <meta http-equiv="X-UA-Compatible" content="chrome=1" />
       <meta name="description" content="Carpentersblocks : A Minecraft mod." />
+      <link rel="stylesheet" href="stylesheets/bootstrap.min.css">
       <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
       <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
       <link rel="icon" href="favicon.ico" type="image/x-icon">
       <script src="javascripts/jquery-2.1.1.min.js"></script>
+      <script src="javascripts/bootstrap.min.js"></script>
       <title>Carpenter's Blocks  - How To </title>
    </head>
 
@@ -40,9 +42,8 @@
 
       <!-- MAIN CONTENT -->
 
-      <div id="main_content_wrap" class="outer">
-         <section id="main_content" class="inner">
-            <h3>How To</h3>
+      <section id="main_content" class="inner">
+         <h3>How To</h3>
 
 Once a Carpenter's block is placed in the world, right-click it with any full-size block. If the block is compatible, it will become the cover block. This enables the Carpenter's block to mimic most of the donor block's properties including fire and explosion resistance, in addition to displaying it's texture.
 
@@ -178,14 +179,7 @@ If you'd like to use Kaevator's original wallpapers with tiles, I've provided a 
 Alternatively, you can relight torches immediately by right-clicking them with another torch.</dd>
 
 </dl>
-         </section>
-      </div>
-
-      <!-- FOOTER  -->
-      
-      <footer>
-         This is the footer.
-      </footer>
+      </section>
 
       <script type="text/javascript">
          var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
@@ -195,8 +189,11 @@ Alternatively, you can relight torches immediately by right-clicking them with a
             pageTracker._trackPageview();
          } catch(err) {}
          $('.expand').click(function() {
-            $(this).next().next('.hidden').slideToggle("fast");
+            $(this).next('div').toggle();
          });
+         $(function () {
+            $('.label').tooltip();
+         });         
       </script>
 
    </body>

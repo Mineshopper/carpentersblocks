@@ -5,10 +5,12 @@
       <meta charset='utf-8' />
       <meta http-equiv="X-UA-Compatible" content="chrome=1" />
       <meta name="description" content="Carpentersblocks : A Minecraft mod." />
+      <link rel="stylesheet" href="stylesheets/bootstrap.min.css">
       <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
       <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
       <link rel="icon" href="favicon.ico" type="image/x-icon">
       <script src="javascripts/jquery-2.1.1.min.js"></script>
+      <script src="javascripts/bootstrap.min.js"></script>
       <title>Carpenter's Blocks  - Home </title>
    </head>
 
@@ -40,9 +42,8 @@
 
       <!-- MAIN CONTENT -->
 
-      <div id="main_content_wrap" class="outer">
-         <section id="main_content" class="inner">
-            <h3>Description</h3>
+      <section id="main_content" class="inner">
+         <h3>Description</h3>
 
 <p>This mod adds slopes and a custom variety of vanilla-inspired blocks to Minecraft. The custom nature of these blocks allows players to cover them using most solid blocks in the game. Once covered, they look and act just like the block they're mimicking, but in entirely new shapes! For example, make some obsidian stairs that are resistant to explosions. Or, make glowstone take the shape of a pyramid top. With Carpenter's Blocks, building takes on new possibilities!</p>
 
@@ -57,14 +58,7 @@ You can help support the mod by becoming a <a href="http://www.patreon.com/mines
    <li>You're allowed to include this mod in a modpack. This also means you don't have to ask.</li>
    <li>View the source code on Github. I encourage developers and users to help make the mod better by submitting pull requests for new localizations, bug fixes, or even enhancements.</li>
 </ul>
-         </section>
-      </div>
-
-      <!-- FOOTER  -->
-      
-      <footer>
-         This is the footer.
-      </footer>
+      </section>
 
       <script type="text/javascript">
          var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
@@ -74,8 +68,11 @@ You can help support the mod by becoming a <a href="http://www.patreon.com/mines
             pageTracker._trackPageview();
          } catch(err) {}
          $('.expand').click(function() {
-            $(this).next().next('.hidden').slideToggle("fast");
+            $(this).next('div').toggle();
          });
+         $(function () {
+            $('.label').tooltip();
+         });         
       </script>
 
    </body>

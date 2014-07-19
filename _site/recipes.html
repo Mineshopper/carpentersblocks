@@ -5,10 +5,12 @@
       <meta charset='utf-8' />
       <meta http-equiv="X-UA-Compatible" content="chrome=1" />
       <meta name="description" content="Carpentersblocks : A Minecraft mod." />
+      <link rel="stylesheet" href="stylesheets/bootstrap.min.css">
       <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
       <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
       <link rel="icon" href="favicon.ico" type="image/x-icon">
       <script src="javascripts/jquery-2.1.1.min.js"></script>
+      <script src="javascripts/bootstrap.min.js"></script>
       <title>Carpenter's Blocks  - Recipes </title>
    </head>
 
@@ -40,9 +42,8 @@
 
       <!-- MAIN CONTENT -->
 
-      <div id="main_content_wrap" class="outer">
-         <section id="main_content" class="inner">
-            <h3>Recipes</h3>
+      <section id="main_content" class="inner">
+         <h3>Recipes</h3>
 
 <img src="http://i.imgur.com/O6M0ujH.png">Carpenter's Hammer</img>
 <img src="http://i.imgur.com/jz4hBFh.png">Carpenter's Chisel</img>
@@ -64,14 +65,7 @@
 <img src="http://i.imgur.com/wsRU6HT.png">Carpenter's Stairs</img>
 <img src="http://i.imgur.com/hS6oqDd.png">Carpenter's Tile (*Note: Hardened clay pictured in recipe.)</img>
 <img src="http://i.imgur.com/AcjOL1n.png">Carpenter's Torch</img>
-         </section>
-      </div>
-
-      <!-- FOOTER  -->
-      
-      <footer>
-         This is the footer.
-      </footer>
+      </section>
 
       <script type="text/javascript">
          var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
@@ -81,8 +75,11 @@
             pageTracker._trackPageview();
          } catch(err) {}
          $('.expand').click(function() {
-            $(this).next().next('.hidden').slideToggle("fast");
+            $(this).next('div').toggle();
          });
+         $(function () {
+            $('.label').tooltip();
+         });         
       </script>
 
    </body>

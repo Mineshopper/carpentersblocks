@@ -1,119 +1,244 @@
 ---
 layout: default
 title: Downloads
+label-begin-forge: <span class="label label-info" data-toggle="tooltip" data-placement="top" title="The minimum required version of Forge">
+label-begin-minecraft: <span class="label label-primary" data-toggle="tooltip" data-placement="top" title="The required version of Minecraft">
+label-end: </span>
+label-dev: <span class="label label-danger" data-toggle="tooltip" data-placement="top" title="This is a development build and may contain critical bugs">DEV</span>
+label-stable: <span class="label label-success" data-toggle="tooltip" data-placement="top" title="This build has been tested and considered stable">STABLE</span>
 ---
 
-<h3>Downloads</h3>
-
 <h4>Dependencies</h4>
-<span id="label-minecraft" onclick="window.open('https://minecraft.net/')">MINECRAFT</span>
-<p>The minimum required version of Minecraft to run a build.  Builds are compiled using SRG names, which may enable them to run on later builds of Minecraft.  Please keep in mind this does not guarantee stability unless the Minecraft version matches exactly.</p>
-<span id="label-forge">FORGE</span>
-<p>The minimum Forge version necessary to run a build.  Grab the version you need <a href="http://files.minecraftforge.net/" target="_blank">here</a>.
 
-<h4>Builds</h4>
+<div style="display: table;">
 
-<div id="download-container">
-   <div id="stable-header" class="text-shadow">
-      Latest Builds
+   <div style="display: table-row;">
+      <div style="display: table-cell; text-align: right;">
+         {{ page.label-begin-minecraft }} MINECRAFT {{ page.label-end }}
+      </div>
+      <div style="display: table-cell; padding-left: 10px;">
+         <p>The required version of <a href="https://minecraft.net/" target="_blank">Minecraft</a> to run a build.  Builds are compiled using SRG names, which may enable them to run on later minor builds of Minecraft.  Please keep in mind this does not guarantee stability unless the Minecraft version matches exactly.</p>
+      </div>
    </div>
-   <div id="download-content">
-      <span id="label-minecraft" class="tooltip animate blue" data-tool="This is a development version, and may contain bugs.">DEV</span>
-      <span id="label-minecraft" title="Minecraft version.">1.7.10</span>
-      <span id="label-forge" title="The minimum Forge build required.">10.13.0.1180</span>
-      Carpenter's Blocks 3.2.5
-      <div class="expand">Changelog</div><br>
-      <div class="hidden">
-         <ul id="changelog">
-            <li>Refactored safe code to help prevent crashes.</li>
-            <li>Now must sneak to apply safe upgrade.</li>
-            <li>Bed designs now fully support texture packs.</li>
-            <li>Fixed some conditions where plants could not be placed on covered blocks.</li>
-            <li>Fixed slope selection not cycling backwards correctly.</li>
-            <li>Fixed minor bug in ladder placement validation.</li>
-            <li>Rewrote packet handler.</li>
-            <li>Fixed plant fertilization crashing server.</li>
-            <li>Bed designs should now load properly on Unix systems. [Noxilie]</li>
-            <li>Code cleanup.</li>
-            <li>Ownership properties shifted over to new UUID system.</li>
-            <li>Forge build requirement set at 1180.</li>
-         </ul>
-      </div>
 
-      <span id="label-minecraft">DEV</span>
-      <span id="label-minecraft">1.7.2</span>
-      <span id="label-forge">10.12.2.1121</span>
-      Carpenter's Blocks 3.2.5
-      <div class="expand">View Changelog</div><br>
-      <div class="hidden">
-         <ul id="changelog">
-            <li>Refactored safe code to help prevent crashes.</li>
-            <li>Now must sneak to apply safe upgrade.</li>
-            <li>Bed designs now fully support texture packs.</li>
-            <li>Fixed some conditions where plants could not be placed on covered blocks.</li>
-            <li>Fixed slope selection not cycling backwards correctly.</li>
-            <li>Fixed minor bug in ladder placement validation.</li>
-            <li>Rewrote packet handler.</li>
-            <li>Fixed plant fertilization crashing server.</li>
-            <li>Bed designs should now load properly on Unix systems. [Noxilie]</li>
-            <li>Code cleanup.</li>
-            <li>Upgraded Forge build requirement to 1121.</li>
-         </ul>
+   <div style="display: table-row;">
+      <div style="display: table-cell; text-align: right;">
+         {{ page.label-begin-forge }} FORGE {{ page.label-end }}
       </div>
-      
-      <span id="label-minecraft">STABLE</span>
-      <span id="label-minecraft">1.7.2</span>
-      <span id="label-forge">10.12.2.1121</span>
-      Carpenter's Blocks 3.2.4
-      <div class="expand">Changelog</div><br>
-      <div class="hidden">
-         <ul id="changelog">
-            <li>Changes.</li>
-         </ul>
+      <div style="display: table-cell; padding-left: 10px;">
+         <p>The minimum <a href="http://files.minecraftforge.net/" target="_blank">Forge</a> version necessary to run a build.</p>
       </div>
+   </div>
 
-      <span id="label-minecraft">DEV</span>
-      <span id="label-minecraft">1.6.4</span>
-      <span id="label-forge">9.11.1.965</span>
-      Carpenter's Blocks 3.2.5
-      <div class="expand">Changelog</div><br>
-      <div class="hidden">
-         <ul id="changelog">
-            <li>Changes.</li>
-         </ul>
-      </div>
+</div>
 
-      <span id="label-minecraft">STABLE</span>
-      <span id="label-minecraft">1.6.4</span>
-      <span id="label-forge">9.11.1.965</span>
-      Carpenter's Blocks 2.1.2
-      <div class="expand">Changelog</div><br>
-      <div class="hidden">
-         <ul id="changelog">
-            <li>Changes.</li>
-         </ul>
-      </div>
+<hr>
 
-      <span id="label-minecraft">STABLE</span>
-      <span id="label-minecraft">1.5.2</span>
-      <span id="label-forge">7.8.1.738</span>
-      Carpenter's Blocks 1.9.9
-      <div class="expand">Changelog</div><br>
-      <div class="hidden">
-         <ul id="changelog">
-            <li>Changes.</li>
-         </ul>
+<h4>Latest Builds</h4>
+
+<h5>Minecraft 1.7.10</h5>
+
+<div class="download-container">
+   <div style="display: table-row;">
+      <div class="download-container-version">
+         Carpenter's Blocks 3.2.5
+         {{ page.label-dev }}
+         {{ page.label-begin-minecraft }}MC 1.7.10{{ page.label-end }}
+         {{ page.label-begin-forge }}FORGE 10.13.0.1180{{ page.label-end }}
       </div>
-      
+   </div>
+   <div style="display: table-row;">
+      <div style="display: table-cell;">
+         <button>Download</button>
+         <button>Mirror</button>
+         <button class="expand">View Changelog</button>
+         <div class="hidden">
+            <ul id="changelog">
+               <li>Refactored safe code to help prevent crashes.</li>
+               <li>Now must sneak to apply safe upgrade.</li>
+               <li>Bed designs now fully support texture packs.</li>
+               <li>Fixed some conditions where plants could not be placed on covered blocks.</li>
+               <li>Fixed slope selection not cycling backwards correctly.</li>
+               <li>Fixed minor bug in ladder placement validation.</li>
+               <li>Rewrote packet handler.</li>
+               <li>Fixed plant fertilization crashing server.</li>
+               <li>Bed designs should now load properly on Unix systems. [Noxilie]</li>
+               <li>Code cleanup.</li>
+               <li>Ownership properties shifted over to new UUID system.</li>
+               <li>Forge build requirement set at 1180.</li>
+            </ul>
+         </div>
+      </div>
    </div>
 </div>
+
+<h5>Minecraft 1.7.2</h5>
+
+<div class="download-container">
+   <div style="display: table-row;">
+      <div class="download-container-version">
+         Carpenter's Blocks 3.2.5
+         {{ page.label-dev }}
+         {{ page.label-begin-minecraft }}MC 1.7.2{{ page.label-end }}
+         {{ page.label-begin-forge }}FORGE 10.12.2.1121{{ page.label-end }}
+      </div>
+   </div>
+   <div style="display: table-row;">
+      <div style="display: table-cell;">
+         <button>Download</button>
+         <button>Mirror</button>
+         <button class="expand">View Changelog</button>
+         <div class="hidden">
+            <ul id="changelog">
+               <li>Refactored safe code to help prevent crashes.</li>
+               <li>Now must sneak to apply safe upgrade.</li>
+               <li>Bed designs now fully support texture packs.</li>
+               <li>Fixed some conditions where plants could not be placed on covered blocks.</li>
+               <li>Fixed slope selection not cycling backwards correctly.</li>
+               <li>Fixed minor bug in ladder placement validation.</li>
+               <li>Rewrote packet handler.</li>
+               <li>Fixed plant fertilization crashing server.</li>
+               <li>Bed designs should now load properly on Unix systems. [Noxilie]</li>
+               <li>Code cleanup.</li>
+               <li>Upgraded Forge build requirement to 1121.</li>
+            </ul>
+         </div>
+      </div>
+   </div>
+</div>
+
+<div class="download-container">
+   <div style="display: table-row;">
+      <div class="download-container-version">
+         Carpenter's Blocks 3.2.4
+         {{ page.label-stable }}
+         {{ page.label-begin-minecraft }}MC 1.7.2{{ page.label-end }}
+         {{ page.label-begin-forge }}FORGE 10.12.2.1121{{ page.label-end }}
+      </div>
+   </div>
+   <div style="display: table-row;">
+      <div style="display: table-cell;">
+         <button>Download</button>
+         <button>Mirror</button>
+         <button class="expand">View Changelog</button>
+         <div class="hidden">
+            <ul id="changelog">
+               <li>CHANGES</li>
+            </ul>
+         </div>
+      </div>
+   </div>
+</div>
+
+<h5>Minecraft 1.6.4</h5>
+
+<div class="download-container">
+   <div style="display: table-row;">
+      <div class="download-container-version">
+         Carpenter's Blocks 3.2.5
+         {{ page.label-dev }}
+         {{ page.label-begin-minecraft }}MC 1.6.4{{ page.label-end }}
+         {{ page.label-begin-forge }}FORGE 9.11.1.965{{ page.label-end }}
+      </div>
+   </div>
+   <div style="display: table-row;">
+      <div style="display: table-cell;">
+         <button>Download</button>
+         <button>Mirror</button>
+         <button class="expand">View Changelog</button>
+         <div class="hidden">
+            <ul id="changelog">
+               <li>CHANGES</li>
+            </ul>
+         </div>
+      </div>
+   </div>
+</div>
+
+<div class="download-container">
+   <div style="display: table-row;">
+      <div class="download-container-version">
+         Carpenter's Blocks 2.1.2
+         {{ page.label-stable }}
+         {{ page.label-begin-minecraft }}MC 1.6.4{{ page.label-end }}
+         {{ page.label-begin-forge }}FORGE 9.11.1.965{{ page.label-end }}
+      </div>
+   </div>
+   <div style="display: table-row;">
+      <div style="display: table-cell;">
+         <button>Download</button>
+         <button>Mirror</button>
+         <button class="expand">View Changelog</button>
+         <div class="hidden">
+            <ul id="changelog">
+               <li>CHANGES</li>
+            </ul>
+         </div>
+      </div>
+   </div>
+</div>
+
+<h5>Minecraft 1.5.2</h5>
+
+<div class="download-container">
+   <div style="display: table-row;">
+      <div class="download-container-version">
+         Carpenter's Blocks 1.9.9
+         {{ page.label-stable }}
+         {{ page.label-begin-minecraft }}MC 1.5.2{{ page.label-end }}
+         {{ page.label-begin-forge }}FORGE 7.8.1.738{{ page.label-end }}
+      </div>
+   </div>
+   <div style="display: table-row;">
+      <div style="display: table-cell;">
+         <button>Download</button>
+         <button>Mirror</button>
+         <button class="expand">View Changelog</button>
+         <div class="hidden">
+            <ul id="changelog">
+               <li>CHANGES</li>
+            </ul>
+         </div>
+      </div>
+   </div>
+</div>
+
+<!-- <div class="download-container">
+   <div style="display: table-row;">
+      <div class="download-container-version">
+         VERSION
+         TAGS
+      </div>
+   </div>
+   <div style="display: table-row;">
+      <div style="display: table-cell;">
+         <button>Download</button>
+         <button>Mirror</button>
+         <button class="expand">View Changelog</button>
+         <div class="hidden">
+            <ul id="changelog">
+               <li>CHANGES</li>
+            </ul>
+         </div>
+      </div>
+   </div>
+</div> -->
+
+<hr>
+
+<h4>Legacy Builds</h4>
+
+<p>Legacy versions can be found by browsing the <a href="http://adf.ly/dMfV4" target="_blank">root download folder</a>.</p>
+
+<hr>
+
+<h4>Extra Resources</h4>
 
 <div id="download-container">
    <div id="extra-header" class="text-shadow">
       Extras
    </div>
    <div id="download-content">
-      <span id="label-extra">LEGACY</span>Legacy versions can be found by browsing the <a href="http://adf.ly/dMfV4" target="_blank">root download folder</a>.<br>
       <a href="changelog.html">View Complete Changelog</a><br>
       
       <div class="expand">Chisel Design Pack by <a href="http://www.minecraftforum.net/user/3725-wreckage/" target="_blank">Wreckage</a></div><br>

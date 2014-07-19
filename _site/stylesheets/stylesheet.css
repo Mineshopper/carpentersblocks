@@ -1,107 +1,3 @@
-@import url(pygment_trac.css);
-
-/*******************************************************************************
-MeyerWeb Reset
-*******************************************************************************/
-
-html, body, div, span, applet, object, iframe,
-h1, h2, h3, h4, h5, h6, p, blockquote, pre,
-a, abbr, acronym, address, big, cite, code,
-del, dfn, em, img, ins, kbd, q, s, samp,
-small, strike, strong, sub, sup, tt, var,
-b, u, i, center,
-dl, dt, dd, ol, ul, li,
-fieldset, form, label, legend,
-table, caption, tbody, tfoot, thead, tr, th, td,
-article, aside, canvas, details, embed,
-figure, figcaption, footer, header, hgroup,
-menu, nav, output, ruby, section, summary,
-time, mark, audio, video {
-  margin: 0;
-  padding: 0;
-  border: 0;
-  font: inherit;
-  vertical-align: baseline;
-}
-
-/* HTML5 display-role reset for older browsers */
-article, aside, details, figcaption, figure,
-footer, header, hgroup, menu, nav, section {
-  display: block;
-}
-
-ol, ul {
-  list-style: none;
-}
-
-table {
-  border-collapse: collapse;
-  border-spacing: 0;
-}
-
-/*******************************************************************************
-Tooltips and Labels
-*******************************************************************************/
-
-/** tooltip styles
-  * based on http://www.flatypo.net/tutorials/how-to-create-animated-tooltips-css3-hiperlink/ 
- **/
-.tooltip{
-  position: relative;
-  display: inline;
-}
-.tooltip:after{
-  display: block;
-  visibility: hidden;
-  position: absolute;
-  bottom: 0;
-  left: 20%;
-  opacity: 0;
-  content: attr(data-tool); /* might also use attr(title) */
-  height: auto;
-  min-width: 100px;
-  padding: 5px 8px;
-  z-index: 999;
-  color: #fff;
-  text-decoration: none;
-  text-align: center;
-  background: rgba(0,0,0,0.85);
-  -webkit-border-radius: 5px;
-  -moz-border-radius: 5px;
-  border-radius: 5px;
-}
-
-.tooltip:before {
-  position: absolute;
-  visibility: hidden;
-  width: 0;
-  height: 0;
-  left: 50%;
-  bottom: 0px;
-  opacity: 0;
-  content: "";
-  border-style: solid;
-  border-bottom-width: 0;
-  border-color: rgba(0,0,0,0.85) transparent transparent transparent;
-}
-.tooltip:hover:after{ visibility: visible; opacity: 1; bottom: 20px; }
-.tooltip:hover:before{ visibility: visible; opacity: 1; bottom: 14px; }
-
-.tooltip.animate:after, a.tooltip.animate:before {
-  -webkit-transition: all 0.2s ease-in-out;
-  -moz-transition: all 0.2s ease-in-out;
-  -ms-transition: all 0.2s ease-in-out;
-  -o-transition: all 0.2s ease-in-out;
-  transition: all 0.2s ease-in-out;
-}
-
-/* tooltip colors (add your own!) */
-.tooltip.blue:after { background:#5f87c2; }
-.tooltip.blue:before { border-color: #5f87c2 transparent transparent transparent; }
-.tooltip.bottom.blue:before{ border-color: transparent transparent #5f87c2 transparent; }
-.tooltip.right.blue:before { border-color: transparent #5f87c2 transparent transparent; }
-.tooltip.left.blue:before { border-color: transparent transparent transparent #5f87c2; }
-
 /*******************************************************************************
 Navbar
 *******************************************************************************/
@@ -131,49 +27,11 @@ Navbar
 Theme
 *******************************************************************************/
 
-body {
-  box-sizing: border-box;
-  color:#373737;
-  background: #212121;
-  font-size: 16px;
-  font-family: Arial, Helvetica, sans-serif;
-  line-height: 1.5;
-  -webkit-font-smoothing: antialiased;
-}
-
 h1, h2, h3, h4, h5, h6 {
   margin: 10px 0;
   font-weight: 700;
   font-family: Arial, Helvetica, sans-serif;
   letter-spacing: -1px;
-}
-
-h1 {
-  font-size: 36px;
-}
-
-h2 {
-  font-size: 32px;
-}
-
-h3 {
-  font-size: 24px;
-}
-
-h4 {
-  font-size: 21px;
-}
-
-h5 {
-  font-size: 18px;
-}
-
-h6 {
-  font-size: 16px;
-}
-
-p {
-  margin: 10px 0 15px 0;
 }
 
 a {
@@ -189,73 +47,6 @@ a {
   -o-transition: text-shadow 0.5s ease;
   -ms-transition: color 0.5s ease;
   -ms-transition: text-shadow 0.5s ease;
-}
-
-img {
-  max-width: 100%;
-}
-
-p img {
-  display: inline;
-  margin: 0;
-  padding: 0;
-  vertical-align: middle;
-  text-align: center;
-  border: none;
-}
-
-ul {
-  list-style: inside;
-  padding-left: 20px;
-  margin: 0;
-  padding: 0;
-  line-height: 1.25em;
-}
-
-ol {
-  list-style: decimal inside;
-  padding-left: 20px;
-  line-height: 1.25em;
-}
-
-dl dt {
-  font-weight: bold;
-}
-
-dl dd {
-  padding-left: 20px;
-  font-style: italic;
-}
-
-dl p {
-  padding-left: 20px;
-  font-style: italic;
-}
-
-#download-container {
-   width: 100%;
-   margin-top: 20px;
-   background-color: white;
-   border-radius: 3px;
-   box-shadow: 0 0 10px rgba(0,0,0,.1);
-}
-
-#download-content {
-   padding: 5px;
-}
-
-#copyright {
-   color: gray;
-}
-
-.expand {
-   color: #007edf;
-   cursor: pointer;
-   display: inline-block;
-}
-
-.expand:hover {
-   text-decoration: underline;
 }
 
 .hidden {
@@ -279,130 +70,28 @@ dl p {
    box-shadow: 0 0 5px rgba(0,0,0,.1);
 }
 
-#development-header {
-   background-color: #fe5900;
-   border-top-left-radius: 3px;
-   border-bottom-right-radius: 3px;
-   display: inline-block;
-   padding: 5px 10px 5px 10px;
-   color: white;
-}
-
-#stable-header {
-   background-color: #00d05b;
-   border-top-left-radius: 3px;
-   border-bottom-right-radius: 3px;
-   display: inline-block;
-   padding: 5px 10px 5px 10px;
-   color: white;
-}
-
-#extra-header {
-   background-color: #37a9e7;
-   border-top-left-radius: 3px;
-   border-bottom-right-radius: 3px;
-   display: inline-block;
-   padding: 5px 10px 5px 10px;
-   color: white;
-}
-
 .text-shadow {
    text-shadow: 1px 1px 3px rgba(0,0,0,0.75);
 }
 
-.patron {
-   color: gold;
-}
-
-.patron:hover, .patron:active {
-   text-decoration: none;
-   color: white;
-}
-
-.whitebox {
-   background-color: white;
-   padding: 10px;
+.download-container {
+   display: table;
+   border: 1px solid rgba(0,0,0,0.1);
+   padding: 5px;
+   border-radius: 5px;
+   margin: 0px 0px 10px 30px;
    width: 100%;
-   box-shadow: 0 0 10px rgba(0,0,0,.1);
 }
 
-#label-generic {
-   padding: 2px 5px 2px 5px;
-   background-color: #37a9e7;
-   border-radius: 2px;
-   color: white;
-   font-family: Arial, Helvetica, sans-serif;
-   font-size: small;
-   margin-right: 5px;
-}
-
-#label-warn {
-   padding: 2px 10px 2px 10px;
-   background-color: #ff4040;
-   border-radius: 2px;
-   color: white;
-   font-family: Impact, sans-serif;
-   font-size: small;
-   margin-right: 5px;
-}
-
-#label-dev {
-   padding: 2px 5px 2px 5px;
-   background-color: #fe5900;
-   border-radius: 2px;
-   color: white;
-   font-family: Arial, Helvetica, sans-serif;
-   font-size: small;
-}
-
-#label-stable {
-   padding: 2px 5px 2px 5px;
-   background-color: #00d05b;
-   border-radius: 2px;
-   color: white;
-   font-family: Arial, Helvetica, sans-serif;
-   font-size: small;
-}
-
-#label-extra {
-   padding: 2px 5px 2px 5px;
-   background-color: #37a9e7;
-   border-radius: 2px;
-   color: white;
-   font-family: Arial, Helvetica, sans-serif;
-   font-size: small;
-}
-
-#label-minecraft {
-   padding: 2px 5px 2px 5px;
-   background-color: #ffb70b;
-   border-radius: 2px;
-   color: white;
-   font-family: Arial, Helvetica, sans-serif;
-   font-size: small;
-}
-
-#label-forge {
-   padding: 2px 5px 2px 5px;
-   background-color: #6c92f8;
-   border-radius: 2px;
-   color: white;
-   font-family: Arial, Helvetica, sans-serif;
-   font-size: small;
-}
-
-/*******************************************************************************
-Full-Width Styles
-*******************************************************************************/
-
-.outer {
-  width: 100%;
+.download-container-version {
+   display: table-cell;
+   padding-bottom: 5px;
 }
 
 .inner {
   position: relative;
   max-width: 1024px;
-  padding: 20px 10px;
+  padding: 20px;
   margin: 0 auto;
 }
 
@@ -420,7 +109,7 @@ Full-Width Styles
 }
 
 #project_title {
-  margin: -10px 0 -15px 0;
+  margin: -10px 0 -5px 0;
   color: gold;
   font-size: 55px;
   font-weight: 700;
@@ -430,7 +119,7 @@ Full-Width Styles
 #project_tagline {
   color: gray;
   margin-left: 2px;
-  padding-bottom: 5px;
+  padding-bottom: 10px;
   font-size: 24px;
   font-weight: 300;
   text-shadow: #111 0px 0px 10px;
@@ -443,60 +132,67 @@ Full-Width Styles
   background-size: contain;
 }
 
-#main_content_wrap {
-  background: #f2f2f2;
-  border-top: 1px solid #111;
-  border-bottom: 1px solid #111;
-}
-
-#main_content {
-  padding-top: 40px;
-}
-
 /*******************************************************************************
-Small Device Styles
+Bootstrap Modifications
 *******************************************************************************/
 
-@media screen and (max-width: 640px) {
-  body {
-    font-size:14px;
-  }
-  
-  #cbimage {
-   display: none;
-  }
+.tooltip > .tooltip-inner {
+   font-weight: bold;
+}
 
-  .inner {
-    min-width: 480px;
-    max-width: 640px;
-  }
+.label-default + .tooltip > .tooltip-inner {
+   background-color: #777777;
+}
 
-  #project_title {
-   font-size: 32px;
-  }
+.label-default + .tooltip.top .tooltip-arrow {
+   border-top-color: #777777;
+}
 
-  h1 {
-    font-size: 28px;
-  }
+.label-primary + .tooltip > .tooltip-inner {
+   background-color: #428bca;
+}
 
-  h2 {
-    font-size: 24px;
-  }
+.label-primary + .tooltip.top .tooltip-arrow {
+   border-top-color: #428bca;
+}
 
-  h3 {
-    font-size: 21px;
-  }
+.label-success + .tooltip > .tooltip-inner {
+   background-color: #5cb85c;
+}
 
-  h4 {
-    font-size: 18px;
-  }
+.label-success + .tooltip.top .tooltip-arrow {
+   border-top-color: #5cb85c;
+}
 
-  h5 {
-    font-size: 14px;
-  }
+.label-info + .tooltip > .tooltip-inner {
+   background-color: #5bc0de;
+}
 
-  h6 {
-    font-size: 12px;
-  }
+.label-info + .tooltip.top .tooltip-arrow {
+   border-top-color: #5bc0de;
+}
 
+.label-warning + .tooltip > .tooltip-inner {
+   background-color: #f0ad4e;
+}
+
+.label-warning + .tooltip.top .tooltip-arrow {
+   border-top-color: #f0ad4e;
+}
+
+.label-danger + .tooltip > .tooltip-inner {
+   background-color: #d9534f;
+}
+
+.label-danger + .tooltip.top .tooltip-arrow {
+   border-top-color: #d9534f;
+}
+
+.tooltip.in {
+   opacity: 1;
+   filter: alpha(opacity=100);
+}
+
+.label {
+   cursor: default;
 }

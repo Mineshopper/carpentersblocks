@@ -5,10 +5,12 @@
       <meta charset='utf-8' />
       <meta http-equiv="X-UA-Compatible" content="chrome=1" />
       <meta name="description" content="Carpentersblocks : A Minecraft mod." />
+      <link rel="stylesheet" href="stylesheets/bootstrap.min.css">
       <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
       <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
       <link rel="icon" href="favicon.ico" type="image/x-icon">
       <script src="javascripts/jquery-2.1.1.min.js"></script>
+      <script src="javascripts/bootstrap.min.js"></script>
       <title>Carpenter's Blocks  - Changelog </title>
    </head>
 
@@ -40,9 +42,8 @@
 
       <!-- MAIN CONTENT -->
 
-      <div id="main_content_wrap" class="outer">
-         <section id="main_content" class="inner">
-            <h3><a name="designer-templates" class="anchor" href="#designer-templates"><span class="octicon octicon-link"></span></a>Complete Changelog</h3>
+      <section id="main_content" class="inner">
+         <h3><a name="designer-templates" class="anchor" href="#designer-templates"><span class="octicon octicon-link"></span></a>Complete Changelog</h3>
 
 <span id="label-stable">3.2.0</span>
 <span id="label-generic">06/22/2014</span>
@@ -850,14 +851,7 @@
 <ul id="changelog-full">
    <li>Initial release.</li>
 </ul>
-         </section>
-      </div>
-
-      <!-- FOOTER  -->
-      
-      <footer>
-         This is the footer.
-      </footer>
+      </section>
 
       <script type="text/javascript">
          var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
@@ -867,8 +861,11 @@
             pageTracker._trackPageview();
          } catch(err) {}
          $('.expand').click(function() {
-            $(this).next().next('.hidden').slideToggle("fast");
+            $(this).next('div').toggle();
          });
+         $(function () {
+            $('.label').tooltip();
+         });         
       </script>
 
    </body>
