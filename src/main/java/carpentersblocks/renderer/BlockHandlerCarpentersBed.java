@@ -225,7 +225,24 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase {
     private void renderMattress(ItemStack itemStack, int x, int y, int z)
     {
         itemStack.setItemDamage(0);
-        setupRender(itemStack, x, y, z, bedParallelNeg ? 0.0D : 0.0625D, 0.3125D, isHead ? 0.125D : 0.0D, bedParallelPos ? 1.0D : 0.9375D, 0.5625D, isHead ? 1.0D : 0.9375D);
+
+        switch (dir) {
+            case NORTH:
+                renderBlocks.setRenderBounds(bedParallelNeg ? 0.0D : 0.0625D, 0.3125D, isHead ? 0.0D : 0.0625D, bedParallelPos ? 1.0D : 0.9375D, 0.5625D, isHead ? 0.875D : 1.0D);
+                break;
+            case SOUTH:
+                renderBlocks.setRenderBounds(bedParallelNeg ? 0.0D : 0.0625D, 0.3125D, isHead ? 0.125D : 0.0D, bedParallelPos ? 1.0D : 0.9375D, 0.5625D, isHead ? 1.0D : 0.9375D);
+                break;
+            case WEST:
+                renderBlocks.setRenderBounds(isHead ? 0.0D : 0.0625D, 0.3125D, bedParallelNeg ? 0.0D : 0.0625D, isHead ? 0.875D : 1.0D, 0.5625D, bedParallelPos ? 1.0D : 0.9375D);
+                break;
+            case EAST:
+                renderBlocks.setRenderBounds(isHead ? 0.125D : 0.0D, 0.3125D, bedParallelNeg ? 0.0D : 0.0625D, isHead ? 1.0D : 0.9375D, 0.5625D, bedParallelPos ? 1.0D : 0.9375D);
+                break;
+            default: {}
+        }
+
+        renderBlock(itemStack, x, y, z);
     }
 
     /**
@@ -233,24 +250,120 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase {
      */
     private void renderNormalFrame(ItemStack itemStack, int x, int y, int z)
     {
+        /* Render components that cannot easily be rotated */
+
+        switch (dir)
+        {
+            case NORTH:
+            {
+                if (isHead) {
+
+                    // Render legs
+                    renderBlocks.setRenderBounds(0.0D, bedParallelNeg ? 0.1875D : 0.0D, 0.875D, 0.125D, bedParallelNeg ? 0.875D : 1.0D, 1.0D);
+                    renderBlock(itemStack, x, y, z);
+                    renderBlocks.setRenderBounds(0.875D, bedParallelPos ? 0.1875D : 0.0D, 0.875D, 1.0D, bedParallelPos ? 0.875D : 1.0D, 1.0D);
+                    renderBlock(itemStack, x, y, z);
+
+                } else {
+
+                    // Render legs
+                    if (!bedParallelNeg) {
+                        renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 0.125D, 0.1875D, 0.125D);
+                        renderBlock(itemStack, x, y, z);
+                    }
+                    if (!bedParallelPos) {
+                        renderBlocks.setRenderBounds(0.875D, 0.0D, 0.0D, 1.0D, 0.1875D, 0.125D);
+                        renderBlock(itemStack, x, y, z);
+                    }
+
+                }
+                break;
+            }
+            case SOUTH:
+            {
+                if (isHead) {
+
+                    // Render legs
+                    renderBlocks.setRenderBounds(0.0D, bedParallelNeg ? 0.1875D : 0.0D, 0.0D, 0.125D, bedParallelNeg ? 0.875D : 1.0D, 0.125D);
+                    renderBlock(itemStack, x, y, z);
+                    renderBlocks.setRenderBounds(0.875D, bedParallelPos ? 0.1875D : 0.0D, 0.0D, 1.0D, bedParallelPos ? 0.875D : 1.0D, 0.125D);
+                    renderBlock(itemStack, x, y, z);
+
+                } else {
+
+                    // Render legs
+                    if (!bedParallelNeg) {
+                        renderBlocks.setRenderBounds(0.0D, 0.0D, 0.875D, 0.125D, 0.1875D, 1.0D);
+                        renderBlock(itemStack, x, y, z);
+                    }
+                    if (!bedParallelPos) {
+                        renderBlocks.setRenderBounds(0.875D, 0.0D, 0.875D, 1.0D, 0.1875D, 1.0D);
+                        renderBlock(itemStack, x, y, z);
+                    }
+
+                }
+                break;
+            }
+            case WEST:
+            {
+                if (isHead) {
+
+                    // Render legs
+                    renderBlocks.setRenderBounds(0.875D, bedParallelNeg ? 0.1875D : 0.0D, 0.0D, 1.0D, bedParallelNeg ? 0.875D : 1.0D, 0.125D);
+                    renderBlock(itemStack, x, y, z);
+                    renderBlocks.setRenderBounds(0.875D, bedParallelPos ? 0.1875D : 0.0D, 0.875D, 1.0D, bedParallelPos ? 0.875D : 1.0D, 1.0D);
+                    renderBlock(itemStack, x, y, z);
+
+                } else {
+
+                    // Render legs
+                    if (!bedParallelNeg) {
+                        renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 0.125D, 0.1875D, 0.125D);
+                        renderBlock(itemStack, x, y, z);
+                    }
+                    if (!bedParallelPos) {
+                        renderBlocks.setRenderBounds(0.0D, 0.0D, 0.875D, 0.125D, 0.1875D, 1.0D);
+                        renderBlock(itemStack, x, y, z);
+                    }
+
+                }
+                break;
+            }
+            case EAST:
+            {
+                if (isHead) {
+
+                    // Render legs
+                    renderBlocks.setRenderBounds(0.0D, bedParallelNeg ? 0.1875D : 0.0D, 0.0D, 0.125D, bedParallelNeg ? 0.875D : 1.0D, 0.125D);
+                    renderBlock(itemStack, x, y, z);
+                    renderBlocks.setRenderBounds(0.0D, bedParallelPos ? 0.1875D : 0.0D, 0.875D, 0.125D, bedParallelPos ? 0.875D : 1.0D, 1.0D);
+                    renderBlock(itemStack, x, y, z);
+
+                } else {
+
+                    // Render legs
+                    if (!bedParallelNeg) {
+                        renderBlocks.setRenderBounds(0.875D, 0.0D, 0.0D, 1.0D, 0.1875D, 0.125D);
+                        renderBlock(itemStack, x, y, z);
+                    }
+                    if (!bedParallelPos) {
+                        renderBlocks.setRenderBounds(0.875D, 0.0D, 0.875D, 1.0D, 0.1875D, 1.0D);
+                        renderBlock(itemStack, x, y, z);
+                    }
+
+                }
+                break;
+            }
+            default: { }
+        }
+
+        /* Render components that are safe to rotate */
+
         if (isHead) {
-
             setupRender(itemStack, x, y, z, 0.125D, 0.1875D, 0.0D, 0.875D, 0.875D, 0.125D); // Render headboard
-            setupRender(itemStack, x, y, z, 0.0D, bedParallelNeg ? 0.1875D : 0.0D, 0.0D, 0.125D, bedParallelNeg ? 0.875D : 1.0D, 0.125D);// Render leg
-            setupRender(itemStack, x, y, z, 0.875D, bedParallelPos ? 0.1875D : 0.0D, 0.0D, 1.0D, bedParallelPos ? 0.875D : 1.0D, 0.125D);// Render leg
             setupRender(itemStack, x, y, z, 0.0D, 0.1875D, 0.125D, 1.0D, 0.3125D, 1.0D); // Render support board
-
         } else {
-
-            if (!bedParallelNeg) {
-                setupRender(itemStack, x, y, z, 0.0D, 0.0D, 0.875D, 0.125D, 0.1875D, 1.0D); // Render leg
-            }
-            if (!bedParallelPos) {
-                setupRender(itemStack, x, y, z, 0.875D, 0.0D, 0.875D, 1.0D, 0.1875D, 1.0D); // Render leg
-            }
-
             setupRender(itemStack, x, y, z, 0.0D, 0.1875D, 0.0D, 1.0D, 0.3125D, 1.0D); // Render support board
-
         }
     }
 
