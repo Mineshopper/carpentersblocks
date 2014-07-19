@@ -18,10 +18,9 @@
 
       <!-- HEADER -->
 
-      <div id="header_wrap" class="outer">
-         <header class="inner">
-
-            <div style="float: left;">
+      <header>
+         <div class="inner">
+            <div class="banner">              
                <h1 class="title">Carpenter's Blocks</h1>
                <h2 class="subtitle">Customize your Minecraft world.</h2>
                <section id="nav">
@@ -35,16 +34,16 @@
                      <li onclick="window.open('https://github.com/Mineshopper/carpentersblocks')">View on GitHub</li>
                   </ul>
                </section>
+               <p class="creation-date">Site last updated: {{ site.time }}</p>
             </div>
-
-            <img src="images/banner.png" style="width: 150px; padding-left: 20px;"></img>
-                  
-         </header>
-      </div>
+            <img src="images/banner.png" class="banner-image"></img>
+            <div style="clear: left;"></div>
+         </div>
+      </header>
 
       <!-- MAIN CONTENT -->
 
-      <section id="main_content" class="inner">
+      <section class="inner">
          {{ content }}
       </section>
 
