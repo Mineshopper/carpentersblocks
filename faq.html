@@ -3,20 +3,91 @@ layout: default
 title: FAQ
 ---
 
-<h3>Migrating 1.6.X worlds to 1.7.X</h3>
+<h4>Installing the Mod</h4>
 
-<p>To migrate your Carpenter's Blocks 1.6.4 worlds to 1.7.2, follow these steps:</p>
-<ol>
-   <li>Load Carpenter's Blocks v2.1.2 or later for MC 1.6+ into your mods folder in the 1.6.4 subdirectory.</li>
-   <li>Load Carpenter's Blocks v3.2.0 or later for MC 1.7+ into your mods folder in the 1.7.2 subdirectory.</li>
-   <li>Start the game in Minecraft 1.6.4 and load the world.</li>
-   <li>Ensure ALL chunks with Carpenter's Blocks have been loaded into memory by visiting all locations where the blocks are used.</li>
-   <li>Exit game.</li>
-</ol>
-<p>The blocks should now be prepared for migration. Start the game in Minecraft 1.7.2 and load the world. Note: run the latest recommended version of Forge for 1.7.2 to ensure you don't run into problems.</p>
+<div class="indent">
+   <p>This mod requires <a href="http://files.minecraftforge.net/" target="_blank">Minecraft Forge</a>. The required or recommended build is listed next to the mod download link above.</p>
+   <p>To install on a client machine, place the mod zip file into your Minecraft directory under the mod folder, typically located at: <em>%APPDATA%/.minecraft/mods/</em></p>
+   <p>To install on a server, place the mod zip file into the server mod folder.</p>
+   <p>If you're having difficulty installing the mod, <a href="http://www.minecraftforum.net/user/799515-avi12/" target="_blank">avi12</a> has provided <a href="http://www.youtube.com/watch?v=I6jGkaFqbGU" target="_blank">video installation instructions</a>.</p>
+</div>
 
-<p>What won't survive the migration:</p>
-<ul>
-   <li>Placed doors and beds will disappear, so be sure to destroy them first.</li>
-   <li>Chisel patterns and designs will disappear from placed blocks.</li>
-</ul>
+<hr>
+
+<h4>Migrating 1.6.X worlds to 1.7.X</h4>
+
+<div class="indent">
+   <p>To migrate your Carpenter's Blocks 1.6.4 worlds to 1.7.2, follow these steps:</p>
+   <ol>
+      <li>Load Carpenter's Blocks v2.1.2 or later for MC 1.6+ into your mods folder in the 1.6.4 subdirectory.</li>
+      <li>Load Carpenter's Blocks v3.2.0 or later for MC 1.7+ into your mods folder in the 1.7.2 subdirectory.</li>
+      <li>Start the game in Minecraft 1.6.4 and load the world.</li>
+      <li>Ensure ALL chunks with Carpenter's Blocks have been loaded into memory by visiting all locations where the blocks are used.</li>
+      <li>Exit game.</li>
+   </ol>
+   <p>The blocks should now be prepared for migration. Start the game in Minecraft 1.7.2 and load the world. Note: run the latest recommended version of Forge for 1.7.2 to ensure you don't run into problems.</p>
+   <p>What won't survive the migration:</p>
+   <ul>
+      <li>Placed doors and beds will disappear, so be sure to destroy them first.</li>
+      <li>Chisel patterns and designs will disappear from placed blocks.</li>
+   </ul>
+</div>
+
+<hr>
+
+<h4>My game crashed! What do I do?</h4>
+
+<div class="indent">
+   You can either post it in spoilers in this thread if not already reported, or as a new issue <a href="https://github.com/Mineshopper/carpentersblocks/issues?state=open" target="_blank">here</a> if it doesn't already exist.
+</div>
+
+<hr>
+
+<h4>Chisel designs, fancy water, ice, colored glass.. none of it renders correctly in 1.7.2 and up, why?</h4>
+
+<div class="indent">
+   <p>After Minecraft 1.6.4, Mojang introduced new alpha rendering code that works great for ordinary blocks, but has proven to be troublesome for mods like this one, causing it to throw PriorityQueue exceptions and crash the game.  Therefore, alpha rendering is currently disabled and the aforementioned features (chisel designs, covers, etc) may not look the way you expect.  This is not a bug, and I am currently looking for ways to resolve it.</p>
+</div>
+
+<hr>
+
+<h4>Will you include a localization file for my region?</h4>
+
+<div class="indent">
+   <p>Submit a pull request to the Github repository in the navigation bar at the top to have your language file(s) added.</p>
+   <p>To load your own language files right away, simply drop the .lang file into the zip in the folder <em>assets/carpentersblocks/lang/</em> and they will be loaded at runtime.</p>
+</div>
+
+<hr>
+
+<h4>Why won't game NPCs detect barriers, doors, etc?  And why won't horses tie to Carpenter's barrier posts?</h4>
+
+<div class="indent">
+   <p>There's no ideal fix for this, as many things are generally coded to recognize only vanilla-type blocks. Circumventing this is not ideal at this time.</p>
+</div>
+
+<hr>
+
+<h4>I'm having issues with this mod and MCPatcher, why?</h4>
+
+<div class="indent">
+   <p>This affected older versions of this mod primarily for Minecraft version 1.6 and up.  It no longer effects 1.6.4 as of version 3.2.5, and it has never affected Minecraft versions 1.7.2 and up.</p>
+</div>
+
+<hr>
+
+<h4>Power isn't propagating through the Carpenter's Block. Why not?</h4>
+
+<div class="indent">
+   <p>The method to enable this functionality doesn't take into account any of the block's unique properties. Because of this, this feature is disabled. If forced, block shading is also effected negatively.</p>
+</div>
+
+<hr>
+
+<!--<h4></h4>
+
+<div class="indent">
+   
+</div>
+
+<hr>-->

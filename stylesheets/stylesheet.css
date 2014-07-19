@@ -116,7 +116,7 @@ figcaption {
   text-shadow: #111 0px 0px 10px;
 }
 
-.recipe-container {
+.figure-container {
    padding: 10px;
    text-align: center;
 }
@@ -152,13 +152,6 @@ figcaption {
   max-width: 1024px;
   padding: 20px;
   margin: 0 auto;
-}
-
-.banner-image {
-  border: 1px solid red;
-  width: 100px;
-  background: url('../images/bannerImage.png') no-repeat;
-  background-size: contain;
 }
 
 /*******************************************************************************
