@@ -3,6 +3,8 @@ layout: default
 title: Changelog
 label-begin-version: <span class="label label-success" data-toggle="tooltip" data-placement="top" title="The mod version">
 label-begin-release: <span class="label label-info" data-toggle="tooltip" data-placement="top" title="The release date">
+label-begin-common: <span class="label label-default" data-toggle="tooltip" data-placement="top" title="These changes are common to all related Minecraft versions">COMMON</span>
+label-begin-minecraft: <span class="label label-primary" data-toggle="tooltip" data-placement="top" title="These changes are specific to this Minecraft version">
 label-end: </span>
 ---
 
@@ -15,6 +17,42 @@ label-end: </span>
    <li>CHANGES</li>
 </ul>
 -->
+
+<div>
+   {{ page.label-begin-version }}3.2.5{{ page.label-end }}
+   {{ page.label-begin-release }}UNKNOWN{{ page.label-end }}
+</div>
+{{ page.label-begin-common }}
+<ul>
+   <li>Refactored safe code to help prevent crashes.</li>
+   <li>Now must sneak to apply safe upgrade.</li>
+   <li>Bed designs now fully support texture packs.</li>
+   <li>Fixed some conditions where plants could not be placed on covered blocks.</li>
+   <li>Fixed slope selection not cycling backwards correctly.</li>
+   <li>Fixed minor bug in ladder placement validation.</li>
+   <li>Rewrote packet handler.</li>
+   <li>Fixed plant fertilization crashing server.</li>
+   <li>Bed designs should now load properly on Unix systems. [Noxilie]</li>
+   <li>Bed designs should no longer unexpectedly hover above bed.</li>
+   <li>Code cleanup.</li>
+</ul>
+{{ page.label-begin-minecraft }}MC 1.7.10{{ page.label-end }}
+<ul>
+   <li>Ownership properties shifted over to new UUID system.</li>
+   <li>Forge build requirement set at 1180.</li>
+</ul>
+{{ page.label-begin-minecraft }}MC 1.7.2{{ page.label-end }}
+<ul>
+   <li>Upgraded Forge build requirement to 1121.</li>
+</ul>
+{{ page.label-begin-minecraft }}MC 1.6.4{{ page.label-end }}
+<ul>
+   <li>Backported from master branch and brought up to date.</li>
+   <li>Fixed flower pot soil and plant not migrating to 1.7.</li>
+   <li>Upgraded Forge build requirement to 965.</li>
+</ul>
+
+<hr>
 
 <div>
    {{ page.label-begin-version }}3.2.4{{ page.label-end }}

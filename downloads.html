@@ -49,8 +49,8 @@ label-stable: <span class="label label-success" data-toggle="tooltip" data-place
    </div>
    <div style="display: table-row;">
       <div style="display: table-cell;">
-         <button>Download</button>
-         <button>Mirror</button>
+         <button onclick="window.open('http://adf.ly/qQNnZ')">Download</button>
+         <button onclick="window.open('https://www.dropbox.com/s/uvnv8bzlq9ld4u6/Carpenter%27s%20Blocks%20v3.2.5%20%5BDEV%5D%20-%20MC%201.7.10.zip?dl=1')">Mirror</button>
          <button class="expand">View Changelog</button>
          <div class="hidden">
             <ul id="changelog">
@@ -63,6 +63,7 @@ label-stable: <span class="label label-success" data-toggle="tooltip" data-place
                <li>Rewrote packet handler.</li>
                <li>Fixed plant fertilization crashing server.</li>
                <li>Bed designs should now load properly on Unix systems. [Noxilie]</li>
+               <li>Bed designs should no longer unexpectedly hover above bed.</li>
                <li>Code cleanup.</li>
                <li>Ownership properties shifted over to new UUID system.</li>
                <li>Forge build requirement set at 1180.</li>
@@ -85,8 +86,8 @@ label-stable: <span class="label label-success" data-toggle="tooltip" data-place
    </div>
    <div style="display: table-row;">
       <div style="display: table-cell;">
-         <button>Download</button>
-         <button>Mirror</button>
+         <button onclick="window.open('http://adf.ly/qQNks')">Download</button>
+         <button onclick="window.open('https://www.dropbox.com/s/r300sdp18f5rku5/Carpenter%27s%20Blocks%20v3.2.5%20%5BDEV%5D%20-%20MC%201.7.2.zip?dl=1')">Mirror</button>
          <button class="expand">View Changelog</button>
          <div class="hidden">
             <ul id="changelog">
@@ -99,6 +100,7 @@ label-stable: <span class="label label-success" data-toggle="tooltip" data-place
                <li>Rewrote packet handler.</li>
                <li>Fixed plant fertilization crashing server.</li>
                <li>Bed designs should now load properly on Unix systems. [Noxilie]</li>
+               <li>Bed designs should no longer unexpectedly hover above bed.</li>
                <li>Code cleanup.</li>
                <li>Upgraded Forge build requirement to 1121.</li>
             </ul>
@@ -118,12 +120,12 @@ label-stable: <span class="label label-success" data-toggle="tooltip" data-place
    </div>
    <div style="display: table-row;">
       <div style="display: table-cell;">
-         <button>Download</button>
-         <button>Mirror</button>
+         <button onclick="window.open('http://adf.ly/qQNqs')">Download</button>
+         <button onclick="window.open('https://www.dropbox.com/s/5sz0nwpl3wcphkq/Carpenter%27s%20Blocks%20v3.2.4%20-%20MC%201.7%2B.zip?dl=1')">Mirror</button>
          <button class="expand">View Changelog</button>
          <div class="hidden">
             <ul id="changelog">
-               <li>CHANGES</li>
+               <li>Fixed server-side cover crash.</li>
             </ul>
          </div>
       </div>
@@ -143,12 +145,14 @@ label-stable: <span class="label label-success" data-toggle="tooltip" data-place
    </div>
    <div style="display: table-row;">
       <div style="display: table-cell;">
-         <button>Download</button>
-         <button>Mirror</button>
+         <button onclick="window.open('http://adf.ly/qQNhd')">Download</button>
+         <button onclick="window.open('https://www.dropbox.com/s/rqysrbpv2pdbx2j/Carpenter%27s%20Blocks%20v3.2.5%20%5BDEV%5D%20-%20MC%201.6.4.zip?dl=1')">Mirror</button>
          <button class="expand">View Changelog</button>
          <div class="hidden">
             <ul id="changelog">
-               <li>CHANGES</li>
+               <li>Backported from master branch and brought up to date.</li>
+               <li>Fixed flower pot soil and plant not migrating to 1.7.</li>
+               <li>Upgraded Forge build requirement to 965.</li>
             </ul>
          </div>
       </div>
@@ -166,12 +170,12 @@ label-stable: <span class="label label-success" data-toggle="tooltip" data-place
    </div>
    <div style="display: table-row;">
       <div style="display: table-cell;">
-         <button>Download</button>
-         <button>Mirror</button>
+         <button onclick="window.open('http://adf.ly/qQO2P')">Download</button>
+         <button onclick="window.open('https://www.dropbox.com/s/uyo6q00fihytg1n/Carpenter%27s%20Blocks%20v2.1.2%20-%20MC%201.6.4.zip?dl=1')">Mirror</button>
          <button class="expand">View Changelog</button>
          <div class="hidden">
             <ul id="changelog">
-               <li>CHANGES</li>
+               <li>Now properly converts slopes and stairs when migrating to 1.7.2.</li>
             </ul>
          </div>
       </div>
@@ -191,12 +195,24 @@ label-stable: <span class="label label-success" data-toggle="tooltip" data-place
    </div>
    <div style="display: table-row;">
       <div style="display: table-cell;">
-         <button>Download</button>
-         <button>Mirror</button>
+         <button onclick="window.open('http://adf.ly/qQO5V')">Download</button>
+         <button onclick="window.open('https://www.dropbox.com/s/sgpy24defk36w1j/Carpenter%27s%20Blocks%20v1.9.9%20-%20MC%201.5.2.zip?dl=1')">Mirror</button>
          <button class="expand">View Changelog</button>
          <div class="hidden">
             <ul id="changelog">
-               <li>CHANGES</li>
+               <li>[PATCH] Uncovered blocks can now catch fire.</li>
+               <li>[PATCH] Bed designs can now be cleared with hammer sneak right-click.</li>
+               <li>[HOTFIX] Corrected flower pot plant rendering for a couple Biomes O Plenty plants.</li>
+               <li>[HOTFIX] Fixed flower pot not decrementing itemstack when plant is placed.</li>
+               <li>Added Carpenters Flower Pot (formerly Painters Flower Pot).</li>
+               <li>Flower pot components can now be altered independently.</li>
+               <li>You can now add your own flower pot designs.</li>
+               <li>Dye colors now use RGB from vanilla dyes.</li>
+               <li>Side covers now do depth checks before popping off.</li>
+               <li>Collapsible block given proper shading and slope creation.</li>
+               <li>Collapsible block hammer behavior improved. Left-click raises corner, right-click lowers corner.</li>
+               <li>Fixed possible crashes in the way block solidity checks are performed.</li>
+               <li>Added hammer right-click sensitivity setting to daylight sensor.</li>
             </ul>
          </div>
       </div>
@@ -212,8 +228,8 @@ label-stable: <span class="label label-success" data-toggle="tooltip" data-place
    </div>
    <div style="display: table-row;">
       <div style="display: table-cell;">
-         <button>Download</button>
-         <button>Mirror</button>
+         <button onclick="window.open('')">Download</button>
+         <button onclick="window.open('')">Mirror</button>
          <button class="expand">View Changelog</button>
          <div class="hidden">
             <ul id="changelog">
@@ -257,7 +273,7 @@ label-stable: <span class="label label-success" data-toggle="tooltip" data-place
 <div class="indent">
    <p>Below are the known published texture pack add-ons for this mod.  They are maintained by the community and may be outdated.</p>
    <ul>
-      <li><a href="http://bdcraft.net/community/pbdc-patches-rel/carpenter-blocks-t319.html">BDCraft Texture Pack Addon</a></li>
-      <li><a href="http://soartex.net/downloads/mods/">Soartex Texture Pack Addon (search for Carpenter's Blocks)</a></li>
+      <li><a href="http://bdcraft.net/community/pbdc-patches-rel/carpenter-blocks-t319.html" target="_blank">BDCraft Texture Pack Addon</a></li>
+      <li><a href="http://soartex.net/downloads/mods/" target="_blank">Soartex Texture Pack Addon (search for Carpenter's Blocks)</a></li>
    </ul>
 </div>
