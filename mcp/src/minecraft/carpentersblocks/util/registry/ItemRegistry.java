@@ -54,6 +54,7 @@ public class ItemRegistry {
         itemCarpentersChiselID        = config.getItem("Chisel", baseItemID++).getInt(baseItemID);
         itemCarpentersDoorID          = config.getItem(  "Door", baseItemID++).getInt(baseItemID);
         itemCarpentersBedID           = config.getItem(   "Bed", baseItemID++).getInt(baseItemID);
+        itemCarpentersTileID          = config.getItem(  "Tile", baseItemID++).getInt(baseItemID);
 
         itemHammerDamageChanceFromSlopes      = config.get("items",      "itemHammerDamageChanceFromSlopes",      itemHammerDamageChanceFromSlopes).getDouble(     itemHammerDamageChanceFromSlopes);
         itemHammerDamageChanceFromStairs      = config.get("items",      "itemHammerDamageChanceFromStairs",      itemHammerDamageChanceFromStairs).getDouble(     itemHammerDamageChanceFromStairs);
