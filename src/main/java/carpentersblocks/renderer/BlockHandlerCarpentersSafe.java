@@ -1,5 +1,8 @@
 package carpentersblocks.renderer;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.init.Blocks;
@@ -15,171 +18,112 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class BlockHandlerCarpentersSafe extends BlockHandlerBase {
 
-    private final int   numBoxes    = 21;
-    private final int   numCapacity = 9;
+    private ForgeDirection dir;
+    private boolean isOpen;
+    private boolean isLocked;
+    private ItemStack metal;
+    private final static ItemStack ice = new ItemStack(Blocks.ice);
+    private final static ItemStack gold = new ItemStack(Blocks.gold_block);
+    private final static ItemStack iron = new ItemStack(Blocks.iron_block);
 
-    private final byte BLOCKTYPE_COVER            = 0;
-    private final byte BLOCKTYPE_PANEL            = 1;
-    private final byte BLOCKTYPE_HANDLE           = 2;
-    private final byte BLOCKTYPE_GREEN_LIGHT      = 3;
-    private final byte BLOCKTYPE_RED_LIGHT        = 4;
-    private final byte BLOCKTYPE_DOOR             = 5;
+    public static class Component {
 
-    private final byte WOOD_XLOW_WALL             = 0;
-    private final byte WOOD_XMAX_WALL             = 1;
-    private final byte WOOD_BOTTOM_LEFT           = 2;
-    private final byte WOOD_BOTTOM_RIGHT          = 3;
-    private final byte WOOD_TOP_LEFT              = 4;
-    private final byte WOOD_TOP_RIGHT             = 5;
-    private final byte WOOD_BACK_LEFT             = 6;
-    private final byte WOOD_BACK_RIGHT            = 7;
-    private final byte WOOD_VERTICAL_CENTER_PIECE = 8;
-    private final byte WOOD_SHELF_TOP             = 9;
-    private final byte WOOD_SHELF_BOTTOM          = 10;
-    private final byte SLIDING_DOOR               = 11;
-    private final byte IRON_PANEL_TOP             = 12;
-    private final byte IRON_PANEL_LEFT            = 13;
-    private final byte IRON_PANEL_RIGHT           = 14;
-    private final byte IRON_PANEL_CENTER          = 15;
-    private final byte IRON_PANEL_BOTTOM          = 16;
-    private final byte IRON_PANEL_BACK_PLATE      = 17;
-    private final byte HANDLE                     = 18;
-    private final byte GREEN_LIGHT                = 19;
-    private final byte RED_LIGHT                  = 20;
+        public double xMin, yMin, zMin, xMax, yMax, zMax;
 
-    private final int LIGHT_RED_ACTIVE     = 0xff0000;
-    private final int LIGHT_RED_INACTIVE   = 0x7e3636;
-    private final int LIGHT_GREEN_ACTIVE   = 0x00ff00;
-    private final int LIGHT_GREEN_INACTIVE = 0x367e36;
-    private final int LIGHT_BLUE_ACTIVE    = 0x0000ff;
-    private final int LIGHT_BLUE_INACTIVE  = 0x383884;
+        public Component(double xMin, double yMin, double zMin, double xMax, double yMax, double zMax)
+        {
+            this.xMin = xMin;
+            this.yMin = yMin;
+            this.zMin = zMin;
+            this.xMax = xMax;
+            this.yMax = yMax;
+            this.zMax = zMax;
+        }
+
+    }
+
+    private final static List<Component> coverList;
+    static {
+        coverList = new ArrayList<Component>();
+        coverList.add(new Component(0.0D, 0.0D, 0.0D, 0.0625D, 1.0D, 1.0D));
+        coverList.add(new Component(0.9375D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D));
+        coverList.add(new Component(0.0625D, 0.0D, 0.0625D, 0.3125D, 0.0625D, 1.0D));
+        coverList.add(new Component(0.375D, 0.0D, 0.0625D, 0.9375D, 0.0625D, 1.0D));
+        coverList.add(new Component(0.0625D, 0.9375D, 0.0625D, 0.3125D, 1.0D, 1.0D));
+        coverList.add(new Component(0.375D, 0.9375D, 0.0625D, 0.9375D, 1.0D, 1.0D));
+        coverList.add(new Component(0.0625D, 0.0D, 0.0D, 0.3125D, 1.0D, 0.0625D));
+        coverList.add(new Component(0.375D, 0.0D, 0.0D, 0.9375D, 1.0D, 0.0625D));
+        coverList.add(new Component(0.3125D, 0.0D, 0.0D, 0.375D, 1.0D, 1.0D));
+        coverList.add(new Component(0.375D, 0.625D, 0.0625D, 0.9375D, 0.6875D, 0.875D));
+        coverList.add(new Component(0.375D, 0.3125D, 0.0625D, 0.9375D, 0.375D, 0.875D));
+    }
+
+    private final static List<Component> panelList;
+    static {
+        panelList = new ArrayList<Component>();
+        panelList.add(new Component(0.125D, 0.875D, 0.9375D, 0.25D, 0.9375D, 1.0D));
+        panelList.add(new Component(0.0625D, 0.0625D, 0.9375D, 0.125D, 0.9375D, 1.0D));
+        panelList.add(new Component(0.25D, 0.0625D, 0.9375D, 0.3125D, 0.9375D, 1.0D));
+        panelList.add(new Component(0.125D, 0.6875D, 0.9375D, 0.25D, 0.75D, 1.0D));
+        panelList.add(new Component(0.125D, 0.0625D, 0.9375D, 0.25D, 0.125D, 1.0D));
+        panelList.add(new Component(0.0625D, 0.0625D, 0.875D, 0.3125D, 0.9375D, 0.9375D));
+    }
+
+    private final int LOCKED_ACTIVE     = 0xff0000;
+    private final int LOCKED_INACTIVE   = 0x7e3636;
+    private final int UNLOCKED_ACTIVE   = 0x00ff00;
+    private final int UNLOCKED_INACTIVE = 0x367e36;
+    private final int CAPACITY_ACTIVE   = 0x0000ff;
+    private final int CAPACITY_INACTIVE = 0x383884;
 
     @Override
     public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderBlocks)
     {
-        Block tempBlock = block;
+        /* Cover components */
 
-        for (int box = 0; box < numBoxes; ++box)
-        {
-            setBounds(renderBlocks, box, true);
+        for (Component comp : coverList) {
+            renderBlocks.setRenderBounds(comp.xMin, comp.yMin, comp.zMin, comp.xMax, comp.yMax, comp.zMax);
             rotateBounds(renderBlocks, ForgeDirection.WEST);
-            int type = getBlockType(box);
-            switch (type) {
-                case BLOCKTYPE_COVER:
-                case BLOCKTYPE_DOOR:
-                    tempBlock = block;
-                    break;
-                case BLOCKTYPE_PANEL:
-                case BLOCKTYPE_HANDLE:
-                    tempBlock = Blocks.iron_block;
-                    break;
-                default:
-                    tempBlock = Blocks.obsidian;
-            }
-
-            super.renderInventoryBlock(tempBlock, metadata, modelID, renderBlocks);
+            super.renderInventoryBlock(block, metadata, modelID, renderBlocks);
         }
 
-        /* Light strip */
+        /* Panel components */
+
+        for (Component comp : panelList) {
+            renderBlocks.setRenderBounds(comp.xMin, comp.yMin, comp.zMin, comp.xMax, comp.yMax, comp.zMax);
+            rotateBounds(renderBlocks, ForgeDirection.WEST);
+            super.renderInventoryBlock(Blocks.iron_block, metadata, modelID, renderBlocks);
+        }
+
+        /* Handle */
+
+        renderBlocks.setRenderBounds(0.8125D, 0.375D, 0.9375D, 0.875D, 0.625D, 1.0D);
+        rotateBounds(renderBlocks, ForgeDirection.WEST);
+        super.renderInventoryBlock(Blocks.iron_block, metadata, modelID, renderBlocks);
+
+        /* Sliding door */
+
+        renderBlocks.setRenderBounds(0.375D, 0.0625D, 0.875F, 0.9375D, 0.9375D, 0.9375D);
+        rotateBounds(renderBlocks, ForgeDirection.WEST);
+        super.renderInventoryBlock(block, metadata, modelID, renderBlocks);
+
+        /* Red light */
+
+        renderBlocks.setRenderBounds(0.125D, 0.75D, 0.9375D, 0.25D, 0.8125D, 1.0D);
+        rotateBounds(renderBlocks, ForgeDirection.WEST);
+        super.renderInventoryBlock(Blocks.obsidian, metadata, modelID, renderBlocks);
+
+        /* Green light */
+
+        renderBlocks.setRenderBounds(0.125D, 0.8125D, 0.9375D, 0.25D, 0.875D, 1.0D);
+        rotateBounds(renderBlocks, ForgeDirection.WEST);
+        super.renderInventoryBlock(Blocks.obsidian, metadata, modelID, renderBlocks);
+
+        /* Capacity strip */
 
         renderBlocks.setRenderBounds(0.125D, 0.125D, 0.9375D, 0.25D, 0.6875D, 1.0D);
         rotateBounds(renderBlocks, ForgeDirection.WEST);
         super.renderInventoryBlock(Blocks.obsidian, metadata, modelID, renderBlocks);
-    }
-
-    /**
-     * Returns box block type.
-     */
-    private int getBlockType(int box)
-    {
-        if (box < 11) {
-            return BLOCKTYPE_COVER;
-        } else if (box == 11) {
-            return BLOCKTYPE_DOOR;
-        } else if (box < 18) {
-            return BLOCKTYPE_PANEL;
-        } else if (box == 18) {
-            return BLOCKTYPE_HANDLE;
-        } else if (box == 19) {
-            return BLOCKTYPE_GREEN_LIGHT;
-        } else {
-            return BLOCKTYPE_RED_LIGHT;
-        }
-    }
-
-    /**
-     * All bounds are set relative to NORTH facing safe.
-     * Rotate them after this using rotateBounds().
-     */
-    private void setBounds(RenderBlocks renderBlocks, int box, boolean isInventory)
-    {
-        boolean isOpen = isInventory ? false : Safe.getState(TE) == Safe.STATE_OPEN;
-
-        switch (box) {
-            case WOOD_XLOW_WALL:
-                renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 0.0625D, 1.0D, 1.0D);
-                break;
-            case WOOD_XMAX_WALL:
-                renderBlocks.setRenderBounds(0.9375D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
-                break;
-            case WOOD_BOTTOM_LEFT:
-                renderBlocks.setRenderBounds(0.0625D, 0.0D, 0.0625D, 0.3125D, 0.0625D, 1.0D);
-                break;
-            case WOOD_BOTTOM_RIGHT:
-                renderBlocks.setRenderBounds(0.375D, 0.0D, 0.0625D, 0.9375D, 0.0625D, 1.0D);
-                break;
-            case WOOD_TOP_LEFT:
-                renderBlocks.setRenderBounds(0.0625D, 0.9375D, 0.0625D, 0.3125D, 1.0D, 1.0D);
-                break;
-            case WOOD_TOP_RIGHT:
-                renderBlocks.setRenderBounds(0.375D, 0.9375D, 0.0625D, 0.9375D, 1.0D, 1.0D);
-                break;
-            case WOOD_BACK_LEFT:
-                renderBlocks.setRenderBounds(0.0625D, 0.0D, 0.0D, 0.3125D, 1.0D, 0.0625D);
-                break;
-            case WOOD_BACK_RIGHT:
-                renderBlocks.setRenderBounds(0.375D, 0.0D, 0.0D, 0.9375D, 1.0D, 0.0625D);
-                break;
-            case WOOD_VERTICAL_CENTER_PIECE:
-                renderBlocks.setRenderBounds(0.3125D, 0.0D, 0.0D, 0.375D, 1.0D, 1.0D);
-                break;
-            case WOOD_SHELF_TOP:
-                renderBlocks.setRenderBounds(0.375D, 0.625D, 0.0625D, 0.9375D, 0.6875D, 0.875D);
-                break;
-            case WOOD_SHELF_BOTTOM:
-                renderBlocks.setRenderBounds(0.375D, 0.3125D, 0.0625D, 0.9375D, 0.375D, 0.875D);
-                break;
-            case SLIDING_DOOR:
-                renderBlocks.setRenderBounds(0.375D, 0.0625D, 0.875F, isOpen ? 0.5625D : 0.9375D, 0.9375D, 0.9375D);
-                break;
-            case IRON_PANEL_TOP:
-                renderBlocks.setRenderBounds(0.125D, 0.875D, 0.9375D, 0.25D, 0.9375D, 1.0D);
-                break;
-            case IRON_PANEL_LEFT:
-                renderBlocks.setRenderBounds(0.0625D, 0.0625D, 0.9375D, 0.125D, 0.9375D, 1.0D);
-                break;
-            case IRON_PANEL_RIGHT:
-                renderBlocks.setRenderBounds(0.25D, 0.0625D, 0.9375D, 0.3125D, 0.9375D, 1.0D);
-                break;
-            case IRON_PANEL_CENTER:
-                renderBlocks.setRenderBounds(0.125D, 0.6875D, 0.9375D, 0.25D, 0.75D, 1.0D);
-                break;
-            case IRON_PANEL_BOTTOM:
-                renderBlocks.setRenderBounds(0.125D, 0.0625D, 0.9375D, 0.25D, 0.125D, 1.0D);
-                break;
-            case IRON_PANEL_BACK_PLATE:
-                renderBlocks.setRenderBounds(0.0625D, 0.0625D, 0.875D, 0.3125D, 0.9375D, 0.9375D);
-                break;
-            case HANDLE:
-                renderBlocks.setRenderBounds(isOpen ? 0.4375D : 0.8125D, 0.375D, 0.9375D, isOpen ? 0.5D : 0.875D, 0.625D, 1.0D);
-                break;
-            case GREEN_LIGHT:
-                renderBlocks.setRenderBounds(0.125D, 0.8125D, 0.9375D, 0.25D, 0.875D, 1.0D);
-                break;
-            case RED_LIGHT:
-                renderBlocks.setRenderBounds(0.125D, 0.75D, 0.9375D, 0.25D, 0.8125D, 1.0D);
-                break;
-        }
     }
 
     @Override
@@ -190,44 +134,77 @@ public class BlockHandlerCarpentersSafe extends BlockHandlerBase {
     {
         renderBlocks.renderAllFaces = true;
 
-        /* Begin drawing everything but the capacity light strip. */
-
         ItemStack itemStack = getCoverForRendering();
-        ForgeDirection facing = Safe.getFacing(TE);
+        dir = Safe.getFacing(TE);
+        isOpen = Safe.getState(TE) == Safe.STATE_OPEN;
+        isLocked = Safe.isLocked(TE);
+        metal = ((TECarpentersSafe)TE).hasUpgrade() ? gold : iron;
 
-        for (int box = 0; box < numBoxes; ++box)
-        {
-            setBounds(renderBlocks, box, false);
-            rotateBounds(renderBlocks, facing);
-            drawBox(itemStack, x, y, z, box);
+        /* Render cover components */
+
+        for (Component comp : coverList) {
+            renderBlockWithRotation(itemStack, x, y, z, comp.xMin, comp.yMin, comp.zMin, comp.xMax, comp.yMax, comp.zMax, dir);
         }
 
-        /* Begin drawing the capacity light strip. */
+        /* Render panel components */
 
-        setIconOverride(6, IconRegistry.icon_safe_light);
+        for (Component comp : panelList) {
+            renderBlockWithRotation(metal, x, y, z, comp.xMin, comp.yMin, comp.zMin, comp.xMax, comp.yMax, comp.zMax, dir); // Render panel
+        }
 
-        double yMin = 0.125D;
-        double yMax = 0.1875D;
-        int capacity = getCapacityIlluminated();
+        renderBlockWithRotation(itemStack, x, y, z, 0.375D, 0.0625D, 0.875F, isOpen ? 0.5625D : 0.9375D, 0.9375D, 0.9375D, dir); // Render sliding door
+        renderBlockWithRotation(metal, x, y, z, isOpen ? 0.4375D : 0.8125D, 0.375D, 0.9375D, isOpen ? 0.5D : 0.875D, 0.625D, 1.0D, dir); // Render handle
 
         suppressDyeColor = true;
         suppressOverlay = true;
         suppressChiselDesign = true;
         disableAO = true;
+        setIconOverride(6, IconRegistry.icon_safe_light);
 
-        for (int box = 0; box < numCapacity; ++box)
+        renderPartLockLight(x, y, z);
+        renderPartCapacityLight(x, y, z);
+
+        clearIconOverride(6);
+        disableAO = false;
+        suppressDyeColor = false;
+        suppressOverlay = false;
+        suppressChiselDesign = false;
+
+        renderBlocks.renderAllFaces = false;
+    }
+
+    private void renderPartCapacityLight(int x, int y, int z)
+    {
+        double yMin = 0.125D;
+        double yMax = 0.1875D;
+
+        /* Determine capacity level */
+
+        TECarpentersSafe TE_safe = (TECarpentersSafe) TE;
+        int numSlotsFilled = 0;
+
+        for (int slot = 0; slot < TE_safe.getSizeInventory(); ++slot) {
+            if (TE_safe.getStackInSlot(slot) != null) {
+                ++numSlotsFilled;
+            }
+        }
+
+        int capacity = numSlotsFilled / (3 * TE_safe.getSizeInventory() / 27);
+
+        /* Draw capacity light strip */
+
+        for (int box = 0; box < 9; ++box)
         {
             if (box + 1 <= capacity) {
                 lightingHelper.setLightnessOverride(1.0F);
                 lightingHelper.setBrightnessOverride(LightingHelper.MAX_BRIGHTNESS);
-                lightingHelper.setColorOverride(LIGHT_BLUE_ACTIVE);
+                lightingHelper.setColorOverride(CAPACITY_ACTIVE);
             } else {
-                lightingHelper.setColorOverride(LIGHT_BLUE_INACTIVE);
+                lightingHelper.setColorOverride(CAPACITY_INACTIVE);
             }
 
-            renderBlocks.setRenderBounds(0.125D, yMin, 0.9375D, 0.25D, yMax, 1.0D);
-            rotateBounds(renderBlocks, facing);
-            renderBlock(new ItemStack(Blocks.ice), x, y, z);
+            renderBlockWithRotation(ice, x, y, z, 0.125D, yMin, 0.9375D, 0.25D, yMax, 1.0D, dir);
+
             lightingHelper.clearColorOverride();
             lightingHelper.clearBrightnessOverride();
             lightingHelper.clearLightnessOverride();
@@ -235,121 +212,37 @@ public class BlockHandlerCarpentersSafe extends BlockHandlerBase {
             yMin += 0.0625D;
             yMax += 0.0625D;
         }
-
-        disableAO = false;
-        suppressDyeColor = false;
-        suppressOverlay = false;
-        suppressChiselDesign = false;
-
-        clearIconOverride(6);
-
-        renderBlocks.renderAllFaces = false;
     }
 
-    private void drawBox(ItemStack itemStack, int x, int y, int z, int box)
+    private void renderPartLockLight(int x, int y, int z)
     {
-        boolean isLocked = Safe.isLocked(TE);
-        int type = getBlockType(box);
-
-        if (type != BLOCKTYPE_COVER && type != BLOCKTYPE_DOOR)
-        {
-            suppressDyeColor = true;
-            suppressOverlay = true;
-            suppressChiselDesign = true;
+        if (isLocked) {
+            lightingHelper.setColorOverride(UNLOCKED_INACTIVE);
+        } else {
+            lightingHelper.setLightnessOverride(1.0F);
+            lightingHelper.setBrightnessOverride(LightingHelper.MAX_BRIGHTNESS);
+            lightingHelper.setColorOverride(UNLOCKED_ACTIVE);
         }
 
-        switch (type) {
-            case BLOCKTYPE_PANEL:
+        renderBlockWithRotation(ice, x, y, z, 0.125D, 0.8125D, 0.9375D, 0.25D, 0.875D, 1.0D, dir);
 
-                renderBlock(getMetalBlock(), x, y, z);
+        lightingHelper.clearColorOverride();
+        lightingHelper.clearBrightnessOverride();
+        lightingHelper.clearLightnessOverride();
 
-                break;
-            case BLOCKTYPE_HANDLE:
-
-                renderBlock(new ItemStack(Blocks.iron_block), x, y, z);
-
-                break;
-            case BLOCKTYPE_GREEN_LIGHT:
-
-                disableAO = true;
-                setIconOverride(6, IconRegistry.icon_safe_light);
-
-                if (isLocked) {
-                    lightingHelper.setColorOverride(LIGHT_GREEN_INACTIVE);
-                } else {
-                    lightingHelper.setLightnessOverride(1.0F);
-                    lightingHelper.setBrightnessOverride(LightingHelper.MAX_BRIGHTNESS);
-                    lightingHelper.setColorOverride(LIGHT_GREEN_ACTIVE);
-                }
-
-                renderBlock(new ItemStack(Blocks.ice), x, y, z);
-                lightingHelper.clearColorOverride();
-                lightingHelper.clearBrightnessOverride();
-                lightingHelper.clearLightnessOverride();
-                clearIconOverride(6);
-                disableAO = false;
-
-                break;
-            case BLOCKTYPE_RED_LIGHT:
-
-                disableAO = true;
-                setIconOverride(6, IconRegistry.icon_safe_light);
-
-                if (isLocked) {
-                    lightingHelper.setLightnessOverride(1.0F);
-                    lightingHelper.setBrightnessOverride(LightingHelper.MAX_BRIGHTNESS);
-                    lightingHelper.setColorOverride(LIGHT_RED_ACTIVE);
-                } else {
-                    lightingHelper.setColorOverride(LIGHT_RED_INACTIVE);
-                }
-
-                renderBlock(new ItemStack(Blocks.ice), x, y, z);
-                lightingHelper.clearColorOverride();
-                lightingHelper.clearBrightnessOverride();
-                lightingHelper.clearLightnessOverride();
-                clearIconOverride(6);
-                disableAO = false;
-
-                break;
-            default:
-
-                renderBlock(itemStack, x, y, z);
-
-                break;
+        if (isLocked) {
+            lightingHelper.setLightnessOverride(1.0F);
+            lightingHelper.setBrightnessOverride(LightingHelper.MAX_BRIGHTNESS);
+            lightingHelper.setColorOverride(LOCKED_ACTIVE);
+        } else {
+            lightingHelper.setColorOverride(LOCKED_INACTIVE);
         }
 
-        suppressDyeColor = false;
-        suppressOverlay = false;
-        suppressChiselDesign = false;
-    }
+        renderBlockWithRotation(ice, x, y, z, 0.125D, 0.75D, 0.9375D, 0.25D, 0.8125D, 1.0D, dir);
 
-    /**
-     * Returns metal block used for safe panel.
-     */
-    private ItemStack getMetalBlock()
-    {
-        TECarpentersSafe TE_safe = (TECarpentersSafe) TE;
-
-        return TE_safe.hasUpgrade() ? new ItemStack(Blocks.gold_block) : new ItemStack(Blocks.iron_block);
-    }
-
-    /**
-     * Returns how many capacity strips to illuminate.
-     * Value returned should be between 0-9.
-     */
-    private int getCapacityIlluminated()
-    {
-        TECarpentersSafe TE_safe = (TECarpentersSafe) TE;
-        int numSlotsFilled = 0;
-
-        for (int slot = 0; slot < TE_safe.getSizeInventory(); ++slot)
-        {
-            if (TE_safe.getStackInSlot(slot) != null) {
-                ++numSlotsFilled;
-            }
-        }
-
-        return numSlotsFilled / (3 * TE_safe.getSizeInventory() / 27);
+        lightingHelper.clearColorOverride();
+        lightingHelper.clearBrightnessOverride();
+        lightingHelper.clearLightnessOverride();
     }
 
 }

@@ -23,7 +23,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class BlockHandlerCarpentersCollapsibleBlock extends BlockAdvancedLighting {
+public class BlockHandlerCarpentersCollapsibleBlock extends BlockHandlerSloped {
 
     /* RENDER IDS */
 

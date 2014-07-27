@@ -81,6 +81,8 @@ public class BlockCarpentersBarrier extends BlockCoverable {
      */
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack itemStack)
     {
+        super.onBlockPlacedBy(world, x, y, z, entityLiving, itemStack);
+
         TEBase TE = getTileEntity(world, x, y, z);
 
         if (TE != null) {
@@ -106,8 +108,6 @@ public class BlockCarpentersBarrier extends BlockCoverable {
             }
 
         }
-
-        super.onBlockPlacedBy(world, x, y, z, entityLiving, itemStack);
     }
 
     @Override
@@ -117,12 +117,12 @@ public class BlockCarpentersBarrier extends BlockCoverable {
      */
     public void addCollisionBoxesToList(World world, int x, int y, int z, AxisAlignedBB axisAlignedBB, List list, Entity entity)
     {
-        TEBase TE = getTileEntity(world, x, y, z);
+        getTileEntity(world, x, y, z);
 
-        boolean connect_ZN = canConnectBarrierTo(TE, world, x, y, z - 1, ForgeDirection.SOUTH);
-        boolean connect_ZP = canConnectBarrierTo(TE, world, x, y, z + 1, ForgeDirection.NORTH);
-        boolean connect_XN = canConnectBarrierTo(TE, world, x - 1, y, z, ForgeDirection.EAST);
-        boolean connect_XP = canConnectBarrierTo(TE, world, x + 1, y, z, ForgeDirection.WEST);
+        boolean connect_ZN = canConnectBarrierTo(world, x, y, z - 1, ForgeDirection.SOUTH);
+        boolean connect_ZP = canConnectBarrierTo(world, x, y, z + 1, ForgeDirection.NORTH);
+        boolean connect_XN = canConnectBarrierTo(world, x - 1, y, z, ForgeDirection.EAST);
+        boolean connect_XP = canConnectBarrierTo(world, x + 1, y, z, ForgeDirection.WEST);
 
         float x_Low = 0.375F;
         float x_High = 0.625F;
@@ -180,10 +180,10 @@ public class BlockCarpentersBarrier extends BlockCoverable {
         TEBase TE = getTileEntity(world, x, y, z);
         int type = Barrier.getType(TE);
 
-        boolean connect_ZN = canConnectBarrierTo(TE, world, x, y, z - 1, ForgeDirection.SOUTH);
-        boolean connect_ZP = canConnectBarrierTo(TE, world, x, y, z + 1, ForgeDirection.NORTH);
-        boolean connect_XN = canConnectBarrierTo(TE, world, x - 1, y, z, ForgeDirection.EAST);
-        boolean connect_XP = canConnectBarrierTo(TE, world, x + 1, y, z, ForgeDirection.WEST);
+        boolean connect_ZN = canConnectBarrierTo(world, x, y, z - 1, ForgeDirection.SOUTH);
+        boolean connect_ZP = canConnectBarrierTo(world, x, y, z + 1, ForgeDirection.NORTH);
+        boolean connect_XN = canConnectBarrierTo(world, x - 1, y, z, ForgeDirection.EAST);
+        boolean connect_XP = canConnectBarrierTo(world, x + 1, y, z, ForgeDirection.WEST);
 
         float x_Low = 0.0F;
         float x_High = 1.0F;
@@ -252,25 +252,31 @@ public class BlockCarpentersBarrier extends BlockCoverable {
     /**
      * Returns true if block can connect to specified side of neighbor block.
      */
-    public boolean canConnectBarrierTo(TEBase TE, IBlockAccess world, int x, int y, int z, ForgeDirection side)
+    public boolean canConnectBarrierTo(IBlockAccess world, int x, int y, int z, ForgeDirection side)
     {
         Block block = world.getBlock(x, y, z);
 
-        /* For the top side, make it create post if block is flower pot, torch, etc. */
-
-        if (side == ForgeDirection.UP) {
-            if (block.getMaterial().equals(Material.circuits)) {
-                return true;
-            }
+        if (block.equals(this) || block.equals(BlockRegistry.blockCarpentersGate)) {
+            return true;
         } else {
-            if (block.equals(this) || block.equals(BlockRegistry.blockCarpentersGate)) {
-                return true;
-            } else {
-                return block.isSideSolid(world, x, y, z, side) && Barrier.getPost(TE) != Barrier.HAS_POST;
-            }
+            return block.isSideSolid(world, x, y, z, side);
         }
+    }
 
-        return false;
+    /**
+     * Checks if the block is a solid face on the given side, used by placement logic.
+     *
+     * @param world The current world
+     * @param x X Position
+     * @param y Y position
+     * @param z Z position
+     * @param side The side to check
+     * @return True if the block is solid on the specified side.
+     */
+    @Override
+    public boolean isSideSolid(IBlockAccess world, int x, int y, int z, ForgeDirection side)
+    {
+        return side.equals(ForgeDirection.UP);
     }
 
     @Override
