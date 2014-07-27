@@ -12,13 +12,13 @@ public class Barrier {
      * Unused         Post  Type
      */
 
-    public final static byte TYPE_VANILLA        = 0;
-    public final static byte TYPE_VANILLA_X1     = 1;
-    public final static byte TYPE_VANILLA_X2     = 2;
-    public final static byte TYPE_VANILLA_X3     = 3;
-    public final static byte TYPE_PICKET         = 4;
-    public final static byte TYPE_SHADOWBOX = 5;
-    public final static byte TYPE_WALL           = 6;
+    public final static byte TYPE_VANILLA    = 0;
+    public final static byte TYPE_VANILLA_X1 = 1;
+    public final static byte TYPE_VANILLA_X2 = 2;
+    public final static byte TYPE_VANILLA_X3 = 3;
+    public final static byte TYPE_PICKET     = 4;
+    public final static byte TYPE_SHADOWBOX  = 5;
+    public final static byte TYPE_WALL       = 6;
 
     public final static byte NO_POST  = 0;
     public final static byte HAS_POST = 1;
