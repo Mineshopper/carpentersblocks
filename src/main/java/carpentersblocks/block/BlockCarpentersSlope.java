@@ -669,7 +669,7 @@ public class BlockCarpentersSlope extends BlockCoverable {
     @Override
     public boolean canCoverSide(TEBase TE, World world, int x, int y, int z, int side)
     {
-        return isSideSolid(world, x, y, z, ForgeDirection.getOrientation(side));
+        return super.canCoverSide(TE, world, x, y, z, side) || isSideSolid(world, x, y, z, ForgeDirection.getOrientation(side));
     }
 
     @Override

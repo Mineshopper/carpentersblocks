@@ -47,6 +47,10 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockCoverable extends BlockContainer {
 
+    /**
+     * Stores actions taken on a block in order to properly play sounds,
+     * decrement player inventory, and to determine if a block was altered.
+     */
     protected class ActionResult {
 
         public ItemStack itemStack;
@@ -316,7 +320,7 @@ public class BlockCoverable extends BlockContainer {
                                         }
                                     }
 
-                                } else if (FeatureRegistry.enableCovers && canCoverBase(TE, world, x, y, z) && BlockProperties.isCover(itemStack)) {
+                                } else if (FeatureRegistry.enableCovers && BlockProperties.isCover(itemStack)) {
 
                                     Block block = BlockProperties.toBlock(itemStack);
 
@@ -333,20 +337,16 @@ public class BlockCoverable extends BlockContainer {
                                     ItemStack tempStack = itemStack.copy();
                                     tempStack.setItemDamage(metadata);
 
-                                    if (!BlockProperties.hasCover(TE, 6)) {
+                                    /* Base cover should always be checked. */
 
-                                        if (BlockProperties.setCover(TE, 6, tempStack)) {
+                                    if (effectiveSide == 6 && (!canCoverSide(TE, world, x, y, z, 6) || BlockProperties.hasCover(TE, 6))) {
+                                        effectiveSide = side;
+                                    }
+
+                                    if (canCoverSide(TE, world, x, y, z, effectiveSide) && !BlockProperties.hasCover(TE, effectiveSide)) {
+                                        if (BlockProperties.setCover(TE, effectiveSide, tempStack)) {
                                             actionResult.setAltered().decInventory();
                                         }
-
-                                    } else if (FeatureRegistry.enableSideCovers) {
-
-                                        if (!BlockProperties.hasCover(TE, side) && canCoverSide(TE, world, x, y, z, side)) {
-                                            if (BlockProperties.setCover(TE, side, tempStack)) {
-                                                actionResult.setAltered().decInventory();
-                                            }
-                                        }
-
                                     }
 
                                 } else if (entityPlayer.isSneaking()) {
@@ -1228,19 +1228,11 @@ public class BlockCoverable extends BlockContainer {
     }
 
     /**
-     * Returns whether base block can be covered.
-     */
-    protected boolean canCoverBase(TEBase TE, World world, int x, int y, int z)
-    {
-        return true;
-    }
-
-    /**
      * Returns whether side of block supports a cover.
      */
     protected boolean canCoverSide(TEBase TE, World world, int x, int y, int z, int side)
     {
-        return false;
+        return side == 6;
     }
 
 }
