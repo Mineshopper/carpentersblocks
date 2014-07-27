@@ -43,7 +43,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class BlockHandlerCarpentersSlope extends BlockAdvancedLighting {
+public class BlockHandlerCarpentersSlope extends BlockHandlerSloped {
 
     /** Returns whether side is sloped face. */
     public boolean           isSideSloped;

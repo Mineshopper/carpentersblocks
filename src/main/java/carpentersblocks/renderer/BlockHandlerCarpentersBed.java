@@ -68,23 +68,7 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase {
     {
         renderBlocks.renderAllFaces = true;
 
-        /* Reset common fields */
-
-        dir = Bed.getDirection(TE);
-        isHead = Bed.isHeadOfBed(TE);
-        hasDesign = BlockProperties.hasDesign(TE);
-        bedParallelPos = getIsParallelPos();
-        bedParallelNeg = getIsParallelNeg();
-        TE_head = isHead ? TE : Bed.getOppositeTE(TE);
-
-        if (TE_head != null) {
-            TE_foot = Bed.getOppositeTE(TE_head);
-        }
-
-        if (hasDesign) {
-            icon_design = IconRegistry.icon_design_bed.get(DesignHandler.listBed.indexOf(BlockProperties.getDesign(TE)));
-        }
-
+        setParams();
         renderFabricComponents(new ItemStack(Blocks.wool), x, y, z);
 
         /* Apply frame dye override */
@@ -106,6 +90,27 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase {
         clearDyeOverride();
         suppressDyeColor = false;
         renderBlocks.renderAllFaces = false;
+    }
+
+    /**
+     * Sets up commonly used fields.
+     */
+    private void setParams()
+    {
+        dir = Bed.getDirection(TE);
+        isHead = Bed.isHeadOfBed(TE);
+        hasDesign = BlockProperties.hasDesign(TE);
+        bedParallelPos = getIsParallelPos();
+        bedParallelNeg = getIsParallelNeg();
+        TE_head = isHead ? TE : Bed.getOppositeTE(TE);
+
+        if (TE_head != null) {
+            TE_foot = Bed.getOppositeTE(TE_head);
+        }
+
+        if (hasDesign) {
+            icon_design = IconRegistry.icon_design_bed.get(DesignHandler.listBed.indexOf(BlockProperties.getDesign(TE)));
+        }
     }
 
     /**
@@ -137,7 +142,7 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase {
         if (isHead) {
             IIcon icon_pillow = hasDesign ? icon_design[0] : IconRegistry.icon_bed_pillow;
             setIconOverride(6, icon_pillow);
-            setupRender(itemStack, x, y, z, 0.125D, 0.5625D, 0.1875D, 0.875D, 0.6875D, 0.5625D);
+            renderBlockWithRotation(itemStack, x, y, z, 0.125D, 0.5625D, 0.1875D, 0.875D, 0.6875D, 0.5625D, dir);
             clearIconOverride(6);
         }
     }
@@ -204,14 +209,14 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase {
         itemStack.setItemDamage(blanketDyeMetadata);
 
         if (isHead) {
-            setupRender(itemStack, x, y, z, 0.0625D, yTop - 0.0625D, 0.5D, 0.9375D, yTop, 1.0D);
-            setupRender(itemStack, x, y, z, 0.0D, yTop - depth, 0.5D, 0.0625D, yTop, 1.0D);
-            setupRender(itemStack, x, y, z, 0.9375D, yTop - depth, 0.5D, 1.0D, yTop, 1.0D);
+            renderBlockWithRotation(itemStack, x, y, z, 0.0625D, yTop - 0.0625D, 0.5D, 0.9375D, yTop, 1.0D, dir);
+            renderBlockWithRotation(itemStack, x, y, z, 0.0D, yTop - depth, 0.5D, 0.0625D, yTop, 1.0D, dir);
+            renderBlockWithRotation(itemStack, x, y, z, 0.9375D, yTop - depth, 0.5D, 1.0D, yTop, 1.0D, dir);
         } else {
-            setupRender(itemStack, x, y, z, 0.0625D, yTop - 0.0625D, 0.0D, 0.9375D, yTop, 0.9375D);
-            setupRender(itemStack, x, y, z, 0.0D, yTop - depth, 0.0D, 0.0625D, yTop, 1.0D);
-            setupRender(itemStack, x, y, z, 0.9375D, yTop - depth, 0.0D, 1.0D, yTop, 1.0D);
-            setupRender(itemStack, x, y, z, 0.0625D, yTop - depth, 0.9375D, 0.9375D, yTop, 1.0D);
+            renderBlockWithRotation(itemStack, x, y, z, 0.0625D, yTop - 0.0625D, 0.0D, 0.9375D, yTop, 0.9375D, dir);
+            renderBlockWithRotation(itemStack, x, y, z, 0.0D, yTop - depth, 0.0D, 0.0625D, yTop, 1.0D, dir);
+            renderBlockWithRotation(itemStack, x, y, z, 0.9375D, yTop - depth, 0.0D, 1.0D, yTop, 1.0D, dir);
+            renderBlockWithRotation(itemStack, x, y, z, 0.0625D, yTop - depth, 0.9375D, 0.9375D, yTop, 1.0D, dir);
         }
 
         itemStack.setItemDamage(15);
@@ -360,21 +365,11 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase {
         /* Render components that are safe to rotate */
 
         if (isHead) {
-            setupRender(itemStack, x, y, z, 0.125D, 0.1875D, 0.0D, 0.875D, 0.875D, 0.125D); // Render headboard
-            setupRender(itemStack, x, y, z, 0.0D, 0.1875D, 0.125D, 1.0D, 0.3125D, 1.0D); // Render support board
+            renderBlockWithRotation(itemStack, x, y, z, 0.125D, 0.1875D, 0.0D, 0.875D, 0.875D, 0.125D, dir); // Render headboard
+            renderBlockWithRotation(itemStack, x, y, z, 0.0D, 0.1875D, 0.125D, 1.0D, 0.3125D, 1.0D, dir); // Render support board
         } else {
-            setupRender(itemStack, x, y, z, 0.0D, 0.1875D, 0.0D, 1.0D, 0.3125D, 1.0D); // Render support board
+            renderBlockWithRotation(itemStack, x, y, z, 0.0D, 0.1875D, 0.0D, 1.0D, 0.3125D, 1.0D, dir); // Render support board
         }
-    }
-
-    /**
-     * Set render bounds, rotate them and render.
-     */
-    private void setupRender(ItemStack itemStack, int x, int y, int z, double xMin, double yMin, double zMin, double xMax, double yMax, double zMax)
-    {
-        renderBlocks.setRenderBounds(xMin, yMin, zMin, xMax, yMax, zMax);
-        rotateBounds(renderBlocks, dir);
-        renderBlock(itemStack, x, y, z);
     }
 
 }

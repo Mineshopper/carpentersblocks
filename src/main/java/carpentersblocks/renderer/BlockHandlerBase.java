@@ -151,11 +151,45 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
     }
 
     /**
-     * Rotates renderBounds if direction does not equal SOUTH.
+     * For South-facing block, sets render bounds, rotates them and renders.
+     */
+    protected void renderBlockWithRotation(ItemStack itemStack, int x, int y, int z, double xMin, double yMin, double zMin, double xMax, double yMax, double zMax, ForgeDirection ... dir)
+    {
+        renderBlocks.setRenderBounds(xMin, yMin, zMin, xMax, yMax, zMax);
+
+        for (ForgeDirection rot : dir) {
+            rotateBounds(renderBlocks, rot);
+        }
+
+        renderBlock(itemStack, x, y, z);
+    }
+
+    /**
+     * For South-facing blocks, rotates bounds for a single directional input.
      */
     protected void rotateBounds(RenderBlocks renderBlocks, ForgeDirection dir)
     {
         switch (dir) {
+            case DOWN:
+                renderBlocks.setRenderBounds(
+                        renderBlocks.renderMinX,
+                        1.0D - renderBlocks.renderMaxZ,
+                        renderBlocks.renderMinY,
+                        renderBlocks.renderMaxX,
+                        1.0D - renderBlocks.renderMinZ,
+                        renderBlocks.renderMaxY
+                        );
+                break;
+            case UP:
+                renderBlocks.setRenderBounds(
+                        renderBlocks.renderMinX,
+                        renderBlocks.renderMinZ,
+                        renderBlocks.renderMinY,
+                        renderBlocks.renderMaxX,
+                        renderBlocks.renderMaxZ,
+                        renderBlocks.renderMaxY
+                        );
+                break;
             case NORTH:
                 renderBlocks.setRenderBounds(
                         1.0D - renderBlocks.renderMaxX,
@@ -593,6 +627,8 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
     /**
      * Sets color, lightness, and brightness in {@link LightingHelper} and
      * renders side.
+     * <p>
+     * Also clears {@link VertexHelper#floatingIcon} and thus cannot be overridden.
      *
      * @param itemStack  the cover ItemStack
      * @param block  the block inside the ItemStack
@@ -603,7 +639,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
      * @param icon  the icon for the side
      * @return nothing
      */
-    public void setColorAndRender(ItemStack itemStack, int x, int y, int z, int side, IIcon icon)
+    public final void setColorAndRender(ItemStack itemStack, int x, int y, int z, int side, IIcon icon)
     {
         int color = getBlockColor(BlockProperties.toBlock(itemStack), itemStack.getItemDamage(), x, y, z, side, icon);
 
@@ -613,6 +649,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
 
         lightingHelper.setupColor(x, y, z, side, color, icon);
         render(x, y, z, side, icon);
+        VertexHelper.unlockFloatingIcon();
     }
 
     /**
