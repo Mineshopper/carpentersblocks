@@ -14,13 +14,13 @@ public class Gate {
      * Unused       State  Facing  OpenDir  Type
      */
 
-    public final static byte TYPE_VANILLA        = Barrier.TYPE_VANILLA;
-    public final static byte TYPE_VANILLA_X1     = Barrier.TYPE_VANILLA_X1;
-    public final static byte TYPE_VANILLA_X2     = Barrier.TYPE_VANILLA_X2;
-    public final static byte TYPE_VANILLA_X3     = Barrier.TYPE_VANILLA_X3;
-    public final static byte TYPE_PICKET         = Barrier.TYPE_PICKET;
-    public final static byte TYPE_SHADOWBOX = Barrier.TYPE_SHADOWBOX;
-    public final static byte TYPE_WALL           = Barrier.TYPE_WALL;
+    public final static byte TYPE_VANILLA    = Barrier.TYPE_VANILLA;
+    public final static byte TYPE_VANILLA_X1 = Barrier.TYPE_VANILLA_X1;
+    public final static byte TYPE_VANILLA_X2 = Barrier.TYPE_VANILLA_X2;
+    public final static byte TYPE_VANILLA_X3 = Barrier.TYPE_VANILLA_X3;
+    public final static byte TYPE_PICKET     = Barrier.TYPE_PICKET;
+    public final static byte TYPE_SHADOWBOX  = Barrier.TYPE_SHADOWBOX;
+    public final static byte TYPE_WALL       = Barrier.TYPE_WALL;
 
     public final static byte FACING_ON_X = 0;
     public final static byte FACING_ON_Z = 1;
