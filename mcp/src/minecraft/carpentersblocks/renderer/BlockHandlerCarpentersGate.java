@@ -243,14 +243,10 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
                 renderBlockWithRotation(itemStack, x, y, z, 0.5D, 0.125D, 0.8125D, 1.0D, 0.25D, 0.9375D, dir);
             }
 
-            renderBlockWithRotation(itemStack, x, y, z, 0.5D, 0.0D, 0.0D, 0.6875D, 1.0D, 0.0625D, dir);
-            renderBlockWithRotation(itemStack, x, y, z, 0.5D, 0.0D, 0.1875D, 0.6875D, 1.0D, 0.25D, dir);
-            renderBlockWithRotation(itemStack, x, y, z, 0.5D, 0.0D, 0.75D, 0.6875D, 1.0D, 0.8125D, dir);
-            renderBlockWithRotation(itemStack, x, y, z, 0.5D, 0.0D, 0.9375D, 0.6875D, 1.0D, 1.0D, dir);
-            renderBlockWithRotation(itemStack, x, y, z, 0.8125D, 0.0D, 0.0D, 1.0D, 1.0D, 0.0625D, dir);
-            renderBlockWithRotation(itemStack, x, y, z, 0.8125D, 0.0D, 0.1875D, 1.0D, 1.0D, 0.25D, dir);
-            renderBlockWithRotation(itemStack, x, y, z, 0.8125D, 0.0D, 0.75D, 1.0D, 1.0D, 0.8125D, dir);
-            renderBlockWithRotation(itemStack, x, y, z, 0.8125D, 0.0D, 0.9375D, 1.0D, 1.0D, 1.0D, dir);
+            renderBlockWithRotation(itemStack, x, y, z, 0.5D, 0.0D, 0.0D, 0.75D, 1.0D, 0.0625D, dir);
+            renderBlockWithRotation(itemStack, x, y, z, 0.75D, 0.0D, 0.1875D, 1.0D, 1.0D, 0.25D, dir);
+            renderBlockWithRotation(itemStack, x, y, z, 0.5D, 0.0D, 0.75D, 0.75D, 1.0D, 0.8125D, dir);
+            renderBlockWithRotation(itemStack, x, y, z, 0.75D, 0.0D, 0.9375D, 1.0D, 1.0D, 1.0D, dir);
 
         } else {
 
@@ -261,12 +257,10 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
                 renderBlockWithRotation(itemStack, x, y, z, 0.4375D, 0.125D, 0.0D, 0.5625D, 0.25D, 1.0D, dir);
             }
 
-            renderBlockWithRotation(itemStack, x, y, z, 0.5625D, 0.0D, 0.0D, 0.625D, 1.0D, 0.1875D, dir);
-            renderBlockWithRotation(itemStack, x, y, z, 0.375D, 0.0D, 0.0D, 0.4375D, 1.0D, 0.1875D, dir);
-            renderBlockWithRotation(itemStack, x, y, z, 0.5625D, 0.0D, 0.3125D, 0.625D, 1.0D, 0.6875D, dir);
-            renderBlockWithRotation(itemStack, x, y, z, 0.375D, 0.0D, 0.3125D, 0.4375D, 1.0D, 0.6875D, dir);
-            renderBlockWithRotation(itemStack, x, y, z, 0.5625D, 0.0D, 0.8125D, 0.625D, 1.0D, 1.0D, dir);
-            renderBlockWithRotation(itemStack, x, y, z, 0.375D, 0.0D, 0.8125D, 0.4375D, 1.0D, 1.0D, dir);
+            renderBlockWithRotation(itemStack, x, y, z, 0.5625D, 0.0D, 0.0D, 0.625D, 1.0D, 0.25D, dir);
+            renderBlockWithRotation(itemStack, x, y, z, 0.375D, 0.0D, 0.25D, 0.4375D, 1.0D, 0.5D, dir);
+            renderBlockWithRotation(itemStack, x, y, z, 0.5625D, 0.0D, 0.5D, 0.625D, 1.0D, 0.75D, dir);
+            renderBlockWithRotation(itemStack, x, y, z, 0.375D, 0.0D, 0.75D, 0.4375D, 1.0D, 1.0D, dir);
 
         }
     }
