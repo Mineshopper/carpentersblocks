@@ -99,7 +99,9 @@ public class RenderHelper extends VertexHelper {
     {
         /* Enforce default floating icons */
 
-        floatingIcon |= icon == BlockGrass.getIconSideOverlay() || icon.getIconName().contains("overlay/overlay_") && icon.getIconName().endsWith("_side");
+        if (icon == BlockGrass.getIconSideOverlay() || icon.getIconName().contains("overlay/overlay_") && icon.getIconName().endsWith("_side")) {
+            lockFloatingIcon();
+        }
 
         boolean customBounds = renderBlocks == null;
 
