@@ -129,7 +129,7 @@ public class BlockRegistry {
     public static int recipeQuantitySafe             = 1;
     public static int recipeQuantitySlope            = 6;
     public static int recipeQuantityStairs           = 4;
-    public static int recipeQuantityTorch            = 4;
+    public static int recipeQuantityTorch            = 8;
 
     /**
      * Run preinitialization routines.
