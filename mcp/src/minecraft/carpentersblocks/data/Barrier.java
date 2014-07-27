@@ -17,7 +17,7 @@ public class Barrier {
     public final static byte TYPE_VANILLA_X2     = 2;
     public final static byte TYPE_VANILLA_X3     = 3;
     public final static byte TYPE_PICKET         = 4;
-    public final static byte TYPE_PLANK_VERTICAL = 5;
+    public final static byte TYPE_SHADOWBOX = 5;
     public final static byte TYPE_WALL           = 6;
 
     public final static byte NO_POST  = 0;

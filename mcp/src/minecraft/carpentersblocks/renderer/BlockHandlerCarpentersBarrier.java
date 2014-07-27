@@ -49,8 +49,8 @@ public class BlockHandlerCarpentersBarrier extends BlockHandlerBase {
             case Barrier.TYPE_PICKET:
                 renderTypePicket(itemStack, x, y, z);
                 break;
-            case Barrier.TYPE_PLANK_VERTICAL:
-                renderTypeVerticalPlank(itemStack, x, y, z);
+            case Barrier.TYPE_SHADOWBOX:
+                renderTypeShadowbox(itemStack, x, y, z);
                 break;
             case Barrier.TYPE_WALL:
                 renderTypeWall(itemStack, x, y, z);
@@ -277,26 +277,20 @@ public class BlockHandlerCarpentersBarrier extends BlockHandlerBase {
     }
 
     /**
-     * Renders vertical plank barrier at given coordinates.
+     * Renders shadowbox barrier at given coordinates.
      */
-    private void renderTypeVerticalPlank(ItemStack itemStack, int x, int y, int z)
+    private void renderTypeShadowbox(ItemStack itemStack, int x, int y, int z)
     {
         renderPost(itemStack, x, y, z, 0.0625D);
 
         for (int side = 2; side < 6; ++side) {
-
             if (connect[side]) {
-
                 ForgeDirection dir = ForgeDirection.getOrientation(side);
                 renderSupportPlank(itemStack, x, y, z, dir, 0.0625D, 0.75D, 0.875D, false);
                 renderSupportPlank(itemStack, x, y, z, dir, 0.0625D, 0.125D, 0.25D, false);
                 renderBlockWithRotation(itemStack, x, y, z, 0.5625D, 0.0D, 0.5D, 0.625D, 1.0D, 0.75D, dir);
-                //renderBlockWithRotation(itemStack, x, y, z, 0.375D, 0.0D, 0.5D, 0.4375D, 1.0D, 0.6875D, dir);
-                //renderBlockWithRotation(itemStack, x, y, z, 0.5625D, 0.0D, 0.8125D, 0.625D, 1.0D, 1.0D, dir);
                 renderBlockWithRotation(itemStack, x, y, z, 0.375D, 0.0D, 0.75D, 0.4375D, 1.0D, 1.0D, dir);
-
             }
-
         }
     }
 

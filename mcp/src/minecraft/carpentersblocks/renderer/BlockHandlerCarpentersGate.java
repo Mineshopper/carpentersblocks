@@ -46,8 +46,8 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
             case Gate.TYPE_PICKET:
                 renderTypePicket(itemStack, x, y, z);
                 break;
-            case Gate.TYPE_PLANK_VERTICAL:
-                renderTypeVerticalPlank(itemStack, x, y, z);
+            case Gate.TYPE_SHADOWBOX:
+                renderTypeShadowbox(itemStack, x, y, z);
                 break;
             case Gate.TYPE_WALL:
                 renderTypeWall(itemStack, x, y, z);
@@ -228,9 +228,9 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
     }
 
     /**
-     * Renders vertical plank gate at given coordinates.
+     * Renders shadowbox gate at given coordinates.
      */
-    private void renderTypeVerticalPlank(ItemStack itemStack, int x, int y, int z)
+    private void renderTypeShadowbox(ItemStack itemStack, int x, int y, int z)
     {
         if (isOpen) {
 
