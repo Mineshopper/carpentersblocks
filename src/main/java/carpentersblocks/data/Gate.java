@@ -19,7 +19,7 @@ public class Gate {
     public final static byte TYPE_VANILLA_X2     = Barrier.TYPE_VANILLA_X2;
     public final static byte TYPE_VANILLA_X3     = Barrier.TYPE_VANILLA_X3;
     public final static byte TYPE_PICKET         = Barrier.TYPE_PICKET;
-    public final static byte TYPE_PLANK_VERTICAL = Barrier.TYPE_PLANK_VERTICAL;
+    public final static byte TYPE_SHADOWBOX = Barrier.TYPE_SHADOWBOX;
     public final static byte TYPE_WALL           = Barrier.TYPE_WALL;
 
     public final static byte FACING_ON_X = 0;
