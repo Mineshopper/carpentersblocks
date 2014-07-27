@@ -399,7 +399,7 @@ public class BlockCarpentersSlope extends BlockCoverable {
                     float[] dim = slopeUtil.genBounds(slope, slice, precision, pass);
 
                     if (dim != null) {
-                        box = AxisAlignedBB.getAABBPool().getAABB(x + dim[0], y + dim[1], z + dim[2], x + dim[3], y + dim[4], z + dim[5]);
+                        box = AxisAlignedBB.getBoundingBox(x + dim[0], y + dim[1], z + dim[2], x + dim[3], y + dim[4], z + dim[5]);
                     }
 
                     if (box != null && axisAlignedBB.intersectsWith(box)) {
@@ -669,7 +669,7 @@ public class BlockCarpentersSlope extends BlockCoverable {
     @Override
     public boolean canCoverSide(TEBase TE, World world, int x, int y, int z, int side)
     {
-        return isSideSolid(world, x, y, z, ForgeDirection.getOrientation(side));
+        return super.canCoverSide(TE, world, x, y, z, side) || isSideSolid(world, x, y, z, ForgeDirection.getOrientation(side));
     }
 
     @Override
