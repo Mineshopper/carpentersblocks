@@ -152,7 +152,7 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase {
      */
     private void renderBlanket(ItemStack itemStack, int x, int y, int z)
     {
-        VertexHelper.lockFloatingIcon();
+        VertexHelper.setFloatingIconLock();
         int blanketDyeMetadata = 0;
         boolean isOccupied = false;
 
@@ -221,7 +221,7 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase {
 
         itemStack.setItemDamage(15);
         clearIconOverride(6);
-        VertexHelper.unlockFloatingIcon();
+        VertexHelper.clearFloatingIconLock();
     }
 
     /**
