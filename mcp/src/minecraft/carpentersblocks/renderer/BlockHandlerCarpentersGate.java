@@ -12,18 +12,21 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISimpleBlockRenderingHandler {
 
+    private boolean[] gate;
+    private ForgeDirection dir;
+    private boolean isOpen;
+    private int type;
+
+    private static final int YN = 0;
+    private static final int YP = 1;
+
     @Override
     public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderBlocks)
     {
-        /* Sides */
-
         renderBlocks.setRenderBounds(0.0D, 0.3125D, 0.4375D, 0.125D, 1.0D, 0.5625D);
         super.renderInventoryBlock(block, metadata, modelID, renderBlocks);
         renderBlocks.setRenderBounds(0.875D, 0.3125D, 0.4375D, 1.0D, 1.0D, 0.5625D);
         super.renderInventoryBlock(block, metadata, modelID, renderBlocks);
-
-        /* Center */
-
         renderBlocks.setRenderBounds(0.125D, 0.5D, 0.4375D, 0.875D, 0.9375D, 0.5625D);
         super.renderInventoryBlock(block, metadata, modelID, renderBlocks);
     }
@@ -36,21 +39,21 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
     {
         renderBlocks.renderAllFaces = true;
 
+        setParams(x, y, z);
         ItemStack itemStack = getCoverForRendering();
-        int type = Gate.getType(TE);
 
         switch (type) {
             case Gate.TYPE_PICKET:
-                renderPicketGate(itemStack, x, y, z);
+                renderTypePicket(itemStack, x, y, z);
                 break;
             case Gate.TYPE_PLANK_VERTICAL:
-                renderVerticalPlankGate(itemStack, x, y, z);
+                renderTypeVerticalPlank(itemStack, x, y, z);
                 break;
             case Gate.TYPE_WALL:
-                renderWallGate(itemStack, x, y, z);
+                renderTypeWall(itemStack, x, y, z);
                 break;
-            default: // Gate.VANILLA
-                renderVanillaGate(itemStack, x, y, z);
+            default:
+                renderTypeVanilla(itemStack, x, y, z);
                 break;
         }
 
@@ -58,1220 +61,229 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
     }
 
     /**
-     * Renders gate at given coordinates
+     * Sets up commonly used fields.
      */
-    private void renderVanillaGate(ItemStack itemStack, int x, int y, int z)
+    private void setParams(int x, int y, int z)
     {
-        boolean isGateOpen = Gate.getState(TE) == Gate.STATE_OPEN;
-        int dir = Gate.getDirOpen(TE);
-        int facing = Gate.getFacing(TE);
-
-        float y_Low2 = 0.375F;
-        float y_High3 = 0.5625F;
-        float y_Low3 = 0.75F;
-        float y_High2 = 0.9375F;
-        float y_Low = 0.3125F;
-        float y_High = 1.0F;
-
-        float yPlankOffset = Gate.getType(TE) * 0.0625F;
+        type = Gate.getType(TE);
+        isOpen = Gate.getState(TE) == Gate.STATE_OPEN;
 
         Block blockYN = Block.blocksList[renderBlocks.blockAccess.getBlockId(x, y - 1, z)];
         Block blockYP = Block.blocksList[renderBlocks.blockAccess.getBlockId(x, y + 1, z)];
 
-        boolean isGateAbove = blockYP != null && blockYP.equals(srcBlock);
-        boolean isGateBelow = blockYN != null && blockYN.equals(srcBlock);
+        boolean[] tempGate = {
+                blockYN != null ? blockYN.equals(srcBlock) : false,
+                blockYP != null ? blockYP.equals(srcBlock) : false
+        };
 
-        boolean joinPlanks = Gate.getType(TE) == Gate.TYPE_VANILLA_X3;
+        gate = tempGate;
 
-        /* Render supports on sides of gate */
-
-        if (facing == Gate.FACING_ON_X)
-        {
-            renderBlocks.setRenderBounds(0.0F, isGateBelow ? 0.0F : y_Low - yPlankOffset, 0.4375F, 0.125F, isGateAbove ? 1.0F : y_High, 0.5625F);
-            renderBlock(itemStack, x, y, z);
-            renderBlocks.setRenderBounds(0.875F, isGateBelow ? 0.0F : y_Low - yPlankOffset, 0.4375F, 1.0F, isGateAbove ? 1.0F : y_High, 0.5625F);
-            renderBlock(itemStack, x, y, z);
+        if (Gate.getFacing(TE) == Gate.FACING_ON_Z) {
+            dir = Gate.getDirOpen(TE) == Gate.DIR_NEG ? ForgeDirection.NORTH : ForgeDirection.SOUTH;
+        } else {
+            dir = Gate.getDirOpen(TE) == Gate.DIR_NEG ? ForgeDirection.EAST : ForgeDirection.WEST;
         }
-        else
-        {
-            renderBlocks.setRenderBounds(0.4375F, isGateBelow ? 0.0F : y_Low - yPlankOffset, 0.0F, 0.5625F, isGateAbove ? 1.0F : y_High, 0.125F);
-            renderBlock(itemStack, x, y, z);
-            renderBlocks.setRenderBounds(0.4375F, isGateBelow ? 0.0F : y_Low - yPlankOffset, 0.875F, 0.5625F, isGateAbove ? 1.0F : y_High, 1.0F);
-            renderBlock(itemStack, x, y, z);
-        }
-
-        if (isGateOpen)
-        {
-            if (facing == Gate.FACING_ON_Z)
-            {
-                if (dir == Gate.DIR_POS)
-                {
-                    if (!joinPlanks) {
-
-                        renderBlocks.setRenderBounds(0.8125D, isGateBelow ? 0.0F : y_Low2 - yPlankOffset, 0.0D, 0.9375D, isGateAbove ? 1.0F : y_High2, 0.125D);
-                        renderBlock(itemStack, x, y, z);
-                        renderBlocks.setRenderBounds(0.8125D, isGateBelow ? 0.0F : y_Low2 - yPlankOffset, 0.875D, 0.9375D, isGateAbove ? 1.0F : y_High2, 1.0D);
-                        renderBlock(itemStack, x, y, z);
-                        renderBlocks.setRenderBounds(0.5625D, y_Low2 - yPlankOffset, 0.0D, 0.8125D, y_High3, 0.125D);
-                        renderBlock(itemStack, x, y, z);
-                        renderBlocks.setRenderBounds(0.5625D, y_Low2 - yPlankOffset, 0.875D, 0.8125D, y_High3, 1.0D);
-                        renderBlock(itemStack, x, y, z);
-                        renderBlocks.setRenderBounds(0.5625D, y_Low3 - yPlankOffset, 0.0D, 0.8125D, y_High2, 0.125D);
-                        renderBlock(itemStack, x, y, z);
-                        renderBlocks.setRenderBounds(0.5625D, y_Low3 - yPlankOffset, 0.875D, 0.8125D, y_High2, 1.0D);
-                        renderBlock(itemStack, x, y, z);
-
-                    } else {
-
-                        renderBlocks.setRenderBounds(0.5625D, isGateBelow ? 0.0F : 0.1875F, 0.0D, 0.9375D, isGateAbove ? 1.0F : y_High2, 0.125D);
-                        renderBlock(itemStack, x, y, z);
-                        renderBlocks.setRenderBounds(0.5625D, isGateBelow ? 0.0F : 0.1875F, 0.875D, 0.9375D, isGateAbove ? 1.0F : y_High2, 1.0D);
-                        renderBlock(itemStack, x, y, z);
-
-                    }
-
-                }
-                else
-                {
-                    if (!joinPlanks) {
-
-                        renderBlocks.setRenderBounds(0.0625D, isGateBelow ? 0.0F : y_Low2 - yPlankOffset, 0.0D, 0.1875D, isGateAbove ? 1.0F : y_High2, 0.125D);
-                        renderBlock(itemStack, x, y, z);
-                        renderBlocks.setRenderBounds(0.0625D, isGateBelow ? 0.0F : y_Low2 - yPlankOffset, 0.875D, 0.1875D, isGateAbove ? 1.0F : y_High2, 1.0D);
-                        renderBlock(itemStack, x, y, z);
-                        renderBlocks.setRenderBounds(0.1875D, y_Low2 - yPlankOffset, 0.0D, 0.4375D, y_High3, 0.125D);
-                        renderBlock(itemStack, x, y, z);
-                        renderBlocks.setRenderBounds(0.1875D, y_Low2 - yPlankOffset, 0.875D, 0.4375D, y_High3, 1.0D);
-                        renderBlock(itemStack, x, y, z);
-                        renderBlocks.setRenderBounds(0.1875D, y_Low3 - yPlankOffset, 0.0D, 0.4375D, y_High2, 0.125D);
-                        renderBlock(itemStack, x, y, z);
-                        renderBlocks.setRenderBounds(0.1875D, y_Low3 - yPlankOffset, 0.875D, 0.4375D, y_High2, 1.0D);
-                        renderBlock(itemStack, x, y, z);
-
-                    } else {
-
-                        renderBlocks.setRenderBounds(0.0625D, isGateBelow ? 0.0F : y_Low2 - yPlankOffset, 0.0D, 0.4375D, isGateAbove ? 1.0F : y_High2, 0.125D);
-                        renderBlock(itemStack, x, y, z);
-                        renderBlocks.setRenderBounds(0.0625D, isGateBelow ? 0.0F : y_Low2 - yPlankOffset, 0.875D, 0.4375D, isGateAbove ? 1.0F : y_High2, 1.0D);
-                        renderBlock(itemStack, x, y, z);
-
-                    }
-
-                }
-            }
-            else
-            {
-                if (dir == Gate.DIR_POS)
-                {
-                    if (!joinPlanks) {
-
-                        renderBlocks.setRenderBounds(0.0D, isGateBelow ? 0.0F : y_Low2 - yPlankOffset, 0.8125D, 0.125D, isGateAbove ? 1.0F : y_High2, 0.9375D);
-                        renderBlock(itemStack, x, y, z);
-                        renderBlocks.setRenderBounds(0.875D, isGateBelow ? 0.0F : y_Low2 - yPlankOffset, 0.8125D, 1.0D, isGateAbove ? 1.0F : y_High2, 0.9375D);
-                        renderBlock(itemStack, x, y, z);
-                        renderBlocks.setRenderBounds(0.0D, y_Low2 - yPlankOffset, 0.5625D, 0.125D, y_High3, 0.8125D);
-                        renderBlock(itemStack, x, y, z);
-                        renderBlocks.setRenderBounds(0.875D, y_Low2 - yPlankOffset, 0.5625D, 1.0D, y_High3, 0.8125D);
-                        renderBlock(itemStack, x, y, z);
-                        renderBlocks.setRenderBounds(0.0D, y_Low3 - yPlankOffset, 0.5625D, 0.125D, y_High2, 0.8125D);
-                        renderBlock(itemStack, x, y, z);
-                        renderBlocks.setRenderBounds(0.875D, y_Low3 - yPlankOffset, 0.5625D, 1.0D, y_High2, 0.8125D);
-                        renderBlock(itemStack, x, y, z);
-
-                    } else {
-
-                        renderBlocks.setRenderBounds(0.875D, isGateBelow ? 0.0F : y_Low2 - yPlankOffset, 0.5625D, 1.0D, isGateAbove ? 1.0F : y_High2, 0.9375D);
-                        renderBlock(itemStack, x, y, z);
-                        renderBlocks.setRenderBounds(0.0D, isGateBelow ? 0.0F : y_Low2 - yPlankOffset, 0.5625D, 0.125D, isGateAbove ? 1.0F : y_High2, 0.9375D);
-                        renderBlock(itemStack, x, y, z);
-
-                    }
-
-                }
-                else
-                {
-                    if (!joinPlanks) {
-
-                        renderBlocks.setRenderBounds(0.0D, isGateBelow ? 0.0F : y_Low2 - yPlankOffset, 0.0625D, 0.125D, isGateAbove ? 1.0F : y_High2, 0.1875D);
-                        renderBlock(itemStack, x, y, z);
-                        renderBlocks.setRenderBounds(0.875D, isGateBelow ? 0.0F : y_Low2 - yPlankOffset, 0.0625D, 1.0D, isGateAbove ? 1.0F : y_High2, 0.1875D);
-                        renderBlock(itemStack, x, y, z);
-                        renderBlocks.setRenderBounds(0.0D, y_Low2 - yPlankOffset, 0.1875D, 0.125D, y_High3, 0.4375D);
-                        renderBlock(itemStack, x, y, z);
-                        renderBlocks.setRenderBounds(0.875D, y_Low2 - yPlankOffset, 0.1875D, 1.0D, y_High3, 0.4375D);
-                        renderBlock(itemStack, x, y, z);
-                        renderBlocks.setRenderBounds(0.0D, y_Low3 - yPlankOffset, 0.1875D, 0.125D, y_High2, 0.4375D);
-                        renderBlock(itemStack, x, y, z);
-                        renderBlocks.setRenderBounds(0.875D, y_Low3 - yPlankOffset, 0.1875D, 1.0D, y_High2, 0.4375D);
-                        renderBlock(itemStack, x, y, z);
-
-                    } else {
-
-                        renderBlocks.setRenderBounds(0.875D, isGateBelow ? 0.0F : y_Low2 - yPlankOffset, 0.0625D, 1.0D, isGateAbove ? 1.0F : y_High2, 0.4375D);
-                        renderBlock(itemStack, x, y, z);
-                        renderBlocks.setRenderBounds(0.0D, isGateBelow ? 0.0F : y_Low2 - yPlankOffset, 0.0625D, 0.125D, isGateAbove ? 1.0F : y_High2, 0.4375D);
-                        renderBlock(itemStack, x, y, z);
-
-                    }
-
-                }
-            }
-        }
-        else
-        {
-            if (facing == Gate.FACING_ON_X)
-            {
-                if (!joinPlanks) {
-
-                    renderBlocks.setRenderBounds(0.375F, isGateBelow ? 0.0F : y_Low2 - yPlankOffset, 0.4375F, 0.5F, isGateAbove ? 1.0F : y_High2, 0.5625F);
-                    renderBlock(itemStack, x, y, z); // Center Post
-                    renderBlocks.setRenderBounds(0.5F, isGateBelow ? 0.0F : y_Low2 - yPlankOffset, 0.4375F, 0.625F, isGateAbove ? 1.0F : y_High2, 0.5625F);
-                    renderBlock(itemStack, x, y, z); // Center Post
-                    renderBlocks.setRenderBounds(0.625F, y_Low2 - yPlankOffset, 0.4375F, 0.875F, y_High3, 0.5625F);
-                    renderBlock(itemStack, x, y, z);
-                    renderBlocks.setRenderBounds(0.625F, y_Low3 - yPlankOffset, 0.4375F, 0.875F, y_High2, 0.5625F);
-                    renderBlock(itemStack, x, y, z);
-                    renderBlocks.setRenderBounds(0.125F, y_Low2 - yPlankOffset, 0.4375F, 0.375F, y_High3, 0.5625F);
-                    renderBlock(itemStack, x, y, z);
-                    renderBlocks.setRenderBounds(0.125F, y_Low3 - yPlankOffset, 0.4375F, 0.375F, y_High2, 0.5625F);
-                    renderBlock(itemStack, x, y, z);
-
-                } else {
-
-                    renderBlocks.setRenderBounds(0.125F, isGateBelow ? 0.0F : y_Low2 - yPlankOffset, 0.4375F, 0.875F, isGateAbove ? 1.0F : y_High2, 0.5625F);
-                    renderBlock(itemStack, x, y, z);
-
-                }
-
-            }
-            else
-            {
-                if (!joinPlanks) {
-
-                    renderBlocks.setRenderBounds(0.4375F, isGateBelow ? 0.0F : y_Low2 - yPlankOffset, 0.375F, 0.5625F, isGateAbove ? 1.0F : y_High2, 0.5F);
-                    renderBlock(itemStack, x, y, z); // Center Post
-                    renderBlocks.setRenderBounds(0.4375F, isGateBelow ? 0.0F : y_Low2 - yPlankOffset, 0.5F, 0.5625F, isGateAbove ? 1.0F : y_High2, 0.625F);
-                    renderBlock(itemStack, x, y, z); // Center Post
-                    renderBlocks.setRenderBounds(0.4375F, y_Low2 - yPlankOffset, 0.625F, 0.5625F, y_High3, 0.875F);
-                    renderBlock(itemStack, x, y, z);
-                    renderBlocks.setRenderBounds(0.4375F, y_Low3 - yPlankOffset, 0.625F, 0.5625F, y_High2, 0.875F);
-                    renderBlock(itemStack, x, y, z);
-                    renderBlocks.setRenderBounds(0.4375F, y_Low2 - yPlankOffset, 0.125F, 0.5625F, y_High3, 0.375F);
-                    renderBlock(itemStack, x, y, z);
-                    renderBlocks.setRenderBounds(0.4375F, y_Low3 - yPlankOffset, 0.125F, 0.5625F, y_High2, 0.375F);
-                    renderBlock(itemStack, x, y, z);
-
-                } else {
-
-                    renderBlocks.setRenderBounds(0.4375F, isGateBelow ? 0.0F : y_Low2 - yPlankOffset, 0.125F, 0.5625F, isGateAbove ? 1.0F : y_High2, 0.875F);
-                    renderBlock(itemStack, x, y, z);
-
-                }
-
-            }
-        }
-
-        renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
     }
 
     /**
-     * Renders gate at given coordinates
+     * Renders vanilla gate at given coordinates.
      */
-    private void renderPicketGate(ItemStack itemStack, int x, int y, int z)
+    private void renderTypeVanilla(ItemStack itemStack, int x, int y, int z)
     {
-        boolean isGateOpen = Gate.getState(TE) == Gate.STATE_OPEN;
-        int dir = Gate.getDirOpen(TE);
-        int facing = Gate.getFacing(TE);
+        double yMin, yMax;
+        double yOffset = type * 0.0625D;
+        boolean singlePlank = type == Gate.TYPE_VANILLA_X3;
 
-        float x_Low = 0.0F;
-        float x_High = 1.0F;
-        float y_Low = 0.0F;
-        float y_High = 1.0F;
-        float z_Low = 0.0F;
-        float z_High = 1.0F;
+        yMin = gate[YN] ? 0.0D : 0.3125D - yOffset;
 
-        Block blockYN = Block.blocksList[renderBlocks.blockAccess.getBlockId(x, y - 1, z)];
-        Block blockYP = Block.blocksList[renderBlocks.blockAccess.getBlockId(x, y + 1, z)];
+        renderBlockWithRotation(itemStack, x, y, z, 0.4375D, yMin, 0.0D, 0.5625D, 1.0D, 0.125D, dir);
+        renderBlockWithRotation(itemStack, x, y, z, 0.4375D, yMin, 0.875D, 0.5625D, 1.0D, 1.0D, dir);
 
-        boolean isGateAbove = blockYP != null && blockYP.equals(srcBlock);
-        boolean isGateBelow = blockYN != null && blockYN.equals(srcBlock);
+        if (isOpen) {
 
-        if (isGateOpen)
-        {
-            if (facing == Gate.FACING_ON_Z)
-            {
-                if (dir == Gate.DIR_POS)
-                {
-                    /* Render horizontal beams */
+            if (!singlePlank) {
 
-                    x_Low = 0.5F;
-                    z_Low = 0.0625F;
-                    z_High = 0.1875F;
+                yMin = gate[YN] ? 0.0D : 0.375D - yOffset;
+                yMax = gate[YP] ? 1.0D : 0.9375D;
 
-                    // Render top beam
-                    if (!isGateAbove) {
-                        y_Low = 0.625F;
-                        y_High = 0.6875F;
-                        renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(itemStack, x, y, z);
-                        z_Low = 0.8125F;
-                        z_High = 0.9375F;
-                        renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(itemStack, x, y, z);
-                    }
+                renderBlockWithRotation(itemStack, x, y, z, 0.8125D, yMin, 0.0D, 0.9375D, yMax, 0.125D, dir);
+                renderBlockWithRotation(itemStack, x, y, z, 0.8125D, yMin, 0.875D, 0.9375D, yMax, 1.0D, dir);
 
-                    // Render bottom beam
-                    if (!isGateBelow) {
-                        y_Low = 0.1875F;
-                        y_High = 0.25F;
-                        z_Low = 0.0625F;
-                        z_High = 0.1875F;
-                        renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(itemStack, x, y, z);
-                        z_Low = 0.8125F;
-                        z_High = 0.9375F;
-                        renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(itemStack, x, y, z);
-                    }
+                yMin = 0.375D - yOffset;
 
-                    /* Render vertical slats */
+                renderBlockWithRotation(itemStack, x, y, z, 0.5625D, yMin, 0.0D, 0.8125D, 0.5625D, 0.125D, dir);
+                renderBlockWithRotation(itemStack, x, y, z, 0.5625D, yMin, 0.875D, 0.8125D, 0.5625D, 1.0D, dir);
 
-                    y_Low = isGateBelow ? 0.0F : 0.0625F;
+                yMin = 0.75D - yOffset;
 
-                    for (int count = 0; count < 3; ++count)
-                    {
-                        switch (count) {
-                            case 0:
-                                x_High = 0.5625F;
-                                y_High = isGateAbove ? 1.0F : 0.8125F;
-                                break;
-                            case 1:
-                                x_Low = 0.6875F;
-                                x_High = 0.8125F;
-                                y_High = isGateAbove ? 1.0F : 0.875F;
-                                break;
-                            case 2:
-                                x_Low = 0.9375F;
-                                x_High = 1.0F;
-                                y_High = isGateAbove ? 1.0F : 0.875F;
-                                break;
-                        }
+                renderBlockWithRotation(itemStack, x, y, z, 0.5625D, yMin, 0.0D, 0.8125D, 0.9375D, 0.125D, dir);
+                renderBlockWithRotation(itemStack, x, y, z, 0.5625D, yMin, 0.875D, 0.8125D, 0.9375D, 1.0D, dir);
 
-                        z_Low = 0.0F;
-                        z_High = 0.0625F;
-                        renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(itemStack, x, y, z);
-                        z_Low += 0.1875F;
-                        z_High += 0.1875F;
-                        renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(itemStack, x, y, z);
-                        z_Low = 0.75F;
-                        z_High = 0.8125F;
-                        renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(itemStack, x, y, z);
-                        z_Low += 0.1875F;
-                        z_High += 0.1875F;
-                        renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(itemStack, x, y, z);
-                    }
-                }
-                else
-                {
-                    /* Render horizontal beams */
+            } else {
 
-                    x_High = 0.5F;
-                    z_Low = 0.0625F;
-                    z_High = 0.1875F;
+                yMin = gate[YN] ? 0.0D : 0.1875D;
+                yMax = gate[YP] ? 1.0D : 0.9375D;
 
-                    // Render top beam
-                    if (!isGateAbove) {
-                        y_Low = 0.625F;
-                        y_High = 0.6875F;
-                        renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(itemStack, x, y, z);
-                        z_Low = 0.8125F;
-                        z_High = 0.9375F;
-                        renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(itemStack, x, y, z);
-                    }
+                renderBlockWithRotation(itemStack, x, y, z, 0.5625D, yMin, 0.0D, 0.9375D, yMax, 0.125D, dir);
+                renderBlockWithRotation(itemStack, x, y, z, 0.5625D, yMin, 0.875D, 0.9375D, yMax, 1.0D, dir);
 
-                    // Render bottom beam
-                    if (!isGateBelow) {
-                        y_Low = 0.1875F;
-                        y_High = 0.25F;
-                        z_Low = 0.0625F;
-                        z_High = 0.1875F;
-                        renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(itemStack, x, y, z);
-                        z_Low = 0.8125F;
-                        z_High = 0.9375F;
-                        renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(itemStack, x, y, z);
-                    }
-
-                    /* Render vertical slats */
-
-                    y_Low = isGateBelow ? 0.0F : 0.0625F;
-
-                    for (int count = 0; count < 3; ++count)
-                    {
-                        switch (count) {
-                            case 0:
-                                x_Low = 0.4375F;
-                                y_High = isGateAbove ? 1.0F : 0.8125F;
-                                break;
-                            case 1:
-                                x_Low = 0.1875F;
-                                x_High = 0.3125F;
-                                y_High = isGateAbove ? 1.0F : 0.875F;
-                                break;
-                            case 2:
-                                x_Low = 0.0F;
-                                x_High = 0.0625F;
-                                y_High = isGateAbove ? 1.0F : 0.875F;
-                                break;
-                        }
-
-                        z_Low = 0.0F;
-                        z_High = 0.0625F;
-                        renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(itemStack, x, y, z);
-                        z_Low += 0.1875F;
-                        z_High += 0.1875F;
-                        renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(itemStack, x, y, z);
-                        z_Low = 0.75F;
-                        z_High = 0.8125F;
-                        renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(itemStack, x, y, z);
-                        z_Low += 0.1875F;
-                        z_High += 0.1875F;
-                        renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(itemStack, x, y, z);
-                    }
-                }
             }
-            else
-            {
-                if (dir == Gate.DIR_POS)
-                {
-                    /* Render horizontal beams */
 
-                    x_Low = 0.0625F;
-                    x_High = 0.1875F;
-                    z_Low = 0.5F;
+        } else {
 
-                    // Render top beam
-                    if (!isGateAbove) {
-                        y_Low = 0.625F;
-                        y_High = 0.6875F;
-                        renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(itemStack, x, y, z);
-                        x_Low = 0.8125F;
-                        x_High = 0.9375F;
-                        renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(itemStack, x, y, z);
-                    }
+            if (!singlePlank) {
 
-                    // Render bottom beam
-                    if (!isGateBelow) {
-                        x_Low = 0.0625F;
-                        x_High = 0.1875F;
-                        y_Low = 0.1875F;
-                        y_High = 0.25F;
-                        renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(itemStack, x, y, z);
-                        x_Low = 0.8125F;
-                        x_High = 0.9375F;
-                        renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(itemStack, x, y, z);
-                    }
+                yMin = gate[YN] ? 0.0D : 0.375D - yOffset;
+                yMax = gate[YP] ? 1.0D : 0.9375D;
 
-                    /* Render vertical slats */
+                renderBlockWithRotation(itemStack, x, y, z, 0.4375D, yMin, 0.375D, 0.5625D, yMax, 0.5D, dir);
+                renderBlockWithRotation(itemStack, x, y, z, 0.4375D, yMin, 0.5D, 0.5625D, yMax, 0.625D, dir);
 
-                    y_Low = isGateBelow ? 0.0F : 0.0625F;
+                yMin = 0.375D - yOffset;
 
-                    for (int count = 0; count < 3; ++count)
-                    {
-                        switch (count) {
-                            case 0:
-                                y_High = isGateAbove ? 1.0F : 0.8125F;
-                                z_High = 0.5625F;
-                                break;
-                            case 1:
-                                y_High = isGateAbove ? 1.0F : 0.875F;
-                                z_Low = 0.6875F;
-                                z_High = 0.8125F;
-                                break;
-                            case 2:
-                                y_High = isGateAbove ? 1.0F : 0.875F;
-                                z_Low = 0.9375F;
-                                z_High = 1.0F;
-                                break;
-                        }
+                renderBlockWithRotation(itemStack, x, y, z, 0.4375D, yMin, 0.625D, 0.5625D, 0.5625D, 0.875D, dir);
+                renderBlockWithRotation(itemStack, x, y, z, 0.4375D, yMin, 0.125D, 0.5625D, 0.5625D, 0.375D, dir);
 
-                        x_Low = 0.0F;
-                        x_High = 0.0625F;
-                        renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(itemStack, x, y, z);
-                        x_Low += 0.1875F;
-                        x_High += 0.1875F;
-                        renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(itemStack, x, y, z);
-                        x_Low = 0.75F;
-                        x_High = 0.8125F;
-                        renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(itemStack, x, y, z);
-                        x_Low += 0.1875F;
-                        x_High += 0.1875F;
-                        renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(itemStack, x, y, z);
-                    }
-                }
-                else
-                {
-                    /* Render horizontal beams */
+                yMin = 0.75D - yOffset;
 
-                    x_Low = 0.0625F;
-                    x_High = 0.1875F;
-                    z_High = 0.5F;
+                renderBlockWithRotation(itemStack, x, y, z, 0.4375D, yMin, 0.625D, 0.5625D, 0.9375D, 0.875D, dir);
+                renderBlockWithRotation(itemStack, x, y, z, 0.4375D, yMin, 0.125D, 0.5625D, 0.9375D, 0.375D, dir);
 
-                    // Render top beam
-                    if (!isGateAbove) {
-                        y_Low = 0.625F;
-                        y_High = 0.6875F;
-                        renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(itemStack, x, y, z);
-                        x_Low = 0.8125F;
-                        x_High = 0.9375F;
-                        renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(itemStack, x, y, z);
-                    }
+            } else {
 
-                    // Render bottom beam
-                    if (!isGateBelow) {
-                        x_Low = 0.0625F;
-                        x_High = 0.1875F;
-                        y_Low = 0.1875F;
-                        y_High = 0.25F;
-                        renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(itemStack, x, y, z);
-                        x_Low = 0.8125F;
-                        x_High = 0.9375F;
-                        renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(itemStack, x, y, z);
-                    }
+                yMin = gate[YN] ? 0.0D : 0.375D - yOffset;
+                yMax = gate[YP] ? 1.0D : 0.9375D;
 
-                    /* Render vertical slats */
+                renderBlockWithRotation(itemStack, x, y, z, 0.4375D, yMin, 0.125D, 0.5625D, yMax, 0.875D, dir);
 
-                    y_Low = isGateBelow ? 0.0F : 0.0625F;
-
-                    for (int count = 0; count < 3; ++count)
-                    {
-                        switch (count) {
-                            case 0:
-                                y_High = isGateAbove ? 1.0F : 0.8125F;
-                                z_Low = 0.4375F;
-                                break;
-                            case 1:
-                                y_High = isGateAbove ? 1.0F : 0.875F;
-                                z_Low = 0.1875F;
-                                z_High = 0.3125F;
-                                break;
-                            case 2:
-                                y_High = isGateAbove ? 1.0F : 0.875F;
-                                z_Low = 0.0F;
-                                z_High = 0.0625F;
-                                break;
-                        }
-
-                        x_Low = 0.0F;
-                        x_High = 0.0625F;
-                        renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(itemStack, x, y, z);
-                        x_Low += 0.1875F;
-                        x_High += 0.1875F;
-                        renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(itemStack, x, y, z);
-                        x_Low = 0.75F;
-                        x_High = 0.8125F;
-                        renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(itemStack, x, y, z);
-                        x_Low += 0.1875F;
-                        x_High += 0.1875F;
-                        renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(itemStack, x, y, z);
-                    }
-                }
             }
+
         }
-        else
-        {
-            if (facing == Gate.FACING_ON_X)
-            {
-                /* Render horizontal beams */
-
-                z_Low = 0.4375F;
-                z_High = 0.5625F;
-
-                // Render top beam
-                if (!isGateAbove) {
-                    y_Low = 0.625F;
-                    y_High = 0.6875F;
-                    renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                    renderBlock(itemStack, x, y, z);
-                }
-
-                // Render bottom beam
-                if (!isGateBelow) {
-                    y_Low = 0.1875F;
-                    y_High = 0.25F;
-                    renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                    renderBlock(itemStack, x, y, z);
-                }
-
-                /* Render vertical slats */
-
-                y_Low = isGateBelow ? 0.0F : 0.0625F;
-
-                for (int count = 0; count < 5; ++count)
-                {
-                    switch (count) {
-                        case 0:
-                            x_Low = 0.0F;
-                            x_High = 0.0625F;
-                            y_High = isGateAbove ? 1.0F : 0.8125F;
-                            break;
-                        case 1:
-                            x_Low = 0.1875F;
-                            x_High = 0.3125F;
-                            y_High = isGateAbove ? 1.0F : 0.875F;
-                            break;
-                        case 2:
-                            x_Low = 0.4375F;
-                            x_High = 0.5625F;
-                            y_High = isGateAbove ? 1.0F : 0.875F;
-                            break;
-                        case 3:
-                            x_Low = 0.6875F;
-                            x_High = 0.8125F;
-                            y_High = isGateAbove ? 1.0F : 0.875F;
-                            break;
-                        case 4:
-                            x_Low = 0.9375F;
-                            x_High = 1.0F;
-                            y_High = isGateAbove ? 1.0F : 0.8125F;
-                            break;
-                    }
-
-                    z_Low = 0.5625F;
-                    z_High = 0.625F;
-                    renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                    renderBlock(itemStack, x, y, z);
-                    z_Low -= 0.1875F;
-                    z_High -= 0.1875F;
-                    renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                    renderBlock(itemStack, x, y, z);
-                }
-            }
-            else
-            {
-                /* Render horizontal beams */
-
-                x_Low = 0.4375F;
-                x_High = 0.5625F;
-
-                // Render top beam
-                if (!isGateAbove) {
-                    y_Low = 0.625F;
-                    y_High = 0.6875F;
-                    renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                    renderBlock(itemStack, x, y, z);
-                }
-
-                // Render bottom beam
-                if (!isGateBelow) {
-                    y_Low = 0.1875F;
-                    y_High = 0.25F;
-                    renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                    renderBlock(itemStack, x, y, z);
-                }
-
-                /* Render vertical slats */
-
-                y_Low = isGateBelow ? 0.0F : 0.0625F;
-
-                for (int count = 0; count < 5; ++count)
-                {
-                    switch (count) {
-                        case 0:
-                            y_High = isGateAbove ? 1.0F : 0.8125F;
-                            z_Low = 0.0F;
-                            z_High = 0.0625F;
-                            break;
-                        case 1:
-                            y_High = isGateAbove ? 1.0F : 0.875F;
-                            z_Low = 0.1875F;
-                            z_High = 0.3125F;
-                            break;
-                        case 2:
-                            y_High = isGateAbove ? 1.0F : 0.875F;
-                            z_Low = 0.4375F;
-                            z_High = 0.5625F;
-                            break;
-                        case 3:
-                            y_High = isGateAbove ? 1.0F : 0.875F;
-                            z_Low = 0.6875F;
-                            z_High = 0.8125F;
-                            break;
-                        case 4:
-                            y_High = isGateAbove ? 1.0F : 0.8125F;
-                            z_Low = 0.9375F;
-                            z_High = 1.0F;
-                            break;
-                    }
-
-                    x_Low = 0.5625F;
-                    x_High = 0.625F;
-                    renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                    renderBlock(itemStack, x, y, z);
-                    x_Low -= 0.1875F;
-                    x_High -= 0.1875F;
-                    renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                    renderBlock(itemStack, x, y, z);
-                }
-            }
-        }
-
-        renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
     }
 
     /**
-     * Renders gate at given coordinates
+     * Renders picket gate at given coordinates.
      */
-    private void renderVerticalPlankGate(ItemStack itemStack, int x, int y, int z)
+    private void renderTypePicket(ItemStack itemStack, int x, int y, int z)
     {
-        boolean isGateOpen = Gate.getState(TE) == Gate.STATE_OPEN;
-        int dir = Gate.getDirOpen(TE);
-        int facing = Gate.getFacing(TE);
+        double yMin, yMax;
 
-        float x_Low = 0.0F;
-        float x_High = 1.0F;
-        float y_Low = 0.0F;
-        float y_High = 1.0F;
-        float z_Low = 0.0F;
-        float z_High = 1.0F;
+        if (isOpen) {
 
-        Block blockYN = Block.blocksList[renderBlocks.blockAccess.getBlockId(x, y - 1, z)];
-        Block blockYP = Block.blocksList[renderBlocks.blockAccess.getBlockId(x, y + 1, z)];
-
-        boolean isGateAbove = blockYP != null && blockYP.equals(srcBlock);
-        boolean isGateBelow = blockYN != null && blockYN.equals(srcBlock);
-
-        if (isGateOpen)
-        {
-            if (facing == Gate.FACING_ON_Z)
-            {
-                if (dir == Gate.DIR_POS)
-                {
-                    /* Render horizontal beams */
-
-                    x_Low = 0.5F;
-                    z_Low = 0.0625F;
-                    z_High = 0.1875F;
-
-                    // Render top beam
-                    if (!isGateAbove) {
-                        y_Low = 0.75F;
-                        y_High = 0.875F;
-                        renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(itemStack, x, y, z);
-                        z_Low = 0.8125F;
-                        z_High = 0.9375F;
-                        renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(itemStack, x, y, z);
-                    }
-
-                    // Render bottom beam
-                    if (!isGateBelow) {
-                        y_Low = 0.125F;
-                        y_High = 0.25F;
-                        z_Low = 0.0625F;
-                        z_High = 0.1875F;
-                        renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(itemStack, x, y, z);
-                        z_Low = 0.8125F;
-                        z_High = 0.9375F;
-                        renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(itemStack, x, y, z);
-                    }
-
-                    /* Render vertical slats */
-
-                    y_Low = 0.0F;
-                    y_High = 1.0F;
-                    z_Low = 0.0F;
-
-                    for (int count = 0; count < 2; ++count)
-                    {
-                        switch (count) {
-                            case 0:
-                                x_High = 0.6875F;
-                                z_High = 0.0625F;
-                                break;
-                            case 1:
-                                x_Low = 0.8125F;
-                                x_High = 1.0F;
-                                z_Low = 0.0F;
-                                z_High = 0.0625F;
-                                break;
-                        }
-
-                        renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(itemStack, x, y, z);
-                        z_Low += 0.1875F;
-                        z_High += 0.1875F;
-                        renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(itemStack, x, y, z);
-                        z_Low = 0.75F;
-                        z_High = 0.8125F;
-                        renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(itemStack, x, y, z);
-                        z_Low += 0.1875F;
-                        z_High += 0.1875F;
-                        renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(itemStack, x, y, z);
-                    }
-                }
-                else
-                {
-                    /* Render horizontal beams */
-
-                    x_High = 0.5F;
-                    z_Low = 0.0625F;
-                    z_High = 0.1875F;
-
-                    // Render top beam
-                    if (!isGateAbove) {
-                        y_Low = 0.75F;
-                        y_High = 0.875F;
-                        renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(itemStack, x, y, z);
-                        z_Low = 0.8125F;
-                        z_High = 0.9375F;
-                        renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(itemStack, x, y, z);
-                    }
-
-                    // Render bottom beam
-                    if (!isGateBelow) {
-                        y_Low = 0.125F;
-                        y_High = 0.25F;
-                        z_Low = 0.0625F;
-                        z_High = 0.1875F;
-                        renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(itemStack, x, y, z);
-                        z_Low = 0.8125F;
-                        z_High = 0.9375F;
-                        renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(itemStack, x, y, z);
-                    }
-
-                    /* Render vertical slats */
-
-                    y_Low = 0.0F;
-                    y_High = 1.0F;
-                    z_Low = 0.0F;
-
-                    for (int count = 0; count < 2; ++count)
-                    {
-                        switch (count) {
-                            case 0:
-                                x_Low = 0.3125F;
-                                z_High = 0.0625F;
-                                break;
-                            case 1:
-                                x_Low = 0.0F;
-                                x_High = 0.1875F;
-                                z_Low = 0.0F;
-                                z_High = 0.0625F;
-                                break;
-                        }
-
-                        renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(itemStack, x, y, z);
-                        z_Low += 0.1875F;
-                        z_High += 0.1875F;
-                        renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(itemStack, x, y, z);
-                        z_Low = 0.75F;
-                        z_High = 0.8125F;
-                        renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(itemStack, x, y, z);
-                        z_Low += 0.1875F;
-                        z_High += 0.1875F;
-                        renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(itemStack, x, y, z);
-                    }
-                }
+            if (!gate[YP]) {
+                renderBlockWithRotation(itemStack, x, y, z, 0.5D, 0.625D, 0.0625D, 1.0D, 0.6875D, 0.1875D, dir);
+                renderBlockWithRotation(itemStack, x, y, z, 0.5D, 0.625D, 0.8125D, 1.0D, 0.6875D, 0.9375D, dir);
             }
-            else
-            {
-                if (dir == Gate.DIR_POS)
-                {
-                    /* Render horizontal beams */
-
-                    x_Low = 0.0625F;
-                    x_High = 0.1875F;
-                    z_Low = 0.5F;
-
-                    // Render top beam
-                    if (!isGateAbove) {
-                        y_Low = 0.75F;
-                        y_High = 0.875F;
-                        renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(itemStack, x, y, z);
-                        x_Low = 0.8125F;
-                        x_High = 0.9375F;
-                        renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(itemStack, x, y, z);
-                    }
-
-                    // Render bottom beam
-                    if (!isGateBelow) {
-                        x_Low = 0.0625F;
-                        x_High = 0.1875F;
-                        y_Low = 0.125F;
-                        y_High = 0.25F;
-                        renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(itemStack, x, y, z);
-                        x_Low = 0.8125F;
-                        x_High = 0.9375F;
-                        renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(itemStack, x, y, z);
-                    }
-
-                    /* Render vertical slats */
-
-                    x_Low = 0.0F;
-                    y_Low = 0.0F;
-                    y_High = 1.0F;
-
-                    for (int count = 0; count < 2; ++count)
-                    {
-                        switch (count) {
-                            case 0:
-                                z_High = 0.6875F;
-                                x_High = 0.0625F;
-                                break;
-                            case 1:
-                                x_Low = 0.0F;
-                                x_High = 0.0625F;
-                                z_Low = 0.8125F;
-                                z_High = 1.0F;
-                                break;
-                        }
-
-                        renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(itemStack, x, y, z);
-                        x_Low += 0.1875F;
-                        x_High += 0.1875F;
-                        renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(itemStack, x, y, z);
-                        x_Low = 0.75F;
-                        x_High = 0.8125F;
-                        renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(itemStack, x, y, z);
-                        x_Low += 0.1875F;
-                        x_High += 0.1875F;
-                        renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(itemStack, x, y, z);
-                    }
-                }
-                else
-                {
-                    /* Render horizontal beams */
-
-                    x_Low = 0.0625F;
-                    x_High = 0.1875F;
-                    z_High = 0.5F;
-
-                    // Render top beam
-                    if (!isGateAbove) {
-                        y_Low = 0.75F;
-                        y_High = 0.875F;
-                        renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(itemStack, x, y, z);
-                        x_Low = 0.8125F;
-                        x_High = 0.9375F;
-                        renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(itemStack, x, y, z);
-                    }
-
-                    // Render bottom beam
-                    if (!isGateBelow) {
-                        x_Low = 0.0625F;
-                        x_High = 0.1875F;
-                        y_Low = 0.125F;
-                        y_High = 0.25F;
-                        renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(itemStack, x, y, z);
-                        x_Low = 0.8125F;
-                        x_High = 0.9375F;
-                        renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(itemStack, x, y, z);
-                    }
-
-                    /* Render vertical slats */
-
-                    x_Low = 0.0F;
-                    y_Low = 0.0F;
-                    y_High = 1.0F;
-
-                    for (int count = 0; count < 2; ++count)
-                    {
-                        switch (count) {
-                            case 0:
-                                x_High = 0.0625F;
-                                z_Low = 0.3125F;
-                                break;
-                            case 1:
-                                x_Low = 0.0F;
-                                x_High = 0.0625F;
-                                z_Low = 0.0F;
-                                z_High = 0.1875F;
-                                break;
-                        }
-
-                        renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(itemStack, x, y, z);
-                        x_Low += 0.1875F;
-                        x_High += 0.1875F;
-                        renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(itemStack, x, y, z);
-                        x_Low = 0.75F;
-                        x_High = 0.8125F;
-                        renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(itemStack, x, y, z);
-                        x_Low += 0.1875F;
-                        x_High += 0.1875F;
-                        renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                        renderBlock(itemStack, x, y, z);
-                    }
-                }
+            if (!gate[YN]) {
+                renderBlockWithRotation(itemStack, x, y, z, 0.5D, 0.1875D, 0.0625D, 1.0D, 0.25D, 0.1875D, dir);
+                renderBlockWithRotation(itemStack, x, y, z, 0.5D, 0.1875D, 0.8125D, 1.0D, 0.25D, 0.9375D, dir);
             }
+
+            yMin = gate[YN] ? 0.0D : 0.0625D;
+            yMax = gate[YP] ? 1.0D : 0.8125D;
+
+            renderBlockWithRotation(itemStack, x, y, z, 0.5D, yMin, 0.0D, 0.5625D, yMax, 0.0625D, dir);
+            renderBlockWithRotation(itemStack, x, y, z, 0.5D, yMin, 0.1875D, 0.5625D, yMax, 0.25D, dir);
+            renderBlockWithRotation(itemStack, x, y, z, 0.5D, yMin, 0.75D, 0.5625D, yMax, 0.8125D, dir);
+            renderBlockWithRotation(itemStack, x, y, z, 0.5D, yMin, 0.9375D, 0.5625D, yMax, 1.0D, dir);
+
+            yMax = gate[YP] ? 1.0D : 0.875D;
+
+            renderBlockWithRotation(itemStack, x, y, z, 0.6875D, yMin, 0.0D, 0.8125D, yMax, 0.0625D, dir);
+            renderBlockWithRotation(itemStack, x, y, z, 0.6875D, yMin, 0.1875D, 0.8125D, yMax, 0.25D, dir);
+            renderBlockWithRotation(itemStack, x, y, z, 0.6875D, yMin, 0.75D, 0.8125D, yMax, 0.8125D, dir);
+            renderBlockWithRotation(itemStack, x, y, z, 0.6875D, yMin, 0.9375D, 0.8125D, yMax, 1.0D, dir);
+            renderBlockWithRotation(itemStack, x, y, z, 0.9375D, yMin, 0.0D, 1.0D, yMax, 0.0625D, dir);
+            renderBlockWithRotation(itemStack, x, y, z, 0.9375D, yMin, 0.1875D, 1.0D, yMax, 0.25D, dir);
+            renderBlockWithRotation(itemStack, x, y, z, 0.9375D, yMin, 0.75D, 1.0D, yMax, 0.8125D, dir);
+            renderBlockWithRotation(itemStack, x, y, z, 0.9375D, yMin, 0.9375D, 1.0D, yMax, 1.0D, dir);
+
+        } else {
+
+            if (!gate[YP]) {
+                renderBlockWithRotation(itemStack, x, y, z, 0.4375D, 0.625D, 0.0D, 0.5625D, 0.6875D, 1.0D, dir);
+            }
+            if (!gate[YN]) {
+                renderBlockWithRotation(itemStack, x, y, z, 0.4375D, 0.1875D, 0.0D, 0.5625D, 0.25D, 1.0D, dir);
+            }
+
+            yMin = gate[YN] ? 0.0D : 0.0625D;
+            yMax = gate[YP] ? 1.0D : 0.8125D;
+
+            renderBlockWithRotation(itemStack, x, y, z, 0.5625D, yMin, 0.0D, 0.625D, yMax, 0.0625D, dir);
+            renderBlockWithRotation(itemStack, x, y, z, 0.375D, yMin, 0.0D, 0.4375D, yMax, 0.0625D, dir);
+            renderBlockWithRotation(itemStack, x, y, z, 0.5625D, yMin, 0.9375D, 0.625D, yMax, 1.0D, dir);
+            renderBlockWithRotation(itemStack, x, y, z, 0.375D, yMin, 0.9375D, 0.4375D, yMax, 1.0D, dir);
+
+            yMax = gate[YP] ? 1.0D : 0.875D;
+
+            renderBlockWithRotation(itemStack, x, y, z, 0.5625D, yMin, 0.1875D, 0.625D, yMax, 0.3125D, dir);
+            renderBlockWithRotation(itemStack, x, y, z, 0.375D, yMin, 0.1875D, 0.4375D, yMax, 0.3125D, dir);
+            renderBlockWithRotation(itemStack, x, y, z, 0.5625D, yMin, 0.4375D, 0.625D, yMax, 0.5625D, dir);
+            renderBlockWithRotation(itemStack, x, y, z, 0.375D, yMin, 0.4375D, 0.4375D, yMax, 0.5625D, dir);
+            renderBlockWithRotation(itemStack, x, y, z, 0.5625D, yMin, 0.6875D, 0.625D, yMax, 0.8125D, dir);
+            renderBlockWithRotation(itemStack, x, y, z, 0.375D, yMin, 0.6875D, 0.4375D, yMax, 0.8125D, dir);
+
         }
-        else
-        {
-            if (facing == Gate.FACING_ON_X)
-            {
-                /* Render horizontal beams */
-
-                z_Low = 0.4375F;
-                z_High = 0.5625F;
-
-                // Render top beam
-                if (!isGateAbove) {
-                    y_Low = 0.75F;
-                    y_High = 0.875F;
-                    renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                    renderBlock(itemStack, x, y, z);
-                }
-
-                // Render bottom beam
-                if (!isGateBelow) {
-                    y_Low = 0.125F;
-                    y_High = 0.25F;
-                    renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                    renderBlock(itemStack, x, y, z);
-                }
-
-                /* Render vertical slats */
-
-                y_Low = 0.0F;
-                y_High = 1.0F;
-
-                for (int count = 0; count < 3; ++count)
-                {
-                    switch (count) {
-                        case 0:
-                            x_Low = 0.0F;
-                            x_High = 0.1875F;
-                            break;
-                        case 1:
-                            x_Low = 0.3125F;
-                            x_High = 0.6875F;
-                            break;
-                        case 2:
-                            x_Low = 0.8125F;
-                            x_High = 1.0F;
-                            break;
-                    }
-
-                    z_Low = 0.5625F;
-                    z_High = 0.625F;
-                    renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                    renderBlock(itemStack, x, y, z);
-                    z_Low -= 0.1875F;
-                    z_High -= 0.1875F;
-                    renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                    renderBlock(itemStack, x, y, z);
-                }
-            }
-            else
-            {
-                /* Render horizontal beams */
-
-                x_Low = 0.4375F;
-                x_High = 0.5625F;
-
-                // Render top beam
-                if (!isGateAbove) {
-                    y_Low = 0.75F;
-                    y_High = 0.875F;
-                    renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                    renderBlock(itemStack, x, y, z);
-                }
-
-                // Render bottom beam
-                if (!isGateBelow) {
-                    y_Low = 0.125F;
-                    y_High = 0.25F;
-                    renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                    renderBlock(itemStack, x, y, z);
-                }
-
-                /* Render planks */
-
-                y_Low = 0.0F;
-                y_High = 1.0F;
-
-                for (int count = 0; count < 3; ++count)
-                {
-                    switch (count) {
-                        case 0:
-                            z_Low = 0.0F;
-                            z_High = 0.1875F;
-                            break;
-                        case 1:
-                            z_Low = 0.3125F;
-                            z_High = 0.6875F;
-                            break;
-                        case 2:
-                            z_Low = 0.8125F;
-                            z_High = 1.0F;
-                            break;
-                    }
-
-                    x_Low = 0.5625F;
-                    x_High = 0.625F;
-                    renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                    renderBlock(itemStack, x, y, z);
-                    x_Low -= 0.1875F;
-                    x_High -= 0.1875F;
-                    renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                    renderBlock(itemStack, x, y, z);
-                }
-            }
-        }
-
-        renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
     }
 
     /**
-     * Renders gate at given coordinates
+     * Renders vertical plank gate at given coordinates.
      */
-    private void renderWallGate(ItemStack itemStack, int x, int y, int z)
+    private void renderTypeVerticalPlank(ItemStack itemStack, int x, int y, int z)
     {
-        boolean isGateOpen = Gate.getState(TE) == Gate.STATE_OPEN;
-        int dir = Gate.getDirOpen(TE);
-        int facing = Gate.getFacing(TE);
+        if (isOpen) {
 
-        float x_Low = 0.0F;
-        float x_High = 1.0F;
-        float y_Low = 0.0F;
-        float y_High = 1.0F;
-        float z_Low = 0.0F;
-        float z_High = 1.0F;
-
-        renderBlocks.blockAccess.getBlockId(x, y - 1, z);
-        Block blockYP = Block.blocksList[renderBlocks.blockAccess.getBlockId(x, y + 1, z)];
-
-        boolean isGateAbove = blockYP != null && blockYP.equals(srcBlock);
-        y_High = isGateAbove || blockYP != null && blockYP.isBlockSolidOnSide(TE.getWorldObj(), x, y + 1, z, ForgeDirection.DOWN) ? 1.0F : 0.8125F;
-
-        if (isGateOpen)
-        {
-            if (facing == Gate.FACING_ON_Z)
-            {
-                if (dir == Gate.DIR_POS)
-                {
-                    x_Low = 0.5F;
-                    z_High = 0.125F;
-                    renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                    renderBlock(itemStack, x, y, z);
-                    z_Low = 0.875F;
-                    z_High = 1.0F;
-                    renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                    renderBlock(itemStack, x, y, z);
-                }
-                else
-                {
-                    x_High = 0.5F;
-                    z_High = 0.125F;
-                    renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                    renderBlock(itemStack, x, y, z);
-                    z_Low = 0.875F;
-                    z_High = 1.0F;
-                    renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                    renderBlock(itemStack, x, y, z);
-                }
+            if (!gate[YP]) {
+                renderBlockWithRotation(itemStack, x, y, z, 0.5D, 0.75D, 0.0625D, 1.0D, 0.875D, 0.1875D, dir);
+                renderBlockWithRotation(itemStack, x, y, z, 0.5D, 0.75D, 0.8125D, 1.0D, 0.875D, 0.9375D, dir);
             }
-            else
-            {
-                if (dir == Gate.DIR_POS)
-                {
-                    x_High = 0.125F;
-                    z_Low = 0.5F;
-                    renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                    renderBlock(itemStack, x, y, z);
-                    x_Low = 0.875F;
-                    x_High = 1.0F;
-                    renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                    renderBlock(itemStack, x, y, z);
-                }
-                else
-                {
-                    x_High = 0.125F;
-                    z_High = 0.5F;
-                    renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                    renderBlock(itemStack, x, y, z);
-                    x_Low = 0.875F;
-                    x_High = 1.0F;
-                    renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                    renderBlock(itemStack, x, y, z);
-                }
+            if (!gate[YN]) {
+                renderBlockWithRotation(itemStack, x, y, z, 0.5D, 0.125D, 0.0625D, 1.0D, 0.25D, 0.1875D, dir);
+                renderBlockWithRotation(itemStack, x, y, z, 0.5D, 0.125D, 0.8125D, 1.0D, 0.25D, 0.9375D, dir);
             }
+
+            renderBlockWithRotation(itemStack, x, y, z, 0.5D, 0.0D, 0.0D, 0.6875D, 1.0D, 0.0625D, dir);
+            renderBlockWithRotation(itemStack, x, y, z, 0.5D, 0.0D, 0.1875D, 0.6875D, 1.0D, 0.25D, dir);
+            renderBlockWithRotation(itemStack, x, y, z, 0.5D, 0.0D, 0.75D, 0.6875D, 1.0D, 0.8125D, dir);
+            renderBlockWithRotation(itemStack, x, y, z, 0.5D, 0.0D, 0.9375D, 0.6875D, 1.0D, 1.0D, dir);
+            renderBlockWithRotation(itemStack, x, y, z, 0.8125D, 0.0D, 0.0D, 1.0D, 1.0D, 0.0625D, dir);
+            renderBlockWithRotation(itemStack, x, y, z, 0.8125D, 0.0D, 0.1875D, 1.0D, 1.0D, 0.25D, dir);
+            renderBlockWithRotation(itemStack, x, y, z, 0.8125D, 0.0D, 0.75D, 1.0D, 1.0D, 0.8125D, dir);
+            renderBlockWithRotation(itemStack, x, y, z, 0.8125D, 0.0D, 0.9375D, 1.0D, 1.0D, 1.0D, dir);
+
+        } else {
+
+            if (!gate[YP]) {
+                renderBlockWithRotation(itemStack, x, y, z, 0.4375D, 0.75D, 0.0D, 0.5625D, 0.875D, 1.0D, dir);
+            }
+            if (!gate[YN]) {
+                renderBlockWithRotation(itemStack, x, y, z, 0.4375D, 0.125D, 0.0D, 0.5625D, 0.25D, 1.0D, dir);
+            }
+
+            renderBlockWithRotation(itemStack, x, y, z, 0.5625D, 0.0D, 0.0D, 0.625D, 1.0D, 0.1875D, dir);
+            renderBlockWithRotation(itemStack, x, y, z, 0.375D, 0.0D, 0.0D, 0.4375D, 1.0D, 0.1875D, dir);
+            renderBlockWithRotation(itemStack, x, y, z, 0.5625D, 0.0D, 0.3125D, 0.625D, 1.0D, 0.6875D, dir);
+            renderBlockWithRotation(itemStack, x, y, z, 0.375D, 0.0D, 0.3125D, 0.4375D, 1.0D, 0.6875D, dir);
+            renderBlockWithRotation(itemStack, x, y, z, 0.5625D, 0.0D, 0.8125D, 0.625D, 1.0D, 1.0D, dir);
+            renderBlockWithRotation(itemStack, x, y, z, 0.375D, 0.0D, 0.8125D, 0.4375D, 1.0D, 1.0D, dir);
+
         }
-        else
-        {
-            if (facing == Gate.FACING_ON_X)
-            {
-                z_Low = 0.4375F;
-                z_High = 0.5625F;
-                renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                renderBlock(itemStack, x, y, z);
-            }
-            else
-            {
-                x_Low = 0.4375F;
-                x_High = 0.5625F;
-                renderBlocks.setRenderBounds(x_Low, y_Low, z_Low, x_High, y_High, z_High);
-                renderBlock(itemStack, x, y, z);
-            }
-        }
+    }
 
-        renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
+    /**
+     * Renders wall gate at given coordinates.
+     */
+    private void renderTypeWall(ItemStack itemStack, int x, int y, int z)
+    {
+        double yMax = gate[YP] ? 1.0D : 0.8125D;
+
+        if (isOpen) {
+            renderBlockWithRotation(itemStack, x, y, z, 0.5D, 0.0D, 0.0D, 1.0D, yMax, 0.125D, dir);
+            renderBlockWithRotation(itemStack, x, y, z, 0.5D, 0.0D, 0.875D, 1.0D, yMax, 1.0D, dir);
+        } else {
+            renderBlockWithRotation(itemStack, x, y, z, 0.4375D, 0.0D, 0.0D, 0.5625D, yMax, 1.0D, dir);
+        }
     }
 
 }

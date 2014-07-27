@@ -12,7 +12,6 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
-import net.minecraftforge.common.RotationHelper;
 import carpentersblocks.data.Barrier;
 import carpentersblocks.data.Gate;
 import carpentersblocks.tileentity.TEBase;
@@ -81,6 +80,8 @@ public class BlockCarpentersBarrier extends BlockCoverable {
      */
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack itemStack)
     {
+        super.onBlockPlacedBy(world, x, y, z, entityLiving, itemStack);
+
         TEBase TE = getTileEntity(world, x, y, z);
 
         if (TE != null) {
@@ -106,8 +107,6 @@ public class BlockCarpentersBarrier extends BlockCoverable {
             }
 
         }
-
-        super.onBlockPlacedBy(world, x, y, z, entityLiving, itemStack);
     }
 
     @Override
@@ -117,12 +116,10 @@ public class BlockCarpentersBarrier extends BlockCoverable {
      */
     public void addCollisionBoxesToList(World world, int x, int y, int z, AxisAlignedBB axisAlignedBB, List list, Entity entity)
     {
-        TEBase TE = getTileEntity(world, x, y, z);
-
-        boolean connect_ZN = canConnectBarrierTo(TE, world, x, y, z - 1, ForgeDirection.SOUTH);
-        boolean connect_ZP = canConnectBarrierTo(TE, world, x, y, z + 1, ForgeDirection.NORTH);
-        boolean connect_XN = canConnectBarrierTo(TE, world, x - 1, y, z, ForgeDirection.EAST);
-        boolean connect_XP = canConnectBarrierTo(TE, world, x + 1, y, z, ForgeDirection.WEST);
+        boolean connect_ZN = canConnectBarrierTo(world, x, y, z - 1, ForgeDirection.SOUTH);
+        boolean connect_ZP = canConnectBarrierTo(world, x, y, z + 1, ForgeDirection.NORTH);
+        boolean connect_XN = canConnectBarrierTo(world, x - 1, y, z, ForgeDirection.EAST);
+        boolean connect_XP = canConnectBarrierTo(world, x + 1, y, z, ForgeDirection.WEST);
 
         float x_Low = 0.375F;
         float x_High = 0.625F;
@@ -180,10 +177,10 @@ public class BlockCarpentersBarrier extends BlockCoverable {
         TEBase TE = getTileEntity(world, x, y, z);
         int type = Barrier.getType(TE);
 
-        boolean connect_ZN = canConnectBarrierTo(TE, world, x, y, z - 1, ForgeDirection.SOUTH);
-        boolean connect_ZP = canConnectBarrierTo(TE, world, x, y, z + 1, ForgeDirection.NORTH);
-        boolean connect_XN = canConnectBarrierTo(TE, world, x - 1, y, z, ForgeDirection.EAST);
-        boolean connect_XP = canConnectBarrierTo(TE, world, x + 1, y, z, ForgeDirection.WEST);
+        boolean connect_ZN = canConnectBarrierTo(TE.getWorldObj(), x, y, z - 1, ForgeDirection.SOUTH);
+        boolean connect_ZP = canConnectBarrierTo(TE.getWorldObj(), x, y, z + 1, ForgeDirection.NORTH);
+        boolean connect_XN = canConnectBarrierTo(TE.getWorldObj(), x - 1, y, z, ForgeDirection.EAST);
+        boolean connect_XP = canConnectBarrierTo(TE.getWorldObj(), x + 1, y, z, ForgeDirection.WEST);
 
         float x_Low = 0.0F;
         float x_High = 1.0F;
@@ -252,29 +249,35 @@ public class BlockCarpentersBarrier extends BlockCoverable {
     /**
      * Returns true if block can connect to specified side of neighbor block.
      */
-    public boolean canConnectBarrierTo(TEBase TE, IBlockAccess world, int x, int y, int z, ForgeDirection side)
+    public boolean canConnectBarrierTo(World world, int x, int y, int z, ForgeDirection side)
     {
         Block block = Block.blocksList[world.getBlockId(x, y, z)];
 
         if (block != null) {
-
-            /* For the top side, make it create post if block is flower pot, torch, etc. */
-
-            if (side == ForgeDirection.UP) {
-                if (block != null && block.blockMaterial == Material.circuits) {
-                    return true;
-                }
+            if (block.equals(this) || block.equals(BlockRegistry.blockCarpentersGate)) {
+                return true;
             } else {
-                if (block.equals(this) || block.equals(BlockRegistry.blockCarpentersGate)) {
-                    return true;
-                } else {
-                    return block.isBlockSolidOnSide(TE.worldObj, x, y, z, side) && Barrier.getPost(TE) != Barrier.HAS_POST;
-                }
+                return block.isBlockSolidOnSide(world, x, y, z, side);
             }
-
         }
 
         return false;
+    }
+
+    /**
+     * Checks if the block is a solid face on the given side, used by placement logic.
+     *
+     * @param world The current world
+     * @param x X Position
+     * @param y Y position
+     * @param z Z position
+     * @param side The side to check
+     * @return True if the block is solid on the specified side.
+     */
+    @Override
+    public boolean isBlockSolidOnSide(World world, int x, int y, int z, ForgeDirection side)
+    {
+        return side.equals(ForgeDirection.UP);
     }
 
     @Override
@@ -284,25 +287,6 @@ public class BlockCarpentersBarrier extends BlockCoverable {
     public boolean canPlaceTorchOnTop(World world, int x, int y, int z)
     {
         return true;
-    }
-
-    /**
-     * Rotate the block. For vanilla blocks this rotates around the axis passed in (generally, it should be the "face" that was hit).
-     * Note: for mod blocks, this is up to the block and modder to decide. It is not mandated that it be a rotation around the
-     * face, but could be a rotation to orient *to* that face, or a visiting of possible rotations.
-     * The method should return true if the rotation was successful though.
-     *
-     * @param worldObj The world
-     * @param x X position
-     * @param y Y position
-     * @param z Z position
-     * @param axis The axis to rotate around
-     * @return True if the rotation was successful, False if the rotation failed, or is not possible
-     */
-    @Override
-    public boolean rotateBlock(World world, int x, int y, int z, ForgeDirection axis)
-    {
-        return RotationHelper.rotateVanillaBlock(this, world, x, y, z, axis);
     }
 
     @Override

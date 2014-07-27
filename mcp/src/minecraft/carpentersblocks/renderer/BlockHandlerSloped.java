@@ -10,7 +10,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class BlockAdvancedLighting extends BlockHandlerBase {
+public abstract class BlockHandlerSloped extends BlockHandlerBase {
 
     /** Identifies which render helper to use. */
     protected int renderID = 0;
@@ -51,7 +51,7 @@ public class BlockAdvancedLighting extends BlockHandlerBase {
     /**
      * Fills ambient occlusion and brightness tables.
      */
-    private final void populateLighting(ItemStack itemStack, int side)
+    private void populateLighting(ItemStack itemStack, int side)
     {
         switch (side) {
             case DOWN:
@@ -120,7 +120,7 @@ public class BlockAdvancedLighting extends BlockHandlerBase {
     /**
      * Fills ambient occlusion and brightness tables for offset block coordinates.
      */
-    private final void populateOffsetLighting(ItemStack itemStack, int side)
+    private void populateOffsetLighting(ItemStack itemStack, int side)
     {
         double renderTemp;
 
@@ -209,7 +209,7 @@ public class BlockAdvancedLighting extends BlockHandlerBase {
     /**
      * A renderSide method that happens after checking if side cover is rendering.
      */
-    protected void renderBaseSide(int x, int y, int z, int side, Icon icon) { }
+    abstract void renderBaseSide(int x, int y, int z, int side, Icon icon);
 
     @Override
     /**
@@ -227,7 +227,7 @@ public class BlockAdvancedLighting extends BlockHandlerBase {
     /**
      * Renders the base cover block.
      */
-    protected void renderBaseBlock(ItemStack itemStack, int x, int y, int z) { }
+    abstract void renderBaseBlock(ItemStack itemStack, int x, int y, int z);
 
     @Override
     /**
