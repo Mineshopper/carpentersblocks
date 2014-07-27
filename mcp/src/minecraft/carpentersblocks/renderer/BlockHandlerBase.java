@@ -627,7 +627,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
      * Sets color, lightness, and brightness in {@link LightingHelper} and
      * renders side.
      * <p>
-     * Also clears {@link VertexHelper#floatingIcon} and thus cannot be overridden.
+     * Also calls {@link VertexHelper#postRender} and thus cannot be overridden.
      *
      * @param itemStack  the cover ItemStack
      * @param block  the block inside the ItemStack
@@ -648,7 +648,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
 
         lightingHelper.setupColor(x, y, z, side, color, icon);
         render(x, y, z, side, icon);
-        VertexHelper.unlockFloatingIcon();
+        VertexHelper.postRender();
     }
 
     /**

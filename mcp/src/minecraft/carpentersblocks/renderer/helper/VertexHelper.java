@@ -23,8 +23,8 @@ public class VertexHelper {
     public final static int LEFT_CENTER   = 6;
     public final static int RIGHT_CENTER  = 7;
 
-    public static boolean  floatingIcon     = false;
-    private static boolean floatingIconLock = false;
+    private static boolean   clearFloat       = false;
+    protected static boolean floatingIcon     = false;
 
     /** Keeps track of vertices drawn per pass. */
     public static int vertexCount = 0;
@@ -35,19 +35,29 @@ public class VertexHelper {
     protected static double offset = 0.0D;
 
     /**
-     * Sets floating icon flag.
+     * Temporarily sets floating icon flag for current face draw.
+     * <p>
+     * To keep it enabled, call {@link VertexHelper#setFloatingIconLock()} instead.
      */
-    public static void lockFloatingIcon()
+    public static void setFloatingIcon()
     {
-        floatingIcon = floatingIconLock = true;
+        floatingIcon = clearFloat = true;
+    }
+
+    /**
+     * Locks floating icon flag.
+     */
+    public static void setFloatingIconLock()
+    {
+        floatingIcon = true;
     }
 
     /**
      * Clears floating icon flag.
      */
-    public static void unlockFloatingIcon()
+    public static void clearFloatingIconLock()
     {
-        floatingIcon = floatingIconLock = false;
+        floatingIcon = false;
     }
 
     /**
@@ -64,6 +74,16 @@ public class VertexHelper {
     public static void clearOffset()
     {
         offset = 0.0D;
+    }
+
+    /**
+     * Prepare helper for next face draw.
+     */
+    public static void postRender()
+    {
+        if (clearFloat) {
+            floatingIcon = clearFloat = false;
+        }
     }
 
     /**
@@ -121,10 +141,6 @@ public class VertexHelper {
         }
 
         drawVertex(renderBlocks, x, y, z, u, v);
-
-        if (!floatingIconLock) {
-            floatingIcon = false;
-        }
     }
 
 }
