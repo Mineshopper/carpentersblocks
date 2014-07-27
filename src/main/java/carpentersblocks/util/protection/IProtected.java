@@ -5,19 +5,13 @@ import java.util.UUID;
 public interface IProtected {
 
     /**
-     * Returns owner of object.
+     * Returns object owner as UUID string.
      */
-    public UUID getOwner();
+    public String getOwner();
 
     /**
      * Sets owner of object.
      */
-    public void setOwner(UUID Id);
-
-    /**
-     * Returns raw owner object.
-     * TODO: Remove when player name-changing system is switched on.
-     */
-    public Object getOwnerRaw();
+    public void setOwner(UUID uuid);
 
 }

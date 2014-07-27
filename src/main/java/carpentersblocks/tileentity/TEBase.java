@@ -75,7 +75,10 @@ public class TEBase extends TileEntity implements IProtected {
         design   = nbt.getString(TAG_DESIGN);
         owner    = nbt.getString(TAG_OWNER);
 
-        // TODO: Remove when player name-changing system is switched on
+        /*
+         * Attempt to update owner name to new UUID format.
+         * TODO: Remove when player name-changing system is switched on
+         */
         if (FMLCommonHandler.instance().getSide().equals(Side.SERVER)) {
             ProtectedUtil.updateOwnerUUID(this);
         }
@@ -188,22 +191,14 @@ public class TEBase extends TileEntity implements IProtected {
      * Sets owner of tile entity.
      */
     @Override
-    public void setOwner(UUID Id)
+    public void setOwner(UUID uuid)
     {
-        owner = Id.toString();
-    }
-
-    /**
-     * Returns owner of tile entity.
-     */
-    @Override
-    public UUID getOwner() throws IllegalArgumentException
-    {
-        return UUID.fromString(owner);
+        owner = uuid.toString();
+        markDirty();
     }
 
     @Override
-    public Object getOwnerRaw()
+    public String getOwner()
     {
         return owner;
     }

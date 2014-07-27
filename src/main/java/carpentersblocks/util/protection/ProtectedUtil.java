@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
 
 import com.mojang.authlib.Agent;
@@ -16,35 +17,53 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.SERVER)
 public class ProtectedUtil {
 
-    private static Map<String, String> cachedUUID = new HashMap<String, String>();
+    private static Map<String, UUID> cachedUUID = new HashMap<String, UUID>();
 
     /**
-     * Reads owner from protected object and converts it to UUID if necessary.
+     * Returns whether player is owner of object.
      */
-    public static void updateOwnerUUID(IProtected object)
+    public static boolean isOwner(IProtected object, EntityPlayer entityPlayer)
     {
-        UUID uuid;
-        try {
-            uuid = object.getOwner();
-        } catch (IllegalArgumentException e) {
-            String rawName = (String) object.getOwnerRaw();
-            if (cachedUUID.containsKey(rawName)) {
-                object.setOwner(UUID.fromString(cachedUUID.get(rawName)));
-            } else {
-                uuid = getOwnerUUID(rawName);
-                if (uuid != null) {
-                    object.setOwner(uuid);
-                    cachedUUID.put(rawName, uuid.toString());
-                }
-            }
+        UUID uuid = updateOwnerUUID(object);
+
+        if (uuid != null) {
+            return object.getOwner().equals(uuid.toString());
+        } else {
+            // Attempt to update owner format manually, then resort to fallback method
+            updateOwnerUUID(object);
+            return object.getOwner().equals(entityPlayer.getDisplayName());
         }
     }
 
     /**
-     * Converts saved owner names to UUID and returns result.
-     * If nothing found (unlikely), returns null.
+     * Reads owner from protected object and converts it to UUID if necessary.
      */
-    private static UUID getOwnerUUID(String name)
+    public static UUID updateOwnerUUID(IProtected object)
+    {
+        String owner = object.getOwner();
+
+        UUID uuid = null;
+        try {
+            uuid = UUID.fromString(owner);
+        } catch (IllegalArgumentException e) {
+            if (cachedUUID.containsKey(owner)) {
+                object.setOwner(cachedUUID.get(owner));
+            } else {
+                uuid = getOwnerIdentity(owner);
+                if (uuid != null) {
+                    object.setOwner(uuid);
+                    cachedUUID.put(owner, uuid);
+                }
+            }
+        }
+
+        return uuid;
+    }
+
+    /**
+     * Converts saved owner names to UUID and returns result.
+     */
+    private static UUID getOwnerIdentity(String name)
     {
         final GameProfile[] gameProfileResult = new GameProfile[1];
         ProfileLookupCallback profilelookupcallback = new ProfileLookupCallback() {

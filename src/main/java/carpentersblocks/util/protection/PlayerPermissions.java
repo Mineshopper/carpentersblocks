@@ -27,7 +27,9 @@ public class PlayerPermissions {
         if (isOp(entityPlayer)) {
             return true;
         } else if (FeatureRegistry.enableOwnership) {
-            return object.getOwner().equals(entityPlayer.getUniqueID());
+            // TODO: Replace return value when name-changing system is enabled.
+            // return object.getOwner().equals(entityPlayer.getUniqueID());
+            return ProtectedUtil.isOwner(object, entityPlayer);
         } else {
             return entityPlayer.canPlayerEdit(x, y, z, 0, entityPlayer.getHeldItem());
         }

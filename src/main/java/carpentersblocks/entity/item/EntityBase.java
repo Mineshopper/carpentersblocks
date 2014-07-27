@@ -3,7 +3,6 @@ package carpentersblocks.entity.item;
 import java.util.UUID;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import carpentersblocks.util.protection.IProtected;
@@ -13,8 +12,7 @@ import cpw.mods.fml.relauncher.Side;
 
 public class EntityBase extends Entity implements IProtected {
 
-    private final static byte ID_OWNER  = 12;
-
+    private final static byte   ID_OWNER  = 12;
     private final static String TAG_OWNER = "owner";
 
     public EntityBase(World world)
@@ -22,26 +20,20 @@ public class EntityBase extends Entity implements IProtected {
         super(world);
     }
 
-    public EntityBase(World world, EntityPlayer entityPlayer)
+    public EntityBase(World world, UUID uuid)
     {
         this(world);
-        setOwner(entityPlayer.getUniqueID());
+        setOwner(uuid);
     }
 
     @Override
-    public void setOwner(UUID Id)
+    public void setOwner(UUID uuid)
     {
-        getDataWatcher().updateObject(ID_OWNER, new String(Id.toString()));
+        getDataWatcher().updateObject(ID_OWNER, new String(uuid.toString()));
     }
 
     @Override
-    public UUID getOwner() throws IllegalArgumentException
-    {
-        return UUID.fromString(getDataWatcher().getWatchableObjectString(ID_OWNER));
-    }
-
-    @Override
-    public Object getOwnerRaw()
+    public String getOwner()
     {
         return getDataWatcher().getWatchableObjectString(ID_OWNER);
     }
@@ -57,7 +49,10 @@ public class EntityBase extends Entity implements IProtected {
     {
         getDataWatcher().updateObject(ID_OWNER, String.valueOf(nbtTagCompound.getString(TAG_OWNER)));
 
-        // TODO: Remove when player name-changing system is switched on
+        /*
+         * Attempt to update owner name to new UUID format.
+         * TODO: Remove when player name-changing system is switched on
+         */
         if (FMLCommonHandler.instance().getSide().equals(Side.SERVER)) {
             ProtectedUtil.updateOwnerUUID(this);
         }
