@@ -146,18 +146,20 @@ public class BlockHandlerCarpentersSafe extends BlockHandlerBase {
             renderBlockWithRotation(itemStack, x, y, z, comp.xMin, comp.yMin, comp.zMin, comp.xMax, comp.yMax, comp.zMax, dir);
         }
 
+        renderBlockWithRotation(itemStack, x, y, z, 0.375D, 0.0625D, 0.875F, isOpen ? 0.5625D : 0.9375D, 0.9375D, 0.9375D, dir); // Render sliding door
+
+        suppressDyeColor = true;
+        suppressOverlay = true;
+        suppressChiselDesign = true;
+
         /* Render panel components */
 
         for (Component comp : panelList) {
             renderBlockWithRotation(metal, x, y, z, comp.xMin, comp.yMin, comp.zMin, comp.xMax, comp.yMax, comp.zMax, dir); // Render panel
         }
 
-        renderBlockWithRotation(itemStack, x, y, z, 0.375D, 0.0625D, 0.875F, isOpen ? 0.5625D : 0.9375D, 0.9375D, 0.9375D, dir); // Render sliding door
         renderBlockWithRotation(metal, x, y, z, isOpen ? 0.4375D : 0.8125D, 0.375D, 0.9375D, isOpen ? 0.5D : 0.875D, 0.625D, 1.0D, dir); // Render handle
 
-        suppressDyeColor = true;
-        suppressOverlay = true;
-        suppressChiselDesign = true;
         disableAO = true;
         setIconOverride(6, IconRegistry.icon_safe_light);
 
@@ -166,6 +168,7 @@ public class BlockHandlerCarpentersSafe extends BlockHandlerBase {
 
         clearIconOverride(6);
         disableAO = false;
+
         suppressDyeColor = false;
         suppressOverlay = false;
         suppressChiselDesign = false;
