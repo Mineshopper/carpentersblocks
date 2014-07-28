@@ -75,7 +75,10 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase {
         renderBlocks.renderAllFaces = true;
 
         setParams();
-        renderFabricComponents(new ItemStack(Block.cloth), x, y, z);
+
+        if (renderPass == PASS_OPAQUE) {
+            renderFabricComponents(new ItemStack(Block.cloth), x, y, z);
+        }
 
         /* Apply frame dye override */
 
