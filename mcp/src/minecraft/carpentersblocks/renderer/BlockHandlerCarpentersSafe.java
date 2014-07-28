@@ -159,18 +159,22 @@ public class BlockHandlerCarpentersSafe extends BlockHandlerBase {
 
         renderBlockWithRotation(metal, x, y, z, isOpen ? 0.4375D : 0.8125D, 0.375D, 0.9375D, isOpen ? 0.5D : 0.875D, 0.625D, 1.0D, dir); // Render handle
 
-        disableAO = true;
-        setIconOverride(6, IconRegistry.icon_safe_light);
+        if (renderPass == PASS_ALPHA) {
 
-        renderPartLockLight(x, y, z);
-        renderPartCapacityLight(x, y, z);
+            disableAO = true;
+            setIconOverride(6, IconRegistry.icon_safe_light);
 
-        clearIconOverride(6);
-        disableAO = false;
+            renderPartLockLight(x, y, z);
+            renderPartCapacityLight(x, y, z);
 
-        suppressDyeColor = false;
-        suppressOverlay = false;
-        suppressChiselDesign = false;
+            clearIconOverride(6);
+            disableAO = false;
+
+            suppressDyeColor = false;
+            suppressOverlay = false;
+            suppressChiselDesign = false;
+
+        }
 
         renderBlocks.renderAllFaces = false;
     }

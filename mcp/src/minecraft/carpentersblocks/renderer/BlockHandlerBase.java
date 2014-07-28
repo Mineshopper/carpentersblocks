@@ -543,16 +543,20 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
     {
         Block block = BlockProperties.toBlock(itemStack);
 
-        // TODO: Revisit render passes when alpha rendering bug is fixed.
-
         /* Render side */
 
-        int tempRotation = getRotation(side);
-        if (BlockProperties.blockRotates(itemStack)) {
-            setDirectionalRotation(side);
+        boolean doRender = block instanceof BlockCoverable && renderPass == PASS_OPAQUE ||
+                           block.getRenderBlockPass() == renderPass ||
+                           renderBlocks.hasOverrideBlockTexture();
+
+        if (doRender) {
+            int tempRotation = getRotation(side);
+            if (BlockProperties.blockRotates(itemStack)) {
+                setDirectionalRotation(side);
+            }
+            setColorAndRender(itemStack, x, y, z, side, icon);
+            setRotation(side, tempRotation);
         }
-        setColorAndRender(itemStack, x, y, z, side, icon);
-        setRotation(side, tempRotation);
 
         /* Render BlockGrass side overlay here, if needed. */
 
@@ -564,13 +568,13 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
             }
         }
 
-        /* Render decorations. */
-
         boolean temp_dye_state = suppressDyeColor;
         suppressDyeColor = true;
 
-        if (!suppressChiselDesign && BlockProperties.hasChiselDesign(TE, coverRendering)) {
-            renderChiselDesign(x, y, z, side);
+        if (renderPass == PASS_ALPHA) {
+            if (!suppressChiselDesign && BlockProperties.hasChiselDesign(TE, coverRendering)) {
+                renderChiselDesign(x, y, z, side);
+            }
         }
 
         if (!suppressOverlay && BlockProperties.hasOverlay(TE, coverRendering)) {

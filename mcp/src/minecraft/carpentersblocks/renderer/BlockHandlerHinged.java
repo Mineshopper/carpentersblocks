@@ -52,32 +52,36 @@ public abstract class BlockHandlerHinged extends BlockHandlerBase {
      */
     protected final void renderPartPane(Icon icon, int x, int y, int z)
     {
-        int dir = side.ordinal();
-        float LIGHTNESS = LightingHelper.LIGHTNESS[dir];
+        if (renderPass == PASS_OPAQUE) {
 
-        Tessellator.instance.setBrightness(Block.glass.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y, z));
-        Tessellator.instance.setColorOpaque_F(LIGHTNESS, LIGHTNESS, LIGHTNESS);
+            int dir = side.ordinal();
+            float LIGHTNESS = LightingHelper.LIGHTNESS[dir];
 
-        renderBlocks.setRenderBounds(paneBounds[dir][0], paneBounds[dir][1], paneBounds[dir][2], paneBounds[dir][3], paneBounds[dir][4], paneBounds[dir][5]);
+            Tessellator.instance.setBrightness(Block.glass.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y, z));
+            Tessellator.instance.setColorOpaque_F(LIGHTNESS, LIGHTNESS, LIGHTNESS);
 
-        switch (side) {
-            case DOWN:
-            case UP:
-                RenderHelper.renderFaceYNeg(renderBlocks, x, y, z, icon);
-                Tessellator.instance.setColorOpaque_F(LightingHelper.LIGHTNESS[1], LightingHelper.LIGHTNESS[1], LightingHelper.LIGHTNESS[1]);
-                RenderHelper.renderFaceYPos(renderBlocks, x, y, z, icon);
-                break;
-            case NORTH:
-            case SOUTH:
-                RenderHelper.renderFaceZNeg(renderBlocks, x, y, z, icon);
-                RenderHelper.renderFaceZPos(renderBlocks, x, y, z, icon);
-                break;
-            case WEST:
-            case EAST:
-                RenderHelper.renderFaceXNeg(renderBlocks, x, y, z, icon);
-                RenderHelper.renderFaceXPos(renderBlocks, x, y, z, icon);
-                break;
-            default: {}
+            renderBlocks.setRenderBounds(paneBounds[dir][0], paneBounds[dir][1], paneBounds[dir][2], paneBounds[dir][3], paneBounds[dir][4], paneBounds[dir][5]);
+
+            switch (side) {
+                case DOWN:
+                case UP:
+                    RenderHelper.renderFaceYNeg(renderBlocks, x, y, z, icon);
+                    Tessellator.instance.setColorOpaque_F(LightingHelper.LIGHTNESS[1], LightingHelper.LIGHTNESS[1], LightingHelper.LIGHTNESS[1]);
+                    RenderHelper.renderFaceYPos(renderBlocks, x, y, z, icon);
+                    break;
+                case NORTH:
+                case SOUTH:
+                    RenderHelper.renderFaceZNeg(renderBlocks, x, y, z, icon);
+                    RenderHelper.renderFaceZPos(renderBlocks, x, y, z, icon);
+                    break;
+                case WEST:
+                case EAST:
+                    RenderHelper.renderFaceXNeg(renderBlocks, x, y, z, icon);
+                    RenderHelper.renderFaceXPos(renderBlocks, x, y, z, icon);
+                    break;
+                default: {}
+            }
+
         }
     }
 

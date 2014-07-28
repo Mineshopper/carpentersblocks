@@ -147,69 +147,75 @@ public class BlockHandlerCarpentersHatch extends BlockHandlerHinged {
      */
     private void renderPartHandle(ItemStack itemStack, int x, int y, int z, boolean renderInterior, boolean renderExterior)
     {
-        if (!renderInterior && !renderExterior) {
-            return;
-        }
+        int blockRenderPass = Block.blocksList[itemStack.itemID].getRenderBlockPass();
 
-        suppressDyeColor = true;
-        suppressChiselDesign = true;
-        suppressOverlay = true;
+        if (renderPass == blockRenderPass) {
 
-        double zOffset = Hatch.getType(TE) == Hatch.TYPE_HIDDEN ? 0.125D : 0.1875D;
-        double yMin = isHigh ? 0.0625D : 0.875D;
-        double yMax = isHigh ? 0.125D : 0.9375D;
-
-        if (renderInterior) {
-
-            if (isOpen) {
-
-                ForgeDirection dir = side.getOpposite();
-                int xTemp = x - dir.offsetX;
-                int yTemp = y - dir.offsetY;
-                int zTemp = z - dir.offsetZ;
-
-                renderBlockWithRotation(itemStack, xTemp, yTemp, zTemp, 0.375D, yMin, 0.9375D, 0.4375D, yMax, 1.0D, dir);
-                renderBlockWithRotation(itemStack, xTemp, yTemp, zTemp, 0.5625D, yMin, 0.9375D, 0.625D, yMax, 1.0D, dir);
-                renderBlockWithRotation(itemStack, xTemp, yTemp, zTemp, 0.375D, yMin, 0.875D, 0.625D, yMax, 0.9375D, dir);
-
-            } else {
-
-                ForgeDirection dir = isHigh ? baseDir : baseDir.getOpposite();
-
-                renderBlockWithRotation(itemStack, x, y, z, 0.375D, yMin, 0.9375D - zOffset, 0.4375D, yMax, 1.0D - zOffset, side, dir);
-                renderBlockWithRotation(itemStack, x, y, z, 0.5625D, yMin, 0.9375D - zOffset, 0.625D, yMax, 1.0D - zOffset, side, dir);
-                renderBlockWithRotation(itemStack, x, y, z, 0.375D, yMin, 0.875D - zOffset, 0.625D, yMax, 0.9375D - zOffset, side, dir);
-
-            }
-        }
-
-        if (renderExterior) {
-
-            if (isOpen) {
-
-                renderBlockWithRotation(itemStack, x, y, z, 0.375D, yMin, 0.9375D - zOffset, 0.4375D, yMax, 1.0D - zOffset, baseDir);
-                renderBlockWithRotation(itemStack, x, y, z, 0.5625D, yMin, 0.9375D - zOffset, 0.625D, yMax, 1.0D - zOffset, baseDir);
-                renderBlockWithRotation(itemStack, x, y, z, 0.375D, yMin, 0.875D - zOffset, 0.625D, yMax, 0.9375D - zOffset, baseDir);
-
-            } else {
-
-                ForgeDirection dir1 = side.getOpposite();
-                ForgeDirection dir2 = !isHigh ? baseDir.getOpposite() : baseDir;
-                int xTemp = x - dir1.offsetX;
-                int yTemp = y - dir1.offsetY;
-                int zTemp = z - dir1.offsetZ;
-
-                renderBlockWithRotation(itemStack, xTemp, yTemp, zTemp, 0.375D, yMin, 0.9375D, 0.4375D, yMax, 1.0D, dir1, dir2);
-                renderBlockWithRotation(itemStack, xTemp, yTemp, zTemp, 0.5625D, yMin, 0.9375D, 0.625D, yMax, 1.0D, dir1, dir2);
-                renderBlockWithRotation(itemStack, xTemp, yTemp, zTemp, 0.375D, yMin, 0.875D, 0.625D, yMax, 0.9375D, dir1, dir2);
-
+            if (!renderInterior && !renderExterior) {
+                return;
             }
 
-        }
+            suppressDyeColor = true;
+            suppressChiselDesign = true;
+            suppressOverlay = true;
 
-        suppressDyeColor = false;
-        suppressChiselDesign = false;
-        suppressOverlay = false;
+            double zOffset = Hatch.getType(TE) == Hatch.TYPE_HIDDEN ? 0.125D : 0.1875D;
+            double yMin = isHigh ? 0.0625D : 0.875D;
+            double yMax = isHigh ? 0.125D : 0.9375D;
+
+            if (renderInterior) {
+
+                if (isOpen) {
+
+                    ForgeDirection dir = side.getOpposite();
+                    int xTemp = x - dir.offsetX;
+                    int yTemp = y - dir.offsetY;
+                    int zTemp = z - dir.offsetZ;
+
+                    renderBlockWithRotation(itemStack, xTemp, yTemp, zTemp, 0.375D, yMin, 0.9375D, 0.4375D, yMax, 1.0D, dir);
+                    renderBlockWithRotation(itemStack, xTemp, yTemp, zTemp, 0.5625D, yMin, 0.9375D, 0.625D, yMax, 1.0D, dir);
+                    renderBlockWithRotation(itemStack, xTemp, yTemp, zTemp, 0.375D, yMin, 0.875D, 0.625D, yMax, 0.9375D, dir);
+
+                } else {
+
+                    ForgeDirection dir = isHigh ? baseDir : baseDir.getOpposite();
+
+                    renderBlockWithRotation(itemStack, x, y, z, 0.375D, yMin, 0.9375D - zOffset, 0.4375D, yMax, 1.0D - zOffset, side, dir);
+                    renderBlockWithRotation(itemStack, x, y, z, 0.5625D, yMin, 0.9375D - zOffset, 0.625D, yMax, 1.0D - zOffset, side, dir);
+                    renderBlockWithRotation(itemStack, x, y, z, 0.375D, yMin, 0.875D - zOffset, 0.625D, yMax, 0.9375D - zOffset, side, dir);
+
+                }
+            }
+
+            if (renderExterior) {
+
+                if (isOpen) {
+
+                    renderBlockWithRotation(itemStack, x, y, z, 0.375D, yMin, 0.9375D - zOffset, 0.4375D, yMax, 1.0D - zOffset, baseDir);
+                    renderBlockWithRotation(itemStack, x, y, z, 0.5625D, yMin, 0.9375D - zOffset, 0.625D, yMax, 1.0D - zOffset, baseDir);
+                    renderBlockWithRotation(itemStack, x, y, z, 0.375D, yMin, 0.875D - zOffset, 0.625D, yMax, 0.9375D - zOffset, baseDir);
+
+                } else {
+
+                    ForgeDirection dir1 = side.getOpposite();
+                    ForgeDirection dir2 = !isHigh ? baseDir.getOpposite() : baseDir;
+                    int xTemp = x - dir1.offsetX;
+                    int yTemp = y - dir1.offsetY;
+                    int zTemp = z - dir1.offsetZ;
+
+                    renderBlockWithRotation(itemStack, xTemp, yTemp, zTemp, 0.375D, yMin, 0.9375D, 0.4375D, yMax, 1.0D, dir1, dir2);
+                    renderBlockWithRotation(itemStack, xTemp, yTemp, zTemp, 0.5625D, yMin, 0.9375D, 0.625D, yMax, 1.0D, dir1, dir2);
+                    renderBlockWithRotation(itemStack, xTemp, yTemp, zTemp, 0.375D, yMin, 0.875D, 0.625D, yMax, 0.9375D, dir1, dir2);
+
+                }
+
+            }
+
+            suppressDyeColor = false;
+            suppressChiselDesign = false;
+            suppressOverlay = false;
+
+        }
     }
 
 }
