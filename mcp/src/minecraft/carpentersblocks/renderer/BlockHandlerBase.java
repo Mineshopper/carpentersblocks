@@ -545,11 +545,14 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
 
         /* Render side */
 
-        boolean doRender = block instanceof BlockCoverable && renderPass == PASS_OPAQUE ||
-                           block.getRenderBlockPass() == renderPass ||
-                           renderBlocks.hasOverrideBlockTexture();
+        boolean renderCover = renderBlocks.hasOverrideBlockTexture();
+        if (block instanceof BlockCoverable) {
+            renderCover |= renderPass == PASS_OPAQUE;
+        } else {
+            renderCover |= block.getRenderBlockPass() == renderPass;
+        }
 
-        if (doRender) {
+        if (renderCover) {
             int tempRotation = getRotation(side);
             if (BlockProperties.blockRotates(itemStack)) {
                 setDirectionalRotation(side);
@@ -577,8 +580,10 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
             }
         }
 
-        if (!suppressOverlay && BlockProperties.hasOverlay(TE, coverRendering)) {
-            renderOverlay(block, x, y, z, side);
+        if (renderPass == PASS_OPAQUE || renderCover && renderPass == PASS_ALPHA) {
+            if (!suppressOverlay && BlockProperties.hasOverlay(TE, coverRendering)) {
+                renderOverlay(block, x, y, z, side);
+            }
         }
 
         suppressDyeColor = temp_dye_state;

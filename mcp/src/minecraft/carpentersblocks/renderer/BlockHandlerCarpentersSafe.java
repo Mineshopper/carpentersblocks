@@ -170,11 +170,11 @@ public class BlockHandlerCarpentersSafe extends BlockHandlerBase {
             clearIconOverride(6);
             disableAO = false;
 
-            suppressDyeColor = false;
-            suppressOverlay = false;
-            suppressChiselDesign = false;
-
         }
+
+        suppressDyeColor = false;
+        suppressOverlay = false;
+        suppressChiselDesign = false;
 
         renderBlocks.renderAllFaces = false;
     }
