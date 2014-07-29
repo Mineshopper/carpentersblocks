@@ -56,8 +56,8 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
     public boolean        disableAO;
     public boolean        hasDyeOverride;
     public int            dyeOverride;
-    public boolean[]      hasIconOverride   = new boolean[6];
-    public Icon[]        iconOverride      = new Icon[6];
+    public boolean[]      hasIconOverride = new boolean[6];
+    public Icon[]         iconOverride    = new Icon[6];
     public int            renderPass;
 
     /** 0-5 are side covers, with 6 being the block itself. */
@@ -352,10 +352,10 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
     /**
      * Sets dye override.
      */
-    protected void setDyeOverride(int dye)
+    protected void setDyeOverride(int color)
     {
         hasDyeOverride = true;
-        dyeOverride = dye;
+        dyeOverride = color;
     }
 
     /**
@@ -545,12 +545,8 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
 
         /* Render side */
 
-        boolean renderCover = renderBlocks.hasOverrideBlockTexture();
-        if (block instanceof BlockCoverable) {
-            renderCover |= renderPass == PASS_OPAQUE;
-        } else {
-            renderCover |= block.getRenderBlockPass() == renderPass;
-        }
+        boolean renderCover = block instanceof BlockCoverable ? renderPass == PASS_OPAQUE : block.getRenderBlockPass() == renderPass;
+        boolean renderOverlay = renderPass == PASS_OPAQUE || renderCover && renderPass == PASS_ALPHA;
 
         if (renderCover) {
             int tempRotation = getRotation(side);
@@ -563,11 +559,13 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
 
         /* Render BlockGrass side overlay here, if needed. */
 
-        if (block.equals(Block.grass) && side > 0 && !isPositiveFace(side)) {
-            if (Minecraft.isFancyGraphicsEnabled()) {
-                setColorAndRender(new ItemStack(Block.grass), x, y, z, side, BlockGrass.getIconSideOverlay());
-            } else {
-                setColorAndRender(new ItemStack(Block.dirt), x, y, z, side, IconRegistry.icon_overlay_fast_grass_side);
+        if (renderOverlay) {
+            if (block.equals(Block.grass) && side > 0 && !isPositiveFace(side)) {
+                if (Minecraft.isFancyGraphicsEnabled()) {
+                    setColorAndRender(new ItemStack(Block.grass), x, y, z, side, BlockGrass.getIconSideOverlay());
+                } else {
+                    setColorAndRender(new ItemStack(Block.dirt), x, y, z, side, IconRegistry.icon_overlay_fast_grass_side);
+                }
             }
         }
 
@@ -580,9 +578,9 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
             }
         }
 
-        if (renderPass == PASS_OPAQUE || renderCover && renderPass == PASS_ALPHA) {
+        if (renderOverlay) {
             if (!suppressOverlay && BlockProperties.hasOverlay(TE, coverRendering)) {
-                renderOverlay(block, x, y, z, side);
+                renderOverlay(x, y, z, side);
             }
         }
 
@@ -610,7 +608,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
     /**
      * Renders overlay on side.
      */
-    protected void renderOverlay(Block block, int x, int y, int z, int side)
+    protected void renderOverlay(int x, int y, int z, int side)
     {
         side = isPositiveFace(side) ? 1 : side;
         Overlay overlay = OverlayHandler.getOverlayType(BlockProperties.getOverlay(TE, coverRendering));
