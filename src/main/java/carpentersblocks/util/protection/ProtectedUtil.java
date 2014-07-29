@@ -11,10 +11,6 @@ import com.mojang.authlib.Agent;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.ProfileLookupCallback;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
-@SideOnly(Side.SERVER)
 public class ProtectedUtil {
 
     private static Map<String, UUID> cachedUUID = new HashMap<String, UUID>();
@@ -24,14 +20,18 @@ public class ProtectedUtil {
      */
     public static boolean isOwner(IProtected object, EntityPlayer entityPlayer)
     {
-        UUID uuid = updateOwnerUUID(object);
+        if (!entityPlayer.worldObj.isRemote) {
+            UUID uuid = updateOwnerUUID(object);
 
-        if (uuid != null) {
-            return object.getOwner().equals(uuid.toString());
+            if (uuid != null) {
+                return object.getOwner().equals(uuid.toString());
+            } else {
+                // Attempt to update owner format manually, then resort to fallback method
+                updateOwnerUUID(object);
+                return object.getOwner().equals(entityPlayer.getDisplayName());
+            }
         } else {
-            // Attempt to update owner format manually, then resort to fallback method
-            updateOwnerUUID(object);
-            return object.getOwner().equals(entityPlayer.getDisplayName());
+            return false;
         }
     }
 
