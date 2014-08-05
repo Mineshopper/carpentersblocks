@@ -235,19 +235,8 @@ public class BlockCarpentersTorch extends BlockCoverable {
 
             if (TE != null) {
 
-                boolean isWet = world.isRaining() && world.canBlockSeeTheSky(x, y, z) && world.getBiomeGenForCoords(x, z).rainfall > 0.0F;
+                boolean isWet = world.canLightningStrikeAt(x, y, z);
                 boolean canDropState = FeatureRegistry.enableTorchWeatherEffects;
-
-                /* Search spaces above for solid faces that could block weather effects. */
-
-                if (isWet) {
-                    for (int yInc = 1; yInc < world.getHeight(); ++yInc) {
-                        if (world.isBlockSolidOnSide(x, y + yInc, z, ForgeDirection.UP) || world.isBlockSolidOnSide(x, y + yInc, z, ForgeDirection.DOWN)) {
-                            isWet = false;
-                            break;
-                        }
-                    }
-                }
 
                 switch (Torch.getState(TE)) {
                     case LIT:
