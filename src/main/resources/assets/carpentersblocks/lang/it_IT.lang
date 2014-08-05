@@ -52,7 +52,7 @@ message.automation_disabled.name=AUTOMATION: Disabilitato.
 message.automation_insert.name=AUTOMATION: Gli oggetti possono solo essere inseriti.
 message.automation_extract.name=AUTOMATION: Gli oggetti possono solo essere estratti.
 message.block_lock.name=CONTROL: Questo Blocco è bloccato.
-message.sensitivity_sleep.name=SENSITIVITY: Stato Alterna presso un giocatore in soglia di sonno (alba e tramonto).
-message.sensitivity_monsters.name=SENSITIVITY: Stato Alterna al mostro in soglia di escursione di luce (comprese le tempeste).
+message.sensitivity_sleep.name=SENSITIVITA': Modifica lo stato quando il giocatore può dormire (alba e tramonto).
+message.sensitivity_monsters.name=SENSITIVITA': Modifica lo stato quando i mostri generano (includendo tempeste).
 
 # </file>
