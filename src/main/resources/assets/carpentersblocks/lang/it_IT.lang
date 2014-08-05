@@ -8,7 +8,7 @@ item.itemCarpentersHammer.name=Martello del Carpentiere
 item.itemCarpentersChisel.name=Scalpello del Carpentiere
 item.itemCarpentersDoor.name=Porta del Carpentiere
 item.itemCarpentersBed.name=Letto del Carpentiere
-item.itemCarpentersTile.name=Lastra del Carpentiere
+item.itemCarpentersTile.name=Facciata del Carpentiere
 
 # BLOCKS
 tile.blockCarpentersBarrier.name=Staccionata del Carpentiere
