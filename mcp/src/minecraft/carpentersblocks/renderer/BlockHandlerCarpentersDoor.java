@@ -179,43 +179,39 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerHinged {
     /**
      * Renders a door handle for the given coordinates
      */
-    private void renderPartHandle(ItemStack itemStack, int x, int y, int z, boolean renderInterior, boolean renderExterior)
+    private void renderPartHandle(ItemStack itemStack, int x, int y, int z, boolean renderInner, boolean renderOuter)
     {
-        int blockRenderPass = Block.blocksList[itemStack.itemID].getRenderBlockPass();
-
-        if (renderPass == blockRenderPass) {
-
-            if (!renderInterior && !renderExterior) {
-                return;
-            }
-
-            suppressDyeColor = true;
-            suppressChiselDesign = true;
-            suppressOverlay = true;
-
-            float xMin = isOpen ? (!hingeLeft ? 0.875F : 0.0625F) : (!hingeLeft ? 0.0625F : 0.875F);
-            float yMin = isBottom ? 0.875F : 0.0625F;
-            float yMax = isBottom ? 0.9375F : 0.125F;
-            float yMinOffset = isBottom ? 0.875F : 0.0F;
-            float yMaxOffset = isBottom ? 1.0F : 0.125F;
-
-            if (renderInterior) {
-                renderBlockWithRotation(itemStack, x, y, z, xMin, yMin, 0.75F, xMin + 0.0625F, yMax, 0.8125F, side);
-                renderBlockWithRotation(itemStack, x, y, z, xMin, yMinOffset, 0.6875F, xMin + 0.0625F, yMaxOffset, 0.75F, side);
-            }
-
-            if (renderExterior) {
-                ForgeDirection opp = side.getOpposite();
-                renderBlockWithRotation(itemStack, x - opp.offsetX, y, z - opp.offsetZ, xMin, yMin, 0.0F, xMin + 0.0625F, yMax, 0.0625F, side);
-                renderBlockWithRotation(itemStack, x - opp.offsetX, y, z - opp.offsetZ, xMin, yMinOffset, 0.0625F, xMin + 0.0625F, yMaxOffset, 0.125F, side);
-            }
-
-
-            suppressDyeColor = false;
-            suppressChiselDesign = false;
-            suppressOverlay = false;
-
+        if (!renderInner && !renderOuter) {
+            return;
         }
+
+        suppressDyeColor = true;
+        suppressChiselDesign = true;
+        suppressOverlay = true;
+
+        float xMin = isOpen ? (!hingeLeft ? 0.875F : 0.0625F) : (!hingeLeft ? 0.0625F : 0.875F);
+        float yMin = isBottom ? 0.875F : 0.0625F;
+        float yMax = isBottom ? 0.9375F : 0.125F;
+        float yMinOffset = isBottom ? 0.875F : 0.0F;
+        float yMaxOffset = isBottom ? 1.0F : 0.125F;
+
+        boolean renderSrc = renderInner && !isOpen || renderOuter && isOpen;
+        boolean renderOffset = renderOuter && !isOpen || renderInner && isOpen;
+
+        if (renderSrc) {
+            renderBlockWithRotation(itemStack, x, y, z, xMin, yMin, 0.75F, xMin + 0.0625F, yMax, 0.8125F, side);
+            renderBlockWithRotation(itemStack, x, y, z, xMin, yMinOffset, 0.6875F, xMin + 0.0625F, yMaxOffset, 0.75F, side);
+        }
+
+        if (renderOffset) {
+            ForgeDirection opp = side.getOpposite();
+            renderBlockWithRotation(itemStack, x - opp.offsetX, y, z - opp.offsetZ, xMin, yMin, 0.0F, xMin + 0.0625F, yMax, 0.0625F, side);
+            renderBlockWithRotation(itemStack, x - opp.offsetX, y, z - opp.offsetZ, xMin, yMinOffset, 0.0625F, xMin + 0.0625F, yMaxOffset, 0.125F, side);
+        }
+
+        suppressDyeColor = false;
+        suppressChiselDesign = false;
+        suppressOverlay = false;
     }
 
 }
