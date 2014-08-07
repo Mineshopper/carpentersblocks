@@ -10,7 +10,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public abstract class BlockHandlerHinged extends BlockHandlerBase {
+public class BlockHandlerHinged extends BlockHandlerBase {
 
     /** Side block renders against. */
     protected ForgeDirection side;
@@ -19,30 +19,14 @@ public abstract class BlockHandlerHinged extends BlockHandlerBase {
     protected boolean isOpen;
 
     /** Bounds for glass or other type of pane. */
-    protected double[][] paneBounds;
-
-    /**
-     * Renders block at coordinates.
-     */
-    abstract void renderBlock(int x, int y, int z);
-
-    @Override
-    /**
-     * Renders the block.
-     */
-    protected final void renderCarpentersBlock(int x, int y, int z)
-    {
-        paneBounds = new double[][] {
-                { 0.0D, 0.09375D, 0.0D, 1.0D, 0.09375D, 1.0D },
-                { 0.0D, 0.90625D, 0.0D, 1.0D, 0.90625D, 1.0D },
-                { 0.0D, 0.0D, 0.09375D, 1.0D, 1.0D, 0.09375D },
-                { 0.0D, 0.0D, 0.90625D, 1.0D, 1.0D, 0.90625D },
-                { 0.09375D, 0.0D, 0.0D, 0.09375D, 1.0D, 1.0D },
-                { 0.90625D, 0.0D, 0.0D, 0.90625D, 1.0D, 1.0D }
-        };
-
-        renderBlock(x, y, z);
-    }
+    protected static final double[][] paneBounds = new double[][] {
+            { 0.0D, 0.09375D, 0.0D, 1.0D, 0.09375D, 1.0D },
+            { 0.0D, 0.90625D, 0.0D, 1.0D, 0.90625D, 1.0D },
+            { 0.0D, 0.0D, 0.09375D, 1.0D, 1.0D, 0.09375D },
+            { 0.0D, 0.0D, 0.90625D, 1.0D, 1.0D, 0.90625D },
+            { 0.09375D, 0.0D, 0.0D, 0.09375D, 1.0D, 1.0D },
+            { 0.90625D, 0.0D, 0.0D, 0.90625D, 1.0D, 1.0D }
+    };
 
     /**
      * Renders pane like the glass or screen.

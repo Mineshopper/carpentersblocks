@@ -34,7 +34,7 @@ public class BlockHandlerCarpentersHatch extends BlockHandlerHinged {
     /**
      * Renders block at coordinates.
      */
-    public void renderBlock(int x, int y, int z)
+    public void renderCarpentersBlock(int x, int y, int z)
     {
         renderBlocks.renderAllFaces = true;
 
