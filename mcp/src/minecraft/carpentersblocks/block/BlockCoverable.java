@@ -130,7 +130,7 @@ public class BlockCoverable extends BlockContainer {
     public Icon getBlockTexture(IBlockAccess world, int x, int y, int z, int side)
     {
         TEBase TE = getTileEntity(world, x, y, z);
-        ItemStack itemStack = TE.cover[6];
+        ItemStack itemStack = BlockProperties.getCover(TE, 6);
         Block block = BlockProperties.toBlock(itemStack);
 
         return block instanceof BlockCoverable ? getIcon() : block.getIcon(side, itemStack.getItemDamage());
