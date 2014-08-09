@@ -4,54 +4,54 @@
 itemGroup.carpentersBlocks.name=Carpenter's Blocks
 
 # ITEMS
-item.itemCarpentersHammer.name=Martello del carpentiere
-item.itemCarpentersChisel.name=Cesello del carpentiere
-item.itemCarpentersDoor.name=Porta del carpentiere
-item.itemCarpentersBed.name=Letto del carpentiere
-item.itemCarpentersTile.name=Mattonella del carpentiere
+item.itemCarpentersHammer.name=Martello del Carpentiere
+item.itemCarpentersChisel.name=Scalpello del Carpentiere
+item.itemCarpentersDoor.name=Porta del Carpentiere
+item.itemCarpentersBed.name=Letto del Carpentiere
+item.itemCarpentersTile.name=Facciata del Carpentiere
 
 # BLOCKS
-tile.blockCarpentersBarrier.name=Barriera del carpentiere
-tile.blockCarpentersBed.name=Letto del carpentiere
-tile.blockCarpentersBlock.name=Blocco del carpentiere
-tile.blockCarpentersButton.name=Pulsante del carpentiere
-tile.blockCarpentersDaylightSensor.name=Sensore di luce diurna del carpentiere
-tile.blockCarpentersCollapsibleBlock.name=Blocco modellabile del carpentiere
-tile.blockCarpentersDoor.name=Porta del carpentiere
-tile.blockCarpentersGate.name=Cancelletto del carpentiere
-tile.blockCarpentersHatch.name=Botola del carpentiere
-tile.blockCarpentersLadder.name=Scala a pioli del carpentiere
-tile.blockCarpentersLever.name=Leva del carpentiere
-tile.blockCarpentersPressurePlate.name=Pedana a pressione del carpentiere
-tile.blockCarpentersSlope.wedge.name=Inclinazione a cuneo del carpentiere
-tile.blockCarpentersSlope.obliqueInterior.name=Inclinazione obliquo interiore del carpentiere
-tile.blockCarpentersSlope.obliqueExterior.name=Inclinazione obliquo esteriore del carpentiere
-tile.blockCarpentersSlope.prism.name=Inclinazione a prisma del carpentiere
-tile.blockCarpentersSlope.prismWedge.name=Inclinazione a cuneo con prisma del carpentiere
-tile.blockCarpentersStairs.name=Scalini del carpentiere
-tile.blockCarpentersTorch.name=Torcia del carpentiere
-tile.blockCarpentersSafe.name=Cassaforte del carpentiere
-tile.blockCarpentersFlowerPot.name=Vaso da fiori del carpentiere
+tile.blockCarpentersBarrier.name=Staccionata del Carpentiere
+tile.blockCarpentersBed.name=Letto del Carpentiere
+tile.blockCarpentersBlock.name=Blocco del Carpentiere
+tile.blockCarpentersButton.name=Bottone del Carpentiere
+tile.blockCarpentersDaylightSensor.name=Sensore di Luce del Carpentiere
+tile.blockCarpentersCollapsibleBlock.name=Blocco Pieghevole del Carpentiere
+tile.blockCarpentersDoor.name=Porta del Carpentiere
+tile.blockCarpentersGate.name=Cancelletto del Carpentiere
+tile.blockCarpentersHatch.name=Botola del Carpentiere
+tile.blockCarpentersLadder.name=Scala del Carpentiere
+tile.blockCarpentersLever.name=Leva del Carpentiere
+tile.blockCarpentersPressurePlate.name=Pedana a Pressione del Carpentiere
+tile.blockCarpentersSlope.wedge.name=Cuneo Inclinato del Carpentiere
+tile.blockCarpentersSlope.obliqueInterior.name=Blocco Inclinato Interiormente del Carpentiere
+tile.blockCarpentersSlope.obliqueExterior.name=Blocco Inclinato Esteriormente del Carpentiere
+tile.blockCarpentersSlope.prism.name=Prisma del Carpentiere
+tile.blockCarpentersSlope.prismWedge.name=Cuneo a Prisma Inclinato del Carpentiere
+tile.blockCarpentersStairs.name=Scalini del Carpentiere
+tile.blockCarpentersTorch.name=Torcia del Carpentiere
+tile.blockCarpentersSafe.name=Cassaforte del Carpentiere
+tile.blockCarpentersFlowerPot.name=Vaso del Carpentiere
 
 # ENTITIES
-entity.CarpentersTile.name=Mattonella del carpentiere
+entity.CarpentersTile.name=Lastra del Carpentiere
 
 # MESSAGES
-message.polarity_pos.name=POLARITA': Segnale di pietrarossa normale.
-message.polarity_neg.name=POLARITA': Segnale di pietrarossa invertita.
-message.activation_iron.name=ATTIVAZIONE: Si comporterà come una porta di ferro.
-message.activation_wood.name=ATTIVAZIONE: Si comporterà come una porta di legno.
-message.trigger_player.name=INNESCO: Solo attivato da giocatori.
-message.trigger_monster.name=INNESCO: Solo attivato da mostri.
-message.trigger_animal.name=INNESCO: Solo attivato da animali.
-message.trigger_all.name=INNESCO: Attivato da tutte le entità
-message.safe_lock.name=CONTROLLO: Lucchetto chiuso.
-message.safe_unlock.name=CONTROLLO: Lucchetto aperto.
-message.automation_all.name=AUTOMAZIONE: Oggetti possono essere inseriti e estratti.
-message.automation_disabled.name=AUTOMAZIONE: Disattiva.
-message.automation_insert.name=AUTOMAZIONE: Oggetti possono essere solo inseriti.
-message.automation_extract.name=AUTOMAZIONE: Oggetti possono essere solo estratti.
-message.block_lock.name=CONTROLLO: Questo blocco è serrato.
+message.polarity_pos.name=POLARITA': Output Normale di Redstone.
+message.polarity_neg.name=POLARITA': Output Inverso di Redstone.
+message.activation_iron.name=ATTIVAZIONE: Si comporta come una porta di ferro.
+message.activation_wood.name=ATTIVAZIONE: Si comporta come una porta di legno.
+message.trigger_player.name=INNESCO: Attivabile solo dai giocatori.
+message.trigger_monster.name=INNESCO: Attivabile solo dai mostri.
+message.trigger_animal.name=INNESCO: Arrivabile solo dagli animali.
+message.trigger_all.name=INNESCO: Attivabile da ogniuno.
+message.safe_lock.name=CONTROLLO: Cassaforte Chiusa.
+message.safe_unlock.name=CONTROLLO: Cassaforte Aperta.
+message.automation_all.name=AUTOMAZIONE: Gli oggetti possono essere inseriti ed estratti.
+message.automation_disabled.name=AUTOMAZIONE: Disabilitato.
+message.automation_insert.name=AUTOMAZIONE: Gli oggetti possono solo essere inseriti.
+message.automation_extract.name=AUTOMAZIONE: Gli oggetti possono solo essere estratti.
+message.block_lock.name=CONTROLLO: Questo Blocco è bloccato.
 message.sensitivity_sleep.name=SENSITIVITA': Modifica lo stato quando il giocatore può dormire (alba e tramonto).
 message.sensitivity_monsters.name=SENSITIVITA': Modifica lo stato quando i mostri generano (includendo tempeste).
 
