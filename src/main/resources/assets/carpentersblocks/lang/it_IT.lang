@@ -5,53 +5,53 @@ itemGroup.carpentersBlocks.name=Carpenter's Blocks
 
 # ITEMS
 item.itemCarpentersHammer.name=Martello del carpentiere
-item.itemCarpentersChisel.name=Cesello del carpentiere
+item.itemCarpentersChisel.name=Scalpello del carpentiere
 item.itemCarpentersDoor.name=Porta del carpentiere
 item.itemCarpentersBed.name=Letto del carpentiere
-item.itemCarpentersTile.name=Mattonella del carpentiere
+item.itemCarpentersTile.name=Facciata del carpentiere
 
 # BLOCKS
-tile.blockCarpentersBarrier.name=Barriera del carpentiere
+tile.blockCarpentersBarrier.name=Staccionata del carpentiere
 tile.blockCarpentersBed.name=Letto del carpentiere
 tile.blockCarpentersBlock.name=Blocco del carpentiere
 tile.blockCarpentersButton.name=Pulsante del carpentiere
 tile.blockCarpentersDaylightSensor.name=Sensore di luce diurna del carpentiere
-tile.blockCarpentersCollapsibleBlock.name=Blocco modellabile del carpentiere
+tile.blockCarpentersCollapsibleBlock.name=Blocco pieghevole del carpentiere
 tile.blockCarpentersDoor.name=Porta del carpentiere
 tile.blockCarpentersGate.name=Cancelletto del carpentiere
 tile.blockCarpentersHatch.name=Botola del carpentiere
 tile.blockCarpentersLadder.name=Scala a pioli del carpentiere
 tile.blockCarpentersLever.name=Leva del carpentiere
 tile.blockCarpentersPressurePlate.name=Pedana a pressione del carpentiere
-tile.blockCarpentersSlope.wedge.name=Inclinazione a cuneo del carpentiere
-tile.blockCarpentersSlope.obliqueInterior.name=Inclinazione obliquo interiore del carpentiere
-tile.blockCarpentersSlope.obliqueExterior.name=Inclinazione obliquo esteriore del carpentiere
+tile.blockCarpentersSlope.wedge.name=Cuneo inclinato del carpentiere
+tile.blockCarpentersSlope.obliqueInterior.name=Blocco inclinato interiormente del carpentiere
+tile.blockCarpentersSlope.obliqueExterior.name=Blocco inclinato esteriormente del carpentiere
 tile.blockCarpentersSlope.prism.name=Inclinazione a prisma del carpentiere
-tile.blockCarpentersSlope.prismWedge.name=Inclinazione a cuneo con prisma del carpentiere
+tile.blockCarpentersSlope.prismWedge.name=Prisma del carpentiere
 tile.blockCarpentersStairs.name=Scalini del carpentiere
 tile.blockCarpentersTorch.name=Torcia del carpentiere
 tile.blockCarpentersSafe.name=Cassaforte del carpentiere
 tile.blockCarpentersFlowerPot.name=Vaso da fiori del carpentiere
 
 # ENTITIES
-entity.CarpentersTile.name=Mattonella del carpentiere
+entity.CarpentersTile.name=Facciata del carpentiere
 
 # MESSAGES
 message.polarity_pos.name=POLARITA': Segnale di pietrarossa normale.
 message.polarity_neg.name=POLARITA': Segnale di pietrarossa invertita.
-message.activation_iron.name=ATTIVAZIONE: Si comporterà come una porta di ferro.
-message.activation_wood.name=ATTIVAZIONE: Si comporterà come una porta di legno.
-message.trigger_player.name=INNESCO: Solo attivato da giocatori.
-message.trigger_monster.name=INNESCO: Solo attivato da mostri.
-message.trigger_animal.name=INNESCO: Solo attivato da animali.
-message.trigger_all.name=INNESCO: Attivato da tutte le entità
+message.activation_iron.name=ATTIVAZIONE: Si comporta come una porta di ferro.
+message.activation_wood.name=ATTIVAZIONE: Si comporta come una porta di legno.
+message.trigger_player.name=INNESCO: Attivabile solo da giocatori.
+message.trigger_monster.name=INNESCO: Attivabile solo da mostri.
+message.trigger_animal.name=INNESCO: Attivabile solo da animali.
+message.trigger_all.name=INNESCO: Attivabile da tutte le entità
 message.safe_lock.name=CONTROLLO: Lucchetto chiuso.
 message.safe_unlock.name=CONTROLLO: Lucchetto aperto.
 message.automation_all.name=AUTOMAZIONE: Oggetti possono essere inseriti e estratti.
-message.automation_disabled.name=AUTOMAZIONE: Disattiva.
+message.automation_disabled.name=AUTOMAZIONE: Disattivato.
 message.automation_insert.name=AUTOMAZIONE: Oggetti possono essere solo inseriti.
 message.automation_extract.name=AUTOMAZIONE: Oggetti possono essere solo estratti.
-message.block_lock.name=CONTROLLO: Questo blocco è serrato.
+message.block_lock.name=CONTROLLO: Questo blocco è bloccato.
 message.sensitivity_sleep.name=SENSITIVITA': Modifica lo stato quando il giocatore può dormire (alba e tramonto).
 message.sensitivity_monsters.name=SENSITIVITA': Modifica lo stato quando i mostri generano (includendo tempeste).
 
