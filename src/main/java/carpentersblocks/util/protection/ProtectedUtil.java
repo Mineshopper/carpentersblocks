@@ -20,18 +20,14 @@ public class ProtectedUtil {
      */
     public static boolean isOwner(IProtected object, EntityPlayer entityPlayer)
     {
-        if (!entityPlayer.worldObj.isRemote) {
-            UUID uuid = updateOwnerUUID(object);
+        UUID uuid = updateOwnerUUID(object);
 
-            if (uuid != null) {
-                return object.getOwner().equals(uuid.toString());
-            } else {
-                // Attempt to update owner format manually, then resort to fallback method
-                updateOwnerUUID(object);
-                return object.getOwner().equals(entityPlayer.getDisplayName());
-            }
+        if (uuid != null) {
+            return object.getOwner().equals(uuid.toString());
         } else {
-            return false;
+            // Attempt to update owner format manually, then resort to fallback method
+            updateOwnerUUID(object);
+            return object.getOwner().equals(entityPlayer.getDisplayName());
         }
     }
 
