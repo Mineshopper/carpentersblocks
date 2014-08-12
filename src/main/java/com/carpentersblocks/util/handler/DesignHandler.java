@@ -68,7 +68,7 @@ public class DesignHandler {
 
         } else {
 
-            File folder = new File(event.getSourceFile().getParentFile().getAbsolutePath());
+            File folder = new File(event.getSourceFile().getAbsolutePath());
 
             for (File file : FileUtils.listFiles(folder, new String[] { "png" }, true)) {
                 processPath(file.getAbsolutePath().replace("\\", "/"));
