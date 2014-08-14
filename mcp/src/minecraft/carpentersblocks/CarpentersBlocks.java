@@ -28,7 +28,7 @@ import cpw.mods.fml.common.network.NetworkMod;
 public class CarpentersBlocks {
 
     public static final String MODID = "CarpentersBlocks";
-    public static final String VERSION = "3.2.5";
+    public static final String VERSION = "3.2.6";
     public static CreativeTabs creativeTab = new CarpentersBlocksTab(MODID);
 
     @Instance(MODID)
