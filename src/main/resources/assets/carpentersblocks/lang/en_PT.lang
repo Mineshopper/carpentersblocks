@@ -1,0 +1,58 @@
+# Carpenter's Blocks Language File = PIRATE ENGLISH
+
+# CREATIVE TAB
+itemGroup.carpentersBlocks.name=Stumpcutter's Chunks
+
+# ITEMS
+item.itemCarpentersHammer.name=Stumpcutter's Thumper
+item.itemCarpentersChisel.name=Stumpcutter's Cutter
+item.itemCarpentersDoor.name=Stumpcutter's Door
+item.itemCarpentersBed.name=Stumpcutter's Bunk
+item.itemCarpentersTile.name=Stumpcutter's Shiny Plate
+
+# BLOCKS
+tile.blockCarpentersBarrier.name=Stumpcutter's Picket
+tile.blockCarpentersBed.name=Stumpcutter's Bunk
+tile.blockCarpentersBlock.name=Stumpcutter's Chunk
+tile.blockCarpentersButton.name=Stumpcutter's Knob
+tile.blockCarpentersDaylightSensor.name=Stumpcutter's Stump 'o Meter
+tile.blockCarpentersCollapsibleBlock.name=Stumpcutter's Sinkin' Chunk
+tile.blockCarpentersDoor.name=Stumpcutter's Door
+tile.blockCarpentersGate.name=Stumpcutter's Picket Gate
+tile.blockCarpentersHatch.name=Stumpcutter's Hatch
+tile.blockCarpentersLadder.name=Stumpcutter's Riggin'
+tile.blockCarpentersLever.name=Stumpcutter's Leverrr
+tile.blockCarpentersPressurePlate.name=Stumpcutter's Booby Trap
+tile.blockCarpentersSlope.wedge.name=Stumpcutter's Sea Legs Block
+tile.blockCarpentersSlope.obliqueInterior.name=Stumpcutter's Inship Sea Legs Chunk
+tile.blockCarpentersSlope.obliqueExterior.name=Stumpcutter's Portside Sea Legs Chunk
+tile.blockCarpentersSlope.prism.name=Stumpcutter's Pointy Chunk
+tile.blockCarpentersSlope.prismWedge.name=Stumpcutter's Pointy Sea Legs Chunk
+tile.blockCarpentersStairs.name=Stairs o' Stumpcutter
+tile.blockCarpentersTorch.name=Stumpcutter's Rod o' Flames
+tile.blockCarpentersSafe.name=Stumpcutter's Booty Box
+tile.blockCarpentersFlowerPot.name=Stumpcutter's Dirt Vase
+
+# ENTITIES
+entity.CarpentersTile.name=Stumpcutter's Shiny Plate
+
+# MESSAGES
+message.polarity_pos.name=POLARITY: Reg'lar Magic Powder Fizzin'
+message.polarity_neg.name=POLARITY: Backwards Magic Powder Fizzin'
+message.activation_iron.name=ACTIVATION: 'Tis but yar Steel Door
+message.activation_wood.name=ACTIVATION: 'Tis but yar Timber Door
+message.trigger_player.name=TRIGGER: Targetin' jest crew
+message.trigger_monster.name=TRIGGER: Targetin' jest horrors
+message.trigger_animal.name=TRIGGER: Targetin' jest beasts
+message.trigger_all.name=TRIGGER: Targetin' all but ye' scurvy face!
+message.safe_lock.name=CONTROL: Booty chest be mine!
+message.safe_unlock.name=CONTROL: Booty chest for all! Yarr!
+message.automation_all.name=AUTOMATION: Booty in, booty out. Cap'n wants booty in
+message.automation_disabled.name=AUTOMATION: No booty 'ere
+message.automation_insert.name=AUTOMATION: Booty in
+message.automation_extract.name=AUTOMATION: Booty out
+message.block_lock.name=CONTROL: This 'ere chunk not be yer chunk, you scurvy dog!
+message.sensitivity_sleep.name=SENSITIVITY: Flashes and stops when yonder sun changes
+message.sensitivity_monsters.name=SENSITIVITY: Goes flash in tha dark. Holster yer muskets!
+
+# </file>
