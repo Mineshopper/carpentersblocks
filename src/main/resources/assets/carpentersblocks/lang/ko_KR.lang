@@ -1,0 +1,39 @@
++# Carpenter's Blocks Language File = Korea - Korean
++
++# CREATIVE TAB
++itemGroup.carpentersBlocks.name=Carpenter's Blocks
++
++# ITEMS
++item.itemCarpentersHammer.name=목수의 망치
++item.itemCarpentersChisel.name=목수의 징
++item.itemCarpentersDoor.name=목수의 문
++item.itemCarpentersBed.name=목수의 침대
++
++# BLOCKS
++tile.blockCarpentersBarrier.name=목수의 배리어
++tile.blockCarpentersBed.name=목수의 침대
++tile.blockCarpentersBlock.name=목수의 블럭
++tile.blockCarpentersButton.name=목수의 버튼
++tile.blockCarpentersDaylightSensor.name=목수의 빛 감지기
++tile.blockCarpentersDoor.name=목수의 문
++tile.blockCarpentersGate.name=목수의 게이트
++tile.blockCarpentersHatch.name=목수의 다락문
++tile.blockCarpentersLadder.name=목수의 사다리
++tile.blockCarpentersLever.name=목수의 레버
++tile.blockCarpentersPressurePlate.name=목수의 감압판
++tile.blockCarpentersSlope.name=목수의 경사면
++tile.blockCarpentersStairs.name=목수의 계단
++
++# MESSAGES
++message.polarity_pos.name=\u00a76레드스톤: \u00a7f보통 레드스톤 출력
++message.polarity_neg.name=\u00a76레드스톤: \u00a7f반대 레드스톤 출력
++message.activation_day.name=\u00a76발동 조건: \u00a7f낮에 출력
++message.activation_night.name=\u00a76발동 조건: \u00a7f밤에 출력
++message.activation_iron.name=\u00a76문 인식: \u00a7f철 문으로 인식.
++message.activation_wood.name=\u00a76문 인식: \u00a7f나무 문으로 인식
++message.trigger_player.name=\u00a76조건: \u00a7f플레이어들에게만 인식.
++message.trigger_monster.name=\u00a76조건: \u00a7f몬스터에게만 인식
++message.trigger_animal.name=\u00a76조건: \u00a7f동물에게만 인식.
++message.trigger_all.name=\u00a76조건: \u00a7f모든 엔티티에 인식.
++
++# </file>
