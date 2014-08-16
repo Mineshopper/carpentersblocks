@@ -34,8 +34,7 @@ public class OptifineHandler {
     {
         int colorMultiplier = block.colorMultiplier(blockAccess, x, y, z);
         try {
-            int tempColorMultiplier = (Integer) getColorMultiplier.invoke(null, block, blockAccess, x, y, z);
-            colorMultiplier = tempColorMultiplier;
+            colorMultiplier = (Integer) getColorMultiplier.invoke(null, block, blockAccess, x, y, z);
         } catch (Exception e) {
             ModLogger.log(Level.WARN, "Block custom coloring failed, disabling Optifine integration: " + e.getMessage());
             enableOptifineIntegration = false;
