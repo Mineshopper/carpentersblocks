@@ -1136,7 +1136,17 @@ public class BlockCoverable extends BlockContainer {
     public boolean canRenderInPass(int pass)
     {
         ForgeHooksClient.setRenderPass(pass);
-        return super.canRenderInPass(pass);
+        return true;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    /**
+     * Returns which pass this block be rendered on. 0 for solids and 1 for alpha.
+     */
+    public int getRenderBlockPass()
+    {
+        return 1;
     }
 
     /**

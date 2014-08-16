@@ -2,6 +2,10 @@ package com.carpentersblocks.renderer.helper;
 
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraftforge.client.MinecraftForgeClient;
+
+import org.lwjgl.opengl.GL11;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -26,8 +30,13 @@ public class VertexHelper {
     private static boolean   clearFloat       = false;
     protected static boolean floatingIcon     = false;
 
+    private static int drawMode;
+
     /** Keeps track of vertices drawn per pass. */
     public static int vertexCount = 0;
+
+    /** Keeps track of vertex draws when in triangle mode. */
+    private static int triVertexCount = 0;
 
     /**
      * Offset used for faces.
@@ -35,9 +44,22 @@ public class VertexHelper {
     protected static double offset = 0.0D;
 
     /**
+     * Sets draw mode.
+     */
+    public static void startDrawing(int inDrawMode)
+    {
+        drawMode = inDrawMode;
+
+        if (MinecraftForgeClient.getRenderPass() == 0) {
+            Tessellator.instance.draw();
+            Tessellator.instance.startDrawing(drawMode);
+        }
+    }
+
+    /**
      * Temporarily sets floating icon flag for current face draw.
      * <p>
-     * To keep it enabled, call {@link VertexHelper#setFloatingIconLock()} instead.
+     * To keep it enabled, call {@link #setFloatingIconLock()} instead.
      */
     public static void setFloatingIcon()
     {
@@ -141,6 +163,18 @@ public class VertexHelper {
         }
 
         drawVertex(renderBlocks, x, y, z, u, v);
+
+        /* Alpha quad sorting won't work for triangles, so make them a quad. */
+
+        boolean isAlpha = MinecraftForgeClient.getRenderPass() == 1;
+
+        if (isAlpha && drawMode == GL11.GL_TRIANGLES) {
+            if (++triVertexCount > 2) {
+                drawVertex(renderBlocks, x, y, z, u, v);
+                triVertexCount = 0;
+            }
+        }
+
     }
 
 }

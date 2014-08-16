@@ -1,5 +1,6 @@
 package com.carpentersblocks.renderer.entity;
 
+import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.texture.TextureMap;
@@ -13,6 +14,7 @@ import com.carpentersblocks.entity.item.EntityCarpentersTile;
 import com.carpentersblocks.renderer.helper.LightingHelper;
 import com.carpentersblocks.renderer.helper.RenderHelper;
 import com.carpentersblocks.util.handler.DyeHandler;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -37,31 +39,32 @@ public class RenderCarpentersTile extends Render {
 
     private void render(EntityCarpentersTile entity, int x, int y, int z)
     {
+        RenderBlocks renderBlocks = RenderBlocks.getInstance();
         Tessellator tessellator = Tessellator.instance;
         tessellator.startDrawingQuads();
 
         double bounds[] = entity.getBounds();
-        RenderHelper.setBounds(bounds[0], bounds[1], bounds[2], bounds[3], bounds[4], bounds[5]);
+        renderBlocks.setRenderBounds(bounds[0], bounds[1], bounds[2], bounds[3], bounds[4], bounds[5]);
 
         float[] dyeColor = LightingHelper.getRGB(DyeHandler.getColor(entity.getDye()));
         tessellator.setColorOpaque_F(dyeColor[0], dyeColor[1], dyeColor[2]);
 
         IIcon icon = entity.getIcon();
 
-        RenderHelper.setRotationOverride(entity.getRotation());
+        RenderHelper.setTextureRotationOverride(entity.getRotation());
         tessellator.setNormal(0.0F, -1.0F, 0.0F);
-        RenderHelper.renderFaceYNeg(null, x, y, z, icon);
+        RenderHelper.renderFaceYNeg(renderBlocks, 0, 0, 0, icon);
         tessellator.setNormal(0.0F, 1.0F, 0.0F);
-        RenderHelper.renderFaceYPos(null, x, y, z, icon);
+        RenderHelper.renderFaceYPos(renderBlocks, 0, 0, 0, icon);
         tessellator.setNormal(0.0F, 0.0F, -1.0F);
-        RenderHelper.renderFaceZNeg(null, x, y, z, icon);
+        RenderHelper.renderFaceZNeg(renderBlocks, 0, 0, 0, icon);
         tessellator.setNormal(0.0F, 0.0F, 1.0F);
-        RenderHelper.renderFaceZPos(null, x, y, z, icon);
+        RenderHelper.renderFaceZPos(renderBlocks, 0, 0, 0, icon);
         tessellator.setNormal(-1.0F, 0.0F, 0.0F);
-        RenderHelper.renderFaceXNeg(null, x, y, z, icon);
+        RenderHelper.renderFaceXNeg(renderBlocks, 0, 0, 0, icon);
         tessellator.setNormal(1.0F, 0.0F, 0.0F);
-        RenderHelper.renderFaceXPos(null, x, y, z, icon);
-        RenderHelper.clearRotationOverride();
+        RenderHelper.renderFaceXPos(renderBlocks, 0, 0, 0, icon);
+        RenderHelper.clearTextureRotationOverride();
 
         tessellator.draw();
     }

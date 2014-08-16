@@ -1,7 +1,5 @@
 package com.carpentersblocks.renderer;
 
-import static com.carpentersblocks.renderer.helper.RenderHelper.QUADS;
-import static com.carpentersblocks.renderer.helper.RenderHelper.TRIANGLES;
 import static com.carpentersblocks.renderer.helper.VertexHelper.BOTTOM_LEFT;
 import static com.carpentersblocks.renderer.helper.VertexHelper.BOTTOM_RIGHT;
 import static com.carpentersblocks.renderer.helper.VertexHelper.NORTHEAST;
@@ -31,6 +29,7 @@ import com.carpentersblocks.block.BlockCoverable;
 import com.carpentersblocks.data.Slope;
 import com.carpentersblocks.data.Slope.Type;
 import com.carpentersblocks.renderer.helper.RenderHelper;
+import com.carpentersblocks.renderer.helper.VertexHelper;
 import com.carpentersblocks.renderer.helper.slope.oblique.HelperCorner;
 import com.carpentersblocks.renderer.helper.slope.oblique.HelperOblWedge;
 import com.carpentersblocks.renderer.helper.slope.oblique.HelperOblique;
@@ -39,6 +38,7 @@ import com.carpentersblocks.renderer.helper.slope.orthogonal.HelperOrthoWedge;
 import com.carpentersblocks.renderer.helper.slope.orthogonal.HelperTriangle;
 import com.carpentersblocks.util.BlockProperties;
 import com.carpentersblocks.util.registry.IconRegistry;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -133,7 +133,7 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerSloped {
         switch (metadata) {
             case BlockCarpentersSlope.META_PRISM_SLOPE:
 
-                tessellator.startDrawing(TRIANGLES);
+                tessellator.startDrawing(GL11.GL_TRIANGLES);
                 tessellator.setNormal(-1.0F, 0.0F, 0.0F);
                 renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 0.5D, 0.5D);
                 HelperTriangle.renderFaceXNegZNeg(renderBlocks, 0.0D, 0.0D, 0.0D, icon);
@@ -153,7 +153,7 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerSloped {
 
             case BlockCarpentersSlope.META_WEDGE:
 
-                tessellator.startDrawing(TRIANGLES);
+                tessellator.startDrawing(GL11.GL_TRIANGLES);
                 tessellator.setNormal(0.0F, 0.0F, -1.0F);
                 HelperOrthoWedge.renderFaceZNeg(renderBlocks, Slope.ID_WEDGE_POS_W, 0.0D, 0.0D, 0.0D, icon);
                 tessellator.setNormal(0.0F, 0.0F, 1.0F);
@@ -171,7 +171,7 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerSloped {
                 break;
             case BlockCarpentersSlope.META_OBLIQUE_INT:
 
-                tessellator.startDrawing(TRIANGLES);
+                tessellator.startDrawing(GL11.GL_TRIANGLES);
                 tessellator.setNormal(0.0F, 1.0F, 0.0F);
                 HelperOrthoWedge.renderFaceYPos(renderBlocks, Slope.ID_OBL_INT_POS_SW, 0.0D, 0.0D, 0.0D, icon);
                 tessellator.setNormal(0.0F, 0.0F, 1.0F);
@@ -193,7 +193,7 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerSloped {
                 break;
             case BlockCarpentersSlope.META_OBLIQUE_EXT:
 
-                tessellator.startDrawing(TRIANGLES);
+                tessellator.startDrawing(GL11.GL_TRIANGLES);
                 tessellator.setNormal(0.0F, -1.0F, 0.0F);
                 HelperOrthoWedge.renderFaceYNeg(renderBlocks, Slope.ID_OBL_EXT_POS_SW, 0.0D, 0.0D, 0.0D, icon);
                 tessellator.setNormal(0.0F, 0.0F, 1.0F);
@@ -209,7 +209,7 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerSloped {
 
                 renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 0.5D, 1.0D);
 
-                tessellator.startDrawing(TRIANGLES);
+                tessellator.startDrawing(GL11.GL_TRIANGLES);
                 renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 0.5D, 0.5D);
                 tessellator.setNormal(-1.0F, 0.5F, 0.0F);
                 HelperPrism.renderSlopeYPosZNeg(renderBlocks, 0.0D, 0.0D, 0.0D, icon);
@@ -549,7 +549,7 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerSloped {
             prepareFaceXPos(itemStack, slope, x, y, z);
         }
 
-        RenderHelper.startDrawing(QUADS);
+        VertexHelper.startDrawing(GL11.GL_QUADS);
 
         renderBlocks.enableAO = false;
     }
@@ -589,7 +589,7 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerSloped {
 
         /* Begin rendering sloped pieces. */
 
-        RenderHelper.startDrawing(TRIANGLES);
+        VertexHelper.startDrawing(GL11.GL_TRIANGLES);
 
         if (pieceList.contains(POINT_N)) {
 
@@ -692,7 +692,7 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerSloped {
         switch (slope.slopeID) {
             case Slope.ID_PRISM_WEDGE_POS_N:
 
-                RenderHelper.startDrawing(TRIANGLES);
+                VertexHelper.startDrawing(GL11.GL_TRIANGLES);
 
                 renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 0.5D, 0.5D, 0.5D);
                 setWedgeLighting(itemStack, Slope.WEDGE_POS_W);
@@ -701,7 +701,7 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerSloped {
                 setWedgeLighting(itemStack, Slope.WEDGE_POS_E);
                 setIDAndRender(itemStack, PRISM_NORTH_XP, x, y, z, EAST);
 
-                RenderHelper.startDrawing(QUADS);
+                VertexHelper.startDrawing(GL11.GL_QUADS);
 
                 forceFullFrame = true;
                 renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
@@ -712,7 +712,7 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerSloped {
                 break;
             case Slope.ID_PRISM_WEDGE_POS_S:
 
-                RenderHelper.startDrawing(TRIANGLES);
+                VertexHelper.startDrawing(GL11.GL_TRIANGLES);
 
                 renderBlocks.setRenderBounds(0.0D, 0.0D, 0.5D, 0.5D, 0.5D, 1.0D);
                 setWedgeLighting(itemStack, Slope.WEDGE_POS_W);
@@ -721,7 +721,7 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerSloped {
                 setWedgeLighting(itemStack, Slope.WEDGE_POS_E);
                 setIDAndRender(itemStack, PRISM_SOUTH_XP, x, y, z, EAST);
 
-                RenderHelper.startDrawing(QUADS);
+                VertexHelper.startDrawing(GL11.GL_QUADS);
 
                 forceFullFrame = true;
                 renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
@@ -732,7 +732,7 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerSloped {
                 break;
             case Slope.ID_PRISM_WEDGE_POS_W:
 
-                RenderHelper.startDrawing(TRIANGLES);
+                VertexHelper.startDrawing(GL11.GL_TRIANGLES);
 
                 renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 0.5D, 0.5D, 0.5D);
                 setWedgeLighting(itemStack, Slope.WEDGE_POS_N);
@@ -741,7 +741,7 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerSloped {
                 setWedgeLighting(itemStack, Slope.WEDGE_POS_S);
                 setIDAndRender(itemStack, PRISM_WEST_ZP, x, y, z, SOUTH);
 
-                RenderHelper.startDrawing(QUADS);
+                VertexHelper.startDrawing(GL11.GL_QUADS);
 
                 forceFullFrame = true;
                 renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
@@ -752,7 +752,7 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerSloped {
                 break;
             case Slope.ID_PRISM_WEDGE_POS_E:
 
-                RenderHelper.startDrawing(TRIANGLES);
+                VertexHelper.startDrawing(GL11.GL_TRIANGLES);
 
                 renderBlocks.setRenderBounds(0.5D, 0.0D, 0.0D, 1.0D, 0.5D, 0.5D);
                 setWedgeLighting(itemStack, Slope.WEDGE_POS_N);
@@ -761,7 +761,7 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerSloped {
                 setWedgeLighting(itemStack, Slope.WEDGE_POS_S);
                 setIDAndRender(itemStack, PRISM_EAST_ZP, x, y, z, SOUTH);
 
-                RenderHelper.startDrawing(QUADS);
+                VertexHelper.startDrawing(GL11.GL_QUADS);
 
                 forceFullFrame = true;
                 renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
@@ -1020,7 +1020,7 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerSloped {
 
     private void prepareHorizontalWedge(ItemStack itemStack, Slope slope, int x, int y, int z)
     {
-        RenderHelper.startDrawing(QUADS);
+        VertexHelper.startDrawing(GL11.GL_QUADS);
 
         setWedgeLighting(itemStack, slope);
 
@@ -1033,7 +1033,7 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerSloped {
 
     private void prepareVerticalWedge(ItemStack itemStack, Slope slope, int x, int y, int z)
     {
-        RenderHelper.startDrawing(QUADS);
+        VertexHelper.startDrawing(GL11.GL_QUADS);
 
         setWedgeLighting(itemStack, slope);
 
@@ -1050,7 +1050,7 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerSloped {
 
     private void prepareWedgeIntCorner(ItemStack itemStack, Slope slope, int x, int y, int z)
     {
-        RenderHelper.startDrawing(TRIANGLES);
+        VertexHelper.startDrawing(GL11.GL_TRIANGLES);
 
         Slope slopeX = slope.facings.contains(ForgeDirection.WEST) ? slope.isPositive ? Slope.WEDGE_POS_W : Slope.WEDGE_NEG_W : slope.isPositive ? Slope.WEDGE_POS_E : Slope.WEDGE_NEG_E;
 
@@ -1075,7 +1075,7 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerSloped {
 
     private void prepareWedgeExtCorner(ItemStack itemStack, Slope slope, int x, int y, int z)
     {
-        RenderHelper.startDrawing(TRIANGLES);
+        VertexHelper.startDrawing(GL11.GL_TRIANGLES);
 
         Slope slopeX = slope.facings.contains(ForgeDirection.WEST) ? slope.isPositive ? Slope.WEDGE_POS_W : Slope.WEDGE_NEG_W : slope.isPositive ? Slope.WEDGE_POS_E : Slope.WEDGE_NEG_E;
 
@@ -1100,7 +1100,7 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerSloped {
 
     private void prepareObliqueIntCorner(ItemStack itemStack, Slope slope, int x, int y, int z)
     {
-        RenderHelper.startDrawing(TRIANGLES);
+        VertexHelper.startDrawing(GL11.GL_TRIANGLES);
 
         renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
         prepareLighting(itemStack);
@@ -1216,7 +1216,7 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerSloped {
 
     private void prepareObliqueExtCorner(ItemStack itemStack, Slope slope, int x, int y, int z)
     {
-        RenderHelper.startDrawing(TRIANGLES);
+        VertexHelper.startDrawing(GL11.GL_TRIANGLES);
 
         renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
         prepareLighting(itemStack);
@@ -1342,11 +1342,11 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerSloped {
 
         switch (slope.getFace(ForgeDirection.DOWN)) {
             case WEDGE:
-                RenderHelper.startDrawing(TRIANGLES);
+                VertexHelper.startDrawing(GL11.GL_TRIANGLES);
                 setIDAndRender(itemStack, WEDGE_YN, x, y, z, DOWN);
                 break;
             default:
-                RenderHelper.startDrawing(QUADS);
+                VertexHelper.startDrawing(GL11.GL_QUADS);
                 setIDAndRender(itemStack, NORMAL_YN, x, y, z, DOWN);
                 break;
         }
@@ -1362,11 +1362,11 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerSloped {
 
         switch (slope.getFace(ForgeDirection.UP)) {
             case WEDGE:
-                RenderHelper.startDrawing(TRIANGLES);
+                VertexHelper.startDrawing(GL11.GL_TRIANGLES);
                 setIDAndRender(itemStack, WEDGE_YP, x, y, z, UP);
                 break;
             default:
-                RenderHelper.startDrawing(QUADS);
+                VertexHelper.startDrawing(GL11.GL_QUADS);
                 setIDAndRender(itemStack, NORMAL_YP, x, y, z, UP);
                 break;
         }
@@ -1382,11 +1382,11 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerSloped {
 
         switch (slope.getFace(ForgeDirection.NORTH)) {
             case WEDGE:
-                RenderHelper.startDrawing(TRIANGLES);
+                VertexHelper.startDrawing(GL11.GL_TRIANGLES);
                 setIDAndRender(itemStack, WEDGE_ZN, x, y, z, NORTH);
                 break;
             case TRIANGLE:
-                RenderHelper.startDrawing(TRIANGLES);
+                VertexHelper.startDrawing(GL11.GL_TRIANGLES);
 
                 renderBlocks.setRenderBounds(0.5D, 0.0D, 0.0D, 1.0D, 0.5D, 1.0D);
                 lightingHelper.setupLightingZNeg(itemStack, x, y, z);
@@ -1398,7 +1398,7 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerSloped {
 
                 break;
             default:
-                RenderHelper.startDrawing(QUADS);
+                VertexHelper.startDrawing(GL11.GL_QUADS);
                 setIDAndRender(itemStack, NORMAL_ZN, x, y, z, NORTH);
                 break;
         }
@@ -1414,11 +1414,11 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerSloped {
 
         switch (slope.getFace(ForgeDirection.SOUTH)) {
             case WEDGE:
-                RenderHelper.startDrawing(TRIANGLES);
+                VertexHelper.startDrawing(GL11.GL_TRIANGLES);
                 setIDAndRender(itemStack, WEDGE_ZP, x, y, z, SOUTH);
                 break;
             case TRIANGLE:
-                RenderHelper.startDrawing(TRIANGLES);
+                VertexHelper.startDrawing(GL11.GL_TRIANGLES);
 
                 renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 0.5D, 0.5D, 1.0D);
                 lightingHelper.setupLightingZPos(itemStack, x, y, z);
@@ -1430,7 +1430,7 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerSloped {
 
                 break;
             default:
-                RenderHelper.startDrawing(QUADS);
+                VertexHelper.startDrawing(GL11.GL_QUADS);
                 setIDAndRender(itemStack, NORMAL_ZP, x, y, z, SOUTH);
                 break;
         }
@@ -1446,11 +1446,11 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerSloped {
 
         switch (slope.getFace(ForgeDirection.WEST)) {
             case WEDGE:
-                RenderHelper.startDrawing(TRIANGLES);
+                VertexHelper.startDrawing(GL11.GL_TRIANGLES);
                 setIDAndRender(itemStack, WEDGE_XN, x, y, z, WEST);
                 break;
             case TRIANGLE:
-                RenderHelper.startDrawing(TRIANGLES);
+                VertexHelper.startDrawing(GL11.GL_TRIANGLES);
 
                 renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 0.5D, 0.5D);
                 lightingHelper.setupLightingXNeg(itemStack, x, y, z);
@@ -1462,7 +1462,7 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerSloped {
 
                 break;
             default:
-                RenderHelper.startDrawing(QUADS);
+                VertexHelper.startDrawing(GL11.GL_QUADS);
                 setIDAndRender(itemStack, NORMAL_XN, x, y, z, WEST);
                 break;
         }
@@ -1478,11 +1478,11 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerSloped {
 
         switch (slope.getFace(ForgeDirection.EAST)) {
             case WEDGE:
-                RenderHelper.startDrawing(TRIANGLES);
+                VertexHelper.startDrawing(GL11.GL_TRIANGLES);
                 setIDAndRender(itemStack, WEDGE_XP, x, y, z, EAST);
                 break;
             case TRIANGLE:
-                RenderHelper.startDrawing(TRIANGLES);
+                VertexHelper.startDrawing(GL11.GL_TRIANGLES);
 
                 renderBlocks.setRenderBounds(0.0D, 0.0D, 0.5D, 1.0D, 0.5D, 1.0D);
                 lightingHelper.setupLightingXPos(itemStack, x, y, z);
@@ -1494,7 +1494,7 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerSloped {
 
                 break;
             default:
-                RenderHelper.startDrawing(QUADS);
+                VertexHelper.startDrawing(GL11.GL_QUADS);
                 setIDAndRender(itemStack, NORMAL_XP, x, y, z, EAST);
                 break;
         }

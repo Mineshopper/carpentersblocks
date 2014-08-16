@@ -1,7 +1,5 @@
 package com.carpentersblocks.renderer;
 
-import static com.carpentersblocks.renderer.helper.RenderHelper.QUADS;
-import static com.carpentersblocks.renderer.helper.RenderHelper.TRIANGLES;
 import static com.carpentersblocks.renderer.helper.VertexHelper.BOTTOM_LEFT;
 import static com.carpentersblocks.renderer.helper.VertexHelper.BOTTOM_RIGHT;
 import static com.carpentersblocks.renderer.helper.VertexHelper.NORTHEAST;
@@ -15,10 +13,14 @@ import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import org.lwjgl.opengl.GL11;
+
 import com.carpentersblocks.renderer.helper.LightingHelper;
 import com.carpentersblocks.renderer.helper.RenderHelper;
 import com.carpentersblocks.renderer.helper.RenderHelperCollapsible;
 import com.carpentersblocks.util.collapsible.CollapsibleUtil;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -94,13 +96,13 @@ public class BlockHandlerCarpentersCollapsibleBlock extends BlockHandlerSloped {
         /* Render top slopes. */
 
         if (srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x, y + 1, z, UP) || !CollapsibleUtil.isFullHeight(TE)) {
-            RenderHelper.startDrawing(TRIANGLES);
+            RenderHelper.startDrawing(GL11.GL_TRIANGLES);
             prepareTopFace(itemStack, x, y, z);
         }
 
         /* Render all other faces. */
 
-        RenderHelper.startDrawing(QUADS);
+        RenderHelper.startDrawing(GL11.GL_QUADS);
         renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
         prepareLighting(itemStack);
 

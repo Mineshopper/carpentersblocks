@@ -14,12 +14,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class RenderHelper extends VertexHelper {
 
-    /** Tessellator draw mode for triangles. */
-    public final static int TRIANGLES = GL11.GL_TRIANGLES;
-
-    /** Tessellator draw mode for quads. */
-    public final static int QUADS = GL11.GL_QUADS;
-
     private static boolean rotationOverride = false;
     private static int     rotation;
 
@@ -44,37 +38,17 @@ public class RenderHelper extends VertexHelper {
     protected static double uTR;
     protected static double vTR;
 
-    public static void setRotationOverride(int in_rotation)
+    public static double[] renderOffset = new double[5];
+
+    public static void setTextureRotationOverride(int in_rotation)
     {
         rotationOverride = true;
         rotation = in_rotation;
     }
 
-    public static void clearRotationOverride()
+    public static void clearTextureRotationOverride()
     {
         rotationOverride = false;
-    }
-
-    /**
-     * Sets block bounds for rendering without a RenderBlocks object.
-     */
-    public static void setBounds(double in_xMin, double in_yMin, double in_zMin, double in_xMax, double in_yMax, double in_zMax)
-    {
-        xMin = in_xMin;
-        yMin = in_yMin;
-        zMin = in_zMin;
-        xMax = in_xMax;
-        yMax = in_yMax;
-        zMax = in_zMax;
-    }
-
-    /**
-     * Sets draw mode in tessellator.
-     */
-    public static void startDrawing(int drawMode)
-    {
-        Tessellator.instance.draw();
-        Tessellator.instance.startDrawing(drawMode);
     }
 
     /**
@@ -103,69 +77,53 @@ public class RenderHelper extends VertexHelper {
             setFloatingIcon();
         }
 
-        boolean customBounds = renderBlocks == null;
-
         /* Set render bounds with offset. */
 
-        if (!customBounds)
-        {
-            xMin = x + renderBlocks.renderMinX - (side.equals(ForgeDirection.WEST)  ? offset : 0);
-            xMax = x + renderBlocks.renderMaxX + (side.equals(ForgeDirection.EAST)  ? offset : 0);
-            yMin = y + renderBlocks.renderMinY - (side.equals(ForgeDirection.DOWN)  ? offset : 0);
-            yMax = y + renderBlocks.renderMaxY + (side.equals(ForgeDirection.UP)    ? offset : 0);
-            zMin = z + renderBlocks.renderMinZ - (side.equals(ForgeDirection.NORTH) ? offset : 0);
-            zMax = z + renderBlocks.renderMaxZ + (side.equals(ForgeDirection.SOUTH) ? offset : 0);
-        }
-
-        double renderMinX = customBounds ? xMin : renderBlocks.renderMinX;
-        double renderMinY = customBounds ? yMin : renderBlocks.renderMinY;
-        double renderMinZ = customBounds ? zMin : renderBlocks.renderMinZ;
-        double renderMaxX = customBounds ? xMax : renderBlocks.renderMaxX;
-        double renderMaxY = customBounds ? yMax : renderBlocks.renderMaxY;
-        double renderMaxZ = customBounds ? zMax : renderBlocks.renderMaxZ;
+        xMin = x + renderBlocks.renderMinX - (side.equals(ForgeDirection.WEST)  ? offset : 0);
+        xMax = x + renderBlocks.renderMaxX + (side.equals(ForgeDirection.EAST)  ? offset : 0);
+        yMin = y + renderBlocks.renderMinY - (side.equals(ForgeDirection.DOWN)  ? offset : 0);
+        yMax = y + renderBlocks.renderMaxY + (side.equals(ForgeDirection.UP)    ? offset : 0);
+        zMin = z + renderBlocks.renderMinZ - (side.equals(ForgeDirection.NORTH) ? offset : 0);
+        zMax = z + renderBlocks.renderMaxZ + (side.equals(ForgeDirection.SOUTH) ? offset : 0);
 
         /* Set u, v for icon with rotation. */
-
-        int rot = 0;
 
         if (!rotationOverride) {
             switch (side) {
                 case DOWN:
-                    rot = renderBlocks.uvRotateBottom;
+                    rotation = renderBlocks.uvRotateBottom;
                     break;
                 case UP:
-                    rot = renderBlocks.uvRotateTop;
+                    rotation = renderBlocks.uvRotateTop;
                     break;
                 case NORTH:
-                    rot = renderBlocks.uvRotateNorth;
+                    rotation = renderBlocks.uvRotateNorth;
                     break;
                 case SOUTH:
-                    rot = renderBlocks.uvRotateSouth;
+                    rotation = renderBlocks.uvRotateSouth;
                     break;
                 case WEST:
-                    rot = renderBlocks.uvRotateWest;
+                    rotation = renderBlocks.uvRotateWest;
                     break;
                 case EAST:
-                    rot = renderBlocks.uvRotateEast;
+                    rotation = renderBlocks.uvRotateEast;
                     break;
                 default: {}
             }
-        } else {
-            rot = rotation;
         }
 
         switch (side) {
 
             case DOWN:
 
-                switch (rot) {
+                switch (rotation) {
 
                     case 0:
 
-                        uMin = icon.getInterpolatedU(renderMinX * 16.0D);
-                        uMax = icon.getInterpolatedU(renderMaxX * 16.0D);
-                        vMin = icon.getInterpolatedV(renderMinZ * 16.0D);
-                        vMax = icon.getInterpolatedV(renderMaxZ * 16.0D);
+                        uMin = icon.getInterpolatedU(renderBlocks.renderMinX * 16.0D);
+                        uMax = icon.getInterpolatedU(renderBlocks.renderMaxX * 16.0D);
+                        vMin = icon.getInterpolatedV(renderBlocks.renderMinZ * 16.0D);
+                        vMax = icon.getInterpolatedV(renderBlocks.renderMaxZ * 16.0D);
 
                         setCornerUV(uMax, vMax, uMax, vMin, uMin, vMin, uMin, vMax);
 
@@ -173,10 +131,10 @@ public class RenderHelper extends VertexHelper {
 
                     case 1:
 
-                        uMin = icon.getInterpolatedU(16.0D - renderMaxZ * 16.0D);
-                        uMax = icon.getInterpolatedU(16.0D - renderMinZ * 16.0D);
-                        vMin = icon.getInterpolatedV(renderMinX * 16.0D);
-                        vMax = icon.getInterpolatedV(renderMaxX * 16.0D);
+                        uMin = icon.getInterpolatedU(16.0D - renderBlocks.renderMaxZ * 16.0D);
+                        uMax = icon.getInterpolatedU(16.0D - renderBlocks.renderMinZ * 16.0D);
+                        vMin = icon.getInterpolatedV(renderBlocks.renderMinX * 16.0D);
+                        vMax = icon.getInterpolatedV(renderBlocks.renderMaxX * 16.0D);
 
                         setCornerUV(uMin, vMax, uMax, vMax, uMax, vMin, uMin, vMin);
 
@@ -184,10 +142,10 @@ public class RenderHelper extends VertexHelper {
 
                     case 2:
 
-                        uMin = icon.getInterpolatedU(16.0D - renderMinX * 16.0D);
-                        uMax = icon.getInterpolatedU(16.0D - renderMaxX * 16.0D);
-                        vMin = icon.getInterpolatedV(16.0D - renderMinZ * 16.0D);
-                        vMax = icon.getInterpolatedV(16.0D - renderMaxZ * 16.0D);
+                        uMin = icon.getInterpolatedU(16.0D - renderBlocks.renderMinX * 16.0D);
+                        uMax = icon.getInterpolatedU(16.0D - renderBlocks.renderMaxX * 16.0D);
+                        vMin = icon.getInterpolatedV(16.0D - renderBlocks.renderMinZ * 16.0D);
+                        vMax = icon.getInterpolatedV(16.0D - renderBlocks.renderMaxZ * 16.0D);
 
                         setCornerUV(uMax, vMax, uMax, vMin, uMin, vMin, uMin, vMax);
 
@@ -195,10 +153,10 @@ public class RenderHelper extends VertexHelper {
 
                     case 3:
 
-                        uMin = icon.getInterpolatedU(renderMaxZ * 16.0D);
-                        uMax = icon.getInterpolatedU(renderMinZ * 16.0D);
-                        vMin = icon.getInterpolatedV(16.0D - renderMinX * 16.0D);
-                        vMax = icon.getInterpolatedV(16.0D - renderMaxX * 16.0D);
+                        uMin = icon.getInterpolatedU(renderBlocks.renderMaxZ * 16.0D);
+                        uMax = icon.getInterpolatedU(renderBlocks.renderMinZ * 16.0D);
+                        vMin = icon.getInterpolatedV(16.0D - renderBlocks.renderMinX * 16.0D);
+                        vMax = icon.getInterpolatedV(16.0D - renderBlocks.renderMaxX * 16.0D);
 
                         setCornerUV(uMin, vMax, uMax, vMax, uMax, vMin, uMin, vMin);
 
@@ -210,14 +168,14 @@ public class RenderHelper extends VertexHelper {
 
             case UP:
 
-                switch (rot) {
+                switch (rotation) {
 
                     case 0:
 
-                        uMin = icon.getInterpolatedU(renderMinX * 16.0D);
-                        uMax = icon.getInterpolatedU(renderMaxX * 16.0D);
-                        vMin = icon.getInterpolatedV(renderMinZ * 16.0D);
-                        vMax = icon.getInterpolatedV(renderMaxZ * 16.0D);
+                        uMin = icon.getInterpolatedU(renderBlocks.renderMinX * 16.0D);
+                        uMax = icon.getInterpolatedU(renderBlocks.renderMaxX * 16.0D);
+                        vMin = icon.getInterpolatedV(renderBlocks.renderMinZ * 16.0D);
+                        vMax = icon.getInterpolatedV(renderBlocks.renderMaxZ * 16.0D);
 
                         setCornerUV(uMax, vMax, uMax, vMin, uMin, vMin, uMin, vMax);
 
@@ -225,10 +183,10 @@ public class RenderHelper extends VertexHelper {
 
                     case 1:
 
-                        uMin = icon.getInterpolatedU(renderMaxZ * 16.0D);
-                        uMax = icon.getInterpolatedU(renderMinZ * 16.0D);
-                        vMin = icon.getInterpolatedV(16.0D - renderMinX * 16.0D);
-                        vMax = icon.getInterpolatedV(16.0D - renderMaxX * 16.0D);
+                        uMin = icon.getInterpolatedU(renderBlocks.renderMaxZ * 16.0D);
+                        uMax = icon.getInterpolatedU(renderBlocks.renderMinZ * 16.0D);
+                        vMin = icon.getInterpolatedV(16.0D - renderBlocks.renderMinX * 16.0D);
+                        vMax = icon.getInterpolatedV(16.0D - renderBlocks.renderMaxX * 16.0D);
 
                         setCornerUV(uMin, vMax, uMax, vMax, uMax, vMin, uMin, vMin);
 
@@ -236,10 +194,10 @@ public class RenderHelper extends VertexHelper {
 
                     case 2:
 
-                        uMin = icon.getInterpolatedU(16.0D - renderMinX * 16.0D);
-                        uMax = icon.getInterpolatedU(16.0D - renderMaxX * 16.0D);
-                        vMin = icon.getInterpolatedV(16.0D - renderMinZ * 16.0D);
-                        vMax = icon.getInterpolatedV(16.0D - renderMaxZ * 16.0D);
+                        uMin = icon.getInterpolatedU(16.0D - renderBlocks.renderMinX * 16.0D);
+                        uMax = icon.getInterpolatedU(16.0D - renderBlocks.renderMaxX * 16.0D);
+                        vMin = icon.getInterpolatedV(16.0D - renderBlocks.renderMinZ * 16.0D);
+                        vMax = icon.getInterpolatedV(16.0D - renderBlocks.renderMaxZ * 16.0D);
 
                         setCornerUV(uMax, vMax, uMax, vMin, uMin, vMin, uMin, vMax);
 
@@ -247,10 +205,10 @@ public class RenderHelper extends VertexHelper {
 
                     case 3:
 
-                        uMin = icon.getInterpolatedU(16.0D - renderMaxZ * 16.0D);
-                        uMax = icon.getInterpolatedU(16.0D - renderMinZ * 16.0D);
-                        vMin = icon.getInterpolatedV(renderMinX * 16.0D);
-                        vMax = icon.getInterpolatedV(renderMaxX * 16.0D);
+                        uMin = icon.getInterpolatedU(16.0D - renderBlocks.renderMaxZ * 16.0D);
+                        uMax = icon.getInterpolatedU(16.0D - renderBlocks.renderMinZ * 16.0D);
+                        vMin = icon.getInterpolatedV(renderBlocks.renderMinX * 16.0D);
+                        vMax = icon.getInterpolatedV(renderBlocks.renderMaxX * 16.0D);
 
                         setCornerUV(uMin, vMax, uMax, vMax, uMax, vMin, uMin, vMin);
 
@@ -262,14 +220,14 @@ public class RenderHelper extends VertexHelper {
 
             case NORTH:
 
-                switch (rot) {
+                switch (rotation) {
 
                     case 0:
 
-                        uMin = icon.getInterpolatedU(16.0D - renderMaxX * 16.0D);
-                        uMax = icon.getInterpolatedU(16.0D - renderMinX * 16.0D);
-                        vMin = icon.getInterpolatedV(16.0D - (floatingIcon ? 1.0D - (renderMaxY - renderMinY) : renderMinY) * 16.0D);
-                        vMax = icon.getInterpolatedV(16.0D - (floatingIcon ? 1.0D : renderMaxY) * 16.0D);
+                        uMin = icon.getInterpolatedU(16.0D - renderBlocks.renderMaxX * 16.0D);
+                        uMax = icon.getInterpolatedU(16.0D - renderBlocks.renderMinX * 16.0D);
+                        vMin = icon.getInterpolatedV(16.0D - (floatingIcon ? 1.0D - (renderBlocks.renderMaxY - renderBlocks.renderMinY) : renderBlocks.renderMinY) * 16.0D);
+                        vMax = icon.getInterpolatedV(16.0D - (floatingIcon ? 1.0D : renderBlocks.renderMaxY) * 16.0D);
 
                         setCornerUV(uMin, vMax, uMin, vMin, uMax, vMin, uMax, vMax);
 
@@ -277,10 +235,10 @@ public class RenderHelper extends VertexHelper {
 
                     case 1:
 
-                        uMin = icon.getInterpolatedU(16.0D - renderMaxY * 16.0D);
-                        uMax = icon.getInterpolatedU(16.0D - renderMinY * 16.0D);
-                        vMin = icon.getInterpolatedV(renderMaxX * 16.0D);
-                        vMax = icon.getInterpolatedV(renderMinX * 16.0D);
+                        uMin = icon.getInterpolatedU(16.0D - renderBlocks.renderMaxY * 16.0D);
+                        uMax = icon.getInterpolatedU(16.0D - renderBlocks.renderMinY * 16.0D);
+                        vMin = icon.getInterpolatedV(renderBlocks.renderMaxX * 16.0D);
+                        vMax = icon.getInterpolatedV(renderBlocks.renderMinX * 16.0D);
 
                         setCornerUV(uMin, vMin, uMax, vMin, uMax, vMax, uMin, vMax);
 
@@ -288,10 +246,10 @@ public class RenderHelper extends VertexHelper {
 
                     case 2:
 
-                        uMin = icon.getInterpolatedU(renderMaxX * 16.0D);
-                        uMax = icon.getInterpolatedU(renderMinX * 16.0D);
-                        vMin = icon.getInterpolatedV(renderMinY * 16.0D);
-                        vMax = icon.getInterpolatedV(renderMaxY * 16.0D);
+                        uMin = icon.getInterpolatedU(renderBlocks.renderMaxX * 16.0D);
+                        uMax = icon.getInterpolatedU(renderBlocks.renderMinX * 16.0D);
+                        vMin = icon.getInterpolatedV(renderBlocks.renderMinY * 16.0D);
+                        vMax = icon.getInterpolatedV(renderBlocks.renderMaxY * 16.0D);
 
                         setCornerUV(uMin, vMax, uMin, vMin, uMax, vMin, uMax, vMax);
 
@@ -299,10 +257,10 @@ public class RenderHelper extends VertexHelper {
 
                     case 3:
 
-                        uMin = icon.getInterpolatedU(renderMaxY * 16.0D);
-                        uMax = icon.getInterpolatedU(renderMinY * 16.0D);
-                        vMin = icon.getInterpolatedV(16.0D - renderMaxX * 16.0D);
-                        vMax = icon.getInterpolatedV(16.0D - renderMinX * 16.0D);
+                        uMin = icon.getInterpolatedU(renderBlocks.renderMaxY * 16.0D);
+                        uMax = icon.getInterpolatedU(renderBlocks.renderMinY * 16.0D);
+                        vMin = icon.getInterpolatedV(16.0D - renderBlocks.renderMaxX * 16.0D);
+                        vMax = icon.getInterpolatedV(16.0D - renderBlocks.renderMinX * 16.0D);
 
                         setCornerUV(uMin, vMin, uMax, vMin, uMax, vMax, uMin, vMax);
 
@@ -314,14 +272,14 @@ public class RenderHelper extends VertexHelper {
 
             case SOUTH:
 
-                switch (rot) {
+                switch (rotation) {
 
                     case 0:
 
-                        uMin = icon.getInterpolatedU(renderMinX * 16.0D);
-                        uMax = icon.getInterpolatedU(renderMaxX * 16.0D);
-                        vMin = icon.getInterpolatedV(16.0D - (floatingIcon ? 1.0D - (renderMaxY - renderMinY) : renderMinY) * 16.0D);
-                        vMax = icon.getInterpolatedV(16.0D - (floatingIcon ? 1.0D : renderMaxY) * 16.0D);
+                        uMin = icon.getInterpolatedU(renderBlocks.renderMinX * 16.0D);
+                        uMax = icon.getInterpolatedU(renderBlocks.renderMaxX * 16.0D);
+                        vMin = icon.getInterpolatedV(16.0D - (floatingIcon ? 1.0D - (renderBlocks.renderMaxY - renderBlocks.renderMinY) : renderBlocks.renderMinY) * 16.0D);
+                        vMax = icon.getInterpolatedV(16.0D - (floatingIcon ? 1.0D : renderBlocks.renderMaxY) * 16.0D);
 
                         setCornerUV(uMin, vMax, uMin, vMin, uMax, vMin, uMax, vMax);
 
@@ -329,10 +287,10 @@ public class RenderHelper extends VertexHelper {
 
                     case 1:
 
-                        uMin = icon.getInterpolatedU(16.0D - renderMaxY * 16.0D);
-                        uMax = icon.getInterpolatedU(16.0D - renderMinY * 16.0D);
-                        vMin = icon.getInterpolatedV(16.0D - renderMinX * 16.0D);
-                        vMax = icon.getInterpolatedV(16.0D - renderMaxX * 16.0D);
+                        uMin = icon.getInterpolatedU(16.0D - renderBlocks.renderMaxY * 16.0D);
+                        uMax = icon.getInterpolatedU(16.0D - renderBlocks.renderMinY * 16.0D);
+                        vMin = icon.getInterpolatedV(16.0D - renderBlocks.renderMinX * 16.0D);
+                        vMax = icon.getInterpolatedV(16.0D - renderBlocks.renderMaxX * 16.0D);
 
                         setCornerUV(uMin, vMin, uMax, vMin, uMax, vMax, uMin, vMax);
 
@@ -340,10 +298,10 @@ public class RenderHelper extends VertexHelper {
 
                     case 2:
 
-                        uMin = icon.getInterpolatedU(16.0D - renderMinX * 16.0D);
-                        uMax = icon.getInterpolatedU(16.0D - renderMaxX * 16.0D);
-                        vMin = icon.getInterpolatedV(renderMinY * 16.0D);
-                        vMax = icon.getInterpolatedV(renderMaxY * 16.0D);
+                        uMin = icon.getInterpolatedU(16.0D - renderBlocks.renderMinX * 16.0D);
+                        uMax = icon.getInterpolatedU(16.0D - renderBlocks.renderMaxX * 16.0D);
+                        vMin = icon.getInterpolatedV(renderBlocks.renderMinY * 16.0D);
+                        vMax = icon.getInterpolatedV(renderBlocks.renderMaxY * 16.0D);
 
                         setCornerUV(uMin, vMax, uMin, vMin, uMax, vMin, uMax, vMax);
 
@@ -351,10 +309,10 @@ public class RenderHelper extends VertexHelper {
 
                     case 3:
 
-                        uMin = icon.getInterpolatedU(renderMaxY * 16.0D);
-                        uMax = icon.getInterpolatedU(renderMinY * 16.0D);
-                        vMin = icon.getInterpolatedV(renderMinX * 16.0D);
-                        vMax = icon.getInterpolatedV(renderMaxX * 16.0D);
+                        uMin = icon.getInterpolatedU(renderBlocks.renderMaxY * 16.0D);
+                        uMax = icon.getInterpolatedU(renderBlocks.renderMinY * 16.0D);
+                        vMin = icon.getInterpolatedV(renderBlocks.renderMinX * 16.0D);
+                        vMax = icon.getInterpolatedV(renderBlocks.renderMaxX * 16.0D);
 
                         setCornerUV(uMin, vMin, uMax, vMin, uMax, vMax, uMin, vMax);
 
@@ -366,14 +324,14 @@ public class RenderHelper extends VertexHelper {
 
             case WEST:
 
-                switch (rot) {
+                switch (rotation) {
 
                     case 0:
 
-                        uMin = icon.getInterpolatedU(renderMinZ * 16.0D);
-                        uMax = icon.getInterpolatedU(renderMaxZ * 16.0D);
-                        vMax = icon.getInterpolatedV(16.0D - (floatingIcon ? 1.0D : renderMaxY) * 16.0D);
-                        vMin = icon.getInterpolatedV(16.0D - (floatingIcon ? 1.0D - (renderMaxY - renderMinY) : renderMinY) * 16.0D);
+                        uMin = icon.getInterpolatedU(renderBlocks.renderMinZ * 16.0D);
+                        uMax = icon.getInterpolatedU(renderBlocks.renderMaxZ * 16.0D);
+                        vMax = icon.getInterpolatedV(16.0D - (floatingIcon ? 1.0D : renderBlocks.renderMaxY) * 16.0D);
+                        vMin = icon.getInterpolatedV(16.0D - (floatingIcon ? 1.0D - (renderBlocks.renderMaxY - renderBlocks.renderMinY) : renderBlocks.renderMinY) * 16.0D);
 
                         setCornerUV(uMin, vMax, uMin, vMin, uMax, vMin, uMax, vMax);
 
@@ -381,10 +339,10 @@ public class RenderHelper extends VertexHelper {
 
                     case 1:
 
-                        uMin = icon.getInterpolatedU(16.0D - renderMaxY * 16.0D);
-                        uMax = icon.getInterpolatedU(16.0D - renderMinY * 16.0D);
-                        vMin = icon.getInterpolatedV(16.0D - renderMinZ * 16.0D);
-                        vMax = icon.getInterpolatedV(16.0D - renderMaxZ * 16.0D);
+                        uMin = icon.getInterpolatedU(16.0D - renderBlocks.renderMaxY * 16.0D);
+                        uMax = icon.getInterpolatedU(16.0D - renderBlocks.renderMinY * 16.0D);
+                        vMin = icon.getInterpolatedV(16.0D - renderBlocks.renderMinZ * 16.0D);
+                        vMax = icon.getInterpolatedV(16.0D - renderBlocks.renderMaxZ * 16.0D);
 
                         setCornerUV(uMin, vMin, uMax, vMin, uMax, vMax, uMin, vMax);
 
@@ -392,10 +350,10 @@ public class RenderHelper extends VertexHelper {
 
                     case 2:
 
-                        uMin = icon.getInterpolatedU(16.0D - renderMinZ * 16.0D);
-                        uMax = icon.getInterpolatedU(16.0D - renderMaxZ * 16.0D);
-                        vMin = icon.getInterpolatedV(renderMinY * 16.0D);
-                        vMax = icon.getInterpolatedV(renderMaxY * 16.0D);
+                        uMin = icon.getInterpolatedU(16.0D - renderBlocks.renderMinZ * 16.0D);
+                        uMax = icon.getInterpolatedU(16.0D - renderBlocks.renderMaxZ * 16.0D);
+                        vMin = icon.getInterpolatedV(renderBlocks.renderMinY * 16.0D);
+                        vMax = icon.getInterpolatedV(renderBlocks.renderMaxY * 16.0D);
 
                         setCornerUV(uMin, vMax, uMin, vMin, uMax, vMin, uMax, vMax);
 
@@ -403,10 +361,10 @@ public class RenderHelper extends VertexHelper {
 
                     case 3:
 
-                        uMin = icon.getInterpolatedU(renderMaxY * 16.0D);
-                        uMax = icon.getInterpolatedU(renderMinY * 16.0D);
-                        vMin = icon.getInterpolatedV(renderMinZ * 16.0D);
-                        vMax = icon.getInterpolatedV(renderMaxZ * 16.0D);
+                        uMin = icon.getInterpolatedU(renderBlocks.renderMaxY * 16.0D);
+                        uMax = icon.getInterpolatedU(renderBlocks.renderMinY * 16.0D);
+                        vMin = icon.getInterpolatedV(renderBlocks.renderMinZ * 16.0D);
+                        vMax = icon.getInterpolatedV(renderBlocks.renderMaxZ * 16.0D);
 
                         setCornerUV(uMin, vMin, uMax, vMin, uMax, vMax, uMin, vMax);
 
@@ -418,14 +376,14 @@ public class RenderHelper extends VertexHelper {
 
             case EAST:
 
-                switch (rot) {
+                switch (rotation) {
 
                     case 0:
 
-                        uMin = icon.getInterpolatedU(16.0D - renderMaxZ * 16.0D);
-                        uMax = icon.getInterpolatedU(16.0D - renderMinZ * 16.0D);
-                        vMax = icon.getInterpolatedV(16.0D - (floatingIcon ? 1.0D : renderMaxY) * 16.0D);
-                        vMin = icon.getInterpolatedV(16.0D - (floatingIcon ? 1.0D - (renderMaxY - renderMinY) : renderMinY) * 16.0D);
+                        uMin = icon.getInterpolatedU(16.0D - renderBlocks.renderMaxZ * 16.0D);
+                        uMax = icon.getInterpolatedU(16.0D - renderBlocks.renderMinZ * 16.0D);
+                        vMax = icon.getInterpolatedV(16.0D - (floatingIcon ? 1.0D : renderBlocks.renderMaxY) * 16.0D);
+                        vMin = icon.getInterpolatedV(16.0D - (floatingIcon ? 1.0D - (renderBlocks.renderMaxY - renderBlocks.renderMinY) : renderBlocks.renderMinY) * 16.0D);
 
                         setCornerUV(uMin, vMax, uMin, vMin, uMax, vMin, uMax, vMax);
 
@@ -433,10 +391,10 @@ public class RenderHelper extends VertexHelper {
 
                     case 1:
 
-                        uMin = icon.getInterpolatedU(16.0D - renderMaxY * 16.0D);
-                        uMax = icon.getInterpolatedU(16.0D - renderMinY * 16.0D);
-                        vMin = icon.getInterpolatedV(renderMaxZ * 16.0D);
-                        vMax = icon.getInterpolatedV(renderMinZ * 16.0D);
+                        uMin = icon.getInterpolatedU(16.0D - renderBlocks.renderMaxY * 16.0D);
+                        uMax = icon.getInterpolatedU(16.0D - renderBlocks.renderMinY * 16.0D);
+                        vMin = icon.getInterpolatedV(renderBlocks.renderMaxZ * 16.0D);
+                        vMax = icon.getInterpolatedV(renderBlocks.renderMinZ * 16.0D);
 
                         setCornerUV(uMin, vMin, uMax, vMin, uMax, vMax, uMin, vMax);
 
@@ -444,10 +402,10 @@ public class RenderHelper extends VertexHelper {
 
                     case 2:
 
-                        uMin = icon.getInterpolatedU(renderMaxZ * 16.0D);
-                        uMax = icon.getInterpolatedU(renderMinZ * 16.0D);
-                        vMin = icon.getInterpolatedV(renderMinY * 16.0D);
-                        vMax = icon.getInterpolatedV(renderMaxY * 16.0D);
+                        uMin = icon.getInterpolatedU(renderBlocks.renderMaxZ * 16.0D);
+                        uMax = icon.getInterpolatedU(renderBlocks.renderMinZ * 16.0D);
+                        vMin = icon.getInterpolatedV(renderBlocks.renderMinY * 16.0D);
+                        vMax = icon.getInterpolatedV(renderBlocks.renderMaxY * 16.0D);
 
                         setCornerUV(uMin, vMax, uMin, vMin, uMax, vMin, uMax, vMax);
 
@@ -455,10 +413,10 @@ public class RenderHelper extends VertexHelper {
 
                     case 3:
 
-                        uMin = icon.getInterpolatedU(renderMaxY * 16.0D);
-                        uMax = icon.getInterpolatedU(renderMinY * 16.0D);
-                        vMin = icon.getInterpolatedV(16.0D - renderMaxZ * 16.0D);
-                        vMax = icon.getInterpolatedV(16.0D - renderMinZ * 16.0D);
+                        uMin = icon.getInterpolatedU(renderBlocks.renderMaxY * 16.0D);
+                        uMax = icon.getInterpolatedU(renderBlocks.renderMinY * 16.0D);
+                        vMin = icon.getInterpolatedV(16.0D - renderBlocks.renderMaxZ * 16.0D);
+                        vMax = icon.getInterpolatedV(16.0D - renderBlocks.renderMinZ * 16.0D);
 
                         setCornerUV(uMin, vMin, uMax, vMin, uMax, vMax, uMin, vMax);
 

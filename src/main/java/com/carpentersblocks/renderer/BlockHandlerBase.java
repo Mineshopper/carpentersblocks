@@ -57,8 +57,8 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
     public boolean        disableAO;
     public boolean        hasDyeOverride;
     public int            dyeOverride;
-    public boolean[]      hasIconOverride   = new boolean[6];
-    public IIcon[]        iconOverride      = new IIcon[6];
+    public boolean[]      hasIconOverride = new boolean[6];
+    public IIcon[]         iconOverride    = new IIcon[6];
     public int            renderPass;
 
     /** 0-5 are side covers, with 6 being the block itself. */
@@ -230,9 +230,38 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
     }
 
     /**
-     * Sets directional block side rotation in RenderBlocks.
+     * Sets texture rotation for side.
      */
-    protected void setDirectionalRotation(int side)
+    protected void setTextureRotation(int side, int rotation)
+    {
+        switch (side)
+        {
+            case DOWN:
+                renderBlocks.uvRotateBottom = rotation;
+                break;
+            case UP:
+                renderBlocks.uvRotateTop = rotation;
+                break;
+            case NORTH:
+                renderBlocks.uvRotateNorth = rotation;
+                break;
+            case SOUTH:
+                renderBlocks.uvRotateSouth = rotation;
+                break;
+            case WEST:
+                renderBlocks.uvRotateWest = rotation;
+                break;
+            default:
+                renderBlocks.uvRotateEast = rotation;
+                break;
+        }
+    }
+
+    /**
+     * Sets directional block side rotation in RenderBlocks for
+     * directional blocks like pillars and logs.
+     */
+    protected void setTextureRotationForDirectionalBlock(int side)
     {
         int metadata = getCoverForRendering().getItemDamage();
         int dir = metadata & 12;
@@ -273,9 +302,9 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
     }
 
     /**
-     * Resets side rotation in RenderBlocks.
+     * Resets side rotation in RenderBlocks back to default values.
      */
-    protected void clearRotation(int side)
+    protected void resetTextureRotation(int side)
     {
         switch (side)
         {
@@ -303,60 +332,27 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
     /**
      * Returns texture rotation for side.
      */
-    protected int getRotation(int side)
+    protected int getTextureRotation(int side)
     {
-        switch (side)
-        {
-            case DOWN:
-                return renderBlocks.uvRotateBottom;
-            case UP:
-                return renderBlocks.uvRotateTop;
-            case NORTH:
-                return renderBlocks.uvRotateNorth;
-            case SOUTH:
-                return renderBlocks.uvRotateSouth;
-            case WEST:
-                return renderBlocks.uvRotateWest;
-            default:
-                return renderBlocks.uvRotateEast;
-        }
-    }
+        int[] rotations = {
+                renderBlocks.uvRotateBottom,
+                renderBlocks.uvRotateTop,
+                renderBlocks.uvRotateNorth,
+                renderBlocks.uvRotateSouth,
+                renderBlocks.uvRotateWest,
+                renderBlocks.uvRotateEast
+        };
 
-    /**
-     * Sets texture rotation for side.
-     */
-    protected void setRotation(int side, int rotation)
-    {
-        switch (side)
-        {
-            case DOWN:
-                renderBlocks.uvRotateBottom = rotation;
-                break;
-            case UP:
-                renderBlocks.uvRotateTop = rotation;
-                break;
-            case NORTH:
-                renderBlocks.uvRotateNorth = rotation;
-                break;
-            case SOUTH:
-                renderBlocks.uvRotateSouth = rotation;
-                break;
-            case WEST:
-                renderBlocks.uvRotateWest = rotation;
-                break;
-            default:
-                renderBlocks.uvRotateEast = rotation;
-                break;
-        }
+        return rotations[side];
     }
 
     /**
      * Sets dye override.
      */
-    protected void setDyeOverride(int dye)
+    protected void setDyeOverride(int color)
     {
         hasDyeOverride = true;
-        dyeOverride = dye;
+        dyeOverride = color;
     }
 
     /**
@@ -543,39 +539,55 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
     protected void renderMultiTexturedSide(ItemStack itemStack, int x, int y, int z, int side, IIcon icon)
     {
         Block block = BlockProperties.toBlock(itemStack);
-
-        // TODO: Revisit render passes when alpha rendering bug is fixed.
+        boolean isAlpha = renderPass == PASS_ALPHA;
 
         /* Render side */
 
-        int tempRotation = getRotation(side);
-        if (BlockProperties.blockRotates(itemStack)) {
-            setDirectionalRotation(side);
+        boolean renderCover = block instanceof BlockCoverable ? renderPass == PASS_OPAQUE : block.getRenderBlockPass() == renderPass;
+        boolean renderOverlay = renderPass == PASS_OPAQUE || renderCover && renderPass == PASS_ALPHA;
+
+        if (renderCover) {
+            int tempRotation = getTextureRotation(side);
+            if (BlockProperties.blockRotates(itemStack)) {
+                setTextureRotationForDirectionalBlock(side);
+            }
+
+            if (isAlpha) {
+                VertexHelper.setOffset(-2.0D / 1024.0D);
+            }
+            setColorAndRender(itemStack, x, y, z, side, icon);
+            VertexHelper.clearOffset();
+
+            setTextureRotation(side, tempRotation);
         }
-        setColorAndRender(itemStack, x, y, z, side, icon);
-        setRotation(side, tempRotation);
 
         /* Render BlockGrass side overlay here, if needed. */
 
-        if (block.equals(Blocks.grass) && side > 0 && !isPositiveFace(side)) {
-            if (Minecraft.isFancyGraphicsEnabled()) {
-                setColorAndRender(new ItemStack(Blocks.grass), x, y, z, side, BlockGrass.getIconSideOverlay());
-            } else {
-                setColorAndRender(new ItemStack(Blocks.dirt), x, y, z, side, IconRegistry.icon_overlay_fast_grass_side);
+        if (renderOverlay) {
+            if (block.equals(Blocks.grass) && side > 0 && !isPositiveFace(side)) {
+                if (Minecraft.isFancyGraphicsEnabled()) {
+                    setColorAndRender(new ItemStack(Blocks.grass), x, y, z, side, BlockGrass.getIconSideOverlay());
+                } else {
+                    setColorAndRender(new ItemStack(Blocks.dirt), x, y, z, side, IconRegistry.icon_overlay_fast_grass_side);
+                }
             }
         }
-
-        /* Render decorations. */
 
         boolean temp_dye_state = suppressDyeColor;
         suppressDyeColor = true;
 
-        if (!suppressChiselDesign && BlockProperties.hasChiselDesign(TE, coverRendering)) {
-            renderChiselDesign(x, y, z, side);
+        if (renderPass == PASS_ALPHA) {
+            if (!suppressChiselDesign && BlockProperties.hasChiselDesign(TE, coverRendering)) {
+                VertexHelper.setOffset(-1.0D / 1024.0D);
+                renderChiselDesign(x, y, z, side);
+                VertexHelper.clearOffset();
+            }
         }
 
-        if (!suppressOverlay && BlockProperties.hasOverlay(TE, coverRendering)) {
-            renderOverlay(block, x, y, z, side);
+        if (renderOverlay) {
+            if (!suppressOverlay && BlockProperties.hasOverlay(TE, coverRendering)) {
+                renderOverlay(x, y, z, side);
+            }
         }
 
         suppressDyeColor = temp_dye_state;
@@ -602,7 +614,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
     /**
      * Renders overlay on side.
      */
-    protected void renderOverlay(Block block, int x, int y, int z, int side)
+    protected void renderOverlay(int x, int y, int z, int side)
     {
         side = isPositiveFace(side) ? 1 : side;
         Overlay overlay = OverlayHandler.getOverlayType(BlockProperties.getOverlay(TE, coverRendering));
