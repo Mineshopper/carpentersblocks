@@ -46,7 +46,7 @@ public class ItemCarpentersHammer extends Item implements ICarpentersHammer {
     @Override
     public boolean func_150897_b(Block blockToBeHarvested)
     {
-        return blockToBeHarvested instanceof BlockCoverable ? true : false;
+        return blockToBeHarvested instanceof BlockCoverable;
     }
 
 }

@@ -74,7 +74,7 @@ public class DyeHandler {
     public static boolean isDye(ItemStack itemStack, boolean allowWhite)
     {
         String name = getOreDictName(itemStack);
-        return dyeMap.containsKey(name) ? (name.equals("dyeWhite") && !allowWhite ? false : true) : false;
+        return dyeMap.containsKey(name) && (name.equals("dyeWhite") && !allowWhite ? false : true);
     }
 
     /**
