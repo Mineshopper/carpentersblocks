@@ -63,7 +63,7 @@ public class BlockHandlerCarpentersBarrier extends BlockHandlerBase {
     {
         BlockCarpentersBarrier tempBlock = (BlockCarpentersBarrier) srcBlock;
 
-        boolean[] tempConnect = {
+        connect = new boolean[]  {
                 tempBlock.canConnectBarrierTo(renderBlocks.blockAccess, x, y - 1, z, ForgeDirection.UP),
                 tempBlock.canConnectBarrierTo(renderBlocks.blockAccess, x, y + 1, z, ForgeDirection.DOWN),
                 tempBlock.canConnectBarrierTo(renderBlocks.blockAccess, x, y, z - 1, ForgeDirection.SOUTH),
@@ -76,13 +76,10 @@ public class BlockHandlerCarpentersBarrier extends BlockHandlerBase {
                 tempBlock.canConnectBarrierTo(renderBlocks.blockAccess, x + 1, y + 1, z, ForgeDirection.WEST),
         };
 
-        boolean[] tempBarrier = {
+        barrier = new boolean[]{
                 renderBlocks.blockAccess.getBlock(x, y - 1, z).equals(srcBlock),
                 renderBlocks.blockAccess.getBlock(x, y + 1, z).equals(srcBlock)
         };
-
-        barrier = tempBarrier;
-        connect = tempConnect;
     }
 
     /**
