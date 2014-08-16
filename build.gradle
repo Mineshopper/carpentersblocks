@@ -60,3 +60,18 @@ processResources
         exclude 'mcmod.info'
     }
 }
+
+task rename(type: Copy) {
+    from('build/libs/')
+    rename { String fileName ->
+        if (fileName.endsWith('jar')) {
+            String minecraftVersion = project.minecraft.version
+            String newMinecraftVersion = minecraftVersion.split("-")[0]
+            String newName = "Carpenter's Blocks v" + project.version + " - MC " + newMinecraftVersion + ".zip"
+            newName
+        }
+    }
+    into('build/')
+}
+
+build.dependsOn rename
