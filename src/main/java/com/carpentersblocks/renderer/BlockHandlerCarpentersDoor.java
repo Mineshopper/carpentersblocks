@@ -179,6 +179,7 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerHinged {
     /**
      * Renders a door handle for the given coordinates
      */
+    @SuppressWarnings("SameParameterValue")
     private void renderPartHandle(ItemStack itemStack, int x, int y, int z, boolean renderInner, boolean renderOuter)
     {
         if (!renderInner && !renderOuter) {

@@ -19,6 +19,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockCarpentersDaylightSensor extends BlockCoverable {
 
+    @SuppressWarnings("SameParameterValue")
     public BlockCarpentersDaylightSensor(Material material)
     {
         super(material);

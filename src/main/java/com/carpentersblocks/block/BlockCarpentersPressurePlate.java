@@ -23,6 +23,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockCarpentersPressurePlate extends BlockCoverable {
 
+    @SuppressWarnings("SameParameterValue")
     public BlockCarpentersPressurePlate(Material material)
     {
         super(material);

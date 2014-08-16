@@ -75,6 +75,7 @@ public class LightingHelper {
      * @param lightness  the brightness override
      * @return the {@link LightingHelper}
      */
+    @SuppressWarnings("SameParameterValue")
     public LightingHelper setBrightnessOverride(int brightness)
     {
         hasBrightnessOverride = true;
