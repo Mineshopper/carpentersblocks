@@ -9,6 +9,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class CarpentersBlocksTab extends CreativeTabs {
 
+    @SuppressWarnings("SameParameterValue")
     public CarpentersBlocksTab(String label)
     {
         super(label);

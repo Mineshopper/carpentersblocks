@@ -19,6 +19,7 @@ import com.carpentersblocks.util.registry.BlockRegistry;
 
 public class BlockCarpentersLadder extends BlockCoverable {
 
+    @SuppressWarnings("SameParameterValue")
     public BlockCarpentersLadder(Material material)
     {
         super(material);

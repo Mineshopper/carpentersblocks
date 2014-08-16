@@ -167,6 +167,7 @@ public class BlockHandlerCarpentersBarrier extends BlockHandlerBase {
     /**
      * If needed, renders horizontal plank at coordinates with given y values and thickness.
      */
+    @SuppressWarnings("SameParameterValue")
     private void renderSupportPlank(ItemStack itemStack, int x, int y, int z, ForgeDirection dir, double depthRadius, double yMin, double yMax, boolean enforce)
     {
         boolean isTop = yMax - 0.5D > 0.5D - yMin;

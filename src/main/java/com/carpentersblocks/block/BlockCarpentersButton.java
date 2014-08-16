@@ -18,6 +18,7 @@ import com.carpentersblocks.util.registry.BlockRegistry;
 
 public class BlockCarpentersButton extends BlockCoverable {
 
+    @SuppressWarnings("SameParameterValue")
     public BlockCarpentersButton(Material material)
     {
         super(material);
