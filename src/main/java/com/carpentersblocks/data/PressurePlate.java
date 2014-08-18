@@ -56,6 +56,7 @@ public class PressurePlate {
     /**
      * Sets state.
      */
+    @SuppressWarnings("SameParameterValue")
     public static void setState(TEBase TE, int state, boolean playSound)
     {
         int temp = BlockProperties.getMetadata(TE) & 0xfff7;

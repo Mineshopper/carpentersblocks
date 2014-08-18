@@ -115,9 +115,7 @@ public class CollapsibleUtil {
             height = maxHeight - 0.5F;
         }
 
-        float[] finalBounds = { xMin, 0.0F, zMin, xMax, height, zMax };
-
-        return finalBounds;
+        return new float[] { xMin, 0.0F, zMin, xMax, height, zMax };
     }
 
 }

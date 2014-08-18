@@ -146,6 +146,7 @@ public class BlockHandlerCarpentersHatch extends BlockHandlerHinged {
     /**
      * Renders a hatch handle for the given coordinates.
      */
+    @SuppressWarnings("SameParameterValue")
     private void renderPartHandle(ItemStack itemStack, int x, int y, int z, boolean renderInterior, boolean renderExterior)
     {
         if (!renderInterior && !renderExterior) {

@@ -75,6 +75,7 @@ public class LightingHelper {
      * @param lightness  the brightness override
      * @return the {@link LightingHelper}
      */
+    @SuppressWarnings("SameParameterValue")
     public LightingHelper setBrightnessOverride(int brightness)
     {
         hasBrightnessOverride = true;
@@ -125,9 +126,8 @@ public class LightingHelper {
         float red = (color >> 16 & 255) / 255.0F;
         float green = (color >> 8 & 255) / 255.0F;
         float blue = (color & 255) / 255.0F;
-        float[] rgb = { red, green, blue };
 
-        return rgb;
+        return new float[] { red, green, blue };
     }
 
     /**

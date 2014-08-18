@@ -42,6 +42,7 @@ public class BlockCarpentersSlope extends BlockCoverable {
 
     private boolean rayTracing;
 
+    @SuppressWarnings("SameParameterValue")
     public BlockCarpentersSlope(Material material)
     {
         super(material);

@@ -65,6 +65,7 @@ public class Hatch {
     /**
      * Sets position (high or low).
      */
+    @SuppressWarnings("SameParameterValue")
     public static void setPos(TEBase TE, int position)
     {
         int temp = BlockProperties.getMetadata(TE) & 0xfff7;

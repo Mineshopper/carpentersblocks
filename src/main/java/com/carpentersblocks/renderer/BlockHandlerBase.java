@@ -385,6 +385,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
     /**
      * Clears icon override.
      */
+    @SuppressWarnings("SameParameterValue")
     protected void clearIconOverride(int side)
     {
         if (side == 6) {
@@ -482,8 +483,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
                 break;
         }
 
-        int[] coords = { x, y, z };
-        return coords;
+        return new int[]{ x, y, z };
     }
 
     /**

@@ -24,6 +24,7 @@ import com.carpentersblocks.util.registry.ItemRegistry;
 
 public class BlockCarpentersCollapsibleBlock extends BlockCoverable {
 
+    @SuppressWarnings("SameParameterValue")
     public BlockCarpentersCollapsibleBlock(Material material)
     {
         super(material);

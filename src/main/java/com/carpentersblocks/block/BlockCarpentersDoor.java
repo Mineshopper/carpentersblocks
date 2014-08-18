@@ -18,6 +18,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockCarpentersDoor extends BlockHinged {
 
+    @SuppressWarnings("SameParameterValue")
     public BlockCarpentersDoor(Material material)
     {
         super(material);
