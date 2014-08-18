@@ -18,6 +18,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockCarpentersGate extends BlockCoverable {
 
+    @SuppressWarnings("SameParameterValue")
     public BlockCarpentersGate(Material material)
     {
         super(material);

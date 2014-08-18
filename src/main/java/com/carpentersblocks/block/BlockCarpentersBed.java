@@ -28,6 +28,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockCarpentersBed extends BlockCoverable {
 
+    @SuppressWarnings("SameParameterValue")
     public BlockCarpentersBed(Material material)
     {
         super(material);

@@ -385,6 +385,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
     /**
      * Clears icon override.
      */
+    @SuppressWarnings("SameParameterValue")
     protected void clearIconOverride(int side)
     {
         if (side == 6) {

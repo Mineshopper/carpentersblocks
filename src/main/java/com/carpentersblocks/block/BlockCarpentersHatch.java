@@ -30,6 +30,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockCarpentersHatch extends BlockCoverable {
 
+    @SuppressWarnings("SameParameterValue")
     public BlockCarpentersHatch(Material material)
     {
         super(material);

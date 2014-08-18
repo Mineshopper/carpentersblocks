@@ -32,6 +32,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockCarpentersTorch extends BlockCoverable {
 
+    @SuppressWarnings("SameParameterValue")
     public BlockCarpentersTorch(Material material)
     {
         super(material);
