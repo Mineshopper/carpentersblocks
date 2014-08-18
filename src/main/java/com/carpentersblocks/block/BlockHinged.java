@@ -305,7 +305,7 @@ public class BlockHinged extends BlockCoverable {
     {
         List<TEBase> hingePieces = getHingePieces(TE);
         for (TEBase piece : hingePieces) {
-            Hinge.setState(piece, state, piece == TE ? true : false);
+            Hinge.setState(piece, state, piece == TE);
         }
     }
 

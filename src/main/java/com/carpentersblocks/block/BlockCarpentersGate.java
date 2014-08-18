@@ -162,8 +162,8 @@ public class BlockCarpentersGate extends BlockCoverable {
      */
     private void cycleNeighborGate(TEBase TE, World world, int x, int y, int z)
     {
-        boolean isGateBelow = world.getBlock(x, y - 1, z).equals(this) ? true : false;
-        boolean isGateAbove = world.getBlock(x, y + 1, z).equals(this) ? true : false;
+        boolean isGateBelow = world.getBlock(x, y - 1, z).equals(this);
+        boolean isGateAbove = world.getBlock(x, y + 1, z).equals(this);
 
         /*
          * Will only check for gate above or below, and limit to only activating a single stacked gate.
