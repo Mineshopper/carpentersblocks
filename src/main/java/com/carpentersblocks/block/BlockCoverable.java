@@ -153,7 +153,7 @@ public class BlockCoverable extends BlockContainer {
      */
     protected TEBase[] getAdjacentTileEntities(World world, int x, int y, int z)
     {
-        return new TEBase[]{
+        return new TEBase[] {
             getSimpleTileEntity(world, x, y - 1, z),
             getSimpleTileEntity(world, x, y + 1, z),
             getSimpleTileEntity(world, x, y, z - 1),
