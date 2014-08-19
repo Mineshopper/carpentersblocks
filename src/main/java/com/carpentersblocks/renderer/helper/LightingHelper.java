@@ -10,24 +10,26 @@ import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
+
 import com.carpentersblocks.renderer.BlockHandlerBase;
 import com.carpentersblocks.util.BlockProperties;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class LightingHelper {
 
-    public  RenderBlocks        renderBlocks;
-    private boolean             hasLightnessOverride;
-    private float               lightnessOverride;
-    private boolean             hasBrightnessOverride;
-    private int                 brightnessOverride;
-    private boolean             hasColorOverride;
-    private int                 colorOverride          = 0xffffff;
-    public static final int     NORMAL_BRIGHTNESS      = 0xff00ff;
-    public static final int     MAX_BRIGHTNESS         = 0xf000f0;
-    public static final float[] LIGHTNESS              = { 0.5F, 1.0F, 0.8F, 0.8F, 0.6F, 0.6F };
+    public  RenderBlocks    renderBlocks;
+    private boolean         hasLightnessOverride;
+    private float           lightnessOverride;
+    private boolean         hasBrightnessOverride;
+    private int             brightnessOverride;
+    private boolean         hasColorOverride;
+    private int             colorOverride          = 0xffffff;
+    public static final int NORMAL_BRIGHTNESS      = 0xff00ff;
+    public static final int MAX_BRIGHTNESS         = 0xf000f0;
+    public static float[]   LIGHTNESS              = { 0.5F, 1.0F, 0.8F, 0.8F, 0.6F, 0.6F };
 
     /** Ambient occlusion values for all four corners of side. */
     public float[] ao = new float[4];
