@@ -68,12 +68,10 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
         type = Gate.getType(TE);
         isOpen = Gate.getState(TE) == Gate.STATE_OPEN;
 
-        boolean[] tempGate = {
+        gate = new boolean[] {
                 renderBlocks.blockAccess.getBlock(x, y - 1, z).equals(srcBlock),
                 renderBlocks.blockAccess.getBlock(x, y + 1, z).equals(srcBlock)
         };
-
-        gate = tempGate;
 
         if (Gate.getFacing(TE) == Gate.FACING_ON_Z) {
             dir = Gate.getDirOpen(TE) == Gate.DIR_NEG ? ForgeDirection.NORTH : ForgeDirection.SOUTH;
