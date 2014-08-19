@@ -482,7 +482,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
                 break;
         }
 
-        return new int[]{ x, y, z };
+        return new int[] { x, y, z };
     }
 
     /**
