@@ -68,7 +68,7 @@ public class BlockHandlerCarpentersGate extends BlockHandlerBase implements ISim
         type = Gate.getType(TE);
         isOpen = Gate.getState(TE) == Gate.STATE_OPEN;
 
-        gate = new boolean[]{
+        gate = new boolean[] {
                 renderBlocks.blockAccess.getBlock(x, y - 1, z).equals(srcBlock),
                 renderBlocks.blockAccess.getBlock(x, y + 1, z).equals(srcBlock)
         };
