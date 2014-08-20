@@ -17,6 +17,7 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+
 import com.carpentersblocks.CarpentersBlocks;
 import com.carpentersblocks.data.FlowerPot;
 import com.carpentersblocks.network.PacketEnrichPlant;
@@ -30,6 +31,7 @@ import com.carpentersblocks.util.handler.EventHandler;
 import com.carpentersblocks.util.handler.PacketHandler;
 import com.carpentersblocks.util.registry.BlockRegistry;
 import com.carpentersblocks.util.registry.IconRegistry;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -164,26 +166,20 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
                     }
                 }
 
-                if (!FlowerPotProperties.hasPlant(TE)) {
-
-                    if (FlowerPotProperties.isPlant(itemStack)) {
-                        int angle = MathHelper.floor_double((entityPlayer.rotationYaw + 180.0F) * 16.0F / 360.0F + 0.5D) & 15;
-                        FlowerPot.setAngle(TE, angle);
-                        FlowerPotProperties.setPlant(TE, itemStack);
-                        actionResult.setAltered().setSoundSource(itemStack).decInventory();
-                    }
-
+                if (!FlowerPotProperties.hasPlant(TE) && FlowerPotProperties.isPlant(itemStack)) {
+                    int angle = MathHelper.floor_double((entityPlayer.rotationYaw + 180.0F) * 16.0F / 360.0F + 0.5D) & 15;
+                    FlowerPot.setAngle(TE, angle);
+                    FlowerPotProperties.setPlant(TE, itemStack);
+                    actionResult.setAltered().setSoundSource(itemStack).decInventory();
                 }
 
             } else {
 
                 if (FlowerPotProperties.isSoil(itemStack)) {
-
                     if (hasCover || soilAreaClicked) {
                         FlowerPotProperties.setSoil(TE, itemStack);
                         actionResult.setAltered().setSoundSource(itemStack).decInventory();
                     }
-
                 }
 
             }
@@ -344,38 +340,51 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
      */
     public int getLightValue(IBlockAccess world, int x, int y, int z)
     {
+        int lightValue = super.getLightValue(world, x, y, z);
+
+        /*
+         * Block.class will call this method by default if the passed
+         * in coordinates don't match the expected block type.  Because
+         * we're passing in covers, it may recurse.
+         *
+         * Return 0 when this happens.
+         */
+
+        if (grabLightValue) {
+            return 0;
+        }
+        grabLightValue = true;
+
         TEBase TE = getTileEntity(world, x, y, z);
 
         if (TE != null && TE instanceof TECarpentersFlowerPot) {
 
-            int coverLight = super.getLightValue(world, x, y, z);
-            int potLight = getLightValue();
-
             if (FlowerPotProperties.hasSoil(TE)) {
 
-                int soil_lightValue = BlockProperties.toBlock(FlowerPotProperties.getSoil(TE)).getLightValue();
+                ItemStack itemStack = FlowerPotProperties.getSoil(TE);
+                int temp = getLightValue(TE, FlowerPotProperties.toBlock(itemStack), itemStack.getItemDamage());
 
-                if (soil_lightValue > potLight) {
-                    potLight = soil_lightValue;
+                if (temp > lightValue) {
+                    lightValue = temp;
                 }
 
             }
 
             if (FlowerPotProperties.hasPlant(TE)) {
 
-                int plant_lightValue = FlowerPotProperties.toBlock(FlowerPotProperties.getPlant(TE)).getLightValue();
+                ItemStack itemStack = FlowerPotProperties.getPlant(TE);
+                int temp = getLightValue(TE, FlowerPotProperties.toBlock(itemStack), itemStack.getItemDamage());
 
-                if (plant_lightValue > potLight) {
-                    potLight = plant_lightValue;
+                if (temp > lightValue) {
+                    lightValue = temp;
                 }
 
             }
 
-            return coverLight > potLight ? coverLight : potLight;
-
         }
 
-        return getLightValue();
+        grabLightValue = false;
+        return lightValue;
     }
 
     @Override

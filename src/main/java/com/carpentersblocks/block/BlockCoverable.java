@@ -29,6 +29,7 @@ import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.util.ForgeDirection;
+
 import com.carpentersblocks.api.ICarpentersChisel;
 import com.carpentersblocks.api.ICarpentersHammer;
 import com.carpentersblocks.renderer.helper.ParticleHelper;
@@ -42,10 +43,14 @@ import com.carpentersblocks.util.protection.PlayerPermissions;
 import com.carpentersblocks.util.registry.FeatureRegistry;
 import com.carpentersblocks.util.registry.IconRegistry;
 import com.carpentersblocks.util.registry.ItemRegistry;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockCoverable extends BlockContainer {
+
+    /** Used when grabbing light value of covers. */
+    protected boolean grabLightValue = false;
 
     /**
      * Stores actions taken on a block in order to properly play sounds,
@@ -715,38 +720,67 @@ public class BlockCoverable extends BlockContainer {
         return false;
     }
 
+    /**
+     * Returns light value for block using two methods.  First, it
+     * checks if the static light value is not zero.  If zero, it checks
+     * using the block metadata.
+     *
+     * @param itemStack
+     * @return
+     */
+    protected int getLightValue(TEBase TE, Block block, int metadata)
+    {
+        /* Grab static light value */
+
+        int lightValue = block.getLightValue();
+
+        /* Try grabbing more accurate lighting using metadata */
+
+        if (lightValue == 0) {
+            BlockProperties.setHostMetadata(TE, metadata);
+            lightValue = block.getLightValue(TE.getWorldObj(), TE.xCoord, TE.yCoord, TE.zCoord);
+            BlockProperties.resetHostMetadata(TE);
+        }
+
+        return lightValue;
+    }
+
     @Override
     /**
      * Returns light value based on cover or side covers.
      */
     public int getLightValue(IBlockAccess world, int x, int y, int z)
     {
+        int lightValue = 0;
+
+        /*
+         * Block.class will call this method by default if the passed
+         * in coordinates don't match the expected block type.  Because
+         * we're passing in covers, it may recurse.
+         *
+         * Return 0 when this happens.
+         */
+
+        if (grabLightValue) {
+            return 0;
+        }
+        grabLightValue = true;
+
         TEBase TE = getTileEntity(world, x, y, z);
 
         if (TE != null) {
-
-            if (BlockProperties.hasCover(TE, 6)) {
-
-                int lightOutput = getLightValue();
-
-                for (int side = 0; side < 7; ++side)
-                {
-                    if (BlockProperties.hasCover(TE, side))
-                    {
-                        int tempLightOutput = BlockProperties.toBlock(BlockProperties.getCover(TE, side)).getLightValue();
-
-                        if (tempLightOutput > lightOutput) {
-                            lightOutput = tempLightOutput;
-                        }
+            for (int side = 0; side < 7; ++side) {
+                if (BlockProperties.hasCover(TE, side)) {
+                    ItemStack itemStack = BlockProperties.getCover(TE, side);
+                    int tempLight = getLightValue(TE, BlockProperties.toBlock(itemStack), itemStack.getItemDamage());
+                    if (tempLight > lightValue) {
+                        lightValue = tempLight;
                     }
                 }
-
-                return lightOutput;
-
             }
-
         }
 
+        grabLightValue = false;
         return lightValue;
     }
 
