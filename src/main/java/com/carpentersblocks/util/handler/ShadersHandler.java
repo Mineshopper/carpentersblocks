@@ -12,14 +12,14 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class ShadersHandler {
 
     private static Class<?> ShadersClass;
-    public static boolean enableShaderModCoreIntegration = false;
+    public static boolean enableShadersModCoreIntegration = false;
 
     public static void init()
     {
         try {
             ShadersClass = Class.forName("shadersmodcore.client.Shaders");
             ModLogger.log(Level.INFO, "ShadersModCore integration successful.");
-            enableShaderModCoreIntegration = true;
+            enableShadersModCoreIntegration = true;
         } catch (ClassNotFoundException e) {}
     }
 
@@ -35,7 +35,7 @@ public class ShadersHandler {
             lightness[4] = lightness[5] = ShadersClass.getDeclaredField("blockLightLevel06").getFloat(null);
         } catch (Exception e) {
             ModLogger.log(Level.WARN, "ShadersModCore integration failed.");
-            enableShaderModCoreIntegration = false;
+            enableShadersModCoreIntegration = false;
         }
     }
 

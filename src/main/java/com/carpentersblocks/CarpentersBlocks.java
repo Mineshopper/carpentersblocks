@@ -2,8 +2,10 @@ package com.carpentersblocks;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraftforge.common.config.Configuration;
+
 import com.carpentersblocks.proxy.CommonProxy;
 import com.carpentersblocks.util.CarpentersBlocksTab;
+
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;

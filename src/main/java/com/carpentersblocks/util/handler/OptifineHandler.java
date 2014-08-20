@@ -9,6 +9,10 @@ import org.apache.logging.log4j.Level;
 
 import com.carpentersblocks.util.ModLogger;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
+@SideOnly(Side.CLIENT)
 public class OptifineHandler {
 
     public static boolean enableOptifineIntegration = false;

@@ -53,12 +53,13 @@ public class EventHandler {
     public static EntityPlayer eventEntityPlayer;
 
     @SubscribeEvent
+    @SideOnly(Side.CLIENT)
     /**
      * Check render settings on render event.
      */
     public void onPreRenderWorldEvent(RenderWorldEvent.Pre event)
     {
-        if (ShadersHandler.enableShaderModCoreIntegration) {
+        if (ShadersHandler.enableShadersModCoreIntegration) {
             ShadersHandler.updateLightness();
         }
     }
