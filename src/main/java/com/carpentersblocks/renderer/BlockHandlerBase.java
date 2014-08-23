@@ -29,6 +29,7 @@ import com.carpentersblocks.util.handler.OverlayHandler;
 import com.carpentersblocks.util.handler.OverlayHandler.Overlay;
 import com.carpentersblocks.util.registry.FeatureRegistry;
 import com.carpentersblocks.util.registry.IconRegistry;
+
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -679,7 +680,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
     public int getBlockColor(Block block, int metadata, int x, int y, int z, int side, IIcon icon)
     {
         BlockProperties.setHostMetadata(TE, metadata);
-        int color = OptifineHandler.enableOptifineIntegration ? OptifineHandler.getColorMultiplier(block, renderBlocks.blockAccess, x, y, z) : block.colorMultiplier(renderBlocks.blockAccess, x, y, z);
+        int color = OptifineHandler.enableOptifineIntegration ? OptifineHandler.getColorMultiplier(block, TE.getWorldObj(), x, y, z) : block.colorMultiplier(TE.getWorldObj(), x, y, z);
         BlockProperties.resetHostMetadata(TE);
 
         if (block.equals(Blocks.grass) && !isPositiveFace(side) && !icon.equals(BlockGrass.getIconSideOverlay())) {
