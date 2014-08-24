@@ -147,23 +147,13 @@ public class EventHandler {
         EntityPlayer entityPlayer = Minecraft.getMinecraft().thePlayer;
 
         if (entityPlayer.isSneaking()) {
-
             ItemStack itemStack = entityPlayer.getHeldItem();
-
             if (itemStack != null && itemStack.getItem() instanceof ItemBlock && BlockProperties.toBlock(itemStack).equals(BlockRegistry.blockCarpentersSlope)) {
-
-                if (event.dwheel == 120) {
-                    entityPlayer.inventory.currentItem = ++entityPlayer.inventory.currentItem;
-                } else if (event.dwheel == -120) {
-                    entityPlayer.inventory.currentItem = --entityPlayer.inventory.currentItem;
-                } else {
-                    return;
+                if (event.dwheel != 0) {
+                    PacketHandler.sendPacketToServer(new PacketSlopeSelect(event.dwheel > 0));
                 }
-
-                PacketHandler.sendPacketToServer(new PacketSlopeSelect(event.dwheel == 120));
-
+                event.setCanceled(true);
             }
-
         }
     }
 
