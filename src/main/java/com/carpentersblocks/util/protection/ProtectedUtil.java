@@ -21,18 +21,9 @@ public class ProtectedUtil {
     public static boolean isOwner(IProtected object, EntityPlayer entityPlayer)
     {
         UUID uuid = updateOwnerUUID(object);
+        String ident = uuid != null ? entityPlayer.getUniqueID().toString() : entityPlayer.getDisplayName();
 
-        if (uuid != null) {
-            return object.getOwner().equals(entityPlayer.getUniqueID().toString());
-        } else {
-            boolean result = object.getOwner().equals(entityPlayer.getDisplayName());
-
-            // Attempt to update owner format manually, which seems to happen
-            // when it is not converted on world load (for reasons unknown).
-            updateOwnerUUID(object);
-
-            return result;
-        }
+        return object.getOwner().equals(ident);
     }
 
     /**
