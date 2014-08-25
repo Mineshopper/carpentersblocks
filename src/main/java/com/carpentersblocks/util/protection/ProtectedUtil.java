@@ -23,11 +23,15 @@ public class ProtectedUtil {
         UUID uuid = updateOwnerUUID(object);
 
         if (uuid != null) {
-            return object.getOwner().equals(uuid.toString());
+            return object.getOwner().equals(entityPlayer.getUniqueID().toString());
         } else {
-            // Attempt to update owner format manually, then resort to fallback method
+            boolean result = object.getOwner().equals(entityPlayer.getDisplayName());
+
+            // Attempt to update owner format manually, which seems to happen
+            // when it is not converted on world load (for reasons unknown).
             updateOwnerUUID(object);
-            return object.getOwner().equals(entityPlayer.getDisplayName());
+
+            return result;
         }
     }
 
@@ -37,19 +41,21 @@ public class ProtectedUtil {
     public static UUID updateOwnerUUID(IProtected object)
     {
         String owner = object.getOwner();
-
         UUID uuid = null;
+
         try {
             uuid = UUID.fromString(owner);
         } catch (IllegalArgumentException e) {
             if (cachedUUID.containsKey(owner)) {
-                object.setOwner(cachedUUID.get(owner));
+                if (cachedUUID.get(owner) != null) {
+                    object.setOwner(cachedUUID.get(owner));
+                }
             } else {
                 uuid = getOwnerIdentity(owner);
                 if (uuid != null) {
                     object.setOwner(uuid);
-                    cachedUUID.put(owner, uuid);
                 }
+                cachedUUID.put(owner, uuid);
             }
         }
 
