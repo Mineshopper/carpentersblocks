@@ -43,7 +43,7 @@ public class CommonProxy {
         BlockRegistry.init(event);
         ItemRegistry.init(event);
 
-        if (FeatureRegistry.enableOverlay) {
+        if (FeatureRegistry.enableOverlays) {
             OverlayHandler.init();
         }
 
@@ -60,7 +60,7 @@ public class CommonProxy {
 
         /* Register Entities */
 
-        if (FeatureRegistry.enableTile) {
+        if (ItemRegistry.enableTile) {
             EntityRegistry.registerModEntity(EntityCarpentersTile.class, "CarpentersTile", ID_TILE, CarpentersBlocks.instance, 64, 999, false);
         }
     }
