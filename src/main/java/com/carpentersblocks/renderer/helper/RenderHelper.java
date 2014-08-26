@@ -2,33 +2,27 @@ package com.carpentersblocks.renderer.helper;
 
 import net.minecraft.block.BlockGrass;
 import net.minecraft.client.renderer.RenderBlocks;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;
-
-import org.lwjgl.opengl.GL11;
-
+import com.carpentersblocks.renderer.BlockHandlerSloped;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class RenderHelper extends VertexHelper {
 
-    private static boolean rotationOverride = false;
-    private static int     rotation;
-
-    private static double uMin;
-    private static double uMax;
-    private static double vMin;
-    private static double vMax;
-
+    private static boolean  rotationOverride = false;
+    private static int      rotation;
+    private static double   uMin;
+    private static double   uMax;
+    private static double   vMin;
+    private static double   vMax;
     protected static double xMin;
     protected static double xMax;
     protected static double yMin;
     protected static double yMax;
     protected static double zMin;
     protected static double zMax;
-
     protected static double uTL;
     protected static double vTL;
     protected static double uBL;
@@ -38,7 +32,20 @@ public class RenderHelper extends VertexHelper {
     protected static double uTR;
     protected static double vTR;
 
-    public static double[] renderOffset = new double[5];
+    public static final double OFFSET_MAX = 2.0D / 1024.0D;
+    public static final double OFFSET_MIN = 1.0D / 1024.0D;
+
+    public static double renderOffset;
+
+    public static void setOffset(double offset)
+    {
+        renderOffset = offset;
+    }
+
+    public static void clearOffset()
+    {
+        renderOffset = 0.0D;
+    }
 
     public static void setTextureRotationOverride(int in_rotation)
     {
@@ -79,12 +86,44 @@ public class RenderHelper extends VertexHelper {
 
         /* Set render bounds with offset. */
 
-        xMin = x + renderBlocks.renderMinX - (side.equals(ForgeDirection.WEST)  ? offset : 0);
-        xMax = x + renderBlocks.renderMaxX + (side.equals(ForgeDirection.EAST)  ? offset : 0);
-        yMin = y + renderBlocks.renderMinY - (side.equals(ForgeDirection.DOWN)  ? offset : 0);
-        yMax = y + renderBlocks.renderMaxY + (side.equals(ForgeDirection.UP)    ? offset : 0);
-        zMin = z + renderBlocks.renderMinZ - (side.equals(ForgeDirection.NORTH) ? offset : 0);
-        zMax = z + renderBlocks.renderMaxZ + (side.equals(ForgeDirection.SOUTH) ? offset : 0);
+        xMin = x + renderBlocks.renderMinX - renderOffset;
+        xMax = x + renderBlocks.renderMaxX + renderOffset;
+        yMin = y + renderBlocks.renderMinY - renderOffset;
+        yMax = y + renderBlocks.renderMaxY + renderOffset;
+        zMin = z + renderBlocks.renderMinZ - renderOffset;
+        zMax = z + renderBlocks.renderMaxZ + renderOffset;
+
+        // Sloppy way to help prevent z-fighting on sloped faces.
+        // Working on a better solution...
+        if (BlockHandlerSloped.isSideSloped) {
+            switch (side) {
+                case DOWN:
+                    yMin -= renderOffset;
+                    yMax -= renderOffset;
+                    break;
+                case UP:
+                    yMin += renderOffset;
+                    yMax += renderOffset;
+                    break;
+                case NORTH:
+                    zMin -= renderOffset;
+                    zMax -= renderOffset;
+                    break;
+                case SOUTH:
+                    zMin += renderOffset;
+                    zMax += renderOffset;
+                    break;
+                case WEST:
+                    xMin -= renderOffset;
+                    xMax -= renderOffset;
+                    break;
+                case EAST:
+                    xMin += renderOffset;
+                    xMax += renderOffset;
+                    break;
+                default: {}
+            }
+        }
 
         /* Set u, v for icon with rotation. */
 

@@ -6,10 +6,8 @@ import static net.minecraftforge.common.util.ForgeDirection.NORTH;
 import static net.minecraftforge.common.util.ForgeDirection.SOUTH;
 import static net.minecraftforge.common.util.ForgeDirection.UP;
 import static net.minecraftforge.common.util.ForgeDirection.WEST;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import net.minecraftforge.common.util.ForgeDirection;
 
 public class Stairs {

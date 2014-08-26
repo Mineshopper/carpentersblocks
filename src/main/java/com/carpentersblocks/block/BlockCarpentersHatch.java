@@ -1,7 +1,6 @@
 package com.carpentersblocks.block;
 
 import java.util.List;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockSlab;
 import net.minecraft.block.BlockStairs;

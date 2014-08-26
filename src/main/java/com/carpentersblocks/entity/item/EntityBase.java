@@ -1,7 +1,6 @@
 package com.carpentersblocks.entity.item;
 
 import java.util.UUID;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;

@@ -12,9 +12,7 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.util.ForgeDirection;
-
 import org.lwjgl.opengl.GL11;
-
 import com.carpentersblocks.block.BlockCoverable;
 import com.carpentersblocks.renderer.helper.FancyFluidsHelper;
 import com.carpentersblocks.renderer.helper.LightingHelper;
@@ -29,7 +27,6 @@ import com.carpentersblocks.util.handler.OverlayHandler;
 import com.carpentersblocks.util.handler.OverlayHandler.Overlay;
 import com.carpentersblocks.util.registry.FeatureRegistry;
 import com.carpentersblocks.util.registry.IconRegistry;
-
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -37,8 +34,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
 
-    public static int PASS_OPAQUE = 0;
-    public static int PASS_ALPHA  = 1;
+    public static final int PASS_OPAQUE = 0;
+    public static final int PASS_ALPHA  = 1;
 
     public static final int DOWN  = 0;
     public static final int UP    = 1;
@@ -59,7 +56,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
     public boolean        hasDyeOverride;
     public int            dyeOverride;
     public boolean[]      hasIconOverride = new boolean[6];
-    public IIcon[]         iconOverride    = new IIcon[6];
+    public IIcon[]        iconOverride    = new IIcon[6];
     public int            renderPass;
 
     /** 0-5 are side covers, with 6 being the block itself. */
@@ -539,55 +536,53 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
     protected void renderMultiTexturedSide(ItemStack itemStack, int x, int y, int z, int side, IIcon icon)
     {
         Block block = BlockProperties.toBlock(itemStack);
-        boolean isAlpha = renderPass == PASS_ALPHA;
+        boolean renderCover = (block instanceof BlockCoverable ? 0 : block.getRenderBlockPass()) == renderPass;
+        boolean hasDesign = BlockProperties.hasChiselDesign(TE, coverRendering);
+        boolean hasOverlay = BlockProperties.hasOverlay(TE, coverRendering);
+        double overlayOffset = 0.0D;
+
+        if (hasOverlay) {
+            if (hasDesign) {
+                overlayOffset = RenderHelper.OFFSET_MAX;
+            } else if (renderPass == PASS_OPAQUE && block.getRenderBlockPass() == PASS_ALPHA && !(block instanceof BlockCoverable)) {
+                overlayOffset = RenderHelper.OFFSET_MIN;
+            }
+        }
 
         /* Render side */
-
-        boolean renderCover = block instanceof BlockCoverable ? renderPass == PASS_OPAQUE : block.getRenderBlockPass() == renderPass;
-        boolean renderOverlay = renderPass == PASS_OPAQUE || renderCover && renderPass == PASS_ALPHA;
 
         if (renderCover) {
             int tempRotation = getTextureRotation(side);
             if (BlockProperties.blockRotates(itemStack)) {
                 setTextureRotationForDirectionalBlock(side);
             }
-
-            if (isAlpha) {
-                VertexHelper.setOffset(-2.0D / 1024.0D);
-            }
             setColorAndRender(itemStack, x, y, z, side, icon);
-            VertexHelper.clearOffset();
-
             setTextureRotation(side, tempRotation);
         }
 
         /* Render BlockGrass side overlay here, if needed. */
 
-        if (renderOverlay) {
-            if (block.equals(Blocks.grass) && side > 0 && !isPositiveFace(side)) {
-                if (Minecraft.isFancyGraphicsEnabled()) {
-                    setColorAndRender(new ItemStack(Blocks.grass), x, y, z, side, BlockGrass.getIconSideOverlay());
-                } else {
-                    setColorAndRender(new ItemStack(Blocks.dirt), x, y, z, side, IconRegistry.icon_overlay_fast_grass_side);
-                }
+        if (renderPass == PASS_OPAQUE & block.equals(Blocks.grass) & side > 0 & !isPositiveFace(side)) {
+            if (Minecraft.isFancyGraphicsEnabled()) {
+                setColorAndRender(new ItemStack(Blocks.grass), x, y, z, side, BlockGrass.getIconSideOverlay());
+            } else {
+                setColorAndRender(new ItemStack(Blocks.dirt), x, y, z, side, IconRegistry.icon_overlay_fast_grass_side);
             }
         }
 
         boolean temp_dye_state = suppressDyeColor;
         suppressDyeColor = true;
 
-        if (renderPass == PASS_ALPHA) {
-            if (!suppressChiselDesign && BlockProperties.hasChiselDesign(TE, coverRendering)) {
-                VertexHelper.setOffset(-1.0D / 1024.0D);
-                renderChiselDesign(x, y, z, side);
-                VertexHelper.clearOffset();
-            }
+        if (hasDesign & !suppressChiselDesign & renderPass == PASS_ALPHA) {
+            RenderHelper.setOffset(RenderHelper.OFFSET_MIN);
+            renderChiselDesign(x, y, z, side);
+            RenderHelper.clearOffset();
         }
 
-        if (renderOverlay) {
-            if (!suppressOverlay && BlockProperties.hasOverlay(TE, coverRendering)) {
-                renderOverlay(x, y, z, side);
-            }
+        if (hasOverlay & !suppressOverlay & renderPass == PASS_OPAQUE) {
+            RenderHelper.setOffset(overlayOffset);
+            renderOverlay(x, y, z, side);
+            RenderHelper.clearOffset();
         }
 
         suppressDyeColor = temp_dye_state;

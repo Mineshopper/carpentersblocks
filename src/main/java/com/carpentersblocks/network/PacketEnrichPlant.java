@@ -2,9 +2,7 @@ package com.carpentersblocks.network;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;
-
 import java.io.IOException;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import com.carpentersblocks.data.FlowerPot;

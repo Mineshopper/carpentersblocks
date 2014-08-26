@@ -1,14 +1,12 @@
 package com.carpentersblocks.proxy;
 
 import net.minecraftforge.common.MinecraftForge;
-
 import com.carpentersblocks.CarpentersBlocksCachedResources;
 import com.carpentersblocks.entity.item.EntityCarpentersTile;
 import com.carpentersblocks.renderer.entity.RenderCarpentersTile;
 import com.carpentersblocks.util.handler.OptifineHandler;
 import com.carpentersblocks.util.handler.ShadersHandler;
 import com.carpentersblocks.util.registry.IconRegistry;
-
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.event.FMLInitializationEvent;

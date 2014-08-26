@@ -2,7 +2,6 @@ package com.carpentersblocks.entity.item;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;

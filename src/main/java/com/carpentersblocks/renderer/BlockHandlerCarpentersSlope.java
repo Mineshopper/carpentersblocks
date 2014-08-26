@@ -8,10 +8,8 @@ import static com.carpentersblocks.renderer.helper.VertexHelper.SOUTHEAST;
 import static com.carpentersblocks.renderer.helper.VertexHelper.SOUTHWEST;
 import static com.carpentersblocks.renderer.helper.VertexHelper.TOP_LEFT;
 import static com.carpentersblocks.renderer.helper.VertexHelper.TOP_RIGHT;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDirectional;
 import net.minecraft.block.material.Material;
@@ -21,9 +19,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-
 import org.lwjgl.opengl.GL11;
-
 import com.carpentersblocks.block.BlockCarpentersSlope;
 import com.carpentersblocks.block.BlockCoverable;
 import com.carpentersblocks.data.Slope;
@@ -38,15 +34,11 @@ import com.carpentersblocks.renderer.helper.slope.orthogonal.HelperOrthoWedge;
 import com.carpentersblocks.renderer.helper.slope.orthogonal.HelperTriangle;
 import com.carpentersblocks.util.BlockProperties;
 import com.carpentersblocks.util.registry.IconRegistry;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class BlockHandlerCarpentersSlope extends BlockHandlerSloped {
-
-    /** Returns whether side is sloped face. */
-    public boolean           isSideSloped;
 
     /* Render IDs */
 

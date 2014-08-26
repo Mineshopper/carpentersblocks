@@ -1,7 +1,6 @@
 package com.carpentersblocks.tileentity;
 
 import java.util.UUID;
-
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;

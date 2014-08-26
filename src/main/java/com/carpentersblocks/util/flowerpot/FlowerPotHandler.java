@@ -2,7 +2,6 @@ package com.carpentersblocks.util.flowerpot;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.init.Blocks;

@@ -1,7 +1,6 @@
 package com.carpentersblocks.util.registry;
 
 import java.util.ArrayList;
-
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;

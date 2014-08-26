@@ -2,7 +2,6 @@ package com.carpentersblocks.util.handler;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockGrass;
 import net.minecraft.client.renderer.RenderBlocks;

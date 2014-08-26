@@ -1,10 +1,8 @@
 package com.carpentersblocks.util.handler;
 
 import org.apache.logging.log4j.Level;
-
 import com.carpentersblocks.renderer.helper.LightingHelper;
 import com.carpentersblocks.util.ModLogger;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 

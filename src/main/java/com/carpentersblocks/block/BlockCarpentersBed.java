@@ -2,7 +2,6 @@ package com.carpentersblocks.block;
 
 import java.util.Iterator;
 import java.util.Random;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;

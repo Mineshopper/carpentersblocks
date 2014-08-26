@@ -1,7 +1,6 @@
 package com.carpentersblocks.util.registry;
 
 import java.util.ArrayList;
-
 import net.minecraft.util.IIcon;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import com.carpentersblocks.CarpentersBlocks;

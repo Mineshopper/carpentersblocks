@@ -3,10 +3,8 @@ package com.carpentersblocks.util.protection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
-
 import com.mojang.authlib.Agent;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.ProfileLookupCallback;
