@@ -10,7 +10,9 @@
 /mcp/src/*
 !/mcp/src/minecraft
 /mcp/src/minecraft/*
-!/mcp/src/minecraft/carpentersblocks
+!/mcp/src/minecraft/com
+/mcp/src/minecraft/com/*
+!mcp/src/minecraft/com/carpentersblocks
 !/mcp/src/minecraft/assets
 /mcp/src/minecraft/assets/*
 !/mcp/src/minecraft/assets/carpentersblocks
