@@ -1,0 +1,58 @@
+# Carpenter's Blocks Language File = South Korea - Korean
+
+# CREATIVE TAB
+itemGroup.carpentersBlocks.name=Carpenter's Blocks
+
+# ITEMS
+item.itemCarpentersHammer.name=목수의 망치
+item.itemCarpentersChisel.name=목수의 징
+item.itemCarpentersDoor.name=목수의 문
+item.itemCarpentersBed.name=목수의 침대
+item.itemCarpentersTile.name=목수의 타일
+
+# BLOCKS
+tile.blockCarpentersBarrier.name=목수의 울타리
+tile.blockCarpentersBed.name=목수의 침대
+tile.blockCarpentersBlock.name=목수의 블럭
+tile.blockCarpentersButton.name=목수의 버튼
+tile.blockCarpentersDaylightSensor.name=목수의 햇빛 감지기
+tile.blockCarpentersCollapsibleBlock.name=목수의 기울어진 블럭
+tile.blockCarpentersDoor.name=목수의 문
+tile.blockCarpentersGate.name=목수의 게이트
+tile.blockCarpentersHatch.name=목수의 다락문
+tile.blockCarpentersLadder.name=목수의 사다리
+tile.blockCarpentersLever.name=목수의 레버
+tile.blockCarpentersPressurePlate.name=목수의 감압판
+tile.blockCarpentersSlope.wedge.name=목수의 슬로프
+tile.blockCarpentersSlope.obliqueInterior.name=목수의 인테리어 슬로프
+tile.blockCarpentersSlope.obliqueExterior.name=목수의 익스테리어 슬로프
+tile.blockCarpentersSlope.prism.name=목수의 프리즘 슬로프
+tile.blockCarpentersSlope.prismWedge.name=목수의 프리즘 웻지 슬로프
+tile.blockCarpentersStairs.name=목수의 계단
+tile.blockCarpentersTorch.name=목수의 횃불
+tile.blockCarpentersSafe.name=목수의 금고
+tile.blockCarpentersFlowerPot.name=목수의 화분
+
+# ENTITIES
+entity.CarpentersTile.name=목수의 타일
+
+# MESSAGES
+message.polarity_pos.name=레드스톤: 보통
+message.polarity_neg.name=레드스톤: 거꾸로
+message.activation_iron.name=인식: 철 문
+message.activation_wood.name=인식: 나무 문
+message.trigger_player.name=발동 대상: 플레이어
+message.trigger_monster.name=발동 대상: 몹
+message.trigger_animal.name=발동 대상: 동물들
+message.trigger_all.name=발동 대상: 모두
+message.safe_lock.name=컨트롤: 금고 잠김
+message.safe_unlock.name=컨트롤: 금고 열림
+message.automation_all.name=자동화 관련: 아이템들은 파이프로 넣었다가 뺄 수 있습니다.
+message.automation_disabled.name=자동화 관련: 비활성화
+message.automation_insert.name=자동화: 아이템을 넣기만 할 수 있습니다.
+message.automation_extract.name=자동화: 아이템을 뺄 수만 있습니다.
+message.block_lock.name=컨트롤: 이 블럭은 잠겼습니다.
+message.sensitivity_sleep.name=센시티비티: 플레이어가 잘때 토글됩니다. (일출과 일몰때).
+message.sensitivity_monsters.name=센시티비티: 몬스터가 스폰될 빛에 토글됩니다. (태풍 포함).
+
+# </file>
