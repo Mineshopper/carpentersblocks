@@ -24,6 +24,7 @@ public class ItemRegistry {
 
     public static boolean enableHammer                  = true;
     public static boolean enableChisel                  = true;
+    public static boolean enableTile                    = true;
     public static int     itemCarpentersToolsUses       = 400;
     public static boolean itemCarpentersToolsDamageable = true;
 
@@ -40,8 +41,11 @@ public class ItemRegistry {
     {
         enableHammer                  = config.get("items",            "Enable Hammer",                  enableHammer).getBoolean(enableHammer);
         enableChisel                  = config.get("items",            "Enable Chisel",                  enableChisel).getBoolean(enableChisel);
+        enableTile                    = config.get("items",              "Enable Tile",                    enableTile).getBoolean(enableTile);
         itemCarpentersToolsUses       = config.get("items",        "Vanilla Tool Uses",       itemCarpentersToolsUses).getInt(itemCarpentersToolsUses);
         itemCarpentersToolsDamageable = config.get("items", "Vanilla Tools Damageable", itemCarpentersToolsDamageable).getBoolean(itemCarpentersToolsDamageable);
+
+        recipeQuantityTile = config.get("recipe quantities", "Tile", recipeQuantityTile).getInt(recipeQuantityTile);
 
         itemHammerDamageChanceFromSlopes      = config.get("items",      "itemHammerDamageChanceFromSlopes",      itemHammerDamageChanceFromSlopes).getDouble(     itemHammerDamageChanceFromSlopes);
         itemHammerDamageChanceFromStairs      = config.get("items",      "itemHammerDamageChanceFromStairs",      itemHammerDamageChanceFromStairs).getDouble(     itemHammerDamageChanceFromStairs);
@@ -65,6 +69,10 @@ public class ItemRegistry {
             itemCarpentersChisel = new ItemCarpentersChisel().setUnlocalizedName("itemCarpentersChisel");
             GameRegistry.registerItem(itemCarpentersChisel, "itemCarpentersChisel");
         }
+        if (enableTile) {
+            itemCarpentersTile = new ItemCarpentersTile().setUnlocalizedName("itemCarpentersTile");
+            GameRegistry.registerItem(itemCarpentersTile, "itemCarpentersTile");
+        }
         if (BlockRegistry.enableDoor) {
             itemCarpentersDoor = new ItemCarpentersDoor().setUnlocalizedName("itemCarpentersDoor");
             GameRegistry.registerItem(itemCarpentersDoor, "itemCarpentersDoor");
@@ -72,10 +80,6 @@ public class ItemRegistry {
         if (BlockRegistry.enableBed) {
             itemCarpentersBed = new ItemCarpentersBed().setUnlocalizedName("itemCarpentersBed");
             GameRegistry.registerItem(itemCarpentersBed, "itemCarpentersBed");
-        }
-        if (FeatureRegistry.enableTile) {
-            itemCarpentersTile = new ItemCarpentersTile().setUnlocalizedName("itemCarpentersTile");
-            GameRegistry.registerItem(itemCarpentersTile, "itemCarpentersTile");
         }
     }
 
@@ -87,14 +91,14 @@ public class ItemRegistry {
         if (enableChisel) {
             GameRegistry.addRecipe(new ItemStack(itemCarpentersChisel, 1), new Object[] { "X", "Y", 'X', Items.iron_ingot, 'Y', BlockRegistry.blockCarpentersBlock });
         }
+        if (enableTile) {
+            GameRegistry.addRecipe(new ItemStack(itemCarpentersTile, recipeQuantityTile), new Object[] { "XXX", "YYY", 'X', Blocks.hardened_clay, 'Y', BlockRegistry.blockCarpentersBlock });
+        }
         if (BlockRegistry.enableDoor) {
             GameRegistry.addRecipe(new ItemStack(itemCarpentersDoor, BlockRegistry.recipeQuantityDoor), new Object[] { "XX", "XX", "XX", 'X', BlockRegistry.blockCarpentersBlock });
         }
         if (BlockRegistry.enableBed) {
             GameRegistry.addRecipe(new ItemStack(itemCarpentersBed, BlockRegistry.recipeQuantityBed), new Object[] { "XXX", "YYY", 'X', Blocks.wool, 'Y', BlockRegistry.blockCarpentersBlock });
-        }
-        if (FeatureRegistry.enableTile) {
-            GameRegistry.addRecipe(new ItemStack(itemCarpentersTile, recipeQuantityTile), new Object[] { "XXX", "YYY", 'X', Blocks.hardened_clay, 'Y', BlockRegistry.blockCarpentersBlock });
         }
     }
 

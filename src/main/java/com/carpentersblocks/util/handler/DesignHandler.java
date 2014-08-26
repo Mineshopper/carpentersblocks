@@ -21,6 +21,7 @@ import com.carpentersblocks.util.ModLogger;
 import com.carpentersblocks.util.registry.BlockRegistry;
 import com.carpentersblocks.util.registry.FeatureRegistry;
 import com.carpentersblocks.util.registry.IconRegistry;
+import com.carpentersblocks.util.registry.ItemRegistry;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -127,7 +128,7 @@ public class DesignHandler {
                 IconRegistry.icon_design_flower_pot.add(iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + PATH_FLOWER_POT + iconName));
             }
         }
-        if (FeatureRegistry.enableTile) {
+        if (ItemRegistry.enableTile) {
             for (String iconName : listTile) {
                 IconRegistry.icon_design_tile.add(iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + PATH_TILE + iconName));
             }

@@ -8,14 +8,13 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 public class FeatureRegistry {
 
     public static boolean enableCovers              = true;
-    public static boolean enableOverlay             = true;
+    public static boolean enableOverlays            = true;
     public static boolean enableSideCovers          = true;
-    public static boolean enableDye                 = true;
+    public static boolean enableDyeColors           = true;
     public static boolean enableChiselDesigns       = true;
     public static boolean enableFancyFluids         = true;
     public static boolean enableTorchWeatherEffects = true;
     public static boolean enableOwnership           = true;
-    public static boolean enableTile                = true;
 
     public static ArrayList<String> overlayItems    = new ArrayList<String>();
     public static ArrayList<String> coverExceptions = new ArrayList<String>();
@@ -27,12 +26,11 @@ public class FeatureRegistry {
      */
     public static void preInit(FMLPreInitializationEvent event, Configuration config)
     {
-        enableCovers        = config.get("features",      "Enable Covers",        enableCovers).getBoolean(enableCovers);
-        enableOverlay       = config.get("features",    "Enable Overlays",       enableOverlay).getBoolean(enableOverlay);
-        enableSideCovers    = config.get("features", "Enable Side Covers",    enableSideCovers).getBoolean(enableSideCovers);
-        enableDye           = config.get("features",  "Enable Dye Colors",           enableDye).getBoolean(enableDye);
-        enableChiselDesigns = config.get("features",    "Enable Patterns", enableChiselDesigns).getBoolean(enableChiselDesigns);
-        enableTile          = config.get("features",        "Enable Tile",          enableTile).getBoolean(enableTile);
+        enableCovers        = config.get("features",         "Enable Covers",        enableCovers).getBoolean(enableCovers);
+        enableOverlays      = config.get("features",       "Enable Overlays",      enableOverlays).getBoolean(enableOverlays);
+        enableSideCovers    = config.get("features",    "Enable Side Covers",    enableSideCovers).getBoolean(enableSideCovers);
+        enableDyeColors     = config.get("features",     "Enable Dye Colors",     enableDyeColors).getBoolean(enableDyeColors);
+        enableChiselDesigns = config.get("features", "Enable Chisel Designs", enableChiselDesigns).getBoolean(enableChiselDesigns);
 
         Property fancyFluidsProp = config.get("features", "Enable Fancy Fluids", enableFancyFluids);
         fancyFluidsProp.comment = "When enabled, unobstructed stationary fluid adjacent to block will render in the same space.\nNote: this only takes effect when Fancy Graphics are enabled.";
