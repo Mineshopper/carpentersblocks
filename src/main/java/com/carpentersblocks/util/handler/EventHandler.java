@@ -120,12 +120,12 @@ public class EventHandler {
                      */
 
                     if (eventEntityPlayer.isSneaking()) {
-
                         if (!(itemStack != null && itemStack.getItem() instanceof ItemBlock && !BlockProperties.isOverlay(itemStack))) {
-                            event.setCanceled(true);
-                            PacketHandler.sendPacketToServer(new PacketActivateBlock(event.x, event.y, event.z, event.face));
+                            event.setCanceled(true); // Normally prevents server event, but sometimes it doesn't, so check below
+                            if (event.entity.worldObj.isRemote) {
+                                PacketHandler.sendPacketToServer(new PacketActivateBlock(event.x, event.y, event.z, event.face));
+                            }
                         }
-
                     }
 
                     break;
