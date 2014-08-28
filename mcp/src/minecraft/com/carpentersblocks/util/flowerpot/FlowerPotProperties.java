@@ -7,11 +7,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.IShearable;
-
 import com.carpentersblocks.tileentity.TEBase;
 import com.carpentersblocks.tileentity.TECarpentersFlowerPot;
 import com.carpentersblocks.util.BlockProperties;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 

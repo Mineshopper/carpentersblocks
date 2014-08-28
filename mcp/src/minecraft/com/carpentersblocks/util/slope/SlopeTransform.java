@@ -3,7 +3,6 @@ package com.carpentersblocks.util.slope;
 import net.minecraft.block.Block;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
-
 import com.carpentersblocks.block.BlockCarpentersSlope;
 import com.carpentersblocks.data.Slope;
 import com.carpentersblocks.data.Slope.Face;

@@ -3,9 +3,7 @@ package com.carpentersblocks.renderer.helper;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.util.Icon;
 import net.minecraftforge.common.ForgeDirection;
-
 import com.carpentersblocks.util.collapsible.CollapsibleUtil;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 

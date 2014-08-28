@@ -2,7 +2,6 @@ package com.carpentersblocks.util;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import cpw.mods.fml.common.FMLLog;
 
 public class ModLogger {

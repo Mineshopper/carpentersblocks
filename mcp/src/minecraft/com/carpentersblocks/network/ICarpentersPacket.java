@@ -3,7 +3,6 @@ package com.carpentersblocks.network;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-
 import net.minecraft.entity.player.EntityPlayer;
 
 public interface ICarpentersPacket {

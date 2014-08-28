@@ -5,7 +5,6 @@ import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-
 import com.carpentersblocks.data.Safe;
 
 public class TECarpentersSafe extends TEBase implements ISidedInventory {

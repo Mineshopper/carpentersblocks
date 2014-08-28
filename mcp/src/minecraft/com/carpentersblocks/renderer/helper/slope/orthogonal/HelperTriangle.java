@@ -3,9 +3,7 @@ package com.carpentersblocks.renderer.helper.slope.orthogonal;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.util.Icon;
 import net.minecraftforge.common.ForgeDirection;
-
 import com.carpentersblocks.renderer.helper.RenderHelper;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 

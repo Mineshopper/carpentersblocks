@@ -1,7 +1,6 @@
 package com.carpentersblocks.block;
 
 import java.util.List;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
@@ -13,14 +12,12 @@ import net.minecraft.util.Icon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
-
 import com.carpentersblocks.data.Slab;
 import com.carpentersblocks.tileentity.TEBase;
 import com.carpentersblocks.util.BlockProperties;
 import com.carpentersblocks.util.handler.EventHandler;
 import com.carpentersblocks.util.registry.BlockRegistry;
 import com.carpentersblocks.util.registry.IconRegistry;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 

@@ -5,7 +5,6 @@ import net.minecraft.block.BlockCrops;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Icon;
-
 import com.carpentersblocks.block.BlockCoverable;
 import com.carpentersblocks.renderer.helper.RenderHelperFlowerPot;
 import com.carpentersblocks.tileentity.TECarpentersFlowerPot;
@@ -14,7 +13,6 @@ import com.carpentersblocks.util.flowerpot.FlowerPotHandler;
 import com.carpentersblocks.util.flowerpot.FlowerPotProperties;
 import com.carpentersblocks.util.handler.DesignHandler;
 import com.carpentersblocks.util.registry.IconRegistry;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 

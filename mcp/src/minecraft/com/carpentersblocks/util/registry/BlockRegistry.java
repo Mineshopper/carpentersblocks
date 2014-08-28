@@ -6,7 +6,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.oredict.ShapedOreRecipe;
-
 import com.carpentersblocks.CarpentersBlocks;
 import com.carpentersblocks.block.BlockCarpentersBarrier;
 import com.carpentersblocks.block.BlockCarpentersBed;
@@ -44,7 +43,6 @@ import com.carpentersblocks.renderer.BlockHandlerCarpentersSlope;
 import com.carpentersblocks.renderer.BlockHandlerCarpentersStairs;
 import com.carpentersblocks.renderer.BlockHandlerCarpentersTorch;
 import com.carpentersblocks.util.BlockProperties;
-
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;

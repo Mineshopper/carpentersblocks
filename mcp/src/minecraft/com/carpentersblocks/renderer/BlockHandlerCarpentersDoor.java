@@ -3,10 +3,8 @@ package com.carpentersblocks.renderer;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.ForgeDirection;
-
 import com.carpentersblocks.data.Hinge;
 import com.carpentersblocks.util.registry.IconRegistry;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 

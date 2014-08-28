@@ -6,12 +6,10 @@ import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
-
 import com.carpentersblocks.block.BlockCarpentersBarrier;
 import com.carpentersblocks.data.Barrier;
 import com.carpentersblocks.tileentity.TEBase;
 import com.carpentersblocks.util.registry.BlockRegistry;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 

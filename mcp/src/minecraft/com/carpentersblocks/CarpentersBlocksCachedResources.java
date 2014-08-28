@@ -11,19 +11,14 @@ import java.util.logging.Level;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
-
 import javax.imageio.ImageIO;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.ResourcePackFileNotFoundException;
 import net.minecraft.client.resources.SimpleReloadableResourceManager;
-
 import org.apache.commons.io.FilenameUtils;
-
 import com.carpentersblocks.util.ModLogger;
 import com.carpentersblocks.util.handler.DesignHandler;
 import com.google.common.base.Charsets;
-
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.client.FMLFileResourcePack;
 import cpw.mods.fml.common.DummyModContainer;

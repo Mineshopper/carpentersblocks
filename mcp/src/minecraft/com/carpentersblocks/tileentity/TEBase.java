@@ -9,7 +9,6 @@ import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.Packet132TileEntityData;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-
 import com.carpentersblocks.util.protection.IProtected;
 
 public class TEBase extends TileEntity implements IProtected {

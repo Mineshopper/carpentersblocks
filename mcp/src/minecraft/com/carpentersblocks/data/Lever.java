@@ -3,7 +3,6 @@ package com.carpentersblocks.data;
 import net.minecraft.block.material.Material;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
-
 import com.carpentersblocks.tileentity.TEBase;
 import com.carpentersblocks.util.BlockProperties;
 

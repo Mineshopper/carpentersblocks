@@ -6,12 +6,10 @@ import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
-
 import com.carpentersblocks.data.Torch;
 import com.carpentersblocks.tileentity.TEBase;
 import com.carpentersblocks.tileentity.TECarpentersTorch;
 import com.carpentersblocks.util.BlockProperties;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 

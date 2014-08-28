@@ -3,10 +3,8 @@ package com.carpentersblocks.network;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
-
 import com.carpentersblocks.data.FlowerPot;
 import com.carpentersblocks.tileentity.TECarpentersFlowerPot;
 

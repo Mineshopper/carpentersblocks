@@ -13,14 +13,11 @@ import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Icon;
 import net.minecraftforge.common.ForgeDirection;
-
 import org.lwjgl.opengl.GL11;
-
 import com.carpentersblocks.renderer.helper.LightingHelper;
 import com.carpentersblocks.renderer.helper.RenderHelper;
 import com.carpentersblocks.renderer.helper.RenderHelperCollapsible;
 import com.carpentersblocks.util.collapsible.CollapsibleUtil;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 

@@ -2,7 +2,6 @@ package com.carpentersblocks.entity.item;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -16,7 +15,6 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
-
 import com.carpentersblocks.api.ICarpentersHammer;
 import com.carpentersblocks.util.BlockProperties;
 import com.carpentersblocks.util.handler.DesignHandler;
@@ -24,7 +22,6 @@ import com.carpentersblocks.util.handler.DyeHandler;
 import com.carpentersblocks.util.protection.PlayerPermissions;
 import com.carpentersblocks.util.registry.IconRegistry;
 import com.carpentersblocks.util.registry.ItemRegistry;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 

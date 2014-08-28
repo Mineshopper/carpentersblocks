@@ -8,17 +8,13 @@ import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-
 import javax.imageio.ImageIO;
-
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.client.resources.ResourceManager;
 import net.minecraft.util.Icon;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.classloading.FMLForgePlugin;
-
 import org.apache.commons.io.FileUtils;
-
 import com.carpentersblocks.CarpentersBlocks;
 import com.carpentersblocks.CarpentersBlocksCachedResources;
 import com.carpentersblocks.util.ModLogger;
@@ -26,7 +22,6 @@ import com.carpentersblocks.util.registry.BlockRegistry;
 import com.carpentersblocks.util.registry.FeatureRegistry;
 import com.carpentersblocks.util.registry.IconRegistry;
 import com.carpentersblocks.util.registry.ItemRegistry;
-
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

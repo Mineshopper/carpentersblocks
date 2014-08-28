@@ -5,12 +5,10 @@ import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.world.World;
-
 import com.carpentersblocks.CarpentersBlocks;
 import com.carpentersblocks.api.ICarpentersChisel;
 import com.carpentersblocks.block.BlockCoverable;
 import com.carpentersblocks.util.registry.ItemRegistry;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 

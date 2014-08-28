@@ -4,13 +4,11 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.Configuration;
-
 import com.carpentersblocks.item.ItemCarpentersBed;
 import com.carpentersblocks.item.ItemCarpentersChisel;
 import com.carpentersblocks.item.ItemCarpentersDoor;
 import com.carpentersblocks.item.ItemCarpentersHammer;
 import com.carpentersblocks.item.ItemCarpentersTile;
-
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.registry.GameRegistry;

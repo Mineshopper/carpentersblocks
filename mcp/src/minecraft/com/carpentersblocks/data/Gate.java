@@ -2,7 +2,6 @@ package com.carpentersblocks.data;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
-
 import com.carpentersblocks.tileentity.TEBase;
 import com.carpentersblocks.util.BlockProperties;
 

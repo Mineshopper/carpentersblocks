@@ -3,13 +3,11 @@ package com.carpentersblocks.renderer;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.item.ItemStack;
-
 import com.carpentersblocks.data.DaylightSensor;
 import com.carpentersblocks.renderer.helper.LightingHelper;
 import com.carpentersblocks.renderer.helper.RenderHelper;
 import com.carpentersblocks.util.BlockProperties;
 import com.carpentersblocks.util.registry.IconRegistry;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 

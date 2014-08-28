@@ -2,7 +2,6 @@ package com.carpentersblocks.block;
 
 import java.util.Iterator;
 import java.util.Random;
-
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.Entity;
@@ -13,7 +12,6 @@ import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
-
 import com.carpentersblocks.CarpentersBlocks;
 import com.carpentersblocks.data.Bed;
 import com.carpentersblocks.tileentity.TEBase;
@@ -22,7 +20,6 @@ import com.carpentersblocks.util.handler.ChatHandler;
 import com.carpentersblocks.util.registry.BlockRegistry;
 import com.carpentersblocks.util.registry.IconRegistry;
 import com.carpentersblocks.util.registry.ItemRegistry;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 

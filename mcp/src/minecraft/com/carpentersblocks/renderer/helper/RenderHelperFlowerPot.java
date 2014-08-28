@@ -5,12 +5,10 @@ import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Icon;
-
 import com.carpentersblocks.data.FlowerPot;
 import com.carpentersblocks.renderer.BlockHandlerBase;
 import com.carpentersblocks.util.BlockProperties;
 import com.carpentersblocks.util.flowerpot.FlowerPotProperties;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 

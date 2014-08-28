@@ -1,15 +1,12 @@
 package com.carpentersblocks.util.registry;
 
 import java.util.ArrayList;
-
 import net.minecraft.util.Icon;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.event.ForgeSubscribe;
-
 import com.carpentersblocks.CarpentersBlocks;
 import com.carpentersblocks.CarpentersBlocksCachedResources;
 import com.carpentersblocks.util.handler.DesignHandler;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 

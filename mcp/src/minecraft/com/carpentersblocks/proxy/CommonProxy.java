@@ -2,7 +2,6 @@ package com.carpentersblocks.proxy;
 
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
-
 import com.carpentersblocks.CarpentersBlocks;
 import com.carpentersblocks.entity.item.EntityCarpentersTile;
 import com.carpentersblocks.tileentity.TEBase;
@@ -16,7 +15,6 @@ import com.carpentersblocks.util.handler.OverlayHandler;
 import com.carpentersblocks.util.registry.BlockRegistry;
 import com.carpentersblocks.util.registry.FeatureRegistry;
 import com.carpentersblocks.util.registry.ItemRegistry;
-
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.registry.EntityRegistry;

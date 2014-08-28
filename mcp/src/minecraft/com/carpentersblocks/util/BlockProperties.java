@@ -15,7 +15,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
-
 import com.carpentersblocks.CarpentersBlocks;
 import com.carpentersblocks.block.BlockCoverable;
 import com.carpentersblocks.tileentity.TEBase;
@@ -23,7 +22,6 @@ import com.carpentersblocks.util.handler.DesignHandler;
 import com.carpentersblocks.util.handler.DyeHandler;
 import com.carpentersblocks.util.handler.OverlayHandler;
 import com.carpentersblocks.util.registry.FeatureRegistry;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 

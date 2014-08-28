@@ -2,7 +2,6 @@ package com.carpentersblocks.data;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-
 import com.carpentersblocks.tileentity.TEBase;
 import com.carpentersblocks.util.BlockProperties;
 

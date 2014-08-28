@@ -7,7 +7,6 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet132TileEntityData;
 import net.minecraft.world.World;
-
 import com.carpentersblocks.data.FlowerPot;
 
 public class TECarpentersFlowerPot extends TEBase {

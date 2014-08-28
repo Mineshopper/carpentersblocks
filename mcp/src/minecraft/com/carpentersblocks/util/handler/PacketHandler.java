@@ -7,18 +7,15 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet250CustomPayload;
-
 import com.carpentersblocks.CarpentersBlocks;
 import com.carpentersblocks.network.ICarpentersPacket;
 import com.carpentersblocks.network.PacketActivateBlock;
 import com.carpentersblocks.network.PacketEnrichPlant;
 import com.carpentersblocks.network.PacketSlopeSelect;
-
 import cpw.mods.fml.common.network.IPacketHandler;
 import cpw.mods.fml.common.network.Player;
 

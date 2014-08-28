@@ -2,7 +2,6 @@ package com.carpentersblocks.tileentity;
 
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet132TileEntityData;
-
 import com.carpentersblocks.data.Torch;
 import com.carpentersblocks.data.Torch.State;
 import com.carpentersblocks.renderer.helper.ParticleHelper;

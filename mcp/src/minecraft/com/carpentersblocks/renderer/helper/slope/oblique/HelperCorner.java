@@ -3,10 +3,8 @@ package com.carpentersblocks.renderer.helper.slope.oblique;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.util.Icon;
 import net.minecraftforge.common.ForgeDirection;
-
 import com.carpentersblocks.data.Slope;
 import com.carpentersblocks.renderer.helper.RenderHelper;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 

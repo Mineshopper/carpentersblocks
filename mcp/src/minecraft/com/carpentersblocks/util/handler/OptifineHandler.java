@@ -2,12 +2,9 @@ package com.carpentersblocks.util.handler;
 
 import java.lang.reflect.Method;
 import java.util.logging.Level;
-
 import net.minecraft.block.Block;
 import net.minecraft.world.IBlockAccess;
-
 import com.carpentersblocks.util.ModLogger;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 

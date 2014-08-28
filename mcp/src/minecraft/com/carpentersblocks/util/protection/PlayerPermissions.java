@@ -2,7 +2,6 @@ package com.carpentersblocks.util.protection;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-
 import com.carpentersblocks.util.registry.FeatureRegistry;
 
 public class PlayerPermissions {

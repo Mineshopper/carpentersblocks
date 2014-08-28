@@ -6,12 +6,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Icon;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.common.ForgeDirection;
-
 import com.carpentersblocks.data.Torch;
 import com.carpentersblocks.renderer.helper.VertexHelper;
 import com.carpentersblocks.util.BlockProperties;
 import com.carpentersblocks.util.registry.IconRegistry;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 

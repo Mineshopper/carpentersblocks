@@ -11,7 +11,6 @@ import net.minecraft.util.Icon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
-
 import com.carpentersblocks.CarpentersBlocks;
 import com.carpentersblocks.data.Lever;
 import com.carpentersblocks.data.Lever.Axis;
@@ -20,7 +19,6 @@ import com.carpentersblocks.util.BlockProperties;
 import com.carpentersblocks.util.handler.ChatHandler;
 import com.carpentersblocks.util.registry.BlockRegistry;
 import com.carpentersblocks.util.registry.IconRegistry;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 

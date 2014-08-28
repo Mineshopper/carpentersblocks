@@ -4,10 +4,8 @@ import net.minecraft.block.Block;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.Icon;
 import net.minecraftforge.common.ForgeDirection;
-
 import com.carpentersblocks.renderer.helper.LightingHelper;
 import com.carpentersblocks.renderer.helper.RenderHelper;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 

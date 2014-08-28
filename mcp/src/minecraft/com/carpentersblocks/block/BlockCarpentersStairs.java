@@ -1,7 +1,6 @@
 package com.carpentersblocks.block;
 
 import java.util.List;
-
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -14,7 +13,6 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
-
 import com.carpentersblocks.data.Stairs;
 import com.carpentersblocks.tileentity.TEBase;
 import com.carpentersblocks.util.BlockProperties;
@@ -23,7 +21,6 @@ import com.carpentersblocks.util.registry.IconRegistry;
 import com.carpentersblocks.util.registry.ItemRegistry;
 import com.carpentersblocks.util.stairs.StairsTransform;
 import com.carpentersblocks.util.stairs.StairsUtil;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 

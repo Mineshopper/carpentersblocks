@@ -1,7 +1,6 @@
 package com.carpentersblocks.util.slope;
 
 import net.minecraftforge.common.ForgeDirection;
-
 import com.carpentersblocks.data.Slope;
 import com.carpentersblocks.util.registry.FeatureRegistry;
 

@@ -6,10 +6,8 @@ import static net.minecraftforge.common.ForgeDirection.NORTH;
 import static net.minecraftforge.common.ForgeDirection.SOUTH;
 import static net.minecraftforge.common.ForgeDirection.UP;
 import static net.minecraftforge.common.ForgeDirection.WEST;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import net.minecraftforge.common.ForgeDirection;
 
 public class Slope {

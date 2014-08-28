@@ -11,9 +11,7 @@ import net.minecraft.util.Icon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.ForgeDirection;
-
 import org.lwjgl.opengl.GL11;
-
 import com.carpentersblocks.block.BlockCoverable;
 import com.carpentersblocks.renderer.helper.FancyFluidsHelper;
 import com.carpentersblocks.renderer.helper.LightingHelper;
@@ -28,7 +26,6 @@ import com.carpentersblocks.util.handler.OverlayHandler;
 import com.carpentersblocks.util.handler.OverlayHandler.Overlay;
 import com.carpentersblocks.util.registry.FeatureRegistry;
 import com.carpentersblocks.util.registry.IconRegistry;
-
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
