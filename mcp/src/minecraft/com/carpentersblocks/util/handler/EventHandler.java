@@ -19,7 +19,6 @@ import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.PlaySoundAtEntityEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-
 import com.carpentersblocks.CarpentersBlocks;
 import com.carpentersblocks.api.ICarpentersChisel;
 import com.carpentersblocks.api.ICarpentersHammer;
@@ -31,7 +30,6 @@ import com.carpentersblocks.tileentity.TEBase;
 import com.carpentersblocks.util.BlockProperties;
 import com.carpentersblocks.util.handler.OverlayHandler.Overlay;
 import com.carpentersblocks.util.registry.BlockRegistry;
-
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
@@ -124,12 +122,12 @@ public class EventHandler {
                      */
 
                     if (eventEntityPlayer.isSneaking()) {
-
                         if (!(itemStack != null && itemStack.getItem() instanceof ItemBlock && !BlockProperties.isOverlay(itemStack))) {
-                            event.setCanceled(true);
-                            PacketHandler.sendPacketToServer(new PacketActivateBlock(event.x, event.y, event.z, event.face));
+                            event.setCanceled(true); // Normally prevents server event, but sometimes it doesn't, so check below
+                            if (event.entity.worldObj.isRemote) {
+                                PacketHandler.sendPacketToServer(new PacketActivateBlock(event.x, event.y, event.z, event.face));
+                            }
                         }
-
                     }
 
                     break;
