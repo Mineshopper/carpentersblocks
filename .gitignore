@@ -10,6 +10,7 @@
 /mcp/src/*
 !/mcp/src/minecraft
 /mcp/src/minecraft/*
+!/mcp/src/minecraft/mcmod.info
 !/mcp/src/minecraft/com
 /mcp/src/minecraft/com/*
 !mcp/src/minecraft/com/carpentersblocks
