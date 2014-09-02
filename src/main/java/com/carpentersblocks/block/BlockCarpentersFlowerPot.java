@@ -482,7 +482,6 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
         if (TE != null && TE instanceof TECarpentersFlowerPot) {
             if (FlowerPot.isEnriched(TE)) {
                 ret.add(new ItemStack(Items.dye, 1, 15));
-                System.out.println("DEBUG: Adding bonemeal to drop.");
             }
             if (FlowerPotProperties.hasPlant(TE)) {
                 ret.add(FlowerPotProperties.getPlant(TE));
