@@ -49,20 +49,27 @@ public class TEBase extends TileEntity implements IProtected {
 
         NBTTagList itemstack_list = nbt.getTagList(TAG_ITEMSTACKS, 10);
 
-        cover   = new ItemStack[7];
-        dye     = new ItemStack[7];
+        cover = new ItemStack[7];
+        dye = new ItemStack[7];
         overlay = new ItemStack[7];
 
         for (int idx = 0; idx < itemstack_list.tagCount(); ++idx)
         {
             NBTTagCompound nbt1 = itemstack_list.getCompoundTagAt(idx);
+            ItemStack tempStack = ItemStack.loadItemStackFromNBT(nbt1);
+
+            /*
+             * All ItemStacks pre-3.2.7 DEV R3 stored original
+             * stack sizes, reduce them here.
+             */
+            tempStack.stackSize = 1;
 
             if (itemstack_list.getCompoundTagAt(idx).hasKey(TAG_COVER)) {
-                cover[nbt1.getByte(TAG_COVER) & 255] = ItemStack.loadItemStackFromNBT(nbt1);
+                cover[nbt1.getByte(TAG_COVER) & 255] = tempStack;
             } else if (itemstack_list.getCompoundTagAt(idx).hasKey(TAG_DYE)) {
-                dye[nbt1.getByte(TAG_DYE) & 255] = ItemStack.loadItemStackFromNBT(nbt1);
+                dye[nbt1.getByte(TAG_DYE) & 255] = tempStack;
             } else if (itemstack_list.getCompoundTagAt(idx).hasKey(TAG_OVERLAY)) {
-                overlay[nbt1.getByte(TAG_OVERLAY) & 255] = ItemStack.loadItemStackFromNBT(nbt1);
+                overlay[nbt1.getByte(TAG_OVERLAY) & 255] = tempStack;
             }
         }
 
@@ -71,8 +78,8 @@ public class TEBase extends TileEntity implements IProtected {
         }
 
         metadata = nbt.getShort(TAG_METADATA);
-        design   = nbt.getString(TAG_DESIGN);
-        owner    = nbt.getString(TAG_OWNER);
+        design = nbt.getString(TAG_DESIGN);
+        owner = nbt.getString(TAG_OWNER);
 
         /*
          * Attempt to update owner name to new UUID format.

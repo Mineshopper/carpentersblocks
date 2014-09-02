@@ -1,6 +1,6 @@
 package com.carpentersblocks.block;
 
-import net.minecraft.block.Block;
+import java.util.ArrayList;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
@@ -216,34 +216,37 @@ public class BlockCarpentersSafe extends BlockCoverable {
         return false;
     }
 
-    @Override
     /**
-     * ejects contained items into the world, and notifies neighbours of an update, as appropriate
+     * This returns a complete list of items dropped from this block.
+     *
+     * @param world The current world
+     * @param x X Position
+     * @param y Y Position
+     * @param z Z Position
+     * @param metadata Current metadata
+     * @param fortune Breakers fortune level
+     * @return A ArrayList containing all items this block drops
      */
-    public void breakBlock(World world, int x, int y, int z, Block block, int metadata)
+    @Override
+    public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int metadata, int fortune)
     {
+        ArrayList<ItemStack> ret = super.getDrops(world, x, y, z, metadata, fortune);
         TEBase TE = getSimpleTileEntity(world, x, y, z);
 
-        if (TE != null) {
-
+        if (TE != null && TE instanceof TECarpentersSafe) {
             TECarpentersSafe TE_safe = (TECarpentersSafe) TE;
-
-            if (TE_safe.hasUpgrade()) {
-                BlockProperties.ejectEntity(TE, new ItemStack(Items.gold_ingot));
+            if (((TECarpentersSafe)TE).hasUpgrade()) {
+                ret.add(new ItemStack(Items.gold_ingot));
             }
-
-            for (int slot = 0; slot < TE_safe.getSizeInventory(); ++slot)
-            {
+            for (int slot = 0; slot < TE_safe.getSizeInventory(); ++slot) {
                 ItemStack itemStack = TE_safe.getStackInSlot(slot);
-
                 if (itemStack != null) {
-                    BlockProperties.ejectEntity(TE, itemStack);
+                    ret.add(itemStack);
                 }
             }
-
         }
 
-        super.breakBlock(world, x, y, z, block, metadata);
+        return ret;
     }
 
     @Override
