@@ -59,13 +59,20 @@ public class TEBase extends TileEntity implements IProtected {
         for (int idx = 0; idx < itemstack_list.tagCount(); ++idx)
         {
             NBTTagCompound nbt1 = (NBTTagCompound)itemstack_list.tagAt(idx);
+            ItemStack tempStack = ItemStack.loadItemStackFromNBT(nbt1);
+
+            /*
+             * All ItemStacks pre-3.2.7 DEV R3 stored original
+             * stack sizes, reduce them here.
+             */
+            tempStack.stackSize = 1;
 
             if (((NBTTagCompound)itemstack_list.tagAt(idx)).hasKey(TAG_COVER)) {
-                cover[nbt1.getByte(TAG_COVER)] = ItemStack.loadItemStackFromNBT(nbt1);
+                cover[nbt1.getByte(TAG_COVER)] = tempStack;
             } else if (((NBTTagCompound)itemstack_list.tagAt(idx)).hasKey(TAG_DYE)) {
-                dye[nbt1.getByte(TAG_DYE)] = ItemStack.loadItemStackFromNBT(nbt1);
+                dye[nbt1.getByte(TAG_DYE)] = tempStack;
             } else if (((NBTTagCompound)itemstack_list.tagAt(idx)).hasKey(TAG_OVERLAY)) {
-                overlay[nbt1.getByte(TAG_OVERLAY)] = ItemStack.loadItemStackFromNBT(nbt1);
+                overlay[nbt1.getByte(TAG_OVERLAY)] = tempStack;
             }
         }
 

@@ -8,7 +8,6 @@ import net.minecraft.block.BlockQuartz;
 import net.minecraft.block.BlockRotatedPillar;
 import net.minecraft.block.StepSound;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -25,9 +24,7 @@ import com.carpentersblocks.util.registry.FeatureRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public final class BlockProperties {
-
-    private BlockProperties() { }
+public class BlockProperties {
 
     public final static StepSound stepSound = new StepSound(CarpentersBlocks.MODID, 1.0F, 1.0F);
     public final static int       MASK_DEFAULT_ICON = 0x10;
@@ -35,6 +32,16 @@ public final class BlockProperties {
     public static boolean isMetadataDefaultIcon(int metadata)
     {
         return (metadata & MASK_DEFAULT_ICON) > 0;
+    }
+
+    /**
+     * Creates a block event that drops the provided ItemStack.
+     * Used outside block methods since method required in Block.class is protected.
+     * @param itemStack
+     */
+    public static void dropAttribute(TEBase TE, ItemStack itemStack)
+    {
+        TE.getWorldObj().addBlockEvent(TE.xCoord, TE.yCoord, TE.zCoord, TE.getBlockType().blockID, itemStack.itemID, itemStack.getItemDamage());
     }
 
     /**
@@ -136,30 +143,6 @@ public final class BlockProperties {
      * Will suppress block updates.
      */
     private static boolean suppressUpdate = false;
-
-    /**
-     * Ejects an item at given coordinates.
-     */
-    public static void ejectEntity(TEBase TE, ItemStack itemStack)
-    {
-        World world = TE.getWorldObj();
-
-        if (!world.isRemote) {
-
-            itemStack.stackSize = 1;
-
-            float offset = 0.7F;
-            double xRand = world.rand.nextFloat() * offset + (1.0F - offset) * 0.5D;
-            double yRand = world.rand.nextFloat() * offset + (1.0F - offset) * 0.2D + 0.6D;
-            double zRand = world.rand.nextFloat() * offset + (1.0F - offset) * 0.5D;
-
-            EntityItem entityEjectedItem = new EntityItem(world, TE.xCoord + xRand, TE.yCoord + yRand, TE.zCoord + zRand, itemStack);
-
-            entityEjectedItem.delayBeforeCanPickup = 10;
-            world.spawnEntityInWorld(entityEjectedItem);
-
-        }
-    }
 
     public static boolean hasDesign(TEBase TE)
     {
@@ -343,29 +326,29 @@ public final class BlockProperties {
     }
 
     /**
-     * Converts ItemStack damage to correct value.
+     * Returns cover ItemStack in its default state.
      * Will correct log drop rotation, among other things.
      */
-    public static ItemStack getFilteredBlock(World world, ItemStack itemStack)
+    public static ItemStack getCoverForDrop(ItemStack itemStack)
     {
         if (itemStack != null) {
-
             Block block = toBlock(itemStack);
             int damageDropped = block.damageDropped(itemStack.getItemDamage());
-            Item itemDropped = Item.itemsList[block.idDropped(itemStack.getItemDamage(), world.rand, /* Fortune */ 0)];
+            Item itemDropped = Item.itemsList[block.idDropped(itemStack.getItemDamage(), null, /* Fortune */ 0)];
 
-            /*
-             * Check if block drops itself, and, if so, correct the damage value
-             * to the block's default.
-             */
+            /* Check if block drops itself, and, if so, correct the damage value to the block's default. */
 
             if (itemDropped != null && itemDropped.equals(itemStack.getItem()) && damageDropped != itemStack.getItemDamage()) {
                 itemStack.setItemDamage(damageDropped);
             }
-
         }
 
         return itemStack;
+    }
+
+    public static ItemStack getCoverForDrop(TEBase TE, int side)
+    {
+        return getCoverForDrop(TE.cover[side]);
     }
 
     /**
@@ -376,10 +359,10 @@ public final class BlockProperties {
         World world = TE.getWorldObj();
 
         if (hasCover(TE, side)) {
-            ejectEntity(TE, getFilteredBlock(world, TE.cover[side]));
+            dropAttribute(TE, getCoverForDrop(TE, side));
         }
 
-        TE.cover[side] = itemStack;
+        TE.cover[side] = getReducedStack(itemStack);
 
         int blockID = itemStack == null ? 0 : itemStack.itemID;
         int metadata = itemStack == null ? 0 : itemStack.getItemDamage();
@@ -456,14 +439,16 @@ public final class BlockProperties {
      */
     public static boolean setDye(TEBase TE, int side, ItemStack itemStack)
     {
-        if (TE.dye[side] != null) {
-            ejectEntity(TE, TE.dye[side]);
+        World world = TE.getWorldObj();
+
+        if (hasDye(TE, side)) {
+            dropAttribute(TE, getDye(TE, side));
         }
 
-        TE.dye[side] = itemStack;
+        TE.dye[side] = getReducedStack(itemStack);
 
         if (!suppressUpdate) {
-            TE.getWorldObj().markBlockForUpdate(TE.xCoord, TE.yCoord, TE.zCoord);
+            world.markBlockForUpdate(TE.xCoord, TE.yCoord, TE.zCoord);
         }
 
         return true;
@@ -482,17 +467,33 @@ public final class BlockProperties {
      */
     public static boolean setOverlay(TEBase TE, int side, ItemStack itemStack)
     {
+        World world = TE.getWorldObj();
+
         if (hasOverlay(TE, side)) {
-            ejectEntity(TE, TE.overlay[side]);
+            dropAttribute(TE, getOverlay(TE, side));
         }
 
-        TE.overlay[side] = itemStack;
+        TE.overlay[side] = getReducedStack(itemStack);
 
         if (!suppressUpdate) {
-            TE.getWorldObj().markBlockForUpdate(TE.xCoord, TE.yCoord, TE.zCoord);
+            world.markBlockForUpdate(TE.xCoord, TE.yCoord, TE.zCoord);
         }
 
         return true;
+    }
+
+    /**
+     * Returns a copy of ItemStack with stackSize set to 1.
+     */
+    public static ItemStack getReducedStack(ItemStack itemStack)
+    {
+        if (itemStack == null) {
+            return itemStack;
+        } else {
+            ItemStack tempStack = itemStack.copy();
+            tempStack.stackSize = 1;
+            return tempStack;
+        }
     }
 
     /**

@@ -36,7 +36,7 @@ public class FlowerPot {
                 /* Play fertilize sound. */
                 TE.getWorldObj().playAuxSFX(2005, TE.xCoord, TE.yCoord, TE.zCoord, 0);
             } else {
-                BlockProperties.ejectEntity(TE, new ItemStack(Item.dyePowder, 1, 15));
+                BlockProperties.dropAttribute(TE, new ItemStack(Item.dyePowder, 1, 15));
             }
         }
 

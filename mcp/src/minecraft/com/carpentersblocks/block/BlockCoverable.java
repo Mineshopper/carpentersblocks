@@ -48,6 +48,9 @@ public class BlockCoverable extends BlockContainer {
     /** Used when grabbing light value of covers. */
     protected boolean grabLightValue = false;
 
+    /** Indicates during getDrops that block instance should not be dropped. */
+    private final int METADATA_DROP_ATTR_ONLY = 16;
+
     /**
      * Stores actions taken on a block in order to properly play sounds,
      * decrement player inventory, and to determine if a block was altered.
@@ -143,16 +146,45 @@ public class BlockCoverable extends BlockContainer {
     }
 
     /**
-     * Returns adjacent, similar tile entities that can be used for duplicating
-     * block properties like dye color, pattern, style, etc.
+     * Called when block event is received.
+     *<p>
+     * For the context of this mod, this is used for dropping block attributes
+     * like covers, overlays, dyes, or any other ItemStack.
+     *<p>
+     * It is handled this way because {@link Block#dropBlockAsItem(World,int,int,int,ItemStack) dropBlockAsItem}
+     * is a protected method.
      *
-     * @param  world  the world reference
-     * @param  x      the x coordinate
-     * @param  y      the y coordinate
-     * @param  z      the z coordinate
-     * @return           an array of adjacent, similar tile entities
-     * @see           TEBase
+     * @param  world the {@link World}
+     * @param  x the x coordinate
+     * @param  y the y coordinate
+     * @param  z the z coordinate
+     * @param  itemId the eventId, repurposed
+     * @param  metadata the event parameter, repurposed
+     * @return true if event was handled
      */
+    @Override
+    public boolean onBlockEventReceived(World world, int x, int y, int z, int itemId/*eventId*/, int metadata/*param*/)
+    {
+        ItemStack itemStack = new ItemStack(itemId, 1, metadata);
+
+        if (itemStack != null) {
+            dropBlockAsItem_do(world, x, y, z, itemStack);
+        }
+
+        return true;
+    }
+
+   /**
+    * Returns adjacent, similar tile entities that can be used for duplicating
+    * block properties like dye color, pattern, style, etc.
+    *
+    * @param  world the world reference
+    * @param  x the x coordinate
+    * @param  y the y coordinate
+    * @param  z the z coordinate
+    * @return an array of adjacent, similar tile entities
+    * @see {@link TEBase}
+    */
     protected TEBase[] getAdjacentTileEntities(World world, int x, int y, int z)
     {
         return new TEBase[] {
@@ -895,19 +927,14 @@ public class BlockCoverable extends BlockContainer {
         TEBase TE = getTileEntity(world, x, y, z);
 
         if (TE != null) {
-
             if (BlockProperties.hasCover(TE, 6)) {
-
                 Block block = BlockProperties.toBlock(BlockProperties.getCover(TE, 6));
-
                 if (entity instanceof EntityWither) {
                     return !block.equals(Block.bedrock) && !block.equals(Block.endPortal) && !block.equals(Block.endPortalFrame);
                 } else if (entity instanceof EntityDragon) {
                     return canDragonDestroy(world, x, y, z);
                 }
-
             }
-
         }
 
         return super.canEntityDestroy(world, x, y, z, entity);
@@ -932,21 +959,52 @@ public class BlockCoverable extends BlockContainer {
     /**
      * Ejects contained items into the world, and notifies neighbors of an update, as appropriate
      */
-    public void breakBlock(World world, int x, int y, int z, int blockID, int metadata)
+    public void breakBlock(World world, int x, int y, int z, int blockId, int metadata)
     {
-        if (!world.isRemote) {
+        /*
+         * Drop block contents excluding the block itself.
+         * The block instance is dropped later in destruction code.
+         */
+        dropBlockAsItem(world, x, y, z, METADATA_DROP_ATTR_ONLY, 0);
+        super.breakBlock(world, x, y, z, blockId, metadata);
+    }
 
-            TEBase TE = getSimpleTileEntity(world, x, y, z);
+    /**
+     * This returns a complete list of items dropped from this block.
+     *
+     * @param world The current world
+     * @param x X Position
+     * @param y Y Position
+     * @param z Z Position
+     * @param metadata Current metadata
+     * @param fortune Breakers fortune level
+     * @return A ArrayList containing all items this block drops
+     */
+    @Override
+    public ArrayList<ItemStack> getBlockDropped(World world, int x, int y, int z, int metadata, int fortune)
+    {
+        ArrayList<ItemStack> ret = super.getBlockDropped(world, x, y, z, metadata, fortune);
+        TEBase TE = getSimpleTileEntity(world, x, y, z);
 
-            if (TE != null) {
-                for (int side = 0; side < 7; ++side) {
-                    BlockProperties.ejectAttributes(TE, side);
-                }
-            }
-
+        if (metadata == METADATA_DROP_ATTR_ONLY) {
+            ret.clear(); // Remove block instance from drop list
         }
 
-        super.breakBlock(world, x, y, z, blockID, metadata);
+        if (TE != null) {
+            for (int idx = 0; idx < 7; ++idx) {
+                if (BlockProperties.hasCover(TE, idx)) {
+                    ret.add(BlockProperties.getCoverForDrop(BlockProperties.getCover(TE, idx)));
+                }
+                if (BlockProperties.hasOverlay(TE, idx)) {
+                    ret.add(BlockProperties.getOverlay(TE, idx));
+                }
+                if (BlockProperties.hasDye(TE, idx)) {
+                    ret.add(BlockProperties.getDye(TE, idx));
+                }
+            }
+        }
+
+        return ret;
     }
 
     @Override
@@ -1094,12 +1152,10 @@ public class BlockCoverable extends BlockContainer {
         ItemStack itemStack = entityPlayer.getHeldItem();
 
         if (itemStack != null) {
-
             Item item = itemStack.getItem();
             if (item instanceof ICarpentersHammer || item instanceof ICarpentersChisel) {
                 return -1.0F;
             }
-
         }
 
         /* Return block hardness of cover. */
