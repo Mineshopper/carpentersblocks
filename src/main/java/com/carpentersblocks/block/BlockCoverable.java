@@ -52,10 +52,6 @@ public class BlockCoverable extends BlockContainer {
     /** Indicates during getDrops that block instance should not be dropped. */
     private final int METADATA_DROP_ATTR_ONLY = 16;
 
-    public static final int EVENT_ID_DROP_COVER   = 0;
-    public static final int EVENT_ID_DROP_OVERLAY = 1;
-    public static final int EVENT_ID_DROP_DYE     = 2;
-
     /**
      * Stores actions taken on a block in order to properly play sounds,
      * decrement player inventory, and to determine if a block was altered.
