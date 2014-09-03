@@ -1,7 +1,7 @@
 package com.carpentersblocks.entity.item;
 
-import java.util.UUID;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import com.carpentersblocks.util.protection.IProtected;
@@ -16,16 +16,16 @@ public class EntityBase extends Entity implements IProtected {
         super(world);
     }
 
-    public EntityBase(World world, UUID uuid)
+    public EntityBase(World world, EntityPlayer entityPlayer)
     {
         this(world);
-        setOwner(uuid);
+        setOwner(entityPlayer.getDisplayName());
     }
 
     @Override
-    public void setOwner(UUID uuid)
+    public void setOwner(String owner)
     {
-        getDataWatcher().updateObject(ID_OWNER, new String(uuid.toString()));
+        getDataWatcher().updateObject(ID_OWNER, new String(owner));
     }
 
     @Override

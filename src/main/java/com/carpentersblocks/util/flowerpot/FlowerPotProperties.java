@@ -97,13 +97,14 @@ public class FlowerPotProperties {
      */
     public static boolean setSoil(TEBase TE, ItemStack itemStack)
     {
+        World world = TE.getWorldObj();
+
         if (hasSoil(TE)) {
-            BlockProperties.ejectEntity(TE, ((TECarpentersFlowerPot)TE).soil);
+            BlockProperties.dropAttribute(TE, getSoil(TE));
         }
 
-        ((TECarpentersFlowerPot)TE).soil = itemStack;
+        ((TECarpentersFlowerPot)TE).soil = BlockProperties.getReducedStack(itemStack);
 
-        World world = TE.getWorldObj();
         world.notifyBlocksOfNeighborChange(TE.xCoord, TE.yCoord, TE.zCoord, BlockProperties.toBlock(itemStack));
         world.markBlockForUpdate(TE.xCoord, TE.yCoord, TE.zCoord);
 
@@ -151,13 +152,14 @@ public class FlowerPotProperties {
      */
     public static boolean setPlant(TEBase TE, ItemStack itemStack)
     {
+        World world = TE.getWorldObj();
+
         if (hasPlant(TE)) {
-            BlockProperties.ejectEntity(TE, ((TECarpentersFlowerPot)TE).plant);
+            BlockProperties.dropAttribute(TE, getPlant(TE));
         }
 
-        ((TECarpentersFlowerPot)TE).plant = itemStack;
+        ((TECarpentersFlowerPot)TE).plant = BlockProperties.getReducedStack(itemStack);
 
-        World world = TE.getWorldObj();
         world.notifyBlocksOfNeighborChange(TE.xCoord, TE.yCoord, TE.zCoord, BlockProperties.toBlock(itemStack));
         world.markBlockForUpdate(TE.xCoord, TE.yCoord, TE.zCoord);
 

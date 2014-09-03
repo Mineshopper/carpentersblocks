@@ -1,5 +1,6 @@
 package com.carpentersblocks.block;
 
+import java.util.ArrayList;
 import java.util.Random;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -116,7 +117,7 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
                     actionResult.setAltered();
                 }
 
-                if (FlowerPotProperties.hasPlant(TE)) {
+                if (!actionResult.altered && FlowerPotProperties.hasPlant(TE)) {
                     actionResult.setSoundSource(FlowerPotProperties.getPlant(TE));
                     FlowerPotProperties.setPlant(TE, (ItemStack)null);
                     actionResult.setAltered();
@@ -199,22 +200,16 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
          */
 
         if (world.isRemote) {
-
             TEBase TE = getTileEntity(world, x, y, z);
-
             if (TE != null) {
-
                 ItemStack itemStack = entityPlayer.getCurrentEquippedItem();
-
                 if (itemStack != null && itemStack.getItem().equals(Items.dye) && itemStack.getItemDamage() == 15) {
                     if (!FlowerPot.isEnriched(TE) && FlowerPotProperties.isPlantColorable(TE)) {
                         PacketHandler.sendPacketToServer(new PacketEnrichPlant(x, y, z, FlowerPotProperties.getPlantColor(TE)));
                         return true;
                     }
                 }
-
             }
-
         }
 
         return super.onBlockActivated(world, x, y, z, entityPlayer, side, hitX, hitY, hitZ);
@@ -467,29 +462,36 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
         super.randomDisplayTick(world, x, y, z, random);
     }
 
-    @Override
     /**
-     * Ejects contained items into the world, and notifies neighbors of an update, as appropriate
+     * This returns a complete list of items dropped from this block.
+     *
+     * @param world The current world
+     * @param x X Position
+     * @param y Y Position
+     * @param z Z Position
+     * @param metadata Current metadata
+     * @param fortune Breakers fortune level
+     * @return A ArrayList containing all items this block drops
      */
-    public void breakBlock(World world, int x, int y, int z, Block block, int metadata)
+    @Override
+    public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int metadata, int fortune)
     {
+        ArrayList<ItemStack> ret = super.getDrops(world, x, y, z, metadata, fortune);
         TEBase TE = getSimpleTileEntity(world, x, y, z);
 
         if (TE != null && TE instanceof TECarpentersFlowerPot) {
-
             if (FlowerPot.isEnriched(TE)) {
-                FlowerPot.setEnrichment(TE, false);
+                ret.add(new ItemStack(Items.dye, 1, 15));
             }
             if (FlowerPotProperties.hasPlant(TE)) {
-                FlowerPotProperties.setPlant(TE, (ItemStack)null);
+                ret.add(FlowerPotProperties.getPlant(TE));
             }
             if (FlowerPotProperties.hasSoil(TE)) {
-                FlowerPotProperties.setSoil(TE, (ItemStack)null);
+                ret.add(FlowerPotProperties.getSoil(TE));
             }
-
         }
 
-        super.breakBlock(world, x, y, z, block, metadata);
+        return ret;
     }
 
     @Override

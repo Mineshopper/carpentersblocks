@@ -30,10 +30,19 @@ public class TECarpentersFlowerPot extends TEBase {
 
         for (int idx = 0; idx < list.tagCount(); ++idx)
         {
+            NBTTagCompound nbt1 = list.getCompoundTagAt(idx);
+            ItemStack tempStack = ItemStack.loadItemStackFromNBT(nbt1);
+
+            /*
+             * All ItemStacks pre-3.2.7 DEV R3 stored original
+             * stack sizes, reduce them here.
+             */
+            tempStack.stackSize = 1;
+
             if ((list.getCompoundTagAt(idx)).hasKey(TAG_SOIL)) {
-                soil = ItemStack.loadItemStackFromNBT(list.getCompoundTagAt(idx));
+                soil = tempStack;
             } else if ((list.getCompoundTagAt(idx)).hasKey(TAG_PLANT)) {
-                plant = ItemStack.loadItemStackFromNBT(list.getCompoundTagAt(idx));
+                plant = tempStack;
             }
         }
     }
