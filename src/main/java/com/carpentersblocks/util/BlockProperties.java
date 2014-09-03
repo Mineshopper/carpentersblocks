@@ -361,7 +361,7 @@ public class BlockProperties {
         World world = TE.getWorldObj();
 
         if (hasCover(TE, side)) {
-            dropAttribute(TE, getCover(TE, side));
+            dropAttribute(TE, getCoverForDrop(TE, side));
         }
 
         TE.cover[side] = getReducedStack(itemStack);
