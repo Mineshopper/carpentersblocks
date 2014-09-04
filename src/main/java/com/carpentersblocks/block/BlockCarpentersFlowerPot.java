@@ -201,7 +201,7 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
 
         if (world.isRemote) {
             TEBase TE = getTileEntity(world, x, y, z);
-            if (TE != null) {
+            if (TE != null && FlowerPotProperties.hasPlant(TE)) {
                 ItemStack itemStack = entityPlayer.getCurrentEquippedItem();
                 if (itemStack != null && itemStack.getItem().equals(Items.dye) && itemStack.getItemDamage() == 15) {
                     if (!FlowerPot.isEnriched(TE) && FlowerPotProperties.isPlantColorable(TE)) {

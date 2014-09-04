@@ -18,6 +18,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import com.carpentersblocks.CarpentersBlocks;
 import com.carpentersblocks.block.BlockCoverable;
 import com.carpentersblocks.tileentity.TEBase;
+import com.carpentersblocks.util.handler.ChatHandler;
 import com.carpentersblocks.util.handler.DesignHandler;
 import com.carpentersblocks.util.handler.DyeHandler;
 import com.carpentersblocks.util.handler.OverlayHandler;
@@ -320,7 +321,8 @@ public class BlockProperties {
                    block instanceof BlockSlab ||
                    block instanceof BlockPane ||
                    block instanceof BlockBreakable ||
-                   FeatureRegistry.coverExceptions.contains(itemStack.getDisplayName());
+                   FeatureRegistry.coverExceptions.contains(itemStack.getDisplayName()) ||
+                   FeatureRegistry.coverExceptions.contains(ChatHandler.getDefaultTranslation(itemStack));
 
         }
 
@@ -520,8 +522,8 @@ public class BlockProperties {
      */
     public static boolean isOverlay(ItemStack itemStack)
     {
-        return itemStack.getItem() != null &&
-               OverlayHandler.overlayMap.containsKey(itemStack.getDisplayName());
+        return OverlayHandler.overlayMap.containsKey(itemStack.getDisplayName()) ||
+               OverlayHandler.overlayMap.containsKey(ChatHandler.getDefaultTranslation(itemStack));
     }
 
     /**

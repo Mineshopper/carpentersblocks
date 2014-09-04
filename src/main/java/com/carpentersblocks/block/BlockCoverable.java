@@ -988,7 +988,7 @@ public class BlockCoverable extends BlockContainer {
         if (TE != null) {
             for (int idx = 0; idx < 7; ++idx) {
                 if (BlockProperties.hasCover(TE, idx)) {
-                    ret.add(BlockProperties.getCoverForDrop(BlockProperties.getCover(TE, idx)));
+                    ret.add(BlockProperties.getCoverForDrop(TE, idx));
                 }
                 if (BlockProperties.hasOverlay(TE, idx)) {
                     ret.add(BlockProperties.getOverlay(TE, idx));
