@@ -92,6 +92,11 @@ public class OverlayHandler {
     public static Overlay getOverlayType(ItemStack itemStack)
     {
         Object object = overlayMap.get(itemStack.getDisplayName());
+
+        if (object == null) {
+            object = overlayMap.get(ChatHandler.getDefaultTranslation(itemStack));
+        }
+
         return object == null ? Overlay.NONE : (Overlay) object;
     }
 

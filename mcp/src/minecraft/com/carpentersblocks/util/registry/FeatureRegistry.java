@@ -49,13 +49,13 @@ public class FeatureRegistry {
         enableTorchWeatherEffects = torchWeatherEffectsProp.getBoolean(enableTorchWeatherEffects);
 
         Property overlayList = config.get("features", "Overlay Definitions", new String[] { "Seeds:grass", "Snowball:snow", "String:web", "Vines:vine", "Wheat:hay", "Mushroom:mycelium" });
-        overlayList.comment = "This maps items to overlays.\nItems are prefixed with display names.\nOverlay suffixes are :grass, :snow, :web, :vine, :hay, :mycelium";
+        overlayList.comment = "This maps items to overlays.\nItems are prefixed with display names (en_US only).\nOverlay suffixes are :grass, :snow, :web, :vine, :hay, :mycelium";
         for (String item : overlayList.getStringList()) {
             overlayItems.add(item);
         }
 
         Property coverExceptionList = config.get("features", "Cover Exceptions", new String[] { "Silverwood Planks", "Greatwood Planks" });
-        coverExceptionList.comment = "This allows restricted blocks to be used as covers.\nAdd your own by supplying the display name for the block.";
+        coverExceptionList.comment = "This allows restricted blocks to be used as covers.\nAdd your own by supplying the display name for the block (en_US only).";
         for (String item : coverExceptionList.getStringList()) {
             coverExceptions.add(item);
         }
