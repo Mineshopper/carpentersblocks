@@ -162,6 +162,20 @@ header .inner {
    padding: 10px 5px 0px 0px;
 }
 
+.dropbox {
+   width: 90px;
+   border: 2px solid #007ee5;
+   border-radius: 2px;
+   background: url('../images/dropbox_logo.png') no-repeat scroll 0 0 #007ee5;
+   background-size: 80px;
+   background-position: center;   
+   color: transparent;
+}
+
+.dropbox:hover {
+   opacity: 0.75;
+}
+
 /*******************************************************************************
 Bootstrap Modifications
 *******************************************************************************/
