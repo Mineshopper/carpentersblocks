@@ -46,7 +46,7 @@ title: FAQ
 <h4>Chisel designs, fancy water, ice, colored glass.. none of it renders correctly in 1.7.2 and up, why?</h4>
 
 <div class="indent">
-   <p>After Minecraft 1.6.4, Mojang introduced new alpha rendering code that works great for ordinary blocks, but has proven to be troublesome for mods like this one, causing it to throw PriorityQueue exceptions and crash the game.  Therefore, alpha rendering is currently disabled and the aforementioned features (chisel designs, covers, etc) may not look the way you expect.  This is not a bug, and I am currently looking for ways to resolve it.</p>
+   <p>Minecraft releases in the 1.7 range began sorting quads that rendered in the alpha pass, which required making many adjustments to the mod.  It has been resolved in version 3.2.7.</p>
 </div>
 
 <hr>
@@ -63,7 +63,7 @@ title: FAQ
 <h4>Why won't game NPCs detect barriers, doors, etc?  And why won't leads tie to Carpenter's Barrier posts?</h4>
 
 <div class="indent">
-   <p>Many aspects of Minecraft are hard-coded to certain objects, like horse leads only surviving when tied to vanilla fence posts, and NPCs only detecting vanilla doors.  There are ways around this, but it's currently a low priority.</p>
+   <p>Many aspects of Minecraft are hard-coded to certain objects, like horse leads only surviving when tied to vanilla fence posts, and NPCs only detecting vanilla doors.  It has been determined that any solution to this problem would require a heavy amount of core changes, and is not within the scope of this mod.</p>
 </div>
 
 <hr>
