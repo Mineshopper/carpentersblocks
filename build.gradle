@@ -19,7 +19,7 @@ apply plugin: 'forge'
 
 version = "3.2.8"
 group= "com.carpentersblocks" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "carpentersblocks"
+archivesBaseName = "Carpenters Blocks v"
 
 minecraft {
     version = "1.7.10-10.13.0.1180"
@@ -61,17 +61,7 @@ processResources
     }
 }
 
-task rename(type: Copy) {
-    from('build/libs/')
-    rename { String fileName ->
-        if (fileName.endsWith('jar')) {
-            String minecraftVersion = project.minecraft.version
-            String newMinecraftVersion = minecraftVersion.split("-")[0]
-            String newName = "Carpenter's Blocks v" + project.version + " - MC " + newMinecraftVersion + ".zip"
-            newName
-        }
-    }
-    into('build/')
+jar {
+    archiveName = project.archivesBaseName + project.version + project.minecraft.version + ".zip"
+    destinationDir = project.getBuildDir()
 }
-
-build.dependsOn rename
