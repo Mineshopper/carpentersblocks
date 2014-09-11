@@ -5,8 +5,8 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 import javax.imageio.ImageIO;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.client.resources.IResourceManager;
@@ -55,12 +55,12 @@ public class DesignHandler {
         if (FMLForgePlugin.RUNTIME_DEOBF) {
 
             try {
-                ZipFile zipFile = new ZipFile(event.getSourceFile());
-                Enumeration enumeration = zipFile.entries();
+                JarFile jarFile = new JarFile(event.getSourceFile());
+                Enumeration enumeration = jarFile.entries();
                 while (enumeration.hasMoreElements()) {
                     processPath(((ZipEntry)enumeration.nextElement()).getName());
                 }
-                zipFile.close();
+                jarFile.close();
             } catch (Exception e) { }
 
         } else {
@@ -70,9 +70,10 @@ public class DesignHandler {
             for (File file : FileUtils.listFiles(folder, new String[] { "png" }, true)) {
                 processPath(file.getAbsolutePath().replace("\\", "/"));
             }
+
         }
 
-        ModLogger.log(Level.INFO, "Designs found: Bed(" + listBed.size() + "), Chisel(" + listChisel.size() + "), FlowerPot(" + listFlowerPot.size() + "), Tile(" + listTile.size() + ")");
+        ModLogger.log(Level.INFO, String.format("Designs found: Bed(%s), Chisel(%s), FlowerPot(%s), Tile(%s)", listBed.size(), listChisel.size(), listFlowerPot.size(), listTile.size()));
     }
 
     private static void processPath(String path)
