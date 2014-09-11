@@ -19,7 +19,7 @@ apply plugin: 'forge'
 
 version = "3.2.8"
 group= "com.carpentersblocks" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "Carpenters Blocks v"
+archivesBaseName = "Carpenter's Blocks"
 
 minecraft {
     version = "1.7.10-10.13.0.1180"
@@ -41,8 +41,7 @@ dependencies {
 
 }
 
-processResources
-{
+processResources {
     // this will ensure that this task is redone when the versions change.
     inputs.property "version", project.version
     inputs.property "mcversion", project.minecraft.version
@@ -62,6 +61,6 @@ processResources
 }
 
 jar {
-    archiveName = project.archivesBaseName + project.version + project.minecraft.version + ".zip"
+    archiveName = project.archivesBaseName + " v" + project.version + " - MC " + project.minecraft.version + ".jar"
     destinationDir = project.getBuildDir()
 }
