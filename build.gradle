@@ -17,9 +17,9 @@ buildscript {
 
 apply plugin: 'forge'
 
-version = "3.2.7"
-group= "" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "carpentersblocks"
+version = "3.2.8"
+group= "com.carpentersblocks" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+archivesBaseName = "Carpenter's Blocks"
 
 minecraft {
     version = "1.7.2-10.12.2.1121"
@@ -61,17 +61,7 @@ processResources
     }
 }
 
-task rename(type: Copy) {
-    from('build/libs/')
-    rename { String fileName ->
-        if (fileName.endsWith('jar')) {
-            String minecraftVersion = project.minecraft.version
-            String newMinecraftVersion = minecraftVersion.split("-")[0]
-            String newName = "Carpenter's Blocks v" + project.version + " - MC " + newMinecraftVersion + ".zip"
-            newName
-        }
-    }
-    into('build/')
+jar {
+    archiveName = project.archivesBaseName + " v" + project.version + " - MC " + project.minecraft.version + ".jar"
+    destinationDir = project.getBuildDir()
 }
-
-build.dependsOn rename
