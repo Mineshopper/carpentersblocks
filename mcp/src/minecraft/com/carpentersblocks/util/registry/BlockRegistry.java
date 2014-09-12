@@ -328,8 +328,7 @@ public class BlockRegistry {
                 .setUnlocalizedName("blockCarpentersButton")
                 .setHardness(0.2F)
                 .setStepSound(BlockProperties.stepSound)
-                .setCreativeTab(CarpentersBlocks.creativeTab)
-                .setTickRandomly(true);
+                .setCreativeTab(CarpentersBlocks.creativeTab);
             GameRegistry.registerBlock(blockCarpentersButton, "blockCarpentersButton");
         }
 
@@ -409,8 +408,7 @@ public class BlockRegistry {
                 .setUnlocalizedName("blockCarpentersPressurePlate")
                 .setHardness(0.2F)
                 .setStepSound(BlockProperties.stepSound)
-                .setCreativeTab(CarpentersBlocks.creativeTab)
-                .setTickRandomly(true);
+                .setCreativeTab(CarpentersBlocks.creativeTab);
             GameRegistry.registerBlock(blockCarpentersPressurePlate, "blockCarpentersPressurePlate");
         }
 
