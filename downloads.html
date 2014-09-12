@@ -7,6 +7,7 @@ label-begin-release: <span class="label label-default" data-toggle="tooltip" dat
 label-end: </span>
 label-dev: <span class="label label-danger" data-toggle="tooltip" data-placement="top" title="This is a development build and may contain critical bugs">DEV</span>
 label-stable: <span class="label label-success" data-toggle="tooltip" data-placement="top" title="This build has been tested and is considered stable">STABLE</span>
+label-final: <span class="label label-warning" data-toggle="tooltip" data-placement="top" title="This is the final build for this Minecraft version.">FINAL</span>
 ---
 
 <h4>Dependencies</h4>
@@ -42,34 +43,22 @@ label-stable: <span class="label label-success" data-toggle="tooltip" data-place
 <div class="download-container">
    <div style="display: table-row;">
       <div class="download-container-version">
-         Carpenter's Blocks 3.2.7
+         Carpenter's Blocks 3.2.8
          {{ page.label-stable }}
          {{ page.label-begin-minecraft }}MC 1.7.10{{ page.label-end }}
          {{ page.label-begin-forge }}FORGE 10.13.0.1180{{ page.label-end }}
-         {{ page.label-begin-release }}RELEASED 09/07/2014{{ page.label-end }}
+         {{ page.label-begin-release }}RELEASED 09/11/2014{{ page.label-end }}
       </div>
    </div>
    <div style="display: table-row;">
       <div style="display: table-cell;">
-         <button onclick="window.open('http://adf.ly/rrh4D')">Download</button>
-         <button onclick="window.open('https://www.dropbox.com/s/rk6zmfkh5r16led/Carpenter%27s%20Blocks%20v3.2.7%20-%20MC%201.7.10.zip?dl=1')" class="dropbox">&nbsp;</button>
+         <button onclick="window.open('http://adf.ly/rz2Ig')">Download</button>
+         <button onclick="window.open('https://www.dropbox.com/s/xj6s1twos65k9hj/Carpenter%27s%20Blocks%20v3.2.8%20-%20MC%201.7.10.jar?dl=1')" class="dropbox">&nbsp;</button>
          <button class="expand">View Changelog</button>
          <div class="collapsed">
             <ul id="changelog">
-               <li>Added basic alpha render support (may see z-fighting).</li>
-               <li>Fixed UUID conversion system causing massive lag spikes and allowing non-owners to edit blocks.</li>
-               <li>Added basic ShadersModCore support (sloped blocks still have shading issues).</li>
-               <li>Block light output now takes attribute metadata into consideration.</li>
-               <li>Fixed crash experienced with ExtraUtilities and other mods.</li>
-               <li>Fixed slope selection altering adjacent item slots.</li>
-               <li>Added missing configuration option for tile recipe quantity.</li>
-               <li>Fixed possible server crash when sneak right-clicking a Carpenter's block.</li>
-               <li>Fixed BuildCraft dupe bug.</li>
-               <li>Fixed flower pot dupe bug.</li>
-               <li>Switched to vanilla methods for dropping attributes (keeps code current).</li>
-               <li>Fixed crash when right-clicking an empty flower pot with bone meal.</li>
-               <li>Fixed configuration overlay definitions and cover exceptions not working for non-English locales.</li>
-               <li>Cleanup.</li>
+               <li>Fixed button triggering neighbor updates randomly.</li>
+               <li>Packaged in jar file now.</li>
             </ul>
          </div>
       </div>
@@ -81,34 +70,22 @@ label-stable: <span class="label label-success" data-toggle="tooltip" data-place
 <div class="download-container">
    <div style="display: table-row;">
       <div class="download-container-version">
-         Carpenter's Blocks 3.2.7
+         Carpenter's Blocks 3.2.8
          {{ page.label-stable }}
          {{ page.label-begin-minecraft }}MC 1.7.2{{ page.label-end }}
          {{ page.label-begin-forge }}FORGE 10.12.2.1121{{ page.label-end }}
-         {{ page.label-begin-release }}RELEASED 09/07/2014{{ page.label-end }}
+         {{ page.label-begin-release }}RELEASED 09/11/2014{{ page.label-end }}
       </div>
    </div>
    <div style="display: table-row;">
       <div style="display: table-cell;">
-         <button onclick="window.open('http://adf.ly/rrh2d')">Download</button>
-         <button onclick="window.open('https://www.dropbox.com/s/jatk3yms1bil5tz/Carpenter%27s%20Blocks%20v3.2.7%20-%20MC%201.7.2.zip?dl=1')" class="dropbox">&nbsp;</button>
+         <button onclick="window.open('http://adf.ly/rz2FR')">Download</button>
+         <button onclick="window.open('https://www.dropbox.com/s/mkd9t4dhzi3dydm/Carpenter%27s%20Blocks%20v3.2.8%20-%20MC%201.7.2.jar?dl=1')" class="dropbox">&nbsp;</button>
          <button class="expand">View Changelog</button>
          <div class="collapsed">
             <ul id="changelog">
-               <li>Added basic alpha render support (may see z-fighting).</li>
-               <li>Fixed port mishap that may have resulted in ownership problems.</li>
-               <li>Added basic ShadersModCore support (sloped blocks still have shading issues).</li>
-               <li>Block light output now takes attribute metadata into consideration.</li>
-               <li>Fixed crash experienced with ExtraUtilities and other mods.</li>
-               <li>Fixed slope selection altering adjacent item slots.</li>
-               <li>Added missing configuration option for tile recipe quantity.</li>
-               <li>Fixed possible server crash when sneak right-clicking a Carpenter's block.</li>
-               <li>Fixed BuildCraft dupe bug.</li>
-               <li>Fixed flower pot dupe bug.</li>
-               <li>Switched to vanilla methods for dropping attributes (keeps code current).</li>
-               <li>Fixed crash when right-clicking an empty flower pot with bone meal.</li>
-               <li>Fixed configuration overlay definitions and cover exceptions not working for non-English locales.</li>
-               <li>Cleanup.</li>
+               <li>Fixed button triggering neighbor updates randomly.</li>
+               <li>Packaged in jar file now.</li>
             </ul>
          </div>
       </div>
@@ -120,32 +97,23 @@ label-stable: <span class="label label-success" data-toggle="tooltip" data-place
 <div class="download-container">
    <div style="display: table-row;">
       <div class="download-container-version">
-         Carpenter's Blocks 3.2.7
+         Carpenter's Blocks 3.2.8
          {{ page.label-stable }}
+         {{ page.label-final }}
          {{ page.label-begin-minecraft }}MC 1.6.4{{ page.label-end }}
          {{ page.label-begin-forge }}FORGE 9.11.1.965{{ page.label-end }}
-         {{ page.label-begin-release }}RELEASED 09/07/2014{{ page.label-end }}
+         {{ page.label-begin-release }}RELEASED 09/11/2014{{ page.label-end }}
       </div>
    </div>
    <div style="display: table-row;">
       <div style="display: table-cell;">
-         <button onclick="window.open('http://adf.ly/rrh11')">Download</button>
-         <button onclick="window.open('https://www.dropbox.com/s/g34pjbuon5set9x/Carpenter%27s%20Blocks%20v3.2.7%20-%20MC%201.6.4.zip?dl=1')" class="dropbox">&nbsp;</button>
+         <button onclick="window.open('http://adf.ly/rz2DL')">Download</button>
+         <button onclick="window.open('https://www.dropbox.com/s/k343vhv1fjofc0k/Carpenter%27s%20Blocks%20v3.2.8%20-%20MC%201.6.4.jar?dl=1')" class="dropbox">&nbsp;</button>
          <button class="expand">View Changelog</button>
          <div class="collapsed">
             <ul id="changelog">
-               <li>Added basic ShadersModCore support (sloped blocks still have shading issues).</li>
-               <li>Block light output now takes attribute metadata into consideration.</li>
-               <li>Fixed crash experienced with ExtraUtilities and other mods.</li>
-               <li>Fixed slope selection altering adjacent item slots.</li>
-               <li>Added missing configuration option for tile recipe quantity.</li>
-               <li>Fixed possible server crash when sneak right-clicking a Carpenter's block.</li>
-               <li>Fixed BuildCraft dupe bug.</li>
-               <li>Fixed flower pot dupe bug.</li>
-               <li>Switched to vanilla methods for dropping attributes (keeps code current).</li>
-               <li>Fixed crash when right-clicking an empty flower pot with bone meal.</li>
-               <li>Fixed vanilla configuration overlay definitions and cover exceptions not working for non-English locales (mod items won't translate to en_US names).</li>
-               <li>Cleanup.</li>
+               <li>Fixed button triggering neighbor updates randomly.</li>
+               <li>Packaged in jar file now.</li>
             </ul>
          </div>
       </div>
@@ -159,6 +127,7 @@ label-stable: <span class="label label-success" data-toggle="tooltip" data-place
       <div class="download-container-version">
          Carpenter's Blocks 1.9.9
          {{ page.label-stable }}
+         {{ page.label-final }}
          {{ page.label-begin-minecraft }}MC 1.5.2{{ page.label-end }}
          {{ page.label-begin-forge }}FORGE 7.8.1.738{{ page.label-end }}
          {{ page.label-begin-release }}RELEASED 01/01/2014{{ page.label-end }}
