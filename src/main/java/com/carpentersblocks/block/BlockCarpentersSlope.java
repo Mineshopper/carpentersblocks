@@ -16,6 +16,7 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+import com.carpentersblocks.CarpentersBlocks;
 import com.carpentersblocks.data.Slope;
 import com.carpentersblocks.data.Slope.Type;
 import com.carpentersblocks.tileentity.TEBase;
@@ -55,8 +56,8 @@ public class BlockCarpentersSlope extends BlockCoverable {
      */
     public void registerBlockIcons(IIconRegister iconRegister)
     {
-        IconRegistry.icon_uncovered_oblique_pos = iconRegister.registerIcon("carpentersblocks:slope/oblique_pos");
-        IconRegistry.icon_uncovered_oblique_neg = iconRegister.registerIcon("carpentersblocks:slope/oblique_neg");
+        IconRegistry.icon_uncovered_oblique_pos = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "slope/oblique_pos");
+        IconRegistry.icon_uncovered_oblique_neg = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "slope/oblique_neg");
     }
 
     @Override
