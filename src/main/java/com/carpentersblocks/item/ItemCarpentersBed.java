@@ -9,6 +9,7 @@ import com.carpentersblocks.CarpentersBlocks;
 import com.carpentersblocks.data.Bed;
 import com.carpentersblocks.tileentity.TEBase;
 import com.carpentersblocks.util.BlockProperties;
+import com.carpentersblocks.util.EntityLivingUtil;
 import com.carpentersblocks.util.registry.BlockRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -43,8 +44,8 @@ public class ItemCarpentersBed extends ItemBlock {
 
             ++y;
 
-            int facing = BlockProperties.getOppositeFacing(entityPlayer);
-            ForgeDirection dir = BlockProperties.getDirectionFromFacing(facing);
+            int rot = EntityLivingUtil.getRotationValue(entityPlayer);
+            ForgeDirection dir = EntityLivingUtil.getRotationFacing(rot).getOpposite();
 
             int x_offset = x - dir.offsetX;
             int z_offset = z - dir.offsetZ;
@@ -64,13 +65,13 @@ public class ItemCarpentersBed extends ItemBlock {
                 /* Foot of bed. */
 
                 TEBase TE_foot = (TEBase) world.getTileEntity(x, y, z);
-                Bed.setDirection(TE_foot, facing);
+                Bed.setDirection(TE_foot, rot);
 
                 /* Head of bed. */
 
                 TEBase TE_head = (TEBase) world.getTileEntity(x_offset, y, z_offset);
                 Bed.setHeadOfBed(TE_head);
-                Bed.setDirection(TE_head, facing);
+                Bed.setDirection(TE_head, rot);
 
                 BlockProperties.playBlockSound(world, new ItemStack(BlockRegistry.blockCarpentersBed), x, y, z, false);
 

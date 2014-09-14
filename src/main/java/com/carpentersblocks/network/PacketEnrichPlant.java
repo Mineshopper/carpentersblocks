@@ -4,10 +4,10 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;
 import java.io.IOException;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import com.carpentersblocks.data.FlowerPot;
 import com.carpentersblocks.tileentity.TECarpentersFlowerPot;
+import com.carpentersblocks.util.EntityLivingUtil;
 
 public class PacketEnrichPlant extends TilePacket {
 
@@ -36,9 +36,7 @@ public class PacketEnrichPlant extends TilePacket {
         if (TE != null) {
             if (hexColor != 16777215 && !FlowerPot.isEnriched(TE)) {
                 FlowerPot.setEnrichment(TE, true);
-                if (!entityPlayer.capabilities.isCreativeMode && --entityPlayer.getCurrentEquippedItem().stackSize <= 0) {
-                    entityPlayer.inventory.setInventorySlotContents(entityPlayer.inventory.currentItem, (ItemStack)null);
-                }
+                EntityLivingUtil.decrementCurrentSlot(entityPlayer);
             }
         }
     }

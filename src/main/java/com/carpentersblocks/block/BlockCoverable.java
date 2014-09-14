@@ -19,6 +19,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Direction;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
@@ -33,6 +34,7 @@ import com.carpentersblocks.api.ICarpentersHammer;
 import com.carpentersblocks.renderer.helper.ParticleHelper;
 import com.carpentersblocks.tileentity.TEBase;
 import com.carpentersblocks.util.BlockProperties;
+import com.carpentersblocks.util.EntityLivingUtil;
 import com.carpentersblocks.util.handler.DesignHandler;
 import com.carpentersblocks.util.handler.EventHandler;
 import com.carpentersblocks.util.handler.OverlayHandler;
@@ -361,8 +363,8 @@ public class BlockCoverable extends BlockContainer {
 
                                     /* Will handle blocks that save directions using all axes (logs, quartz) */
                                     if (BlockProperties.blockRotates(itemStack)) {
-                                        int facing = BlockProperties.getOppositeFacing(EventHandler.eventEntityPlayer);
-                                        int side_interpolated = entityPlayer.rotationPitch < -45.0F ? 0 : entityPlayer.rotationPitch > 45 ? 1 : facing == 0 ? 3 : facing == 1 ? 4 : facing == 2 ? 2 : 5;
+                                        int rot = Direction.rotateOpposite[EntityLivingUtil.getRotationValue(entityPlayer)];
+                                        int side_interpolated = entityPlayer.rotationPitch < -45.0F ? 0 : entityPlayer.rotationPitch > 45 ? 1 : rot == 0 ? 3 : rot == 1 ? 4 : rot == 2 ? 2 : 5;
                                         metadata = block.onBlockPlaced(world, x, y, z, side_interpolated, hitX, hitY, hitZ, metadata);
                                     }
 
@@ -422,9 +424,7 @@ public class BlockCoverable extends BlockContainer {
                     }
 
                     if (actionResult.decInv) {
-                        if (!entityPlayer.capabilities.isCreativeMode && --itemStack.stackSize <= 0) {
-                            entityPlayer.inventory.setInventorySlotContents(entityPlayer.inventory.currentItem, (ItemStack)null);
-                        }
+                        EntityLivingUtil.decrementCurrentSlot(entityPlayer);
                     }
 
                 }
@@ -1231,7 +1231,18 @@ public class BlockCoverable extends BlockContainer {
      */
     public int getRenderBlockPass()
     {
-        return 1;
+        /*
+         * Alpha properties of block or cover depend on this returning a value
+         * of 1, so it's the default value.  However, when rendering in player
+         * hand we'll encounter sorting artifacts, and thus need to enforce
+         * opaque rendering, or 0.
+         */
+
+        if (ForgeHooksClient.getWorldRenderPass() < 0) {
+            return 0;
+        } else {
+            return 1;
+        }
     }
 
     /**

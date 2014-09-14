@@ -5,6 +5,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import com.carpentersblocks.tileentity.TEBase;
 import com.carpentersblocks.util.BlockProperties;
+import com.carpentersblocks.util.EntityLivingUtil;
 
 public class Safe
 {
@@ -32,9 +33,9 @@ public class Safe
      */
     public static ForgeDirection getFacing(TEBase TE)
     {
-        int facing = BlockProperties.getMetadata(TE) & 0x3;
+        int rot = BlockProperties.getMetadata(TE) & 0x3;
 
-        return BlockProperties.getDirectionFromFacing(facing);
+        return EntityLivingUtil.getRotationFacing(rot).getOpposite();
     }
 
     /**

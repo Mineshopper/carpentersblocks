@@ -7,14 +7,11 @@ import net.minecraft.block.BlockPane;
 import net.minecraft.block.BlockQuartz;
 import net.minecraft.block.BlockRotatedPillar;
 import net.minecraft.block.BlockSlab;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
 import com.carpentersblocks.CarpentersBlocks;
 import com.carpentersblocks.block.BlockCoverable;
 import com.carpentersblocks.tileentity.TEBase;
@@ -111,34 +108,6 @@ public class BlockProperties {
         }
 
         return 0.0625F;
-    }
-
-    /**
-     * Returns opposite of entity facing.
-     */
-    public static int getOppositeFacing(EntityLivingBase entityLiving)
-    {
-        return MathHelper.floor_double(entityLiving.rotationYaw * 4.0F / 360.0F + 0.5D) & 3;
-    }
-
-    /**
-     * Will return opposite direction from entity facing.
-     */
-    public static ForgeDirection getDirectionFromFacing(int facing)
-    {
-        switch (facing)
-        {
-            case 0:
-                return ForgeDirection.NORTH;
-            case 1:
-                return ForgeDirection.EAST;
-            case 2:
-                return ForgeDirection.SOUTH;
-            case 3:
-                return ForgeDirection.WEST;
-            default:
-                return ForgeDirection.UNKNOWN;
-        }
     }
 
     /**

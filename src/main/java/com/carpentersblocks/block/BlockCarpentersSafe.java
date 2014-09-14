@@ -17,7 +17,7 @@ import com.carpentersblocks.CarpentersBlocks;
 import com.carpentersblocks.data.Safe;
 import com.carpentersblocks.tileentity.TEBase;
 import com.carpentersblocks.tileentity.TECarpentersSafe;
-import com.carpentersblocks.util.BlockProperties;
+import com.carpentersblocks.util.EntityLivingUtil;
 import com.carpentersblocks.util.handler.ChatHandler;
 import com.carpentersblocks.util.protection.PlayerPermissions;
 import com.carpentersblocks.util.registry.BlockRegistry;
@@ -58,11 +58,11 @@ public class BlockCarpentersSafe extends BlockCoverable {
      */
     protected boolean onHammerLeftClick(TEBase TE, EntityPlayer entityPlayer)
     {
-        int facing = BlockProperties.getOppositeFacing(entityPlayer);
-        ForgeDirection dir = BlockProperties.getDirectionFromFacing(facing);
+        int rot = EntityLivingUtil.getRotationValue(entityPlayer);
+        ForgeDirection dir = EntityLivingUtil.getRotationFacing(rot).getOpposite();
 
         if (dir != Safe.getFacing(TE)) {
-            Safe.setFacing(TE, facing);
+            Safe.setFacing(TE, rot);
             return true;
         } else {
             return false;
@@ -134,7 +134,7 @@ public class BlockCarpentersSafe extends BlockCoverable {
         TEBase TE = getTileEntity(world, x, y, z);
 
         if (TE != null) {
-            Safe.setFacing(TE, BlockProperties.getOppositeFacing(entityLiving));
+            Safe.setFacing(TE, EntityLivingUtil.getRotationValue(entityLiving));
         }
 
         super.onBlockPlacedBy(world, x, y, z, entityLiving, itemStack);

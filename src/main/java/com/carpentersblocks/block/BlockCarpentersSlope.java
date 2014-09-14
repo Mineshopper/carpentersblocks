@@ -20,6 +20,7 @@ import com.carpentersblocks.data.Slope;
 import com.carpentersblocks.data.Slope.Type;
 import com.carpentersblocks.tileentity.TEBase;
 import com.carpentersblocks.util.BlockProperties;
+import com.carpentersblocks.util.EntityLivingUtil;
 import com.carpentersblocks.util.handler.EventHandler;
 import com.carpentersblocks.util.registry.BlockRegistry;
 import com.carpentersblocks.util.registry.IconRegistry;
@@ -568,7 +569,7 @@ public class BlockCarpentersSlope extends BlockCoverable {
             boolean isPositive = EventHandler.eventFace > 1 && EventHandler.hitY < 0.5F || EventHandler.eventFace == 1;
             int corner = getCorner(entityLiving.rotationYaw, EventHandler.eventFace, EventHandler.hitX, EventHandler.hitY, EventHandler.hitZ);
 
-            ForgeDirection dir = ForgeDirection.getOrientation(ForgeDirection.OPPOSITES[BlockProperties.getDirectionFromFacing(BlockProperties.getOppositeFacing(entityLiving)).ordinal()]);
+            ForgeDirection dir = EntityLivingUtil.getFacing(entityLiving);
 
             switch (metadata) {
             case META_WEDGE:

@@ -16,6 +16,7 @@ import com.carpentersblocks.data.Lever;
 import com.carpentersblocks.data.Lever.Axis;
 import com.carpentersblocks.tileentity.TEBase;
 import com.carpentersblocks.util.BlockProperties;
+import com.carpentersblocks.util.EntityLivingUtil;
 import com.carpentersblocks.util.handler.ChatHandler;
 import com.carpentersblocks.util.registry.BlockRegistry;
 import com.carpentersblocks.util.registry.IconRegistry;
@@ -114,15 +115,11 @@ public class BlockCarpentersLever extends BlockCoverable {
         if (TE != null) {
 
             int facing = world.getBlockMetadata(x, y, z);
-
             Lever.setFacing(TE, facing);
             Lever.setReady(TE);
 
-            /* For vertical facings, set axis rotation. */
-            if (facing < 2)
-            {
-                ForgeDirection dir = BlockProperties.getDirectionFromFacing(BlockProperties.getOppositeFacing(entityLiving));
-
+            if (facing < 2) {
+                ForgeDirection dir = EntityLivingUtil.getFacing(entityLiving).getOpposite();
                 if (dir.equals(ForgeDirection.NORTH) || dir.equals(ForgeDirection.SOUTH)) {
                     Lever.setAxis(TE, Axis.Z);
                 }

@@ -4,6 +4,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import com.carpentersblocks.tileentity.TEBase;
 import com.carpentersblocks.util.BlockProperties;
+import com.carpentersblocks.util.EntityLivingUtil;
 import com.carpentersblocks.util.registry.BlockRegistry;
 
 public class Bed {
@@ -113,9 +114,9 @@ public class Bed {
      */
     public static ForgeDirection getDirection(TEBase TE)
     {
-        int facing = BlockProperties.getMetadata(TE) & 0x6000;
+        int rot = (BlockProperties.getMetadata(TE) & 0x6000) >> 13;
 
-        return BlockProperties.getDirectionFromFacing(facing >> 13);
+        return EntityLivingUtil.getRotationFacing(rot).getOpposite();
     }
 
     /**
