@@ -22,7 +22,7 @@ public class ParticleHelper {
      */
     public static void spawnTorchBigSmoke(TECarpentersTorch TE)
     {
-        double[] headCoords = Torch.getHeadCoordinates(TE);
+        double[] headCoords = new Torch().getHeadCoordinates(TE);
         TE.getWorldObj().spawnParticle("largesmoke", headCoords[0], headCoords[1], headCoords[2], 0.0D, 0.0D, 0.0D);
     }
 

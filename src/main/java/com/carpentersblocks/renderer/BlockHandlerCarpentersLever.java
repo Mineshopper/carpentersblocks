@@ -80,9 +80,10 @@ public class BlockHandlerCarpentersLever extends BlockHandlerBase {
         tessellator.setBrightness(Blocks.dirt.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y, z));
         tessellator.setColorOpaque_F(1.0F, 1.0F, 1.0F);
 
-        ForgeDirection facing = Lever.getFacing(TE);
-        boolean toggleState = Lever.getState(TE) == Lever.STATE_ON;
-        boolean rotateLever = Lever.getAxis(TE) == Axis.X;
+        Lever data = new Lever();
+        ForgeDirection dir = data.getDirection(TE);
+        boolean toggleState = data.getState(TE) == data.STATE_ON;
+        boolean rotateLever = data.getAxis(TE) == Axis.X;
 
         IIcon icon = renderBlocks.hasOverrideBlockTexture() ? renderBlocks.overrideBlockTexture : IconRegistry.icon_lever;
 
@@ -91,18 +92,16 @@ public class BlockHandlerCarpentersLever extends BlockHandlerBase {
         double vMin = icon.getMinV();
         double vMax = icon.getMaxV();
 
-        Vec3[] vector = new Vec3[8];
-        float vecX = 0.0625F;
-        float vecY = 0.625F;
-        float vecZ = 0.0625F;
-        vector[0] = Vec3.createVectorHelper(-vecX, 0.0D, -vecZ);
-        vector[1] = Vec3.createVectorHelper(vecX, 0.0D, -vecZ);
-        vector[2] = Vec3.createVectorHelper(vecX, 0.0D, vecZ);
-        vector[3] = Vec3.createVectorHelper(-vecX, 0.0D, vecZ);
-        vector[4] = Vec3.createVectorHelper(-vecX, vecY, -vecZ);
-        vector[5] = Vec3.createVectorHelper(vecX, vecY, -vecZ);
-        vector[6] = Vec3.createVectorHelper(vecX, vecY, vecZ);
-        vector[7] = Vec3.createVectorHelper(-vecX, vecY, vecZ);
+        Vec3[] vector = {
+            Vec3.createVectorHelper(-0.0625F,   0.0D, -0.0625F),
+            Vec3.createVectorHelper( 0.0625F,   0.0D, -0.0625F),
+            Vec3.createVectorHelper( 0.0625F,   0.0D,  0.0625F),
+            Vec3.createVectorHelper(-0.0625F,   0.0D,  0.0625F),
+            Vec3.createVectorHelper(-0.0625F, 0.625F, -0.0625F),
+            Vec3.createVectorHelper( 0.0625F, 0.625F, -0.0625F),
+            Vec3.createVectorHelper( 0.0625F, 0.625F,  0.0625F),
+            Vec3.createVectorHelper(-0.0625F, 0.625F,  0.0625F)
+        };
 
         /* Set up lever handle rotation. */
 
@@ -116,9 +115,9 @@ public class BlockHandlerCarpentersLever extends BlockHandlerBase {
                 vector[vecCount].rotateAroundX(-((float)Math.PI * 2F / 9F));
             }
 
-            if (facing.ordinal() < 2) {
+            if (dir.ordinal() < 2) {
 
-                if (facing.equals(ForgeDirection.DOWN)) {
+                if (dir.equals(ForgeDirection.DOWN)) {
                     vector[vecCount].rotateAroundZ((float)Math.PI);
                 }
 
@@ -126,7 +125,7 @@ public class BlockHandlerCarpentersLever extends BlockHandlerBase {
                     vector[vecCount].rotateAroundY((float)Math.PI / 2F);
                 }
 
-                if (facing.equals(ForgeDirection.UP)) {
+                if (dir.equals(ForgeDirection.UP)) {
                     vector[vecCount].xCoord += x + 0.5D;
                     vector[vecCount].yCoord += y + 0.125F;
                     vector[vecCount].zCoord += z + 0.5D;
@@ -141,7 +140,7 @@ public class BlockHandlerCarpentersLever extends BlockHandlerBase {
                 vector[vecCount].yCoord -= 0.375D;
                 vector[vecCount].rotateAroundX((float)Math.PI / 2F);
 
-                switch (facing) {
+                switch (dir) {
                     case NORTH:
                         vector[vecCount].rotateAroundY(0.0F);
                         break;
@@ -169,21 +168,21 @@ public class BlockHandlerCarpentersLever extends BlockHandlerBase {
         Vec3 vertex3 = null;
         Vec3 vertex4 = null;
 
-        for (int side = 0; side < 6; ++side)
+        for (int idx = 0; idx < 6; ++idx)
         {
-            if (side == 0) {
+            if (idx == 0) {
                 uMin = icon.getInterpolatedU(7.0D);
                 vMin = icon.getInterpolatedV(6.0D);
                 uMax = icon.getInterpolatedU(9.0D);
                 vMax = icon.getInterpolatedV(8.0D);
-            } else if (side == 2) {
+            } else if (idx == 2) {
                 uMin = icon.getInterpolatedU(7.0D);
                 vMin = icon.getInterpolatedV(6.0D);
                 uMax = icon.getInterpolatedU(9.0D);
                 vMax = icon.getMaxV();
             }
 
-            switch (side) {
+            switch (idx) {
                 case 0:
                     vertex1 = vector[0];
                     vertex2 = vector[1];

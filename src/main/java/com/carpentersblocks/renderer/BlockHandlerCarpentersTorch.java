@@ -17,6 +17,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class BlockHandlerCarpentersTorch extends BlockHandlerBase {
 
     private Vec3[] vec3 = new Vec3[8];
+    private static Torch data = new Torch();
 
     @Override
     public boolean shouldRender3DInInventory(int modelId)
@@ -83,7 +84,7 @@ public class BlockHandlerCarpentersTorch extends BlockHandlerBase {
         tessellator.setColorOpaque_F(1.0F, 1.0F, 1.0F);
 
         IIcon icon = null;
-        switch (Torch.getState(TE)) {
+        switch (data.getState(TE)) {
             case LIT:
                 icon = IconRegistry.icon_torch_lit;
                 break;
@@ -96,22 +97,18 @@ public class BlockHandlerCarpentersTorch extends BlockHandlerBase {
             default: {}
         }
 
-        float vecX = 0.0625F;
-        float vecY = 10.0F / 16.0F;
-        float vecZ = 0.0625F;
-
         vec3 = new Vec3[] {
-            Vec3.createVectorHelper(-vecX, 0.5D, -vecZ),
-            Vec3.createVectorHelper(vecX, 0.5D, -vecZ),
-            Vec3.createVectorHelper(vecX, 0.5D, vecZ),
-            Vec3.createVectorHelper(-vecX, 0.5D, vecZ),
-            Vec3.createVectorHelper(-vecX, vecY, -vecZ),
-            Vec3.createVectorHelper(vecX, vecY, -vecZ),
-            Vec3.createVectorHelper(vecX, vecY, vecZ),
-            Vec3.createVectorHelper(-vecX, vecY, vecZ)
+            Vec3.createVectorHelper(-0.0625F,   0.5D, -0.0625F),
+            Vec3.createVectorHelper( 0.0625F,   0.5D, -0.0625F),
+            Vec3.createVectorHelper( 0.0625F,   0.5D,  0.0625F),
+            Vec3.createVectorHelper(-0.0625F,   0.5D,  0.0625F),
+            Vec3.createVectorHelper(-0.0625F, 0.625F, -0.0625F),
+            Vec3.createVectorHelper( 0.0625F, 0.625F, -0.0625F),
+            Vec3.createVectorHelper( 0.0625F, 0.625F,  0.0625F),
+            Vec3.createVectorHelper(-0.0625F, 0.625F,  0.0625F)
         };
 
-        setRotations(Torch.getFacing(TE), vec3, x, y, z);
+        setRotations(data.getDirection(TE), vec3, x, y, z);
 
         for (int side = 0; side < 6; ++side) {
             renderFace(side, icon, false);
@@ -123,22 +120,18 @@ public class BlockHandlerCarpentersTorch extends BlockHandlerBase {
      */
     private void renderTorchHandle(ItemStack itemStack, int x, int y, int z)
     {
-        float vecX = 0.0625F;
-        float vecY = 0.5F;
-        float vecZ = 0.0625F;
-
         vec3 = new Vec3[] {
-            Vec3.createVectorHelper(-vecX, 0.0D, -vecZ),
-            Vec3.createVectorHelper(vecX, 0.0D, -vecZ),
-            Vec3.createVectorHelper(vecX, 0.0D, vecZ),
-            Vec3.createVectorHelper(-vecX, 0.0D, vecZ),
-            Vec3.createVectorHelper(-vecX, vecY, -vecZ),
-            Vec3.createVectorHelper(vecX, vecY, -vecZ),
-            Vec3.createVectorHelper(vecX, vecY, vecZ),
-            Vec3.createVectorHelper(-vecX, vecY, vecZ)
+            Vec3.createVectorHelper(-0.0625F, 0.0D, -0.0625F),
+            Vec3.createVectorHelper( 0.0625F, 0.0D, -0.0625F),
+            Vec3.createVectorHelper( 0.0625F, 0.0D,  0.0625F),
+            Vec3.createVectorHelper(-0.0625F, 0.0D,  0.0625F),
+            Vec3.createVectorHelper(-0.0625F, 0.5F, -0.0625F),
+            Vec3.createVectorHelper( 0.0625F, 0.5F, -0.0625F),
+            Vec3.createVectorHelper( 0.0625F, 0.5F,  0.0625F),
+            Vec3.createVectorHelper(-0.0625F, 0.5F,  0.0625F)
         };
 
-        setRotations(Torch.getFacing(TE), vec3, x, y, z);
+        setRotations(data.getDirection(TE), vec3, x, y, z);
 
         lightingHelper.setupLightingYNeg(itemStack, x, y, z);
         delegateSideRender(itemStack, x, y, z, DOWN);
@@ -159,43 +152,45 @@ public class BlockHandlerCarpentersTorch extends BlockHandlerBase {
         delegateSideRender(itemStack, x, y, z, EAST);
     }
 
-    private void setRotations(ForgeDirection facing, Vec3[] vec3, int x, int y, int z)
+    private void setRotations(ForgeDirection dir, Vec3[] vec3, int x, int y, int z)
     {
         for (int vecCount = 0; vecCount < 8; ++vecCount)
         {
-            if (facing.equals(ForgeDirection.UP)) {
+            switch (dir) {
+                case UP:
+                    vec3[vecCount].xCoord += x + 0.5D;
+                    vec3[vecCount].yCoord += y;
+                    vec3[vecCount].zCoord += z + 0.5D;
+                    break;
+                default:
 
-                vec3[vecCount].xCoord += x + 0.5D;
-                vec3[vecCount].yCoord += y;
-                vec3[vecCount].zCoord += z + 0.5D;
+                    vec3[vecCount].zCoord += 0.0625D;
+                    vec3[vecCount].rotateAroundX(-((float)Math.PI * 3.4F / 9F));
 
-            } else {
+                    vec3[vecCount].yCoord -= 0.4375D;
+                    vec3[vecCount].rotateAroundX((float)Math.PI / 2F);
 
-                vec3[vecCount].zCoord += 0.0625D;
-                vec3[vecCount].rotateAroundX(-((float)Math.PI * 3.4F / 9F));
+                    switch (dir) {
+                        case NORTH:
+                            vec3[vecCount].rotateAroundY(0.0F);
+                            break;
+                        case SOUTH:
+                            vec3[vecCount].rotateAroundY((float)Math.PI);
+                            break;
+                        case WEST:
+                            vec3[vecCount].rotateAroundY((float)Math.PI / 2F);
+                            break;
+                        case EAST:
+                            vec3[vecCount].rotateAroundY(-((float)Math.PI / 2F));
+                            break;
+                        default: {}
+                    }
 
-                vec3[vecCount].yCoord -= 0.4375D;
-                vec3[vecCount].rotateAroundX((float)Math.PI / 2F);
+                    vec3[vecCount].xCoord += x + 0.5D;
+                    vec3[vecCount].yCoord += y + 0.1875F;
+                    vec3[vecCount].zCoord += z + 0.5D;
 
-                switch (facing) {
-                    case NORTH:
-                        vec3[vecCount].rotateAroundY(0.0F);
-                        break;
-                    case SOUTH:
-                        vec3[vecCount].rotateAroundY((float)Math.PI);
-                        break;
-                    case WEST:
-                        vec3[vecCount].rotateAroundY((float)Math.PI / 2F);
-                        break;
-                    case EAST:
-                        vec3[vecCount].rotateAroundY(-((float)Math.PI / 2F));
-                        break;
-                    default: {}
-                }
-
-                vec3[vecCount].xCoord += x + 0.5D;
-                vec3[vecCount].yCoord += y + 0.1875F;
-                vec3[vecCount].zCoord += z + 0.5D;
+                    break;
             }
         }
     }

@@ -26,6 +26,7 @@ import com.carpentersblocks.block.BlockCarpentersSlope;
 import com.carpentersblocks.block.BlockCarpentersStairs;
 import com.carpentersblocks.block.BlockCarpentersTorch;
 import com.carpentersblocks.block.ItemBlockCarpentersSlope;
+import com.carpentersblocks.block.ItemBlockSided;
 import com.carpentersblocks.renderer.BlockHandlerCarpentersBarrier;
 import com.carpentersblocks.renderer.BlockHandlerCarpentersBed;
 import com.carpentersblocks.renderer.BlockHandlerCarpentersBlock;
@@ -299,7 +300,7 @@ public class BlockRegistry {
                 .setHardness(0.2F)
                 .setStepSound(BlockProperties.stepSound)
                 .setCreativeTab(CarpentersBlocks.creativeTab);
-            GameRegistry.registerBlock(blockCarpentersButton, "blockCarpentersButton");
+            GameRegistry.registerBlock(blockCarpentersButton, ItemBlockSided.class, "blockCarpentersButton");
             Blocks.fire.setFireInfo(blockCarpentersButton, 5, 20);
         }
 
@@ -384,7 +385,7 @@ public class BlockRegistry {
                 .setHardness(0.2F)
                 .setStepSound(BlockProperties.stepSound)
                 .setCreativeTab(CarpentersBlocks.creativeTab);
-            GameRegistry.registerBlock(blockCarpentersLever, "blockCarpentersLever");
+            GameRegistry.registerBlock(blockCarpentersLever, ItemBlockSided.class, "blockCarpentersLever");
             Blocks.fire.setFireInfo(blockCarpentersLever, 5, 20);
         }
 
@@ -435,7 +436,7 @@ public class BlockRegistry {
                 .setStepSound(BlockProperties.stepSound)
                 .setCreativeTab(CarpentersBlocks.creativeTab)
                 .setTickRandomly(true);
-            GameRegistry.registerBlock(blockCarpentersTorch, "blockCarpentersTorch");
+            GameRegistry.registerBlock(blockCarpentersTorch, ItemBlockSided.class, "blockCarpentersTorch");
             Blocks.fire.setFireInfo(blockCarpentersTorch, 5, 20);
         }
     }

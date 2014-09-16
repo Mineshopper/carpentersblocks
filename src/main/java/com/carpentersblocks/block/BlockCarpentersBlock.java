@@ -23,6 +23,16 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockCarpentersBlock extends BlockCoverable {
 
+    private static float[][] bounds = {
+        { 0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F }, // FULL BLOCK
+        { 0.0F, 0.0F, 0.0F, 0.5F, 1.0F, 1.0F }, // SLAB WEST
+        { 0.5F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F }, // SLAB EAST
+        { 0.0F, 0.0F, 0.0F, 1.0F, 0.5F, 1.0F }, // SLAB DOWN
+        { 0.0F, 0.5F, 0.0F, 1.0F, 1.0F, 1.0F }, // SLAB UP
+        { 0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 0.5F }, // SLAB NORTH
+        { 0.0F, 0.0F, 0.5F, 1.0F, 1.0F, 1.0F }  // SLAB SOUTH
+    };
+
     public BlockCarpentersBlock(Material material)
     {
         super(material);
@@ -102,19 +112,7 @@ public class BlockCarpentersBlock extends BlockCoverable {
     public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
     {
         TEBase TE = getTileEntity(world, x, y, z);
-
         int data = BlockProperties.getMetadata(TE);
-
-        float[][] bounds = {
-                { 0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F }, // FULL BLOCK
-                { 0.0F, 0.0F, 0.0F, 0.5F, 1.0F, 1.0F }, // SLAB WEST
-                { 0.5F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F }, // SLAB EAST
-                { 0.0F, 0.0F, 0.0F, 1.0F, 0.5F, 1.0F }, // SLAB DOWN
-                { 0.0F, 0.5F, 0.0F, 1.0F, 1.0F, 1.0F }, // SLAB UP
-                { 0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 0.5F }, // SLAB NORTH
-                { 0.0F, 0.0F, 0.5F, 1.0F, 1.0F, 1.0F }  // SLAB SOUTH
-        };
-
         setBlockBounds(bounds[data][0], bounds[data][1], bounds[data][2], bounds[data][3], bounds[data][4], bounds[data][5]);
     }
 
@@ -165,17 +163,6 @@ public class BlockCarpentersBlock extends BlockCoverable {
 
     @Override
     /**
-     * Return true if the block is a normal, solid cube.  This
-     * determines indirect power state, entity ejection from blocks, and a few
-     * others.
-     */
-    public boolean isBlockNormalCube()
-    {
-        return false;
-    }
-
-    @Override
-    /**
      * Checks if the block is a solid face on the given side, used by placement logic.
      */
     public boolean isSideSolid(IBlockAccess world, int x, int y, int z, ForgeDirection side)
@@ -209,6 +196,28 @@ public class BlockCarpentersBlock extends BlockCoverable {
         }
 
         return false;
+    }
+
+    /**
+     * Called to determine whether to allow the a block to handle its own indirect power rather than using the default rules.
+     * @param world The world
+     * @param x The x position of this block instance
+     * @param y The y position of this block instance
+     * @param z The z position of this block instance
+     * @param side The INPUT side of the block to be powered - ie the opposite of this block's output side
+     * @return Whether Block#isProvidingWeakPower should be called when determining indirect power
+     */
+    @Override
+    public boolean shouldCheckWeakPower(IBlockAccess world, int x, int y, int z, int side)
+    {
+        TEBase TE = getTileEntity(world, x, y, z);
+
+        if (TE != null) {
+            int data = BlockProperties.getMetadata(TE);
+            return data == Slab.BLOCK_FULL;
+        }
+
+        return super.shouldCheckWeakPower(world, x, y, z, side);
     }
 
     @Override

@@ -570,7 +570,7 @@ public class BlockCarpentersSlope extends BlockCoverable {
             boolean isPositive = EventHandler.eventFace > 1 && EventHandler.hitY < 0.5F || EventHandler.eventFace == 1;
             int corner = getCorner(entityLiving.rotationYaw, EventHandler.eventFace, EventHandler.hitX, EventHandler.hitY, EventHandler.hitZ);
 
-            ForgeDirection dir = EntityLivingUtil.getFacing(entityLiving);
+            ForgeDirection dir = EntityLivingUtil.getFacing(entityLiving).getOpposite();
 
             switch (metadata) {
             case META_WEDGE:

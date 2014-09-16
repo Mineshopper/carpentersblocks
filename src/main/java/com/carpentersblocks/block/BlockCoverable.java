@@ -483,82 +483,20 @@ public class BlockCoverable extends BlockContainer {
      */
     public void onNeighborBlockChange(World world, int x, int y, int z, Block block)
     {
+        /* This will check for and eject side covers that are obstructed. */
+
         if (!world.isRemote) {
-
             TEBase TE = getTileEntity(world, x, y, z);
-
             if (TE != null) {
-
-                /*
-                 * Check for and eject side covers that are blocked by a
-                 * solid adjacent block.
-                 */
-                if (BlockProperties.hasSideCovers(TE))
-                {
-                    for (int side = 0; side < 6; ++side)
-                    {
-                        if (BlockProperties.hasCover(TE, side))
-                        {
-                            /*
-                             * If block state no longer allows a side cover on
-                             * side, eject side cover.
-                             */
-                            if (!canCoverSide(TE, world, x, y, z, side))
-                            {
-                                BlockProperties.ejectAttributes(TE, side);
-                                return;
-                            }
-
-                            float sideCoverDepth = BlockProperties.getSideCoverDepth(TE, side);
-
-                            /*
-                             * If side is obstructed, eject side cover.
-                             * Currently does not check for side depth.
-                             */
-                            ForgeDirection dir = ForgeDirection.getOrientation(side);
-                            int x_offset = x + dir.offsetX;
-                            int y_offset = y + dir.offsetY;
-                            int z_offset = z + dir.offsetZ;
-
-                            Block adjBlock = world.getBlock(x_offset, y_offset, z_offset);
-                            ForgeDirection adj_side = ForgeDirection.getOrientation(ForgeDirection.OPPOSITES[side]);
-
-                            if (adjBlock.isSideSolid(world, x_offset, y_offset, z_offset, adj_side))
-                            {
-                                switch (adj_side) {
-                                    case DOWN:
-                                        if (adjBlock.getBlockBoundsMinY() < sideCoverDepth) {
-                                            BlockProperties.ejectAttributes(TE, side);
-                                        }
-                                        break;
-                                    case UP:
-                                        if (adjBlock.getBlockBoundsMaxY() > 1.0F - sideCoverDepth) {
-                                            BlockProperties.ejectAttributes(TE, side);
-                                        }
-                                        break;
-                                    case NORTH:
-                                        if (adjBlock.getBlockBoundsMinZ() < sideCoverDepth) {
-                                            BlockProperties.ejectAttributes(TE, side);
-                                        }
-                                        break;
-                                    case SOUTH:
-                                        if (adjBlock.getBlockBoundsMaxZ() > 1.0F - sideCoverDepth) {
-                                            BlockProperties.ejectAttributes(TE, side);
-                                        }
-                                        break;
-                                    case WEST:
-                                        if (adjBlock.getBlockBoundsMinX() < sideCoverDepth) {
-                                            BlockProperties.ejectAttributes(TE, side);
-                                        }
-                                        break;
-                                    case EAST:
-                                        if (adjBlock.getBlockBoundsMaxX() > 1.0F - sideCoverDepth) {
-                                            BlockProperties.ejectAttributes(TE, side);
-                                        }
-                                        break;
-                                    default: {}
-                                }
-                            }
+                for (int side = 0; side < 6; ++side) {
+                    if (BlockProperties.hasCover(TE, side)) {
+                        if (!canCoverSide(TE, world, x, y, z, side)) {
+                            BlockProperties.ejectAttributes(TE, side);
+                            continue;
+                        }
+                        ForgeDirection dir = ForgeDirection.getOrientation(side);
+                        if (world.isSideSolid(x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ, dir.getOpposite()) && isSideSolid(world, x, y, z, dir)) {
+                            BlockProperties.ejectAttributes(TE, side);
                         }
                     }
                 }
@@ -572,25 +510,26 @@ public class BlockCoverable extends BlockContainer {
      * returns true, standard redstone propagation rules will apply instead and this will not be called. Args: World, X,
      * Y, Z, side. Note that the side is reversed - eg it is 1 (up) when checking the bottom of the block.
      */
-    public int isProvidingWeakPower(IBlockAccess world, int x, int y, int z, int side)
+    public int isProvidingWeakPower(IBlockAccess blockAccess, int x, int y, int z, int side)
     {
-        TEBase TE = getTileEntity(world, x, y, z);
+        TEBase TE = getTileEntity(blockAccess, x, y, z);
+        int power = 0;
+
+        /* Indirect power is provided by any cover. */
 
         if (TE != null) {
-
-            if (BlockProperties.hasCover(TE, 6)) {
-
-                int effectiveSide = ForgeDirection.OPPOSITES[side];
-                int power = BlockProperties.toBlock(BlockProperties.getCover(TE, 6)).isProvidingWeakPower(world, x, y, z, side);
-                int power_side = BlockProperties.hasCover(TE, effectiveSide) ? BlockProperties.toBlock(BlockProperties.getCover(TE, effectiveSide)).isProvidingWeakPower(world, x, y, z, side) : 0;
-
-                return power_side > power ? power_side : power;
-
+            for (int idx = 0; idx < 7; ++idx) {
+                if (BlockProperties.hasCover(TE, idx)) {
+                    Block block = BlockProperties.toBlock(BlockProperties.getCover(TE, idx));
+                    int tempPower = block.isProvidingWeakPower(blockAccess, x, y, z, side);
+                    if (tempPower > power) {
+                        power = tempPower;
+                    }
+                }
             }
-
         }
 
-        return 0;
+        return power;
     }
 
     @Override
@@ -598,25 +537,31 @@ public class BlockCoverable extends BlockContainer {
      * Returns true if the block is emitting direct/strong redstone power on the specified side. Args: World, X, Y, Z,
      * side. Note that the side is reversed - eg it is 1 (up) when checking the bottom of the block.
      */
-    public int isProvidingStrongPower(IBlockAccess world, int x, int y, int z, int side)
+    public int isProvidingStrongPower(IBlockAccess blockAccess, int x, int y, int z, int side)
     {
-        TEBase TE = getTileEntity(world, x, y, z);
+        TEBase TE = getTileEntity(blockAccess, x, y, z);
+        int power = 0;
+
+        /* Strong power is provided by the base cover, or a side cover if one exists. */
 
         if (TE != null) {
-
-            if (BlockProperties.hasCover(TE, 6)) {
-
-                int effectiveSide = ForgeDirection.OPPOSITES[side];
-                int power = BlockProperties.toBlock(BlockProperties.getCover(TE, 6)).isProvidingStrongPower(world, x, y, z, side);
-                int power_side = BlockProperties.hasCover(TE, effectiveSide) ? BlockProperties.toBlock(BlockProperties.getCover(TE, effectiveSide)).isProvidingStrongPower(world, x, y, z, side) : 0;
-
-                return power_side > power ? power_side : power;
-
+            int effectiveSide = ForgeDirection.OPPOSITES[side];
+            if (BlockProperties.hasCover(TE, effectiveSide)) {
+                Block block = BlockProperties.toBlock(BlockProperties.getCover(TE, effectiveSide));
+                int tempPower = block.isProvidingWeakPower(blockAccess, x, y, z, side);
+                if (tempPower > power) {
+                    power = tempPower;
+                }
+            } else if (BlockProperties.hasCover(TE, 6)) {
+                Block block = BlockProperties.toBlock(BlockProperties.getCover(TE, 6));
+                int tempPower = block.isProvidingWeakPower(blockAccess, x, y, z, side);
+                if (tempPower > power) {
+                    power = tempPower;
+                }
             }
-
         }
 
-        return 0;
+        return power;
     }
 
     /**

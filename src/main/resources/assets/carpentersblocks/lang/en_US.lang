@@ -54,5 +54,6 @@ message.automation_extract.name=AUTOMATION: Items can be extracted only.
 message.block_lock.name=CONTROL: This block is locked.
 message.sensitivity_sleep.name=SENSITIVITY: Toggles state at player sleep threshold (sunrise and sunset).
 message.sensitivity_monsters.name=SENSITIVITY: Toggles state at monster spawn light threshold (including storms).
+message.sensitivity_dynamic.name=SENSITIVITY: Redstone output changes based on position of the sun.
 
 # </file>

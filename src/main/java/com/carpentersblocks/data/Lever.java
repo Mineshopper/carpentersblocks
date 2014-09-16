@@ -6,13 +6,13 @@ import net.minecraftforge.common.util.ForgeDirection;
 import com.carpentersblocks.tileentity.TEBase;
 import com.carpentersblocks.util.BlockProperties;
 
-public class Lever {
+public class Lever implements ISided {
 
     /**
      * 16-bit data components:
      *
-     * [0000000]  [0]   [0]    [0]       [0]    [000]
-     * Unused     Axis  Ready  Polarity  State  Facing
+     * [0000000] [0]  [0]    [0]      [0]   [000]
+     * Unused    Axis Unused Polarity State Dir
      */
 
     public enum Axis
@@ -21,16 +21,17 @@ public class Lever {
         Z
     }
 
-    public final static byte POLARITY_POSITIVE = 0;
-    public final static byte POLARITY_NEGATIVE = 1;
+    public final byte POLARITY_POSITIVE = 0;
+    public final byte POLARITY_NEGATIVE = 1;
 
-    public final static byte STATE_OFF = 0;
-    public final static byte STATE_ON  = 1;
+    public final byte STATE_OFF = 0;
+    public final byte STATE_ON  = 1;
 
     /**
      * Returns facing.
      */
-    public static ForgeDirection getFacing(TEBase TE)
+    @Override
+    public ForgeDirection getDirection(TEBase TE)
     {
         return ForgeDirection.getOrientation(BlockProperties.getMetadata(TE) & 0x7);
     }
@@ -38,10 +39,11 @@ public class Lever {
     /**
      * Sets facing.
      */
-    public static void setFacing(TEBase TE, int side)
+    @Override
+    public void setDirection(TEBase TE, ForgeDirection dir)
     {
         int temp = BlockProperties.getMetadata(TE) & 0xfff8;
-        temp |= side;
+        temp |= dir.ordinal();
 
         BlockProperties.setMetadata(TE, temp);
     }
@@ -49,7 +51,7 @@ public class Lever {
     /**
      * Returns state.
      */
-    public static int getState(TEBase TE)
+    public int getState(TEBase TE)
     {
         int temp = BlockProperties.getMetadata(TE) & 0x8;
         return temp >> 3;
@@ -58,7 +60,7 @@ public class Lever {
     /**
      * Sets state.
      */
-    public static void setState(TEBase TE, int state, boolean playSound)
+    public void setState(TEBase TE, int state, boolean playSound)
     {
         int temp = BlockProperties.getMetadata(TE) & 0xfff7;
         temp |= state << 3;
@@ -80,7 +82,7 @@ public class Lever {
     /**
      * Returns polarity.
      */
-    public static int getPolarity(TEBase TE)
+    public int getPolarity(TEBase TE)
     {
         int temp = BlockProperties.getMetadata(TE) & 0x10;
         return temp >> 4;
@@ -89,7 +91,7 @@ public class Lever {
     /**
      * Sets polarity.
      */
-    public static void setPolarity(TEBase TE, int polarity)
+    public void setPolarity(TEBase TE, int polarity)
     {
         int temp = BlockProperties.getMetadata(TE) & 0xffef;
         temp |= polarity << 4;
@@ -100,7 +102,7 @@ public class Lever {
     /**
      * Returns rotation axis.
      */
-    public static Axis getAxis(TEBase TE)
+    public Axis getAxis(TEBase TE)
     {
         int temp = BlockProperties.getMetadata(TE) & 0x40;
         return temp > 1 ? Axis.Z : Axis.X;
@@ -109,32 +111,10 @@ public class Lever {
     /**
      * Sets rotation axis.
      */
-    public static void setAxis(TEBase TE, Axis axis)
+    public void setAxis(TEBase TE, Axis axis)
     {
         int temp = BlockProperties.getMetadata(TE) & 0xffbf;
         temp |= axis.ordinal() << 6;
-
-        BlockProperties.setMetadata(TE, temp);
-    }
-
-    /**
-     * Returns whether block is capable of handling logic functions.
-     * This is implemented because for buttons and levers the SERVER
-     * lags behind the client and will cause the block to pop of walls
-     * before it has a chance to set the correct facing.
-     */
-    public static boolean isReady(TEBase TE)
-    {
-        return (BlockProperties.getMetadata(TE) & 0x20) > 1;
-    }
-
-    /**
-     * Sets block as ready.
-     */
-    public static void setReady(TEBase TE)
-    {
-        int temp = BlockProperties.getMetadata(TE) & 0xffdf;
-        temp |= 1 << 5;
 
         BlockProperties.setMetadata(TE, temp);
     }

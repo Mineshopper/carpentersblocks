@@ -28,7 +28,7 @@ public class CommonProxy {
     public void preInit(FMLPreInitializationEvent event, Configuration config)
     {
         FeatureRegistry.preInit(event, config); // Do before block and item registration
-        BlockRegistry.preInit(event, config);
+        BlockRegistry.preInit(event, config); // Do before item registration
         ItemRegistry.preInit(event, config);
         DesignHandler.preInit(event);
     }

@@ -2,44 +2,47 @@ package com.carpentersblocks.data;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
 import com.carpentersblocks.tileentity.TEBase;
 import com.carpentersblocks.util.BlockProperties;
 
-public class PressurePlate {
+public class PressurePlate implements ISided {
 
     /**
      * 16-bit data components:
      *
      * [000000000]  [00]     [0]       [0]    [000]
-     * Unused       Trigger  Polarity  State  Type
+     * Unused       Trigger  Polarity  State  Dir
      */
 
-    public final static byte POLARITY_POSITIVE = 0;
-    public final static byte POLARITY_NEGATIVE = 1;
+    public final byte POLARITY_POSITIVE = 0;
+    public final byte POLARITY_NEGATIVE = 1;
 
-    public final static byte STATE_OFF = 0;
-    public final static byte STATE_ON  = 1;
+    public final byte STATE_OFF = 0;
+    public final byte STATE_ON  = 1;
 
-    public final static byte TRIGGER_PLAYER  = 0;
-    public final static byte TRIGGER_MONSTER = 1;
-    public final static byte TRIGGER_ANIMAL  = 2;
-    public final static byte TRIGGER_ALL     = 3;
+    public final byte TRIGGER_PLAYER  = 0;
+    public final byte TRIGGER_MONSTER = 1;
+    public final byte TRIGGER_ANIMAL  = 2;
+    public final byte TRIGGER_ALL     = 3;
 
     /**
-     * Returns type.
+     * Returns direction.
      */
-    public static int getType(TEBase TE)
+    @Override
+    public ForgeDirection getDirection(TEBase TE)
     {
-        return BlockProperties.getMetadata(TE) & 0x7;
+        return ForgeDirection.getOrientation(BlockProperties.getMetadata(TE) & 0x7);
     }
 
     /**
-     * Sets type.
+     * Sets direction.
      */
-    public static void setType(TEBase TE, int type)
+    @Override
+    public void setDirection(TEBase TE, ForgeDirection dir)
     {
         int temp = BlockProperties.getMetadata(TE) & 0xfff8;
-        temp |= type;
+        temp |= dir.ordinal();
 
         BlockProperties.setMetadata(TE, temp);
     }
@@ -47,7 +50,7 @@ public class PressurePlate {
     /**
      * Returns state.
      */
-    public static int getState(TEBase TE)
+    public int getState(TEBase TE)
     {
         int temp = BlockProperties.getMetadata(TE) & 0x8;
         return temp >> 3;
@@ -56,7 +59,7 @@ public class PressurePlate {
     /**
      * Sets state.
      */
-    public static void setState(TEBase TE, int state, boolean playSound)
+    public void setState(TEBase TE, int state, boolean playSound)
     {
         int temp = BlockProperties.getMetadata(TE) & 0xfff7;
         temp |= state << 3;
@@ -78,7 +81,7 @@ public class PressurePlate {
     /**
      * Returns polarity.
      */
-    public static int getPolarity(TEBase TE)
+    public int getPolarity(TEBase TE)
     {
         int temp = BlockProperties.getMetadata(TE) & 0x10;
         return temp >> 4;
@@ -87,7 +90,7 @@ public class PressurePlate {
     /**
      * Sets polarity.
      */
-    public static void setPolarity(TEBase TE, int polarity)
+    public void setPolarity(TEBase TE, int polarity)
     {
         int temp = BlockProperties.getMetadata(TE) & 0xffef;
         temp |= polarity << 4;
@@ -98,7 +101,7 @@ public class PressurePlate {
     /**
      * Returns trigger entity.
      */
-    public static int getTriggerEntity(TEBase TE)
+    public int getTriggerEntity(TEBase TE)
     {
         int temp = BlockProperties.getMetadata(TE) & 0x60;
         return temp >> 5;
@@ -107,7 +110,7 @@ public class PressurePlate {
     /**
      * Sets trigger entity.
      */
-    public static void setTriggerEntity(TEBase TE, int trigger)
+    public void setTriggerEntity(TEBase TE, int trigger)
     {
         int temp = BlockProperties.getMetadata(TE) & 0xff9f;
         temp |= trigger << 5;

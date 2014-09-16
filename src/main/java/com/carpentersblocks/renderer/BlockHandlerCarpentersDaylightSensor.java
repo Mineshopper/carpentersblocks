@@ -4,6 +4,8 @@ import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.util.ForgeDirection;
+import com.carpentersblocks.block.BlockCarpentersDaylightSensor;
 import com.carpentersblocks.data.DaylightSensor;
 import com.carpentersblocks.renderer.helper.LightingHelper;
 import com.carpentersblocks.renderer.helper.RenderHelper;
@@ -14,6 +16,9 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class BlockHandlerCarpentersDaylightSensor extends BlockHandlerBase {
+
+    private static ItemStack lapis = new ItemStack(Blocks.lapis_block);
+    private static ItemStack redstone = new ItemStack(Blocks.redstone_block);
 
     @Override
     public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderBlocks)
@@ -65,71 +70,89 @@ public class BlockHandlerCarpentersDaylightSensor extends BlockHandlerBase {
     {
         renderBlocks.renderAllFaces = true;
 
-            suppressDyeColor = true;
-            suppressOverlay = true;
-            suppressChiselDesign = true;
+        suppressDyeColor = true;
+        suppressOverlay = true;
+        suppressChiselDesign = true;
 
-            /* Render glass inlay */
+        DaylightSensor data = new DaylightSensor();
+        ((BlockCarpentersDaylightSensor)srcBlock).setBlockBoundsBasedOnState(renderBlocks.blockAccess, x, y, z);
 
-            ItemStack glass = new ItemStack(Blocks.glass);
-            renderBlocks.enableAO = getEnableAO(glass);
+        /* Render glass inlay */
 
-            renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 0.25D, 1.0D);
-            lightingHelper.setupLightingYPos(glass, x, y, z);
-            lightingHelper.setupColor(x, y, z, 1, getBlockColor(BlockProperties.toBlock(glass), 0, x, y, z, 1, null), null);
-            RenderHelper.renderFaceYPos(renderBlocks, x, y, z, IconRegistry.icon_daylight_sensor_glass_top);
+        ItemStack glass = new ItemStack(Blocks.glass);
+        renderBlocks.enableAO = getEnableAO(glass);
 
-            renderBlocks.enableAO = false;
+        ForgeDirection dir = data.getDirection(TE).getOpposite();
+        ForgeDirection facing = dir.getOpposite();
 
-            /* Render lapis inlay */
+        switch (dir.getOpposite()) {
+            case UP:
+                lightingHelper.setupLightingYPos(glass, x, y, z);
+                lightingHelper.setupColor(x, y, z, facing.ordinal(), getBlockColor(BlockProperties.toBlock(glass), 0, x, y, z, facing.ordinal(), null), null);
+                RenderHelper.renderFaceYPos(renderBlocks, x, y, z, IconRegistry.icon_daylight_sensor_glass_top);
+                break;
+            case NORTH:
+                lightingHelper.setupLightingZNeg(glass, x, y, z);
+                lightingHelper.setupColor(x, y, z, facing.ordinal(), getBlockColor(BlockProperties.toBlock(glass), 0, x, y, z, facing.ordinal(), null), null);
+                RenderHelper.renderFaceZNeg(renderBlocks, x, y, z, IconRegistry.icon_daylight_sensor_glass_top);
+                break;
+            case SOUTH:
+                lightingHelper.setupLightingZPos(glass, x, y, z);
+                lightingHelper.setupColor(x, y, z, facing.ordinal(), getBlockColor(BlockProperties.toBlock(glass), 0, x, y, z, facing.ordinal(), null), null);
+                RenderHelper.renderFaceZPos(renderBlocks, x, y, z, IconRegistry.icon_daylight_sensor_glass_top);
+                break;
+            case WEST:
+                lightingHelper.setupLightingXNeg(glass, x, y, z);
+                lightingHelper.setupColor(x, y, z, facing.ordinal(), getBlockColor(BlockProperties.toBlock(glass), 0, x, y, z, facing.ordinal(), null), null);
+                RenderHelper.renderFaceXNeg(renderBlocks, x, y, z, IconRegistry.icon_daylight_sensor_glass_top);
+                break;
+            case EAST:
+                lightingHelper.setupLightingXPos(glass, x, y, z);
+                lightingHelper.setupColor(x, y, z, facing.ordinal(), getBlockColor(BlockProperties.toBlock(glass), 0, x, y, z, facing.ordinal(), null), null);
+                RenderHelper.renderFaceXPos(renderBlocks, x, y, z, IconRegistry.icon_daylight_sensor_glass_top);
+                break;
+            default: {}
+        }
 
-            renderBlocks.setRenderBounds(0.125D, 0.0625D, 0.125D, 0.875D, 0.1875D, 0.875D);
-            renderBlock(new ItemStack(Blocks.lapis_block), x, y, z);
+        renderBlocks.enableAO = false;
 
-            /* Render bordering redstone inlay */
+        /* Render lapis inlay */
 
-            boolean isActive = DaylightSensor.isActive(TE);
+        renderBlockWithRotation(lapis, x, y, z, 0.125D, 0.125D, 0.8125D, 0.875D, 0.875D, 0.9375D, dir);
 
-            if (isActive) {
-                disableAO = true;
-                lightingHelper.setBrightnessOverride(LightingHelper.MAX_BRIGHTNESS);
-            } else {
-                lightingHelper.setLightnessOverride(0.5F);
-            }
+        /* Render bordering redstone inlay */
 
-            ItemStack redstone = new ItemStack(Blocks.redstone_block);
+        boolean isActive = data.isActive(TE);
 
-            renderBlocks.setRenderBounds(0.0625D, 0.0625D, 0.0625D, 0.125D, 0.1875D, 0.9375D);
-            renderBlock(redstone, x, y, z);
-            renderBlocks.setRenderBounds(0.875D, 0.0625D, 0.0625D, 0.9375D, 0.1875D, 0.9375D);
-            renderBlock(redstone, x, y, z);
-            renderBlocks.setRenderBounds(0.0625D, 0.0625D, 0.0625D, 0.9375D, 0.1875D, 0.125D);
-            renderBlock(redstone, x, y, z);
-            renderBlocks.setRenderBounds(0.0625D, 0.0625D, 0.875D, 0.9375D, 0.1875D, 0.9375D);
-            renderBlock(redstone, x, y, z);
+        if (isActive) {
+            disableAO = true;
+            lightingHelper.setBrightnessOverride(LightingHelper.MAX_BRIGHTNESS);
+        } else {
+            lightingHelper.setLightnessOverride(0.5F);
+        }
 
-            lightingHelper.clearLightnessOverride();
-            lightingHelper.clearBrightnessOverride();
-            disableAO = false;
+        renderBlockWithRotation(redstone, x, y, z, 0.0625D, 0.0625D, 0.8125D, 0.125D, 0.9375D, 0.9375D, dir);
+        renderBlockWithRotation(redstone, x, y, z, 0.125D, 0.0625D, 0.8125D, 0.875D, 0.125D, 0.9375D, dir);
+        renderBlockWithRotation(redstone, x, y, z, 0.125D, 0.875D, 0.8125D, 0.875D, 0.9375D, 0.9375D, dir);
+        renderBlockWithRotation(redstone, x, y, z, 0.875D, 0.0625D, 0.8125D, 0.9375D, 0.9375D, 0.9375D, dir);
 
-            suppressDyeColor = false;
-            suppressOverlay = false;
-            suppressChiselDesign = false;
+        lightingHelper.clearLightnessOverride();
+        lightingHelper.clearBrightnessOverride();
+        disableAO = false;
+
+        suppressDyeColor = false;
+        suppressOverlay = false;
+        suppressChiselDesign = false;
 
         /* Render coverBlock walls and bottom */
 
         ItemStack itemStack = getCoverForRendering();
 
-        renderBlocks.setRenderBounds(0.0625D, 0.0D, 0.0625D, 0.9375D, 0.0625D, 0.9375D);
-        renderBlock(itemStack, x, y, z);
-        renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 0.0625D, 0.25D, 1.0D);
-        renderBlock(itemStack, x, y, z);
-        renderBlocks.setRenderBounds(0.9375D, 0.0D, 0.0D, 1.0D, 0.25D, 1.0D);
-        renderBlock(itemStack, x, y, z);
-        renderBlocks.setRenderBounds(0.0625D, 0.0D, 0.0D, 0.9375D, 0.25D, 0.0625D);
-        renderBlock(itemStack, x, y, z);
-        renderBlocks.setRenderBounds(0.0625D, 0.0D, 0.9375D, 0.9375D, 0.25D, 1.0D);
-        renderBlock(itemStack, x, y, z);
+        renderBlockWithRotation(itemStack, x, y, z, 0.0625D, 0.0625D, 0.9375D, 0.9375D, 0.9375D, 1.0D, dir); // Base
+        renderBlockWithRotation(itemStack, x, y, z, 0.0D, 0.0D, 0.75D, 0.0625D, 1.0D, 1.0D, dir);
+        renderBlockWithRotation(itemStack, x, y, z, 0.0625D, 0.0D, 0.75D, 0.9375D, 0.0625D, 1.0D, dir);
+        renderBlockWithRotation(itemStack, x, y, z, 0.0625D, 0.9375D, 0.75D, 0.9375D, 1.0D, 1.0D, dir);
+        renderBlockWithRotation(itemStack, x, y, z, 0.9375D, 0.0D, 0.75D, 1.0D, 1.0D, 1.0D, dir);
 
         renderBlocks.renderAllFaces = false;
     }

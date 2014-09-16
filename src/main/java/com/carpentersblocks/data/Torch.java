@@ -5,13 +5,13 @@ import net.minecraftforge.common.util.ForgeDirection;
 import com.carpentersblocks.tileentity.TEBase;
 import com.carpentersblocks.util.BlockProperties;
 
-public class Torch {
+public class Torch implements ISided {
 
     /**
      * 16-bit data components:
      *
-     * [0000000000]  [0]    [00]   [000]
-     * Unused        Ready  State  Facing
+     * [00000000000] [00]  [000]
+     * Unused        State Dir
      */
 
     public enum State
@@ -22,20 +22,22 @@ public class Torch {
     }
 
     /**
-     * Returns facing.
+     * Returns direction.
      */
-    public static ForgeDirection getFacing(TEBase TE)
+    @Override
+    public ForgeDirection getDirection(TEBase TE)
     {
         return ForgeDirection.getOrientation(BlockProperties.getMetadata(TE) & 0x7);
     }
 
     /**
-     * Sets facing.
+     * Sets direction.
      */
-    public static void setFacing(TEBase TE, int side)
+    @Override
+    public void setDirection(TEBase TE, ForgeDirection dir)
     {
         int temp = BlockProperties.getMetadata(TE) & 0xfff8;
-        temp |= side;
+        temp |= dir.ordinal();
 
         BlockProperties.setMetadata(TE, temp);
     }
@@ -43,7 +45,7 @@ public class Torch {
     /**
      * Returns state.
      */
-    public static State getState(TEBase TE)
+    public State getState(TEBase TE)
     {
         int temp = BlockProperties.getMetadata(TE) & 0x18;
         int val = temp >> 3;
@@ -54,7 +56,7 @@ public class Torch {
     /**
      * Sets state.
      */
-    public static void setState(TEBase TE, State state)
+    public void setState(TEBase TE, State state)
     {
         if (state.ordinal() > getState(TE).ordinal()) {
             double[] headCoords = getHeadCoordinates(TE);
@@ -69,31 +71,9 @@ public class Torch {
     }
 
     /**
-     * Returns whether block is capable of handling logic functions.
-     * This is implemented because for buttons and levers the SERVER
-     * lags behind the client and will cause the block to pop of walls
-     * before it has a chance to set the correct facing.
-     */
-    public static boolean isReady(TEBase TE)
-    {
-        return (BlockProperties.getMetadata(TE) & 0x20) > 0;
-    }
-
-    /**
-     * Sets block as ready.
-     */
-    public static void setReady(TEBase TE)
-    {
-        int temp = BlockProperties.getMetadata(TE) & 0xffdf;
-        temp |= 1 << 5;
-
-        BlockProperties.setMetadata(TE, temp);
-    }
-
-    /**
      * Returns location where particles and sounds originate.
      */
-    public static double[] getHeadCoordinates(TEBase TE)
+    public double[] getHeadCoordinates(TEBase TE)
     {
         double[] coords;
 
@@ -103,9 +83,9 @@ public class Torch {
         double offset1 = 0.2199999988079071D;
         double offset2 = 0.27000001072883606D;
 
-        ForgeDirection facing = getFacing(TE);
+        ForgeDirection side = getDirection(TE);
 
-        switch (facing) {
+        switch (side) {
             case NORTH:
                 coords = new double[] { xOffset, yOffset + offset1, zOffset + offset2 };
                 break;
@@ -119,7 +99,8 @@ public class Torch {
                 coords = new double[] { xOffset - offset2, yOffset + offset1, zOffset };
                 break;
             default:
-                coords = new double[] { xOffset, yOffset, zOffset };
+                coords = new double[] { xOffset, yOffset, zOffset }; // Default UP
+                break;
         }
 
         return coords;

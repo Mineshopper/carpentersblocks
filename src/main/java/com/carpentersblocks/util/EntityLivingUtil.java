@@ -61,7 +61,7 @@ public class EntityLivingUtil {
     public static ForgeDirection getFacing(EntityLivingBase entity)
     {
         int rot = getRotationValue(entity);
-        return getRotationFacing(rot);
+        return getRotationFacing(rot).getOpposite();
     }
 
 }

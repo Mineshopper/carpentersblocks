@@ -22,7 +22,8 @@ public class TECarpentersTorch extends TEBase {
     {
         if (getWorldObj().isRemote) {
 
-            State existing_state = Torch.getState(this);
+            Torch data = new Torch();
+            State existing_state = data.getState(this);
 
             super.onDataPacket(net, pkt);
 
@@ -31,7 +32,7 @@ public class TECarpentersTorch extends TEBase {
              * has to be handled client-side.
              */
 
-            if (Torch.getState(this).ordinal() > existing_state.ordinal()) {
+            if (data.getState(this).ordinal() > existing_state.ordinal()) {
                 ParticleHelper.spawnTorchBigSmoke(this);
             }
 

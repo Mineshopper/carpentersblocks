@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Random;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.entity.player.EntityPlayer;
@@ -11,20 +12,25 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
 import com.carpentersblocks.data.PressurePlate;
 import com.carpentersblocks.tileentity.TEBase;
-import com.carpentersblocks.util.BlockProperties;
 import com.carpentersblocks.util.handler.ChatHandler;
 import com.carpentersblocks.util.registry.BlockRegistry;
 import com.carpentersblocks.util.registry.IconRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class BlockCarpentersPressurePlate extends BlockCoverable {
+public class BlockCarpentersPressurePlate extends BlockSided {
+
+    private static PressurePlate data = new PressurePlate();
+
+    /** Whether full bounds should be used for collision purposes. */
+    private boolean fullBounds = false;
 
     public BlockCarpentersPressurePlate(Material material)
     {
-        super(material);
+        super(material, data);
     }
 
     @Override
@@ -44,17 +50,15 @@ public class BlockCarpentersPressurePlate extends BlockCoverable {
      */
     protected boolean onHammerLeftClick(TEBase TE, EntityPlayer entityPlayer)
     {
-        int polarity = PressurePlate.getPolarity(TE) == PressurePlate.POLARITY_POSITIVE ? PressurePlate.POLARITY_NEGATIVE : PressurePlate.POLARITY_POSITIVE;
+        int polarity = data.getPolarity(TE) == data.POLARITY_POSITIVE ? data.POLARITY_NEGATIVE : data.POLARITY_POSITIVE;
 
-        PressurePlate.setPolarity(TE, polarity);
+        data.setPolarity(TE, polarity);
         TE.getWorldObj().notifyBlocksOfNeighborChange(TE.xCoord, TE.yCoord - 1, TE.zCoord, this);
 
-        switch (polarity) {
-            case PressurePlate.POLARITY_POSITIVE:
-                ChatHandler.sendMessageToPlayer("message.polarity_pos.name", entityPlayer);
-                break;
-            case PressurePlate.POLARITY_NEGATIVE:
-                ChatHandler.sendMessageToPlayer("message.polarity_neg.name", entityPlayer);
+        if (polarity == data.POLARITY_POSITIVE) {
+            ChatHandler.sendMessageToPlayer("message.polarity_pos.name", entityPlayer);
+        } else {
+            ChatHandler.sendMessageToPlayer("message.polarity_neg.name", entityPlayer);
         }
 
         return true;
@@ -66,40 +70,35 @@ public class BlockCarpentersPressurePlate extends BlockCoverable {
      */
     protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer)
     {
-        int trigger;
+        int trigger = data.getTriggerEntity(TE);
 
-        switch (PressurePlate.getTriggerEntity(TE))
-        {
-            case PressurePlate.TRIGGER_PLAYER:
-                trigger = PressurePlate.TRIGGER_MONSTER;
-                break;
-            case PressurePlate.TRIGGER_MONSTER:
-                trigger = PressurePlate.TRIGGER_ANIMAL;
-                break;
-            case PressurePlate.TRIGGER_ANIMAL:
-                trigger = PressurePlate.TRIGGER_ALL;
-                break;
-            default:
-                trigger = PressurePlate.TRIGGER_PLAYER;
+        if (++trigger > 3) {
+            trigger = 0;
         }
 
-        PressurePlate.setTriggerEntity(TE, trigger);
+        data.setTriggerEntity(TE, trigger);
 
-        switch (trigger) {
-            case PressurePlate.TRIGGER_PLAYER:
-                ChatHandler.sendMessageToPlayer("message.trigger_player.name", entityPlayer);
-                break;
-            case PressurePlate.TRIGGER_MONSTER:
-                ChatHandler.sendMessageToPlayer("message.trigger_monster.name", entityPlayer);
-                break;
-            case PressurePlate.TRIGGER_ANIMAL:
-                ChatHandler.sendMessageToPlayer("message.trigger_animal.name", entityPlayer);
-                break;
-            case PressurePlate.TRIGGER_ALL:
-                ChatHandler.sendMessageToPlayer("message.trigger_all.name", entityPlayer);
+        if (trigger == data.TRIGGER_PLAYER) {
+            ChatHandler.sendMessageToPlayer("message.trigger_player.name", entityPlayer);
+        } else if (trigger == data.TRIGGER_MONSTER) {
+            ChatHandler.sendMessageToPlayer("message.trigger_monster.name", entityPlayer);
+        } else if (trigger == data.TRIGGER_ANIMAL) {
+            ChatHandler.sendMessageToPlayer("message.trigger_animal.name", entityPlayer);
+        } else {
+            ChatHandler.sendMessageToPlayer("message.trigger_all.name", entityPlayer);
         }
 
         return true;
+    }
+
+    /**
+     * Returns a bounding box from the pool of bounding boxes (this means this box can change after the pool has been
+     * cleared to be reused)
+     */
+    @Override
+    public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int x, int y, int z)
+    {
+        return null;
     }
 
     @Override
@@ -111,7 +110,32 @@ public class BlockCarpentersPressurePlate extends BlockCoverable {
         TEBase TE = getTileEntity(world, x, y, z);
 
         if (TE != null) {
-            setBlockBounds(0.0625F, 0.0F, 0.0625F, 1.0F - 0.0625F, isDepressed(TE) ? 0.03125F : 0.0625F, 1.0F - 0.0625F);
+
+            float depth = fullBounds | !isDepressed(TE) ? 0.0625F : 0.03125F;
+            ForgeDirection side = data.getDirection(TE);
+
+            switch (side) {
+                case DOWN:
+                    setBlockBounds(0.0625F, 1.0F - depth, 0.0625F, 0.9375F, 1.0F, 0.9375F);
+                    break;
+                case UP:
+                    setBlockBounds(0.0625F, 0.0F, 0.0625F, 0.9375F, depth, 0.9375F);
+                    break;
+                case NORTH:
+                    setBlockBounds(0.0625F, 0.0625F, 1.0F - depth, 0.9375F, 0.9375F, 1.0F);
+                    break;
+                case SOUTH:
+                    setBlockBounds(0.0625F, 0.0625F, 0.0F, 0.9375F, 0.9375F, depth);
+                    break;
+                case WEST:
+                    setBlockBounds(1.0F - depth, 0.0625F, 0.0625F, 1.0F, 0.9375F, 0.9375F);
+                    break;
+                case EAST:
+                    setBlockBounds(0.0F, 0.0625F, 0.0625F, depth, 0.9375F, 0.9375F);
+                    break;
+                default: {}
+            }
+
         }
     }
 
@@ -126,48 +150,6 @@ public class BlockCarpentersPressurePlate extends BlockCoverable {
 
     @Override
     /**
-     * Returns a bounding box from the pool of bounding boxes (this means this box can change after the pool has been
-     * cleared to be reused)
-     */
-    public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int x, int y, int z)
-    {
-        return null;
-    }
-
-    @Override
-    /**
-     * Checks to see if its valid to put this block at the specified coordinates. Args: world, x, y, z
-     */
-    public boolean canPlaceBlockAt(World world, int x, int y, int z)
-    {
-        return World.doesBlockHaveSolidTopSurface(world, x, y - 1, z);
-    }
-
-    @Override
-    /**
-     * Lets the block know when one of its neighbor changes. Doesn't know which neighbor changed (coordinates passed are
-     * their own) Args: x, y, z, neighbor blockID
-     */
-    public void onNeighborBlockChange(World world, int x, int y, int z, Block block)
-    {
-        if (!world.isRemote) {
-
-            TEBase TE = getTileEntity(world, x, y, z);
-
-            if (TE != null) {
-                if (!World.doesBlockHaveSolidTopSurface(world, x, y - 1, z)) {
-                    dropBlockAsItem(world, x, y, z, 0, 0);
-                    world.setBlockToAir(x, y, z);
-                }
-            }
-
-        }
-
-        super.onNeighborBlockChange(world, x, y, z, block);
-    }
-
-    @Override
-    /**
      * Ticks the block if it's been scheduled
      */
     public void updateTick(World world, int x, int y, int z, Random random)
@@ -178,21 +160,16 @@ public class BlockCarpentersPressurePlate extends BlockCoverable {
 
             if (TE != null) {
 
-                List entityList = world.getEntitiesWithinAABB(Entity.class, getSensitiveAABB(x, y, z));
+                boolean depressed = false;
 
-                boolean shouldActivate = false;
-                if (!entityList.isEmpty()) {
-                    for (int count = 0; count < entityList.size() && !shouldActivate; ++count) {
-                        if (shouldTrigger(TE, (Entity)entityList.get(count), world, x, y, z)) {
-                            shouldActivate = true;
-                        }
-                    }
+                if (isDepressed(TE)) {
+                    depressed = hasTriggerInBounds(TE);
                 }
 
-                if (!shouldActivate && isDepressed(TE)) {
-                    toggleOff(TE, world, x, y, z);
-                } else {
+                if (depressed) {
                     world.scheduleBlockUpdate(x, y, z, this, tickRate(world));
+                } else {
+                    toggleOff(TE, world, x, y, z);
                 }
 
             }
@@ -207,16 +184,56 @@ public class BlockCarpentersPressurePlate extends BlockCoverable {
     public void onEntityCollidedWithBlock(World world, int x, int y, int z, Entity entity)
     {
         if (!world.isRemote) {
-
             TEBase TE = getTileEntity(world, x, y, z);
-
             if (TE != null) {
-                if (shouldTrigger(TE, entity, world, x, y, z) && !isDepressed(TE)) {
+                if (hasTriggerInBounds(TE)) {
                     toggleOn(TE, world, x, y, z);
                 }
             }
-
         }
+    }
+
+    /**
+     * Returns whether sensitive area contains an entity that can
+     * trigger a state change.
+     *
+     * @param  TE the {@link TEBase}
+     * @return whether sensitive area contains valid {@link Entity}
+     */
+    private boolean hasTriggerInBounds(TEBase TE)
+    {
+        fullBounds = true;
+        List entityList = TE.getWorldObj().getEntitiesWithinAABB(Entity.class, getSensitiveAABB(TE.xCoord, TE.yCoord, TE.zCoord));
+        fullBounds = false;
+
+        if (!entityList.isEmpty()) {
+            for (int idx = 0; idx < entityList.size(); ++idx) {
+                if (canEntityTrigger(TE, (Entity)entityList.get(idx))) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Gets the area of bounding box that is sensitive to changes.
+     *
+     * @param  x the x coordinate
+     * @param  y the y coordinate
+     * @param  z the z coordinate
+     * @return the {@link AxisAlignedBB}
+     */
+    private AxisAlignedBB getSensitiveAABB(int x, int y, int z)
+    {
+        World world = Minecraft.getMinecraft().theWorld;
+
+        if (world != null) {
+            setBlockBoundsBasedOnState(Minecraft.getMinecraft().theWorld, x, y, z);
+        }
+
+        return AxisAlignedBB.getBoundingBox(x + minX, y + minY, z + minZ, x + maxX, y + maxY, z + maxZ);
     }
 
     /**
@@ -224,8 +241,8 @@ public class BlockCarpentersPressurePlate extends BlockCoverable {
      */
     private void toggleOn(TEBase TE, World world, int x, int y, int z)
     {
-        PressurePlate.setState(TE, PressurePlate.STATE_ON, true);
-        notifyNeighborsOfUpdate(world, x, y, z);
+        data.setState(TE, data.STATE_ON, true);
+        notifyNeighborOfUpdate(world, x, y, z);
         world.scheduleBlockUpdate(x, y, z, this, tickRate(world));
     }
 
@@ -234,19 +251,8 @@ public class BlockCarpentersPressurePlate extends BlockCoverable {
      */
     private void toggleOff(TEBase TE, World world, int x, int y, int z)
     {
-        PressurePlate.setState(TE, PressurePlate.STATE_OFF, true);
-        notifyNeighborsOfUpdate(world, x, y, z);
-    }
-
-    private AxisAlignedBB getSensitiveAABB(int x, int y, int z)
-    {
-        return AxisAlignedBB.getBoundingBox(x + 0.125F, y, z + 0.125F, x + 1.0F - 0.125F, y + 0.25D, z + 1.0F - 0.125F);
-    }
-
-    private void notifyNeighborsOfUpdate(World world, int x, int y, int z)
-    {
-        world.notifyBlocksOfNeighborChange(x, y, z, this);
-        world.notifyBlocksOfNeighborChange(x, y - 1, z, this);
+        data.setState(TE, data.STATE_OFF, true);
+        notifyNeighborOfUpdate(world, x, y, z);
     }
 
     /**
@@ -254,30 +260,7 @@ public class BlockCarpentersPressurePlate extends BlockCoverable {
      */
     private boolean isDepressed(TEBase TE)
     {
-        return PressurePlate.getState(TE) == PressurePlate.STATE_ON;
-    }
-
-    @Override
-    /**
-     * Returns true if the block is emitting indirect/weak redstone power on the specified side. If isBlockNormalCube
-     * returns true, standard redstone propagation rules will apply instead and this will not be called. Args: World, X,
-     * Y, Z, side. Note that the side is reversed - eg it is 1 (up) when checking the bottom of the block.
-     */
-    public int isProvidingWeakPower(IBlockAccess world, int x, int y, int z, int side)
-    {
-        TEBase TE = getTileEntity(world, x, y, z);
-        return TE == null ? 0 : getPowerSupply(TE, BlockProperties.getMetadata(TE));
-    }
-
-    @Override
-    /**
-     * Returns true if the block is emitting direct/strong redstone power on the specified side. Args: World, X, Y, Z,
-     * side. Note that the side is reversed - eg it is 1 (up) when checking the bottom of the block.
-     */
-    public int isProvidingStrongPower(IBlockAccess world, int x, int y, int z, int side)
-    {
-        TEBase TE = getTileEntity(world, x, y, z);
-        return TE == null ? 0 : side == 1 ? getPowerSupply(TE, BlockProperties.getMetadata(TE)) : 0;
+        return data.getState(TE) == data.STATE_ON;
     }
 
     @Override
@@ -292,37 +275,37 @@ public class BlockCarpentersPressurePlate extends BlockCoverable {
     /**
      * Returns power level (0 or 15)
      */
-    private int getPowerSupply(TEBase TE, int data)
+    @Override
+    public int getPowerOutput(TEBase TE)
     {
-        int polarity = PressurePlate.getPolarity(TE);
+        int polarity = data.getPolarity(TE);
 
         if (isDepressed(TE)) {
-            return polarity == PressurePlate.POLARITY_POSITIVE ? 15 : 0;
+            return polarity == data.POLARITY_POSITIVE ? 15 : 0;
         } else {
-            return polarity == PressurePlate.POLARITY_NEGATIVE ? 15 : 0;
+            return polarity == data.POLARITY_NEGATIVE ? 15 : 0;
         }
     }
 
     /**
      * Returns whether pressure plate should trigger based on entity colliding with it.
      */
-    private boolean shouldTrigger(TEBase TE, Entity entity, World world, int x, int y, int z)
+    private boolean canEntityTrigger(TEBase TE, Entity entity)
     {
         if (entity == null) {
             return false;
         }
 
-        int trigger = PressurePlate.getTriggerEntity(TE);
+        int trigger = data.getTriggerEntity(TE);
 
-        switch (trigger) {
-            case PressurePlate.TRIGGER_PLAYER:
-                return entity instanceof EntityPlayer;
-            case PressurePlate.TRIGGER_MONSTER:
-                return entity.isCreatureType(EnumCreatureType.monster, false);
-            case PressurePlate.TRIGGER_ANIMAL:
-                return entity.isCreatureType(EnumCreatureType.creature, false);
-            default: // TRIGGER_EVERYTHING
-                return true;
+        if (trigger == data.TRIGGER_PLAYER) {
+            return entity instanceof EntityPlayer;
+        } else if (trigger == data.TRIGGER_MONSTER) {
+            return entity.isCreatureType(EnumCreatureType.monster, false);
+        } else if (trigger == data.TRIGGER_ANIMAL) {
+            return entity.isCreatureType(EnumCreatureType.creature, false);
+        } else {
+            return true;
         }
     }
 
@@ -336,22 +319,11 @@ public class BlockCarpentersPressurePlate extends BlockCoverable {
 
         if (TE != null) {
             if (isDepressed(TE)) {
-                notifyNeighborsOfUpdate(world, x, y, z);
+                notifyNeighborOfUpdate(world, x, y, z);
             }
         }
 
         super.breakBlock(world, x, y, z, block, metadata);
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    /**
-     * Returns true if the given side of this block type should be rendered, if the adjacent block is at the given
-     * coordinates.  Args: world, x, y, z, side
-     */
-    public boolean shouldSideBeRendered(IBlockAccess world, int x, int y, int z, int side)
-    {
-        return side != 0;
     }
 
     @Override

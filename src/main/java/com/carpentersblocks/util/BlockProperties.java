@@ -235,20 +235,6 @@ public class BlockProperties {
                isCover(TE.cover[side]);
     }
 
-    /**
-     * Returns whether block has side covers.
-     */
-    public static boolean hasSideCovers(TEBase TE)
-    {
-        for (int side = 0; side < 6; ++side) {
-            if (hasCover(TE, side)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     private static ItemStack getCoverUnfiltered(TEBase TE, int side)
     {
         return TE.cover[side] != null ? TE.cover[side] : new ItemStack(TE.getBlockType());

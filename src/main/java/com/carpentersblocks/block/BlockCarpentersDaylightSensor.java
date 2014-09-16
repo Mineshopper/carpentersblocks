@@ -1,9 +1,11 @@
 package com.carpentersblocks.block;
 
+import net.minecraft.block.BlockDaylightDetector;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -17,12 +19,13 @@ import com.carpentersblocks.util.registry.IconRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class BlockCarpentersDaylightSensor extends BlockCoverable {
+public class BlockCarpentersDaylightSensor extends BlockSided {
+
+    private static DaylightSensor data = new DaylightSensor();
 
     public BlockCarpentersDaylightSensor(Material material)
     {
-        super(material);
-        setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.25F, 1.0F);
+        super(material, data);
     }
 
     @SideOnly(Side.CLIENT)
@@ -42,16 +45,14 @@ public class BlockCarpentersDaylightSensor extends BlockCoverable {
      */
     protected boolean onHammerLeftClick(TEBase TE, EntityPlayer entityPlayer)
     {
-        int polarity = DaylightSensor.getPolarity(TE) == DaylightSensor.POLARITY_POSITIVE ? DaylightSensor.POLARITY_NEGATIVE : DaylightSensor.POLARITY_POSITIVE;
+        int polarity = data.getPolarity(TE) == data.POLARITY_POSITIVE ? data.POLARITY_NEGATIVE : data.POLARITY_POSITIVE;
 
-        DaylightSensor.setPolarity(TE, polarity);
+        data.setPolarity(TE, polarity);
 
-        switch (polarity) {
-            case DaylightSensor.POLARITY_POSITIVE:
-                ChatHandler.sendMessageToPlayer("message.polarity_pos.name", entityPlayer);
-                break;
-            case DaylightSensor.POLARITY_NEGATIVE:
-                ChatHandler.sendMessageToPlayer("message.polarity_neg.name", entityPlayer);
+        if (polarity == data.POLARITY_POSITIVE) {
+            ChatHandler.sendMessageToPlayer("message.polarity_pos.name", entityPlayer);
+        } else {
+            ChatHandler.sendMessageToPlayer("message.polarity_neg.name", entityPlayer);
         }
 
         return true;
@@ -63,15 +64,47 @@ public class BlockCarpentersDaylightSensor extends BlockCoverable {
      */
     protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer)
     {
-        int sensitivity = DaylightSensor.setNextSensitivity(TE);
+        int sensitivity = data.setNextSensitivity(TE);
 
-        if (sensitivity == DaylightSensor.SENSITIVITY_SLEEP) {
+        if (sensitivity == data.SENSITIVITY_SLEEP) {
             ChatHandler.sendMessageToPlayer("message.sensitivity_sleep.name", entityPlayer);
-        } else {
+        } else if (sensitivity == data.SENSITIVITY_MONSTERS){
             ChatHandler.sendMessageToPlayer("message.sensitivity_monsters.name", entityPlayer);
+        } else {
+            ChatHandler.sendMessageToPlayer("message.sensitivity_dynamic.name", entityPlayer);
         }
 
         return true;
+    }
+
+    @Override
+    /**
+     * Updates the blocks bounds based on its current state. Args: world, x, y, z
+     */
+    public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
+    {
+        TEBase TE = getTileEntity(world, x, y, z);
+
+        if (TE != null) {
+            switch (data.getDirection(TE)) {
+                case UP:
+                    setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.25F, 1.0F);
+                    break;
+                case NORTH:
+                    setBlockBounds(0.0F, 0.0F, 0.75F, 1.0F, 1.0F, 1.0F);
+                    break;
+                case SOUTH:
+                    setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 0.25F);
+                    break;
+                case WEST:
+                    setBlockBounds(0.75F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
+                    break;
+                case EAST:
+                    setBlockBounds(0.0F, 0.0F, 0.0F, 0.25F, 1.0F, 1.0F);
+                    break;
+                default: {}
+            }
+        }
     }
 
     @Override
@@ -85,34 +118,127 @@ public class BlockCarpentersDaylightSensor extends BlockCoverable {
         TEBase TE = getTileEntity(world, x, y, z);
 
         if (TE != null) {
-            return DaylightSensor.isActive(TE) ? 15 : 0;
+            return data.getRedstoneOutput(TE);
         }
 
         return 0;
     }
 
+    /**
+     * Calculates and saves the current light level at this space.
+     *
+     * @param  world the {@link World}
+     * @param  x the x coordinate
+     * @param  y the y coordinate
+     * @param  z the z coordinate
+     * @return nothing
+     */
     public void updateLightLevel(World world, int x, int y, int z)
     {
-        if (!world.provider.hasNoSky)
-        {
+        if (!world.provider.hasNoSky) {
+
             TEBase TE = getTileEntity(world, x, y, z);
 
             if (TE != null) {
 
-                int temp_lightValue = DaylightSensor.getLightLevel(TE);
-                int lightValue = world.getSavedLightValue(EnumSkyBlock.Sky, x, y, z) - world.skylightSubtracted;
+                int temp = data.getLightLevel(TE);
+                float angle = world.getCelestialAngleRadians(1.0F);
 
-                if (world.isThundering()) {
+                int lightValue = world.getSavedLightValue(EnumSkyBlock.Sky, x, y, z) - world.skylightSubtracted;
+                int sensitivity = data.getSensitivity(TE);
+
+                if (sensitivity == data.SENSITIVITY_DYNAMIC) {
+
+                    if (angle <= 1.67D || angle >= 4.62) {
+
+                        /* Adjust strength based on sun exposure. */
+
+                        switch (data.getDirection(TE)) {
+                            case UP:
+                                lightValue = getCelestialRedstoneOutput(world, x, y, z, lightValue, angle);
+                                break;
+                            case NORTH:
+                            case SOUTH:
+                                lightValue *= 0.6F;
+                                break;
+                            case EAST:
+                                lightValue = getCelestialRedstoneOutput(world, x, y, z, lightValue, (float) (angle + Math.PI / 2));
+                                break;
+                            case WEST:
+                                lightValue = getCelestialRedstoneOutput(world, x, y, z, lightValue, (float) (angle - Math.PI / 2));
+                                break;
+                            default: {}
+                        }
+
+                    } else {
+                        lightValue = 0;
+                    }
+
+                } else if (sensitivity == data.SENSITIVITY_MONSTERS && world.isThundering()) {
+
+                    /* Override light value to trigger monster-spawn light threshold during thunderstorms. */
+
                     lightValue = 7;
+
                 }
 
-                if (temp_lightValue != lightValue) {
-                    DaylightSensor.setLightLevel(TE, lightValue);
+                if (temp != lightValue) {
+                    data.setLightLevel(TE, lightValue);
                     world.notifyBlocksOfNeighborChange(x, y, z, this);
                 }
 
             }
+
         }
+    }
+
+    /**
+     * Gets redstone output strength based on the angle of the sun.
+     * <p>
+     * This is copied from {@link BlockDaylightDetector#func_149957_e BlockDaylightDetector}
+     * with a parameterized skylight and angle added.
+     *
+     * @param  world the {@link World}
+     * @param  x the x coordinate
+     * @param  y the y coordinate
+     * @param  z the z coordinate
+     * @param  skylight the saved light value
+     * @param  angle the angle of the sun in radians
+     * @return the output strength from 0 to 15
+     */
+    public int getCelestialRedstoneOutput(World world, int x, int y, int z, int skylight, float angle)
+    {
+        if (!world.provider.hasNoSky) {
+
+            if (angle < (float) Math.PI) {
+                angle += (0.0F - angle) * 0.2F;
+            } else {
+                angle += (((float) Math.PI * 2F) - angle) * 0.2F;
+            }
+
+            skylight = Math.round(skylight * MathHelper.cos(angle));
+
+            if (skylight < 0) {
+                skylight = 0;
+            } else if (skylight > 15) {
+                skylight = 15;
+            }
+
+        }
+
+        return skylight;
+    }
+
+    /**
+     * Whether block can be attached to specified side of another block.
+     *
+     * @param  side the side
+     * @return whether side is supported
+     */
+    @Override
+    public boolean canAttachToSide(int side)
+    {
+        return side != 0;
     }
 
     @Override
