@@ -51,13 +51,25 @@ public class BlockSided extends BlockCoverable {
     {
         super.onBlockPlacedBy(world, x, y, z, entityLiving, itemStack);
 
-        if (!world.isRemote) {
-            TEBase TE = getTileEntity(world, x, y, z);
-            if (TE != null) {
-                int meta = world.getBlockMetadata(x, y, z);
-                data.setDirection(TE, ForgeDirection.getOrientation(meta));
-            }
+        TEBase TE = getTileEntity(world, x, y, z);
+        if (TE != null) {
+            int meta = world.getBlockMetadata(x, y, z);
+            data.setDirection(TE, ForgeDirection.getOrientation(meta));
         }
+    }
+
+    /**
+     * Called after a block is placed
+     */
+    @Override
+    public void onPostBlockPlaced(World world, int x, int y, int z, int metadata)
+    {
+        /*
+         * Part of world.setBlock() involves updating neighbors.  Since we
+         * prevent this in ItemBlockSided, we'll invoke it here.
+         */
+
+        world.notifyBlocksOfNeighborChange(x, y, z, this);
     }
 
     @Override

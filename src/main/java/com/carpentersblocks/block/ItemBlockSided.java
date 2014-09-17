@@ -25,14 +25,17 @@ public class ItemBlockSided extends ItemBlock {
     public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int metadata)
     {
         /*
-         * For BlockSided blocks, we need to create them using the 0 flag to
-         * ensure that block updates don't happen too early.  This is most
-         * noticeable with the Lever and Button, where they will pop off walls
-         * immediately upon placement if a neighbor is updated before the server
-         * has had a chance to initialize the block tile entity with a side.
+         * We need to use a flag that doesn't call for a block update ([flag & 1] updates).
+         *
+         * If the world updates, there's a chance the block will pop off the wall before
+         * the server is able to set the block direction.  This happens when the world
+         * notifies neighbors of the block update, and they in turn update this block.
+         *
+         * Instead, we'll notify neighbors when it's safe to do so -- in BlockSided using
+         * onPostBlockPlaced().
          */
 
-        if (!world.setBlock(x, y, z, field_150939_a, metadata, 2)) {
+        if (!world.setBlock(x, y, z, field_150939_a, metadata, 0)) {
             return false;
         }
 

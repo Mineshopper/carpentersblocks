@@ -320,7 +320,7 @@ public class BlockRegistry {
                 .setHardness(0.2F)
                 .setStepSound(BlockProperties.stepSound)
                 .setCreativeTab(CarpentersBlocks.creativeTab);
-            GameRegistry.registerBlock(blockCarpentersDaylightSensor, "blockCarpentersDaylightSensor");
+            GameRegistry.registerBlock(blockCarpentersDaylightSensor, ItemBlockSided.class, "blockCarpentersDaylightSensor");
             Blocks.fire.setFireInfo(blockCarpentersDaylightSensor, 5, 20);
         }
 
@@ -395,7 +395,7 @@ public class BlockRegistry {
                 .setHardness(0.2F)
                 .setStepSound(BlockProperties.stepSound)
                 .setCreativeTab(CarpentersBlocks.creativeTab);
-            GameRegistry.registerBlock(blockCarpentersPressurePlate, "blockCarpentersPressurePlate");
+            GameRegistry.registerBlock(blockCarpentersPressurePlate, ItemBlockSided.class, "blockCarpentersPressurePlate");
             Blocks.fire.setFireInfo(blockCarpentersPressurePlate, 5, 20);
         }
 
