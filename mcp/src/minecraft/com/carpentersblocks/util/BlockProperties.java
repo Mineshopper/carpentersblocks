@@ -1,5 +1,6 @@
 package com.carpentersblocks.util;
 
+import java.util.Random;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockBreakable;
 import net.minecraft.block.BlockHalfSlab;
@@ -331,12 +332,12 @@ public class BlockProperties {
      * Returns cover ItemStack in its default state.
      * Will correct log drop rotation, among other things.
      */
-    public static ItemStack getCoverForDrop(ItemStack itemStack)
+    public static ItemStack getCoverForDrop(Random rand, ItemStack itemStack)
     {
         if (itemStack != null) {
             Block block = toBlock(itemStack);
             int damageDropped = block.damageDropped(itemStack.getItemDamage());
-            Item itemDropped = Item.itemsList[block.idDropped(itemStack.getItemDamage(), null, /* Fortune */ 0)];
+            Item itemDropped = Item.itemsList[block.idDropped(itemStack.getItemDamage(), rand, /* Fortune */ 0)];
 
             /* Check if block drops itself, and, if so, correct the damage value to the block's default. */
 
@@ -350,7 +351,7 @@ public class BlockProperties {
 
     public static ItemStack getCoverForDrop(TEBase TE, int side)
     {
-        return getCoverForDrop(TE.cover[side]);
+        return getCoverForDrop(TE.getWorldObj().rand, TE.cover[side]);
     }
 
     /**
