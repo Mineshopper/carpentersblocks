@@ -8,6 +8,8 @@ label-end: </span>
 label-dev: <span class="label label-danger" data-toggle="tooltip" data-placement="top" title="This is a development build and may contain critical bugs">DEV</span>
 label-stable: <span class="label label-success" data-toggle="tooltip" data-placement="top" title="This build has been tested and is considered stable">STABLE</span>
 label-final: <span class="label label-warning" data-toggle="tooltip" data-placement="top" title="This is the final build for this Minecraft version">FINAL</span>
+label-begin-patch: <span class="label label-warning" data-toggle="tooltip" data-placement="top" title="This build was patched after release">
+label-patch: <span class="label label-warning">PATCH</span>
 ---
 
 <h4>Dependencies</h4>
@@ -43,11 +45,40 @@ label-final: <span class="label label-warning" data-toggle="tooltip" data-placem
 <div class="download-container">
    <div style="display: table-row;">
       <div class="download-container-version">
+         Carpenter's Blocks 3.2.9 DEV
+         {{ page.label-dev }}
+         {{ page.label-begin-minecraft }}MC 1.7.10{{ page.label-end }}
+         {{ page.label-begin-forge }}FORGE 10.13.0.1180{{ page.label-end }}
+         {{ page.label-begin-release }}RELEASED 09/17/2014{{ page.label-end }}
+      </div>
+   </div>
+   <div style="display: table-row;">
+      <div style="display: table-cell;">
+         <button onclick="window.open('http://adf.ly/s8QhM')">Download</button>
+         <button onclick="window.open('https://www.dropbox.com/s/qdjo34t0xeb92wr/Carpenter%27s%20Blocks%20v3.2.9%20DEV%20-%20MC%201.7.10.jar?dl=1')" class="dropbox">&nbsp;</button>
+         <button class="expand">View Changelog</button>
+         <div class="collapsed">
+            <ul id="changelog">
+               <li>Redstone propagation for Carpenter's Block added.</li>
+               <li>Buttons can now be placed on top or bottom faces of block.</li>
+               <li>Pressure plates can now be placed on any side of block.</li>
+               <li>Daylight sensor can now be placed on sides of block, and has a new dynamic sensitivity setting.</li>
+               <li>Fix possible crash when removing covers.</li>
+            </ul>
+         </div>
+      </div>
+   </div>
+</div>
+
+<div class="download-container">
+   <div style="display: table-row;">
+      <div class="download-container-version">
          Carpenter's Blocks 3.2.8
          {{ page.label-stable }}
          {{ page.label-begin-minecraft }}MC 1.7.10{{ page.label-end }}
          {{ page.label-begin-forge }}FORGE 10.13.0.1180{{ page.label-end }}
          {{ page.label-begin-release }}RELEASED 09/11/2014{{ page.label-end }}
+         {{ page.label-begin-patch }}PATCHED 09/17/2014{{ page.label-end }}
       </div>
    </div>
    <div style="display: table-row;">
@@ -59,6 +90,7 @@ label-final: <span class="label label-warning" data-toggle="tooltip" data-placem
             <ul id="changelog">
                <li>Fixed button triggering neighbor updates randomly.</li>
                <li>Packaged in jar file now.</li>
+               <li>{{ page.label-patch }} Fix possible crash when removing covers.</li>
             </ul>
          </div>
       </div>
@@ -72,9 +104,11 @@ label-final: <span class="label label-warning" data-toggle="tooltip" data-placem
       <div class="download-container-version">
          Carpenter's Blocks 3.2.8
          {{ page.label-stable }}
+         {{ page.label-final }}
          {{ page.label-begin-minecraft }}MC 1.7.2{{ page.label-end }}
          {{ page.label-begin-forge }}FORGE 10.12.2.1121{{ page.label-end }}
          {{ page.label-begin-release }}RELEASED 09/11/2014{{ page.label-end }}
+         {{ page.label-begin-patch }}PATCHED 09/17/2014{{ page.label-end }}
       </div>
    </div>
    <div style="display: table-row;">
@@ -86,6 +120,7 @@ label-final: <span class="label label-warning" data-toggle="tooltip" data-placem
             <ul id="changelog">
                <li>Fixed button triggering neighbor updates randomly.</li>
                <li>Packaged in jar file now.</li>
+               <li>{{ page.label-patch }} Fix possible crash when removing covers.</li>
             </ul>
          </div>
       </div>
@@ -103,6 +138,7 @@ label-final: <span class="label label-warning" data-toggle="tooltip" data-placem
          {{ page.label-begin-minecraft }}MC 1.6.4{{ page.label-end }}
          {{ page.label-begin-forge }}FORGE 9.11.1.965{{ page.label-end }}
          {{ page.label-begin-release }}RELEASED 09/11/2014{{ page.label-end }}
+         {{ page.label-begin-patch }}PATCHED 09/17/2014{{ page.label-end }}
       </div>
    </div>
    <div style="display: table-row;">
@@ -114,6 +150,7 @@ label-final: <span class="label label-warning" data-toggle="tooltip" data-placem
             <ul id="changelog">
                <li>Fixed button triggering neighbor updates randomly.</li>
                <li>Packaged in jar file now.</li>
+               <li>{{ page.label-patch }} Fix possible crash when removing covers.</li>
             </ul>
          </div>
       </div>

@@ -5,6 +5,8 @@ label-begin-version: <span class="label label-success" data-toggle="tooltip" dat
 label-begin-release: <span class="label label-info" data-toggle="tooltip" data-placement="top" title="The release date">
 label-begin-common: <span class="label label-default" data-toggle="tooltip" data-placement="top" title="These changes are common to all related Minecraft versions">COMMON</span>
 label-begin-minecraft: <span class="label label-primary" data-toggle="tooltip" data-placement="top" title="These changes are specific to this Minecraft version">
+label-begin-patch: <span class="label label-warning" data-toggle="tooltip" data-placement="top" title="This build was patched after release">
+label-patch: <span class="label label-warning">PATCH</span>
 label-end: </span>
 ---
 
@@ -19,13 +21,29 @@ label-end: </span>
 -->
 
 <div>
+   {{ page.label-begin-version }}3.2.9{{ page.label-end }}
+   {{ page.label-begin-release }}IN DEVELOPMENT{{ page.label-end }}
+</div>
+<ul>
+   <li>Redstone propagation for Carpenter's Block added.</li>
+   <li>Buttons can now be placed on top or bottom faces of block.</li>
+   <li>Pressure plates can now be placed on any side of block.</li>
+   <li>Daylight sensor can now be placed on sides of block, and has a new dynamic sensitivity setting.</li>
+   <li>Fix possible crash when removing covers.</li>
+</ul>
+
+<hr>
+
+<div>
    {{ page.label-begin-version }}3.2.8{{ page.label-end }}
    {{ page.label-begin-release }}RELEASED 09/11/2014{{ page.label-end }}
+   {{ page.label-begin-patch }}PATCHED 09/17/2014{{ page.label-end }}
 </div>
 {{ page.label-begin-common }}
 <ul>
    <li>Fixed button triggering neighbor updates randomly.</li>
    <li>Packaged in jar file now.</li>
+   <li>{{ page.label-patch }} Fix possible crash when removing covers.</li>
 </ul>
 
 <hr>
