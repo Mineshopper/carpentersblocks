@@ -11,8 +11,8 @@ public class PressurePlate implements ISided {
     /**
      * 16-bit data components:
      *
-     * [000000000]  [00]     [0]       [0]    [000]
-     * Unused       Trigger  Polarity  State  Dir
+     * [000000000] [00]    [0]      [0]   [000]
+     * Unused      Trigger Polarity State Dir
      */
 
     public final byte POLARITY_POSITIVE = 0;

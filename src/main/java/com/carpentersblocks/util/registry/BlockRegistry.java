@@ -390,7 +390,7 @@ public class BlockRegistry {
         }
 
         if (enablePressurePlate) {
-            blockCarpentersPressurePlate = new BlockCarpentersPressurePlate(Material.wood)
+            blockCarpentersPressurePlate = new BlockCarpentersPressurePlate(Material.circuits)
                 .setBlockName("blockCarpentersPressurePlate")
                 .setHardness(0.2F)
                 .setStepSound(BlockProperties.stepSound)
