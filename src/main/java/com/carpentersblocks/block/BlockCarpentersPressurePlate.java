@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Random;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.entity.player.EntityPlayer;
@@ -203,7 +202,7 @@ public class BlockCarpentersPressurePlate extends BlockSided {
     private boolean hasTriggerInBounds(TEBase TE)
     {
         fullBounds = true;
-        List entityList = TE.getWorldObj().getEntitiesWithinAABB(Entity.class, getSensitiveAABB(TE.xCoord, TE.yCoord, TE.zCoord));
+        List entityList = TE.getWorldObj().getEntitiesWithinAABB(Entity.class, getSensitiveAABB(TE.getWorldObj(), TE.xCoord, TE.yCoord, TE.zCoord));
         fullBounds = false;
 
         if (!entityList.isEmpty()) {
@@ -225,14 +224,9 @@ public class BlockCarpentersPressurePlate extends BlockSided {
      * @param  z the z coordinate
      * @return the {@link AxisAlignedBB}
      */
-    private AxisAlignedBB getSensitiveAABB(int x, int y, int z)
+    private AxisAlignedBB getSensitiveAABB(World world, int x, int y, int z)
     {
-        World world = Minecraft.getMinecraft().theWorld;
-
-        if (world != null) {
-            setBlockBoundsBasedOnState(Minecraft.getMinecraft().theWorld, x, y, z);
-        }
-
+        setBlockBoundsBasedOnState(world, x, y, z);
         return AxisAlignedBB.getBoundingBox(x + minX, y + minY, z + minZ, x + maxX, y + maxY, z + maxZ);
     }
 
