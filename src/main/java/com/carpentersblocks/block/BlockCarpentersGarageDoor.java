@@ -20,6 +20,7 @@ import com.carpentersblocks.data.GarageDoor;
 import com.carpentersblocks.data.Hinge;
 import com.carpentersblocks.tileentity.TEBase;
 import com.carpentersblocks.util.EntityLivingUtil;
+import com.carpentersblocks.util.handler.ChatHandler;
 import com.carpentersblocks.util.registry.BlockRegistry;
 import com.carpentersblocks.util.registry.IconRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -27,7 +28,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockCarpentersGarageDoor extends BlockCoverable {
 
-    public final static String type[] = { "default", "glassTop", "glass", "siding" };
+    public final static String type[] = { "default", "glassTop", "glass", "iron" };
     private static GarageDoor data = new GarageDoor();
 
     public BlockCarpentersGarageDoor(Material material)
@@ -44,6 +45,7 @@ public class BlockCarpentersGarageDoor extends BlockCoverable {
     public void registerBlockIcons(IIconRegister iconRegister)
     {
         IconRegistry.icon_garage_glass_top = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "garagedoor/glass_top");
+        IconRegistry.icon_garage_glass     = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "garagedoor/glass");
     }
 
     @Override
@@ -58,9 +60,9 @@ public class BlockCarpentersGarageDoor extends BlockCoverable {
             temp = 0;
         }
 
-        // TODO: Update all connecting blocks
         // TODO: Fix block dropping when hit with hammer
         data.setType(TE, temp);
+        propagateChanges(TE, TE.getWorldObj(), TE.xCoord, TE.yCoord, TE.zCoord, true);
         return true;
     }
 
@@ -76,8 +78,23 @@ public class BlockCarpentersGarageDoor extends BlockCoverable {
             temp = type.length - 1;
         }
 
-        // TODO: Update all connecting blocks
-        data.setType(TE, temp);
+        if (entityPlayer.isSneaking()) {
+            int rigidity = data.isRigid(TE) ? GarageDoor.DOOR_NONRIGID : GarageDoor.DOOR_RIGID;
+
+            switch (rigidity) {
+                case GarageDoor.DOOR_NONRIGID:
+                    ChatHandler.sendMessageToPlayer("message.activation_wood.name", entityPlayer);
+                    break;
+                case GarageDoor.DOOR_RIGID:
+                    ChatHandler.sendMessageToPlayer("message.activation_iron.name", entityPlayer);
+            }
+
+            data.setRigidity(TE, rigidity);
+        } else {
+            data.setType(TE, temp);
+        }
+
+        propagateChanges(TE, TE.getWorldObj(), TE.xCoord, TE.yCoord, TE.zCoord, true);
         return true;
     }
 
@@ -196,43 +213,51 @@ public class BlockCarpentersGarageDoor extends BlockCoverable {
      */
     protected void postOnBlockActivated(TEBase TE, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ, ActionResult actionResult)
     {
-        changeState(TE, TE.getWorldObj(), TE.xCoord, TE.yCoord, TE.zCoord, true);
-        actionResult.setAltered().setNoSound();
+        if (!data.isRigid(TE)) {
+            int state = data.getState(TE) == GarageDoor.STATE_OPEN ? GarageDoor.STATE_CLOSED : GarageDoor.STATE_OPEN;
+            data.setState(TE, state, false);
+            propagateChanges(TE, TE.getWorldObj(), TE.xCoord, TE.yCoord, TE.zCoord, true);
+            actionResult.setAltered().setNoSound();
+        }
     }
 
     /**
-     * Toggles state of block.
+     * Propagates block properties to all connecting blocks.
      * <p>
-     * Will start at bottom of column and finish at the top. If propagate
-     * is true, will also notify neighbor blocks of state change.
+     * If notifyNeighbors is true, will notify all columns along a horizontal
+     * line to update.  Only the first method call should set this to true.
      *
-     * @param TE the {@link TEBase}
+     * @param TE the host {@link TEBase}
      * @param world the {@link World}
      * @param x the x coordinate
      * @param y the y coordinate
      * @param z the z coordinate
      * @param propagate notify adjacent garage doors
      */
-    private void changeState(TEBase TE, World world, int x, int y, int z, boolean propagate)
+    private void propagateChanges(TEBase TE, World world, int x, int y, int z, boolean notifyNeighbors)
     {
-        int state = data.isOpen(TE) ? data.STATE_CLOSED : data.STATE_OPEN;
+        int state = data.getState(TE);
+        int type = data.getType(TE);
+        int rigid = data.getRigidity(TE);
 
-        if (propagate) {
+        if (notifyNeighbors) {
 
             /* Propagate at level of top garage door only. */
+
+            ForgeDirection facing = data.getDirection(TE);
             int topY = data.getTopmost(world, x, y, z).yCoord;
             int propX = x;
             int propZ = z;
 
             /* Propagate in first direction. */
 
-            ForgeDirection dir = data.getDirection(TE).getRotation(ForgeDirection.UP);
+            ForgeDirection dir = facing.getRotation(ForgeDirection.UP);
             do {
                 propX += dir.offsetX;
                 propZ += dir.offsetZ;
-                TEBase temp = (TEBase) world.getTileEntity(propX, topY, propZ);
-                if (temp != null && data.getDirection(temp).equals(data.getDirection(TE))) {
-                    changeState(temp, world, propX, topY, propZ, false);
+                TEBase temp = getTileEntity(world, propX, topY, propZ);
+                if (temp != null && data.getDirection(temp).equals(facing)) {
+                    propagateChanges(TE, world, propX, topY, propZ, false);
                 }
             } while (world.getBlock(propX, topY, propZ).equals(this));
 
@@ -244,9 +269,9 @@ public class BlockCarpentersGarageDoor extends BlockCoverable {
             do {
                 propX += dir.offsetX;
                 propZ += dir.offsetZ;
-                TEBase temp = (TEBase) world.getTileEntity(propX, topY, propZ);
-                if (temp != null && data.getDirection(temp).equals(data.getDirection(TE))) {
-                    changeState(temp, world, propX, topY, propZ, false);
+                TEBase temp = getTileEntity(world, propX, topY, propZ);
+                if (temp != null && data.getDirection(temp).equals(facing)) {
+                    propagateChanges(TE, world, propX, topY, propZ, false);
                 }
             } while (world.getBlock(propX, topY, propZ).equals(this));
 
@@ -256,7 +281,9 @@ public class BlockCarpentersGarageDoor extends BlockCoverable {
         do {
             TEBase temp = getTileEntity(world, x, y, z);
             if (temp != null) {
+                data.setType(temp, type);
                 data.setState(temp, state, data.isTopmost(temp));
+                data.setRigidity(temp, rigid);
             }
         } while (world.getBlock(x, ++y, z).equals(this));
     }
@@ -280,8 +307,11 @@ public class BlockCarpentersGarageDoor extends BlockCoverable {
 
                 /* Set block open or closed. */
 
-                if (block != null && block.canProvidePower() && world.isBlockIndirectlyGettingPowered(x, y, z) != data.isOpen(TE)) {
-                    changeState(TE, world, x, y, z, true);
+                int powerState = world.isBlockIndirectlyGettingPowered(x, y, z) ? GarageDoor.STATE_OPEN : GarageDoor.STATE_CLOSED;
+                if (block != null && block.canProvidePower() && powerState != data.getState(TE)) {
+                    int state = data.isOpen(TE) ? GarageDoor.STATE_CLOSED : GarageDoor.STATE_OPEN;
+                    data.setState(TE, state, false);
+                    propagateChanges(TE, world, x, y, z, true);
                 }
 
             }

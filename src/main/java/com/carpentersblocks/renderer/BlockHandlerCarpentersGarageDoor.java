@@ -55,7 +55,7 @@ public class BlockHandlerCarpentersGarageDoor extends BlockHandlerBase {
                 case GarageDoor.TYPE_GLASS:
                     renderTypeGlass(itemStack, x, y, z);
                     break;
-                case GarageDoor.TYPE_SIDING:
+                case GarageDoor.TYPE_IRON:
                     renderTypeSiding(itemStack, x, y, z);
                     break;
             }
@@ -164,7 +164,26 @@ public class BlockHandlerCarpentersGarageDoor extends BlockHandlerBase {
      */
     public void renderTypeGlass(ItemStack itemStack, int x, int y, int z)
     {
-        renderBlockWithRotation(itemStack, x, y, z, 0.0D, 0.0D, 0.125D, 1.0D, 1.0D, 0.25D, dir);
+        if (data.isOpen(TE)) {
+            renderBlockWithRotation(itemStack, x, y, z, 0.0D, 0.5D, 0.125D, 1.0D, 1.0D, 0.25D, dir);
+        } else {
+            if (data.isTopmost(TE)) {
+                renderBlockWithRotation(itemStack, x, y, z, 0.0D, 0.0D, 0.125D, 0.125D, 1.0D, 0.25D, dir); // Left vert
+                renderBlockWithRotation(itemStack, x, y, z, 0.125D, 0.875D, 0.125D, 0.875D, 1.0D, 0.25D, dir); // center top
+                renderBlockWithRotation(itemStack, x, y, z, 0.125D, 0.4375D, 0.125D, 0.875D, 0.5625D, 0.25D, dir); // center middle
+                renderBlockWithRotation(itemStack, x, y, z, 0.125D, 0.0D, 0.125D, 0.875D, 0.125D, 0.25D, dir); // center bottom
+                renderBlockWithRotation(itemStack, x, y, z, 0.125D, 0.125D, 0.1875D, 0.875D, 0.4375D, 0.25D, dir); // center panel bottom
+                renderBlockWithRotation(itemStack, x, y, z, 0.875D, 0.0D, 0.125D, 1.0D, 1.0D, 0.25D, dir); // Right vert
+                renderPartPane(IconRegistry.icon_garage_glass_top, x, y, z, 0.1875F);
+            } else {
+                renderBlockWithRotation(itemStack, x, y, z, 0.0D, 0.0D, 0.125D, 0.125D, 1.0D, 0.25D, dir); // Left vert
+                renderBlockWithRotation(itemStack, x, y, z, 0.125D, 0.875D, 0.125D, 0.875D, 1.0D, 0.25D, dir); // center top
+                renderBlockWithRotation(itemStack, x, y, z, 0.125D, 0.4375D, 0.125D, 0.875D, 0.5625D, 0.25D, dir); // center middle
+                renderBlockWithRotation(itemStack, x, y, z, 0.125D, 0.0D, 0.125D, 0.875D, 0.125D, 0.25D, dir); // center bottom
+                renderBlockWithRotation(itemStack, x, y, z, 0.0D, 0.0D, 0.1875D, 1.0D, 1.0D, 0.25D, dir); // center panel bottom
+                renderBlockWithRotation(itemStack, x, y, z, 0.875D, 0.0D, 0.125D, 1.0D, 1.0D, 0.25D, dir); // Right vert
+            }
+        }
     }
 
     /**

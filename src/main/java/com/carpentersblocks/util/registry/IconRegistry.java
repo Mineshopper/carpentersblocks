@@ -42,6 +42,7 @@ public class IconRegistry {
     public static IIcon icon_tile_blank;
     public static IIcon icon_bed_pillow;
     public static IIcon icon_garage_glass_top;
+    public static IIcon icon_garage_glass;
 
     public static ArrayList<IIcon>   icon_design_chisel     = new ArrayList<IIcon>();
     public static ArrayList<IIcon[]> icon_design_bed        = new ArrayList<IIcon[]>();

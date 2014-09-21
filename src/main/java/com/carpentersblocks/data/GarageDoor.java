@@ -12,17 +12,20 @@ public class GarageDoor implements ISided {
     /**
      * 16-bit data components:
      *
-     * [00000000] [0]   [000] [0000]
-     * Unused     State Dir   Type
+     * [0000000] [0]   [0]   [000] [0000]
+     * Unused    Rigid State Dir   Type
      */
 
-    public static final int TYPE_DEFAULT   = 0;
-    public static final int TYPE_GLASS_TOP = 1;
-    public static final int TYPE_GLASS     = 2;
-    public static final int TYPE_SIDING    = 3;
+    public static final int  TYPE_DEFAULT   = 0;
+    public static final int  TYPE_GLASS_TOP = 1;
+    public static final int  TYPE_GLASS     = 2;
+    public static final int  TYPE_IRON      = 3;
 
-    public final static int STATE_CLOSED = 0;
-    public final static int STATE_OPEN   = 1;
+    public final static int  STATE_CLOSED   = 0;
+    public final static int  STATE_OPEN     = 1;
+
+    public final static byte DOOR_NONRIGID = 0;
+    public final static byte DOOR_RIGID    = 1;
 
     /**
      * Returns type.
@@ -81,6 +84,31 @@ public class GarageDoor implements ISided {
             world.playAuxSFXAtEntity((EntityPlayer)null, 1003, TE.xCoord, TE.yCoord, TE.zCoord, 0);
         }
 
+        BlockProperties.setMetadata(TE, temp);
+    }
+
+    /**
+     * Whether garage door is rigid (requires redstone).
+     */
+    public boolean isRigid(TEBase TE)
+    {
+        return getRigidity(TE) == DOOR_RIGID;
+    }
+
+    /**
+     * Returns rigidity (requiring redstone).
+     */
+    public int getRigidity(TEBase TE)
+    {
+        return (BlockProperties.getMetadata(TE) & 0x100) >> 8;
+    }
+
+    /**
+     * Sets rigidity (requiring redstone).
+     */
+    public void setRigidity(TEBase TE, int rigidity)
+    {
+        int temp = (BlockProperties.getMetadata(TE) & ~0x100) | (rigidity << 8);
         BlockProperties.setMetadata(TE, temp);
     }
 
