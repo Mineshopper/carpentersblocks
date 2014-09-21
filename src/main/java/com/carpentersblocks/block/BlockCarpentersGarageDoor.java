@@ -28,7 +28,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockCarpentersGarageDoor extends BlockCoverable {
 
-    public final static String type[] = { "default", "glassTop", "glass", "iron" };
+    public final static String type[] = { "default", "glassTop", "glass", "siding", "hidden" };
     private static GarageDoor data = new GarageDoor();
 
     public BlockCarpentersGarageDoor(Material material)
@@ -108,21 +108,13 @@ public class BlockCarpentersGarageDoor extends BlockCoverable {
 
         if (TE != null) {
             float yMin = data.isTopmost(TE) && data.isOpen(TE) ? 0.5F : 0.0F;
+            ForgeDirection dir = data.getDirection(TE);
+
             if (data.isVisible(TE)) {
-                switch (data.getDirection(TE)) {
-                    case NORTH:
-                        setBlockBounds(0.0F, yMin, 0.75F, 1.0F, 1.0F, 0.875F);
-                        break;
-                    case SOUTH:
-                        setBlockBounds(0.0F, yMin, 0.125F, 1.0F, 1.0F, 0.25F);
-                        break;
-                    case WEST:
-                        setBlockBounds(0.75F, yMin, 0.0F, 0.875F, 1.0F, 1.0F);
-                        break;
-                    case EAST:
-                        setBlockBounds(0.125F, yMin, 0.0F, 0.25F, 1.0F, 1.0F);
-                        break;
-                    default: {}
+                if (data.getType(TE) == GarageDoor.TYPE_HIDDEN) {
+                    setBlockBounds(0.0F, yMin, 0.0F, 1.0F, 1.0F, 0.125F, dir);
+                } else {
+                    setBlockBounds(0.0F, yMin, 0.125F, 1.0F, 1.0F, 0.25F, dir);
                 }
             }
         }
@@ -169,14 +161,16 @@ public class BlockCarpentersGarageDoor extends BlockCoverable {
      * @param x
      * @param y
      * @param z
+     * @param dropSource whether player destroyed topmost block
      */
     private void destroy(World world, int x, int y, int z)
     {
         int baseY = data.getBottommost(world, x, y, z).yCoord;
         do {
-            TEBase temp = (TEBase) world.getTileEntity(x, baseY, z);
+            TEBase temp = getTileEntity(world, x, baseY, z);
             if (temp != null) {
                 if (data.isTopmost(temp)) {
+                    // TODO: Fix dropping two blocks when top is destroyed first
                     dropBlockAsItem(world, x, y, z, 0, 0);
                 }
             }
@@ -196,6 +190,8 @@ public class BlockCarpentersGarageDoor extends BlockCoverable {
     {
         ForgeDirection dir = data.getDirection(TE);
         int type = data.getType(TE);
+        int state = data.getState(TE);
+        int rigid = data.getRigidity(TE);
 
         for (int baseY = y; canPlaceBlockAt(world, x, baseY, z); --baseY) {
             world.setBlock(x, baseY, z, this);
@@ -203,6 +199,8 @@ public class BlockCarpentersGarageDoor extends BlockCoverable {
             if (temp != null) {
                 data.setDirection(temp, dir);
                 data.setType(temp, type);
+                data.setState(temp, state, false);
+                data.setRigidity(temp, rigid);
             }
         }
     }
@@ -282,7 +280,7 @@ public class BlockCarpentersGarageDoor extends BlockCoverable {
             TEBase temp = getTileEntity(world, x, y, z);
             if (temp != null) {
                 data.setType(temp, type);
-                data.setState(temp, state, data.isTopmost(temp));
+                data.setState(temp, state, data.isTopmost(temp) && data.getState(temp) != state);
                 data.setRigidity(temp, rigid);
             }
         } while (world.getBlock(x, ++y, z).equals(this));
@@ -410,8 +408,6 @@ public class BlockCarpentersGarageDoor extends BlockCoverable {
         ForgeDirection facing = EntityLivingUtil.getFacing(entityLiving).getOpposite();
         data.setDirection(TE, facing);
 
-        create(TE, world, x, y - 1, z);
-
         /* Match type above or below block. */
 
         for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
@@ -420,6 +416,8 @@ public class BlockCarpentersGarageDoor extends BlockCoverable {
                 data.setType(TE, data.getType(TE_adj));
             }
         }
+
+        create(TE, world, x, y - 1, z);
 
         super.onBlockPlacedBy(world, x, y, z, entityLiving, itemStack);
     }

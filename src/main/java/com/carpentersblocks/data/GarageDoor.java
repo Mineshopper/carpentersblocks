@@ -19,7 +19,8 @@ public class GarageDoor implements ISided {
     public static final int  TYPE_DEFAULT   = 0;
     public static final int  TYPE_GLASS_TOP = 1;
     public static final int  TYPE_GLASS     = 2;
-    public static final int  TYPE_IRON      = 3;
+    public static final int  TYPE_SIDING    = 3;
+    public static final int  TYPE_HIDDEN    = 4;
 
     public final static int  STATE_CLOSED   = 0;
     public final static int  STATE_OPEN     = 1;
@@ -126,6 +127,17 @@ public class GarageDoor implements ISided {
     public boolean isTopmost(TEBase TE)
     {
         return !TE.getWorldObj().getBlock(TE.xCoord, TE.yCoord + 1, TE.zCoord).equals(BlockRegistry.blockCarpentersGarageDoor);
+    }
+
+    /**
+     * Weather panel is the bottommost.
+     *
+     * @param  TE the {@link TEBase}
+     * @return true if panel is the bottommost
+     */
+    public boolean isBottommost(TEBase TE)
+    {
+        return !TE.getWorldObj().getBlock(TE.xCoord, TE.yCoord - 1, TE.zCoord).equals(BlockRegistry.blockCarpentersGarageDoor);
     }
 
     /**

@@ -9,6 +9,7 @@ import net.minecraft.block.BlockDirectional;
 import net.minecraft.block.BlockRedstoneWire;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.particle.EffectRenderer;
+import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -145,6 +146,34 @@ public class BlockCoverable extends BlockContainer {
         Block block = BlockProperties.toBlock(itemStack);
 
         return block instanceof BlockCoverable ? getIcon() : block.getIcon(side, itemStack.getItemDamage());
+    }
+
+    /**
+     * For South-sided blocks, rotates and sets the block bounds using
+     * the provided ForgeDirection.
+     *
+     * @param  dir the rotated {@link ForgeDirection}
+     */
+    protected void setBlockBounds(float minX, float minY, float minZ, float maxX, float maxY, float maxZ, ForgeDirection dir)
+    {
+        switch (dir) {
+            case DOWN:
+                setBlockBounds(minX, 1.0F - maxZ, minY, maxX, 1.0F - minZ, maxY);
+                break;
+            case UP:
+                setBlockBounds(minX, minZ, minY, maxX, maxZ, maxY);
+                break;
+            case NORTH:
+                setBlockBounds(1.0F - maxX, minY, 1.0F - maxZ, 1.0F - minX, maxY, 1.0F - minZ);
+                break;
+            case EAST:
+                setBlockBounds(minZ, minY, 1.0F - maxX, maxZ, maxY, 1.0F - minX);
+                break;
+            case WEST:
+                setBlockBounds(1.0F - maxZ, minY, minX, 1.0F - minZ, maxY, maxX);
+                break;
+            default: {}
+        }
     }
 
     /**
