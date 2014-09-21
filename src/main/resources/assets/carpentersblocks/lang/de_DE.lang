@@ -18,6 +18,7 @@ tile.blockCarpentersButton.name=Knopf des Zimmermanns
 tile.blockCarpentersDaylightSensor.name=Tageslichtsensor des Zimmermanns
 tile.blockCarpentersCollapsibleBlock.name=Zusammenklappbarer Block des Zimmermanns
 tile.blockCarpentersDoor.name=Tür des Zimmermanns
+tile.blockCarpentersGarageDoor.name=Garagentür des Zimmermanns
 tile.blockCarpentersGate.name=Zauntor des Zimmermanns
 tile.blockCarpentersHatch.name=Luke des Zimmermanns
 tile.blockCarpentersLadder.name=Leiter des Zimmermanns
@@ -54,5 +55,6 @@ message.automation_extract.name=AUTOMATISIERUNG: Items können nur herausgenomme
 message.block_lock.name=KONTROLLE: Dieser Block ist verschlossen.
 message.sensitivity_sleep.name=SENSITIVITÄT: Ändert Status bei Spieler-Schlafsgrenze (Sonnenauf- und -untergang).
 message.sensitivity_monsters.name=SENSITIVITÄT: Ändert Status bei Monster-Spawn-Grenze (Stürme eingeschlossen).
+message.sensitivity_dynamic.name=SENSITIVITY: Redstone-Output ändert sich basierend auf der Position der Sonne.
 
 # </file>
