@@ -55,5 +55,6 @@ message.automation_extract.name=AUTOMATISIERUNG: Items können nur herausgenomme
 message.block_lock.name=KONTROLLE: Dieser Block ist verschlossen.
 message.sensitivity_sleep.name=SENSITIVITÄT: Ändert Status bei Spieler-Schlafsgrenze (Sonnenauf- und -untergang).
 message.sensitivity_monsters.name=SENSITIVITÄT: Ändert Status bei Monster-Spawn-Grenze (Stürme eingeschlossen).
+message.sensitivity_dynamic.name=SENSITIVITY: Redstone-Output ändert sich basierend auf der Position der Sonne.
 
 # </file>
