@@ -18,6 +18,7 @@ tile.blockCarpentersButton.name=Knopf des Zimmermanns
 tile.blockCarpentersDaylightSensor.name=Tageslichtsensor des Zimmermanns
 tile.blockCarpentersCollapsibleBlock.name=Zusammenklappbarer Block des Zimmermanns
 tile.blockCarpentersDoor.name=Tür des Zimmermanns
+tile.blockCarpentersGarageDoor.name=Garagentür des Zimmermanns
 tile.blockCarpentersGate.name=Zauntor des Zimmermanns
 tile.blockCarpentersHatch.name=Luke des Zimmermanns
 tile.blockCarpentersLadder.name=Leiter des Zimmermanns
