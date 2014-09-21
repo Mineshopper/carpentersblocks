@@ -18,6 +18,7 @@ tile.blockCarpentersButton.name=Pulsante del carpentiere
 tile.blockCarpentersDaylightSensor.name=Sensore di luce diurna del carpentiere
 tile.blockCarpentersCollapsibleBlock.name=Blocco pieghevole del carpentiere
 tile.blockCarpentersDoor.name=Porta del carpentiere
+tile.blockCarpentersGarageDoor.name=Porta del garage del carpentiere
 tile.blockCarpentersGate.name=Cancelletto del carpentiere
 tile.blockCarpentersHatch.name=Botola del carpentiere
 tile.blockCarpentersLadder.name=Scala a pioli del carpentiere
@@ -54,5 +55,6 @@ message.automation_extract.name=AUTOMAZIONE: Oggetti possono essere solo estratt
 message.block_lock.name=CONTROLLO: Questo blocco è bloccato.
 message.sensitivity_sleep.name=SENSITIVITA': Modifica lo stato quando il giocatore può dormire (alba e tramonto).
 message.sensitivity_monsters.name=SENSITIVITA': Modifica lo stato quando i mostri generano (includendo tempeste).
+message.sensitivity_dynamic.name=SENSITIVITA: Segnale di pietrarossa cambia in base alla posizione del sole.
 
 # </file>
