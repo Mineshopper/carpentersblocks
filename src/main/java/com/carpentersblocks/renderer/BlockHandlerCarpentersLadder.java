@@ -51,7 +51,7 @@ public class BlockHandlerCarpentersLadder extends BlockHandlerBase {
         ItemStack itemStack = getCoverForRendering();
         dir = data.getDirection(TE);
 
-        switch (Ladder.getType(TE)) {
+        switch (data.getType(TE)) {
             case Ladder.TYPE_DEFAULT:
                 renderTypeDefaultClassic(itemStack, x, y, z);
                 //renderTypeDefault(itemStack, x, y, z);

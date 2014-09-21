@@ -17,6 +17,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockCarpentersDoor extends BlockHinged {
 
+    public final static String type[] = { "glassTop", "glassTall", "panel", "screenTall", "french", "hidden" };
+
     public BlockCarpentersDoor(Material material)
     {
         super(material);
@@ -46,13 +48,13 @@ public class BlockCarpentersDoor extends BlockHinged {
     {
         if (!entityPlayer.isSneaking()) {
 
-            int type = Hinge.getType(TE);
+            int temp = Hinge.getType(TE);
 
-            if (++type > 5) {
-                type = 0;
+            if (++temp >= type.length) {
+                temp = 0;
             }
 
-            setHingeType(TE, type);
+            setHingeType(TE, temp);
             super.onHammerRightClick(TE, entityPlayer);
             return true;
 

@@ -16,6 +16,7 @@ import com.carpentersblocks.block.BlockCarpentersCollapsibleBlock;
 import com.carpentersblocks.block.BlockCarpentersDaylightSensor;
 import com.carpentersblocks.block.BlockCarpentersDoor;
 import com.carpentersblocks.block.BlockCarpentersFlowerPot;
+import com.carpentersblocks.block.BlockCarpentersGarageDoor;
 import com.carpentersblocks.block.BlockCarpentersGate;
 import com.carpentersblocks.block.BlockCarpentersHatch;
 import com.carpentersblocks.block.BlockCarpentersLadder;
@@ -35,6 +36,7 @@ import com.carpentersblocks.renderer.BlockHandlerCarpentersCollapsibleBlock;
 import com.carpentersblocks.renderer.BlockHandlerCarpentersDaylightSensor;
 import com.carpentersblocks.renderer.BlockHandlerCarpentersDoor;
 import com.carpentersblocks.renderer.BlockHandlerCarpentersFlowerPot;
+import com.carpentersblocks.renderer.BlockHandlerCarpentersGarageDoor;
 import com.carpentersblocks.renderer.BlockHandlerCarpentersGate;
 import com.carpentersblocks.renderer.BlockHandlerCarpentersHatch;
 import com.carpentersblocks.renderer.BlockHandlerCarpentersLadder;
@@ -63,6 +65,7 @@ public class BlockRegistry {
     public static Block blockCarpentersDaylightSensor;
     public static Block blockCarpentersDoor;
     public static Block blockCarpentersFlowerPot;
+    public static Block blockCarpentersGarageDoor;
     public static Block blockCarpentersGate;
     public static Block blockCarpentersHatch;
     public static Block blockCarpentersLadder;
@@ -83,6 +86,7 @@ public class BlockRegistry {
     public static int carpentersDaylightSensorRenderID;
     public static int carpentersDoorRenderID;
     public static int carpentersFlowerPotRenderID;
+    public static int carpentersGarageDoorRenderID;
     public static int carpentersGateRenderID;
     public static int carpentersHatchRenderID;
     public static int carpentersLadderRenderID;
@@ -102,6 +106,7 @@ public class BlockRegistry {
     public static boolean enableDaylightSensor   = true;
     public static boolean enableDoor             = true;
     public static boolean enableFlowerPot        = true;
+    public static boolean enableGarageDoor       = true;
     public static boolean enableGate             = true;
     public static boolean enableHatch            = true;
     public static boolean enableLadder           = true;
@@ -122,6 +127,7 @@ public class BlockRegistry {
     public static int recipeQuantityDaylightSensor   = 1;
     public static int recipeQuantityDoor             = 1;
     public static int recipeQuantityFlowerPot        = 1;
+    public static int recipeQuantityGarageDoor       = 8;
     public static int recipeQuantityGate             = 1;
     public static int recipeQuantityHatch            = 1;
     public static int recipeQuantityLadder           = 4;
@@ -144,6 +150,7 @@ public class BlockRegistry {
         enableDaylightSensor   = config.get("blocks",   "Enable Daylight Sensor",   enableDaylightSensor).getBoolean(enableDaylightSensor);
         enableDoor             = config.get("blocks",              "Enable Door",             enableDoor).getBoolean(enableDoor);
         enableFlowerPot        = config.get("blocks",        "Enable Flower Pot",        enableFlowerPot).getBoolean(enableFlowerPot);
+        enableGarageDoor       = config.get("blocks",       "Enable Garage Door",       enableGarageDoor).getBoolean(enableGarageDoor);
         enableGate             = config.get("blocks",              "Enable Gate",             enableGate).getBoolean(enableGate);
         enableHatch            = config.get("blocks",             "Enable Hatch",            enableHatch).getBoolean(enableHatch);
         enableLadder           = config.get("blocks",            "Enable Ladder",           enableLadder).getBoolean(enableLadder);
@@ -162,6 +169,7 @@ public class BlockRegistry {
         recipeQuantityDaylightSensor   = config.get("recipe quantities",   "Daylight Sensor",   recipeQuantityDaylightSensor).getInt(recipeQuantityDaylightSensor);
         recipeQuantityDoor             = config.get("recipe quantities",              "Door",             recipeQuantityDoor).getInt(recipeQuantityDoor);
         recipeQuantityFlowerPot        = config.get("recipe quantities",        "Flower Pot",        recipeQuantityFlowerPot).getInt(recipeQuantityFlowerPot);
+        recipeQuantityGarageDoor       = config.get("recipe quantities",       "Garage Door",       recipeQuantityGarageDoor).getInt(recipeQuantityGarageDoor);
         recipeQuantityGate             = config.get("recipe quantities",              "Gate",             recipeQuantityGate).getInt(recipeQuantityGate);
         recipeQuantityHatch            = config.get("recipe quantities",             "Hatch",            recipeQuantityHatch).getInt(recipeQuantityHatch);
         recipeQuantityLadder           = config.get("recipe quantities",            "Ladder",           recipeQuantityLadder).getInt(recipeQuantityLadder);
@@ -198,6 +206,10 @@ public class BlockRegistry {
             if (enableDaylightSensor) {
                 carpentersDaylightSensorRenderID = RenderingRegistry.getNextAvailableRenderId();
                 RenderingRegistry.registerBlockHandler(carpentersDaylightSensorRenderID, new BlockHandlerCarpentersDaylightSensor());
+            }
+            if (enableGarageDoor) {
+                carpentersGarageDoorRenderID = RenderingRegistry.getNextAvailableRenderId();
+                RenderingRegistry.registerBlockHandler(carpentersGarageDoorRenderID, new BlockHandlerCarpentersGarageDoor());
             }
             if (enableGate) {
                 carpentersGateRenderID = RenderingRegistry.getNextAvailableRenderId();
@@ -349,6 +361,16 @@ public class BlockRegistry {
             Blocks.fire.setFireInfo(blockCarpentersFlowerPot, 5, 20);
         }
 
+        if (enableGarageDoor) {
+            blockCarpentersGarageDoor = new BlockCarpentersGarageDoor(Material.wood)
+                .setBlockName("blockCarpentersGarageDoor")
+                .setHardness(0.2F)
+                .setStepSound(BlockProperties.stepSound)
+                .setCreativeTab(CarpentersBlocks.creativeTab);
+            GameRegistry.registerBlock(blockCarpentersGarageDoor, "blockCarpentersGarageDoor");
+            Blocks.fire.setFireInfo(blockCarpentersGarageDoor, 5, 20);
+        }
+
         if (enableGate) {
             blockCarpentersGate = new BlockCarpentersGate(Material.wood)
                 .setBlockName("blockCarpentersGate")
@@ -461,6 +483,9 @@ public class BlockRegistry {
         }
         if (enableFlowerPot) {
             GameRegistry.addRecipe(new ItemStack(blockCarpentersFlowerPot, recipeQuantityFlowerPot), new Object[] { "X X", " X ", 'X', blockCarpentersBlock });
+        }
+        if (enableGarageDoor) {
+            GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(blockCarpentersGarageDoor, recipeQuantityGarageDoor), "XXX", "X X", "XXX", 'X', blockCarpentersBlock));
         }
         if (enableGate) {
             GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(blockCarpentersGate, recipeQuantityGate), "XYX", "XYX", 'X', "stickWood", 'Y', blockCarpentersBlock));

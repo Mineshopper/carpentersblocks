@@ -20,7 +20,6 @@ public class Hinge {
     public final static byte TYPE_SCREEN_TALL  = 3;
     public final static byte TYPE_FRENCH_GLASS = 4;
     public final static byte TYPE_HIDDEN       = 5;
-    public final static byte TYPE_SHUTTER      = 6;
 
     public final static byte FACING_XP = 0;
     public final static byte FACING_ZP = 1;

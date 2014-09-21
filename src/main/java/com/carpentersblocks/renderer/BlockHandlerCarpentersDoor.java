@@ -43,7 +43,7 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerHinged {
                 renderTypeTall(itemStack, x, y, z);
                 break;
             case Hinge.TYPE_PANELS:
-                renderTypePanels(itemStack, x, y, z);
+                renderTypePaneled(itemStack, x, y, z);
                 break;
             case Hinge.TYPE_FRENCH_GLASS:
                 renderTypeFrench(itemStack, x, y, z);
@@ -79,7 +79,12 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerHinged {
     }
 
     /**
-     * Renders a French glass door at the given coordinates.
+     * Renders a French door at given coordinates.
+     *
+     * @param itemStack the {@link ItemStack}
+     * @param x the x coordinate
+     * @param y the y coordinate
+     * @param z the z coordinate
      */
     private void renderTypeFrench(ItemStack itemStack, int x, int y, int z)
     {
@@ -102,11 +107,16 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerHinged {
             renderPartPane(IconRegistry.icon_door_french_glass_top, x, y, z);
         }
 
-        renderPartHandle(new ItemStack(Blocks.iron_block), x, y, z, true, true);
+        renderPartPullHandle(new ItemStack(Blocks.iron_block), x, y, z, true, true);
     }
 
     /**
-     * Renders a glass top door at the given coordinates.
+     * Renders a glass top door at given coordinates.
+     *
+     * @param itemStack the {@link ItemStack}
+     * @param x the x coordinate
+     * @param y the y coordinate
+     * @param z the z coordinate
      */
     private void renderTypeGlassTop(ItemStack itemStack, int x, int y, int z)
     {
@@ -123,13 +133,18 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerHinged {
             renderPartPane(IconRegistry.icon_door_glass_top, x, y, z);
         }
 
-        renderPartHandle(new ItemStack(Blocks.iron_block), x, y, z, true, true);
+        renderPartPullHandle(new ItemStack(Blocks.iron_block), x, y, z, true, true);
     }
 
     /**
-     * Renders a panels door at the given coordinates.
+     * Renders a paneled door at given coordinates.
+     *
+     * @param itemStack the {@link ItemStack}
+     * @param x the x coordinate
+     * @param y the y coordinate
+     * @param z the z coordinate
      */
-    private void renderTypePanels(ItemStack itemStack, int x, int y, int z)
+    private void renderTypePaneled(ItemStack itemStack, int x, int y, int z)
     {
         renderBlockWithRotation(itemStack, x, y, z, 0.0D, 0.0D, 0.8125D, 0.1875D, 1.0D, 1.0D, side);
         renderBlockWithRotation(itemStack, x, y, z, 0.8125D, 0.0D, 0.8125D, 1.0D, 1.0D, 1.0D, side);
@@ -145,11 +160,16 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerHinged {
             renderBlockWithRotation(itemStack, x, y, z, 0.3125D, 0.375D, 0.8125D, 0.6875D, 0.6875D, 1.0D, side);
         }
 
-        renderPartHandle(new ItemStack(Blocks.iron_block), x, y, z, true, true);
+        renderPartPullHandle(new ItemStack(Blocks.iron_block), x, y, z, true, true);
     }
 
     /**
-     * Renders a tall glass or screen door at the given coordinates.
+     * Renders a tall screen or glass door at given coordinates.
+     *
+     * @param itemStack the {@link ItemStack}
+     * @param x the x coordinate
+     * @param y the y coordinate
+     * @param z the z coordinate
      */
     private void renderTypeTall(ItemStack itemStack, int x, int y, int z)
     {
@@ -164,22 +184,32 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerHinged {
             renderPartPane(type == Hinge.TYPE_SCREEN_TALL ? IconRegistry.icon_door_screen_tall : IconRegistry.icon_door_glass_tall_top, x, y, z);
         }
 
-        renderPartHandle(new ItemStack(Blocks.iron_block), x, y, z, true, true);
+        renderPartPullHandle(new ItemStack(Blocks.iron_block), x, y, z, true, true);
     }
 
     /**
-     * Renders a hidden door at the given coordinates
+     * Renders a hidden door at given coordinates.
+     *
+     * @param itemStack the {@link ItemStack}
+     * @param x the x coordinate
+     * @param y the y coordinate
+     * @param z the z coordinate
      */
     private void renderTypeHidden(ItemStack itemStack, int x, int y, int z)
     {
         renderBlockWithRotation(itemStack, x, y, z, 0.0D, 0.0D, 0.8125D, 1.0D, 1.0D, 1.0D, side);
-        renderPartHandle(new ItemStack(Blocks.iron_block), x, y, z, true, false);
+        renderPartPullHandle(new ItemStack(Blocks.iron_block), x, y, z, true, false);
     }
 
     /**
-     * Renders a door handle for the given coordinates
+     * Renders a pull handle at given coordinates.
+     *
+     * @param itemStack the {@link ItemStack}
+     * @param x the x coordinate
+     * @param y the y coordinate
+     * @param z the z coordinate
      */
-    private void renderPartHandle(ItemStack itemStack, int x, int y, int z, boolean renderInner, boolean renderOuter)
+    private void renderPartPullHandle(ItemStack itemStack, int x, int y, int z, boolean renderInner, boolean renderOuter)
     {
         if (!renderInner && !renderOuter) {
             return;
@@ -208,6 +238,49 @@ public class BlockHandlerCarpentersDoor extends BlockHandlerHinged {
             renderBlockWithRotation(itemStack, x - opp.offsetX, y, z - opp.offsetZ, xMin, yMin, 0.0F, xMin + 0.0625F, yMax, 0.0625F, side);
             renderBlockWithRotation(itemStack, x - opp.offsetX, y, z - opp.offsetZ, xMin, yMinOffset, 0.0625F, xMin + 0.0625F, yMaxOffset, 0.125F, side);
         }
+
+        suppressDyeColor = false;
+        suppressChiselDesign = false;
+        suppressOverlay = false;
+    }
+
+    /**
+     * Renders a push handle at given coordinates.
+     *
+     * @param itemStack the {@link ItemStack}
+     * @param x the x coordinate
+     * @param y the y coordinate
+     * @param z the z coordinate
+     */
+    private void renderPartPushHandle(ItemStack itemStack, int x, int y, int z, boolean inner)
+    {
+        suppressDyeColor = true;
+        suppressChiselDesign = true;
+        suppressOverlay = true;
+
+        float xMin = isOpen ? (!hingeLeft ? 0.875F : 0.0625F) : (!hingeLeft ? 0.0625F : 0.875F);
+        float yMin = isBottom ? 0.875F : 0.0625F;
+        float yMax = isBottom ? 0.9375F : 0.125F;
+        float yMinOffset = isBottom ? 0.875F : 0.0F;
+        float yMaxOffset = isBottom ? 1.0F : 0.125F;
+
+        // NEEDS TO BE WORKED ON!
+
+        /*
+        boolean renderSrc = renderInner && !isOpen || renderOuter && isOpen;
+        boolean renderOffset = renderOuter && !isOpen || renderInner && isOpen;
+
+        if (renderSrc) {
+            renderBlockWithRotation(itemStack, x, y, z, xMin, yMin, 0.75F, xMin + 0.0625F, yMax, 0.8125F, side);
+            renderBlockWithRotation(itemStack, x, y, z, xMin, yMinOffset, 0.6875F, xMin + 0.0625F, yMaxOffset, 0.75F, side);
+        }
+
+        if (renderOffset) {
+            ForgeDirection opp = side.getOpposite();
+            renderBlockWithRotation(itemStack, x - opp.offsetX, y, z - opp.offsetZ, xMin, yMin, 0.0F, xMin + 0.0625F, yMax, 0.0625F, side);
+            renderBlockWithRotation(itemStack, x - opp.offsetX, y, z - opp.offsetZ, xMin, yMinOffset, 0.0625F, xMin + 0.0625F, yMaxOffset, 0.125F, side);
+        }
+        */
 
         suppressDyeColor = false;
         suppressChiselDesign = false;
