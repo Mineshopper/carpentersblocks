@@ -18,6 +18,7 @@ tile.blockCarpentersButton.name=Кнопка плотника
 tile.blockCarpentersDaylightSensor.name=Датчик дневного света плотника
 tile.blockCarpentersCollapsibleBlock.name=Складной блок плотника
 tile.blockCarpentersDoor.name=Дверь плотника
+tile.blockCarpentersGarageDoor.name=Раздвижная дверь плотника
 tile.blockCarpentersGate.name=Калитка плотника
 tile.blockCarpentersHatch.name=Люк плотника
 tile.blockCarpentersLadder.name=Лестница плотника
@@ -54,5 +55,6 @@ message.automation_extract.name=АВТОМАТИЗАЦИЯ: Предметы м�
 message.block_lock.name=КОНТРОЛЬ: Этот блок закрыт.
 message.sensitivity_sleep.name=ЧУВСТВИТЕЛЬНОСТЬ: Переключение состояния на пороге сна игрока (восхода и захода солнца).
 message.sensitivity_monsters.name=ЧУВСТВИТЕЛЬНОСТЬ: Переключение состояния на пороге появления монстров (включая штормы).
+message.sensitivity_dynamic.name=ЧУВСТВИТЕЛЬНОСТЬ: Сила сигнала зависит от положения солнца.
 
 # </file>
