@@ -9,7 +9,6 @@ import net.minecraft.block.BlockDirectional;
 import net.minecraft.block.BlockRedstoneWire;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.particle.EffectRenderer;
-import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -53,7 +52,7 @@ public class BlockCoverable extends BlockContainer {
     protected boolean grabLightValue = false;
 
     /** Indicates during getDrops that block instance should not be dropped. */
-    private final int METADATA_DROP_ATTR_ONLY = 16;
+    protected final int METADATA_DROP_ATTR_ONLY = 16;
 
     /**
      * Stores actions taken on a block in order to properly play sounds,

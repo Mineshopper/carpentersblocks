@@ -29,7 +29,7 @@ public class BlockCarpentersLadder extends BlockSided {
      */
     protected boolean onHammerLeftClick(TEBase TE, EntityPlayer entityPlayer)
     {
-        int temp = data.getType(TE);
+        int temp = Ladder.getType(TE);
 
         if (++temp > type.length - 1) {
             temp = 0;
@@ -45,7 +45,7 @@ public class BlockCarpentersLadder extends BlockSided {
      */
     protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer)
     {
-        int temp = data.getType(TE);
+        int temp = Ladder.getType(TE);
 
         if (--temp < 0) {
             temp = type.length - 1;
@@ -129,7 +129,7 @@ public class BlockCarpentersLadder extends BlockSided {
             ForgeDirection dir = ForgeDirection.getOrientation(side);
             if (world.getBlock(x, y + dir.offsetY, z).equals(this)) {
                 TEBase TE_adj = (TEBase) world.getTileEntity(x, y + dir.offsetY, z);
-                data.setType(TE, data.getType(TE_adj));
+                data.setType(TE, Ladder.getType(TE_adj));
             }
         }
 

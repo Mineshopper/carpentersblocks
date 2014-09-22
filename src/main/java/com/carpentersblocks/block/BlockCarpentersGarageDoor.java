@@ -1,13 +1,11 @@
 package com.carpentersblocks.block;
 
 import java.util.ArrayList;
-import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MovingObjectPosition;
@@ -17,7 +15,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import com.carpentersblocks.CarpentersBlocks;
 import com.carpentersblocks.data.GarageDoor;
-import com.carpentersblocks.data.Hinge;
 import com.carpentersblocks.tileentity.TEBase;
 import com.carpentersblocks.util.EntityLivingUtil;
 import com.carpentersblocks.util.handler.ChatHandler;
@@ -142,6 +139,7 @@ public class BlockCarpentersGarageDoor extends BlockCoverable {
      * Ray traces through the blocks collision from start vector to end vector returning a ray trace hit. Args: world,
      * x, y, z, startVec, endVec
      */
+    @Override
     public MovingObjectPosition collisionRayTrace(World world, int x, int y, int z, Vec3 startVec, Vec3 endVec)
     {
         TEBase TE = getTileEntity(world, x, y, z);
@@ -167,13 +165,6 @@ public class BlockCarpentersGarageDoor extends BlockCoverable {
     {
         int baseY = data.getBottommost(world, x, y, z).yCoord;
         do {
-            TEBase temp = getTileEntity(world, x, baseY, z);
-            if (temp != null) {
-                if (data.isTopmost(temp)) {
-                    // TODO: Fix dropping two blocks when top is destroyed first
-                    dropBlockAsItem(world, x, y, z, 0, 0);
-                }
-            }
             world.setBlockToAir(x, baseY++, z);
         } while (world.getBlock(x, baseY, z).equals(this));
     }
@@ -209,11 +200,12 @@ public class BlockCarpentersGarageDoor extends BlockCoverable {
      * Called if cover and decoration checks have been performed but
      * returned no changes.
      */
+    @Override
     protected void postOnBlockActivated(TEBase TE, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ, ActionResult actionResult)
     {
         if (!data.isRigid(TE)) {
             int state = data.getState(TE) == GarageDoor.STATE_OPEN ? GarageDoor.STATE_CLOSED : GarageDoor.STATE_OPEN;
-            data.setState(TE, state, false);
+            data.setState(TE, state, true);
             propagateChanges(TE, TE.getWorldObj(), TE.xCoord, TE.yCoord, TE.zCoord, true);
             actionResult.setAltered().setNoSound();
         }
@@ -300,7 +292,7 @@ public class BlockCarpentersGarageDoor extends BlockCoverable {
 
                 if (!(canPlaceBlockOnSide(world, x, y, z, 0) || world.getBlock(x, y + 1, z).equals(this))) {
                     destroy(world, x, y, z);
-                    // TODO: Fix destroying topmost dropping two doors
+                    dropBlockAsItem(world, x, y, z, 0, 0);
                 }
 
                 /* Set block open or closed. */
@@ -339,13 +331,17 @@ public class BlockCarpentersGarageDoor extends BlockCoverable {
      *        Can be useful to delay the destruction of tile entities till after harvestBlock
      * @return True if the block is actually destroyed.
      */
+    @Override
     public boolean removedByPlayer(World world, EntityPlayer entityPlayer, int x, int y, int z, boolean willHarvest)
     {
         if (!world.isRemote) {
             destroy(world, x, y, z);
+            if (!entityPlayer.capabilities.isCreativeMode) {
+                dropBlockAsItem(world, x, y, z, 0, 0);
+            }
         }
 
-        return super.removedByPlayer(world, entityPlayer, x, y, z);
+        return super.removedByPlayer(world, entityPlayer, x, y, z, willHarvest);
     }
 
     /**
@@ -386,6 +382,7 @@ public class BlockCarpentersGarageDoor extends BlockCoverable {
     /**
      * Checks to see if its valid to put this block at the specified coordinates. Args: world, x, y, z
      */
+    @Override
     public boolean canPlaceBlockAt(World world, int x, int y, int z)
     {
         if (super.canPlaceBlockAt(world, x, y, z)) {
