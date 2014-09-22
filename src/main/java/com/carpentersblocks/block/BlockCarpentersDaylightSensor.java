@@ -66,12 +66,16 @@ public class BlockCarpentersDaylightSensor extends BlockSided {
     {
         int sensitivity = data.setNextSensitivity(TE);
 
-        if (sensitivity == data.SENSITIVITY_SLEEP) {
-            ChatHandler.sendMessageToPlayer("message.sensitivity_sleep.name", entityPlayer);
-        } else if (sensitivity == data.SENSITIVITY_MONSTERS){
-            ChatHandler.sendMessageToPlayer("message.sensitivity_monsters.name", entityPlayer);
-        } else {
-            ChatHandler.sendMessageToPlayer("message.sensitivity_dynamic.name", entityPlayer);
+        switch (sensitivity) {
+            case DaylightSensor.SENSITIVITY_SLEEP:
+                ChatHandler.sendMessageToPlayer("message.sensitivity_sleep.name", entityPlayer);
+                break;
+            case DaylightSensor.SENSITIVITY_MONSTERS:
+                ChatHandler.sendMessageToPlayer("message.sensitivity_monsters.name", entityPlayer);
+                break;
+            case DaylightSensor.SENSITIVITY_DYNAMIC:
+                ChatHandler.sendMessageToPlayer("message.sensitivity_dynamic.name", entityPlayer);
+                break;
         }
 
         return true;

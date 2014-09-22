@@ -171,7 +171,9 @@ public class BlockCoverable extends BlockContainer {
             case WEST:
                 setBlockBounds(1.0F - maxZ, minY, minX, 1.0F - minZ, maxY, maxX);
                 break;
-            default: {}
+            default:
+                setBlockBounds(minX, minY, minZ, maxX, maxY, maxZ);
+                break;
         }
     }
 
@@ -596,7 +598,7 @@ public class BlockCoverable extends BlockContainer {
      * Indicates whether block destruction should be suppressed when block is clicked.
      * Will return true if player is holding a Carpenter's tool in creative mode.
      */
-    private boolean suppressDestroyBlock(EntityPlayer entityPlayer)
+    protected boolean suppressDestroyBlock(EntityPlayer entityPlayer)
     {
         ItemStack itemStack = entityPlayer.getHeldItem();
 

@@ -57,7 +57,6 @@ public class BlockCarpentersGarageDoor extends BlockCoverable {
             temp = 0;
         }
 
-        // TODO: Fix block dropping when hit with hammer
         data.setType(TE, temp);
         propagateChanges(TE, TE.getWorldObj(), TE.xCoord, TE.yCoord, TE.zCoord, true);
         return true;
@@ -104,7 +103,7 @@ public class BlockCarpentersGarageDoor extends BlockCoverable {
         TEBase TE = getTileEntity(world, x, y, z);
 
         if (TE != null) {
-            float yMin = data.isTopmost(TE) && data.isOpen(TE) ? 0.5F : 0.0F;
+            float yMin = data.isHost(TE) && data.isOpen(TE) ? 0.5F : 0.0F;
             ForgeDirection dir = data.getDirection(TE);
 
             if (data.isVisible(TE)) {
@@ -161,12 +160,20 @@ public class BlockCarpentersGarageDoor extends BlockCoverable {
      * @param z
      * @param dropSource whether player destroyed topmost block
      */
-    private void destroy(World world, int x, int y, int z)
+    private void destroy(World world, int x, int y, int z, boolean doDrop)
     {
-        int baseY = data.getBottommost(world, x, y, z).yCoord;
-        do {
-            world.setBlockToAir(x, baseY++, z);
-        } while (world.getBlock(x, baseY, z).equals(this));
+        if (!world.isRemote) {
+            int baseY = data.getBottommost(world, x, y, z).yCoord;
+            do {
+                if (doDrop) {
+                    TEBase temp = getTileEntity(world, x, baseY, z);
+                    if (temp != null && data.isHost(temp)) {
+                        dropBlockAsItem(world, x, y, z, createStackedBlock(0));
+                    }
+                }
+                world.setBlockToAir(x, baseY++, z);
+            } while (world.getBlock(x, baseY, z).equals(this));
+        }
     }
 
     /**
@@ -272,7 +279,7 @@ public class BlockCarpentersGarageDoor extends BlockCoverable {
             TEBase temp = getTileEntity(world, x, y, z);
             if (temp != null) {
                 data.setType(temp, type);
-                data.setState(temp, state, data.isTopmost(temp) && data.getState(temp) != state);
+                data.setState(temp, state, data.isHost(temp) && data.getState(temp) != state);
                 data.setRigidity(temp, rigid);
             }
         } while (world.getBlock(x, ++y, z).equals(this));
@@ -290,9 +297,9 @@ public class BlockCarpentersGarageDoor extends BlockCoverable {
             TEBase TE = getTileEntity(world, x, y, z);
             if (TE != null) {
 
-                if (!(canPlaceBlockOnSide(world, x, y, z, 0) || world.getBlock(x, y + 1, z).equals(this))) {
-                    destroy(world, x, y, z);
-                    dropBlockAsItem(world, x, y, z, 0, 0);
+                // TODO: Try to resolve Buildcraft builder issues here
+                if (data.isHost(TE) && !(canPlaceBlockOnSide(world, x, y, z, 0) || world.getBlock(x, y + 1, z).equals(this))) {
+                    destroy(world, x, y, z, true);
                 }
 
                 /* Set block open or closed. */
@@ -332,16 +339,14 @@ public class BlockCarpentersGarageDoor extends BlockCoverable {
      * @return True if the block is actually destroyed.
      */
     @Override
-    public boolean removedByPlayer(World world, EntityPlayer entityPlayer, int x, int y, int z, boolean willHarvest)
+    public boolean removedByPlayer(World world, EntityPlayer entityPlayer, int x, int y, int z)
     {
-        if (!world.isRemote) {
-            destroy(world, x, y, z);
-            if (!entityPlayer.capabilities.isCreativeMode) {
-                dropBlockAsItem(world, x, y, z, 0, 0);
-            }
+        if (!suppressDestroyBlock(entityPlayer)) {
+            destroy(world, x, y, z, !entityPlayer.capabilities.isCreativeMode);
+            return false;
         }
 
-        return super.removedByPlayer(world, entityPlayer, x, y, z, willHarvest);
+        return super.removedByPlayer(world, entityPlayer, x, y, z);
     }
 
     /**
@@ -358,16 +363,15 @@ public class BlockCarpentersGarageDoor extends BlockCoverable {
     @Override
     public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int metadata, int fortune)
     {
-        ArrayList<ItemStack> ret = super.getDrops(world, x, y, z, metadata, fortune);
-        TEBase TE = getTileEntity(world, x, y, z);
+        ArrayList<ItemStack> list = new ArrayList<ItemStack>();
 
-        if (TE != null) {
-            if (data.isTopmost(TE)) {
-                ret.add(createStackedBlock(0));
-            }
+        TEBase TE = getTileEntity(world, x, y, z);
+        if (TE != null && data.isHost(TE)) {
+            list.add(createStackedBlock(0));
         }
 
-        return ret;
+        list.addAll(super.getDrops(world, x, y, z, METADATA_DROP_ATTR_ONLY, fortune));
+        return list;
     }
 
     @Override
@@ -404,6 +408,7 @@ public class BlockCarpentersGarageDoor extends BlockCoverable {
 
         ForgeDirection facing = EntityLivingUtil.getFacing(entityLiving).getOpposite();
         data.setDirection(TE, facing);
+        data.setHost(TE);
 
         /* Match type above or below block. */
 

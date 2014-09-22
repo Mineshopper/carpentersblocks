@@ -143,7 +143,7 @@ public class BlockHandlerCarpentersGarageDoor extends BlockHandlerBase {
             renderBlockWithRotation(itemStack, x, y, z, 0.125D, 0.5D, 0.125D, 0.875D, 0.625D, 0.1875D, dir); // Bottom center
             renderBlockWithRotation(itemStack, x, y, z, 0.875D, 0.5D, 0.125D, 1.0D, 1.0D, 0.1875D, dir);
         } else {
-            if (data.isTopmost(TE)) {
+            if (data.isHost(TE)) {
                 renderBlockWithRotation(itemStack, x, y, z, 0.0D, 0.0D, 0.125D, 0.125D, 1.0D, 0.25D, dir);
                 renderBlockWithRotation(itemStack, x, y, z, 0.125D, 0.875D, 0.125D, 0.875D, 1.0D, 0.25D, dir);
                 renderBlockWithRotation(itemStack, x, y, z, 0.125D, 0.4375D, 0.125D, 0.875D, 0.5625D, 0.25D, dir);

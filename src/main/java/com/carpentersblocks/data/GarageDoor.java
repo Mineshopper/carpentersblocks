@@ -12,8 +12,8 @@ public class GarageDoor implements ISided {
     /**
      * 16-bit data components:
      *
-     * [0000000] [0]   [0]   [000] [0000]
-     * Unused    Rigid State Dir   Type
+     * [000000] [0]  [0]   [0]   [000] [0000]
+     * Unused   Host Rigid State Dir   Type
      */
 
     public static final int  TYPE_DEFAULT   = 0;
@@ -113,20 +113,28 @@ public class GarageDoor implements ISided {
         BlockProperties.setMetadata(TE, temp);
     }
 
-    public boolean isOpen(TEBase TE)
+    /**
+     * Sets host door (the topmost).
+     */
+    public void setHost(TEBase TE)
     {
-        return getState(TE) == STATE_OPEN;
+        int temp = BlockProperties.getMetadata(TE) | 0x200;
+        BlockProperties.setMetadata(TE, temp);
     }
 
     /**
-     * Weather panel is the topmost.
-     *
-     * @param  TE the {@link TEBase}
-     * @return true if panel is the topmost
+     * Returns true if door is host (the topmost).
      */
-    public boolean isTopmost(TEBase TE)
+    public boolean isHost(TEBase TE)
     {
-        return !TE.getWorldObj().getBlock(TE.xCoord, TE.yCoord + 1, TE.zCoord).equals(BlockRegistry.blockCarpentersGarageDoor);
+        return (BlockProperties.getMetadata(TE) & 0x200) > 0;
+    }
+
+
+
+    public boolean isOpen(TEBase TE)
+    {
+        return getState(TE) == STATE_OPEN;
     }
 
     /**
@@ -182,7 +190,7 @@ public class GarageDoor implements ISided {
     public boolean isVisible(TEBase TE)
     {
         if (isOpen(TE)) {
-            return isTopmost(TE);
+            return isHost(TE);
         } else {
             return true;
         }
