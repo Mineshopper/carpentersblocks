@@ -354,14 +354,12 @@ public class BlockHandlerCarpentersLadder extends BlockHandlerBase {
                 renderBlockWithRotation(itemStack, x, y, z, 0.4375D, 0.8125D, 0.0625D, 0.5625D, 0.875D, 0.125D, axisDir);
                 break;
             default:
-
                 for (double yLow = 0.125D; yLow < 1.0D; yLow += 0.25D) {
                     double yHigh = yLow + 0.0625D;
-                    renderBlockWithRotation(itemStack, x, y, z, 0.0625D, yLow, 0.0D, 0.125D, yHigh, 0.0625D, dir); // xLow nub
-                    renderBlockWithRotation(itemStack, x, y, z, 0.875D, yLow, 0.0D, 0.9375D, yHigh, 0.0625D, dir); // xHigh nub
-                    renderBlockWithRotation(itemStack, x, y, z, 0.0625D, yLow, 0.0625D, 0.9375D, yHigh, 0.125D, dir); // Full width
+                    renderBlockWithRotation(itemStack, x, y, z, 0.125D, yLow, 0.0D, 0.1875D, yHigh, 0.125D, dir); // xLow nub
+                    renderBlockWithRotation(itemStack, x, y, z, 0.8125D, yLow, 0.0D, 0.875D, yHigh, 0.125D, dir); // xHigh nub
+                    renderBlockWithRotation(itemStack, x, y, z, 0.125D, yLow, 0.125D, 0.875D, yHigh, 0.1875D, dir); // Full width
                 }
-
                 break;
         }
     }
