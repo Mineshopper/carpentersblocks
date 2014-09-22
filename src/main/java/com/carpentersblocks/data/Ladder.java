@@ -41,7 +41,7 @@ public class Ladder implements ISided {
         return getDirection(TE).ordinal() < 2;
     }
 
-    public static int getType(TEBase TE)
+    public int getType(TEBase TE)
     {
         return (BlockProperties.getMetadata(TE) & 0xfff8) >>> 3;
     }

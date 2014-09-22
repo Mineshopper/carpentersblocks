@@ -13,12 +13,12 @@ public class DaylightSensor implements ISided {
      * Unused   Dir   Sensitivity Polarity LightLevel
      */
 
-    public final byte POLARITY_POSITIVE = 0;
-    public final byte POLARITY_NEGATIVE = 1;
+    public static final byte POLARITY_POSITIVE = 0;
+    public static final byte POLARITY_NEGATIVE = 1;
 
-    public final byte SENSITIVITY_SLEEP    = 0;
-    public final byte SENSITIVITY_MONSTERS = 1;
-    public final byte SENSITIVITY_DYNAMIC  = 2;
+    public static final byte SENSITIVITY_SLEEP    = 0;
+    public static final byte SENSITIVITY_MONSTERS = 1;
+    public static final byte SENSITIVITY_DYNAMIC  = 2;
 
     /**
      * Returns direction.

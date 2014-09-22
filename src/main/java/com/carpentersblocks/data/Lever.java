@@ -21,11 +21,11 @@ public class Lever implements ISided {
         Z
     }
 
-    public final byte POLARITY_POSITIVE = 0;
-    public final byte POLARITY_NEGATIVE = 1;
+    public static final byte POLARITY_POSITIVE = 0;
+    public static final byte POLARITY_NEGATIVE = 1;
 
-    public final byte STATE_OFF = 0;
-    public final byte STATE_ON  = 1;
+    public static final byte STATE_OFF = 0;
+    public static final byte STATE_ON  = 1;
 
     /**
      * Returns facing.

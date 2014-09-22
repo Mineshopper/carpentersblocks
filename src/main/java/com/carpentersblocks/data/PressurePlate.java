@@ -15,16 +15,16 @@ public class PressurePlate implements ISided {
      * Unused      Trigger Polarity State Dir
      */
 
-    public final byte POLARITY_POSITIVE = 0;
-    public final byte POLARITY_NEGATIVE = 1;
+    public static final byte POLARITY_POSITIVE = 0;
+    public static final byte POLARITY_NEGATIVE = 1;
 
-    public final byte STATE_OFF = 0;
-    public final byte STATE_ON  = 1;
+    public static final byte STATE_OFF = 0;
+    public static final byte STATE_ON  = 1;
 
-    public final byte TRIGGER_PLAYER  = 0;
-    public final byte TRIGGER_MONSTER = 1;
-    public final byte TRIGGER_ANIMAL  = 2;
-    public final byte TRIGGER_ALL     = 3;
+    public static final byte TRIGGER_PLAYER  = 0;
+    public static final byte TRIGGER_MONSTER = 1;
+    public static final byte TRIGGER_ANIMAL  = 2;
+    public static final byte TRIGGER_ALL     = 3;
 
     /**
      * Returns direction.
