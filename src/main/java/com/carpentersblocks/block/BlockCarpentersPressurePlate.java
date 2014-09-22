@@ -11,7 +11,6 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
 import com.carpentersblocks.data.PressurePlate;
 import com.carpentersblocks.tileentity.TEBase;
 import com.carpentersblocks.util.handler.ChatHandler;
@@ -52,7 +51,7 @@ public class BlockCarpentersPressurePlate extends BlockSided {
         int polarity = data.getPolarity(TE) == data.POLARITY_POSITIVE ? data.POLARITY_NEGATIVE : data.POLARITY_POSITIVE;
 
         data.setPolarity(TE, polarity);
-        TE.getWorldObj().notifyBlocksOfNeighborChange(TE.xCoord, TE.yCoord - 1, TE.zCoord, this);
+        notifyBlocksOfPowerChange(TE.getWorldObj(), TE.xCoord, TE.yCoord, TE.zCoord);
 
         if (polarity == data.POLARITY_POSITIVE) {
             ChatHandler.sendMessageToPlayer("message.polarity_pos.name", entityPlayer);
@@ -76,6 +75,7 @@ public class BlockCarpentersPressurePlate extends BlockSided {
         }
 
         data.setTriggerEntity(TE, trigger);
+        notifyBlocksOfPowerChange(TE.getWorldObj(), TE.xCoord, TE.yCoord, TE.zCoord);
 
         if (trigger == data.TRIGGER_PLAYER) {
             ChatHandler.sendMessageToPlayer("message.trigger_player.name", entityPlayer);
@@ -109,32 +109,8 @@ public class BlockCarpentersPressurePlate extends BlockSided {
         TEBase TE = getTileEntity(world, x, y, z);
 
         if (TE != null) {
-
             float depth = fullBounds | !isDepressed(TE) ? 0.0625F : 0.03125F;
-            ForgeDirection side = data.getDirection(TE);
-
-            switch (side) {
-                case DOWN:
-                    setBlockBounds(0.0625F, 1.0F - depth, 0.0625F, 0.9375F, 1.0F, 0.9375F);
-                    break;
-                case UP:
-                    setBlockBounds(0.0625F, 0.0F, 0.0625F, 0.9375F, depth, 0.9375F);
-                    break;
-                case NORTH:
-                    setBlockBounds(0.0625F, 0.0625F, 1.0F - depth, 0.9375F, 0.9375F, 1.0F);
-                    break;
-                case SOUTH:
-                    setBlockBounds(0.0625F, 0.0625F, 0.0F, 0.9375F, 0.9375F, depth);
-                    break;
-                case WEST:
-                    setBlockBounds(1.0F - depth, 0.0625F, 0.0625F, 1.0F, 0.9375F, 0.9375F);
-                    break;
-                case EAST:
-                    setBlockBounds(0.0F, 0.0625F, 0.0625F, depth, 0.9375F, 0.9375F);
-                    break;
-                default: {}
-            }
-
+            setBlockBounds(0.0625F, 0.0625F, 0.0F, 0.9375F, 0.9375F, depth, data.getDirection(TE));
         }
     }
 
@@ -227,7 +203,7 @@ public class BlockCarpentersPressurePlate extends BlockSided {
     private void toggleOn(TEBase TE, World world, int x, int y, int z)
     {
         data.setState(TE, data.STATE_ON, true);
-        notifyNeighborOfUpdate(world, x, y, z);
+        notifyBlocksOfPowerChange(world, x, y, z);
         world.scheduleBlockUpdate(x, y, z, this, tickRate(world));
     }
 
@@ -237,7 +213,7 @@ public class BlockCarpentersPressurePlate extends BlockSided {
     private void toggleOff(TEBase TE, World world, int x, int y, int z)
     {
         data.setState(TE, data.STATE_OFF, true);
-        notifyNeighborOfUpdate(world, x, y, z);
+        notifyBlocksOfPowerChange(world, x, y, z);
     }
 
     /**
@@ -304,7 +280,7 @@ public class BlockCarpentersPressurePlate extends BlockSided {
 
         if (TE != null) {
             if (isDepressed(TE)) {
-                notifyNeighborOfUpdate(world, x, y, z);
+                notifyBlocksOfPowerChange(world, x, y, z);
             }
         }
 

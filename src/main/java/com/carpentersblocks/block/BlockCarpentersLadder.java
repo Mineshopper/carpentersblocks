@@ -64,26 +64,16 @@ public class BlockCarpentersLadder extends BlockSided {
         TEBase TE = getTileEntity(world, x, y, z);
 
         if (TE != null) {
-            switch (data.getDirection(TE)) {
+            ForgeDirection dir =data.getDirection(TE);
+            switch (dir) {
                 case DOWN: // DIR_ON_X
                     setBlockBounds(0.0F, 0.0F, 0.375F, 1.0F, 1.0F, 0.625F);
                     break;
                 case UP: // DIR_ON_Z
                     setBlockBounds(0.375F, 0.0F, 0.0F, 0.625F, 1.0F, 1.0F);
                     break;
-                case NORTH:
-                    setBlockBounds(0.0F, 0.0F, 0.8125F, 1.0F, 1.0F, 1.0F);
-                    break;
-                case SOUTH:
-                    setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 0.1875F);
-                    break;
-                case WEST:
-                    setBlockBounds(0.8125F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
-                    break;
-                case EAST:
-                    setBlockBounds(0.0F, 0.0F, 0.0F, 0.1875F, 1.0F, 1.0F);
-                    break;
-                default: {}
+                default:
+                    setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 0.1875F, dir);
             }
         }
     }

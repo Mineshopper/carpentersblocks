@@ -64,7 +64,7 @@ public class BlockCarpentersLever extends BlockSided {
         int polarity = data.getPolarity(TE) == data.POLARITY_POSITIVE ? data.POLARITY_NEGATIVE : data.POLARITY_POSITIVE;
 
         data.setPolarity(TE, polarity);
-        notifyNeighborOfUpdate(TE.getWorldObj(), TE.xCoord, TE.yCoord, TE.zCoord);
+        notifyBlocksOfPowerChange(TE.getWorldObj(), TE.xCoord, TE.yCoord, TE.zCoord);
 
         if (polarity == data.POLARITY_POSITIVE) {
             ChatHandler.sendMessageToPlayer("message.polarity_pos.name", entityPlayer);
@@ -140,19 +140,9 @@ public class BlockCarpentersLever extends BlockSided {
                         setBlockBounds(0.5F - offset, 0.0F, 0.2F, 0.5F + offset, offset, 0.8F);
                     }
                     break;
-                case NORTH:
-                    setBlockBounds(0.5F - offset, 0.2F, 1.0F - offset, 0.5F + offset, 0.8F, 1.0F);
+                default:
+                    setBlockBounds(0.5F - offset, 0.2F, 0.0F, 0.5F + offset, 0.8F, offset, side);
                     break;
-                case SOUTH:
-                    setBlockBounds(0.5F - offset, 0.2F, 0.0F, 0.5F + offset, 0.8F, offset);
-                    break;
-                case WEST:
-                    setBlockBounds(1.0F - offset, 0.2F, 0.5F - offset, 1.0F, 0.8F, 0.5F + offset);
-                    break;
-                case EAST:
-                    setBlockBounds(0.0F, 0.2F, 0.5F - offset, offset, 0.8F, 0.5F + offset);
-                    break;
-                default: {}
             }
 
         }
@@ -169,7 +159,7 @@ public class BlockCarpentersLever extends BlockSided {
         World world = TE.getWorldObj();
 
         world.notifyBlocksOfNeighborChange(TE.xCoord, TE.yCoord, TE.zCoord, this);
-        notifyNeighborOfUpdate(world, TE.xCoord, TE.yCoord, TE.zCoord);
+        notifyBlocksOfPowerChange(world, TE.xCoord, TE.yCoord, TE.zCoord);
 
         actionResult.setAltered().setNoSound();
     }
@@ -206,7 +196,7 @@ public class BlockCarpentersLever extends BlockSided {
         if (TE != null) {
             if (isActive(TE)) {
                 world.notifyBlocksOfNeighborChange(x, y, z, block);
-                notifyNeighborOfUpdate(world, x, y, z);
+                notifyBlocksOfPowerChange(world, x, y, z);
             }
         }
 

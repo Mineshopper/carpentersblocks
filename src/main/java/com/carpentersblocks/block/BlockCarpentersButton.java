@@ -7,7 +7,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
 import com.carpentersblocks.data.Button;
 import com.carpentersblocks.tileentity.TEBase;
 import com.carpentersblocks.util.handler.ChatHandler;
@@ -31,7 +30,7 @@ public class BlockCarpentersButton extends BlockSided {
         int polarity = data.getPolarity(TE) == data.POLARITY_POSITIVE ? data.POLARITY_NEGATIVE : data.POLARITY_POSITIVE;
 
         data.setPolarity(TE, polarity);
-        notifyNeighborOfUpdate(TE.getWorldObj(), TE.xCoord, TE.yCoord, TE.zCoord);
+        notifyBlocksOfPowerChange(TE.getWorldObj(), TE.xCoord, TE.yCoord, TE.zCoord);
 
         if (polarity == data.POLARITY_POSITIVE) {
             ChatHandler.sendMessageToPlayer("message.polarity_pos.name", entityPlayer);
@@ -61,29 +60,7 @@ public class BlockCarpentersButton extends BlockSided {
         TEBase TE = getTileEntity(world, x, y, z);
 
         if (TE != null) {
-            ForgeDirection side = data.getDirection(TE);
-            float depth = isDepressed(TE) ? 0.0625F : 0.125F;
-            switch (side) {
-                case DOWN:
-                    setBlockBounds(0.3125F, 1.0F - depth, 0.375F, 0.6875F, 1.0F, 0.625F);
-                    break;
-                case UP:
-                    setBlockBounds(0.3125F, 0.0F, 0.375F, 0.6875F, depth, 0.625F);
-                    break;
-                case NORTH:
-                    setBlockBounds(0.5F - 0.1875F, 0.375F, 1.0F - depth, 0.5F + 0.1875F, 0.625F, 1.0F);
-                    break;
-                case SOUTH:
-                    setBlockBounds(0.5F - 0.1875F, 0.375F, 0.0F, 0.5F + 0.1875F, 0.625F, depth);
-                    break;
-                case WEST:
-                    setBlockBounds(1.0F - depth, 0.375F, 0.5F - 0.1875F, 1.0F, 0.625F, 0.5F + 0.1875F);
-                    break;
-                case EAST:
-                    setBlockBounds(0.0F, 0.375F, 0.5F - 0.1875F, depth, 0.625F, 0.5F + 0.1875F);
-                    break;
-                default: {}
-            }
+            setBlockBounds(0.5F - 0.1875F, 0.375F, 0.0F, 0.5F + 0.1875F, 0.625F, isDepressed(TE) ? 0.0625F : 0.125F, data.getDirection(TE));
         }
     }
 
@@ -97,7 +74,7 @@ public class BlockCarpentersButton extends BlockSided {
             World world = TE.getWorldObj();
             data.getDirection(TE);
             data.setState(TE, data.STATE_ON, true);
-            notifyNeighborOfUpdate(world, TE.xCoord, TE.yCoord, TE.zCoord);
+            notifyBlocksOfPowerChange(world, TE.xCoord, TE.yCoord, TE.zCoord);
             world.scheduleBlockUpdate(TE.xCoord, TE.yCoord, TE.zCoord, this, tickRate(world));
             actionResult.setAltered();
         }
@@ -113,7 +90,7 @@ public class BlockCarpentersButton extends BlockSided {
 
         if (TE != null) {
             if (isDepressed(TE)) {
-                notifyNeighborOfUpdate(world, x, y, z);
+                notifyBlocksOfPowerChange(world, x, y, z);
             }
         }
 
@@ -162,7 +139,7 @@ public class BlockCarpentersButton extends BlockSided {
             TEBase TE = getTileEntity(world, x, y, z);
             if (TE != null) {
                 data.setState(TE, data.STATE_OFF, true);
-                notifyNeighborOfUpdate(world, x, y, z);
+                notifyBlocksOfPowerChange(world, x, y, z);
             }
         }
     }

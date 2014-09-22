@@ -48,6 +48,7 @@ public class BlockCarpentersDaylightSensor extends BlockSided {
         int polarity = data.getPolarity(TE) == data.POLARITY_POSITIVE ? data.POLARITY_NEGATIVE : data.POLARITY_POSITIVE;
 
         data.setPolarity(TE, polarity);
+        notifyBlocksOfPowerChange(TE.getWorldObj(), TE.xCoord, TE.yCoord, TE.zCoord);
 
         if (polarity == data.POLARITY_POSITIVE) {
             ChatHandler.sendMessageToPlayer("message.polarity_pos.name", entityPlayer);
@@ -65,6 +66,7 @@ public class BlockCarpentersDaylightSensor extends BlockSided {
     protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer)
     {
         int sensitivity = data.setNextSensitivity(TE);
+        notifyBlocksOfPowerChange(TE.getWorldObj(), TE.xCoord, TE.yCoord, TE.zCoord);
 
         switch (sensitivity) {
             case DaylightSensor.SENSITIVITY_SLEEP:
@@ -90,42 +92,20 @@ public class BlockCarpentersDaylightSensor extends BlockSided {
         TEBase TE = getTileEntity(world, x, y, z);
 
         if (TE != null) {
-            switch (data.getDirection(TE)) {
-                case UP:
-                    setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.25F, 1.0F);
-                    break;
-                case NORTH:
-                    setBlockBounds(0.0F, 0.0F, 0.75F, 1.0F, 1.0F, 1.0F);
-                    break;
-                case SOUTH:
-                    setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 0.25F);
-                    break;
-                case WEST:
-                    setBlockBounds(0.75F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
-                    break;
-                case EAST:
-                    setBlockBounds(0.0F, 0.0F, 0.0F, 0.25F, 1.0F, 1.0F);
-                    break;
-                default: {}
-            }
+            setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 0.25F, data.getDirection(TE));
         }
     }
 
-    @Override
     /**
-     * Returns true if the block is emitting indirect/weak redstone power on the specified side. If isBlockNormalCube
-     * returns true, standard redstone propagation rules will apply instead and this will not be called. Args: World, X,
-     * Y, Z, side. Note that the side is reversed - eg it is 1 (up) when checking the bottom of the block.
+     * Gets block-specific power level from 0 to 15.
+     *
+     * @param  TE  the {@link TEBase}
+     * @return the power output
      */
-    public int isProvidingWeakPower(IBlockAccess world, int x, int y, int z, int side)
+    @Override
+    public int getPowerOutput(TEBase TE)
     {
-        TEBase TE = getTileEntity(world, x, y, z);
-
-        if (TE != null) {
-            return data.getRedstoneOutput(TE);
-        }
-
-        return 0;
+        return data.getRedstoneOutput(TE);
     }
 
     /**

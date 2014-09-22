@@ -131,19 +131,9 @@ public class BlockCarpentersTorch extends BlockSided {
                 case UP:
                     setBlockBounds(0.4F, 0.0F, 0.4F, 0.6F, 0.6F, 0.6F);
                     break;
-                case NORTH:
-                    setBlockBounds(0.35F, 0.2F, 0.7F, 0.65F, 0.8F, 1.0F);
+                default:
+                    setBlockBounds(0.35F, 0.2F, 0.0F, 0.65F, 0.8F, 0.3F, side);
                     break;
-                case SOUTH:
-                    setBlockBounds(0.35F, 0.2F, 0.0F, 0.65F, 0.8F, 0.3F);
-                    break;
-                case WEST:
-                    setBlockBounds(0.7F, 0.2F, 0.35F, 1.0F, 0.8F, 0.65F);
-                    break;
-                case EAST:
-                    setBlockBounds(0.0F, 0.2F, 0.35F, 0.3F, 0.8F, 0.65F);
-                    break;
-                default: {}
             }
         }
     }

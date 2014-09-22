@@ -112,7 +112,7 @@ public class BlockSided extends BlockCoverable {
     }
 
     /**
-     * Notifies attached neighbor of block update.
+     * Notifies relevant blocks of a change in power output.
      *
      * @param  world
      * @param  x
@@ -120,13 +120,27 @@ public class BlockSided extends BlockCoverable {
      * @param  z
      * @return nothing
      */
-    public void notifyNeighborOfUpdate(World world, int x, int y, int z)
+    public void notifyBlocksOfPowerChange(World world, int x, int y, int z)
     {
+        /* Notify strong power change. */
+
+        world.notifyBlockChange(x, y, z, this);
+
+        /* Notify weak power change. */
+
         if (canProvidePower()) {
             TEBase TE = getTileEntity(world, x, y, z);
             if (TE != null) {
                 ForgeDirection dir = data.getDirection(TE);
                 world.notifyBlocksOfNeighborChange(x - dir.offsetX, y - dir.offsetY, z - dir.offsetZ, this);
+            } else {
+
+                /* When block is destroyed, notify neighbors in all directions. */
+
+                for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
+                    world.notifyBlocksOfNeighborChange(x - dir.offsetX, y - dir.offsetY, z - dir.offsetZ, this);
+                }
+
             }
         }
     }
@@ -176,6 +190,19 @@ public class BlockSided extends BlockCoverable {
         }
 
         return power;
+    }
+
+    @Override
+    /**
+     * Ejects contained items into the world, and notifies neighbors of an update, as appropriate
+     */
+    public void breakBlock(World world, int x, int y, int z, Block block, int metadata)
+    {
+        if (canProvidePower()) {
+            notifyBlocksOfPowerChange(world, x, y, z);
+        }
+
+        super.breakBlock(world, x, y, z, block, metadata);
     }
 
     /**
