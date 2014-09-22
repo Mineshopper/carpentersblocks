@@ -86,6 +86,15 @@ public class BlockSided extends BlockCoverable {
 
     @Override
     /**
+     * How many world ticks before ticking
+     */
+    public int tickRate(World world)
+    {
+        return 20;
+    }
+
+    @Override
+    /**
      * Lets the block know when one of its neighbor changes. Doesn't know which neighbor changed (coordinates passed are
      * their own) Args: x, y, z, neighbor blockID
      */
@@ -103,9 +112,7 @@ public class BlockSided extends BlockCoverable {
     }
 
     /**
-     * Notifies self and neighbor adjacent to block of update.
-     * <p>
-     * Used primarily for power-emitting blocks.
+     * Notifies attached neighbor of block update.
      *
      * @param  world
      * @param  x
@@ -116,10 +123,9 @@ public class BlockSided extends BlockCoverable {
     public void notifyNeighborOfUpdate(World world, int x, int y, int z)
     {
         if (canProvidePower()) {
-            world.notifyBlocksOfNeighborChange(x, y, z, this);
             TEBase TE = getTileEntity(world, x, y, z);
             if (TE != null) {
-                ForgeDirection dir = data.getDirection(TE).getOpposite();
+                ForgeDirection dir = data.getDirection(TE);
                 world.notifyBlocksOfNeighborChange(x - dir.offsetX, y - dir.offsetY, z - dir.offsetZ, this);
             }
         }

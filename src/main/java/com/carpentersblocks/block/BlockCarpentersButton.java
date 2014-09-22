@@ -42,15 +42,6 @@ public class BlockCarpentersButton extends BlockSided {
         return true;
     }
 
-    @Override
-    /**
-     * How many world ticks before ticking
-     */
-    public int tickRate(World world)
-    {
-        return 20;
-    }
-
     /**
      * Returns a bounding box from the pool of bounding boxes (this means this box can change after the pool has been
      * cleared to be reused)

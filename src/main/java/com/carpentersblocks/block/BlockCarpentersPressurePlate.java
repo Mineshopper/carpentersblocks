@@ -140,15 +140,6 @@ public class BlockCarpentersPressurePlate extends BlockSided {
 
     @Override
     /**
-     * How many world ticks before ticking
-     */
-    public int tickRate(World world)
-    {
-        return 20;
-    }
-
-    @Override
-    /**
      * Ticks the block if it's been scheduled
      */
     public void updateTick(World world, int x, int y, int z, Random random)
