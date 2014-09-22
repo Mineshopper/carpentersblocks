@@ -4,6 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -18,6 +19,17 @@ public class BlockSided extends BlockCoverable {
     {
         super(material);
         this.data = data;
+    }
+
+    /**
+     * Returns a bounding box from the pool of bounding boxes (this means this box can change after the pool has been
+     * cleared to be reused)
+     */
+    @Override
+    public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int x, int y, int z)
+    {
+        setBlockBoundsBasedOnState(world, x, y, z);
+        return super.getCollisionBoundingBoxFromPool(world, x, y, z);
     }
 
     @Override
