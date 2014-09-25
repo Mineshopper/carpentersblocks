@@ -122,13 +122,22 @@ public class BlockCoverable extends BlockContainer {
     /**
      * Returns the icon on the side given the block metadata.
      * <p>
-     * Due to the amount of control needed over this, vanilla calls will always return icon_blank.
+     * Due to the amount of control needed over this, vanilla calls will always return an invisible icon.
      */
     public IIcon getIcon(int side, int metadata)
     {
         if (BlockProperties.isMetadataDefaultIcon(metadata)) {
             return getIcon();
         }
+
+        /*
+         * This icon is a mask (or something) for redstone wire.
+         * We use it here because it renders an invisible icon.
+         *
+         * Using an invisible icon is important because sprint particles are
+         * hard-coded and will always grab particle icons using this method.
+         * We'll throw our own sprint particles in EventHandler.class.
+         */
 
         return BlockRedstoneWire.getRedstoneWireIcon("cross_overlay");
     }
@@ -183,8 +192,10 @@ public class BlockCoverable extends BlockContainer {
      * For the context of this mod, this is used for dropping block attributes
      * like covers, overlays, dyes, or any other ItemStack.
      *<p>
-     * It is handled this way because {@link Block#dropBlockAsItem(World,int,int,int,ItemStack) dropBlockAsItem}
-     * is a protected method.
+     * In order for external classes to call the protected method
+     * {@link Block#dropBlockAsItem(World,int,int,int,ItemStack) dropBlockAsItem},
+     * they create a block event with parameters itemId and metadata, allowing
+     * the {@link ItemStack} to be recreated and dropped.
      *
      * @param  world the {@link World}
      * @param  x the x coordinate
