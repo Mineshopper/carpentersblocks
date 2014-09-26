@@ -420,7 +420,7 @@ public class BlockCoverable extends BlockContainer {
 
                                     if (canCoverSide(TE, world, x, y, z, effectiveSide) && !BlockProperties.hasCover(TE, effectiveSide)) {
                                         if (BlockProperties.setCover(TE, effectiveSide, tempStack)) {
-                                            actionResult.setAltered().decInventory();
+                                            actionResult.setAltered().decInventory().setSoundSource(itemStack);
                                         }
                                     }
 
