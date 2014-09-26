@@ -1260,6 +1260,15 @@ public class BlockCoverable extends BlockContainer {
         return false;
     }
 
+    /**
+     * Should block use the brightest neighbor light value as its own
+     */
+    @Override
+    public boolean getUseNeighborBrightness()
+    {
+        return true;
+    }
+
     @Override
     /**
      * Called whenever the block is added into the world. Args: world, x, y, z
