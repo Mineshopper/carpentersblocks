@@ -1,7 +1,6 @@
 package com.carpentersblocks.block;
 
 import java.util.List;
-import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -112,8 +111,13 @@ public class BlockCarpentersBlock extends BlockCoverable {
     public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
     {
         TEBase TE = getTileEntity(world, x, y, z);
-        int data = BlockProperties.getMetadata(TE);
-        setBlockBounds(bounds[data][0], bounds[data][1], bounds[data][2], bounds[data][3], bounds[data][4], bounds[data][5]);
+
+        if (TE != null) {
+            int data = BlockProperties.getMetadata(TE);
+            if (data < bounds.length) {
+                setBlockBounds(bounds[data][0], bounds[data][1], bounds[data][2], bounds[data][3], bounds[data][4], bounds[data][5]);
+            }
+        }
     }
 
     @Override
@@ -227,79 +231,29 @@ public class BlockCarpentersBlock extends BlockCoverable {
      */
     protected boolean shareFaces(TEBase TE_adj, TEBase TE_src, ForgeDirection side_adj, ForgeDirection side_src)
     {
-        if (TE_adj.getBlockType() == this)
-        {
-            Block block_src = TE_src.getBlockType();
+        if (TE_adj.getBlockType() == this) {
 
-            block_src.setBlockBoundsBasedOnState(TE_src.getWorldObj(), TE_src.xCoord, TE_src.yCoord, TE_src.zCoord);
-
-            double[] bounds_src = {
-                    block_src.getBlockBoundsMinX(),
-                    block_src.getBlockBoundsMinY(),
-                    block_src.getBlockBoundsMinZ(),
-                    block_src.getBlockBoundsMaxX(),
-                    block_src.getBlockBoundsMaxY(),
-                    block_src.getBlockBoundsMaxZ()
-            };
-
+            setBlockBoundsBasedOnState(TE_src.getWorldObj(), TE_src.xCoord, TE_src.yCoord, TE_src.zCoord);
+            double[] bnds_src = { getBlockBoundsMinX(), getBlockBoundsMinY(), getBlockBoundsMinZ(), getBlockBoundsMaxX(), getBlockBoundsMaxY(), getBlockBoundsMaxZ() };
             setBlockBoundsBasedOnState(TE_adj.getWorldObj(), TE_adj.xCoord, TE_adj.yCoord, TE_adj.zCoord);
 
-            /*
-             * Check whether faces meet and their dimensions match.
-             */
-            switch (side_src)
-            {
+            switch (side_src) {
                 case DOWN:
-                    /** -Y */
-                    return maxY == 1.0D &&
-                    bounds_src[1] == 0.0D &&
-                    minX == bounds_src[0] &&
-                    maxX == bounds_src[3] &&
-                    minZ == bounds_src[2] &&
-                    maxZ == bounds_src[5];
+                    return maxY == 1.0D && bnds_src[1] == 0.0D && minX == bnds_src[0] && maxX == bnds_src[3] && minZ == bnds_src[2] && maxZ == bnds_src[5];
                 case UP:
-                    /** +Y */
-                    return minY == 0.0D &&
-                    bounds_src[4] == 1.0D &&
-                    minX == bounds_src[0] &&
-                    maxX == bounds_src[3] &&
-                    minZ == bounds_src[2] &&
-                    maxZ == bounds_src[5];
+                    return minY == 0.0D && bnds_src[4] == 1.0D && minX == bnds_src[0] && maxX == bnds_src[3] && minZ == bnds_src[2] && maxZ == bnds_src[5];
                 case NORTH:
-                    /** -Z */
-                    return maxZ == 1.0D &&
-                    bounds_src[2] == 0.0D &&
-                    minX == bounds_src[0] &&
-                    maxX == bounds_src[3] &&
-                    minY == bounds_src[1] &&
-                    maxY == bounds_src[4];
+                    return maxZ == 1.0D && bnds_src[2] == 0.0D && minX == bnds_src[0] && maxX == bnds_src[3] && minY == bnds_src[1] && maxY == bnds_src[4];
                 case SOUTH:
-                    /** +Z */
-                    return minZ == 0.0D &&
-                    bounds_src[5] == 1.0D &&
-                    minX == bounds_src[0] &&
-                    maxX == bounds_src[3] &&
-                    minY == bounds_src[1] &&
-                    maxY == bounds_src[4];
+                    return minZ == 0.0D && bnds_src[5] == 1.0D && minX == bnds_src[0] && maxX == bnds_src[3] && minY == bnds_src[1] && maxY == bnds_src[4];
                 case WEST:
-                    /** -X */
-                    return maxX == 1.0D &&
-                    bounds_src[0] == 0.0D &&
-                    minY == bounds_src[1] &&
-                    maxY == bounds_src[4] &&
-                    minZ == bounds_src[2] &&
-                    maxZ == bounds_src[5];
+                    return maxX == 1.0D && bnds_src[0] == 0.0D && minY == bnds_src[1] && maxY == bnds_src[4] && minZ == bnds_src[2] && maxZ == bnds_src[5];
                 case EAST:
-                    /** +X */
-                    return minX == 0.0D &&
-                    bounds_src[3] == 1.0D &&
-                    minY == bounds_src[1] &&
-                    maxY == bounds_src[4] &&
-                    minZ == bounds_src[2] &&
-                    maxZ == bounds_src[5];
+                    return minX == 0.0D && bnds_src[3] == 1.0D && minY == bnds_src[1] && maxY == bnds_src[4] && minZ == bnds_src[2] && maxZ == bnds_src[5];
                 default:
                     return false;
             }
+
         }
 
         return super.shareFaces(TE_adj, TE_src, side_adj, side_src);
