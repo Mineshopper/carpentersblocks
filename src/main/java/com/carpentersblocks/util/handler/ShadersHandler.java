@@ -1,5 +1,6 @@
 package com.carpentersblocks.util.handler;
 
+import java.lang.reflect.Field;
 import org.apache.logging.log4j.Level;
 import com.carpentersblocks.util.ModLogger;
 import cpw.mods.fml.relauncher.Side;
@@ -9,6 +10,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class ShadersHandler {
 
     private static Class<?> ShadersClass;
+    private static Field oldLightingField;
     public static boolean enableShadersModCoreIntegration = false;
     public static boolean oldLighting = true;
 
@@ -16,9 +18,10 @@ public class ShadersHandler {
     {
         try {
             ShadersClass = Class.forName("shadersmodcore.client.Shaders");
+            oldLightingField = ShadersClass.getDeclaredField("configOldLighting");
             ModLogger.log(Level.INFO, "ShadersModCore integration successful.");
             enableShadersModCoreIntegration = true;
-        } catch (ClassNotFoundException e) {}
+        } catch (Exception e) {}
     }
 
     /**
@@ -27,7 +30,7 @@ public class ShadersHandler {
     public static void update()
     {
         try {
-            oldLighting = ShadersClass.getDeclaredField("configOldLighting").getBoolean(null);
+            oldLighting = oldLightingField.getBoolean(null);
         } catch (Exception e) {
             ModLogger.log(Level.WARN, "ShadersModCore integration failed: " + e.getMessage());
             enableShadersModCoreIntegration = false;
