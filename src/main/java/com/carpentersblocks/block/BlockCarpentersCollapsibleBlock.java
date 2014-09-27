@@ -23,6 +23,8 @@ import com.carpentersblocks.util.registry.ItemRegistry;
 
 public class BlockCarpentersCollapsibleBlock extends BlockCoverable {
 
+    private static Collapsible data = new Collapsible();
+
     public BlockCarpentersCollapsibleBlock(Material material)
     {
         super(material);
@@ -408,6 +410,33 @@ public class BlockCarpentersCollapsibleBlock extends BlockCoverable {
         }
 
         return finalTrace;
+    }
+
+    @Override
+    /**
+     * Returns whether sides share faces based on sloping property and face shape.
+     */
+    protected boolean shareFaces(TEBase TE_adj, TEBase TE_src, ForgeDirection side_adj, ForgeDirection side_src)
+    {
+        if (TE_adj.getBlockType() == this) {
+            switch (side_adj) {
+                case NORTH:
+                    return data.getQuadHeight(TE_adj, data.QUAD_XZNN) == data.getQuadHeight(TE_src, data.QUAD_XZNP) &&
+                           data.getQuadHeight(TE_adj, data.QUAD_XZPN) == data.getQuadHeight(TE_src, data.QUAD_XZPP);
+                case SOUTH:
+                    return data.getQuadHeight(TE_adj, data.QUAD_XZNP) == data.getQuadHeight(TE_src, data.QUAD_XZNN) &&
+                           data.getQuadHeight(TE_adj, data.QUAD_XZPP) == data.getQuadHeight(TE_src, data.QUAD_XZPN);
+                case WEST:
+                    return data.getQuadHeight(TE_adj, data.QUAD_XZNP) == data.getQuadHeight(TE_src, data.QUAD_XZPP) &&
+                           data.getQuadHeight(TE_adj, data.QUAD_XZNN) == data.getQuadHeight(TE_src, data.QUAD_XZPN);
+                case EAST:
+                    return data.getQuadHeight(TE_adj, data.QUAD_XZPP) == data.getQuadHeight(TE_src, data.QUAD_XZNP) &&
+                           data.getQuadHeight(TE_adj, data.QUAD_XZPN) == data.getQuadHeight(TE_src, data.QUAD_XZNN);
+                default: {}
+            }
+        }
+
+        return super.shareFaces(TE_adj, TE_src, side_adj, side_src);
     }
 
     @Override
