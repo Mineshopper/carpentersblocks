@@ -2,7 +2,6 @@ package com.carpentersblocks.renderer.helper;
 
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraftforge.client.MinecraftForgeClient;
 import org.lwjgl.opengl.GL11;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -42,16 +41,17 @@ public class VertexHelper {
     protected static double offset = 0.0D;
 
     /**
-     * Sets draw mode.
+     * Sets draw mode internally.
+     * <p>
+     * This would ordinarily force a draw and prepare the {@link Tessellator}
+     * with a new draw mode, but because alpha pass and ShadersModCore
+     * have issues with {@link GL11#GL11_GL_TRIANGLES Triangles}, we'll use
+     * a faux draw mode and transform {@link GL11#GL11_GL_TRIANGLES Triangles}
+     * to {@link GL11#GL11_GL_QUADS Quads} instead in method {@link #setupVertex}.
      */
     public static void startDrawing(int inDrawMode)
     {
         drawMode = inDrawMode;
-
-        if (MinecraftForgeClient.getRenderPass() == 0) {
-            Tessellator.instance.draw();
-            Tessellator.instance.startDrawing(drawMode);
-        }
     }
 
     /**
@@ -116,7 +116,19 @@ public class VertexHelper {
     }
 
     /**
-     * Applies brightness, color, and adds vertex through tessellator
+     * Applies brightness, color, and adds vertex through tessellator.
+     * <p>
+     * If {@link #drawMode} is {@link GL11#GL_TRIANGLES Triangles}, will automatically
+     * duplicate the third vertex to form a {@link GL11#GL_QUADS Quad}.
+     *
+     * @param renderBlocks the {@link RenderBlocks}
+     * @param x the x coordinate
+     * @param y the y coordinate
+     * @param z the z coordinate
+     * @param u the texture coordinate x-offset
+     * @param v the texture coordinate y-offset
+     * @param vertex the vertex corner
+     * @see   {@link #startDrawing(int)}
      */
     public static void setupVertex(RenderBlocks renderBlocks, double x, double y, double z, double u, double v, int vertex)
     {
@@ -162,11 +174,9 @@ public class VertexHelper {
 
         drawVertex(renderBlocks, x, y, z, u, v);
 
-        /* Alpha quad sorting won't work for triangles, so make them a quad. */
+        /* Alpha quad sorting and ShadersModeCore won't work with triangles, so make them a quad. */
 
-        boolean isAlpha = MinecraftForgeClient.getRenderPass() == 1;
-
-        if (isAlpha && drawMode == GL11.GL_TRIANGLES) {
+        if (drawMode == GL11.GL_TRIANGLES) {
             if (++triVertexCount > 2) {
                 drawVertex(renderBlocks, x, y, z, u, v);
                 triVertexCount = 0;
