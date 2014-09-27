@@ -125,7 +125,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
             renderCarpentersBlock(x, y, z);
             renderSideBlocks(x, y, z);
 
-            if (Minecraft.isFancyGraphicsEnabled() && FeatureRegistry.enableFancyFluids) {
+            if (FeatureRegistry.enableFancyFluids) {
                 if (BlockProperties.hasCover(TE, 6)) {
                     VertexHelper.vertexCount += FancyFluidsHelper.render(TE, renderBlocks, x, y, z) ? 1 : 0;
                 }

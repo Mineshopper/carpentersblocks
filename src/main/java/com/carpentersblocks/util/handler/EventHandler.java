@@ -1,6 +1,7 @@
 package com.carpentersblocks.util.handler;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.entity.Entity;
@@ -17,6 +18,7 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.MouseEvent;
+import net.minecraftforge.client.event.RenderWorldEvent;
 import net.minecraftforge.client.event.sound.PlaySoundEvent17;
 import net.minecraftforge.event.entity.PlaySoundAtEntityEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
@@ -43,6 +45,8 @@ public class EventHandler {
     public static float hitX;
     public static float hitY;
     public static float hitZ;
+
+    public static Material blockMaterial = Material.wood;
 
     /** Stores face for onBlockClicked(). */
     public static int eventFace;
@@ -225,6 +229,31 @@ public class EventHandler {
             }
 
         }
+    }
+
+    @SideOnly(Side.CLIENT)
+    @SubscribeEvent
+    public void onPreRenderWorldEvent(RenderWorldEvent.Pre event)
+    {
+        /*
+         * Fancy fluids render cleaner when defining Carpenter's Blocks
+         * as water material during rendering.  This prevents adjacent
+         * fluid blocks rendering their sides because of Material differences.
+         *
+         * A possible disadvantage is adjacent water blocks won't render
+         * sides that are touching another Carpenter's block.
+         */
+
+        blockMaterial = Material.water;
+    }
+
+    @SideOnly(Side.CLIENT)
+    @SubscribeEvent
+    public void onPostRenderWorldEvent(RenderWorldEvent.Post event)
+    {
+        /* Revert material change made during rendering. */
+
+        blockMaterial = Material.wood;
     }
 
     @SideOnly(Side.CLIENT)

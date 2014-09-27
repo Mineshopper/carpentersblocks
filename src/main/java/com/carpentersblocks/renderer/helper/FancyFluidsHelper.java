@@ -22,6 +22,13 @@ public class FancyFluidsHelper {
 
     /**
      * Renders fancy fluid.
+     *
+     * @param  TE the {@link TEBase}
+     * @param  renderBlocks the {@link RenderBlocks}
+     * @param  x the x coordinate
+     * @param  y the y coordinate
+     * @param  z the z coordinate
+     * @return true if fluid rendered in space
      */
     public static boolean render(TEBase TE, RenderBlocks renderBlocks, int x, int y, int z)
     {
@@ -52,9 +59,15 @@ public class FancyFluidsHelper {
     }
 
     /**
-     * Returns nearby fluid block if one exists and can be routed to, otherwise null.
+     * Gets nearby, routable fluid block.
+     *
+     * @param  blockAccess the {@link IBlockAccess}
+     * @param  x the x coordinate
+     * @param  y the y coordinate
+     * @param  z the z coordinate
+     * @return a nearby fluid {@link ItemStack}, or null if no routable fluid exists
      */
-    public static ItemStack getFluidBlock(IBlockAccess world, int x, int y, int z)
+    public static ItemStack getFluidBlock(IBlockAccess blockAccess, int x, int y, int z)
     {
         int[][] offsetXZ = {{0, -1}, {0, 1}, {-1, 0}, {1, 0}, {-1, -1}, {-1, 1}, {1, 1}, {1, -1}};
 
@@ -71,19 +84,19 @@ public class FancyFluidsHelper {
 
         for (int idx = 0; idx < offsetXZ.length; ++idx) {
 
-            Block block = world.getBlock(x + offsetXZ[idx][0], y, z + offsetXZ[idx][1]);
+            Block block = blockAccess.getBlock(x + offsetXZ[idx][0], y, z + offsetXZ[idx][1]);
 
             if (block instanceof BlockLiquid || block instanceof IFluidBlock) {
                 if (idx < 4) {
-                    if (!world.isSideSolid(x, y, z, route[idx][0][0], false)) {
-                        return new ItemStack(block, world.getBlockMetadata(x + offsetXZ[idx][0], y, z + offsetXZ[idx][1]));
+                    if (!blockAccess.isSideSolid(x, y, z, route[idx][0][0], false)) {
+                        return new ItemStack(block, blockAccess.getBlockMetadata(x + offsetXZ[idx][0], y, z + offsetXZ[idx][1]));
                     }
                 } else {
                     for (int routeIdx = 0; routeIdx < 2; ++routeIdx) {
-                        if (!world.isSideSolid(x, y, z, route[idx][routeIdx][0], false)) {
+                        if (!blockAccess.isSideSolid(x, y, z, route[idx][routeIdx][0], false)) {
                             int[] bridgeXZ = { x + route[idx][routeIdx][0].offsetX, z + route[idx][routeIdx][0].offsetZ };
-                            if (!world.isSideSolid(bridgeXZ[0], y, bridgeXZ[1], route[idx][routeIdx][1], false) && !world.isSideSolid(bridgeXZ[0], y, bridgeXZ[1], route[idx][routeIdx][2], false)) {
-                                return new ItemStack(block, world.getBlockMetadata(x + offsetXZ[idx][0], y, z + offsetXZ[idx][1]));
+                            if (!blockAccess.isSideSolid(bridgeXZ[0], y, bridgeXZ[1], route[idx][routeIdx][1], false) && !blockAccess.isSideSolid(bridgeXZ[0], y, bridgeXZ[1], route[idx][routeIdx][2], false)) {
+                                return new ItemStack(block, blockAccess.getBlockMetadata(x + offsetXZ[idx][0], y, z + offsetXZ[idx][1]));
                             }
                         }
                     }

@@ -1152,6 +1152,12 @@ public class BlockCoverable extends BlockContainer {
     }
 
     @Override
+    public Material getMaterial()
+    {
+        return EventHandler.blockMaterial;
+    }
+
+    @Override
     @SideOnly(Side.CLIENT)
     /**
      * Returns true if the given side of this block type should be rendered, if the adjacent block is at the given
