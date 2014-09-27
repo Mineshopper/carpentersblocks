@@ -134,8 +134,8 @@ public class VertexHelper {
     {
         Tessellator tessellator = Tessellator.instance;
 
-        if (renderBlocks != null && renderBlocks.enableAO)
-        {
+        if (renderBlocks != null && renderBlocks.enableAO) {
+
             switch(vertex) {
                 case BOTTOM_CENTER:
                     tessellator.setColorOpaque_F((renderBlocks.colorRedBottomLeft + renderBlocks.colorRedBottomRight) / 2.0F, (renderBlocks.colorGreenBottomLeft + renderBlocks.colorGreenBottomRight) / 2.0F, (renderBlocks.colorBlueBottomLeft + renderBlocks.colorBlueBottomRight) / 2.0F);
@@ -170,6 +170,7 @@ public class VertexHelper {
                     tessellator.setBrightness(renderBlocks.brightnessTopRight);
                     break;
             }
+
         }
 
         drawVertex(renderBlocks, x, y, z, u, v);
@@ -182,7 +183,6 @@ public class VertexHelper {
                 triVertexCount = 0;
             }
         }
-
     }
 
 }

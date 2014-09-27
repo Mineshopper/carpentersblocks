@@ -1170,7 +1170,7 @@ public class BlockCoverable extends BlockContainer {
         if (TE != null) {
 
             ForgeDirection side_src = ForgeDirection.getOrientation(side);
-            ForgeDirection side_adj = ForgeDirection.getOrientation(ForgeDirection.OPPOSITES[side]);
+            ForgeDirection side_adj = side_src.getOpposite();
 
             TEBase TE_adj = (TEBase) world.getTileEntity(x, y, z);
             TEBase TE_src = (TEBase) world.getTileEntity(x + side_adj.offsetX, y + side_adj.offsetY, z + side_adj.offsetZ);
@@ -1179,21 +1179,18 @@ public class BlockCoverable extends BlockContainer {
 
                 if (shareFaces(TE_adj, TE_src, side_adj, side_src)) {
 
-                    if (shareFaces(TE_adj, TE_src, side_adj, side_src)) {
+                    Block block_adj = BlockProperties.toBlock(BlockProperties.getCover(TE_adj, 6));
+                    Block block_src = BlockProperties.toBlock(BlockProperties.getCover(TE_src, 6));
 
-                        Block block_adj = BlockProperties.toBlock(BlockProperties.getCover(TE_adj, 6));
-                        Block block_src = BlockProperties.toBlock(BlockProperties.getCover(TE_src, 6));
-
-                        if (!BlockProperties.hasCover(TE_adj, 6)) {
-                            return BlockProperties.hasCover(TE_src, 6);
+                    if (!BlockProperties.hasCover(TE_adj, 6)) {
+                        return BlockProperties.hasCover(TE_src, 6);
+                    } else {
+                        if (!BlockProperties.hasCover(TE_src, 6) && block_adj.getRenderBlockPass() == 0) {
+                            return !block_adj.isOpaqueCube();
+                        } else if (BlockProperties.hasCover(TE_src, 6) && block_src.isOpaqueCube() == block_adj.isOpaqueCube() && block_src.getRenderBlockPass() == block_adj.getRenderBlockPass()) {
+                            return false;
                         } else {
-                            if (!BlockProperties.hasCover(TE_src, 6) && block_adj.getRenderBlockPass() == 0) {
-                                return !block_adj.isOpaqueCube();
-                            } else if (BlockProperties.hasCover(TE_src, 6) && block_src.isOpaqueCube() == block_adj.isOpaqueCube() && block_src.getRenderBlockPass() == block_adj.getRenderBlockPass()) {
-                                return false;
-                            } else {
-                                return true;
-                            }
+                            return true;
                         }
                     }
 
