@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 import net.minecraft.item.ItemDye;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.ForgeVersion;
 import net.minecraftforge.oredict.OreDictionary;
 
 public class DyeHandler {
@@ -54,17 +53,14 @@ public class DyeHandler {
      */
     public static String getOreDictName(ItemStack itemStack)
     {
-        if (ForgeVersion.getBuildVersion() > 1112) {
-            for (int id : OreDictionary.getOreIDs(itemStack)) {
-                String result = OreDictionary.getOreName(id);
-                if (result.startsWith("dye") && result.length() > 3) {
-                    return result;
-                }
+        for (int id : OreDictionary.getOreIDs(itemStack)) {
+            String result = OreDictionary.getOreName(id);
+            if (result.startsWith("dye") && result.length() > 3) {
+                return result;
             }
-            return "Unknown";
-        } else {
-            return OreDictionary.getOreName(OreDictionary.getOreID(itemStack));
         }
+
+        return "Unknown";
     }
 
     /**
