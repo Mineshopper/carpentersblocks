@@ -1,7 +1,6 @@
 package com.carpentersblocks.util.handler;
 
 import org.apache.logging.log4j.Level;
-import com.carpentersblocks.renderer.helper.LightingHelper;
 import com.carpentersblocks.util.ModLogger;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -11,6 +10,7 @@ public class ShadersHandler {
 
     private static Class<?> ShadersClass;
     public static boolean enableShadersModCoreIntegration = false;
+    public static boolean oldLighting = true;
 
     public static void init()
     {
@@ -22,18 +22,16 @@ public class ShadersHandler {
     }
 
     /**
-     * Prepares lighting properties based on whether.
+     * Updates fields based on ShadersModCore configuration.
      */
-    public static void updateLightness()
+    public static void update()
     {
         try {
-            float[] lightness = LightingHelper.LIGHTNESS;
-            lightness[0] = ShadersClass.getDeclaredField("blockLightLevel05").getFloat(null);
-            lightness[2] = lightness[3] = ShadersClass.getDeclaredField("blockLightLevel08").getFloat(null);
-            lightness[4] = lightness[5] = ShadersClass.getDeclaredField("blockLightLevel06").getFloat(null);
+            oldLighting = ShadersClass.getDeclaredField("configOldLighting").getBoolean(null);
         } catch (Exception e) {
-            ModLogger.log(Level.WARN, "ShadersModCore integration failed.");
+            ModLogger.log(Level.WARN, "ShadersModCore integration failed: " + e.getMessage());
             enableShadersModCoreIntegration = false;
+            oldLighting = true;
         }
     }
 

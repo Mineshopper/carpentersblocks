@@ -12,21 +12,22 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import com.carpentersblocks.renderer.BlockHandlerBase;
 import com.carpentersblocks.util.BlockProperties;
+import com.carpentersblocks.util.handler.ShadersHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class LightingHelper {
 
-    public  RenderBlocks    renderBlocks;
-    private boolean         hasLightnessOverride;
-    private float           lightnessOverride;
-    private boolean         hasBrightnessOverride;
-    private int             brightnessOverride;
-    private boolean         hasColorOverride;
-    private int             colorOverride          = 0xffffff;
-    public static final int MAX_BRIGHTNESS         = 0xf000f0;
-    public static float[]   LIGHTNESS              = { 0.5F, 1.0F, 0.8F, 0.8F, 0.6F, 0.6F };
+    public  RenderBlocks renderBlocks;
+    private boolean      hasLightnessOverride;
+    private float        lightnessOverride;
+    private boolean      hasBrightnessOverride;
+    private int          brightnessOverride;
+    private boolean      hasColorOverride;
+    private int          colorOverride          = 0xffffff;
+    public final int     MAX_BRIGHTNESS         = 0xf000f0;
+    public float[]       LIGHTNESS              = { 0.5F, 1.0F, 0.8F, 0.8F, 0.6F, 0.6F };
 
     /** Ambient occlusion values for all four corners of side. */
     public float[] ao = new float[4];
@@ -131,6 +132,9 @@ public class LightingHelper {
     /**
      * Sets up the color using lightness, brightness, and the primary color
      * value (usually the dye color) for the side.
+     * <p>
+     * If ShadersModCore is loaded and {@link ShadersHandler#oldLighting} is false,
+     * will automatically override lightness.
      *
      * @param  itemStack the cover {@link ItemStack}
      * @param  block the {@link Block} inside the {@link ItemStack}
@@ -140,12 +144,18 @@ public class LightingHelper {
      * @param  side the side
      * @param  hexColor the color
      * @param  icon the icon
+     * @see    {@link ShadersHandler}
      * @return a float array with rgb values
      */
     public void setupColor(int x, int y, int z, int side, int hexColor, IIcon icon)
     {
         Tessellator tessellator = Tessellator.instance;
         float lightness = hasLightnessOverride ? lightnessOverride : LIGHTNESS[side];
+
+        if (ShadersHandler.enableShadersModCoreIntegration && !ShadersHandler.oldLighting) {
+            lightness = 1.0F;
+        }
+
         tessellator.setBrightness(hasBrightnessOverride ? brightnessOverride : brightness);
         float[] rgb = getRGB(hexColor);
 

@@ -8,7 +8,6 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
 import com.carpentersblocks.data.Safe;
-import com.carpentersblocks.renderer.helper.LightingHelper;
 import com.carpentersblocks.tileentity.TECarpentersSafe;
 import com.carpentersblocks.util.registry.IconRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -199,7 +198,7 @@ public class BlockHandlerCarpentersSafe extends BlockHandlerBase {
         {
             if (box + 1 <= capacity) {
                 lightingHelper.setLightnessOverride(1.0F);
-                lightingHelper.setBrightnessOverride(LightingHelper.MAX_BRIGHTNESS);
+                lightingHelper.setBrightnessOverride(lightingHelper.MAX_BRIGHTNESS);
                 lightingHelper.setColorOverride(CAPACITY_ACTIVE);
             } else {
                 lightingHelper.setColorOverride(CAPACITY_INACTIVE);
@@ -222,7 +221,7 @@ public class BlockHandlerCarpentersSafe extends BlockHandlerBase {
             lightingHelper.setColorOverride(UNLOCKED_INACTIVE);
         } else {
             lightingHelper.setLightnessOverride(1.0F);
-            lightingHelper.setBrightnessOverride(LightingHelper.MAX_BRIGHTNESS);
+            lightingHelper.setBrightnessOverride(lightingHelper.MAX_BRIGHTNESS);
             lightingHelper.setColorOverride(UNLOCKED_ACTIVE);
         }
 
@@ -234,7 +233,7 @@ public class BlockHandlerCarpentersSafe extends BlockHandlerBase {
 
         if (isLocked) {
             lightingHelper.setLightnessOverride(1.0F);
-            lightingHelper.setBrightnessOverride(LightingHelper.MAX_BRIGHTNESS);
+            lightingHelper.setBrightnessOverride(lightingHelper.MAX_BRIGHTNESS);
             lightingHelper.setColorOverride(LOCKED_ACTIVE);
         } else {
             lightingHelper.setColorOverride(LOCKED_INACTIVE);

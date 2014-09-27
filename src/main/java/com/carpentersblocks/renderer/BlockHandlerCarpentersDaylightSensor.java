@@ -7,7 +7,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
 import com.carpentersblocks.block.BlockCarpentersDaylightSensor;
 import com.carpentersblocks.data.DaylightSensor;
-import com.carpentersblocks.renderer.helper.LightingHelper;
 import com.carpentersblocks.renderer.helper.RenderHelper;
 import com.carpentersblocks.util.BlockProperties;
 import com.carpentersblocks.util.registry.IconRegistry;
@@ -126,7 +125,7 @@ public class BlockHandlerCarpentersDaylightSensor extends BlockHandlerBase {
 
         if (isActive) {
             disableAO = true;
-            lightingHelper.setBrightnessOverride(LightingHelper.MAX_BRIGHTNESS);
+            lightingHelper.setBrightnessOverride(lightingHelper.MAX_BRIGHTNESS);
         } else {
             lightingHelper.setLightnessOverride(0.5F);
         }

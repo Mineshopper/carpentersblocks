@@ -8,7 +8,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;
 import com.carpentersblocks.data.GarageDoor;
-import com.carpentersblocks.renderer.helper.LightingHelper;
 import com.carpentersblocks.renderer.helper.RenderHelper;
 import com.carpentersblocks.util.registry.IconRegistry;
 
@@ -76,7 +75,7 @@ public class BlockHandlerCarpentersGarageDoor extends BlockHandlerBase {
      */
     public void renderPartPane(IIcon icon, int x, int y, int z, float offset)
     {
-        float LIGHTNESS = LightingHelper.LIGHTNESS[dir.ordinal()];
+        float LIGHTNESS = lightingHelper.LIGHTNESS[dir.ordinal()];
 
         Tessellator.instance.setBrightness(Blocks.glass.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y, z));
         Tessellator.instance.setColorOpaque_F(LIGHTNESS, LIGHTNESS, LIGHTNESS);

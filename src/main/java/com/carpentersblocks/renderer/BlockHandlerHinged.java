@@ -4,7 +4,6 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;
-import com.carpentersblocks.renderer.helper.LightingHelper;
 import com.carpentersblocks.renderer.helper.RenderHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -37,7 +36,7 @@ public class BlockHandlerHinged extends BlockHandlerBase {
     protected final void renderPartPane(IIcon icon, int x, int y, int z)
     {
         int dir = side.ordinal();
-        float LIGHTNESS = LightingHelper.LIGHTNESS[dir];
+        float LIGHTNESS = lightingHelper.LIGHTNESS[dir];
 
         Tessellator.instance.setBrightness(Blocks.glass.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y, z));
         Tessellator.instance.setColorOpaque_F(LIGHTNESS, LIGHTNESS, LIGHTNESS);
@@ -48,7 +47,7 @@ public class BlockHandlerHinged extends BlockHandlerBase {
             case DOWN:
             case UP:
                 RenderHelper.renderFaceYNeg(renderBlocks, x, y, z, icon);
-                Tessellator.instance.setColorOpaque_F(LightingHelper.LIGHTNESS[1], LightingHelper.LIGHTNESS[1], LightingHelper.LIGHTNESS[1]);
+                Tessellator.instance.setColorOpaque_F(lightingHelper.LIGHTNESS[1], lightingHelper.LIGHTNESS[1], lightingHelper.LIGHTNESS[1]);
                 RenderHelper.renderFaceYPos(renderBlocks, x, y, z, icon);
                 break;
             case NORTH:

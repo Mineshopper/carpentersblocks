@@ -40,76 +40,76 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class BlockHandlerCarpentersSlope extends BlockHandlerSloped {
 
-    /* Render IDs */
-
-    private static final int NORMAL_YN              = 0;
-    private static final int NORMAL_YP              = 1;
-    private static final int NORMAL_ZN              = 2;
-    private static final int NORMAL_ZP              = 3;
-    private static final int NORMAL_XN              = 4;
-    private static final int NORMAL_XP              = 5;
-    private static final int TRIANGLE_XZNN          = 6;
-    private static final int TRIANGLE_XZNP          = 7;
-    private static final int TRIANGLE_XZPP          = 8;
-    private static final int TRIANGLE_XZPN          = 9;
-    private static final int TRIANGLE_ZXNP          = 10;
-    private static final int TRIANGLE_ZXNN          = 11;
-    private static final int TRIANGLE_ZXPN          = 12;
-    private static final int TRIANGLE_ZXPP          = 13;
-    private static final int WEDGE_YN               = 14;
-    private static final int WEDGE_YP               = 15;
-    private static final int WEDGE_SLOPED_ZN        = 16;
-    private static final int WEDGE_ZN               = 17;
-    private static final int WEDGE_SLOPED_ZP        = 18;
-    private static final int WEDGE_ZP               = 19;
-    private static final int WEDGE_SLOPED_XN        = 20;
-    private static final int WEDGE_XN               = 21;
-    private static final int WEDGE_SLOPED_XP        = 22;
-    private static final int WEDGE_XP               = 23;
-    private static final int WEDGE_CORNER_SLOPED_ZN = 24;
-    private static final int WEDGE_CORNER_SLOPED_ZP = 25;
-    private static final int WEDGE_CORNER_SLOPED_XN = 26;
-    private static final int WEDGE_CORNER_SLOPED_XP = 27;
-    private static final int OBL_INT_YN             = 28;
-    private static final int OBL_INT_YP             = 29;
-    private static final int OBL_EXT_LEFT_YP        = 30;
-    private static final int OBL_EXT_RIGHT_YP       = 31;
-    private static final int OBL_EXT_LEFT_YN        = 32;
-    private static final int OBL_EXT_RIGHT_YN       = 33;
-    private static final int PRISM_YZNN             = 34;
-    private static final int PRISM_YZNP             = 35;
-    private static final int PRISM_YXNN             = 36;
-    private static final int PRISM_YXNP             = 37;
-    private static final int PRISM_YZPN             = 38;
-    private static final int PRISM_YZPP             = 39;
-    private static final int PRISM_YXPN             = 40;
-    private static final int PRISM_YXPP             = 41;
-    private static final int PRISM_NORTH_XN         = 42;
-    private static final int PRISM_NORTH_XP         = 43;
-    private static final int PRISM_SOUTH_XN         = 44;
-    private static final int PRISM_SOUTH_XP         = 45;
-    private static final int PRISM_WEST_ZN          = 46;
-    private static final int PRISM_WEST_ZP          = 47;
-    private static final int PRISM_EAST_ZN          = 48;
-    private static final int PRISM_EAST_ZP          = 49;
-    private static final int PRISM_WEDGE_ZN         = 50;
-    private static final int PRISM_WEDGE_ZP         = 51;
-    private static final int PRISM_WEDGE_XN         = 52;
-    private static final int PRISM_WEDGE_XP         = 53;
-
     /* Lightness values. */
 
-    private final float LIGHTNESS_XYNN              = 0.6F;
-    private final float LIGHTNESS_XYPN              = 0.55F;
-    private final float LIGHTNESS_ZYNN              = 0.7F;
-    private final float LIGHTNESS_ZYPN              = 0.65F;
-    private final float LIGHTNESS_XYNP              = 0.85F;
-    private final float LIGHTNESS_XYPP              = 0.8F;
-    private final float LIGHTNESS_ZYNP              = 0.95F;
-    private final float LIGHTNESS_ZYPP              = 0.9F;
-    private final float LIGHTNESS_SIDE_WEDGE        = 0.7F;
-    private final float LIGHTNESS_POS_OBL           = 0.9F;
-    private final float LIGHTNESS_NEG_OBL           = 0.65F;
+    private float LIGHTNESS_XYNN   = 0.6F;
+    private float LIGHTNESS_XYPN   = 0.55F;
+    private float LIGHTNESS_ZYNN   = 0.7F;
+    private float LIGHTNESS_ZYPN   = 0.65F;
+    private float LIGHTNESS_XYNP   = 0.85F;
+    private float LIGHTNESS_XYPP   = 0.8F;
+    private float LIGHTNESS_ZYNP   = 0.95F;
+    private float LIGHTNESS_ZYPP   = 0.9F;
+    private float LIGHTNESS_XZPP   = 0.7F;
+    private float LIGHTNESS_XYZPPP = 0.9F;
+    private float LIGHTNESS_XYZPNP = 0.65F;
+
+    /* Render Ids used for RenderHelper designation. */
+
+    private final int NORMAL_YN              = 0;
+    private final int NORMAL_YP              = 1;
+    private final int NORMAL_ZN              = 2;
+    private final int NORMAL_ZP              = 3;
+    private final int NORMAL_XN              = 4;
+    private final int NORMAL_XP              = 5;
+    private final int TRIANGLE_XZNN          = 6;
+    private final int TRIANGLE_XZNP          = 7;
+    private final int TRIANGLE_XZPP          = 8;
+    private final int TRIANGLE_XZPN          = 9;
+    private final int TRIANGLE_ZXNP          = 10;
+    private final int TRIANGLE_ZXNN          = 11;
+    private final int TRIANGLE_ZXPN          = 12;
+    private final int TRIANGLE_ZXPP          = 13;
+    private final int WEDGE_YN               = 14;
+    private final int WEDGE_YP               = 15;
+    private final int WEDGE_SLOPED_ZN        = 16;
+    private final int WEDGE_ZN               = 17;
+    private final int WEDGE_SLOPED_ZP        = 18;
+    private final int WEDGE_ZP               = 19;
+    private final int WEDGE_SLOPED_XN        = 20;
+    private final int WEDGE_XN               = 21;
+    private final int WEDGE_SLOPED_XP        = 22;
+    private final int WEDGE_XP               = 23;
+    private final int WEDGE_CORNER_SLOPED_ZN = 24;
+    private final int WEDGE_CORNER_SLOPED_ZP = 25;
+    private final int WEDGE_CORNER_SLOPED_XN = 26;
+    private final int WEDGE_CORNER_SLOPED_XP = 27;
+    private final int OBL_INT_YN             = 28;
+    private final int OBL_INT_YP             = 29;
+    private final int OBL_EXT_LEFT_YP        = 30;
+    private final int OBL_EXT_RIGHT_YP       = 31;
+    private final int OBL_EXT_LEFT_YN        = 32;
+    private final int OBL_EXT_RIGHT_YN       = 33;
+    private final int PRISM_YZNN             = 34;
+    private final int PRISM_YZNP             = 35;
+    private final int PRISM_YXNN             = 36;
+    private final int PRISM_YXNP             = 37;
+    private final int PRISM_YZPN             = 38;
+    private final int PRISM_YZPP             = 39;
+    private final int PRISM_YXPN             = 40;
+    private final int PRISM_YXPP             = 41;
+    private final int PRISM_NORTH_XN         = 42;
+    private final int PRISM_NORTH_XP         = 43;
+    private final int PRISM_SOUTH_XN         = 44;
+    private final int PRISM_SOUTH_XP         = 45;
+    private final int PRISM_WEST_ZN          = 46;
+    private final int PRISM_WEST_ZP          = 47;
+    private final int PRISM_EAST_ZN          = 48;
+    private final int PRISM_EAST_ZP          = 49;
+    private final int PRISM_WEDGE_ZN         = 50;
+    private final int PRISM_WEDGE_ZP         = 51;
+    private final int PRISM_WEDGE_XN         = 52;
+    private final int PRISM_WEDGE_XP         = 53;
 
     @Override
     public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderBlocks)
@@ -781,7 +781,7 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerSloped {
         switch (slope.slopeID) {
             case Slope.ID_WEDGE_NW:
 
-                lightingHelper.setLightnessOverride(LIGHTNESS_SIDE_WEDGE);
+                lightingHelper.setLightnessOverride(LIGHTNESS_XZPP);
 
                 if (renderBlocks.enableAO) {
 
@@ -800,7 +800,7 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerSloped {
                 break;
             case Slope.ID_WEDGE_NE:
 
-                lightingHelper.setLightnessOverride(LIGHTNESS_SIDE_WEDGE);
+                lightingHelper.setLightnessOverride(LIGHTNESS_XZPP);
 
                 if (renderBlocks.enableAO) {
 
@@ -819,7 +819,7 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerSloped {
                 break;
             case Slope.ID_WEDGE_SW:
 
-                lightingHelper.setLightnessOverride(LIGHTNESS_SIDE_WEDGE);
+                lightingHelper.setLightnessOverride(LIGHTNESS_XZPP);
 
                 if (renderBlocks.enableAO) {
 
@@ -838,7 +838,7 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerSloped {
                 break;
             case Slope.ID_WEDGE_SE:
 
-                lightingHelper.setLightnessOverride(LIGHTNESS_SIDE_WEDGE);
+                lightingHelper.setLightnessOverride(LIGHTNESS_XZPP);
 
                 if (renderBlocks.enableAO) {
 
@@ -1198,10 +1198,10 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerSloped {
         }
 
         if (slope.isPositive) {
-            lightingHelper.setLightnessOverride(LIGHTNESS_POS_OBL);
+            lightingHelper.setLightnessOverride(LIGHTNESS_XYZPPP);
             setIDAndRender(itemStack, OBL_INT_YP, x, y, z, NORTH);
         } else {
-            lightingHelper.setLightnessOverride(LIGHTNESS_NEG_OBL);
+            lightingHelper.setLightnessOverride(LIGHTNESS_XYZPNP);
             setIDAndRender(itemStack, OBL_INT_YN, x, y, z, NORTH);
         }
     }
@@ -1314,11 +1314,11 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerSloped {
         }
 
         if (slope.isPositive) {
-            lightingHelper.setLightnessOverride(LIGHTNESS_POS_OBL);
+            lightingHelper.setLightnessOverride(LIGHTNESS_XYZPPP);
             setIDAndRender(itemStack, OBL_EXT_LEFT_YP, x, y, z, NORTH);
             setIDAndRender(itemStack, OBL_EXT_RIGHT_YP, x, y, z, NORTH);
         } else {
-            lightingHelper.setLightnessOverride(LIGHTNESS_NEG_OBL);
+            lightingHelper.setLightnessOverride(LIGHTNESS_XYZPNP);
             setIDAndRender(itemStack, OBL_EXT_LEFT_YN, x, y, z, NORTH);
             setIDAndRender(itemStack, OBL_EXT_RIGHT_YN, x, y, z, NORTH);
         }
