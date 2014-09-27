@@ -15,8 +15,8 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
+import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.MouseEvent;
-import net.minecraftforge.client.event.RenderWorldEvent;
 import net.minecraftforge.client.event.sound.PlaySoundEvent17;
 import net.minecraftforge.event.entity.PlaySoundAtEntityEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
@@ -53,12 +53,14 @@ public class EventHandler {
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
     /**
-     * Check render settings on render event.
+     * Check render settings on GUI open/close event.
      */
-    public void onPreRenderWorldEvent(RenderWorldEvent.Pre event)
+    public void onGuiOpenEvent(GuiOpenEvent event)
     {
-        if (ShadersHandler.enableShadersModCoreIntegration) {
-            ShadersHandler.updateLightness();
+        if (event.gui == null) {
+            if (ShadersHandler.enableShadersModCoreIntegration) {
+                ShadersHandler.update();
+            }
         }
     }
 
