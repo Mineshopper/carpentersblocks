@@ -127,7 +127,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
 
             if (FeatureRegistry.enableFancyFluids) {
                 if (BlockProperties.hasCover(TE, 6)) {
-                    VertexHelper.vertexCount += FancyFluidsHelper.render(TE, renderBlocks, x, y, z) ? 1 : 0;
+                    VertexHelper.vertexCount += FancyFluidsHelper.render(TE, renderBlocks, x, y, z) ? 4 : 0;
                 }
             }
 
