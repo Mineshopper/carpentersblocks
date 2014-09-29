@@ -120,11 +120,12 @@ title: Tutorial
 
 <div class="indent">
    <p>Left-click any of these blocks with the Carpenter's Hammer to alter the redstone signal polarity.</p>
-   <p>The daylight sensor also has the option of setting light threshold levels.  Right-click the sensor with the hammer to set when the signal should be cycled on or off.</p>
-   <p>Here's a brief description of the two light thresholds:</p>
+   <p>The daylight sensor also has the option of setting sensitivity levels.  Right-click the sensor with the hammer to set when the signal should be cycled on or off, or whether it should output redstone signal dynamically.</p>
+   <p>Here's a brief description of the three levels:</p>
    <ul>
       <li>When the light level drops to a level suitable for players to sleep, or it raises to a level suitable for when the player should wake up, it will trigger the player sleep threshold.</li>
       <li>When the light level enters or exits a level where monsters will start spawning, it will trigger the monster spawn light threshold.  This also takes into account conditions where monsters spawn at higher light levels, such as during thunderstorms.</li>
+      <li>Depending on the sun exposure to the panel, the dynamic sensitivity setting controls redstone output depending on where the sun is in the sky, and which direction the panel is facing.
    </ul>
 </div>
 
@@ -139,12 +140,17 @@ title: Tutorial
 
 <hr>
 
-<h4>Carpenter's Door and Hatch</h4>
+<h4>Carpenter's Door, Garage Door and Hatch</h4>
 
 <div class="indent">
-   <p>These blocks have several styles that you can choose from.  Left- or right-click any part of the door or hatch with the Carpenter's Hammer to cycle through them.</p>
-   <p>Want the door to behave more like the vanilla iron door? Sneak right-click any part of the door or hatch to alter the behavior.  The behaviors are straight-forward: behave like a wooden door, or behave like an iron door.  Iron door behavior requires a redstone signal to open or close.</p>
-   <p>In addition, doors that should naturally open together will act as a single entity (i.e. double doors).  Opening or closing either door will trigger both, and setting door behavior will also apply to both doors automatically.</p>
+   <p>These blocks have several styles that you can choose from.  Left- or right-click any part of these blocks with the Carpenter's Hammer to cycle through them.</p>
+   <p>Want the block to behave more like the vanilla iron door? Sneak right-click any part of the block to alter the behavior.  The behaviors are straight-forward:
+        <ul>
+            <li><em>Wooden door behavior</em>: players can change block state by right-clicking them.</li>
+            <li><em>Iron door behavior</em>: a redstone signal is required to change block state</li>
+        </ul>
+   </p>
+   <p>In addition, doors or garage doors that should naturally open together will act as a single entity (i.e. double doors, adjacent garage doors).  Connected blocks will share state changes like opening or closing, and applying behavior settings.</p>
 </div>
 
 <hr>
@@ -165,7 +171,7 @@ title: Tutorial
 <h4>Carpenter's Pressure Plate</h4>
 
 <div class="indent">
-   <p>Left-click the pressure plate with the Carpenter's Hammer to alter the redstone signal polarity.  Set whether you want it to emit a signal when stepped on, or whether you'd like to emit a signal only when nothing is on it.</p>
+   <p>Left-click the pressure plate with the Carpenter's Hammer to alter the redstone signal polarity.  Set whether you want it to emit a signal when collided with, or whether you'd like to emit a signal only when nothing is colliding with it.</p>
    <p>Right-click the pressure plate with the Carpenter's Hammer to cycle through what type of entity should activate it.  The types of entities include: players, animals, monsters, or all entities (including arrows and dropped items).</p>
 </div>
 
