@@ -34,6 +34,7 @@ import com.carpentersblocks.tileentity.TEBase;
 import com.carpentersblocks.util.BlockProperties;
 import com.carpentersblocks.util.handler.OverlayHandler.Overlay;
 import com.carpentersblocks.util.registry.BlockRegistry;
+import com.carpentersblocks.util.registry.FeatureRegistry;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -244,7 +245,9 @@ public class EventHandler {
          * sides that are touching another Carpenter's block.
          */
 
-        blockMaterial = Material.water;
+        if (FeatureRegistry.enableFancyFluids) {
+            blockMaterial = Material.water;
+        }
     }
 
     @SideOnly(Side.CLIENT)
@@ -253,7 +256,9 @@ public class EventHandler {
     {
         /* Revert material change made during rendering. */
 
-        blockMaterial = Material.wood;
+        if (FeatureRegistry.enableFancyFluids) {
+            blockMaterial = Material.wood;
+        }
     }
 
     @SideOnly(Side.CLIENT)
