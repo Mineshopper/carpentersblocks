@@ -22,7 +22,7 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 public class CarpentersBlocks {
 
     public static final String MODID = "CarpentersBlocks";
-    public static final String VERSION = "3.3.0 DEV R3";
+    public static final String VERSION = "3.3.0 DEV R4";
     public static FMLEventChannel channel;
     public static CreativeTabs creativeTab = new CarpentersBlocksTab(MODID);
 
