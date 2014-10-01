@@ -18,28 +18,29 @@ public class HelperOblique extends RenderHelper {
     {
         prepareRender(renderBlocks, ForgeDirection.NORTH, x, y, z, icon);
 
-        double uTM = uTR - (uTR - uTL) / 2;
+        double uMI = uTR - (uTR - uTL) / 2;
+        double vMI = rotation % 2 == 0 ? vTL : (vBR - (vBR - vBL) / 2);
 
         switch (slopeID) {
             case Slope.ID_OBL_INT_NEG_NW:
                 setupVertex(renderBlocks, xMin, yMin, zMax, uBR, vBR, SOUTHWEST);
-                setupVertex(renderBlocks, xMin, yMax, zMin, uTM, vTL, NORTHWEST);
+                setupVertex(renderBlocks, xMin, yMax, zMin, uMI, vMI, NORTHWEST);
                 setupVertex(renderBlocks, xMax, yMin, zMin, uBL, vBL, NORTHEAST);
                 break;
             case Slope.ID_OBL_INT_NEG_SW:
-                setupVertex(renderBlocks, xMin, yMax, zMax, uTM, vTL, SOUTHWEST);
+                setupVertex(renderBlocks, xMin, yMax, zMax, uMI, vMI, SOUTHWEST);
                 setupVertex(renderBlocks, xMin, yMin, zMin, uBL, vBL, NORTHWEST);
                 setupVertex(renderBlocks, xMax, yMin, zMax, uBR, vBR, SOUTHEAST);
                 break;
             case Slope.ID_OBL_INT_NEG_NE:
                 setupVertex(renderBlocks, xMin, yMin, zMin, uBR, vBR, NORTHWEST);
-                setupVertex(renderBlocks, xMax, yMax, zMin, uTM, vTL, NORTHEAST);
+                setupVertex(renderBlocks, xMax, yMax, zMin, uMI, vMI, NORTHEAST);
                 setupVertex(renderBlocks, xMax, yMin, zMax, uBL, vBL, SOUTHEAST);
                 break;
             case Slope.ID_OBL_INT_NEG_SE:
                 setupVertex(renderBlocks, xMin, yMin, zMax, uBL, vBL, SOUTHWEST);
                 setupVertex(renderBlocks, xMax, yMin, zMin, uBR, vBR, NORTHEAST);
-                setupVertex(renderBlocks, xMax, yMax, zMax, uTM, vTL, SOUTHEAST);
+                setupVertex(renderBlocks, xMax, yMax, zMax, uMI, vMI, SOUTHEAST);
                 break;
         }
     }
@@ -51,26 +52,28 @@ public class HelperOblique extends RenderHelper {
     {
         prepareRender(renderBlocks, ForgeDirection.NORTH, x, y, z, icon);
 
-        double uTM = uTR - (uTR - uTL) / 2;
+        boolean altRot = rotation % 2 == 0;
+        double uMI = !altRot ? uBL : (uTR - (uTR - uTL) / 2);
+        double vMI = altRot ? vBR : (vBR - (vBR - vBL) / 2);
 
         switch (slopeID) {
             case Slope.ID_OBL_INT_POS_NW:
                 setupVertex(renderBlocks, xMax, yMax, zMin, uTL, vTL, NORTHEAST);
-                setupVertex(renderBlocks, xMin, yMin, zMin, uTM, vBL, NORTHWEST);
+                setupVertex(renderBlocks, xMin, yMin, zMin, uMI, vMI, NORTHWEST);
                 setupVertex(renderBlocks, xMin, yMax, zMax, uTR, vTR, SOUTHWEST);
                 break;
             case Slope.ID_OBL_INT_POS_SW:
                 setupVertex(renderBlocks, xMax, yMax, zMax, uTR, vTR, SOUTHEAST);
                 setupVertex(renderBlocks, xMin, yMax, zMin, uTL, vTL, NORTHWEST);
-                setupVertex(renderBlocks, xMin, yMin, zMax, uTM, vBL, SOUTHWEST);
+                setupVertex(renderBlocks, xMin, yMin, zMax, uMI, vMI, SOUTHWEST);
                 break;
             case Slope.ID_OBL_INT_POS_NE:
                 setupVertex(renderBlocks, xMax, yMax, zMax, uTL, vTL, SOUTHEAST);
-                setupVertex(renderBlocks, xMax, yMin, zMin, uTM, vBL, NORTHEAST);
+                setupVertex(renderBlocks, xMax, yMin, zMin, uMI, vMI, NORTHEAST);
                 setupVertex(renderBlocks, xMin, yMax, zMin, uTR, vTR, NORTHWEST);
                 break;
             case Slope.ID_OBL_INT_POS_SE:
-                setupVertex(renderBlocks, xMax, yMin, zMax, uTM, vBL, SOUTHEAST);
+                setupVertex(renderBlocks, xMax, yMin, zMax, uMI, vMI, SOUTHEAST);
                 setupVertex(renderBlocks, xMax, yMax, zMin, uTR, vTR, NORTHEAST);
                 setupVertex(renderBlocks, xMin, yMax, zMax, uTL, vTL, SOUTHWEST);
                 break;
@@ -158,32 +161,32 @@ public class HelperOblique extends RenderHelper {
     {
         prepareRender(renderBlocks, ForgeDirection.NORTH, x, y, z, icon);
 
-        double uBOTTOM_MIDDLE = uBR;
-        double uBOTTOM_RIGHT_MIDDLE = uBOTTOM_MIDDLE - (uBR - uBL) / 2;
+        double uMI1 = uBR; // u middle coordinate, left triangle
+        double uMI2 = uMI1 - (uBR - uBL) / 2; // u middle coordinate, right triangle
 
         double xMid = xMax - (xMax - xMin) / 2;
         double zMid = zMax - (zMax - zMin) / 2;
 
         switch (slopeID) {
             case Slope.ID_OBL_EXT_POS_NW:
-                setupVertex(renderBlocks, xMax, yMax, zMax,       uBOTTOM_MIDDLE, vTL, TOP_LEFT     );
-                setupVertex(renderBlocks, xMax, yMin, zMin, uBOTTOM_RIGHT_MIDDLE, vBL, BOTTOM_LEFT  );
-                setupVertex(renderBlocks, xMid, yMin, zMid,       uBOTTOM_MIDDLE, vBR, BOTTOM_CENTER);
+                setupVertex(renderBlocks, xMax, yMax, zMax, uMI1, vTL, TOP_LEFT     );
+                setupVertex(renderBlocks, xMax, yMin, zMin, uMI2, vBL, BOTTOM_LEFT  );
+                setupVertex(renderBlocks, xMid, yMin, zMid, uMI1, vBR, BOTTOM_CENTER);
                 break;
             case Slope.ID_OBL_EXT_POS_SW:
-                setupVertex(renderBlocks, xMid, yMin, zMid,       uBOTTOM_MIDDLE, vBR, BOTTOM_CENTER);
-                setupVertex(renderBlocks, xMax, yMax, zMin,       uBOTTOM_MIDDLE, vTL, TOP_LEFT     );
-                setupVertex(renderBlocks, xMin, yMin, zMin, uBOTTOM_RIGHT_MIDDLE, vBL, BOTTOM_LEFT  );
+                setupVertex(renderBlocks, xMid, yMin, zMid, uMI1, vBR, BOTTOM_CENTER);
+                setupVertex(renderBlocks, xMax, yMax, zMin, uMI1, vTL, TOP_LEFT     );
+                setupVertex(renderBlocks, xMin, yMin, zMin, uMI2, vBL, BOTTOM_LEFT  );
                 break;
             case Slope.ID_OBL_EXT_POS_NE:
-                setupVertex(renderBlocks, xMax, yMin, zMax, uBOTTOM_RIGHT_MIDDLE, vBL, BOTTOM_LEFT  );
-                setupVertex(renderBlocks, xMid, yMin, zMid,       uBOTTOM_MIDDLE, vBR, BOTTOM_CENTER);
-                setupVertex(renderBlocks, xMin, yMax, zMax,       uBOTTOM_MIDDLE, vTL, TOP_LEFT     );
+                setupVertex(renderBlocks, xMax, yMin, zMax, uMI2, vBL, BOTTOM_LEFT  );
+                setupVertex(renderBlocks, xMid, yMin, zMid, uMI1, vBR, BOTTOM_CENTER);
+                setupVertex(renderBlocks, xMin, yMax, zMax, uMI1, vTL, TOP_LEFT     );
                 break;
             case Slope.ID_OBL_EXT_POS_SE:
-                setupVertex(renderBlocks, xMin, yMax, zMin,       uBOTTOM_MIDDLE, vTL, TOP_LEFT     );
-                setupVertex(renderBlocks, xMin, yMin, zMax, uBOTTOM_RIGHT_MIDDLE, vBL, BOTTOM_LEFT  );
-                setupVertex(renderBlocks, xMid, yMin, zMid,       uBOTTOM_MIDDLE, vBR, BOTTOM_CENTER);
+                setupVertex(renderBlocks, xMin, yMax, zMin, uMI1, vTL, TOP_LEFT     );
+                setupVertex(renderBlocks, xMin, yMin, zMax, uMI2, vBL, BOTTOM_LEFT  );
+                setupVertex(renderBlocks, xMid, yMin, zMid, uMI1, vBR, BOTTOM_CENTER);
                 break;
         }
     }

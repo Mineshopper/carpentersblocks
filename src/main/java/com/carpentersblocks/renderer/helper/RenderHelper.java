@@ -12,7 +12,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class RenderHelper extends VertexHelper {
 
     private static boolean  rotationOverride = false;
-    private static int      rotation;
+    protected static int    rotation;
     private static double   uMin;
     private static double   uMax;
     private static double   vMin;
