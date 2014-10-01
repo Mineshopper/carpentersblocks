@@ -184,7 +184,7 @@ public class BlockCarpentersGarageDoor extends BlockCoverable {
      * @param y
      * @param z
      */
-    private void create(TEBase TE, World world, int x, int y, int z)
+    private void create(TEBase TE, World world, EntityLivingBase entity, int x, int y, int z)
     {
         ForgeDirection dir = data.getDirection(TE);
         int type = data.getType(TE);
@@ -199,6 +199,7 @@ public class BlockCarpentersGarageDoor extends BlockCoverable {
                 data.setType(temp, type);
                 data.setState(temp, state, false);
                 data.setRigidity(temp, rigid);
+                temp.setOwner(entity.getUniqueID());
             }
         }
     }
@@ -419,7 +420,7 @@ public class BlockCarpentersGarageDoor extends BlockCoverable {
             }
         }
 
-        create(TE, world, x, y - 1, z);
+        create(TE, world, entityLiving, x, y - 1, z);
 
         super.onBlockPlacedBy(world, x, y, z, entityLiving, itemStack);
     }
