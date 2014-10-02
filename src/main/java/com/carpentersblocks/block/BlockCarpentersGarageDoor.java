@@ -213,7 +213,7 @@ public class BlockCarpentersGarageDoor extends BlockCoverable {
     {
         if (!data.isRigid(TE)) {
             int state = data.getState(TE) == GarageDoor.STATE_OPEN ? GarageDoor.STATE_CLOSED : GarageDoor.STATE_OPEN;
-            data.setState(TE, state, true);
+            data.setState(TE, state, false);
             propagateChanges(TE, TE.getWorldObj(), TE.xCoord, TE.yCoord, TE.zCoord, true);
             actionResult.setAltered().setNoSound();
         }
@@ -280,7 +280,7 @@ public class BlockCarpentersGarageDoor extends BlockCoverable {
             TEBase temp = getTileEntity(world, x, y, z);
             if (temp != null) {
                 data.setType(temp, type);
-                data.setState(temp, state, data.isHost(temp) && data.getState(temp) != state);
+                data.setState(temp, state, notifyNeighbors && data.getState(temp) != state);
                 data.setRigidity(temp, rigid);
             }
         } while (world.getBlock(x, ++y, z).equals(this));
@@ -298,7 +298,6 @@ public class BlockCarpentersGarageDoor extends BlockCoverable {
             TEBase TE = getTileEntity(world, x, y, z);
             if (TE != null) {
 
-                // TODO: Try to resolve Buildcraft builder issues here
                 if (data.isHost(TE) && !(canPlaceBlockOnSide(world, x, y, z, 0) || world.getBlock(x, y + 1, z).equals(this))) {
                     destroy(world, x, y, z, true);
                 }
