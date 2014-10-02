@@ -70,8 +70,6 @@ public class BlockHinged extends BlockCoverable {
         return false;
     }
 
-
-
     @Override
     /**
      * Opens or closes hinge on right click.

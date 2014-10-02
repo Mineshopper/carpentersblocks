@@ -38,6 +38,7 @@ public class CarpentersBlocks {
         channel = NetworkRegistry.INSTANCE.newEventDrivenChannel(MODID);
         Configuration config = new Configuration(event.getSuggestedConfigurationFile());
         config.load();
+
         proxy.preInit(event, config);
 
         if (config.hasChanged()) {

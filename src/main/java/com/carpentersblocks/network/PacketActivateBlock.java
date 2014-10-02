@@ -6,6 +6,7 @@ import java.io.IOException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import com.carpentersblocks.util.EntityLivingUtil;
 
 public class PacketActivateBlock extends TilePacket {
 
@@ -32,9 +33,7 @@ public class PacketActivateBlock extends TilePacket {
         if (!result) {
             if (itemStack != null && itemStack.getItem() instanceof ItemBlock) {
                 itemStack.tryPlaceItemIntoWorld(entityPlayer, entityPlayer.worldObj, x, y, z, side, 1.0F, 1.0F, 1.0F);
-                if (!entityPlayer.capabilities.isCreativeMode && --itemStack.stackSize <= 0) {
-                    entityPlayer.inventory.setInventorySlotContents(entityPlayer.inventory.currentItem, (ItemStack)null);
-                }
+                EntityLivingUtil.decrementCurrentSlot(entityPlayer);
             }
         }
     }

@@ -23,7 +23,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 
 public class CommonProxy {
 
-    public final static int ID_TILE = 0;
+    public final static int ENTITY_ID_TILE = 0;
 
     public void preInit(FMLPreInitializationEvent event, Configuration config)
     {
@@ -38,7 +38,7 @@ public class CommonProxy {
         MinecraftForge.EVENT_BUS.register(new EventHandler());
         CarpentersBlocks.channel.register(new PacketHandler());
 
-        /* Initialize Components */
+        /* Initialize blocks and items */
 
         BlockRegistry.init(event);
         ItemRegistry.init(event);
@@ -47,21 +47,21 @@ public class CommonProxy {
             OverlayHandler.init();
         }
 
-        /* Register Tile Entities */
+        /* Register tile entities */
 
         GameRegistry.registerTileEntity(                    TEBase.class,          "TileEntityCarpentersSlope"); // Compatibility mapping
         GameRegistry.registerTileEntity(                    TEBase.class,            "TileEntityCarpentersBed"); // Compatibility mapping
         GameRegistry.registerTileEntity(                    TEBase.class,          "TileEntityCarpentersBlock");
-        GameRegistry.registerTileEntity(TECarpentersDaylightSensor.class, "TileEntityCarpentersDaylightSensor");
         GameRegistry.registerTileEntity(TECarpentersDaylightSensor.class,            "TileEntityCarpentersExt"); // Compatibility mapping
+        GameRegistry.registerTileEntity(TECarpentersDaylightSensor.class, "TileEntityCarpentersDaylightSensor");
         GameRegistry.registerTileEntity(     TECarpentersFlowerPot.class,      "TileEntityCarpentersFlowerPot");
         GameRegistry.registerTileEntity(          TECarpentersSafe.class,           "TileEntityCarpentersSafe");
         GameRegistry.registerTileEntity(         TECarpentersTorch.class,          "TileEntityCarpentersTorch");
 
-        /* Register Entities */
+        /* Register entities */
 
         if (ItemRegistry.enableTile) {
-            EntityRegistry.registerModEntity(EntityCarpentersTile.class, "CarpentersTile", ID_TILE, CarpentersBlocks.instance, 64, 999, false);
+            EntityRegistry.registerModEntity(EntityCarpentersTile.class, "CarpentersTile", ENTITY_ID_TILE, CarpentersBlocks.instance, 64, 999, false);
         }
     }
 
