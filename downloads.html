@@ -10,6 +10,7 @@ label-stable: <span class="label label-success" data-toggle="tooltip" data-place
 label-final: <span class="label label-warning" data-toggle="tooltip" data-placement="top" title="This is the final build for this Minecraft version">FINAL</span>
 label-begin-patch: <span class="label label-warning" data-toggle="tooltip" data-placement="top" title="This build was patched after release">
 label-patch: <span class="label label-warning">PATCH</span>
+label-release: <span class="label label-danger">
 ---
 
 <h4>Dependencies</h4>
@@ -45,17 +46,17 @@ label-patch: <span class="label label-warning">PATCH</span>
 <div class="download-container">
    <div style="display: table-row;">
       <div class="download-container-version">
-         Carpenter's Blocks 3.3.0 DEV R3
+         Carpenter's Blocks 3.3.0 DEV R4
          {{ page.label-dev }}
          {{ page.label-begin-minecraft }}MC 1.7.10{{ page.label-end }}
          {{ page.label-begin-forge }}FORGE 10.13.0.1180{{ page.label-end }}
-         {{ page.label-begin-release }}RELEASED 09/26/2014{{ page.label-end }}
+         {{ page.label-begin-release }}RELEASED 10/04/2014{{ page.label-end }}
       </div>
    </div>
    <div style="display: table-row;">
       <div style="display: table-cell;">
-         <button onclick="window.open('http://adf.ly/sOG9b')" class="ad_button">Download</button>
-         <button onclick="window.open('https://www.dropbox.com/s/f7if76l1rgmccpm/Carpenter%27s%20Blocks%20v3.3.0%20DEV%20R3%20-%20MC%201.7.10.jar?dl=1')" class="dropbox">&nbsp;</button>
+         <button onclick="window.open('http://adf.ly/scKBi')" class="ad_button">Download</button>
+         <button onclick="window.open('https://www.dropbox.com/s/utlbhe113rvtua4/Carpenter%27s%20Blocks%20v3.3.0%20DEV%20R4%20-%20MC%201.7.10.jar?dl=1')" class="dropbox">&nbsp;</button>
          <button class="expand">View Changelog</button>
          <div class="collapsed">
             <ul id="changelog">
@@ -66,9 +67,15 @@ label-patch: <span class="label label-warning">PATCH</span>
                 <li>Pressure plates can now be placed on any side of block.</li>
                 <li>Daylight sensor can now be placed on sides of block, and has a new dynamic sensitivity setting.</li>
                 <li>Fixed possible crash when removing covers.</li>
-                <li>[R2] Fixed long-standing brightness problem.</li>
-                <li>[R2] Placing side covers now plays correct sound.</li>
-                <li>[R3] Improved ShadersModCore support; slopes and collapsible block now shade properly.</li>
+                <li>{{ page.label-release }}R2{{ page.label-end }} Fixed long-standing brightness problem.</li>
+                <li>{{ page.label-release }}R2{{ page.label-end }} Placing side covers now plays correct sound.</li>
+                <li>{{ page.label-release }}R3{{ page.label-end }} Improved ShadersModCore support; slopes and collapsible block now shade properly.</li>
+                <li>{{ page.label-release }}R4{{ page.label-end }} Fixed garage door not propagating ownership to entire column on creation.</li>
+                <li>{{ page.label-release }}R4{{ page.label-end }} Added block illumination; sneak right-click a block with glowstone dust.</li>
+                <li>{{ page.label-release }}R4{{ page.label-end }} Added proper side render checks for collapsible block.</li>
+                <li>{{ page.label-release }}R4{{ page.label-end }} Fancy fluids no longer restricted to fancy graphics, should look cleaner.</li>
+                <li>{{ page.label-release }}R4{{ page.label-end }} Fixed stretched textures on interior oblique sloped faces when rotating textures.</li>
+                <li>{{ page.label-release }}R4{{ page.label-end }} Fixed crash when loading mod as jar in development environment.</li>
             </ul>
          </div>
       </div>
