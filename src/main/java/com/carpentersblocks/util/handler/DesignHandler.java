@@ -12,7 +12,6 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.classloading.FMLForgePlugin;
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.Level;
 import com.carpentersblocks.CarpentersBlocks;

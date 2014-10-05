@@ -15,6 +15,7 @@ public class FeatureRegistry {
     public static boolean enableFancyFluids         = true;
     public static boolean enableTorchWeatherEffects = true;
     public static boolean enableOwnership           = true;
+    public static boolean enableIllumination        = true;
 
     public static ArrayList<String> overlayItems    = new ArrayList<String>();
     public static ArrayList<String> coverExceptions = new ArrayList<String>();
@@ -35,6 +36,10 @@ public class FeatureRegistry {
         Property fancyFluidsProp = config.get("features", "Enable Fancy Fluids", enableFancyFluids);
         fancyFluidsProp.comment = "When enabled, unobstructed stationary fluid adjacent to block will render in the same space.\nNote: this only takes effect when Fancy Graphics are enabled.";
         enableFancyFluids = fancyFluidsProp.getBoolean(enableFancyFluids);
+
+        Property illuminationProp = config.get("features", "Enable Illumination", enableIllumination);
+        illuminationProp.comment = "This will enable players to cover blocks with glowstone dust to make them illuminate.";
+        enableIllumination = illuminationProp.getBoolean(enableIllumination);
 
         Property ownershipProp = config.get("features", "Enable Ownership", enableOwnership);
         ownershipProp.comment = "This will prevent players besides you and server operators from editing your objects.\nNote: this does not protect objects against destruction (intentional), and may allow activation if appropriate. Also, the Carpenter's Safe is not affected by this.";

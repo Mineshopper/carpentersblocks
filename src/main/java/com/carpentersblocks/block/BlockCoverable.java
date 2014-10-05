@@ -302,7 +302,10 @@ public class BlockCoverable extends BlockContainer {
 
                                 if (entityPlayer.isSneaking()) {
 
-                                    if (BlockProperties.hasOverlay(TE, effectiveSide)) {
+                                    if (BlockProperties.hasIlluminator(TE)) {
+                                        BlockProperties.setIlluminator(TE, null);
+                                        actionResult.setAltered();
+                                    } else if (BlockProperties.hasOverlay(TE, effectiveSide)) {
                                         BlockProperties.setOverlay(TE, effectiveSide, (ItemStack)null);
                                         actionResult.setAltered();
                                     } else if (BlockProperties.hasDye(TE, effectiveSide)) {
@@ -426,7 +429,13 @@ public class BlockCoverable extends BlockContainer {
 
                                 } else if (entityPlayer.isSneaking()) {
 
-                                    if (FeatureRegistry.enableOverlays && BlockProperties.isOverlay(itemStack)) {
+                                    if (FeatureRegistry.enableIllumination && BlockProperties.isIlluminator(itemStack)) {
+                                        if (!BlockProperties.hasIlluminator(TE)) {
+                                            if (BlockProperties.setIlluminator(TE, itemStack)) {
+                                                actionResult.setAltered().decInventory().setSoundSource(itemStack);
+                                            }
+                                        }
+                                    } else if (FeatureRegistry.enableOverlays && BlockProperties.isOverlay(itemStack)) {
                                         if (!BlockProperties.hasOverlay(TE, effectiveSide) && (effectiveSide < 6 && BlockProperties.hasCover(TE, effectiveSide) || effectiveSide == 6)) {
                                             if (BlockProperties.setOverlay(TE, effectiveSide, itemStack)) {
                                                 actionResult.setAltered().decInventory().setSoundSource(itemStack);
@@ -784,12 +793,16 @@ public class BlockCoverable extends BlockContainer {
         TEBase TE = getTileEntity(world, x, y, z);
 
         if (TE != null) {
-            for (int side = 0; side < 7; ++side) {
-                if (BlockProperties.hasCover(TE, side)) {
-                    ItemStack itemStack = BlockProperties.getCover(TE, side);
-                    int tempLight = getLightValue(TE, BlockProperties.toBlock(itemStack), itemStack.getItemDamage());
-                    if (tempLight > lightValue) {
-                        lightValue = tempLight;
+            if (FeatureRegistry.enableIllumination && BlockProperties.hasIlluminator(TE)) {
+                lightValue = 15;
+            } else {
+                for (int side = 0; side < 7; ++side) {
+                    if (BlockProperties.hasCover(TE, side)) {
+                        ItemStack itemStack = BlockProperties.getCover(TE, side);
+                        int tempLight = getLightValue(TE, BlockProperties.toBlock(itemStack), itemStack.getItemDamage());
+                        if (tempLight > lightValue) {
+                            lightValue = tempLight;
+                        }
                     }
                 }
             }
@@ -983,6 +996,10 @@ public class BlockCoverable extends BlockContainer {
                     ret.add(BlockProperties.getDye(TE, idx));
                 }
             }
+        }
+
+        if (BlockProperties.hasIlluminator(TE)) {
+            ret.add(BlockProperties.getIlluminator(TE));
         }
 
         return ret;

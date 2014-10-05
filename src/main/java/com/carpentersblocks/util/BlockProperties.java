@@ -13,6 +13,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+import net.minecraftforge.oredict.OreDictionary;
 import com.carpentersblocks.CarpentersBlocks;
 import com.carpentersblocks.block.BlockCoverable;
 import com.carpentersblocks.tileentity.TEBase;
@@ -377,6 +378,68 @@ public class BlockProperties {
     }
 
     /**
+     * Checks {@link OreDictionary} to determine if {@link ItemStack} contains
+     * a dustGlowstone ore name.
+     *
+     * @return <code>true</code> if {@link ItemStack} contains dustGlowstone ore name
+     */
+    public static boolean isIlluminator(ItemStack itemStack)
+    {
+        if (itemStack != null) {
+            for (int Id : OreDictionary.getOreIDs(itemStack)) {
+                if (OreDictionary.getOreName(Id).equals("dustGlowstone")) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Checks if tile entity has illumination attribute.
+     *
+     * @return <code>true</code> if {@link TEBase} has illumination {@link ItemStack}
+     */
+    public static boolean hasIlluminator(TEBase TE)
+    {
+        return TE.illuminator != null &&
+               isIlluminator(TE.illuminator);
+    }
+
+    /**
+     * Sets illumination attribute for tile entity.
+     *
+     * @return whether assignment was successful
+     */
+    public static boolean setIlluminator(TEBase TE, ItemStack itemStack)
+    {
+        World world = TE.getWorldObj();
+
+        if (hasIlluminator(TE)) {
+            dropAttribute(TE, getIlluminator(TE));
+        }
+
+        TE.illuminator = getReducedStack(itemStack);
+
+        if (!suppressUpdate) {
+            world.markBlockForUpdate(TE.xCoord, TE.yCoord, TE.zCoord);
+        }
+
+        return true;
+    }
+
+    /**
+     * Gets glowstone dust {@link ItemStack}.
+     *
+     * @return the {@link ItemStack}
+     */
+    public static ItemStack getIlluminator(TEBase TE)
+    {
+        return TE.illuminator;
+    }
+
+    /**
      * Returns true if ItemStack is a dye.
      */
     public static boolean isDye(ItemStack itemStack, boolean allowWhite)
@@ -386,7 +449,7 @@ public class BlockProperties {
     }
 
     /**
-     * Returns whether side has cover.
+     * Returns whether side has dye.
      */
     public static boolean hasDye(TEBase TE, int side)
     {
@@ -395,7 +458,7 @@ public class BlockProperties {
     }
 
     /**
-     * Sets color for side.
+     * Sets dye for side.
      */
     public static boolean setDye(TEBase TE, int side, ItemStack itemStack)
     {

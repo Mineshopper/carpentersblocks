@@ -20,6 +20,7 @@ public class TEBase extends TileEntity implements IProtected {
     private final String TAG_COVER         = "cover";
     private final String TAG_DYE           = "dye";
     private final String TAG_OVERLAY       = "overlay";
+    private final String TAG_ILLUMINATOR   = "illuminator";
     private final String TAG_ITEMSTACKS    = "itemstacks";
     private final String TAG_METADATA      = "metadata";
     private final String TAG_OWNER         = "owner";
@@ -29,6 +30,7 @@ public class TEBase extends TileEntity implements IProtected {
     public ItemStack[] cover   = new ItemStack[7];
     public ItemStack[] dye     = new ItemStack[7];
     public ItemStack[] overlay = new ItemStack[7];
+    public ItemStack   illuminator;
 
     /** Chisel design for each side and base block. */
     public String[] chiselDesign = { "", "", "", "", "", "", "" };
@@ -52,6 +54,7 @@ public class TEBase extends TileEntity implements IProtected {
         cover = new ItemStack[7];
         dye = new ItemStack[7];
         overlay = new ItemStack[7];
+        illuminator = null;
 
         for (int idx = 0; idx < itemstack_list.tagCount(); ++idx)
         {
@@ -70,6 +73,8 @@ public class TEBase extends TileEntity implements IProtected {
                 dye[nbt1.getByte(TAG_DYE) & 255] = tempStack;
             } else if (itemstack_list.getCompoundTagAt(idx).hasKey(TAG_OVERLAY)) {
                 overlay[nbt1.getByte(TAG_OVERLAY) & 255] = tempStack;
+            } else if (itemstack_list.getCompoundTagAt(idx).hasKey(TAG_ILLUMINATOR)) {
+                illuminator = tempStack;
             }
         }
 
@@ -117,6 +122,13 @@ public class TEBase extends TileEntity implements IProtected {
                 overlay[side].writeToNBT(nbt1);
                 itemstack_list.appendTag(nbt1);
             }
+        }
+
+        if (illuminator != null) {
+            NBTTagCompound nbt1 = new NBTTagCompound();
+            nbt1.setByte(TAG_ILLUMINATOR, (byte) 6);
+            illuminator.writeToNBT(nbt1);
+            itemstack_list.appendTag(nbt1);
         }
 
         nbt.setTag(TAG_ITEMSTACKS, itemstack_list);
