@@ -996,10 +996,9 @@ public class BlockCoverable extends BlockContainer {
                     ret.add(BlockProperties.getDye(TE, idx));
                 }
             }
-        }
-
-        if (BlockProperties.hasIlluminator(TE)) {
-            ret.add(BlockProperties.getIlluminator(TE));
+            if (BlockProperties.hasIlluminator(TE)) {
+                ret.add(BlockProperties.getIlluminator(TE));
+            }
         }
 
         return ret;
