@@ -229,7 +229,7 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
             if (TE != null) {
 
                 if (!canPlaceBlockOnSide(world, x, y, z, 1)) {
-                    dropBlockAsItem(world, x, y, z, world.getBlockMetadata(x, y, z), 0);
+                    dropBlockAsItem(world, x, y, z, createStackedBlock(0));
                     world.setBlockToAir(x, y, z);
                 }
 

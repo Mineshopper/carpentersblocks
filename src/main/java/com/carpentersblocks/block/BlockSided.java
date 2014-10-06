@@ -105,7 +105,7 @@ public class BlockSided extends BlockCoverable {
         if (!world.isRemote) {
             TEBase TE = getTileEntity(world, x, y, z);
             if (TE != null && !canPlaceBlockOnSide(world, x, y, z, data.getDirection(TE).ordinal())) {
-                dropBlockAsItem(world, x, y, z, 0, 0);
+                dropBlockAsItem(world, x, y, z, createStackedBlock(0));
                 world.setBlockToAir(x, y, z);
             }
         }

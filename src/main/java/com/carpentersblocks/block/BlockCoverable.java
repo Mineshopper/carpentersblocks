@@ -955,11 +955,12 @@ public class BlockCoverable extends BlockContainer {
      */
     public void breakBlock(World world, int x, int y, int z, Block block, int metadata)
     {
-        /*
-         * Drop block contents excluding the block itself.
-         * The block instance is dropped later in destruction code.
-         */
-        dropBlockAsItem(world, x, y, z, METADATA_DROP_ATTR_ONLY, 0);
+        /* Drop block instance. */
+
+        for (ItemStack itemStack : getDrops(world, x, y, z, METADATA_DROP_ATTR_ONLY, 0)) {
+            dropBlockAsItem(world, x, y, z, itemStack);
+        }
+
         super.breakBlock(world, x, y, z, block, metadata);
     }
 
