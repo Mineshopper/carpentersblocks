@@ -218,6 +218,26 @@ public class BlockCoverable extends BlockContainer {
     }
 
     /**
+     * Drops block as {@link ItemStack} and notifies relevant systems of
+     * block removal.  Block attributes will drop later in destruction.
+     * <p>
+     * This is usually called when a {@link #onNeighborBlockChange(World, int, int, int, Block) neighbor changes}.
+     *
+     * @param world the {@link World}
+     * @param x the x coordinate
+     * @param y the y coordinate
+     * @param z the z coordinate
+     * @param dropBlock whether block {@link ItemStack} is dropped
+     */
+    protected void destroyBlock(World world, int x, int y, int z, boolean dropBlock)
+    {
+        if (dropBlock) {
+            dropBlockAsItem(world, x, y, z, new ItemStack(getItemDropped(0, world.rand, 0)));
+        }
+        world.setBlockToAir(x, y, z);
+    }
+
+    /**
      * Returns adjacent, similar tile entities that can be used for duplicating
      * block properties like dye color, pattern, style, etc.
      *

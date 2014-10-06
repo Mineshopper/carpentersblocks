@@ -353,20 +353,18 @@ public class BlockHinged extends BlockCoverable {
 
                 boolean isOpen = Hinge.getState(TE) == Hinge.STATE_OPEN;
 
-                /*
-                 * Check if hinge piece is orphaned.
-                 */
+                /* Check if hinge piece is orphaned. */
+
                 if (Hinge.getPiece(TE) == Hinge.PIECE_BOTTOM) {
                     if (!world.getBlock(x, y + 1, z).equals(this)) {
-                        world.setBlockToAir(x, y, z);
+                        destroyBlock(world, x, y, z, false);
                         return;
                     } else if (requiresFoundation() && !World.doesBlockHaveSolidTopSurface(world, x, y - 1, z)) {
-                        world.setBlockToAir(x, y + 1, z);
-                        dropBlockAsItem(world, x, y, z, 0, 0);
+                        destroyBlock(world, x, y, z, true);
                         return;
                     }
                 } else if (!world.getBlock(x, y - 1, z).equals(this)) {
-                    world.setBlockToAir(x, y, z);
+                    destroyBlock(world, x, y, z, false);
                     return;
                 }
 
@@ -375,6 +373,7 @@ public class BlockHinged extends BlockCoverable {
                  * that they act as a single entity regardless of which
                  * hinge piece receives this event.
                  */
+
                 boolean isPowered = false;
                 List<TEBase> hingePieces = getHingePieces(TE);
                 for (TEBase piece : hingePieces) {
@@ -385,9 +384,8 @@ public class BlockHinged extends BlockCoverable {
                     }
                 }
 
-                /*
-                 * Set block open or closed
-                 */
+                /* Set block open or closed. */
+
                 if (block != null && block.canProvidePower() && isPowered != isOpen) {
                     setHingeState(TE, isOpen ? Hinge.STATE_CLOSED : Hinge.STATE_OPEN);
                 }

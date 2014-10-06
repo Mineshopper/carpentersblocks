@@ -229,8 +229,7 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
             if (TE != null) {
 
                 if (!canPlaceBlockOnSide(world, x, y, z, 1)) {
-                    dropBlockAsItem(world, x, y, z, createStackedBlock(0));
-                    world.setBlockToAir(x, y, z);
+                    destroyBlock(world, x, y, z, true);
                 }
 
                 /* Eject double tall plant if obstructed. */

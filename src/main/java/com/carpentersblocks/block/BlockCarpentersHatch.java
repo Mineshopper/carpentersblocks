@@ -330,8 +330,7 @@ public class BlockCarpentersHatch extends BlockCoverable {
         }
 
         if (count == 4) {
-            world.setBlockToAir(x, y, z);
-            dropBlockAsItem(world, x, y, z, world.getBlockMetadata(x, y, z), 0);
+            destroyBlock(world, x, y, z, true);
         } else {
             Hatch.setDir(TE, dir);
         }

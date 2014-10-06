@@ -165,13 +165,14 @@ public class BlockCarpentersGarageDoor extends BlockCoverable {
         if (!world.isRemote) {
             int baseY = data.getBottommost(world, x, y, z).yCoord;
             do {
+                boolean dropBlock = false;
                 if (doDrop) {
                     TEBase temp = getTileEntity(world, x, baseY, z);
                     if (temp != null && data.isHost(temp)) {
-                        dropBlockAsItem(world, x, y, z, createStackedBlock(0));
+                        dropBlock = true;
                     }
                 }
-                world.setBlockToAir(x, baseY++, z);
+                destroyBlock(world, x, baseY++, z, dropBlock);
             } while (world.getBlock(x, baseY, z).equals(this));
         }
     }

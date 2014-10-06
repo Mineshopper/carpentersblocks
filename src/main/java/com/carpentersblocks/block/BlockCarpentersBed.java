@@ -160,7 +160,7 @@ public class BlockCarpentersBed extends BlockCoverable {
 
         } else {
 
-            world.setBlockToAir(x, y, z);
+            destroyBlock(world, x, y, z, false);
             world.newExplosion((Entity)null, x + 0.5F, y + 0.5F, z + 0.5F, 5.0F, true, true);
 
         }
@@ -174,15 +174,12 @@ public class BlockCarpentersBed extends BlockCoverable {
     public void onNeighborBlockChange(World world, int x, int y, int z, Block block)
     {
         if (!world.isRemote) {
-
             TEBase TE = getTileEntity(world, x, y, z);
-
             if (TE != null) {
                 if (Bed.getOppositeTE(TE) == null) {
-                    world.setBlockToAir(x, y, z);
+                    destroyBlock(world, x, y, z, false);
                 }
             }
-
         }
 
         super.onNeighborBlockChange(world, x, y, z, block);
