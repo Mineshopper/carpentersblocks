@@ -22,8 +22,6 @@ import com.carpentersblocks.util.handler.DesignHandler;
 import com.carpentersblocks.util.handler.DyeHandler;
 import com.carpentersblocks.util.handler.OverlayHandler;
 import com.carpentersblocks.util.registry.FeatureRegistry;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockProperties {
 
@@ -200,17 +198,6 @@ public class BlockProperties {
     }
 
     /**
-     * Returns whether block or side block has an attribute.
-     * It checks for cover, dye color and overlay.
-     */
-    public static boolean hasAttribute(TEBase TE, int side)
-    {
-        return hasCover(TE, side) ||
-               hasDye(TE, side) ||
-               hasOverlay(TE, side);
-    }
-
-    /**
      * Strips side of all properties.
      */
     public static void ejectAttributes(TEBase TE, int side)
@@ -228,38 +215,29 @@ public class BlockProperties {
     }
 
     /**
-     * Returns whether block has a cover.
-     * Checks if block ID exists and whether it is a valid cover block.
-     */
-    public static boolean hasCover(TEBase TE, int side)
-    {
-        return TE.cover[side] != null &&
-               isCover(TE.cover[side]);
-    }
-
-    private static ItemStack getCoverUnfiltered(TEBase TE, int side)
-    {
-        return TE.cover[side] != null ? TE.cover[side] : new ItemStack(TE.getBlockType());
-    }
-
-    @SideOnly(Side.CLIENT)
-    /**
-     * Returns untouched cover ItemStack for rendering purposes.
-     */
-    public static ItemStack getCoverForRendering(TEBase TE, int side)
-    {
-        return getCoverUnfiltered(TE, side);
-    }
-
-    /**
-     * Returns filtered cover ItemStack that is safe for calling block properties.
+     * Returns the cover, or if no cover exists, will return the calling block type.
      *
+     * @param  TE the {@link TEBase}
+     * @param  side the side
+     * @return the {@link ItemStack}
+     */
+    public static ItemStack getCoverSafe(TEBase TE, int side)
+    {
+        ItemStack itemStack = TE.attrMap.get(TE.ID_COVER[side]);
+        return itemStack != null ? itemStack : new ItemStack(TE.getBlockType());
+    }
+
+    /**
+     * Returns cover {@link ItemStack}.
+     * <p>
+     * If cover {@link ItemStack#hasTagCompound()}, will replace {@link Item} with {@link Blocks#planks}.
+     * <p>
      * This is needed to avoid calling properties for covers that have NBTTagCompounds,
      * which may rely on data that does not exist.
      */
     public static ItemStack getCover(TEBase TE, int side)
     {
-        ItemStack itemStack = getCoverUnfiltered(TE, side);
+        ItemStack itemStack = getCoverSafe(TE, side);
         Block block = toBlock(itemStack);
 
         return block.hasTileEntity(itemStack.getItemDamage()) && !(block instanceof BlockCoverable) ? new ItemStack(Blocks.planks) : itemStack;
@@ -287,29 +265,41 @@ public class BlockProperties {
     }
 
     /**
-     * Returns cover ItemStack in its default state.
-     * Will correct log drop rotation, among other things.
+     * Will restore cover {@link ItemStack} to default state before returning result.
+     * <p>
+     * Corrects log rotation, among other things.
+     *
+     * @param  rand a {@link Random} reference
+     * @param  itemStack the {@link ItemStack}
+     * @return the cover {@link ItemStack} in it's default state
      */
-    public static ItemStack getCoverForDrop(Random rand, ItemStack itemStack)
+    public static ItemStack getCoverForDrop(TEBase TE, int side)
     {
+        ItemStack itemStack = TE.attrMap.get(TE.ID_COVER[side]);
+
         if (itemStack != null) {
             Block block = toBlock(itemStack);
-            int damageDropped = block.damageDropped(itemStack.getItemDamage());
-            Item itemDropped = block.getItemDropped(itemStack.getItemDamage(), rand, /* Fortune */ 0);
+            int dmgDrop = block.damageDropped(itemStack.getItemDamage());
+            Item itemDrop = block.getItemDropped(itemStack.getItemDamage(), TE.getWorldObj().rand, /* Fortune */ 0);
 
             /* Check if block drops itself, and, if so, correct the damage value to the block's default. */
 
-            if (itemDropped != null && itemDropped.equals(itemStack.getItem()) && damageDropped != itemStack.getItemDamage()) {
-                itemStack.setItemDamage(damageDropped);
+            if (itemDrop != null && itemDrop.equals(itemStack.getItem()) && dmgDrop != itemStack.getItemDamage()) {
+                itemStack.setItemDamage(dmgDrop);
             }
         }
 
         return itemStack;
     }
 
-    public static ItemStack getCoverForDrop(TEBase TE, int side)
+    /**
+     * Returns whether block has a cover.
+     * Checks if block ID exists and whether it is a valid cover block.
+     */
+    public static boolean hasCover(TEBase TE, int side)
     {
-        return getCoverForDrop(TE.getWorldObj().rand, TE.cover[side]);
+        ItemStack itemStack = getCoverSafe(TE, side);
+        return itemStack != null && isCover(itemStack);
     }
 
     /**
@@ -323,7 +313,7 @@ public class BlockProperties {
             dropAttribute(TE, getCoverForDrop(TE, side));
         }
 
-        TE.cover[side] = getReducedStack(itemStack);
+        TE.attrMap.put(TE.ID_COVER[side], getReducedStack(itemStack));
 
         Block block = itemStack == null ? TE.getBlockType() : toBlock(itemStack);
         int metadata = itemStack == null ? 0 : itemStack.getItemDamage();
@@ -403,8 +393,8 @@ public class BlockProperties {
      */
     public static boolean hasIlluminator(TEBase TE)
     {
-        return TE.illuminator != null &&
-               isIlluminator(TE.illuminator);
+        ItemStack itemStack = TE.attrMap.get(TE.ID_ILLUMINATOR);
+        return itemStack != null && isIlluminator(itemStack);
     }
 
     /**
@@ -420,7 +410,7 @@ public class BlockProperties {
             dropAttribute(TE, getIlluminator(TE));
         }
 
-        TE.illuminator = getReducedStack(itemStack);
+        TE.attrMap.put(TE.ID_ILLUMINATOR, getReducedStack(itemStack));
 
         if (!suppressUpdate) {
             world.markBlockForUpdate(TE.xCoord, TE.yCoord, TE.zCoord);
@@ -436,7 +426,7 @@ public class BlockProperties {
      */
     public static ItemStack getIlluminator(TEBase TE)
     {
-        return TE.illuminator;
+        return TE.attrMap.get(TE.ID_ILLUMINATOR);
     }
 
     /**
@@ -453,8 +443,8 @@ public class BlockProperties {
      */
     public static boolean hasDye(TEBase TE, int side)
     {
-        return TE.dye[side] != null &&
-               isDye(TE.dye[side], true);
+        ItemStack itemStack = TE.attrMap.get(TE.ID_DYE[side]);
+        return itemStack != null && isDye(itemStack, true);
     }
 
     /**
@@ -468,7 +458,7 @@ public class BlockProperties {
             dropAttribute(TE, getDye(TE, side));
         }
 
-        TE.dye[side] = getReducedStack(itemStack);
+        TE.attrMap.put(TE.ID_DYE[side], getReducedStack(itemStack));
 
         if (!suppressUpdate) {
             world.markBlockForUpdate(TE.xCoord, TE.yCoord, TE.zCoord);
@@ -482,7 +472,7 @@ public class BlockProperties {
      */
     public static ItemStack getDye(TEBase TE, int side)
     {
-        return TE.dye[side];
+        return TE.attrMap.get(TE.ID_DYE[side]);
     }
 
     /**
@@ -496,7 +486,7 @@ public class BlockProperties {
             dropAttribute(TE, getOverlay(TE, side));
         }
 
-        TE.overlay[side] = getReducedStack(itemStack);
+        TE.attrMap.put(TE.ID_OVERLAY[side], getReducedStack(itemStack));
 
         if (!suppressUpdate) {
             world.markBlockForUpdate(TE.xCoord, TE.yCoord, TE.zCoord);
@@ -524,7 +514,7 @@ public class BlockProperties {
      */
     public static ItemStack getOverlay(TEBase TE, int side)
     {
-        return TE.overlay[side];
+        return TE.attrMap.get(TE.ID_OVERLAY[side]);
     }
 
     /**
@@ -532,8 +522,8 @@ public class BlockProperties {
      */
     public static boolean hasOverlay(TEBase TE, int side)
     {
-        return TE.overlay[side] != null &&
-               isOverlay(TE.overlay[side]);
+        ItemStack itemStack = TE.attrMap.get(TE.ID_OVERLAY[side]);
+        return itemStack != null && isOverlay(itemStack);
     }
 
     /**

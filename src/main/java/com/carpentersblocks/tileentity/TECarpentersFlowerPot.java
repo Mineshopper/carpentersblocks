@@ -1,9 +1,6 @@
 package com.carpentersblocks.tileentity;
 
 import net.minecraft.item.ItemDye;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.world.World;
@@ -11,64 +8,8 @@ import com.carpentersblocks.data.FlowerPot;
 
 public class TECarpentersFlowerPot extends TEBase {
 
-    private final String TAG_PLANT_ITEMSTACKS = "pot_property";
-    public final String TAG_SOIL  = "soil";
-    public final String TAG_PLANT = "plant";
-
-    public ItemStack soil;
-    public ItemStack plant;
-
-    @Override
-    public void readFromNBT(NBTTagCompound nbt)
-    {
-        super.readFromNBT(nbt);
-
-        NBTTagList list = nbt.getTagList(TAG_PLANT_ITEMSTACKS, 10);
-
-        soil = null;
-        plant = null;
-
-        for (int idx = 0; idx < list.tagCount(); ++idx)
-        {
-            NBTTagCompound nbt1 = list.getCompoundTagAt(idx);
-            ItemStack tempStack = ItemStack.loadItemStackFromNBT(nbt1);
-
-            /*
-             * All ItemStacks pre-3.2.7 DEV R3 stored original
-             * stack sizes, reduce them here.
-             */
-            tempStack.stackSize = 1;
-
-            if ((list.getCompoundTagAt(idx)).hasKey(TAG_SOIL)) {
-                soil = tempStack;
-            } else if ((list.getCompoundTagAt(idx)).hasKey(TAG_PLANT)) {
-                plant = tempStack;
-            }
-        }
-    }
-
-    @Override
-    public void writeToNBT(NBTTagCompound nbt)
-    {
-        super.writeToNBT(nbt);
-
-        NBTTagList list = new NBTTagList();
-
-        if (soil != null) {
-            NBTTagCompound nbt1 = new NBTTagCompound();
-            nbt1.setByte(TAG_SOIL, (byte) 0);
-            soil.writeToNBT(nbt1);
-            list.appendTag(nbt1);
-        }
-        if (plant != null) {
-            NBTTagCompound nbt1 = new NBTTagCompound();
-            nbt1.setByte(TAG_PLANT, (byte) 0);
-            plant.writeToNBT(nbt1);
-            list.appendTag(nbt1);
-        }
-
-        nbt.setTag(TAG_PLANT_ITEMSTACKS, list);
-    }
+    public static final byte ID_PLANT = 22;
+    public static final byte ID_SOIL  = 23;
 
     @Override
     /**

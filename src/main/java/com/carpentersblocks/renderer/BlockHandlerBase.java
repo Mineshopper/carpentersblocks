@@ -224,7 +224,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
 
     protected ItemStack getCoverForRendering()
     {
-        return BlockProperties.getCoverForRendering(TE, coverRendering);
+        return BlockProperties.getCoverSafe(TE, coverRendering);
     }
 
     /**
