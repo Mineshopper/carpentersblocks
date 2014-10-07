@@ -122,13 +122,13 @@ public class BlockProperties {
 
     public static String getDesign(TEBase TE)
     {
-        return TE.design;
+        return TE.cbDesign;
     }
 
     public static boolean setDesign(TEBase TE, String name)
     {
-        if (!TE.design.equals(name)) {
-            TE.design = name;
+        if (!TE.cbDesign.equals(name)) {
+            TE.cbDesign = name;
             if (!suppressUpdate) {
                 TE.getWorldObj().markBlockForUpdate(TE.xCoord, TE.yCoord, TE.zCoord);
             }
@@ -223,7 +223,7 @@ public class BlockProperties {
      */
     public static ItemStack getCoverSafe(TEBase TE, int side)
     {
-        ItemStack itemStack = TE.attrMap.get(TE.ID_COVER[side]);
+        ItemStack itemStack = TE.cbAttrMap.get(TE.ID_COVER[side]);
         return itemStack != null ? itemStack : new ItemStack(TE.getBlockType());
     }
 
@@ -275,7 +275,7 @@ public class BlockProperties {
      */
     public static ItemStack getCoverForDrop(TEBase TE, int side)
     {
-        ItemStack itemStack = TE.attrMap.get(TE.ID_COVER[side]);
+        ItemStack itemStack = TE.cbAttrMap.get(TE.ID_COVER[side]);
 
         if (itemStack != null) {
             Block block = toBlock(itemStack);
@@ -313,7 +313,7 @@ public class BlockProperties {
             dropAttribute(TE, getCoverForDrop(TE, side));
         }
 
-        TE.attrMap.put(TE.ID_COVER[side], getReducedStack(itemStack));
+        TE.cbAttrMap.put(TE.ID_COVER[side], getReducedStack(itemStack));
 
         Block block = itemStack == null ? TE.getBlockType() : toBlock(itemStack);
         int metadata = itemStack == null ? 0 : itemStack.getItemDamage();
@@ -348,7 +348,7 @@ public class BlockProperties {
      */
     public final static int getMetadata(TEBase TE)
     {
-        return TE.metadata & 0xffff;
+        return TE.cbMetadata & 0xffff;
     }
 
     /**
@@ -357,7 +357,7 @@ public class BlockProperties {
     public static boolean setMetadata(TEBase TE, int data)
     {
         if (data != getMetadata(TE)) {
-            TE.metadata = (short) data;
+            TE.cbMetadata = (short) data;
             if (!suppressUpdate) {
                 TE.getWorldObj().markBlockForUpdate(TE.xCoord, TE.yCoord, TE.zCoord);
             }
@@ -393,7 +393,7 @@ public class BlockProperties {
      */
     public static boolean hasIlluminator(TEBase TE)
     {
-        ItemStack itemStack = TE.attrMap.get(TE.ID_ILLUMINATOR);
+        ItemStack itemStack = TE.cbAttrMap.get(TE.ID_ILLUMINATOR);
         return itemStack != null && isIlluminator(itemStack);
     }
 
@@ -410,7 +410,7 @@ public class BlockProperties {
             dropAttribute(TE, getIlluminator(TE));
         }
 
-        TE.attrMap.put(TE.ID_ILLUMINATOR, getReducedStack(itemStack));
+        TE.cbAttrMap.put(TE.ID_ILLUMINATOR, getReducedStack(itemStack));
 
         if (!suppressUpdate) {
             world.markBlockForUpdate(TE.xCoord, TE.yCoord, TE.zCoord);
@@ -426,7 +426,7 @@ public class BlockProperties {
      */
     public static ItemStack getIlluminator(TEBase TE)
     {
-        return TE.attrMap.get(TE.ID_ILLUMINATOR);
+        return TE.cbAttrMap.get(TE.ID_ILLUMINATOR);
     }
 
     /**
@@ -443,7 +443,7 @@ public class BlockProperties {
      */
     public static boolean hasDye(TEBase TE, int side)
     {
-        ItemStack itemStack = TE.attrMap.get(TE.ID_DYE[side]);
+        ItemStack itemStack = TE.cbAttrMap.get(TE.ID_DYE[side]);
         return itemStack != null && isDye(itemStack, true);
     }
 
@@ -458,7 +458,7 @@ public class BlockProperties {
             dropAttribute(TE, getDye(TE, side));
         }
 
-        TE.attrMap.put(TE.ID_DYE[side], getReducedStack(itemStack));
+        TE.cbAttrMap.put(TE.ID_DYE[side], getReducedStack(itemStack));
 
         if (!suppressUpdate) {
             world.markBlockForUpdate(TE.xCoord, TE.yCoord, TE.zCoord);
@@ -472,7 +472,7 @@ public class BlockProperties {
      */
     public static ItemStack getDye(TEBase TE, int side)
     {
-        return TE.attrMap.get(TE.ID_DYE[side]);
+        return TE.cbAttrMap.get(TE.ID_DYE[side]);
     }
 
     /**
@@ -486,7 +486,7 @@ public class BlockProperties {
             dropAttribute(TE, getOverlay(TE, side));
         }
 
-        TE.attrMap.put(TE.ID_OVERLAY[side], getReducedStack(itemStack));
+        TE.cbAttrMap.put(TE.ID_OVERLAY[side], getReducedStack(itemStack));
 
         if (!suppressUpdate) {
             world.markBlockForUpdate(TE.xCoord, TE.yCoord, TE.zCoord);
@@ -514,7 +514,7 @@ public class BlockProperties {
      */
     public static ItemStack getOverlay(TEBase TE, int side)
     {
-        return TE.attrMap.get(TE.ID_OVERLAY[side]);
+        return TE.cbAttrMap.get(TE.ID_OVERLAY[side]);
     }
 
     /**
@@ -522,7 +522,7 @@ public class BlockProperties {
      */
     public static boolean hasOverlay(TEBase TE, int side)
     {
-        ItemStack itemStack = TE.attrMap.get(TE.ID_OVERLAY[side]);
+        ItemStack itemStack = TE.cbAttrMap.get(TE.ID_OVERLAY[side]);
         return itemStack != null && isOverlay(itemStack);
     }
 
@@ -548,7 +548,7 @@ public class BlockProperties {
      */
     public static String getChiselDesign(TEBase TE, int side)
     {
-        return TE.chiselDesign[side];
+        return TE.cbChiselDesign[side];
     }
 
     /**
@@ -556,8 +556,8 @@ public class BlockProperties {
      */
     public static boolean setChiselDesign(TEBase TE, int side, String iconName)
     {
-        if (!TE.chiselDesign.equals(iconName)) {
-            TE.chiselDesign[side] = iconName;
+        if (!TE.cbChiselDesign.equals(iconName)) {
+            TE.cbChiselDesign[side] = iconName;
             if (!suppressUpdate) {
                 TE.getWorldObj().markBlockForUpdate(TE.xCoord, TE.yCoord, TE.zCoord);
             }

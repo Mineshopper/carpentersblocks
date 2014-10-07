@@ -20,53 +20,59 @@ import cpw.mods.fml.relauncher.Side;
 
 public class TEBase extends TileEntity implements IProtected {
 
-    private static final String TAG_ATTRIBUTE      = "cbAttr";
-    private static final String TAG_ITEMSTACKS     = "itemstacks";
-    private static final String TAG_METADATA       = "metadata";
-    private static final String TAG_OWNER          = "owner";
-    private static final String TAG_CHISEL_DESIGN  = "chiselDesign";
-    private static final String TAG_DESIGN         = "design";
+    private static final String TAG_ATTR          = "cbAttribute";
+    private static final String TAG_ATTR_LIST     = "cbAttrList";
+    private static final String TAG_METADATA      = "cbMetadata";
+    private static final String TAG_OWNER         = "cbOwner";
+    private static final String TAG_CHISEL_DESIGN = "cbChiselDesign";
+    private static final String TAG_DESIGN        = "cbDesign";
 
-    public static final byte[] ID_COVER            = {  0,  1,  2,  3,  4,  5,  6 };
-    public static final byte[] ID_DYE              = {  7,  8,  9, 10, 11, 12, 13 };
-    public static final byte[] ID_OVERLAY          = { 14, 15, 16, 17, 18, 19, 20 };
-    public static final byte   ID_ILLUMINATOR      = 21;
+    public static final byte[] ID_COVER           = {  0,  1,  2,  3,  4,  5,  6 };
+    public static final byte[] ID_DYE             = {  7,  8,  9, 10, 11, 12, 13 };
+    public static final byte[] ID_OVERLAY         = { 14, 15, 16, 17, 18, 19, 20 };
+    public static final byte   ID_ILLUMINATOR     = 21;
 
-    public Map<Byte, ItemStack> attrMap = new HashMap<Byte, ItemStack>();
+    public Map<Byte, ItemStack> cbAttrMap = new HashMap<Byte, ItemStack>();
 
     /** Chisel design for each side and base block. */
-    public String[] chiselDesign = { "", "", "", "", "", "", "" };
+    public String[] cbChiselDesign = { "", "", "", "", "", "", "" };
 
     /** Holds specific block information like facing, states, etc. */
-    public short metadata;
+    public short cbMetadata;
 
     /** Design name. */
-    public String design = "";
+    public String cbDesign = "";
 
     /** Owner of tile entity. */
-    private String owner = "";
+    public String cbOwner = "";
 
     @Override
     public void readFromNBT(NBTTagCompound nbt)
     {
         super.readFromNBT(nbt);
 
-        NBTTagList nbttaglist = nbt.getTagList(TAG_ITEMSTACKS, 10);
-        attrMap.clear();
-        for (int idx = 0; idx < nbttaglist.tagCount(); ++idx) {
-            NBTTagCompound nbt1 = nbttaglist.getCompoundTagAt(idx);
-            ItemStack tempStack = ItemStack.loadItemStackFromNBT(nbt1);
-            tempStack.stackSize = 1; // All ItemStacks pre-3.2.7 DEV R3 stored original stack sizes, reduce them here.
-            attrMap.put((byte) (nbt1.getByte(TAG_ATTRIBUTE) & 255), tempStack);
-        }
+        cbAttrMap.clear();
+        if (nbt.hasKey("owner")) {
+            System.out.println("DEBUG: Found old data, updating TE.");
+            MigrationHelper.updateMappingsOnRead(this, nbt);
+        } else {
+            System.out.println("DEBUG: No old data found, TE is good.");
+            NBTTagList nbttaglist = nbt.getTagList(TAG_ATTR_LIST, 10);
+            for (int idx = 0; idx < nbttaglist.tagCount(); ++idx) {
+                NBTTagCompound nbt1 = nbttaglist.getCompoundTagAt(idx);
+                ItemStack tempStack = ItemStack.loadItemStackFromNBT(nbt1);
+                tempStack.stackSize = 1; // All ItemStacks pre-3.2.7 DEV R3 stored original stack sizes, reduce them here.
+                cbAttrMap.put((byte) (nbt1.getByte(TAG_ATTR) & 255), tempStack);
+            }
 
-        for (int idx = 0; idx < 7; ++idx) {
-            chiselDesign[idx] = nbt.getString(TAG_CHISEL_DESIGN + "_" + idx);
-        }
+            for (int idx = 0; idx < 7; ++idx) {
+                cbChiselDesign[idx] = nbt.getString(TAG_CHISEL_DESIGN + "_" + idx);
+            }
 
-        metadata = nbt.getShort(TAG_METADATA);
-        design = nbt.getString(TAG_DESIGN);
-        owner = nbt.getString(TAG_OWNER);
+            cbMetadata = nbt.getShort(TAG_METADATA);
+            cbDesign = nbt.getString(TAG_DESIGN);
+            cbOwner = nbt.getString(TAG_OWNER);
+        }
 
         /*
          * Attempt to update owner name to new UUID format.
@@ -83,24 +89,24 @@ public class TEBase extends TileEntity implements IProtected {
         super.writeToNBT(nbt);
 
         NBTTagList itemstack_list = new NBTTagList();
-        Iterator iterator = attrMap.entrySet().iterator();
+        Iterator iterator = cbAttrMap.entrySet().iterator();
         while (iterator.hasNext()) {
             Map.Entry entry = (Map.Entry) iterator.next();
             NBTTagCompound nbt1 = new NBTTagCompound();
             byte key = (Byte) entry.getKey();
-            nbt1.setByte(TAG_ATTRIBUTE, key);
+            nbt1.setByte(TAG_ATTR, key);
             ((ItemStack)entry.getValue()).writeToNBT(nbt1);
             itemstack_list.appendTag(nbt1);
         }
-        nbt.setTag(TAG_ITEMSTACKS, itemstack_list);
+        nbt.setTag(TAG_ATTR_LIST, itemstack_list);
 
         for (int idx = 0; idx < 7; ++idx) {
-            nbt.setString(TAG_CHISEL_DESIGN + "_" + idx, chiselDesign[idx]);
+            nbt.setString(TAG_CHISEL_DESIGN + "_" + idx, cbChiselDesign[idx]);
         }
 
-        nbt.setShort(TAG_METADATA, metadata);
-        nbt.setString(TAG_DESIGN, design);
-        nbt.setString(TAG_OWNER, owner);
+        nbt.setShort(TAG_METADATA, cbMetadata);
+        nbt.setString(TAG_DESIGN, cbDesign);
+        nbt.setString(TAG_OWNER, cbOwner);
     }
 
     @Override
@@ -172,14 +178,14 @@ public class TEBase extends TileEntity implements IProtected {
     @Override
     public void setOwner(UUID uuid)
     {
-        owner = uuid.toString();
+        cbOwner = uuid.toString();
         markDirty();
     }
 
     @Override
     public String getOwner()
     {
-        return owner;
+        return cbOwner;
     }
 
     @Override

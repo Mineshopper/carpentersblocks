@@ -63,7 +63,7 @@ public class FlowerPotProperties {
      */
     public static boolean hasSoil(TEBase TE)
     {
-        ItemStack itemStack = TE.attrMap.get((((TECarpentersFlowerPot)TE).ID_SOIL));
+        ItemStack itemStack = TE.cbAttrMap.get((((TECarpentersFlowerPot)TE).ID_SOIL));
         return itemStack != null && isSoil(itemStack);
     }
 
@@ -88,7 +88,7 @@ public class FlowerPotProperties {
      */
     public static ItemStack getSoil(TEBase TE)
     {
-        return TE.attrMap.get(((TECarpentersFlowerPot)TE).ID_SOIL);
+        return TE.cbAttrMap.get(((TECarpentersFlowerPot)TE).ID_SOIL);
     }
 
     /**
@@ -102,7 +102,7 @@ public class FlowerPotProperties {
             BlockProperties.dropAttribute(TE, getSoil(TE));
         }
 
-        TE.attrMap.put(((TECarpentersFlowerPot)TE).ID_SOIL, BlockProperties.getReducedStack(itemStack));
+        TE.cbAttrMap.put(((TECarpentersFlowerPot)TE).ID_SOIL, BlockProperties.getReducedStack(itemStack));
 
         world.notifyBlocksOfNeighborChange(TE.xCoord, TE.yCoord, TE.zCoord, BlockProperties.toBlock(itemStack));
         world.markBlockForUpdate(TE.xCoord, TE.yCoord, TE.zCoord);
@@ -115,7 +115,7 @@ public class FlowerPotProperties {
      */
     public static boolean hasPlant(TEBase TE)
     {
-        ItemStack itemStack = TE.attrMap.get(((TECarpentersFlowerPot)TE).ID_PLANT);
+        ItemStack itemStack = TE.cbAttrMap.get(((TECarpentersFlowerPot)TE).ID_PLANT);
         return itemStack != null && isPlant(itemStack);
     }
 
@@ -142,7 +142,7 @@ public class FlowerPotProperties {
      */
     public static ItemStack getPlant(TEBase TE)
     {
-        return TE.attrMap.get(((TECarpentersFlowerPot)TE).ID_PLANT);
+        return TE.cbAttrMap.get(((TECarpentersFlowerPot)TE).ID_PLANT);
     }
 
     /**
@@ -156,7 +156,7 @@ public class FlowerPotProperties {
             BlockProperties.dropAttribute(TE, getPlant(TE));
         }
 
-        TE.attrMap.put(((TECarpentersFlowerPot)TE).ID_PLANT, BlockProperties.getReducedStack(itemStack));
+        TE.cbAttrMap.put(((TECarpentersFlowerPot)TE).ID_PLANT, BlockProperties.getReducedStack(itemStack));
 
         world.notifyBlocksOfNeighborChange(TE.xCoord, TE.yCoord, TE.zCoord, BlockProperties.toBlock(itemStack));
         world.markBlockForUpdate(TE.xCoord, TE.yCoord, TE.zCoord);
