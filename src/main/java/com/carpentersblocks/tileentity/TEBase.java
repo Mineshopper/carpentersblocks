@@ -53,10 +53,8 @@ public class TEBase extends TileEntity implements IProtected {
 
         cbAttrMap.clear();
         if (nbt.hasKey("owner")) {
-            System.out.println("DEBUG: Found old data, updating TE.");
             MigrationHelper.updateMappingsOnRead(this, nbt);
         } else {
-            System.out.println("DEBUG: No old data found, TE is good.");
             NBTTagList nbttaglist = nbt.getTagList(TAG_ATTR_LIST, 10);
             for (int idx = 0; idx < nbttaglist.tagCount(); ++idx) {
                 NBTTagCompound nbt1 = nbttaglist.getCompoundTagAt(idx);
