@@ -20,6 +20,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class FancyFluidsHelper {
 
+    public final static Class[] liquidClasses = { BlockLiquid.class, IFluidBlock.class};
+
     /**
      * Renders fancy fluid.
      *
@@ -85,8 +87,17 @@ public class FancyFluidsHelper {
         for (int idx = 0; idx < offsetXZ.length; ++idx) {
 
             Block block = blockAccess.getBlock(x + offsetXZ[idx][0], y, z + offsetXZ[idx][1]);
+            Class clazz = block.getClass();
 
-            if (block instanceof BlockLiquid || block instanceof IFluidBlock) {
+            boolean isLiquid = false;
+            for (int idx1 = 0; idx1 < liquidClasses.length; ++idx1) {
+                if (liquidClasses[idx1].isAssignableFrom(clazz)) {
+                    isLiquid = true;
+                    break;
+                }
+            }
+
+            if (isLiquid) {
                 if (idx < 4) {
                     if (!blockAccess.isSideSolid(x, y, z, route[idx][0][0], false)) {
                         return new ItemStack(block, blockAccess.getBlockMetadata(x + offsetXZ[idx][0], y, z + offsetXZ[idx][1]));

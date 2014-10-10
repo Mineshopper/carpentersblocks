@@ -12,10 +12,10 @@ public class FeatureRegistry {
     public static boolean enableSideCovers          = true;
     public static boolean enableDyeColors           = true;
     public static boolean enableChiselDesigns       = true;
-    public static boolean enableFancyFluids         = true;
     public static boolean enableTorchWeatherEffects = true;
     public static boolean enableOwnership           = true;
     public static boolean enableIllumination        = true;
+    public static int     routableFluids            = 0;
 
     public static ArrayList<String> overlayItems    = new ArrayList<String>();
     public static ArrayList<String> coverExceptions = new ArrayList<String>();
@@ -33,9 +33,13 @@ public class FeatureRegistry {
         enableDyeColors     = config.get("features",     "Enable Dye Colors",     enableDyeColors).getBoolean(enableDyeColors);
         enableChiselDesigns = config.get("features", "Enable Chisel Designs", enableChiselDesigns).getBoolean(enableChiselDesigns);
 
-        Property fancyFluidsProp = config.get("features", "Enable Fancy Fluids", enableFancyFluids);
-        fancyFluidsProp.comment = "When enabled, unobstructed stationary fluid adjacent to block will render in the same space.\nNote: this only takes effect when Fancy Graphics are enabled.";
-        enableFancyFluids = fancyFluidsProp.getBoolean(enableFancyFluids);
+        Property routableFluidsProp = config.get("features", "Routable Fluids", routableFluids);
+        routableFluidsProp.comment = "When enabled, unobstructed stationary fluid adjacent to block will render in the block space."
+                                   + "\n0 is disabled"
+                                   + "\n1 is fast, but adjacent fluid sides may be visible"
+                                   + "\n2 is fancy, but is not compatible with Optifine's Multi-Core Chunk Loading"
+                                   + "\n3 is fancy, but chunk render updates may cause massive lag spikes";
+        routableFluids = routableFluidsProp.getInt(routableFluids);
 
         Property illuminationProp = config.get("features", "Enable Illumination", enableIllumination);
         illuminationProp.comment = "This will enable players to cover blocks with glowstone dust to make them illuminate.";

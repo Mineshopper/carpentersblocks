@@ -31,6 +31,7 @@ import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.util.ForgeDirection;
 import com.carpentersblocks.api.ICarpentersChisel;
 import com.carpentersblocks.api.ICarpentersHammer;
+import com.carpentersblocks.renderer.helper.FancyFluidsHelper;
 import com.carpentersblocks.renderer.helper.ParticleHelper;
 import com.carpentersblocks.tileentity.TEBase;
 import com.carpentersblocks.util.BlockProperties;
@@ -1288,6 +1289,17 @@ public class BlockCoverable extends BlockContainer {
      */
     public boolean isOpaqueCube()
     {
+        if (FeatureRegistry.routableFluids == 3) {
+            try {
+                Class<?> clazz = Class.forName(new Throwable().getStackTrace()[2].getClassName());
+                for (int idx = 0; idx < FancyFluidsHelper.liquidClasses.length; ++idx) {
+                    if (clazz.isAssignableFrom(FancyFluidsHelper.liquidClasses[idx])) {
+                        return true;
+                    }
+                }
+            } catch (Exception e) {}
+        }
+
         return false;
     }
 

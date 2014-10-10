@@ -125,10 +125,8 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
             renderCarpentersBlock(x, y, z);
             renderSideBlocks(x, y, z);
 
-            if (FeatureRegistry.enableFancyFluids) {
-                if (BlockProperties.hasCover(TE, 6)) {
-                    VertexHelper.vertexCount += FancyFluidsHelper.render(TE, renderBlocks, x, y, z) ? 4 : 0;
-                }
+            if (FeatureRegistry.routableFluids > 0) {
+                VertexHelper.vertexCount += FancyFluidsHelper.render(TE, renderBlocks, x, y, z) ? 4 : 0;
             }
 
         }

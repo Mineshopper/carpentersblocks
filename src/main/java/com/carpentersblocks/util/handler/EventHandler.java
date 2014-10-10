@@ -232,31 +232,31 @@ public class EventHandler {
         }
     }
 
+
     @SideOnly(Side.CLIENT)
     @SubscribeEvent
     public void onPreRenderWorldEvent(RenderWorldEvent.Pre event)
     {
         /*
-         * Fancy fluids render cleaner when defining Carpenter's Blocks
-         * as water material during rendering.  This prevents adjacent
+         * Routable fluids render cleaner when defining Carpenter's Blocks
+         * as water material during rendering. This prevents adjacent
          * fluid blocks rendering their sides because of Material differences.
          *
          * A possible disadvantage is adjacent water blocks won't render
-         * sides that are touching another Carpenter's block.
+         * sides that are touching another Carpenter's block.  Also, Optifine's
+         * multi-core chunk loading is known to break this method.
          */
-
-        if (FeatureRegistry.enableFancyFluids) {
+        if (FeatureRegistry.routableFluids == 2) {
             blockMaterial = Material.water;
         }
     }
-
     @SideOnly(Side.CLIENT)
     @SubscribeEvent
     public void onPostRenderWorldEvent(RenderWorldEvent.Post event)
     {
         /* Revert material change made during rendering. */
 
-        if (FeatureRegistry.enableFancyFluids) {
+        if (FeatureRegistry.routableFluids == 2) {
             blockMaterial = Material.wood;
         }
     }
