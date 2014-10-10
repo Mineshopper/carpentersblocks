@@ -198,27 +198,23 @@ public class BlockHandlerCarpentersTorch extends BlockHandlerBase {
      */
     protected final void renderPartPane(IIcon icon, int x, int y, int z, ForgeDirection dir)
     {
-        int side = dir.ordinal();
+        int side = dir.getOpposite().ordinal();
         float LIGHTNESS = lightingHelper.LIGHTNESS[side];
 
         Tessellator.instance.setBrightness(Blocks.glass.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y, z));
         Tessellator.instance.setColorOpaque_F(LIGHTNESS, LIGHTNESS, LIGHTNESS);
 
         switch (side) {
-            case DOWN:
-            case UP:
-                RenderHelper.renderFaceYNeg(renderBlocks, x, y, z, icon);
-                Tessellator.instance.setColorOpaque_F(lightingHelper.LIGHTNESS[1], lightingHelper.LIGHTNESS[1], lightingHelper.LIGHTNESS[1]);
-                RenderHelper.renderFaceYPos(renderBlocks, x, y, z, icon);
-                break;
             case NORTH:
-            case SOUTH:
                 RenderHelper.renderFaceZNeg(renderBlocks, x, y, z, icon);
+                break;
+            case SOUTH:
                 RenderHelper.renderFaceZPos(renderBlocks, x, y, z, icon);
                 break;
             case WEST:
-            case EAST:
                 RenderHelper.renderFaceXNeg(renderBlocks, x, y, z, icon);
+                break;
+            case EAST:
                 RenderHelper.renderFaceXPos(renderBlocks, x, y, z, icon);
                 break;
             default: {}
