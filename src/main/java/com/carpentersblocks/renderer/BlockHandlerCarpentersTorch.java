@@ -2,11 +2,13 @@ package com.carpentersblocks.renderer;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.common.util.ForgeDirection;
 import com.carpentersblocks.data.Torch;
+import com.carpentersblocks.renderer.helper.RenderHelper;
 import com.carpentersblocks.renderer.helper.VertexHelper;
 import com.carpentersblocks.util.BlockProperties;
 import com.carpentersblocks.util.registry.IconRegistry;
@@ -18,6 +20,7 @@ public class BlockHandlerCarpentersTorch extends BlockHandlerBase {
 
     private Vec3[] vec3 = new Vec3[8];
     private static Torch data = new Torch();
+    private ForgeDirection dir;
 
     @Override
     public boolean shouldRender3DInInventory(int modelId)
@@ -34,7 +37,7 @@ public class BlockHandlerCarpentersTorch extends BlockHandlerBase {
         Block block = BlockProperties.toBlock(itemStack);
 
         if (BlockProperties.hasCover(TE, 6)) {
-            return block.getIcon(2, renderBlocks.blockAccess.getBlockMetadata(TE.xCoord, TE.yCoord, TE.zCoord));
+            return block.getIcon(side, renderBlocks.blockAccess.getBlockMetadata(TE.xCoord, TE.yCoord, TE.zCoord));
         } else {
             return IconRegistry.icon_uncovered_solid;
         }
@@ -49,44 +52,38 @@ public class BlockHandlerCarpentersTorch extends BlockHandlerBase {
         renderBlocks.renderAllFaces = true;
         disableAO = true;
 
-        renderBlocks.setRenderBounds(0.4375D, 0.0D, 0.4375D, 0.5625D, 0.625D, 0.5625D);
-        renderTorch(getCoverForRendering(), x, y, z);
+        ItemStack itemStack = getCoverForRendering();
+        dir = data.getDirection(TE);
+
+        switch (data.getType(TE)) {
+            case Torch.TYPE_VANILLA:
+                renderTypeVanilla(itemStack, x, y, z);
+                break;
+            case Torch.TYPE_LANTERN:
+                renderTypeLantern(itemStack, x, y, z);
+                break;
+        }
 
         disableAO = false;
         renderBlocks.renderAllFaces = false;
     }
 
-    @Override
-    /**
-     * Renders side.
-     */
-    protected void render(int x, int y, int z, int side, IIcon icon)
+    private void renderTypeVanilla(ItemStack itemStack, int x, int y, int z)
     {
-        renderFace(side, icon, true);
-    }
+        renderBlocks.setRenderBounds(0.4375D, 0.0D, 0.4375D, 0.5625D, 0.625D, 0.5625D);
 
-    /**
-     * Renders a torch at the given coordinates
-     */
-    private void renderTorch(ItemStack itemStack, int x, int y, int z)
-    {
-        renderTorchHead(x, y, z);
-        renderTorchHandle(itemStack, x, y, z);
-    }
+        /* Render torch head. */
 
-    /**
-     * Renders a torch head at the given coordinates.
-     */
-    private void renderTorchHead(int x, int y, int z)
-    {
         Tessellator tessellator = Tessellator.instance;
         tessellator.setBrightness(srcBlock.getMixedBrightnessForBlock(renderBlocks.blockAccess, TE.xCoord, TE.yCoord, TE.zCoord));
         tessellator.setColorOpaque_F(1.0F, 1.0F, 1.0F);
 
+        RenderHelper.setFloatingIconLock();
+
         IIcon icon = null;
         switch (data.getState(TE)) {
             case LIT:
-                icon = IconRegistry.icon_torch_lit;
+                icon = IconRegistry.icon_torch_head_lit;
                 break;
             case SMOLDERING:
                 icon = IconRegistry.icon_torch_head_smoldering;
@@ -98,40 +95,38 @@ public class BlockHandlerCarpentersTorch extends BlockHandlerBase {
         }
 
         vec3 = new Vec3[] {
-            Vec3.createVectorHelper(-0.0625F,   0.5D, -0.0625F),
-            Vec3.createVectorHelper( 0.0625F,   0.5D, -0.0625F),
-            Vec3.createVectorHelper( 0.0625F,   0.5D,  0.0625F),
-            Vec3.createVectorHelper(-0.0625F,   0.5D,  0.0625F),
-            Vec3.createVectorHelper(-0.0625F, 0.625F, -0.0625F),
-            Vec3.createVectorHelper( 0.0625F, 0.625F, -0.0625F),
-            Vec3.createVectorHelper( 0.0625F, 0.625F,  0.0625F),
-            Vec3.createVectorHelper(-0.0625F, 0.625F,  0.0625F)
+                Vec3.createVectorHelper(-0.0625F,   0.5D, -0.0625F),
+                Vec3.createVectorHelper( 0.0625F,   0.5D, -0.0625F),
+                Vec3.createVectorHelper( 0.0625F,   0.5D,  0.0625F),
+                Vec3.createVectorHelper(-0.0625F,   0.5D,  0.0625F),
+                Vec3.createVectorHelper(-0.0625F, 0.625F, -0.0625F),
+                Vec3.createVectorHelper( 0.0625F, 0.625F, -0.0625F),
+                Vec3.createVectorHelper( 0.0625F, 0.625F,  0.0625F),
+                Vec3.createVectorHelper(-0.0625F, 0.625F,  0.0625F)
         };
 
-        setRotations(data.getDirection(TE), vec3, x, y, z);
+        setVanillaRotations(data.getDirection(TE), vec3, x, y, z);
 
         for (int side = 0; side < 6; ++side) {
-            renderFace(side, icon, false);
+            renderVectors(side, icon, false);
         }
-    }
 
-    /**
-     * Renders a torch handle at the given coordinates.
-     */
-    private void renderTorchHandle(ItemStack itemStack, int x, int y, int z)
-    {
+        RenderHelper.clearFloatingIconLock();
+
+        /* Render torch handle. */
+
         vec3 = new Vec3[] {
-            Vec3.createVectorHelper(-0.0625F, 0.0D, -0.0625F),
-            Vec3.createVectorHelper( 0.0625F, 0.0D, -0.0625F),
-            Vec3.createVectorHelper( 0.0625F, 0.0D,  0.0625F),
-            Vec3.createVectorHelper(-0.0625F, 0.0D,  0.0625F),
-            Vec3.createVectorHelper(-0.0625F, 0.5F, -0.0625F),
-            Vec3.createVectorHelper( 0.0625F, 0.5F, -0.0625F),
-            Vec3.createVectorHelper( 0.0625F, 0.5F,  0.0625F),
-            Vec3.createVectorHelper(-0.0625F, 0.5F,  0.0625F)
+                Vec3.createVectorHelper(-0.0625F, 0.0D, -0.0625F),
+                Vec3.createVectorHelper( 0.0625F, 0.0D, -0.0625F),
+                Vec3.createVectorHelper( 0.0625F, 0.0D,  0.0625F),
+                Vec3.createVectorHelper(-0.0625F, 0.0D,  0.0625F),
+                Vec3.createVectorHelper(-0.0625F, 0.5F, -0.0625F),
+                Vec3.createVectorHelper( 0.0625F, 0.5F, -0.0625F),
+                Vec3.createVectorHelper( 0.0625F, 0.5F,  0.0625F),
+                Vec3.createVectorHelper(-0.0625F, 0.5F,  0.0625F)
         };
 
-        setRotations(data.getDirection(TE), vec3, x, y, z);
+        setVanillaRotations(data.getDirection(TE), vec3, x, y, z);
 
         lightingHelper.setupLightingYNeg(itemStack, x, y, z);
         delegateSideRender(itemStack, x, y, z, DOWN);
@@ -152,7 +147,98 @@ public class BlockHandlerCarpentersTorch extends BlockHandlerBase {
         delegateSideRender(itemStack, x, y, z, EAST);
     }
 
-    private void setRotations(ForgeDirection dir, Vec3[] vec3, int x, int y, int z)
+    private void renderTypeLantern(ItemStack itemStack, int x, int y, int z)
+    {
+        switch (dir) {
+            case UP:
+                renderBlockWithRotation(itemStack, x, y, z, 0.375D, 0.0D, 0.375D, 0.625D, 0.375D, 0.625D);
+                break;
+            default:
+                renderBlockWithRotation(itemStack, x, y, z, 0.4375D, 0.375D, 0.0D, 0.5625D, 0.75D, 0.25D, dir);
+                renderBlockWithRotation(itemStack, x, y, z, 0.375D, 0.375D, 0.25D, 0.625D, 0.75D, 0.375D, dir);
+                renderBlockWithRotation(itemStack, x, y, z, 0.375D, 0.25D, 0.375D, 0.625D, 0.375D, 0.625D);
+                break;
+        }
+
+        for (int facing = 2; facing < 6; ++facing) {
+            ForgeDirection nextDir = ForgeDirection.getOrientation(facing);
+            renderBlockWithRotation(itemStack, x, y, z, 0.25D, 0.25D, 0.25D, 0.375D, 0.75D, 0.375D, nextDir);
+            renderBlockWithRotation(itemStack, x, y, z, 0.25D, 0.25D, 0.375D, 0.375D, 0.375D, 0.625D, nextDir);
+
+            /* Render glass. */
+
+            if (facing != dir.ordinal()) {
+                renderBlocks.setRenderBounds (0.375D, 0.375D, 0.3125D, 0.625D, 0.75D, 0.3125D);
+                rotateBounds(renderBlocks, nextDir);
+                renderPartPane(IconRegistry.icon_lantern_glass, x, y, z, nextDir);
+            }
+        }
+
+        renderBlockWithRotation(itemStack, x, y, z, 0.1875D, 0.75D, 0.1875D, 0.8125D, 0.875D, 0.8125D);
+        renderBlockWithRotation(itemStack, x, y, z, 0.3125D, 0.875D, 0.3125D, 0.6875D, 0.9375D, 0.6875D);
+
+        /* Render torch head piece. */
+
+        suppressChiselDesign = suppressDyeColor = suppressOverlay = true;
+        RenderHelper.setFloatingIconLock();
+        setIconOverride(6, IconRegistry.icon_torch_head_lit);
+        lightingHelper.setMaximumLuminosity();
+        renderBlockWithRotation(new ItemStack(Blocks.dirt), x, y, z, 0.4375D, 0.375D, 0.4375D, 0.5625D, 0.5D, 0.5625D);
+        lightingHelper.clearMaximumLuminosity();
+        clearIconOverride(6);
+        RenderHelper.clearFloatingIconLock();
+        suppressChiselDesign = suppressDyeColor = suppressOverlay = false;
+    }
+
+    /**
+     * Renders pane like glass or screen.
+     * <p>
+     * TODO: Revisit when alpha pass is properly implemented since alpha renders
+     * both sides during a single quad draw.
+     */
+    protected final void renderPartPane(IIcon icon, int x, int y, int z, ForgeDirection dir)
+    {
+        int side = dir.ordinal();
+        float LIGHTNESS = lightingHelper.LIGHTNESS[side];
+
+        Tessellator.instance.setBrightness(Blocks.glass.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y, z));
+        Tessellator.instance.setColorOpaque_F(LIGHTNESS, LIGHTNESS, LIGHTNESS);
+
+        switch (side) {
+            case DOWN:
+            case UP:
+                RenderHelper.renderFaceYNeg(renderBlocks, x, y, z, icon);
+                Tessellator.instance.setColorOpaque_F(lightingHelper.LIGHTNESS[1], lightingHelper.LIGHTNESS[1], lightingHelper.LIGHTNESS[1]);
+                RenderHelper.renderFaceYPos(renderBlocks, x, y, z, icon);
+                break;
+            case NORTH:
+            case SOUTH:
+                RenderHelper.renderFaceZNeg(renderBlocks, x, y, z, icon);
+                RenderHelper.renderFaceZPos(renderBlocks, x, y, z, icon);
+                break;
+            case WEST:
+            case EAST:
+                RenderHelper.renderFaceXNeg(renderBlocks, x, y, z, icon);
+                RenderHelper.renderFaceXPos(renderBlocks, x, y, z, icon);
+                break;
+            default: {}
+        }
+    }
+
+    @Override
+    /**
+     * Renders side.
+     */
+    protected void render(int x, int y, int z, int side, IIcon icon)
+    {
+        if (data.getType(TE) == Torch.TYPE_VANILLA) {
+            renderVectors(side, icon, true);
+        } else {
+            super.render(x, y, z, side, icon);
+        }
+    }
+
+    private void setVanillaRotations(ForgeDirection dir, Vec3[] vec3, int x, int y, int z)
     {
         for (int vecCount = 0; vecCount < 8; ++vecCount)
         {
@@ -196,22 +282,36 @@ public class BlockHandlerCarpentersTorch extends BlockHandlerBase {
     }
 
     /**
-     * Performs final rendering of face.
+     * Renders vanilla torch components using vectors.
+     *
+     * @param  side the block face
+     * @param  icon the {@link IIcon}
+     * @param  isHandle <code>true</code> if handle is drawing
      */
-    private void renderFace(int side, IIcon icon, boolean isHandle)
+    private void renderVectors(int side, IIcon icon, boolean isHandle)
     {
         double uMin, uMax, vMin, vMax;
 
         if (isHandle) {
             uMin = icon.getInterpolatedU(7.0D);
             uMax = icon.getInterpolatedU(9.0D);
-            vMin = icon.getMinV();
-            vMax = icon.getInterpolatedV(8.0D);
+            if (side == 0) {
+                vMin = icon.getInterpolatedV(7.0D);
+                vMax = icon.getInterpolatedV(9.0D);
+            } else {
+                vMin = icon.getMinV();
+                vMax = icon.getInterpolatedV(8.0D);
+            }
         } else {
             uMin = icon.getInterpolatedU(7.0D);
             uMax = icon.getInterpolatedU(9.0D);
-            vMin = icon.getInterpolatedV(6.0D);
-            vMax = icon.getInterpolatedV(8.0D);
+            if (VertexHelper.hasFloatingIcon()) {
+                vMin = icon.getMinV();
+                vMax = icon.getInterpolatedV(2.0D);
+            } else {
+                vMin = icon.getInterpolatedV(6.0D);
+                vMax = icon.getInterpolatedV(8.0D);
+            }
         }
 
         Vec3 vertex1 = null;

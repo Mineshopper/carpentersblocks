@@ -10,8 +10,8 @@ public class Torch implements ISided {
     /**
      * 16-bit data components:
      *
-     * [00000000000] [00]  [000]
-     * Unused        State Dir
+     * [0000000] [0000] [00]  [000]
+     * Unused    Type   State Dir
      */
 
     public enum State
@@ -20,6 +20,9 @@ public class Torch implements ISided {
         SMOLDERING,
         UNLIT
     }
+
+    public final static byte TYPE_VANILLA = 0;
+    public final static byte TYPE_LANTERN = 1;
 
     /**
      * Returns direction.
@@ -38,6 +41,25 @@ public class Torch implements ISided {
     {
         int temp = BlockProperties.getMetadata(TE) & 0xfff8;
         temp |= dir.ordinal();
+
+        BlockProperties.setMetadata(TE, temp);
+    }
+
+    /**
+     * Gets type.
+     */
+    public int getType(TEBase TE)
+    {
+        return (BlockProperties.getMetadata(TE) & 0x1e0) >> 5;
+    }
+
+    /**
+     * Sets type.
+     */
+    public void setType(TEBase TE, int type)
+    {
+        int temp = BlockProperties.getMetadata(TE) & ~0x1e0;
+        temp |= (type & 0xf) << 5;
 
         BlockProperties.setMetadata(TE, temp);
     }
@@ -76,31 +98,33 @@ public class Torch implements ISided {
     public double[] getHeadCoordinates(TEBase TE)
     {
         double[] coords;
-
         double xOffset = TE.xCoord + 0.5F;
         double yOffset = TE.yCoord + 0.7F;
         double zOffset = TE.zCoord + 0.5F;
-        double offset1 = 0.2199999988079071D;
-        double offset2 = 0.27000001072883606D;
 
-        ForgeDirection side = getDirection(TE);
-
-        switch (side) {
-            case NORTH:
-                coords = new double[] { xOffset, yOffset + offset1, zOffset + offset2 };
-                break;
-            case SOUTH:
-                coords = new double[] { xOffset, yOffset + offset1, zOffset - offset2 };
-                break;
-            case WEST:
-                coords = new double[] { xOffset + offset2, yOffset + offset1, zOffset };
-                break;
-            case EAST:
-                coords = new double[] { xOffset - offset2, yOffset + offset1, zOffset };
-                break;
-            default:
-                coords = new double[] { xOffset, yOffset, zOffset }; // Default UP
-                break;
+        if (getType(TE) == TYPE_VANILLA) {
+            double offset1 = 0.2199999988079071D;
+            double offset2 = 0.27000001072883606D;
+            ForgeDirection side = getDirection(TE);
+            switch (side) {
+                case NORTH:
+                    coords = new double[] { xOffset, yOffset + offset1, zOffset + offset2 };
+                    break;
+                case SOUTH:
+                    coords = new double[] { xOffset, yOffset + offset1, zOffset - offset2 };
+                    break;
+                case WEST:
+                    coords = new double[] { xOffset + offset2, yOffset + offset1, zOffset };
+                    break;
+                case EAST:
+                    coords = new double[] { xOffset - offset2, yOffset + offset1, zOffset };
+                    break;
+                default:
+                    coords = new double[] { xOffset, yOffset, zOffset }; // Default UP
+                    break;
+            }
+        } else {
+            coords = new double[] { xOffset, TE.yCoord + 0.5625F, zOffset };
         }
 
         return coords;

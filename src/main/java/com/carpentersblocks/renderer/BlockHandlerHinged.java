@@ -28,7 +28,7 @@ public class BlockHandlerHinged extends BlockHandlerBase {
     };
 
     /**
-     * Renders pane like the glass or screen.
+     * Renders pane like glass or screen.
      * <p>
      * TODO: Revisit when alpha pass is properly implemented since alpha renders
      * both sides during a single quad draw.

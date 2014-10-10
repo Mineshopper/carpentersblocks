@@ -53,7 +53,7 @@ public class BlockHandlerCarpentersLadder extends BlockHandlerBase {
 
         switch (data.getType(TE)) {
             case Ladder.TYPE_DEFAULT:
-                renderTypeDefaultClassic(itemStack, x, y, z);
+                renderTypeDefaultClassic(itemStack, x, y, z); // Classic connects to adjacent ladders
                 //renderTypeDefault(itemStack, x, y, z);
                 break;
             case Ladder.TYPE_RAIL:

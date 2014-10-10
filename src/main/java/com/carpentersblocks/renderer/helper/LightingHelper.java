@@ -47,6 +47,24 @@ public class LightingHelper {
     }
 
     /**
+     * Sets brightness and lightness values to their maximum values.
+     */
+    public void setMaximumLuminosity()
+    {
+        setBrightnessOverride(0xf000f0);
+        setLightnessOverride(1.0F);
+    }
+
+    /**
+     * Clears maximum luminosity override.
+     */
+    public void clearMaximumLuminosity()
+    {
+        clearBrightnessOverride();
+        clearLightnessOverride();
+    }
+
+    /**
      * Sets lightness override.
      *
      * @param  lightness the lightness override

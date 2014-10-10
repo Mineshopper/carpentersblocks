@@ -23,9 +23,11 @@ public class IconRegistry {
     public static IIcon icon_overlay_snow_side;
     public static IIcon icon_overlay_mycelium_side;
     public static IIcon icon_lever;
-    public static IIcon icon_torch_lit;
+    public static IIcon icon_torch;
+    public static IIcon icon_torch_head_lit;
     public static IIcon icon_torch_head_smoldering;
     public static IIcon icon_torch_head_unlit;
+    public static IIcon icon_lantern_glass;
     public static IIcon icon_door_screen_tall;
     public static IIcon icon_door_glass_tall_top;
     public static IIcon icon_door_glass_tall_bottom;

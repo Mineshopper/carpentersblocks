@@ -29,6 +29,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class BlockCarpentersTorch extends BlockSided {
 
     private static final Torch data = new Torch();
+    public final static String type[] = { "vanilla", "lantern" };
 
     public BlockCarpentersTorch(Material material)
     {
@@ -43,9 +44,11 @@ public class BlockCarpentersTorch extends BlockSided {
      */
     public void registerBlockIcons(IIconRegister iconRegister)
     {
-        IconRegistry.icon_torch_lit             = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "torch/torch_lit");
+        IconRegistry.icon_torch                 = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "torch/torch");
+        IconRegistry.icon_torch_head_lit        = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "torch/torch_head_lit");
         IconRegistry.icon_torch_head_smoldering = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "torch/torch_head_smoldering");
         IconRegistry.icon_torch_head_unlit      = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "torch/torch_head_unlit");
+        IconRegistry.icon_lantern_glass         = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "torch/lantern_glass");
     }
 
     @SideOnly(Side.CLIENT)
@@ -55,7 +58,40 @@ public class BlockCarpentersTorch extends BlockSided {
      */
     public IIcon getIcon(int side, int metadata)
     {
-        return IconRegistry.icon_torch_lit;
+        return IconRegistry.icon_torch;
+    }
+
+
+    @Override
+    /**
+     * Cycle forwards through types.
+     */
+    protected boolean onHammerLeftClick(TEBase TE, EntityPlayer entityPlayer)
+    {
+        int temp = data.getType(TE);
+
+        if (++temp > type.length - 1) {
+            temp = 0;
+        }
+
+        data.setType(TE, temp);
+        return true;
+    }
+
+    @Override
+    /**
+     * Cycle backwards through types.
+     */
+    protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer)
+    {
+        int temp = data.getType(TE);
+
+        if (--temp < 0) {
+            temp = type.length - 1;
+        }
+
+        data.setType(TE, temp);
+        return true;
     }
 
     /**
@@ -114,6 +150,12 @@ public class BlockCarpentersTorch extends BlockSided {
     @Override
     public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int x, int y, int z)
     {
+        TEBase TE = getTileEntity(world, x, y, z);
+
+        if (TE != null && data.getType(TE) == data.TYPE_LANTERN) {
+            return super.getCollisionBoundingBoxFromPool(world, x, y, z);
+        }
+
         return null;
     }
 
@@ -126,14 +168,27 @@ public class BlockCarpentersTorch extends BlockSided {
         TEBase TE = getTileEntity(world, x, y, z);
 
         if (TE != null) {
+
             ForgeDirection side = data.getDirection(TE);
-            switch (side) {
-                case UP:
-                    setBlockBounds(0.4F, 0.0F, 0.4F, 0.6F, 0.6F, 0.6F);
-                    break;
-                default:
-                    setBlockBounds(0.35F, 0.2F, 0.0F, 0.65F, 0.8F, 0.3F, side);
-                    break;
+
+            if (data.getType(TE) == data.TYPE_VANILLA) {
+                switch (side) {
+                    case UP:
+                        setBlockBounds(0.4F, 0.0F, 0.4F, 0.6F, 0.6F, 0.6F);
+                        break;
+                    default:
+                        setBlockBounds(0.35F, 0.2F, 0.0F, 0.65F, 0.8F, 0.3F, side);
+                        break;
+                }
+            } else {
+                switch (side) {
+                    case UP:
+                        setBlockBounds(0.1875F, 0.0F, 0.1875F, 0.8125F, 0.9375F, 0.8125F);
+                        break;
+                    default:
+                        setBlockBounds(0.1875F, 0.25F, 0.0F, 0.8125F, 0.9375F, 0.8125F, side);
+                        break;
+                }
             }
         }
     }
@@ -160,7 +215,7 @@ public class BlockCarpentersTorch extends BlockSided {
 
             TEBase TE = getTileEntity(world, x, y, z);
 
-            if (TE != null) {
+            if (TE != null && data.getType(TE) == data.TYPE_VANILLA) {
 
                 boolean isWet = world.canLightningStrikeAt(x, y, z);
                 boolean canDropState = FeatureRegistry.enableTorchWeatherEffects;

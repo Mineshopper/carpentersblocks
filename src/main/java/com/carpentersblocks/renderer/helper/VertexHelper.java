@@ -55,6 +55,19 @@ public class VertexHelper {
     }
 
     /**
+     * Gets floating icon flag.
+     * <p>
+     * Floating icons translate down on y-axis so top of icon
+     * meets {@link RenderBlocks#renderMaxY}.
+     *
+     * @return <code>true</code> if icon is floating
+     */
+    public static boolean hasFloatingIcon()
+    {
+        return floatingIcon;
+    }
+
+    /**
      * Temporarily sets floating icon flag for current face draw.
      * <p>
      * To keep it enabled, call {@link #setFloatingIconLock()} instead.
