@@ -91,8 +91,7 @@ public class TEBase extends TileEntity implements IProtected {
         while (iterator.hasNext()) {
             Map.Entry entry = (Map.Entry) iterator.next();
             NBTTagCompound nbt1 = new NBTTagCompound();
-            byte key = (Byte) entry.getKey();
-            nbt1.setByte(TAG_ATTR, key);
+            nbt1.setByte(TAG_ATTR, (Byte) entry.getKey());
             ((ItemStack)entry.getValue()).writeToNBT(nbt1);
             itemstack_list.appendTag(nbt1);
         }
