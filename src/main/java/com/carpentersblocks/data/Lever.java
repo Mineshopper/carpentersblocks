@@ -33,7 +33,7 @@ public class Lever implements ISided {
     @Override
     public ForgeDirection getDirection(TEBase TE)
     {
-        return ForgeDirection.getOrientation(BlockProperties.getMetadata(TE) & 0x7);
+        return ForgeDirection.getOrientation(TE.getData() & 0x7);
     }
 
     /**
@@ -42,10 +42,10 @@ public class Lever implements ISided {
     @Override
     public void setDirection(TEBase TE, ForgeDirection dir)
     {
-        int temp = BlockProperties.getMetadata(TE) & 0xfff8;
+        int temp = TE.getData() & 0xfff8;
         temp |= dir.ordinal();
 
-        BlockProperties.setMetadata(TE, temp);
+        TE.setData(temp);
     }
 
     /**
@@ -53,7 +53,7 @@ public class Lever implements ISided {
      */
     public int getState(TEBase TE)
     {
-        int temp = BlockProperties.getMetadata(TE) & 0x8;
+        int temp = TE.getData() & 0x8;
         return temp >> 3;
     }
 
@@ -62,7 +62,7 @@ public class Lever implements ISided {
      */
     public void setState(TEBase TE, int state, boolean playSound)
     {
-        int temp = BlockProperties.getMetadata(TE) & 0xfff7;
+        int temp = TE.getData() & 0xfff7;
         temp |= state << 3;
 
         World world = TE.getWorldObj();
@@ -76,7 +76,7 @@ public class Lever implements ISided {
             world.playSoundEffect(TE.xCoord + 0.5D, TE.yCoord + 0.5D, TE.zCoord + 0.5D, "random.click", 0.3F, getState(TE) == STATE_ON ? 0.5F : 0.6F);
         }
 
-        BlockProperties.setMetadata(TE, temp);
+        TE.setData(temp);
     }
 
     /**
@@ -84,7 +84,7 @@ public class Lever implements ISided {
      */
     public int getPolarity(TEBase TE)
     {
-        int temp = BlockProperties.getMetadata(TE) & 0x10;
+        int temp = TE.getData() & 0x10;
         return temp >> 4;
     }
 
@@ -93,10 +93,10 @@ public class Lever implements ISided {
      */
     public void setPolarity(TEBase TE, int polarity)
     {
-        int temp = BlockProperties.getMetadata(TE) & 0xffef;
+        int temp = TE.getData() & 0xffef;
         temp |= polarity << 4;
 
-        BlockProperties.setMetadata(TE, temp);
+        TE.setData(temp);
     }
 
     /**
@@ -104,7 +104,7 @@ public class Lever implements ISided {
      */
     public Axis getAxis(TEBase TE)
     {
-        int temp = BlockProperties.getMetadata(TE) & 0x40;
+        int temp = TE.getData() & 0x40;
         return temp > 1 ? Axis.Z : Axis.X;
     }
 
@@ -113,10 +113,10 @@ public class Lever implements ISided {
      */
     public void setAxis(TEBase TE, Axis axis)
     {
-        int temp = BlockProperties.getMetadata(TE) & 0xffbf;
+        int temp = TE.getData() & 0xffbf;
         temp |= axis.ordinal() << 6;
 
-        BlockProperties.setMetadata(TE, temp);
+        TE.setData(temp);
     }
 
 }

@@ -36,7 +36,7 @@ public class BlockHandlerCarpentersTorch extends BlockHandlerBase {
     {
         Block block = BlockProperties.toBlock(itemStack);
 
-        if (BlockProperties.hasCover(TE, 6)) {
+        if (TE.hasAttribute(TE.ATTR_COVER[6])) {
             return block.getIcon(side, renderBlocks.blockAccess.getBlockMetadata(TE.xCoord, TE.yCoord, TE.zCoord));
         } else {
             return IconRegistry.icon_uncovered_solid;

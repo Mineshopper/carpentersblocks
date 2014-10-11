@@ -3,7 +3,6 @@ package com.carpentersblocks.data;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import com.carpentersblocks.tileentity.TEBase;
-import com.carpentersblocks.util.BlockProperties;
 
 public class Torch implements ISided {
 
@@ -30,7 +29,7 @@ public class Torch implements ISided {
     @Override
     public ForgeDirection getDirection(TEBase TE)
     {
-        return ForgeDirection.getOrientation(BlockProperties.getMetadata(TE) & 0x7);
+        return ForgeDirection.getOrientation(TE.getData() & 0x7);
     }
 
     /**
@@ -39,10 +38,10 @@ public class Torch implements ISided {
     @Override
     public void setDirection(TEBase TE, ForgeDirection dir)
     {
-        int temp = BlockProperties.getMetadata(TE) & 0xfff8;
+        int temp = TE.getData() & 0xfff8;
         temp |= dir.ordinal();
 
-        BlockProperties.setMetadata(TE, temp);
+        TE.setData(temp);
     }
 
     /**
@@ -50,7 +49,7 @@ public class Torch implements ISided {
      */
     public int getType(TEBase TE)
     {
-        return (BlockProperties.getMetadata(TE) & 0x1e0) >> 5;
+        return (TE.getData() & 0x1e0) >> 5;
     }
 
     /**
@@ -58,10 +57,10 @@ public class Torch implements ISided {
      */
     public void setType(TEBase TE, int type)
     {
-        int temp = BlockProperties.getMetadata(TE) & ~0x1e0;
+        int temp = TE.getData() & ~0x1e0;
         temp |= (type & 0xf) << 5;
 
-        BlockProperties.setMetadata(TE, temp);
+        TE.setData(temp);
     }
 
     /**
@@ -69,7 +68,7 @@ public class Torch implements ISided {
      */
     public State getState(TEBase TE)
     {
-        int temp = BlockProperties.getMetadata(TE) & 0x18;
+        int temp = TE.getData() & 0x18;
         int val = temp >> 3;
 
         return val == State.LIT.ordinal() ? State.LIT : val == State.SMOLDERING.ordinal() ? State.SMOLDERING : State.UNLIT;
@@ -86,10 +85,10 @@ public class Torch implements ISided {
             world.playSoundEffect(headCoords[0], headCoords[1], headCoords[2], "random.fizz", 0.5F, 2.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
         }
 
-        int temp = BlockProperties.getMetadata(TE) & 0xffe7;
+        int temp = TE.getData() & 0xffe7;
         temp |= state.ordinal() << 3;
 
-        BlockProperties.setMetadata(TE, temp);
+        TE.setData(temp);
     }
 
     /**

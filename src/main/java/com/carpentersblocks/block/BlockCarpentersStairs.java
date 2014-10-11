@@ -16,7 +16,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import com.carpentersblocks.data.Stairs;
 import com.carpentersblocks.tileentity.TEBase;
-import com.carpentersblocks.util.BlockProperties;
 import com.carpentersblocks.util.registry.BlockRegistry;
 import com.carpentersblocks.util.registry.IconRegistry;
 import com.carpentersblocks.util.registry.ItemRegistry;
@@ -49,7 +48,7 @@ public class BlockCarpentersStairs extends BlockCoverable {
      */
     protected boolean onHammerLeftClick(TEBase TE, EntityPlayer entityPlayer)
     {
-        int stairsID = BlockProperties.getMetadata(TE);
+        int stairsID = TE.getData();
         Stairs stairs = Stairs.stairsList[stairsID];
 
         /* Cycle between stairs direction based on current type. */
@@ -96,7 +95,7 @@ public class BlockCarpentersStairs extends BlockCoverable {
                 break;
         }
 
-        BlockProperties.setMetadata(TE, stairsID);
+        TE.setData(stairsID);
 
         return true;
     }
@@ -107,7 +106,7 @@ public class BlockCarpentersStairs extends BlockCoverable {
      */
     protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer)
     {
-        int stairsID = BlockProperties.getMetadata(TE);
+        int stairsID = TE.getData();
         Stairs stairs = Stairs.stairsList[stairsID];
 
         /* Transform stairs to next type. */
@@ -140,7 +139,7 @@ public class BlockCarpentersStairs extends BlockCoverable {
                 break;
         }
 
-        BlockProperties.setMetadata(TE, stairsID);
+        TE.setData(stairsID);
 
         return true;
     }
@@ -168,7 +167,7 @@ public class BlockCarpentersStairs extends BlockCoverable {
 
         if (TE != null) {
 
-            Stairs stairs = Stairs.stairsList[BlockProperties.getMetadata(TE)];
+            Stairs stairs = Stairs.stairsList[TE.getData()];
             StairsUtil stairsUtil = new StairsUtil();
 
             double currDist = 0.0D;
@@ -215,7 +214,7 @@ public class BlockCarpentersStairs extends BlockCoverable {
 
             AxisAlignedBB colBox = null;
 
-            Stairs stairs = Stairs.stairsList[BlockProperties.getMetadata(TE)];
+            Stairs stairs = Stairs.stairsList[TE.getData()];
             StairsUtil stairsUtil = new StairsUtil();
 
             for (int box = 0; box < 3; ++box) {
@@ -244,7 +243,7 @@ public class BlockCarpentersStairs extends BlockCoverable {
 
         if (TE != null) {
             if (isBlockSolid(world, x, y, z)) {
-                return Stairs.stairsList[BlockProperties.getMetadata(TE)].isFaceFull(side);
+                return Stairs.stairsList[TE.getData()].isFaceFull(side);
             }
         }
 
@@ -308,8 +307,8 @@ public class BlockCarpentersStairs extends BlockCoverable {
 
             int facing = MathHelper.floor_double(entityLiving.rotationYaw * 4.0F / 360.0F + 0.5D) & 3;
 
-            BlockProperties.setMetadata(TE, world.getBlockMetadata(x, y, z));
-            int stairsID = BlockProperties.getMetadata(TE);
+            TE.setData(world.getBlockMetadata(x, y, z));
+            int stairsID = TE.getData();
 
             if (stairsID > 11)
             {
@@ -329,12 +328,12 @@ public class BlockCarpentersStairs extends BlockCoverable {
                 }
             }
 
-            BlockProperties.setMetadata(TE, stairsID);
+            TE.setData(stairsID);
 
             /* If shift key is down, skip auto-orientation. */
             if (!entityLiving.isSneaking()) {
-                stairsID = StairsTransform.transformStairs(world, stairsID, x, y, z);
-                BlockProperties.setMetadata(TE, stairsID);
+                stairsID = StairsTransform.transformStairs(TE, stairsID, x, y, z);
+                TE.setData(stairsID);
                 StairsTransform.transformAdjacentStairs(world, stairsID, x, y, z);
             }
 

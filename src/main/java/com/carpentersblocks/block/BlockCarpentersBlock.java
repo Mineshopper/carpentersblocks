@@ -13,7 +13,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import com.carpentersblocks.data.Slab;
 import com.carpentersblocks.tileentity.TEBase;
-import com.carpentersblocks.util.BlockProperties;
 import com.carpentersblocks.util.handler.EventHandler;
 import com.carpentersblocks.util.registry.BlockRegistry;
 import com.carpentersblocks.util.registry.IconRegistry;
@@ -54,13 +53,13 @@ public class BlockCarpentersBlock extends BlockCoverable {
      */
     protected boolean onHammerLeftClick(TEBase TE, EntityPlayer entityPlayer)
     {
-        int data = BlockProperties.getMetadata(TE);
+        int data = TE.getData();
 
         if (++data > Slab.SLAB_Z_POS) {
             data = Slab.BLOCK_FULL;
         }
 
-        BlockProperties.setMetadata(TE, data);
+        TE.setData(data);
 
         return true;
     }
@@ -71,7 +70,7 @@ public class BlockCarpentersBlock extends BlockCoverable {
      */
     protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer)
     {
-        int data = BlockProperties.getMetadata(TE);
+        int data = TE.getData();
 
         if (data == Slab.BLOCK_FULL) {
             switch (EventHandler.eventFace)
@@ -99,7 +98,7 @@ public class BlockCarpentersBlock extends BlockCoverable {
             data = Slab.BLOCK_FULL;
         }
 
-        BlockProperties.setMetadata(TE, data);
+        TE.setData(data);
 
         return true;
     }
@@ -113,7 +112,7 @@ public class BlockCarpentersBlock extends BlockCoverable {
         TEBase TE = getTileEntity(world, x, y, z);
 
         if (TE != null) {
-            int data = BlockProperties.getMetadata(TE);
+            int data = TE.getData();
             if (data < bounds.length) {
                 setBlockBounds(bounds[data][0], bounds[data][1], bounds[data][2], bounds[data][3], bounds[data][4], bounds[data][5]);
             }
@@ -154,14 +153,14 @@ public class BlockCarpentersBlock extends BlockCoverable {
                 for (TEBase TE_current : TE_list) {
                     if (TE_current != null) {
                         if (TE_current.getBlockType().equals(this)) {
-                            data = BlockProperties.getMetadata(TE_current);
+                            data = TE_current.getData();
                         }
                     }
                 }
 
             }
 
-            BlockProperties.setMetadata(TE, data);
+            TE.setData(data);
         }
     }
 
@@ -177,7 +176,7 @@ public class BlockCarpentersBlock extends BlockCoverable {
 
             if (isBlockSolid(world, x, y, z)) {
 
-                int data = BlockProperties.getMetadata(TE);
+                int data = TE.getData();
 
                 if (data == Slab.BLOCK_FULL) {
                     return true;
@@ -217,7 +216,7 @@ public class BlockCarpentersBlock extends BlockCoverable {
         TEBase TE = getTileEntity(world, x, y, z);
 
         if (TE != null) {
-            int data = BlockProperties.getMetadata(TE);
+            int data = TE.getData();
             return data == Slab.BLOCK_FULL;
         }
 

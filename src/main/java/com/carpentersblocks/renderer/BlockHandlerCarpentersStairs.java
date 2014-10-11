@@ -5,7 +5,6 @@ import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.item.ItemStack;
 import com.carpentersblocks.block.BlockCarpentersStairs;
 import com.carpentersblocks.data.Stairs;
-import com.carpentersblocks.util.BlockProperties;
 import com.carpentersblocks.util.registry.BlockRegistry;
 import com.carpentersblocks.util.stairs.StairsUtil;
 import cpw.mods.fml.relauncher.Side;
@@ -31,7 +30,7 @@ public class BlockHandlerCarpentersStairs extends BlockHandlerBase {
     {
         ItemStack itemStack = getCoverForRendering();
 
-        Stairs stairs = Stairs.stairsList[BlockProperties.getMetadata(TE)];
+        Stairs stairs = Stairs.stairsList[TE.getData()];
         StairsUtil stairsUtil = new StairsUtil();
 
         BlockCarpentersStairs blockRef = (BlockCarpentersStairs) BlockRegistry.blockCarpentersStairs;
@@ -57,7 +56,7 @@ public class BlockHandlerCarpentersStairs extends BlockHandlerBase {
     {
         renderBlocks.renderAllFaces = true;
 
-        Stairs stairs = Stairs.stairsList[BlockProperties.getMetadata(TE)];
+        Stairs stairs = Stairs.stairsList[TE.getData()];
         StairsUtil stairsUtil = new StairsUtil();
 
         for (int box = 0; box < 3; ++box)
@@ -70,7 +69,7 @@ public class BlockHandlerCarpentersStairs extends BlockHandlerBase {
                 {
                     coverRendering = side;
 
-                    if (BlockProperties.hasCover(TE, side))
+                    if (TE.hasAttribute(TE.ATTR_COVER[side]))
                     {
                         renderBlocks.setRenderBounds(bounds[0], bounds[1], bounds[2], bounds[3], bounds[4], bounds[5]);
                         int[] renderOffset = getSideCoverRenderBounds(x, y, z, side);

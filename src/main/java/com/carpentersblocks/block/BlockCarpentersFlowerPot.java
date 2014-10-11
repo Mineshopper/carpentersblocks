@@ -73,12 +73,8 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
      */
     protected boolean onHammerLeftClick(TEBase TE, EntityPlayer entityPlayer)
     {
-        BlockProperties.setPrevDesign(TE);
-
-        if (BlockProperties.hasCover(TE, 6)) {
-            BlockProperties.setCover(TE, 6, null);
-        }
-
+        TE.setPrevDesign();
+        TE.removeAttribute(TE.ATTR_COVER[6]);
         return true;
     }
 
@@ -89,16 +85,22 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
     protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer)
     {
         if (entityPlayer.isSneaking()) {
-            BlockProperties.clearDesign(TE);
+            TE.removeDesign();
         } else {
-            BlockProperties.setNextDesign(TE);
+            TE.setNextDesign();
         }
-
-        if (BlockProperties.hasCover(TE, 6)) {
-            BlockProperties.setCover(TE, 6, null);
-        }
-
+        TE.removeAttribute(TE.ATTR_COVER[6]);
         return true;
+    }
+
+    /**
+     * Checks if {@link ItemStack} contains fertilizer.
+     *
+     * @return <code>true</code> if {@link ItemStack} contains fertilizer
+     */
+    public static boolean isFertilizer(ItemStack itemStack)
+    {
+        return itemStack != null ? itemStack.getItem().equals(Items.dye) && itemStack.getItemDamage() == 15 : false;
     }
 
     @Override
@@ -111,24 +113,24 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
 
             if (EventHandler.hitY > 0.375F) {
 
-                if (FlowerPot.isEnriched(TE)) {
+                if (TE.hasAttribute(TE.ATTR_FERTILIZER)) {
                     actionResult.setSoundSource(new ItemStack(Blocks.sand));
-                    FlowerPot.setEnrichment(TE, false);
                     actionResult.setAltered();
+                    TE.removeAttribute(TE.ATTR_FERTILIZER);
                 }
 
-                if (!actionResult.altered && FlowerPotProperties.hasPlant(TE)) {
-                    actionResult.setSoundSource(FlowerPotProperties.getPlant(TE));
-                    FlowerPotProperties.setPlant(TE, (ItemStack)null);
+                if (!actionResult.altered && TE.hasAttribute(TE.ATTR_PLANT)) {
+                    actionResult.setSoundSource(TE.getAttribute(TE.ATTR_PLANT));
                     actionResult.setAltered();
+                    TE.removeAttribute(TE.ATTR_PLANT);
                 }
 
-            } else if (FlowerPotProperties.hasSoil(TE)) {
+            } else if (TE.hasAttribute(TE.ATTR_SOIL)) {
 
                 if (EventHandler.eventFace == 1 && EventHandler.hitX > 0.375F && EventHandler.hitX < 0.625F && EventHandler.hitZ > 0.375F && EventHandler.hitZ < 0.625F) {
-                    actionResult.setSoundSource(FlowerPotProperties.getSoil(TE));
-                    FlowerPotProperties.setSoil(TE, (ItemStack)null);
+                    actionResult.setSoundSource(TE.getAttribute(TE.ATTR_SOIL));
                     actionResult.setAltered();
+                    TE.removeAttribute(TE.ATTR_SOIL);
                 }
 
             }
@@ -147,11 +149,11 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
 
         if (itemStack != null) {
 
-            boolean hasCover = BlockProperties.hasCover(TE, 6);
-            boolean hasOverlay = BlockProperties.hasOverlay(TE, 6);
+            boolean hasCover = TE.hasAttribute(TE.ATTR_COVER[6]);
+            boolean hasOverlay = TE.hasAttribute(TE.ATTR_OVERLAY[6]);
             boolean soilAreaClicked = side == 1 && hitX > 0.375F && hitX < 0.625F && hitZ > 0.375F && hitZ < 0.625F;
 
-            if (FlowerPotProperties.hasSoil(TE)) {
+            if (TE.hasAttribute(TE.ATTR_SOIL)) {
 
                 /*
                  * Leaf blocks can be plants or covers.  We need to differentiate
@@ -164,10 +166,10 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
                     }
                 }
 
-                if (!FlowerPotProperties.hasPlant(TE) && FlowerPotProperties.isPlant(itemStack)) {
+                if (!TE.hasAttribute(TE.ATTR_PLANT) && FlowerPotProperties.isPlant(itemStack)) {
                     int angle = MathHelper.floor_double((entityPlayer.rotationYaw + 180.0F) * 16.0F / 360.0F + 0.5D) & 15;
                     FlowerPot.setAngle(TE, angle);
-                    FlowerPotProperties.setPlant(TE, itemStack);
+                    TE.addAttribute(TE.ATTR_PLANT, itemStack);
                     actionResult.setAltered().setSoundSource(itemStack).decInventory();
                 }
 
@@ -175,7 +177,7 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
 
                 if (FlowerPotProperties.isSoil(itemStack)) {
                     if (hasCover || soilAreaClicked) {
-                        FlowerPotProperties.setSoil(TE, itemStack);
+                        TE.addAttribute(TE.ATTR_SOIL, itemStack);
                         actionResult.setAltered().setSoundSource(itemStack).decInventory();
                     }
                 }
@@ -201,10 +203,10 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
 
         if (world.isRemote) {
             TEBase TE = getTileEntity(world, x, y, z);
-            if (TE != null && FlowerPotProperties.hasPlant(TE)) {
+            if (TE != null && TE.hasAttribute(TE.ATTR_PLANT)) {
                 ItemStack itemStack = entityPlayer.getCurrentEquippedItem();
                 if (itemStack != null && itemStack.getItem().equals(Items.dye) && itemStack.getItemDamage() == 15) {
-                    if (!FlowerPot.isEnriched(TE) && FlowerPotProperties.isPlantColorable(TE)) {
+                    if (!TE.hasAttribute(TE.ATTR_FERTILIZER) && FlowerPotProperties.isPlantColorable(TE)) {
                         PacketHandler.sendPacketToServer(new PacketEnrichPlant(x, y, z, FlowerPotProperties.getPlantColor(TE)));
                         return true;
                     }
@@ -234,13 +236,13 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
 
                 /* Eject double tall plant if obstructed. */
 
-                if (FlowerPotProperties.hasPlant(TE)) {
+                if (TE.hasAttribute(TE.ATTR_PLANT)) {
 
                     Profile profile = FlowerPotHandler.getPlantProfile(TE);
 
                     if (profile.equals(Profile.DOUBLEPLANT) || profile.equals(Profile.THIN_DOUBLEPLANT)) {
                         if (world.getBlock(x, y + 1, z).isSideSolid(world, x, y + 1, z, ForgeDirection.DOWN)) {
-                            FlowerPotProperties.setPlant(TE, (ItemStack)null);
+                            TE.removeAttribute(TE.ATTR_PLANT);
                         }
                     }
 
@@ -273,7 +275,7 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
 
         if (TE != null && TE instanceof TECarpentersFlowerPot) {
 
-            if (FlowerPotProperties.hasPlant(TE)) {
+            if (TE.hasAttribute(TE.ATTR_PLANT)) {
 
                 switch (FlowerPotHandler.getPlantProfile(TE)) {
                     case CACTUS:
@@ -306,7 +308,7 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
 
             AxisAlignedBB axisAlignedBB = AxisAlignedBB.getBoundingBox(x + 0.3125F, y, z + 0.3125F, x + 0.6875F, y + 0.375F, z + 0.6875F);
 
-            if (FlowerPotProperties.hasPlant(TE)) {
+            if (TE.hasAttribute(TE.ATTR_PLANT)) {
 
                 switch (FlowerPotHandler.getPlantProfile(TE)) {
                     case CACTUS:
@@ -350,9 +352,9 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
 
         if (TE != null && TE instanceof TECarpentersFlowerPot) {
 
-            if (FlowerPotProperties.hasSoil(TE)) {
+            if (TE.hasAttribute(TE.ATTR_SOIL)) {
 
-                ItemStack itemStack = FlowerPotProperties.getSoil(TE);
+                ItemStack itemStack = TE.getAttribute(TE.ATTR_SOIL);
                 int temp = getLightValue(TE, FlowerPotProperties.toBlock(itemStack), itemStack.getItemDamage());
 
                 if (temp > lightValue) {
@@ -361,9 +363,9 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
 
             }
 
-            if (FlowerPotProperties.hasPlant(TE)) {
+            if (TE.hasAttribute(TE.ATTR_PLANT)) {
 
-                ItemStack itemStack = FlowerPotProperties.getPlant(TE);
+                ItemStack itemStack = TE.getAttribute(TE.ATTR_PLANT);
                 int temp = getLightValue(TE, FlowerPotProperties.toBlock(itemStack), itemStack.getItemDamage());
 
                 if (temp > lightValue) {
@@ -387,17 +389,12 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
         TEBase TE = getTileEntity(world, x, y, z);
 
         if (TE != null && TE instanceof TECarpentersFlowerPot) {
-
-            if (FlowerPotProperties.hasPlant(TE)) {
-
-                ItemStack itemStack = FlowerPotProperties.getPlant(TE);
-
-                BlockProperties.setHostMetadata(TE, itemStack.getItemDamage());
+            if (TE.hasAttribute(TE.ATTR_PLANT)) {
+                ItemStack itemStack = TE.getAttribute(TE.ATTR_PLANT);
+                TE.setMetadata(itemStack.getItemDamage());
                 FlowerPotProperties.toBlock(itemStack).onEntityCollidedWithBlock(world, x, y, z, entity);
-                BlockProperties.resetHostMetadata(TE);
-
+                TE.restoreMetadata();
             }
-
         }
 
         super.onEntityCollidedWithBlock(world, x, y, z, entity);
@@ -416,7 +413,7 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
     @Override
     protected boolean canCoverSide(TEBase TE, World world, int x, int y, int z, int side)
     {
-        return side == 6 ? !BlockProperties.hasDesign(TE) : false;
+        return side == 6 ? !TE.hasDesign() : false;
     }
 
     @Override
@@ -436,24 +433,18 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
              * to get accurate results.
              */
 
-            if (FlowerPotProperties.hasPlant(TE)) {
-
-                ItemStack itemStack = FlowerPotProperties.getPlant(TE);
-
-                BlockProperties.setHostMetadata(TE, itemStack.getItemDamage());
+            if (TE.hasAttribute(TE.ATTR_PLANT)) {
+                ItemStack itemStack = TE.getAttribute(TE.ATTR_PLANT);
+                TE.setMetadata(itemStack.getItemDamage());
                 FlowerPotProperties.toBlock(itemStack).randomDisplayTick(world, x, y, z, random);
-                BlockProperties.resetHostMetadata(TE);
-
+                TE.restoreMetadata();
             }
 
-            if (FlowerPotProperties.hasSoil(TE)) {
-
-                ItemStack itemStack = FlowerPotProperties.getSoil(TE);
-
-                BlockProperties.setHostMetadata(TE, itemStack.getItemDamage());
+            if (TE.hasAttribute(TE.ATTR_SOIL)) {
+                ItemStack itemStack = TE.getAttribute(TE.ATTR_SOIL);
+                TE.setMetadata(itemStack.getItemDamage());
                 BlockProperties.toBlock(itemStack).randomDisplayTick(world, x, y, z, random);
-                BlockProperties.resetHostMetadata(TE);
-
+                TE.restoreMetadata();
             }
 
         }
@@ -478,15 +469,15 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
         ArrayList<ItemStack> ret = super.getDrops(world, x, y, z, metadata, fortune);
         TEBase TE = getSimpleTileEntity(world, x, y, z);
 
-        if (TE != null && TE instanceof TECarpentersFlowerPot) {
-            if (FlowerPot.isEnriched(TE)) {
-                ret.add(new ItemStack(Items.dye, 1, 15));
+        if (TE != null) {
+            if (TE.hasAttribute(TE.ATTR_FERTILIZER)) {
+                ret.add(TE.getAttribute(TE.ATTR_FERTILIZER));
             }
-            if (FlowerPotProperties.hasPlant(TE)) {
-                ret.add(FlowerPotProperties.getPlant(TE));
+            if (TE.hasAttribute(TE.ATTR_PLANT)) {
+                ret.add(TE.getAttribute(TE.ATTR_PLANT));
             }
-            if (FlowerPotProperties.hasSoil(TE)) {
-                ret.add(FlowerPotProperties.getSoil(TE));
+            if (TE.hasAttribute(TE.ATTR_SOIL)) {
+                ret.add(TE.getAttribute(TE.ATTR_SOIL));
             }
         }
 

@@ -4,9 +4,10 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;
 import java.io.IOException;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
-import com.carpentersblocks.data.FlowerPot;
-import com.carpentersblocks.tileentity.TECarpentersFlowerPot;
+import com.carpentersblocks.tileentity.TEBase;
 import com.carpentersblocks.util.EntityLivingUtil;
 
 public class PacketEnrichPlant extends TilePacket {
@@ -31,11 +32,11 @@ public class PacketEnrichPlant extends TilePacket {
         World world = entityPlayer.worldObj;
         hexColor = bbis.readInt();
 
-        TECarpentersFlowerPot TE = (TECarpentersFlowerPot) world.getTileEntity(x, y, z);
+        TEBase TE = (TEBase) world.getTileEntity(x, y, z);
 
         if (TE != null) {
-            if (hexColor != 16777215 && !FlowerPot.isEnriched(TE)) {
-                FlowerPot.setEnrichment(TE, true);
+            if (hexColor != 16777215 && !TE.hasAttribute(TE.ATTR_FERTILIZER)) {
+                TE.addAttribute(TE.ATTR_FERTILIZER, new ItemStack(Items.dye, 1, 15));
                 EntityLivingUtil.decrementCurrentSlot(entityPlayer);
             }
         }

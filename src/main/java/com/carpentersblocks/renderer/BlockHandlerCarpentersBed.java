@@ -7,7 +7,6 @@ import net.minecraftforge.common.util.ForgeDirection;
 import com.carpentersblocks.data.Bed;
 import com.carpentersblocks.renderer.helper.VertexHelper;
 import com.carpentersblocks.tileentity.TEBase;
-import com.carpentersblocks.util.BlockProperties;
 import com.carpentersblocks.util.handler.DesignHandler;
 import com.carpentersblocks.util.handler.DyeHandler;
 import com.carpentersblocks.util.registry.IconRegistry;
@@ -74,8 +73,8 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase {
         /* Apply frame dye override */
 
         if (TE_head != null) {
-            if (BlockProperties.hasDye(TE_head, 6)) {
-                setDyeOverride(DyeHandler.getColor(BlockProperties.getDye(TE_head, 6)));
+            if (TE.hasAttribute(TE.ATTR_DYE[6])) {
+                setDyeOverride(DyeHandler.getColor(TE.getAttribute(TE.ATTR_DYE[6])));
             } else {
                 suppressDyeColor = true;
             }
@@ -99,7 +98,7 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase {
     {
         dir = Bed.getDirection(TE);
         isHead = Bed.isHeadOfBed(TE);
-        hasDesign = BlockProperties.hasDesign(TE);
+        hasDesign = TE.hasDesign();
         bedParallelPos = getIsParallelPos();
         bedParallelNeg = getIsParallelNeg();
         TE_head = isHead ? TE : Bed.getOppositeTE(TE);
@@ -109,7 +108,7 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase {
         }
 
         if (hasDesign) {
-            icon_design = IconRegistry.icon_design_bed.get(DesignHandler.listBed.indexOf(BlockProperties.getDesign(TE)));
+            icon_design = IconRegistry.icon_design_bed.get(DesignHandler.listBed.indexOf(TE.getDesign()));
         }
     }
 
@@ -198,7 +197,7 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase {
         } else {
 
             if (TE_foot != null) {
-                blanketDyeMetadata = BlockProperties.hasDye(TE_foot, coverRendering) ? DyeHandler.getVanillaDmgValue(BlockProperties.getDye(TE_foot, coverRendering)) : 0;
+                blanketDyeMetadata = TE.hasAttribute(TE.ATTR_DYE[coverRendering]) ? DyeHandler.getVanillaDmgValue(TE.getAttribute(TE.ATTR_DYE[coverRendering])) : 0;
             }
 
         }

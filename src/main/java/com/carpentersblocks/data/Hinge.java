@@ -3,7 +3,6 @@ package com.carpentersblocks.data;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import com.carpentersblocks.tileentity.TEBase;
-import com.carpentersblocks.util.BlockProperties;
 
 public class Hinge {
 
@@ -43,7 +42,7 @@ public class Hinge {
      */
     public static int getType(TEBase TE)
     {
-        return BlockProperties.getMetadata(TE) & 0x7;
+        return TE.getData() & 0x7;
     }
 
     /**
@@ -51,10 +50,10 @@ public class Hinge {
      */
     public static void setType(TEBase TE, int type)
     {
-        int temp = BlockProperties.getMetadata(TE) & 0xfff8;
+        int temp = TE.getData() & 0xfff8;
         temp |= type;
 
-        BlockProperties.setMetadata(TE, temp);
+        TE.setData(temp);
     }
 
     /**
@@ -62,7 +61,7 @@ public class Hinge {
      */
     public static int getHinge(TEBase TE)
     {
-        int temp = BlockProperties.getMetadata(TE) & 0x8;
+        int temp = TE.getData() & 0x8;
         return temp >> 3;
     }
 
@@ -71,10 +70,10 @@ public class Hinge {
      */
     public static void setHingeSide(TEBase TE, int hingeSide)
     {
-        int temp = BlockProperties.getMetadata(TE) & 0xfff7;
+        int temp = TE.getData() & 0xfff7;
         temp |= hingeSide << 3;
 
-        BlockProperties.setMetadata(TE, temp);
+        TE.setData(temp);
     }
 
     /**
@@ -82,7 +81,7 @@ public class Hinge {
      */
     public static int getFacing(TEBase TE)
     {
-        int temp = BlockProperties.getMetadata(TE) & 0x30;
+        int temp = TE.getData() & 0x30;
         return temp >> 4;
     }
 
@@ -91,10 +90,10 @@ public class Hinge {
      */
     public static void setFacing(TEBase TE, int facing)
     {
-        int temp = BlockProperties.getMetadata(TE) & 0xffcf;
+        int temp = TE.getData() & 0xffcf;
         temp |= facing << 4;
 
-        BlockProperties.setMetadata(TE, temp);
+        TE.setData(temp);
     }
 
     /**
@@ -102,7 +101,7 @@ public class Hinge {
      */
     public static int getState(TEBase TE)
     {
-        int temp = BlockProperties.getMetadata(TE) & 0x40;
+        int temp = TE.getData() & 0x40;
         return temp >> 6;
     }
 
@@ -111,7 +110,7 @@ public class Hinge {
      */
     public static void setState(TEBase TE, int state, boolean playSound)
     {
-        int temp = BlockProperties.getMetadata(TE) & 0xffbf;
+        int temp = TE.getData() & 0xffbf;
         temp |= state << 6;
 
         World world = TE.getWorldObj();
@@ -120,7 +119,7 @@ public class Hinge {
             world.playAuxSFXAtEntity((EntityPlayer)null, 1003, TE.xCoord, TE.yCoord, TE.zCoord, 0);
         }
 
-        BlockProperties.setMetadata(TE, temp);
+        TE.setData(temp);
     }
 
     /**
@@ -128,7 +127,7 @@ public class Hinge {
      */
     public static int getPiece(TEBase TE)
     {
-        int temp = BlockProperties.getMetadata(TE) & 0x80;
+        int temp = TE.getData() & 0x80;
         return temp >> 7;
     }
 
@@ -137,10 +136,10 @@ public class Hinge {
      */
     public static void setPiece(TEBase TE, int piece)
     {
-        int temp = BlockProperties.getMetadata(TE) & 0xff7f;
+        int temp = TE.getData() & 0xff7f;
         temp |= piece << 7;
 
-        BlockProperties.setMetadata(TE, temp);
+        TE.setData(temp);
     }
 
     /**
@@ -148,7 +147,7 @@ public class Hinge {
      */
     public static int getRigidity(TEBase TE)
     {
-        int temp = BlockProperties.getMetadata(TE) & 0x100;
+        int temp = TE.getData() & 0x100;
         return temp >> 8;
     }
 
@@ -157,10 +156,10 @@ public class Hinge {
      */
     public static void setRigidity(TEBase TE, int rigid)
     {
-        int temp = BlockProperties.getMetadata(TE) & 0xfeff;
+        int temp = TE.getData() & 0xfeff;
         temp |= rigid << 8;
 
-        BlockProperties.setMetadata(TE, temp);
+        TE.setData(temp);
     }
 
 }

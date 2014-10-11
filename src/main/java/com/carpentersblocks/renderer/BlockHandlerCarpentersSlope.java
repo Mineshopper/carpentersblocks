@@ -242,10 +242,10 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerSloped {
         if (isSideSloped)
         {
             Block block = BlockProperties.toBlock(itemStack);
-            Slope slope = Slope.slopesList[BlockProperties.getMetadata(TE)];
+            Slope slope = Slope.slopesList[TE.getData()];
             int metadata = itemStack.getItemDamage();
 
-            if (!BlockProperties.hasCover(TE, 6)) {
+            if (!TE.hasAttribute(TE.ATTR_COVER[6])) {
 
                 switch (slope.type) {
                     case OBLIQUE_EXT:
@@ -304,7 +304,7 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerSloped {
      */
     protected void renderBaseSide(int x, int y, int z, int side, IIcon icon)
     {
-        int slopeID = BlockProperties.getMetadata(TE);
+        int slopeID = TE.getData();
 
         switch (renderID)
         {
@@ -479,7 +479,7 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerSloped {
      */
     public void renderBaseBlock(ItemStack itemStack, int x, int y, int z)
     {
-        Slope slope = Slope.slopesList[BlockProperties.getMetadata(TE)];
+        Slope slope = Slope.slopesList[TE.getData()];
 
         renderBlocks.enableAO = getEnableAO(itemStack);
 
@@ -549,7 +549,7 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerSloped {
     @Override
     protected boolean isPositiveFace(int side)
     {
-        return super.isPositiveFace(side) || isSideSloped && Slope.slopesList[BlockProperties.getMetadata(TE)].isPositive;
+        return super.isPositiveFace(side) || isSideSloped && Slope.slopesList[TE.getData()].isPositive;
     }
 
     /**

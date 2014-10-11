@@ -3,7 +3,6 @@ package com.carpentersblocks.data;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import com.carpentersblocks.tileentity.TEBase;
-import com.carpentersblocks.util.BlockProperties;
 import com.carpentersblocks.util.EntityLivingUtil;
 import com.carpentersblocks.util.registry.BlockRegistry;
 
@@ -23,7 +22,7 @@ public class Bed {
      */
     public final static int getType(TEBase TE)
     {
-        return BlockProperties.getMetadata(TE) & 0xf;
+        return TE.getData() & 0xf;
     }
 
     /**
@@ -31,10 +30,10 @@ public class Bed {
      */
     public static void setType(TEBase TE, int type)
     {
-        int temp = BlockProperties.getMetadata(TE) & 0xfff0;
+        int temp = TE.getData() & 0xfff0;
         temp |= type;
 
-        BlockProperties.setMetadata(TE, temp);
+        TE.setData(temp);
     }
 
     /**
@@ -42,7 +41,7 @@ public class Bed {
      */
     public static boolean isOccupied(TEBase TE)
     {
-        int temp = BlockProperties.getMetadata(TE) & 0x10;
+        int temp = TE.getData() & 0x10;
 
         return temp != 0;
     }
@@ -52,13 +51,13 @@ public class Bed {
      */
     public static void setOccupied(TEBase TE, boolean isOccupied)
     {
-        int temp = BlockProperties.getMetadata(TE) & 0xffef;
+        int temp = TE.getData() & 0xffef;
 
         if (isOccupied) {
             temp |= 1 << 4;
         }
 
-        BlockProperties.setMetadata(TE, temp);
+        TE.setData(temp);
     }
 
     /**
@@ -93,7 +92,7 @@ public class Bed {
      */
     public static boolean isHeadOfBed(TEBase TE)
     {
-        int temp = BlockProperties.getMetadata(TE) & 0x8000;
+        int temp = TE.getData() & 0x8000;
 
         return temp != 0;
     }
@@ -103,10 +102,10 @@ public class Bed {
      */
     public static void setHeadOfBed(TEBase TE)
     {
-        int temp = BlockProperties.getMetadata(TE) & 0x7fff;
+        int temp = TE.getData() & 0x7fff;
         temp |= 1 << 15;
 
-        BlockProperties.setMetadata(TE, temp);
+        TE.setData(temp);
     }
 
     /**
@@ -114,7 +113,7 @@ public class Bed {
      */
     public static ForgeDirection getDirection(TEBase TE)
     {
-        int rot = (BlockProperties.getMetadata(TE) & 0x6000) >> 13;
+        int rot = (TE.getData() & 0x6000) >> 13;
 
         return EntityLivingUtil.getRotationFacing(rot).getOpposite();
     }
@@ -125,10 +124,10 @@ public class Bed {
      */
     public static void setDirection(TEBase TE, int facing)
     {
-        int temp = BlockProperties.getMetadata(TE) & 0x9fff;
+        int temp = TE.getData() & 0x9fff;
         temp |= facing << 13;
 
-        BlockProperties.setMetadata(TE, temp);
+        TE.setData(temp);
     }
 
 }

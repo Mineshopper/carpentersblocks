@@ -4,12 +4,8 @@ import net.minecraft.item.ItemDye;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.world.World;
-import com.carpentersblocks.data.FlowerPot;
 
 public class TECarpentersFlowerPot extends TEBase {
-
-    public static final byte ID_PLANT = 22;
-    public static final byte ID_SOIL  = 23;
 
     @Override
     /**
@@ -27,7 +23,7 @@ public class TECarpentersFlowerPot extends TEBase {
 
         if (world.isRemote) {
 
-            boolean wasEnriched = FlowerPot.isEnriched(this);
+            boolean wasEnriched = hasAttribute(ATTR_FERTILIZER);
 
             super.onDataPacket(net, pkt);
 
@@ -39,7 +35,7 @@ public class TECarpentersFlowerPot extends TEBase {
              * saplings or crops with bonemeal.
              */
 
-            if (!wasEnriched && FlowerPot.isEnriched(this)) {
+            if (!wasEnriched && hasAttribute(ATTR_FERTILIZER)) {
                 ItemDye.func_150918_a(world, xCoord, yCoord, zCoord, 15);
             }
 

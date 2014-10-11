@@ -8,7 +8,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import com.carpentersblocks.block.BlockCoverable;
 import com.carpentersblocks.renderer.helper.RenderHelperFlowerPot;
-import com.carpentersblocks.tileentity.TECarpentersFlowerPot;
 import com.carpentersblocks.util.BlockProperties;
 import com.carpentersblocks.util.flowerpot.FlowerPotHandler;
 import com.carpentersblocks.util.flowerpot.FlowerPotProperties;
@@ -49,14 +48,11 @@ public class BlockHandlerCarpentersFlowerPot extends BlockHandlerBase {
      */
     protected void renderCarpentersBlock(int x, int y, int z)
     {
-        TECarpentersFlowerPot TE = (TECarpentersFlowerPot) renderBlocks.blockAccess.getTileEntity(x, y, z);
-
         renderBlocks.renderAllFaces = true;
 
         ItemStack itemStack = getCoverForRendering();
 
-        if (BlockProperties.hasDesign(TE))
-        {
+        if (TE.hasDesign()) {
             suppressOverlay = true;
             suppressChiselDesign = true;
             suppressDyeColor = true;
@@ -68,12 +64,12 @@ public class BlockHandlerCarpentersFlowerPot extends BlockHandlerBase {
         suppressChiselDesign = true;
         suppressDyeColor = true;
 
-        if (FlowerPotProperties.hasSoil(TE)) {
-            renderSoil(FlowerPotProperties.getSoil(TE), x, y, z);
+        if (TE.hasAttribute(TE.ATTR_SOIL)) {
+            renderSoil(TE.getAttribute(TE.ATTR_SOIL), x, y, z);
         }
 
-        if (FlowerPotProperties.hasPlant(TE)) {
-            renderPlant(FlowerPotProperties.getPlant(TE), x, y, z);
+        if (TE.hasAttribute(TE.ATTR_PLANT)) {
+            renderPlant(TE.getAttribute(TE.ATTR_PLANT), x, y, z);
         }
 
         suppressOverlay = false;
@@ -88,8 +84,8 @@ public class BlockHandlerCarpentersFlowerPot extends BlockHandlerBase {
      */
     public boolean renderPot(ItemStack itemStack, int x, int y, int z)
     {
-        if (BlockProperties.hasDesign(TE)) {
-            IIcon designIcon = IconRegistry.icon_design_flower_pot.get(DesignHandler.listFlowerPot.indexOf(BlockProperties.getDesign(TE)));
+        if (TE.hasDesign()) {
+            IIcon designIcon = IconRegistry.icon_design_flower_pot.get(DesignHandler.listFlowerPot.indexOf(TE.getDesign()));
             setIconOverride(6, designIcon);
         }
 
@@ -193,7 +189,7 @@ public class BlockHandlerCarpentersFlowerPot extends BlockHandlerBase {
      */
     private void drawStackedBlocks(ItemStack itemStack, int x, int y, int z)
     {
-        BlockProperties.setHostMetadata(TE, itemStack.getItemDamage());
+        TE.setMetadata(itemStack.getItemDamage());
         renderBlocks.setRenderBounds(0.375F, 0.0D, 0.375F, 0.625F, 0.25D, 0.625F);
         renderBlock(itemStack, x, y, z);
         renderBlocks.setRenderBounds(0.375F, 0.25D, 0.375F, 0.625F, 0.50D, 0.625F);
@@ -201,7 +197,7 @@ public class BlockHandlerCarpentersFlowerPot extends BlockHandlerBase {
         renderBlocks.setRenderBounds(0.375F, 0.50D, 0.375F, 0.625F, 0.75D, 0.625F);
         renderBlock(itemStack, x, y, z);
         renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
-        BlockProperties.resetHostMetadata(TE);
+        TE.restoreMetadata();
     }
 
 }

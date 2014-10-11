@@ -15,7 +15,6 @@ import com.carpentersblocks.CarpentersBlocks;
 import com.carpentersblocks.data.Lever;
 import com.carpentersblocks.data.Lever.Axis;
 import com.carpentersblocks.tileentity.TEBase;
-import com.carpentersblocks.util.BlockProperties;
 import com.carpentersblocks.util.EntityLivingUtil;
 import com.carpentersblocks.util.handler.ChatHandler;
 import com.carpentersblocks.util.registry.BlockRegistry;
@@ -60,7 +59,6 @@ public class BlockCarpentersLever extends BlockSided {
      */
     protected boolean onHammerLeftClick(TEBase TE, EntityPlayer entityPlayer)
     {
-        BlockProperties.getMetadata(TE);
         int polarity = data.getPolarity(TE) == data.POLARITY_POSITIVE ? data.POLARITY_NEGATIVE : data.POLARITY_POSITIVE;
 
         data.setPolarity(TE, polarity);

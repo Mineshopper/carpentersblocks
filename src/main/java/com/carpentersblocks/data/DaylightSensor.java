@@ -2,7 +2,6 @@ package com.carpentersblocks.data;
 
 import net.minecraftforge.common.util.ForgeDirection;
 import com.carpentersblocks.tileentity.TEBase;
-import com.carpentersblocks.util.BlockProperties;
 
 public class DaylightSensor implements ISided {
 
@@ -26,7 +25,7 @@ public class DaylightSensor implements ISided {
     @Override
     public ForgeDirection getDirection(TEBase TE)
     {
-        int side = (BlockProperties.getMetadata(TE) & 0x380) >> 7;
+        int side = (TE.getData() & 0x380) >> 7;
         return ForgeDirection.getOrientation(side);
     }
 
@@ -36,10 +35,10 @@ public class DaylightSensor implements ISided {
     @Override
     public void setDirection(TEBase TE, ForgeDirection dir)
     {
-        int temp = BlockProperties.getMetadata(TE) & 0xfc7f;
+        int temp = TE.getData() & 0xfc7f;
         temp |= dir.ordinal() << 7;
 
-        BlockProperties.setMetadata(TE, temp);
+        TE.setData(temp);
     }
 
     /**
@@ -47,7 +46,7 @@ public class DaylightSensor implements ISided {
      */
     public int getLightLevel(TEBase TE)
     {
-        return BlockProperties.getMetadata(TE) & 0xf;
+        return TE.getData() & 0xf;
     }
 
     /**
@@ -55,10 +54,10 @@ public class DaylightSensor implements ISided {
      */
     public void setLightLevel(TEBase TE, int lightLevel)
     {
-        int temp = BlockProperties.getMetadata(TE) & 0xfff0;
+        int temp = TE.getData() & 0xfff0;
         temp |= lightLevel;
 
-        BlockProperties.setMetadata(TE, temp);
+        TE.setData(temp);
     }
 
     /**
@@ -66,7 +65,7 @@ public class DaylightSensor implements ISided {
      */
     public int getPolarity(TEBase TE)
     {
-        int temp = BlockProperties.getMetadata(TE) & 0x10;
+        int temp = TE.getData() & 0x10;
         return temp >> 4;
     }
 
@@ -75,10 +74,10 @@ public class DaylightSensor implements ISided {
      */
     public void setPolarity(TEBase TE, int state)
     {
-        int temp = BlockProperties.getMetadata(TE) & 0xffef;
+        int temp = TE.getData() & 0xffef;
         temp |= state << 4;
 
-        BlockProperties.setMetadata(TE, temp);
+        TE.setData(temp);
     }
 
     /**
@@ -86,7 +85,7 @@ public class DaylightSensor implements ISided {
      */
     public int getSensitivity(TEBase TE)
     {
-        int temp = BlockProperties.getMetadata(TE) & 0x60;
+        int temp = TE.getData() & 0x60;
         return temp >> 5;
     }
 
@@ -95,10 +94,10 @@ public class DaylightSensor implements ISided {
      */
     private void setSensitivity(TEBase TE, int sensitivity)
     {
-        int temp = BlockProperties.getMetadata(TE) & 0xff9f;
+        int temp = TE.getData() & 0xff9f;
         temp |= sensitivity << 5;
 
-        BlockProperties.setMetadata(TE, temp);
+        TE.setData(temp);
     }
 
     /**

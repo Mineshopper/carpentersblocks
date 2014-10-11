@@ -18,7 +18,6 @@ import com.carpentersblocks.CarpentersBlocks;
 import com.carpentersblocks.block.BlockCoverable;
 import com.carpentersblocks.tileentity.TEBase;
 import com.carpentersblocks.util.handler.ChatHandler;
-import com.carpentersblocks.util.handler.DesignHandler;
 import com.carpentersblocks.util.handler.DyeHandler;
 import com.carpentersblocks.util.handler.OverlayHandler;
 import com.carpentersblocks.util.registry.FeatureRegistry;
@@ -34,20 +33,10 @@ public class BlockProperties {
     }
 
     /**
-     * Creates a block event that drops the provided ItemStack.
-     * Used outside block methods since method required in Block.class is protected.
-     * @param itemStack
-     */
-    public static void dropAttribute(TEBase TE, ItemStack itemStack)
-    {
-        TE.getWorldObj().addBlockEvent(TE.xCoord, TE.yCoord, TE.zCoord, TE.getBlockType(), Item.getIdFromItem(itemStack.getItem()), itemStack.getItemDamage());
-    }
-
-    /**
      * Adds additional data to unused bits in ItemStack metadata to
      * identify special properties for ItemStack.
-     *
-     * Tells BlockCoverable class to retrieve block icon rather than
+     * <p>
+     * Tells {@link BlockCoverable} to retrieve block icon rather than
      * default blank icon.
      *
      * @param itemStack
@@ -58,25 +47,6 @@ public class BlockProperties {
         if (toBlock(itemStack) instanceof BlockCoverable) {
             itemStack.setItemDamage(itemStack.getItemDamage() | MASK_DEFAULT_ICON);
         }
-    }
-
-    /**
-     * Sets host metadata to match ItemStack damage value.
-     *
-     * Most often used when retrieving properties for side covers,
-     * or any ItemStack in general besides base cover (side == 6).
-     */
-    public static void setHostMetadata(TEBase TE, int metadata)
-    {
-        TE.getWorldObj().setBlockMetadataWithNotify(TE.xCoord, TE.yCoord, TE.zCoord, metadata, 4);
-    }
-
-    /**
-     * Resets host block metadata.
-     */
-    public static void resetHostMetadata(TEBase TE)
-    {
-        TE.getWorldObj().setBlockMetadataWithNotify(TE.xCoord, TE.yCoord, TE.zCoord, BlockProperties.getCover(TE, 6).getItemDamage(), 4);
     }
 
     /**
@@ -97,7 +67,7 @@ public class BlockProperties {
      */
     public static float getSideCoverDepth(TEBase TE, int side)
     {
-        if (side == 1 && hasCover(TE, side)) {
+        if (side == 1 && TE.hasAttribute(TE.ATTR_COVER[side])) {
 
             Block block = toBlock(getCover(TE, side));
 
@@ -108,55 +78,6 @@ public class BlockProperties {
         }
 
         return 0.0625F;
-    }
-
-    /**
-     * Will suppress block updates.
-     */
-    private static boolean suppressUpdate = false;
-
-    public static boolean hasDesign(TEBase TE)
-    {
-        return DesignHandler.getListForType(getBlockDesignType(TE)).contains(getDesign(TE));
-    }
-
-    public static String getDesign(TEBase TE)
-    {
-        return TE.cbDesign;
-    }
-
-    public static boolean setDesign(TEBase TE, String name)
-    {
-        if (!TE.cbDesign.equals(name)) {
-            TE.cbDesign = name;
-            if (!suppressUpdate) {
-                TE.getWorldObj().markBlockForUpdate(TE.xCoord, TE.yCoord, TE.zCoord);
-            }
-            return true;
-        }
-
-        return false;
-    }
-
-    public static boolean clearDesign(TEBase TE)
-    {
-        return setDesign(TE, "");
-    }
-
-    public static String getBlockDesignType(TEBase TE)
-    {
-        String name = TE.getBlockType().getUnlocalizedName();
-        return name.substring(new String("tile.blockCarpenters").length()).toLowerCase();
-    }
-
-    public static boolean setNextDesign(TEBase TE)
-    {
-        return setDesign(TE, DesignHandler.getNext(getBlockDesignType(TE), getDesign(TE)));
-    }
-
-    public static boolean setPrevDesign(TEBase TE)
-    {
-        return setDesign(TE, DesignHandler.getPrev(getBlockDesignType(TE), getDesign(TE)));
     }
 
     /**
@@ -198,36 +119,6 @@ public class BlockProperties {
     }
 
     /**
-     * Strips side of all properties.
-     */
-    public static void ejectAttributes(TEBase TE, int side)
-    {
-        suppressUpdate = true;
-
-        setCover(TE, side, (ItemStack)null);
-        setDye(TE, side, (ItemStack)null);
-        setOverlay(TE, side, (ItemStack)null);
-        setChiselDesign(TE, side, "");
-
-        suppressUpdate = false;
-
-        TE.getWorldObj().markBlockForUpdate(TE.xCoord, TE.yCoord, TE.zCoord);
-    }
-
-    /**
-     * Returns the cover, or if no cover exists, will return the calling block type.
-     *
-     * @param  TE the {@link TEBase}
-     * @param  side the side
-     * @return the {@link ItemStack}
-     */
-    public static ItemStack getCoverSafe(TEBase TE, int side)
-    {
-        ItemStack itemStack = TE.cbAttrMap.get(TE.ID_COVER[side]);
-        return itemStack != null ? itemStack : new ItemStack(TE.getBlockType());
-    }
-
-    /**
      * Returns cover {@link ItemStack}.
      * <p>
      * If cover {@link ItemStack#hasTagCompound()}, will replace {@link Item} with {@link Blocks#planks}.
@@ -241,6 +132,47 @@ public class BlockProperties {
         Block block = toBlock(itemStack);
 
         return block.hasTileEntity(itemStack.getItemDamage()) && !(block instanceof BlockCoverable) ? new ItemStack(Blocks.planks) : itemStack;
+    }
+
+    /**
+     * Will restore cover {@link ItemStack} to default state before returning result.
+     * <p>
+     * Corrects log rotation, among other things.
+     *
+     * @param  rand a {@link Random} reference
+     * @param  itemStack the {@link ItemStack}
+     * @return the cover {@link ItemStack} in it's default state
+     */
+    public static ItemStack getCoverForDrop(TEBase TE, int side)
+    {
+        ItemStack itemStack = TE.getAttribute(TE.ATTR_COVER[side]);
+
+        if (itemStack != null) {
+            Block block = toBlock(itemStack);
+            int dmgDrop = block.damageDropped(itemStack.getItemDamage());
+            Item itemDrop = block.getItemDropped(itemStack.getItemDamage(), TE.getWorldObj().rand, /* Fortune */ 0);
+
+            /* Check if block drops itself, and, if so, correct the damage value to the block's default. */
+
+            if (itemDrop != null && itemDrop.equals(itemStack.getItem()) && dmgDrop != itemStack.getItemDamage()) {
+                itemStack.setItemDamage(dmgDrop);
+            }
+        }
+
+        return itemStack;
+    }
+
+    /**
+     * Returns the cover, or if no cover exists, will return the calling block type.
+     *
+     * @param  TE the {@link TEBase}
+     * @param  side the side
+     * @return the {@link ItemStack}
+     */
+    public static ItemStack getCoverSafe(TEBase TE, int side)
+    {
+        ItemStack itemStack = TE.getAttribute(TE.ATTR_COVER[side]);
+        return itemStack != null ? itemStack : new ItemStack(TE.getBlockType());
     }
 
     /**
@@ -259,109 +191,6 @@ public class BlockProperties {
                    FeatureRegistry.coverExceptions.contains(itemStack.getDisplayName()) ||
                    FeatureRegistry.coverExceptions.contains(ChatHandler.getDefaultTranslation(itemStack));
 
-        }
-
-        return false;
-    }
-
-    /**
-     * Will restore cover {@link ItemStack} to default state before returning result.
-     * <p>
-     * Corrects log rotation, among other things.
-     *
-     * @param  rand a {@link Random} reference
-     * @param  itemStack the {@link ItemStack}
-     * @return the cover {@link ItemStack} in it's default state
-     */
-    public static ItemStack getCoverForDrop(TEBase TE, int side)
-    {
-        ItemStack itemStack = TE.cbAttrMap.get(TE.ID_COVER[side]);
-
-        if (itemStack != null) {
-            Block block = toBlock(itemStack);
-            int dmgDrop = block.damageDropped(itemStack.getItemDamage());
-            Item itemDrop = block.getItemDropped(itemStack.getItemDamage(), TE.getWorldObj().rand, /* Fortune */ 0);
-
-            /* Check if block drops itself, and, if so, correct the damage value to the block's default. */
-
-            if (itemDrop != null && itemDrop.equals(itemStack.getItem()) && dmgDrop != itemStack.getItemDamage()) {
-                itemStack.setItemDamage(dmgDrop);
-            }
-        }
-
-        return itemStack;
-    }
-
-    /**
-     * Returns whether block has a cover.
-     * Checks if block ID exists and whether it is a valid cover block.
-     */
-    public static boolean hasCover(TEBase TE, int side)
-    {
-        ItemStack itemStack = getCoverSafe(TE, side);
-        return itemStack != null && isCover(itemStack);
-    }
-
-    /**
-     * Sets cover block.
-     */
-    public static boolean setCover(TEBase TE, int side, ItemStack itemStack)
-    {
-        World world = TE.getWorldObj();
-
-        if (hasCover(TE, side)) {
-            dropAttribute(TE, getCoverForDrop(TE, side));
-        }
-
-        TE.cbAttrMap.put(TE.ID_COVER[side], getReducedStack(itemStack));
-
-        Block block = itemStack == null ? TE.getBlockType() : toBlock(itemStack);
-        int metadata = itemStack == null ? 0 : itemStack.getItemDamage();
-
-        if (side == 6) {
-            world.setBlockMetadataWithNotify(TE.xCoord, TE.yCoord, TE.zCoord, metadata, 0);
-        }
-
-        world.notifyBlocksOfNeighborChange(TE.xCoord, TE.yCoord, TE.zCoord, block);
-        world.markBlockForUpdate(TE.xCoord, TE.yCoord, TE.zCoord);
-
-        return true;
-    }
-
-    /**
-     * Get extended metadata for Carpenter's block.
-     *
-     * @deprecated  Provided until Smart Moving updates.
-     *    Replaced by {@link #getMetadata(TEBase)}
-     * @return extended metadata
-     */
-    @Deprecated
-    public final static int getData(TEBase TE)
-    {
-        return getMetadata(TE);
-    }
-
-    /**
-     * Get extended metadata for Carpenter's block.
-     *
-     * @return
-     */
-    public final static int getMetadata(TEBase TE)
-    {
-        return TE.cbMetadata & 0xffff;
-    }
-
-    /**
-     * Set block data.
-     */
-    public static boolean setMetadata(TEBase TE, int data)
-    {
-        if (data != getMetadata(TE)) {
-            TE.cbMetadata = (short) data;
-            if (!suppressUpdate) {
-                TE.getWorldObj().markBlockForUpdate(TE.xCoord, TE.yCoord, TE.zCoord);
-            }
-            return true;
         }
 
         return false;
@@ -387,143 +216,12 @@ public class BlockProperties {
     }
 
     /**
-     * Checks if tile entity has illumination attribute.
-     *
-     * @return <code>true</code> if {@link TEBase} has illumination {@link ItemStack}
-     */
-    public static boolean hasIlluminator(TEBase TE)
-    {
-        ItemStack itemStack = TE.cbAttrMap.get(TE.ID_ILLUMINATOR);
-        return itemStack != null && isIlluminator(itemStack);
-    }
-
-    /**
-     * Sets illumination attribute for tile entity.
-     *
-     * @return whether assignment was successful
-     */
-    public static boolean setIlluminator(TEBase TE, ItemStack itemStack)
-    {
-        World world = TE.getWorldObj();
-
-        if (hasIlluminator(TE)) {
-            dropAttribute(TE, getIlluminator(TE));
-        }
-
-        TE.cbAttrMap.put(TE.ID_ILLUMINATOR, getReducedStack(itemStack));
-
-        if (!suppressUpdate) {
-            world.markBlockForUpdate(TE.xCoord, TE.yCoord, TE.zCoord);
-        }
-
-        return true;
-    }
-
-    /**
-     * Gets glowstone dust {@link ItemStack}.
-     *
-     * @return the {@link ItemStack}
-     */
-    public static ItemStack getIlluminator(TEBase TE)
-    {
-        return TE.cbAttrMap.get(TE.ID_ILLUMINATOR);
-    }
-
-    /**
      * Returns true if ItemStack is a dye.
      */
     public static boolean isDye(ItemStack itemStack, boolean allowWhite)
     {
         return itemStack.getItem() != null &&
                DyeHandler.isDye(itemStack, allowWhite);
-    }
-
-    /**
-     * Returns whether side has dye.
-     */
-    public static boolean hasDye(TEBase TE, int side)
-    {
-        ItemStack itemStack = TE.cbAttrMap.get(TE.ID_DYE[side]);
-        return itemStack != null && isDye(itemStack, true);
-    }
-
-    /**
-     * Sets dye for side.
-     */
-    public static boolean setDye(TEBase TE, int side, ItemStack itemStack)
-    {
-        World world = TE.getWorldObj();
-
-        if (hasDye(TE, side)) {
-            dropAttribute(TE, getDye(TE, side));
-        }
-
-        TE.cbAttrMap.put(TE.ID_DYE[side], getReducedStack(itemStack));
-
-        if (!suppressUpdate) {
-            world.markBlockForUpdate(TE.xCoord, TE.yCoord, TE.zCoord);
-        }
-
-        return true;
-    }
-
-    /**
-     * Returns dye color for side.
-     */
-    public static ItemStack getDye(TEBase TE, int side)
-    {
-        return TE.cbAttrMap.get(TE.ID_DYE[side]);
-    }
-
-    /**
-     * Sets overlay.
-     */
-    public static boolean setOverlay(TEBase TE, int side, ItemStack itemStack)
-    {
-        World world = TE.getWorldObj();
-
-        if (hasOverlay(TE, side)) {
-            dropAttribute(TE, getOverlay(TE, side));
-        }
-
-        TE.cbAttrMap.put(TE.ID_OVERLAY[side], getReducedStack(itemStack));
-
-        if (!suppressUpdate) {
-            world.markBlockForUpdate(TE.xCoord, TE.yCoord, TE.zCoord);
-        }
-
-        return true;
-    }
-
-    /**
-     * Returns a copy of ItemStack with stackSize set to 1.
-     */
-    public static ItemStack getReducedStack(ItemStack itemStack)
-    {
-        if (itemStack == null) {
-            return itemStack;
-        } else {
-            ItemStack tempStack = itemStack.copy();
-            tempStack.stackSize = 1;
-            return tempStack;
-        }
-    }
-
-    /**
-     * Returns overlay.
-     */
-    public static ItemStack getOverlay(TEBase TE, int side)
-    {
-        return TE.cbAttrMap.get(TE.ID_OVERLAY[side]);
-    }
-
-    /**
-     * Returns whether block has overlay.
-     */
-    public static boolean hasOverlay(TEBase TE, int side)
-    {
-        ItemStack itemStack = TE.cbAttrMap.get(TE.ID_OVERLAY[side]);
-        return itemStack != null && isOverlay(itemStack);
     }
 
     /**
@@ -536,35 +234,25 @@ public class BlockProperties {
     }
 
     /**
-     * Returns whether block has pattern.
+     * Gets the first matching ore dictionary entry from the provided ore names.
+     *
+     * @param  itemStack the {@link ItemStack}
+     * @param  name the OreDictionary name to check against
+     * @return the first matching OreDictionary name, otherwise blank string
      */
-    public static boolean hasChiselDesign(TEBase TE, int side)
+    public static String getOreDictMatch(ItemStack itemStack, String ... name)
     {
-        return DesignHandler.listChisel.contains(getChiselDesign(TE, side));
-    }
-
-    /**
-     * Returns pattern.
-     */
-    public static String getChiselDesign(TEBase TE, int side)
-    {
-        return TE.cbChiselDesign[side];
-    }
-
-    /**
-     * Sets pattern.
-     */
-    public static boolean setChiselDesign(TEBase TE, int side, String iconName)
-    {
-        if (!TE.cbChiselDesign.equals(iconName)) {
-            TE.cbChiselDesign[side] = iconName;
-            if (!suppressUpdate) {
-                TE.getWorldObj().markBlockForUpdate(TE.xCoord, TE.yCoord, TE.zCoord);
+        if (itemStack != null) {
+            for (int Id : OreDictionary.getOreIDs(itemStack)) {
+                for (String oreName : name) {
+                    if (OreDictionary.getOreName(Id).equals(oreName)) {
+                        return oreName;
+                    }
+                }
             }
-            return true;
         }
 
-        return false;
+        return "";
     }
 
 }

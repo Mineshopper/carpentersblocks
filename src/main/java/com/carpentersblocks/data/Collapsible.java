@@ -1,7 +1,6 @@
 package com.carpentersblocks.data;
 
 import com.carpentersblocks.tileentity.TEBase;
-import com.carpentersblocks.util.BlockProperties;
 
 public class Collapsible {
 
@@ -46,7 +45,7 @@ public class Collapsible {
      */
     public static void setQuadHeight(TEBase TE, int corner, int height)
     {
-        int data = BlockProperties.getMetadata(TE);
+        int data = TE.getData();
         --height;
 
         if (height >= 0 && height < 16)
@@ -70,8 +69,8 @@ public class Collapsible {
                     break;
             }
 
-            if (BlockProperties.getMetadata(TE) != data) {
-                BlockProperties.setMetadata(TE, data);
+            if (TE.getData() != data) {
+                TE.setData(data);
             }
         }
     }
@@ -81,7 +80,7 @@ public class Collapsible {
      */
     public static int getQuadHeight(final TEBase TE, int corner)
     {
-        int data = BlockProperties.getMetadata(TE);
+        int data = TE.getData();
 
         switch (corner) {
             case QUAD_XZNN:

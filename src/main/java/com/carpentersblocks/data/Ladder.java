@@ -2,7 +2,6 @@ package com.carpentersblocks.data;
 
 import net.minecraftforge.common.util.ForgeDirection;
 import com.carpentersblocks.tileentity.TEBase;
-import com.carpentersblocks.util.BlockProperties;
 
 public class Ladder implements ISided {
 
@@ -23,14 +22,14 @@ public class Ladder implements ISided {
     @Override
     public void setDirection(TEBase TE, ForgeDirection dir)
     {
-        int temp = (BlockProperties.getMetadata(TE) & 0xfff8) | dir.ordinal();
-        BlockProperties.setMetadata(TE, temp);
+        int temp = (TE.getData() & 0xfff8) | dir.ordinal();
+        TE.setData(temp);
     }
 
     @Override
     public ForgeDirection getDirection(TEBase TE)
     {
-        return ForgeDirection.getOrientation(BlockProperties.getMetadata(TE) & 0x7);
+        return ForgeDirection.getOrientation(TE.getData() & 0x7);
     }
 
     /**
@@ -43,13 +42,13 @@ public class Ladder implements ISided {
 
     public int getType(TEBase TE)
     {
-        return (BlockProperties.getMetadata(TE) & 0xfff8) >>> 3;
+        return (TE.getData() & 0xfff8) >>> 3;
     }
 
     public void setType(TEBase TE, int type)
     {
-        int temp = (BlockProperties.getMetadata(TE) & 0x7) | (type << 3);
-        BlockProperties.setMetadata(TE, temp);
+        int temp = (TE.getData() & 0x7) | (type << 3);
+        TE.setData(temp);
     }
 
 }

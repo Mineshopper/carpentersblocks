@@ -20,7 +20,6 @@ import net.minecraftforge.common.util.ForgeDirection;
 import com.carpentersblocks.CarpentersBlocks;
 import com.carpentersblocks.data.Hatch;
 import com.carpentersblocks.tileentity.TEBase;
-import com.carpentersblocks.util.BlockProperties;
 import com.carpentersblocks.util.handler.ChatHandler;
 import com.carpentersblocks.util.registry.BlockRegistry;
 import com.carpentersblocks.util.registry.IconRegistry;
@@ -53,8 +52,6 @@ public class BlockCarpentersHatch extends BlockCoverable {
      */
     protected boolean onHammerLeftClick(TEBase TE, EntityPlayer entityPlayer)
     {
-        BlockProperties.getMetadata(TE);
-
         if (!TE.getWorldObj().isRemote) {
             findNextSideSupportBlock(TE, TE.getWorldObj(), TE.xCoord, TE.yCoord, TE.zCoord);
         }

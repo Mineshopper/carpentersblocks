@@ -4,7 +4,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import com.carpentersblocks.tileentity.TEBase;
-import com.carpentersblocks.util.BlockProperties;
 import com.carpentersblocks.util.registry.BlockRegistry;
 
 public class GarageDoor implements ISided {
@@ -33,7 +32,7 @@ public class GarageDoor implements ISided {
      */
     public int getType(TEBase TE)
     {
-        return BlockProperties.getMetadata(TE) & 0xf;
+        return TE.getData() & 0xf;
     }
 
     /**
@@ -41,8 +40,8 @@ public class GarageDoor implements ISided {
      */
     public void setType(TEBase TE, int type)
     {
-        int temp = (BlockProperties.getMetadata(TE) & ~0xf) | type;
-        BlockProperties.setMetadata(TE, temp);
+        int temp = (TE.getData() & ~0xf) | type;
+        TE.setData(temp);
     }
 
     /**
@@ -51,7 +50,7 @@ public class GarageDoor implements ISided {
     @Override
     public ForgeDirection getDirection(TEBase TE)
     {
-        int side = (BlockProperties.getMetadata(TE) & 0x70) >> 4;
+        int side = (TE.getData() & 0x70) >> 4;
         return ForgeDirection.getOrientation(side);
     }
 
@@ -61,8 +60,8 @@ public class GarageDoor implements ISided {
     @Override
     public void setDirection(TEBase TE, ForgeDirection dir)
     {
-        int temp = (BlockProperties.getMetadata(TE) & ~0x70) | dir.ordinal() << 4;
-        BlockProperties.setMetadata(TE, temp);
+        int temp = (TE.getData() & ~0x70) | dir.ordinal() << 4;
+        TE.setData(temp);
     }
 
     /**
@@ -70,7 +69,7 @@ public class GarageDoor implements ISided {
      */
     public int getState(TEBase TE)
     {
-        return (BlockProperties.getMetadata(TE) & 0x80) >> 7;
+        return (TE.getData() & 0x80) >> 7;
     }
 
     /**
@@ -78,14 +77,14 @@ public class GarageDoor implements ISided {
      */
     public void setState(TEBase TE, int state, boolean playSound)
     {
-        int temp = (BlockProperties.getMetadata(TE) & ~0x80) | state << 7;
+        int temp = (TE.getData() & ~0x80) | state << 7;
 
         World world = TE.getWorldObj();
         if (!world.isRemote && playSound) {
             world.playAuxSFXAtEntity((EntityPlayer)null, 1003, TE.xCoord, TE.yCoord, TE.zCoord, 0);
         }
 
-        BlockProperties.setMetadata(TE, temp);
+        TE.setData(temp);
     }
 
     /**
@@ -101,7 +100,7 @@ public class GarageDoor implements ISided {
      */
     public int getRigidity(TEBase TE)
     {
-        return (BlockProperties.getMetadata(TE) & 0x100) >> 8;
+        return (TE.getData() & 0x100) >> 8;
     }
 
     /**
@@ -109,8 +108,8 @@ public class GarageDoor implements ISided {
      */
     public void setRigidity(TEBase TE, int rigidity)
     {
-        int temp = (BlockProperties.getMetadata(TE) & ~0x100) | (rigidity << 8);
-        BlockProperties.setMetadata(TE, temp);
+        int temp = (TE.getData() & ~0x100) | (rigidity << 8);
+        TE.setData(temp);
     }
 
     /**
@@ -118,8 +117,8 @@ public class GarageDoor implements ISided {
      */
     public void setHost(TEBase TE)
     {
-        int temp = BlockProperties.getMetadata(TE) | 0x200;
-        BlockProperties.setMetadata(TE, temp);
+        int temp = TE.getData() | 0x200;
+        TE.setData(temp);
     }
 
     /**
@@ -127,7 +126,7 @@ public class GarageDoor implements ISided {
      */
     public boolean isHost(TEBase TE)
     {
-        return (BlockProperties.getMetadata(TE) & 0x200) > 0;
+        return (TE.getData() & 0x200) > 0;
     }
 
 

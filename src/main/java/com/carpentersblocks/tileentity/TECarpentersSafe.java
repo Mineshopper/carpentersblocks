@@ -1,6 +1,7 @@
 package com.carpentersblocks.tileentity;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -9,15 +10,11 @@ import com.carpentersblocks.data.Safe;
 
 public class TECarpentersSafe extends TEBase implements ISidedInventory {
 
-    private final String TAG_UPGRADE = "upgrade";
     private final String TAG_SLOT    = "Slot";
     private final String TAG_ITEMS   = "Items";
 
     /** Holds contents of block. */
     private ItemStack[] inventoryContents = new ItemStack[54];
-
-    /** Whether safe holds 54 items opposed to only 27. */
-    private boolean hasUpgrade = false;
 
     /** Counts ticks. */
     private int tickCount;
@@ -57,27 +54,12 @@ public class TECarpentersSafe extends TEBase implements ISidedInventory {
     }
 
     /**
-     * Returns whether safe is upgraded to 54 slots (gold).
-     */
-    public boolean hasUpgrade()
-    {
-        return hasUpgrade;
-    }
-
-    public void setUpgrade()
-    {
-        hasUpgrade = true;
-        markDirty();
-        getWorldObj().markBlockForUpdate(xCoord, yCoord, zCoord);
-    }
-
-    /**
      * Returns the number of slots in the inventory.
      */
     @Override
     public int getSizeInventory()
     {
-        return hasUpgrade ? 54 : 27;
+        return hasAttribute(ATTR_UPGRADE) ? 54 : 27;
     }
 
     /**
@@ -162,10 +144,8 @@ public class TECarpentersSafe extends TEBase implements ISidedInventory {
         super.readFromNBT(nbt);
 
         /* Compatibility code with older versions prior to v3.2.5 */
-        if (nbt.hasKey("inventorySize")) {
-            hasUpgrade = nbt.getInteger("inventorySize") > 27;
-        } else {
-            hasUpgrade = nbt.getBoolean(TAG_UPGRADE);
+        if (nbt.hasKey("inventorySize") && nbt.getInteger("inventorySize") > 27) {
+            addAttribute(ATTR_UPGRADE, new ItemStack(Items.iron_ingot));
         }
 
         NBTTagList nbttaglist = nbt.getTagList(TAG_ITEMS, 10);
@@ -187,8 +167,6 @@ public class TECarpentersSafe extends TEBase implements ISidedInventory {
     public void writeToNBT(NBTTagCompound nbt)
     {
         super.writeToNBT(nbt);
-
-        nbt.setBoolean(TAG_UPGRADE, hasUpgrade);
 
         NBTTagList nbttaglist = new NBTTagList();
 

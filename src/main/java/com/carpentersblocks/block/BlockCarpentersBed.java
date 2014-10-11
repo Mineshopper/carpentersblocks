@@ -17,7 +17,6 @@ import net.minecraft.world.biome.BiomeGenBase;
 import com.carpentersblocks.CarpentersBlocks;
 import com.carpentersblocks.data.Bed;
 import com.carpentersblocks.tileentity.TEBase;
-import com.carpentersblocks.util.BlockProperties;
 import com.carpentersblocks.util.handler.ChatHandler;
 import com.carpentersblocks.util.registry.BlockRegistry;
 import com.carpentersblocks.util.registry.IconRegistry;
@@ -61,9 +60,8 @@ public class BlockCarpentersBed extends BlockCoverable {
      */
     protected boolean onHammerLeftClick(TEBase TE, EntityPlayer entityPlayer)
     {
-        BlockProperties.setPrevDesign(TE);
-        BlockProperties.setDesign(Bed.getOppositeTE(TE), BlockProperties.getDesign(TE));
-
+        TE.setPrevDesign();
+        Bed.getOppositeTE(TE).setDesign(TE.getDesign());
         return true;
     }
 
@@ -74,11 +72,11 @@ public class BlockCarpentersBed extends BlockCoverable {
     protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer)
     {
         if (entityPlayer.isSneaking()) {
-            BlockProperties.clearDesign(TE);
-            BlockProperties.clearDesign(Bed.getOppositeTE(TE));
+            TE.removeDesign();
+            Bed.getOppositeTE(TE).removeDesign();
         } else {
-            BlockProperties.setNextDesign(TE);
-            BlockProperties.setDesign(Bed.getOppositeTE(TE), BlockProperties.getDesign(TE));
+            TE.setNextDesign();
+            Bed.getOppositeTE(TE).setDesign(TE.getDesign());
         }
 
         return true;

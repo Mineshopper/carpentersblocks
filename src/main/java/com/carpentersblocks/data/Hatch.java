@@ -3,7 +3,6 @@ package com.carpentersblocks.data;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import com.carpentersblocks.tileentity.TEBase;
-import com.carpentersblocks.util.BlockProperties;
 
 public class Hatch {
 
@@ -39,7 +38,7 @@ public class Hatch {
      */
     public static int getType(TEBase TE)
     {
-        return BlockProperties.getMetadata(TE) & 0x7;
+        return TE.getData() & 0x7;
     }
 
     /**
@@ -47,10 +46,10 @@ public class Hatch {
      */
     public static void setType(TEBase TE, int type)
     {
-        int temp = BlockProperties.getMetadata(TE) & 0xfff8;
+        int temp = TE.getData() & 0xfff8;
         temp |= type;
 
-        BlockProperties.setMetadata(TE, temp);
+        TE.setData(temp);
     }
 
     /**
@@ -58,7 +57,7 @@ public class Hatch {
      */
     public static int getPos(TEBase TE)
     {
-        int temp = BlockProperties.getMetadata(TE) & 0x8;
+        int temp = TE.getData() & 0x8;
         return temp >> 3;
     }
 
@@ -67,10 +66,10 @@ public class Hatch {
      */
     public static void setPos(TEBase TE, int position)
     {
-        int temp = BlockProperties.getMetadata(TE) & 0xfff7;
+        int temp = TE.getData() & 0xfff7;
         temp |= position << 3;
 
-        BlockProperties.setMetadata(TE, temp);
+        TE.setData(temp);
     }
 
     /**
@@ -78,7 +77,7 @@ public class Hatch {
      */
     public static int getState(TEBase TE)
     {
-        int temp = BlockProperties.getMetadata(TE) & 0x10;
+        int temp = TE.getData() & 0x10;
         return temp >> 4;
     }
 
@@ -87,7 +86,7 @@ public class Hatch {
      */
     public static void setState(TEBase TE, int state)
     {
-        int temp = BlockProperties.getMetadata(TE) & 0xffef;
+        int temp = TE.getData() & 0xffef;
         temp |= state << 4;
 
         World world = TE.getWorldObj();
@@ -96,7 +95,7 @@ public class Hatch {
             world.playAuxSFXAtEntity((EntityPlayer)null, 1003, TE.xCoord, TE.yCoord, TE.zCoord, 0);
         }
 
-        BlockProperties.setMetadata(TE, temp);
+        TE.setData(temp);
     }
 
     /**
@@ -104,7 +103,7 @@ public class Hatch {
      */
     public static int getDir(TEBase TE)
     {
-        int temp = BlockProperties.getMetadata(TE) & 0x60;
+        int temp = TE.getData() & 0x60;
         return temp >> 5;
     }
 
@@ -113,10 +112,10 @@ public class Hatch {
      */
     public static void setDir(TEBase TE, int dir)
     {
-        int temp = BlockProperties.getMetadata(TE) & 0xff9f;
+        int temp = TE.getData() & 0xff9f;
         temp |= dir << 5;
 
-        BlockProperties.setMetadata(TE, temp);
+        TE.setData(temp);
     }
 
     /**
@@ -124,7 +123,7 @@ public class Hatch {
      */
     public static int getRigidity(TEBase TE)
     {
-        int temp = BlockProperties.getMetadata(TE) & 0x80;
+        int temp = TE.getData() & 0x80;
         return temp >> 7;
     }
 
@@ -133,10 +132,10 @@ public class Hatch {
      */
     public static void setRigidity(TEBase TE, int rigid)
     {
-        int temp = BlockProperties.getMetadata(TE) & 0xff7f;
+        int temp = TE.getData() & 0xff7f;
         temp |= rigid << 7;
 
-        BlockProperties.setMetadata(TE, temp);
+        TE.setData(temp);
     }
 
 }

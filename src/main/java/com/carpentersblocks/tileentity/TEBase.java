@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
 import net.minecraft.block.Block;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -13,6 +14,8 @@ import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import com.carpentersblocks.util.BlockProperties;
+import com.carpentersblocks.util.handler.DesignHandler;
 import com.carpentersblocks.util.protection.IProtected;
 import com.carpentersblocks.util.protection.ProtectedUtil;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -27,24 +30,28 @@ public class TEBase extends TileEntity implements IProtected {
     private static final String TAG_CHISEL_DESIGN = "cbChiselDesign";
     private static final String TAG_DESIGN        = "cbDesign";
 
-    public static final byte[] ID_COVER           = {  0,  1,  2,  3,  4,  5,  6 };
-    public static final byte[] ID_DYE             = {  7,  8,  9, 10, 11, 12, 13 };
-    public static final byte[] ID_OVERLAY         = { 14, 15, 16, 17, 18, 19, 20 };
-    public static final byte   ID_ILLUMINATOR     = 21;
+    public static final byte[]  ATTR_COVER        = {  0,  1,  2,  3,  4,  5,  6 };
+    public static final byte[]  ATTR_DYE          = {  7,  8,  9, 10, 11, 12, 13 };
+    public static final byte[]  ATTR_OVERLAY      = { 14, 15, 16, 17, 18, 19, 20 };
+    public static final byte    ATTR_ILLUMINATOR  = 21;
+    public static final byte    ATTR_PLANT        = 22;
+    public static final byte    ATTR_SOIL         = 23;
+    public static final byte    ATTR_FERTILIZER   = 24;
+    public static final byte    ATTR_UPGRADE      = 25;
 
-    public Map<Byte, ItemStack> cbAttrMap = new HashMap<Byte, ItemStack>();
+    protected Map<Byte, ItemStack> cbAttrMap = new HashMap<Byte, ItemStack>();
 
     /** Chisel design for each side and base block. */
-    public String[] cbChiselDesign = { "", "", "", "", "", "", "" };
+    protected String[] cbChiselDesign = { "", "", "", "", "", "", "" };
 
     /** Holds specific block information like facing, states, etc. */
-    public short cbMetadata;
+    protected short cbMetadata;
 
     /** Design name. */
-    public String cbDesign = "";
+    protected String cbDesign = "";
 
     /** Owner of tile entity. */
-    public String cbOwner = "";
+    protected String cbOwner = "";
 
     @Override
     public void readFromNBT(NBTTagCompound nbt)
@@ -52,6 +59,7 @@ public class TEBase extends TileEntity implements IProtected {
         super.readFromNBT(nbt);
 
         cbAttrMap.clear();
+
         if (nbt.hasKey("owner")) {
             MigrationHelper.updateMappingsOnRead(this, nbt);
         } else {
@@ -60,7 +68,8 @@ public class TEBase extends TileEntity implements IProtected {
                 NBTTagCompound nbt1 = nbttaglist.getCompoundTagAt(idx);
                 ItemStack tempStack = ItemStack.loadItemStackFromNBT(nbt1);
                 tempStack.stackSize = 1; // All ItemStacks pre-3.2.7 DEV R3 stored original stack sizes, reduce them here.
-                cbAttrMap.put((byte) (nbt1.getByte(TAG_ATTR) & 255), tempStack);
+                byte attrId = (byte) (nbt1.getByte(TAG_ATTR) & 255);
+                cbAttrMap.put(attrId, tempStack);
             }
 
             for (int idx = 0; idx < 7; ++idx) {
@@ -87,6 +96,7 @@ public class TEBase extends TileEntity implements IProtected {
         super.writeToNBT(nbt);
 
         NBTTagList itemstack_list = new NBTTagList();
+
         Iterator iterator = cbAttrMap.entrySet().iterator();
         while (iterator.hasNext()) {
             Map.Entry entry = (Map.Entry) iterator.next();
@@ -193,6 +203,223 @@ public class TEBase extends TileEntity implements IProtected {
     public boolean canUpdate()
     {
         return false;
+    }
+
+    public boolean hasAttribute(byte attrId)
+    {
+        return cbAttrMap.containsKey(attrId);
+    }
+
+    public ItemStack getAttribute(byte attrId)
+    {
+        return cbAttrMap.get(attrId);
+    }
+
+    public void addAttribute(byte attrId, ItemStack itemStack)
+    {
+        if (!hasAttribute(attrId) && itemStack != null) {
+
+            World world = getWorldObj();
+
+            ItemStack reducedStack = null;
+            if (itemStack != null) {
+                reducedStack = ItemStack.copyItemStack(itemStack);
+                reducedStack.stackSize = 1;
+            }
+
+            cbAttrMap.put(attrId, reducedStack);
+
+            /* Cover attributes change metadata and notify neighbors. */
+
+            Block block = itemStack == null ? getBlockType() : BlockProperties.toBlock(itemStack);
+
+            if (attrId < 7) {
+                int metadata = itemStack == null ? 0 : itemStack.getItemDamage();
+                if (attrId == ATTR_COVER[6]) {
+                    world.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, metadata, 0);
+                }
+                world.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, block);
+            } else if (attrId == ATTR_PLANT | attrId == ATTR_SOIL) {
+                world.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, block);
+            }
+
+            if (attrId == ATTR_FERTILIZER) {
+                /* Play sound when fertilizing plants.. though I've never heard it before. */
+                getWorldObj().playAuxSFX(2005, xCoord, yCoord, zCoord, 0);
+            }
+
+            markDirty();
+            world.markBlockForUpdate(xCoord, yCoord, zCoord);
+
+        }
+    }
+
+    /**
+     * If tile entity contains attribute, will drop attribute
+     * {@link ItemStack} and remove it from the map.
+     *
+     * @param  attrId
+     * @return <code>true</code> if attribute was removed
+     */
+    public boolean removeAttribute(byte attrId)
+    {
+        if (hasAttribute(attrId)) {
+            dropAttribute(attrId);
+            cbAttrMap.remove(attrId);
+            markDirty();
+            return true;
+        }
+
+        return false;
+    }
+
+    public void removeAttributes(int side)
+    {
+        removeAttribute(ATTR_COVER[side]);
+        removeAttribute(ATTR_DYE[side]);
+        removeAttribute(ATTR_OVERLAY[side]);
+
+        if (side == 6) {
+            removeAttribute(ATTR_ILLUMINATOR);
+        }
+    }
+
+    /**
+     * Creates a block event that drops the provided ItemStack.
+     * Used outside block methods since method required in Block.class is protected.
+     *
+     * @param itemStack
+     */
+    public void dropAttribute(byte attrId)
+    {
+        ItemStack itemStack = getAttribute(attrId);
+        getWorldObj().addBlockEvent(xCoord, yCoord, zCoord, getBlockType(), Item.getIdFromItem(itemStack.getItem()), itemStack.getItemDamage());
+    }
+
+    /**
+     * Returns whether block has pattern.
+     */
+    public boolean hasChiselDesign(int side)
+    {
+        return DesignHandler.listChisel.contains(getChiselDesign(side));
+    }
+
+    /**
+     * Returns pattern.
+     */
+    public String getChiselDesign(int side)
+    {
+        return cbChiselDesign[side];
+    }
+
+    /**
+     * Sets pattern.
+     */
+    public boolean setChiselDesign(int side, String iconName)
+    {
+        if (!cbChiselDesign.equals(iconName)) {
+            cbChiselDesign[side] = iconName;
+            getWorldObj().markBlockForUpdate(xCoord, yCoord, zCoord);
+            return true;
+        }
+
+        return false;
+    }
+
+    public void removeChiselDesign(int side)
+    {
+        if (!cbChiselDesign.equals("")) {
+            cbChiselDesign[side] = "";
+            getWorldObj().markBlockForUpdate(xCoord, yCoord, zCoord);
+        }
+    }
+
+    /**
+     * Gets block-specific data.
+     *
+     * @return the data
+     */
+    public int getData()
+    {
+        return cbMetadata & 0xffff;
+    }
+
+    /**
+     * Sets block-specific data.
+     */
+    public boolean setData(int data)
+    {
+        if (data != getData()) {
+            cbMetadata = (short) data;
+            getWorldObj().markBlockForUpdate(xCoord, yCoord, zCoord);
+            return true;
+        }
+
+        return false;
+    }
+
+    public boolean hasDesign()
+    {
+        return DesignHandler.getListForType(getBlockDesignType()).contains(cbDesign);
+    }
+
+    public String getDesign()
+    {
+        return cbDesign;
+    }
+
+    public boolean setDesign(String name)
+    {
+        if (!cbDesign.equals(name)) {
+            cbDesign = name;
+            getWorldObj().markBlockForUpdate(xCoord, yCoord, zCoord);
+            return true;
+        }
+
+        return false;
+    }
+
+    public boolean removeDesign()
+    {
+        return setDesign("");
+    }
+
+    public String getBlockDesignType()
+    {
+        String name = getBlockType().getUnlocalizedName();
+        return name.substring(new String("tile.blockCarpenters").length()).toLowerCase();
+    }
+
+    public boolean setNextDesign()
+    {
+        return setDesign(DesignHandler.getNext(getBlockDesignType(), cbDesign));
+    }
+
+    public boolean setPrevDesign()
+    {
+        return setDesign(DesignHandler.getPrev(getBlockDesignType(), cbDesign));
+    }
+
+    /**
+     * Sets block metadata without causing a render update.
+     * <p>
+     * As part of mimicking a cover block, the metadata must be changed
+     * to better represent the cover properties.
+     * <p>
+     * This is normally followed up by calling {@link setMetadataFromCover}.
+     */
+    public void setMetadata(int metadata)
+    {
+        getWorldObj().setBlockMetadataWithNotify(xCoord, yCoord, zCoord, metadata, 4);
+    }
+
+    /**
+     * Restores default metadata for block from base cover.
+     */
+    public void restoreMetadata()
+    {
+        int metadata = hasAttribute(ATTR_COVER[6]) ? getAttribute(ATTR_COVER[6]).getItemDamage() : 0;
+        getWorldObj().setBlockMetadataWithNotify(xCoord, yCoord, zCoord, metadata, 4);
     }
 
 }

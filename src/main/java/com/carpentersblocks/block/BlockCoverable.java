@@ -312,7 +312,7 @@ public class BlockCoverable extends BlockContainer {
 
                     if (itemStack != null) {
 
-                        int effectiveSide = BlockProperties.hasCover(TE, EventHandler.eventFace) ? EventHandler.eventFace : 6;
+                        int effectiveSide = TE.hasAttribute(TE.ATTR_COVER[EventHandler.eventFace]) ? EventHandler.eventFace : 6;
                         Item item = itemStack.getItem();
 
                         if (item instanceof ICarpentersHammer && ((ICarpentersHammer)item).canUseHammer(world, entityPlayer)) {
@@ -323,18 +323,18 @@ public class BlockCoverable extends BlockContainer {
 
                                 if (entityPlayer.isSneaking()) {
 
-                                    if (BlockProperties.hasIlluminator(TE)) {
-                                        BlockProperties.setIlluminator(TE, null);
+                                    if (TE.hasAttribute(TE.ATTR_ILLUMINATOR)) {
+                                        TE.removeAttribute(TE.ATTR_ILLUMINATOR);
                                         actionResult.setAltered();
-                                    } else if (BlockProperties.hasOverlay(TE, effectiveSide)) {
-                                        BlockProperties.setOverlay(TE, effectiveSide, (ItemStack)null);
+                                    } else if (TE.hasAttribute(TE.ATTR_OVERLAY[effectiveSide])) {
+                                        TE.removeAttribute(TE.ATTR_OVERLAY[effectiveSide]);
                                         actionResult.setAltered();
-                                    } else if (BlockProperties.hasDye(TE, effectiveSide)) {
-                                        BlockProperties.setDye(TE, effectiveSide, (ItemStack)null);
+                                    } else if (TE.hasAttribute(TE.ATTR_DYE[effectiveSide])) {
+                                        TE.removeAttribute(TE.ATTR_DYE[effectiveSide]);
                                         actionResult.setAltered();
-                                    } else if (BlockProperties.hasCover(TE, effectiveSide)) {
-                                        BlockProperties.setCover(TE, effectiveSide, (ItemStack)null);
-                                        BlockProperties.setChiselDesign(TE, effectiveSide, "");
+                                    } else if (TE.hasAttribute(TE.ATTR_COVER[effectiveSide])) {
+                                        TE.removeAttribute(TE.ATTR_COVER[effectiveSide]);
+                                        TE.removeChiselDesign(effectiveSide);
                                         actionResult.setAltered();
                                     }
 
@@ -356,11 +356,11 @@ public class BlockCoverable extends BlockContainer {
 
                             if (entityPlayer.isSneaking()) {
 
-                                if (BlockProperties.hasChiselDesign(TE, effectiveSide)) {
-                                    BlockProperties.setChiselDesign(TE, effectiveSide, "");
+                                if (TE.hasChiselDesign(effectiveSide)) {
+                                    TE.removeChiselDesign(effectiveSide);
                                 }
 
-                            } else if (BlockProperties.hasCover(TE, effectiveSide)) {
+                            } else if (TE.hasAttribute(TE.ATTR_COVER[effectiveSide])) {
 
                                 onChiselClick(TE, effectiveSide, true);
 
@@ -395,7 +395,7 @@ public class BlockCoverable extends BlockContainer {
                 if (canPlayerActivate(TE, entityPlayer)) {
 
                     /* Sides 0-5 are side covers, and 6 is the base block. */
-                    int effectiveSide = BlockProperties.hasCover(TE, side) ? side : 6;
+                    int effectiveSide = TE.hasAttribute(TE.ATTR_COVER[side]) ? side : 6;
 
                     preOnBlockActivated(TE, entityPlayer, side, hitX, hitY, hitZ, actionResult);
 
@@ -413,7 +413,7 @@ public class BlockCoverable extends BlockContainer {
 
                                 } else if (ItemRegistry.enableChisel && itemStack.getItem() instanceof ICarpentersChisel && ((ICarpentersChisel)itemStack.getItem()).canUseChisel(world, entityPlayer)) {
 
-                                    if (BlockProperties.hasCover(TE, effectiveSide)) {
+                                    if (TE.hasAttribute(TE.ATTR_COVER[effectiveSide])) {
                                         if (onChiselClick(TE, effectiveSide, false)) {
                                             actionResult.setAltered();
                                         }
@@ -438,35 +438,31 @@ public class BlockCoverable extends BlockContainer {
 
                                     /* Base cover should always be checked. */
 
-                                    if (effectiveSide == 6 && (!canCoverSide(TE, world, x, y, z, 6) || BlockProperties.hasCover(TE, 6))) {
+                                    if (effectiveSide == 6 && (!canCoverSide(TE, world, x, y, z, 6) || TE.hasAttribute(TE.ATTR_COVER[6]))) {
                                         effectiveSide = side;
                                     }
 
-                                    if (canCoverSide(TE, world, x, y, z, effectiveSide) && !BlockProperties.hasCover(TE, effectiveSide)) {
-                                        if (BlockProperties.setCover(TE, effectiveSide, tempStack)) {
-                                            actionResult.setAltered().decInventory().setSoundSource(itemStack);
-                                        }
+                                    if (canCoverSide(TE, world, x, y, z, effectiveSide) && !TE.hasAttribute(TE.ATTR_COVER[effectiveSide])) {
+                                        TE.addAttribute(TE.ATTR_COVER[effectiveSide], tempStack);
+                                        actionResult.setAltered().decInventory().setSoundSource(itemStack);
                                     }
 
                                 } else if (entityPlayer.isSneaking()) {
 
                                     if (FeatureRegistry.enableIllumination && BlockProperties.isIlluminator(itemStack)) {
-                                        if (!BlockProperties.hasIlluminator(TE)) {
-                                            if (BlockProperties.setIlluminator(TE, itemStack)) {
-                                                actionResult.setAltered().decInventory().setSoundSource(itemStack);
-                                            }
+                                        if (!TE.hasAttribute(TE.ATTR_ILLUMINATOR)) {
+                                            TE.addAttribute(TE.ATTR_ILLUMINATOR, itemStack);
+                                            actionResult.setAltered().decInventory().setSoundSource(itemStack);
                                         }
                                     } else if (FeatureRegistry.enableOverlays && BlockProperties.isOverlay(itemStack)) {
-                                        if (!BlockProperties.hasOverlay(TE, effectiveSide) && (effectiveSide < 6 && BlockProperties.hasCover(TE, effectiveSide) || effectiveSide == 6)) {
-                                            if (BlockProperties.setOverlay(TE, effectiveSide, itemStack)) {
-                                                actionResult.setAltered().decInventory().setSoundSource(itemStack);
-                                            }
+                                        if (!TE.hasAttribute(TE.ATTR_OVERLAY[effectiveSide]) && (effectiveSide < 6 && TE.hasAttribute(TE.ATTR_COVER[effectiveSide]) || effectiveSide == 6)) {
+                                            TE.addAttribute(TE.ATTR_OVERLAY[effectiveSide], itemStack);
+                                            actionResult.setAltered().decInventory().setSoundSource(itemStack);
                                         }
                                     } else if (FeatureRegistry.enableDyeColors && BlockProperties.isDye(itemStack, false)) {
-                                        if (!BlockProperties.hasDye(TE, effectiveSide)) {
-                                            if (BlockProperties.setDye(TE, effectiveSide, itemStack)) {
-                                                actionResult.setAltered().decInventory().setSoundSource(itemStack);
-                                            }
+                                        if (!TE.hasAttribute(TE.ATTR_DYE[effectiveSide])) {
+                                            TE.addAttribute(TE.ATTR_DYE[effectiveSide], itemStack);
+                                            actionResult.setAltered().decInventory().setSoundSource(itemStack);
                                         }
                                     }
 
@@ -513,7 +509,7 @@ public class BlockCoverable extends BlockContainer {
      */
     public boolean onChiselClick(TEBase TE, int side, boolean leftClick)
     {
-        String design = BlockProperties.getChiselDesign(TE, side);
+        String design = TE.getChiselDesign(side);
         String designAdj = "";
 
         if (design.equals("")) {
@@ -527,8 +523,8 @@ public class BlockCoverable extends BlockContainer {
             for (TEBase TE_current : TE_list) {
                 if (TE_current != null) {
                     TE_current.getBlockType();
-                    if (BlockProperties.hasChiselDesign(TE_current, side)) {
-                        design = BlockProperties.getChiselDesign(TE_current, side);
+                    if (TE_current.hasChiselDesign(side)) {
+                        design = TE_current.getChiselDesign(side);
                         designAdj = design;
                     }
                 }
@@ -541,7 +537,7 @@ public class BlockCoverable extends BlockContainer {
         }
 
         if (!design.equals("")) {
-            BlockProperties.setChiselDesign(TE, side, design);
+            TE.setChiselDesign(side, design);
         }
 
         return true;
@@ -560,14 +556,14 @@ public class BlockCoverable extends BlockContainer {
             TEBase TE = getTileEntity(world, x, y, z);
             if (TE != null) {
                 for (int side = 0; side < 6; ++side) {
-                    if (BlockProperties.hasCover(TE, side)) {
+                    if (TE.hasAttribute(TE.ATTR_COVER[side])) {
                         if (!canCoverSide(TE, world, x, y, z, side)) {
-                            BlockProperties.ejectAttributes(TE, side);
+                            TE.removeAttributes(side);
                             continue;
                         }
                         ForgeDirection dir = ForgeDirection.getOrientation(side);
                         if (world.isSideSolid(x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ, dir.getOpposite()) && isSideSolid(world, x, y, z, dir)) {
-                            BlockProperties.ejectAttributes(TE, side);
+                            TE.removeAttributes(side);
                         }
                     }
                 }
@@ -590,7 +586,7 @@ public class BlockCoverable extends BlockContainer {
 
         if (TE != null) {
             for (int idx = 0; idx < 7; ++idx) {
-                if (BlockProperties.hasCover(TE, idx)) {
+                if (TE.hasAttribute(TE.ATTR_COVER[idx])) {
                     Block block = BlockProperties.toBlock(BlockProperties.getCover(TE, idx));
                     int tempPower = block.isProvidingWeakPower(blockAccess, x, y, z, side);
                     if (tempPower > power) {
@@ -617,13 +613,13 @@ public class BlockCoverable extends BlockContainer {
 
         if (TE != null) {
             int effectiveSide = ForgeDirection.OPPOSITES[side];
-            if (BlockProperties.hasCover(TE, effectiveSide)) {
+            if (TE.hasAttribute(TE.ATTR_COVER[effectiveSide])) {
                 Block block = BlockProperties.toBlock(BlockProperties.getCover(TE, effectiveSide));
                 int tempPower = block.isProvidingWeakPower(blockAccess, x, y, z, side);
                 if (tempPower > power) {
                     power = tempPower;
                 }
-            } else if (BlockProperties.hasCover(TE, 6)) {
+            } else if (TE.hasAttribute(TE.ATTR_COVER[6])) {
                 Block block = BlockProperties.toBlock(BlockProperties.getCover(TE, 6));
                 int tempPower = block.isProvidingWeakPower(blockAccess, x, y, z, side);
                 if (tempPower > power) {
@@ -684,11 +680,11 @@ public class BlockCoverable extends BlockContainer {
 
         if (TE != null) {
 
-            int effectiveSide = BlockProperties.hasCover(TE, target.sideHit) ? target.sideHit : 6;
+            int effectiveSide = TE.hasAttribute(TE.ATTR_COVER[target.sideHit]) ? target.sideHit : 6;
             ItemStack itemStack = BlockProperties.getCover(TE, effectiveSide);
 
-            if (BlockProperties.hasOverlay(TE, effectiveSide)) {
-                Overlay overlay = OverlayHandler.getOverlayType(BlockProperties.getOverlay(TE, effectiveSide));
+            if (TE.hasAttribute(TE.ATTR_OVERLAY[effectiveSide])) {
+                Overlay overlay = OverlayHandler.getOverlayType(TE.getAttribute(TE.ATTR_OVERLAY[effectiveSide]));
                 if (OverlayHandler.coversFullSide(overlay, target.sideHit)) {
                     itemStack = overlay.getItemStack();
                 }
@@ -782,9 +778,9 @@ public class BlockCoverable extends BlockContainer {
         /* Try grabbing more accurate lighting using metadata */
 
         if (lightValue == 0) {
-            BlockProperties.setHostMetadata(TE, metadata);
+            TE.setMetadata(metadata);
             lightValue = block.getLightValue(TE.getWorldObj(), TE.xCoord, TE.yCoord, TE.zCoord);
-            BlockProperties.resetHostMetadata(TE);
+            TE.restoreMetadata();
         }
 
         return lightValue;
@@ -794,7 +790,7 @@ public class BlockCoverable extends BlockContainer {
     /**
      * Returns light value based on cover or side covers.
      */
-    public int getLightValue(IBlockAccess world, int x, int y, int z)
+    public int getLightValue(IBlockAccess blockAccess, int x, int y, int z)
     {
         int lightValue = 0;
 
@@ -811,14 +807,14 @@ public class BlockCoverable extends BlockContainer {
         }
         grabLightValue = true;
 
-        TEBase TE = getTileEntity(world, x, y, z);
+        TEBase TE = getTileEntity(blockAccess, x, y, z);
 
         if (TE != null) {
-            if (FeatureRegistry.enableIllumination && BlockProperties.hasIlluminator(TE)) {
+            if (FeatureRegistry.enableIllumination && TE.hasAttribute(TE.ATTR_ILLUMINATOR)) {
                 lightValue = 15;
             } else {
                 for (int side = 0; side < 7; ++side) {
-                    if (BlockProperties.hasCover(TE, side)) {
+                    if (TE.hasAttribute(TE.ATTR_COVER[side])) {
                         ItemStack itemStack = BlockProperties.getCover(TE, side);
                         int tempLight = getLightValue(TE, BlockProperties.toBlock(itemStack), itemStack.getItemDamage());
                         if (tempLight > lightValue) {
@@ -842,7 +838,7 @@ public class BlockCoverable extends BlockContainer {
         TEBase TE = getTileEntity(world, x, y, z);
 
         if (TE != null) {
-            if (BlockProperties.hasCover(TE, 6)) {
+            if (TE.hasAttribute(TE.ATTR_COVER[6])) {
                 return BlockProperties.toBlock(BlockProperties.getCover(TE, 6)).getBlockHardness(world, x, y, z);
             }
         }
@@ -869,7 +865,7 @@ public class BlockCoverable extends BlockContainer {
     /**
      * Called when fire is updating on a neighbor block.
      */
-    public int getFireSpreadSpeed(IBlockAccess world, int x, int y, int z, ForgeDirection face)
+    public int getFireSpreadSpeed(IBlockAccess world, int x, int y, int z, ForgeDirection side)
     {
         TEBase TE = getTileEntity(world, x, y, z);
 
@@ -877,7 +873,7 @@ public class BlockCoverable extends BlockContainer {
             return Blocks.fire.getEncouragement(BlockProperties.toBlock(BlockProperties.getCover(TE, 6)));
         }
 
-        return super.getFireSpreadSpeed(world, x, y, z, face);
+        return super.getFireSpreadSpeed(world, x, y, z, side);
     }
 
     @Override
@@ -891,7 +887,7 @@ public class BlockCoverable extends BlockContainer {
         TEBase TE = getTileEntity(world, x, y, z);
 
         if (TE != null) {
-            if (BlockProperties.hasCover(TE, 6)) {
+            if (TE.hasAttribute(TE.ATTR_COVER[6])) {
                 return BlockProperties.toBlock(BlockProperties.getCover(TE, 6)).isFireSource(world, x, y, z, side);
             }
         }
@@ -908,7 +904,7 @@ public class BlockCoverable extends BlockContainer {
         TEBase TE = getTileEntity(world, x, y, z);
 
         if (TE != null) {
-            if (BlockProperties.hasCover(TE, 6)) {
+            if (TE.hasAttribute(TE.ATTR_COVER[6])) {
                 return BlockProperties.toBlock(BlockProperties.getCover(TE, 6)).getExplosionResistance(entity);
             }
         }
@@ -925,7 +921,7 @@ public class BlockCoverable extends BlockContainer {
         TEBase TE = getTileEntity(world, x, y, z);
 
         if (TE != null) {
-            if (BlockProperties.hasCover(TE, 6)) {
+            if (TE.hasAttribute(TE.ATTR_COVER[6])) {
                 return BlockProperties.toBlock(BlockProperties.getCover(TE, 6)).isWood(world,  x,  y,  z);
             }
         }
@@ -942,7 +938,7 @@ public class BlockCoverable extends BlockContainer {
         TEBase TE = getTileEntity(world, x, y, z);
 
         if (TE != null) {
-            if (BlockProperties.hasCover(TE, 6)) {
+            if (TE.hasAttribute(TE.ATTR_COVER[6])) {
                 Block block = BlockProperties.toBlock(BlockProperties.getCover(TE, 6));
                 if (entity instanceof EntityWither) {
                     return !block.equals(Blocks.bedrock) && !block.equals(Blocks.end_portal) && !block.equals(Blocks.end_portal_frame) && !block.equals(Blocks.command_block);
@@ -964,7 +960,7 @@ public class BlockCoverable extends BlockContainer {
         TEBase TE = getTileEntity(world, x, y, z);
 
         if (TE != null) {
-            if (BlockProperties.hasCover(TE, 6)) {
+            if (TE.hasAttribute(TE.ATTR_COVER[6])) {
                 BlockProperties.toBlock(BlockProperties.getCover(TE, 6)).onEntityCollidedWithBlock(world, x, y, z, entity);
             }
         }
@@ -1008,18 +1004,18 @@ public class BlockCoverable extends BlockContainer {
 
         if (TE != null) {
             for (int idx = 0; idx < 7; ++idx) {
-                if (BlockProperties.hasCover(TE, idx)) {
+                if (TE.hasAttribute(TE.ATTR_COVER[idx])) {
                     ret.add(BlockProperties.getCoverForDrop(TE, idx));
                 }
-                if (BlockProperties.hasOverlay(TE, idx)) {
-                    ret.add(BlockProperties.getOverlay(TE, idx));
+                if (TE.hasAttribute(TE.ATTR_OVERLAY[idx])) {
+                    ret.add(TE.getAttribute(TE.ATTR_OVERLAY[idx]));
                 }
-                if (BlockProperties.hasDye(TE, idx)) {
-                    ret.add(BlockProperties.getDye(TE, idx));
+                if (TE.hasAttribute(TE.ATTR_DYE[idx])) {
+                    ret.add(TE.getAttribute(TE.ATTR_DYE[idx]));
                 }
             }
-            if (BlockProperties.hasIlluminator(TE)) {
-                ret.add(BlockProperties.getIlluminator(TE));
+            if (TE.hasAttribute(TE.ATTR_ILLUMINATOR)) {
+                ret.add(TE.getAttribute(TE.ATTR_ILLUMINATOR));
             }
         }
 
@@ -1037,12 +1033,12 @@ public class BlockCoverable extends BlockContainer {
 
         if (TE != null) {
 
-            if (BlockProperties.hasCover(TE, 6)) {
+            if (TE.hasAttribute(TE.ATTR_COVER[6])) {
                 BlockProperties.toBlock(BlockProperties.getCover(TE, 6)).randomDisplayTick(world, x, y, z, random);
             }
 
-            if (BlockProperties.hasOverlay(TE, 6)) {
-                if (OverlayHandler.getOverlayType(BlockProperties.getOverlay(TE, 6)).equals(Overlay.MYCELIUM)) {
+            if (TE.hasAttribute(TE.ATTR_OVERLAY[6])) {
+                if (OverlayHandler.getOverlayType(TE.getAttribute(TE.ATTR_OVERLAY[6])).equals(Overlay.MYCELIUM)) {
                     Blocks.mycelium.randomDisplayTick(world, x, y, z, random);
                 }
             }
@@ -1090,11 +1086,11 @@ public class BlockCoverable extends BlockContainer {
             List<Block> blocks = new ArrayList<Block>();
 
             for (int side1 = 1; side1 < 7; side1 += 5) {
-                if (BlockProperties.hasCover(TE, side1)) {
+                if (TE.hasAttribute(TE.ATTR_COVER[side1])) {
                     blocks.add(BlockProperties.toBlock(BlockProperties.getCover(TE, side1)));
                 }
-                if (BlockProperties.hasOverlay(TE, side1)) {
-                    blocks.add(BlockProperties.toBlock(OverlayHandler.getOverlayType(BlockProperties.getOverlay(TE, side1)).getItemStack()));
+                if (TE.hasAttribute(TE.ATTR_OVERLAY[side1])) {
+                    blocks.add(BlockProperties.toBlock(OverlayHandler.getOverlayType(TE.getAttribute(TE.ATTR_OVERLAY[side1])).getItemStack()));
                 }
             }
 
@@ -1137,7 +1133,7 @@ public class BlockCoverable extends BlockContainer {
         TEBase TE = getTileEntity(world, x, y, z);
 
         if (TE != null) {
-            return !BlockProperties.hasCover(TE, 6) || BlockProperties.toBlock(BlockProperties.getCover(TE, 6)).isOpaqueCube();
+            return !TE.hasAttribute(TE.ATTR_COVER[6]) || BlockProperties.toBlock(BlockProperties.getCover(TE, 6)).isOpaqueCube();
         } else {
             return false;
         }
@@ -1220,12 +1216,12 @@ public class BlockCoverable extends BlockContainer {
                     Block block_adj = BlockProperties.toBlock(BlockProperties.getCover(TE_adj, 6));
                     Block block_src = BlockProperties.toBlock(BlockProperties.getCover(TE_src, 6));
 
-                    if (!BlockProperties.hasCover(TE_adj, 6)) {
-                        return BlockProperties.hasCover(TE_src, 6);
+                    if (!TE_adj.hasAttribute(TE.ATTR_COVER[6])) {
+                        return TE_src.hasAttribute(TE.ATTR_COVER[6]);
                     } else {
-                        if (!BlockProperties.hasCover(TE_src, 6) && block_adj.getRenderBlockPass() == 0) {
+                        if (!TE_src.hasAttribute(TE.ATTR_COVER[6]) && block_adj.getRenderBlockPass() == 0) {
                             return !block_adj.isOpaqueCube();
-                        } else if (BlockProperties.hasCover(TE_src, 6) && block_src.isOpaqueCube() == block_adj.isOpaqueCube() && block_src.getRenderBlockPass() == block_adj.getRenderBlockPass()) {
+                        } else if (TE_src.hasAttribute(TE.ATTR_COVER[6]) && block_src.isOpaqueCube() == block_adj.isOpaqueCube() && block_src.getRenderBlockPass() == block_adj.getRenderBlockPass()) {
                             return false;
                         } else {
                             return true;

@@ -15,7 +15,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import com.carpentersblocks.data.Collapsible;
 import com.carpentersblocks.tileentity.TEBase;
-import com.carpentersblocks.util.BlockProperties;
 import com.carpentersblocks.util.collapsible.CollapsibleUtil;
 import com.carpentersblocks.util.handler.EventHandler;
 import com.carpentersblocks.util.registry.BlockRegistry;
@@ -168,7 +167,7 @@ public class BlockCarpentersCollapsibleBlock extends BlockCoverable {
 
                 switch (side) {
                     case UP:
-                        return BlockProperties.getMetadata(TE) == 0;
+                        return TE.getData() == 0;
                     case NORTH:
                         return Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZNN) + Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZPN) == 32;
                     case SOUTH:

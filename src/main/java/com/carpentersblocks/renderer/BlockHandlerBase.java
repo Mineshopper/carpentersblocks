@@ -492,7 +492,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
 
         for (int side = 0; side < 6; ++side)
         {
-            if (BlockProperties.hasCover(TE, side))
+            if (TE.hasAttribute(TE.ATTR_COVER[side]))
             {
                 coverRendering = side;
                 int[] renderOffset = getSideCoverRenderBounds(x, y, z, side);
@@ -535,8 +535,8 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
     {
         Block block = BlockProperties.toBlock(itemStack);
         boolean renderCover = (block instanceof BlockCoverable ? 0 : block.getRenderBlockPass()) == renderPass;
-        boolean hasDesign = BlockProperties.hasChiselDesign(TE, coverRendering);
-        boolean hasOverlay = BlockProperties.hasOverlay(TE, coverRendering);
+        boolean hasDesign = TE.hasChiselDesign(coverRendering);
+        boolean hasOverlay = TE.hasAttribute(TE.ATTR_OVERLAY[coverRendering]);
         double overlayOffset = 0.0D;
 
         if (hasOverlay) {
@@ -610,7 +610,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
     protected void renderOverlay(int x, int y, int z, int side)
     {
         side = isPositiveFace(side) ? 1 : side;
-        Overlay overlay = OverlayHandler.getOverlayType(BlockProperties.getOverlay(TE, coverRendering));
+        Overlay overlay = OverlayHandler.getOverlayType(TE.getAttribute(TE.ATTR_OVERLAY[coverRendering]));
 
         IIcon icon = OverlayHandler.getOverlayIcon(overlay, side);
 
@@ -624,7 +624,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
      */
     protected void renderChiselDesign(int x, int y, int z, int side)
     {
-        String design = BlockProperties.getChiselDesign(TE, coverRendering);
+        String design = TE.getChiselDesign(coverRendering);
         IIcon icon = renderBlocks.getIconSafe(IconRegistry.icon_design_chisel.get(DesignHandler.listChisel.indexOf(design)));
         setColorAndRender(new ItemStack(Blocks.glass), x, y, z, side, icon);
     }
@@ -648,8 +648,8 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
     {
         int color = getBlockColor(BlockProperties.toBlock(itemStack), itemStack.getItemDamage(), x, y, z, side, icon);
 
-        if (!suppressDyeColor && (BlockProperties.hasDye(TE, coverRendering) || hasDyeOverride)) {
-            color = hasDyeOverride ? dyeOverride : DyeHandler.getColor(BlockProperties.getDye(TE, coverRendering));
+        if (!suppressDyeColor && (TE.hasAttribute(TE.ATTR_DYE[coverRendering]) || hasDyeOverride)) {
+            color = hasDyeOverride ? dyeOverride : DyeHandler.getColor(TE.getAttribute(TE.ATTR_DYE[coverRendering]));
         }
 
         lightingHelper.setupColor(x, y, z, side, color, icon);
@@ -672,9 +672,9 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
      */
     public int getBlockColor(Block block, int metadata, int x, int y, int z, int side, IIcon icon)
     {
-        BlockProperties.setHostMetadata(TE, metadata);
+        TE.setMetadata(metadata);
         int color = OptifineHandler.enableOptifineIntegration ? OptifineHandler.getColorMultiplier(block, TE.getWorldObj(), x, y, z) : block.colorMultiplier(TE.getWorldObj(), x, y, z);
-        BlockProperties.resetHostMetadata(TE);
+        TE.restoreMetadata();
 
         if (block.equals(Blocks.grass) && !isPositiveFace(side) && !icon.equals(BlockGrass.getIconSideOverlay())) {
             color = 16777215;

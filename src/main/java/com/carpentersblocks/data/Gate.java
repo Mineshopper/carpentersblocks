@@ -3,7 +3,6 @@ package com.carpentersblocks.data;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import com.carpentersblocks.tileentity.TEBase;
-import com.carpentersblocks.util.BlockProperties;
 
 public class Gate {
 
@@ -36,7 +35,7 @@ public class Gate {
      */
     public static int getType(TEBase TE)
     {
-        return BlockProperties.getMetadata(TE) & 0xf;
+        return TE.getData() & 0xf;
     }
 
     /**
@@ -44,10 +43,10 @@ public class Gate {
      */
     public static void setType(TEBase TE, int type)
     {
-        int temp = BlockProperties.getMetadata(TE) & 0xfff0;
+        int temp = TE.getData() & 0xfff0;
         temp |= type;
 
-        BlockProperties.setMetadata(TE, temp);
+        TE.setData(temp);
     }
 
     /**
@@ -55,7 +54,7 @@ public class Gate {
      */
     public static int getFacing(TEBase TE)
     {
-        int temp = BlockProperties.getMetadata(TE) & 0x20;
+        int temp = TE.getData() & 0x20;
         return temp >> 5;
     }
 
@@ -64,10 +63,10 @@ public class Gate {
      */
     public static void setFacing(TEBase TE, int facing)
     {
-        int temp = BlockProperties.getMetadata(TE) & 0xffdf;
+        int temp = TE.getData() & 0xffdf;
         temp |= facing << 5;
 
-        BlockProperties.setMetadata(TE, temp);
+        TE.setData(temp);
     }
 
     /**
@@ -75,7 +74,7 @@ public class Gate {
      */
     public static int getState(TEBase TE)
     {
-        int temp = BlockProperties.getMetadata(TE) & 0x40;
+        int temp = TE.getData() & 0x40;
         return temp >> 6;
     }
 
@@ -84,7 +83,7 @@ public class Gate {
      */
     public static void setState(TEBase TE, int state, boolean playSound)
     {
-        int temp = BlockProperties.getMetadata(TE) & 0xffbf;
+        int temp = TE.getData() & 0xffbf;
         temp |= state << 6;
 
         World world = TE.getWorldObj();
@@ -93,7 +92,7 @@ public class Gate {
             world.playAuxSFXAtEntity((EntityPlayer)null, 1003, TE.xCoord, TE.yCoord, TE.zCoord, 0);
         }
 
-        BlockProperties.setMetadata(TE, temp);
+        TE.setData(temp);
     }
 
     /**
@@ -101,7 +100,7 @@ public class Gate {
      */
     public static int getDirOpen(TEBase TE)
     {
-        int temp = BlockProperties.getMetadata(TE) & 0x10;
+        int temp = TE.getData() & 0x10;
         return temp >> 4;
     }
 
@@ -110,10 +109,10 @@ public class Gate {
      */
     public static void setDirOpen(TEBase TE, int dirOpen)
     {
-        int temp = BlockProperties.getMetadata(TE) & 0xffef;
+        int temp = TE.getData() & 0xffef;
         temp |= dirOpen << 4;
 
-        BlockProperties.setMetadata(TE, temp);
+        TE.setData(temp);
     }
 
 }

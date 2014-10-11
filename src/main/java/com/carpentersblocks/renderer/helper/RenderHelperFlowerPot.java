@@ -30,7 +30,7 @@ public class RenderHelperFlowerPot extends RenderHelper {
 
         tessellator.setColorOpaque_F(rgb[0], rgb[1], rgb[2]);
 
-        if (FlowerPot.isEnriched(blockHandler.TE)) {
+        if (blockHandler.TE.hasAttribute(blockHandler.TE.ATTR_FERTILIZER)) {
             if (FlowerPotProperties.getPlantColor(blockHandler.TE) != 16777215) {
                 tessellator.setColorOpaque_F(0.45F, 0.80F, 0.30F);
             }

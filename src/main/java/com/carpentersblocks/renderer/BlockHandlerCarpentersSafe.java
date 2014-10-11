@@ -7,8 +7,10 @@ import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
+import com.carpentersblocks.block.BlockCarpentersSafe;
 import com.carpentersblocks.data.Safe;
 import com.carpentersblocks.tileentity.TECarpentersSafe;
+import com.carpentersblocks.util.BlockProperties;
 import com.carpentersblocks.util.registry.IconRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -19,10 +21,8 @@ public class BlockHandlerCarpentersSafe extends BlockHandlerBase {
     private ForgeDirection dir;
     private boolean isOpen;
     private boolean isLocked;
-    private ItemStack metal;
-    private final static ItemStack ice = new ItemStack(Blocks.ice);
-    private final static ItemStack gold = new ItemStack(Blocks.gold_block);
-    private final static ItemStack iron = new ItemStack(Blocks.iron_block);
+    private ItemStack panelItemStack;
+    private ItemStack iceStack = new ItemStack(Blocks.ice);
 
     public static class Component {
 
@@ -136,7 +136,21 @@ public class BlockHandlerCarpentersSafe extends BlockHandlerBase {
         dir = Safe.getFacing(TE);
         isOpen = Safe.getState(TE) == Safe.STATE_OPEN;
         isLocked = Safe.isLocked(TE);
-        metal = ((TECarpentersSafe)TE).hasUpgrade() ? gold : iron;
+
+        /* Set panel material */
+
+        if (TE.hasAttribute(TE.ATTR_UPGRADE)) {
+            String name = BlockProperties.getOreDictMatch(TE.getAttribute(TE.ATTR_UPGRADE), BlockCarpentersSafe.upgradeOres);
+            if (!"".equals(name)) {
+                for (int idx = 0; idx < BlockCarpentersSafe.upgradeOres.length; ++idx) {
+                    if (BlockCarpentersSafe.upgradeOres[idx].equals(name)) {
+                        panelItemStack = BlockCarpentersSafe.upgradeStack[idx];
+                    }
+                }
+            }
+        } else {
+            panelItemStack = new ItemStack(Blocks.iron_block);
+        }
 
         /* Render cover components */
 
@@ -153,10 +167,10 @@ public class BlockHandlerCarpentersSafe extends BlockHandlerBase {
         /* Render panel components */
 
         for (Component comp : panelList) {
-            renderBlockWithRotation(metal, x, y, z, comp.xMin, comp.yMin, comp.zMin, comp.xMax, comp.yMax, comp.zMax, dir); // Render panel
+            renderBlockWithRotation(panelItemStack, x, y, z, comp.xMin, comp.yMin, comp.zMin, comp.xMax, comp.yMax, comp.zMax, dir); // Render panel
         }
 
-        renderBlockWithRotation(metal, x, y, z, isOpen ? 0.4375D : 0.8125D, 0.375D, 0.9375D, isOpen ? 0.5D : 0.875D, 0.625D, 1.0D, dir); // Render handle
+        renderBlockWithRotation(panelItemStack, x, y, z, isOpen ? 0.4375D : 0.8125D, 0.375D, 0.9375D, isOpen ? 0.5D : 0.875D, 0.625D, 1.0D, dir); // Render handle
 
         disableAO = true;
         setIconOverride(6, IconRegistry.icon_safe_light);
@@ -204,7 +218,7 @@ public class BlockHandlerCarpentersSafe extends BlockHandlerBase {
                 lightingHelper.setColorOverride(CAPACITY_INACTIVE);
             }
 
-            renderBlockWithRotation(ice, x, y, z, 0.125D, yMin, 0.9375D, 0.25D, yMax, 1.0D, dir);
+            renderBlockWithRotation(iceStack, x, y, z, 0.125D, yMin, 0.9375D, 0.25D, yMax, 1.0D, dir);
 
             lightingHelper.clearColorOverride();
             lightingHelper.clearBrightnessOverride();
@@ -225,7 +239,7 @@ public class BlockHandlerCarpentersSafe extends BlockHandlerBase {
             lightingHelper.setColorOverride(UNLOCKED_ACTIVE);
         }
 
-        renderBlockWithRotation(ice, x, y, z, 0.125D, 0.8125D, 0.9375D, 0.25D, 0.875D, 1.0D, dir);
+        renderBlockWithRotation(iceStack, x, y, z, 0.125D, 0.8125D, 0.9375D, 0.25D, 0.875D, 1.0D, dir);
 
         lightingHelper.clearColorOverride();
         lightingHelper.clearBrightnessOverride();
@@ -239,7 +253,7 @@ public class BlockHandlerCarpentersSafe extends BlockHandlerBase {
             lightingHelper.setColorOverride(LOCKED_INACTIVE);
         }
 
-        renderBlockWithRotation(ice, x, y, z, 0.125D, 0.75D, 0.9375D, 0.25D, 0.8125D, 1.0D, dir);
+        renderBlockWithRotation(iceStack, x, y, z, 0.125D, 0.75D, 0.9375D, 0.25D, 0.8125D, 1.0D, dir);
 
         lightingHelper.clearColorOverride();
         lightingHelper.clearBrightnessOverride();

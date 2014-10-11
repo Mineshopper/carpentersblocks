@@ -7,7 +7,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockAccess;
@@ -17,6 +16,7 @@ import com.carpentersblocks.CarpentersBlocks;
 import com.carpentersblocks.data.Safe;
 import com.carpentersblocks.tileentity.TEBase;
 import com.carpentersblocks.tileentity.TECarpentersSafe;
+import com.carpentersblocks.util.BlockProperties;
 import com.carpentersblocks.util.EntityLivingUtil;
 import com.carpentersblocks.util.handler.ChatHandler;
 import com.carpentersblocks.util.protection.PlayerPermissions;
@@ -26,6 +26,12 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockCarpentersSafe extends BlockCoverable {
+
+    /** OreDictionary names for safe upgrade materials. */
+    public final static String[] upgradeOres = { "ingotGold", "gemDiamond", "gemEmerald" };
+
+    /** ItemStacks that represent panel material for {@link upgradeOres}. */
+    public final static ItemStack[] upgradeStack = { new ItemStack(Blocks.gold_block), new ItemStack(Blocks.diamond_block), new ItemStack(Blocks.emerald_block) };
 
     public BlockCarpentersSafe(Material material)
     {
@@ -140,6 +146,16 @@ public class BlockCarpentersSafe extends BlockCoverable {
         super.onBlockPlacedBy(world, x, y, z, entityLiving, itemStack);
     }
 
+    /**
+     * Checks if {@link ItemStack} contains safe upgrade.
+     *
+     * @return <code>true</code> if {@link ItemStack} contains safe upgrade
+     */
+    public static boolean isUpgrade(ItemStack itemStack)
+    {
+        return !BlockProperties.getOreDictMatch(itemStack, upgradeOres).equals("");
+    }
+
     @Override
     /**
      * Called upon block activation (right click on the block.)
@@ -150,12 +166,10 @@ public class BlockCarpentersSafe extends BlockCoverable {
 
         if (!Safe.isOpen(TE) && canPlayerActivate(TE, entityPlayer)) {
 
-            TECarpentersSafe TE_safe = (TECarpentersSafe) TE;
-
             if (entityPlayer.isSneaking()) {
                 ItemStack itemStack = entityPlayer.getHeldItem();
-                if (itemStack != null && itemStack.getItem().equals(Items.gold_ingot) && !TE_safe.hasUpgrade()) {
-                    TE_safe.setUpgrade();
+                if (itemStack != null && isUpgrade(itemStack) && !TE.hasAttribute(TE.ATTR_UPGRADE)) {
+                    TE.addAttribute(TE.ATTR_UPGRADE, itemStack);
                     actionResult.decInventory().setSoundSource(itemStack);
                     return;
                 }
@@ -163,7 +177,7 @@ public class BlockCarpentersSafe extends BlockCoverable {
 
             if (!actionResult.decInv) {
                 actionResult.setNoSound();
-                entityPlayer.displayGUIChest(TE_safe);
+                entityPlayer.displayGUIChest((TECarpentersSafe)TE);
             }
 
         } else {
@@ -234,12 +248,11 @@ public class BlockCarpentersSafe extends BlockCoverable {
         TEBase TE = getSimpleTileEntity(world, x, y, z);
 
         if (TE != null && TE instanceof TECarpentersSafe) {
-            TECarpentersSafe TE_safe = (TECarpentersSafe) TE;
-            if (((TECarpentersSafe)TE).hasUpgrade()) {
-                ret.add(new ItemStack(Items.gold_ingot));
+            if (TE.hasAttribute(TE.ATTR_UPGRADE)) {
+                ret.add(TE.getAttribute(TE.ATTR_UPGRADE));
             }
-            for (int slot = 0; slot < TE_safe.getSizeInventory(); ++slot) {
-                ItemStack itemStack = TE_safe.getStackInSlot(slot);
+            for (int slot = 0; slot < ((TECarpentersSafe)TE).getSizeInventory(); ++slot) {
+                ItemStack itemStack = ((TECarpentersSafe)TE).getStackInSlot(slot);
                 if (itemStack != null) {
                     ret.add(itemStack);
                 }

@@ -1,7 +1,6 @@
 package com.carpentersblocks.data;
 
 import com.carpentersblocks.tileentity.TEBase;
-import com.carpentersblocks.util.BlockProperties;
 
 public class Barrier {
 
@@ -28,7 +27,7 @@ public class Barrier {
      */
     public static int getType(TEBase TE)
     {
-        return BlockProperties.getMetadata(TE) & 0xf;
+        return TE.getData() & 0xf;
     }
 
     /**
@@ -36,10 +35,10 @@ public class Barrier {
      */
     public static void setType(TEBase TE, int type)
     {
-        int temp = BlockProperties.getMetadata(TE) & 0xfff0;
+        int temp = TE.getData() & 0xfff0;
         temp |= type;
 
-        BlockProperties.setMetadata(TE, temp);
+        TE.setData(temp);
     }
 
     /**
@@ -47,7 +46,7 @@ public class Barrier {
      */
     public static int getPost(TEBase TE)
     {
-        return BlockProperties.getMetadata(TE) >> 4;
+        return TE.getData() >> 4;
     }
 
     /**
@@ -55,10 +54,10 @@ public class Barrier {
      */
     public static void setPost(TEBase TE, int post)
     {
-        int temp = BlockProperties.getMetadata(TE) & 0xffef;
+        int temp = TE.getData() & 0xffef;
         temp |= post << 4;
 
-        BlockProperties.setMetadata(TE, temp);
+        TE.setData(temp);
     }
 
 }

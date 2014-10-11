@@ -4,7 +4,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import com.carpentersblocks.tileentity.TEBase;
-import com.carpentersblocks.util.BlockProperties;
 import com.carpentersblocks.util.EntityLivingUtil;
 
 public class Safe
@@ -33,7 +32,7 @@ public class Safe
      */
     public static ForgeDirection getFacing(TEBase TE)
     {
-        int rot = BlockProperties.getMetadata(TE) & 0x3;
+        int rot = TE.getData() & 0x3;
 
         return EntityLivingUtil.getRotationFacing(rot).getOpposite();
     }
@@ -44,10 +43,10 @@ public class Safe
      */
     public static void setFacing(TEBase TE, int facing)
     {
-        int temp = BlockProperties.getMetadata(TE) & 0xfffc;
+        int temp = TE.getData() & 0xfffc;
         temp |= facing;
 
-        BlockProperties.setMetadata(TE, temp);
+        TE.setData(temp);
     }
 
     /**
@@ -55,7 +54,7 @@ public class Safe
      */
     public static int getState(TEBase TE)
     {
-        int temp = BlockProperties.getMetadata(TE) & 0x4;
+        int temp = TE.getData() & 0x4;
 
         return temp >> 2;
     }
@@ -65,7 +64,7 @@ public class Safe
      */
     public static void setState(TEBase TE, int state)
     {
-        int temp = BlockProperties.getMetadata(TE) & 0xfffb;
+        int temp = TE.getData() & 0xfffb;
         temp |= state << 2;
 
         World world = TE.getWorldObj();
@@ -74,7 +73,7 @@ public class Safe
             world.playAuxSFXAtEntity((EntityPlayer)null, 1003, TE.xCoord, TE.yCoord, TE.zCoord, 0);
         }
 
-        BlockProperties.setMetadata(TE, temp);
+        TE.setData(temp);
     }
 
     /**
@@ -82,7 +81,7 @@ public class Safe
      */
     public static boolean isLocked(TEBase TE)
     {
-        return (BlockProperties.getMetadata(TE) & 0x8) == LOCK_SET;
+        return (TE.getData() & 0x8) == LOCK_SET;
     }
 
     /**
@@ -90,10 +89,10 @@ public class Safe
      */
     public static void setLocked(TEBase TE, boolean isLocked)
     {
-        int temp = BlockProperties.getMetadata(TE) & 0xfff7;
+        int temp = TE.getData() & 0xfff7;
         temp |= (isLocked ? LOCK_SET : LOCK_UNSET) << 3;
 
-        BlockProperties.setMetadata(TE, temp);
+        TE.setData(temp);
     }
 
     /**
@@ -101,7 +100,7 @@ public class Safe
      */
     public static int getAutoPerm(TEBase TE)
     {
-        int temp = BlockProperties.getMetadata(TE) & 0x30;
+        int temp = TE.getData() & 0x30;
 
         return temp >> 4;
     }
@@ -111,10 +110,10 @@ public class Safe
      */
     public static void setAutoPerm(TEBase TE, int autoPerm)
     {
-        int temp = BlockProperties.getMetadata(TE) & 0xffcf;
+        int temp = TE.getData() & 0xffcf;
         temp |= autoPerm << 4;
 
-        BlockProperties.setMetadata(TE, temp);
+        TE.setData(temp);
     }
 
     /**

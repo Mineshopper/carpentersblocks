@@ -41,14 +41,13 @@ public class MigrationHelper {
             ItemStack tempStack = ItemStack.loadItemStackFromNBT(nbt1);
             tempStack.stackSize = 1; // All ItemStacks pre-3.2.7 DEV R3 stored original stack sizes, reduce them here.
             if (nbt1.hasKey(TAG_COVER)) {
-                System.out.println("DEBUG: Converting " + tempStack.getDisplayName() + " to new ID.");
-                TE.cbAttrMap.put(TE.ID_COVER[nbt1.getByte(TAG_COVER) & 255], tempStack);
+                TE.addAttribute(TE.ATTR_COVER[nbt1.getByte(TAG_COVER) & 255], tempStack);
             } else if (nbt1.hasKey(TAG_DYE)) {
-                TE.cbAttrMap.put(TE.ID_DYE[nbt1.getByte(TAG_DYE) & 255], tempStack);
+                TE.addAttribute(TE.ATTR_DYE[nbt1.getByte(TAG_DYE) & 255], tempStack);
             } else if (nbt1.hasKey(TAG_OVERLAY)) {
-                TE.cbAttrMap.put(TE.ID_OVERLAY[nbt1.getByte(TAG_OVERLAY) & 255], tempStack);
+                TE.addAttribute(TE.ATTR_OVERLAY[nbt1.getByte(TAG_OVERLAY) & 255], tempStack);
             } else if (nbt1.hasKey(TAG_ILLUMINATOR)) {
-                TE.cbAttrMap.put(TE.ID_ILLUMINATOR, tempStack);
+                TE.addAttribute(TE.ATTR_ILLUMINATOR, tempStack);
             }
         }
 
@@ -64,9 +63,9 @@ public class MigrationHelper {
             ItemStack tempStack = ItemStack.loadItemStackFromNBT(nbt1);
             tempStack.stackSize = 1; // All ItemStacks pre-3.2.7 DEV R3 stored original stack sizes, reduce them here.
             if (nbt1.hasKey(TAG_SOIL)) {
-                TE.cbAttrMap.put(TECarpentersFlowerPot.ID_SOIL, tempStack);
+                TE.addAttribute(TE.ATTR_SOIL, tempStack);
             } else if (nbt1.hasKey(TAG_PLANT)) {
-                TE.cbAttrMap.put(TECarpentersFlowerPot.ID_PLANT, tempStack);
+                TE.addAttribute(TE.ATTR_PLANT, tempStack);
             }
         }
     }

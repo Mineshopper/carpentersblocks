@@ -205,11 +205,11 @@ public class EventHandler {
         if (world.getBlock(x, y, z) instanceof BlockCoverable) {
 
             TEBase TE = (TEBase) world.getTileEntity(x, y, z);
-            int effectiveSide = BlockProperties.hasCover(TE, 1) ? 1 : 6;
+            int effectiveSide = TE.hasAttribute(TE.ATTR_COVER[1]) ? 1 : 6;
             ItemStack itemStack = BlockProperties.getCover(TE, effectiveSide);
 
-            if (BlockProperties.hasOverlay(TE, effectiveSide)) {
-                Overlay overlay = OverlayHandler.getOverlayType(BlockProperties.getOverlay(TE, effectiveSide));
+            if (TE.hasAttribute(TE.ATTR_OVERLAY[effectiveSide])) {
+                Overlay overlay = OverlayHandler.getOverlayType(TE.getAttribute(TE.ATTR_OVERLAY[effectiveSide]));
                 if (OverlayHandler.coversFullSide(overlay, 1)) {
                     itemStack = overlay.getItemStack();
                 }
