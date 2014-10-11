@@ -46,9 +46,7 @@ public class Hatch {
      */
     public static void setType(TEBase TE, int type)
     {
-        int temp = TE.getData() & 0xfff8;
-        temp |= type;
-
+        int temp = (TE.getData() & ~0x7) | type;
         TE.setData(temp);
     }
 
@@ -57,8 +55,7 @@ public class Hatch {
      */
     public static int getPos(TEBase TE)
     {
-        int temp = TE.getData() & 0x8;
-        return temp >> 3;
+        return (TE.getData() & 0x8) >> 3;
     }
 
     /**
@@ -66,9 +63,7 @@ public class Hatch {
      */
     public static void setPos(TEBase TE, int position)
     {
-        int temp = TE.getData() & 0xfff7;
-        temp |= position << 3;
-
+        int temp = (TE.getData() & ~0x8) | (position << 3);
         TE.setData(temp);
     }
 
@@ -77,8 +72,7 @@ public class Hatch {
      */
     public static int getState(TEBase TE)
     {
-        int temp = TE.getData() & 0x10;
-        return temp >> 4;
+        return (TE.getData() & 0x10) >> 4;
     }
 
     /**
@@ -86,9 +80,7 @@ public class Hatch {
      */
     public static void setState(TEBase TE, int state)
     {
-        int temp = TE.getData() & 0xffef;
-        temp |= state << 4;
-
+        int temp = (TE.getData() & ~0x10) | (state << 4);
         World world = TE.getWorldObj();
 
         if (!world.isRemote) {
@@ -103,8 +95,7 @@ public class Hatch {
      */
     public static int getDir(TEBase TE)
     {
-        int temp = TE.getData() & 0x60;
-        return temp >> 5;
+        return (TE.getData() & 0x60) >> 5;
     }
 
     /**
@@ -112,9 +103,7 @@ public class Hatch {
      */
     public static void setDir(TEBase TE, int dir)
     {
-        int temp = TE.getData() & 0xff9f;
-        temp |= dir << 5;
-
+        int temp = (TE.getData() & ~0x60) | (dir << 5);
         TE.setData(temp);
     }
 
@@ -123,8 +112,7 @@ public class Hatch {
      */
     public static int getRigidity(TEBase TE)
     {
-        int temp = TE.getData() & 0x80;
-        return temp >> 7;
+        return (TE.getData() & 0x80) >> 7;
     }
 
     /**
@@ -132,9 +120,7 @@ public class Hatch {
      */
     public static void setRigidity(TEBase TE, int rigid)
     {
-        int temp = TE.getData() & 0xff7f;
-        temp |= rigid << 7;
-
+        int temp = (TE.getData() & ~0x80) | (rigid << 7);
         TE.setData(temp);
     }
 

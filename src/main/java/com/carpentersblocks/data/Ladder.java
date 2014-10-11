@@ -8,8 +8,8 @@ public class Ladder implements ISided {
     /**
      * 16-bit data components:
      *
-     * [0000000000000] [000]
-     * Type            Dir
+     * [000000000] [0000] [000]
+     * Unused      Type   Dir
      */
 
     public static final byte DIR_ON_X  = 0;
@@ -20,16 +20,16 @@ public class Ladder implements ISided {
     public static final byte TYPE_POLE    = 2;
 
     @Override
-    public void setDirection(TEBase TE, ForgeDirection dir)
-    {
-        int temp = (TE.getData() & 0xfff8) | dir.ordinal();
-        TE.setData(temp);
-    }
-
-    @Override
     public ForgeDirection getDirection(TEBase TE)
     {
         return ForgeDirection.getOrientation(TE.getData() & 0x7);
+    }
+
+    @Override
+    public void setDirection(TEBase TE, ForgeDirection dir)
+    {
+        int temp = (TE.getData() & ~0x7) | dir.ordinal();
+        TE.setData(temp);
     }
 
     /**
@@ -42,12 +42,12 @@ public class Ladder implements ISided {
 
     public int getType(TEBase TE)
     {
-        return (TE.getData() & 0xfff8) >>> 3;
+        return (TE.getData() & 0x78) >>> 3;
     }
 
     public void setType(TEBase TE, int type)
     {
-        int temp = (TE.getData() & 0x7) | (type << 3);
+        int temp = (TE.getData() & ~0x78) | (type << 3);
         TE.setData(temp);
     }
 

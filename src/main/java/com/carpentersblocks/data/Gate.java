@@ -43,9 +43,7 @@ public class Gate {
      */
     public static void setType(TEBase TE, int type)
     {
-        int temp = TE.getData() & 0xfff0;
-        temp |= type;
-
+        int temp = (TE.getData() & ~0xf) | type;
         TE.setData(temp);
     }
 
@@ -54,8 +52,7 @@ public class Gate {
      */
     public static int getFacing(TEBase TE)
     {
-        int temp = TE.getData() & 0x20;
-        return temp >> 5;
+        return (TE.getData() & 0x20) >> 5;
     }
 
     /**
@@ -63,9 +60,7 @@ public class Gate {
      */
     public static void setFacing(TEBase TE, int facing)
     {
-        int temp = TE.getData() & 0xffdf;
-        temp |= facing << 5;
-
+        int temp = (TE.getData() & ~0x20) | (facing << 5);
         TE.setData(temp);
     }
 
@@ -74,8 +69,7 @@ public class Gate {
      */
     public static int getState(TEBase TE)
     {
-        int temp = TE.getData() & 0x40;
-        return temp >> 6;
+        return (TE.getData() & 0x40) >> 6;
     }
 
     /**
@@ -83,9 +77,7 @@ public class Gate {
      */
     public static void setState(TEBase TE, int state, boolean playSound)
     {
-        int temp = TE.getData() & 0xffbf;
-        temp |= state << 6;
-
+        int temp = (TE.getData() & ~0x40) | (state << 6);
         World world = TE.getWorldObj();
 
         if (!world.isRemote && playSound) {
@@ -100,8 +92,7 @@ public class Gate {
      */
     public static int getDirOpen(TEBase TE)
     {
-        int temp = TE.getData() & 0x10;
-        return temp >> 4;
+        return (TE.getData() & 0x10) >> 4;
     }
 
     /**
@@ -109,9 +100,7 @@ public class Gate {
      */
     public static void setDirOpen(TEBase TE, int dirOpen)
     {
-        int temp = TE.getData() & 0xffef;
-        temp |= dirOpen << 4;
-
+        int temp = (TE.getData() & ~0x10) | (dirOpen << 4);
         TE.setData(temp);
     }
 

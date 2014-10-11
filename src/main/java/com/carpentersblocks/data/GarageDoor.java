@@ -60,7 +60,7 @@ public class GarageDoor implements ISided {
     @Override
     public void setDirection(TEBase TE, ForgeDirection dir)
     {
-        int temp = (TE.getData() & ~0x70) | dir.ordinal() << 4;
+        int temp = (TE.getData() & ~0x70) | (dir.ordinal() << 4);
         TE.setData(temp);
     }
 
@@ -77,7 +77,7 @@ public class GarageDoor implements ISided {
      */
     public void setState(TEBase TE, int state, boolean playSound)
     {
-        int temp = (TE.getData() & ~0x80) | state << 7;
+        int temp = (TE.getData() & ~0x80) | (state << 7);
 
         World world = TE.getWorldObj();
         if (!world.isRemote && playSound) {

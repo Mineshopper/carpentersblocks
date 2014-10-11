@@ -19,8 +19,7 @@ public class FlowerPot {
      */
     public static int getAngle(TEBase TE)
     {
-        int temp = TE.getData() & 0xf00;
-        return temp >> 8;
+        return (TE.getData() & 0xf00) >> 8;
     }
 
     /**
@@ -28,9 +27,7 @@ public class FlowerPot {
      */
     public static void setAngle(TEBase TE, int angle)
     {
-        int temp = TE.getData() & 0xf0ff;
-        temp |= angle << 8;
-
+        int temp = (TE.getData() & ~0xf00) | (angle << 8);
         TE.setData(temp);
     }
 

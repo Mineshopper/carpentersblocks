@@ -32,9 +32,7 @@ public class Safe
      */
     public static ForgeDirection getFacing(TEBase TE)
     {
-        int rot = TE.getData() & 0x3;
-
-        return EntityLivingUtil.getRotationFacing(rot).getOpposite();
+        return EntityLivingUtil.getRotationFacing(TE.getData() & 0x3).getOpposite();
     }
 
     /**
@@ -43,9 +41,7 @@ public class Safe
      */
     public static void setFacing(TEBase TE, int facing)
     {
-        int temp = TE.getData() & 0xfffc;
-        temp |= facing;
-
+        int temp = (TE.getData() & ~0x3) | facing;
         TE.setData(temp);
     }
 
@@ -54,9 +50,7 @@ public class Safe
      */
     public static int getState(TEBase TE)
     {
-        int temp = TE.getData() & 0x4;
-
-        return temp >> 2;
+        return (TE.getData() & 0x4) >> 2;
     }
 
     /**
@@ -64,9 +58,7 @@ public class Safe
      */
     public static void setState(TEBase TE, int state)
     {
-        int temp = TE.getData() & 0xfffb;
-        temp |= state << 2;
-
+        int temp = (TE.getData() & ~0x4) | (state << 2);
         World world = TE.getWorldObj();
 
         if (!world.isRemote) {
@@ -89,9 +81,7 @@ public class Safe
      */
     public static void setLocked(TEBase TE, boolean isLocked)
     {
-        int temp = TE.getData() & 0xfff7;
-        temp |= (isLocked ? LOCK_SET : LOCK_UNSET) << 3;
-
+        int temp = (TE.getData() & ~0x8) | ((isLocked ? LOCK_SET : LOCK_UNSET) << 3);
         TE.setData(temp);
     }
 
@@ -100,9 +90,7 @@ public class Safe
      */
     public static int getAutoPerm(TEBase TE)
     {
-        int temp = TE.getData() & 0x30;
-
-        return temp >> 4;
+        return (TE.getData() & 0x30) >> 4;
     }
 
     /**
@@ -110,9 +98,7 @@ public class Safe
      */
     public static void setAutoPerm(TEBase TE, int autoPerm)
     {
-        int temp = TE.getData() & 0xffcf;
-        temp |= autoPerm << 4;
-
+        int temp = (TE.getData() & ~0x30) | (autoPerm << 4);
         TE.setData(temp);
     }
 
@@ -130,7 +116,6 @@ public class Safe
     public static boolean allowsInsertion(TEBase TE)
     {
         int autoPerm = getAutoPerm(TE);
-
         return autoPerm == AUTOMATION_RECEIVE || autoPerm == AUTOMATION_ALL;
     }
 
@@ -140,7 +125,6 @@ public class Safe
     public static boolean allowsExtraction(TEBase TE)
     {
         int autoPerm = getAutoPerm(TE);
-
         return autoPerm == AUTOMATION_SEND || autoPerm == AUTOMATION_ALL;
     }
 

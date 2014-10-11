@@ -52,19 +52,19 @@ public class Collapsible {
         {
             switch (corner) {
                 case QUAD_XZNN:
-                    data &= 0xfff;
+                    data &= ~0xf000;
                     data |= 15 - height << 12;
                     break;
                 case QUAD_XZNP:
-                    data &= 0xf0ff;
+                    data &= ~0x0f00;
                     data |= 15 - height << 8;
                     break;
                 case QUAD_XZPN:
-                    data &= 0xff0f;
+                    data &= ~0x00f0;
                     data |= 15 - height << 4;
                     break;
                 case QUAD_XZPP:
-                    data &= 0xfff0;
+                    data &= ~0xf;
                     data |= 15 - height;
                     break;
             }

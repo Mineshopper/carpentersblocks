@@ -35,9 +35,7 @@ public class Barrier {
      */
     public static void setType(TEBase TE, int type)
     {
-        int temp = TE.getData() & 0xfff0;
-        temp |= type;
-
+        int temp = (TE.getData() & ~0xf) | type;
         TE.setData(temp);
     }
 
@@ -46,7 +44,7 @@ public class Barrier {
      */
     public static int getPost(TEBase TE)
     {
-        return TE.getData() >> 4;
+        return TE.getData() >> (0x10 >> 4);
     }
 
     /**
@@ -54,9 +52,7 @@ public class Barrier {
      */
     public static void setPost(TEBase TE, int post)
     {
-        int temp = TE.getData() & 0xffef;
-        temp |= post << 4;
-
+        int temp = (TE.getData() & ~0x10) | (post << 4);
         TE.setData(temp);
     }
 

@@ -35,9 +35,7 @@ public class DaylightSensor implements ISided {
     @Override
     public void setDirection(TEBase TE, ForgeDirection dir)
     {
-        int temp = TE.getData() & 0xfc7f;
-        temp |= dir.ordinal() << 7;
-
+        int temp = (TE.getData() & ~0x380) | (dir.ordinal() << 7);
         TE.setData(temp);
     }
 
@@ -54,9 +52,7 @@ public class DaylightSensor implements ISided {
      */
     public void setLightLevel(TEBase TE, int lightLevel)
     {
-        int temp = TE.getData() & 0xfff0;
-        temp |= lightLevel;
-
+        int temp = (TE.getData() & ~0xf) | lightLevel;
         TE.setData(temp);
     }
 
@@ -65,8 +61,7 @@ public class DaylightSensor implements ISided {
      */
     public int getPolarity(TEBase TE)
     {
-        int temp = TE.getData() & 0x10;
-        return temp >> 4;
+        return (TE.getData() & 0x10) >> 4;
     }
 
     /**
@@ -74,9 +69,7 @@ public class DaylightSensor implements ISided {
      */
     public void setPolarity(TEBase TE, int state)
     {
-        int temp = TE.getData() & 0xffef;
-        temp |= state << 4;
-
+        int temp = (TE.getData() & ~0x10) | (state << 4);
         TE.setData(temp);
     }
 
@@ -85,8 +78,7 @@ public class DaylightSensor implements ISided {
      */
     public int getSensitivity(TEBase TE)
     {
-        int temp = TE.getData() & 0x60;
-        return temp >> 5;
+        return (TE.getData() & 0x60) >> 5;
     }
 
     /**
@@ -94,9 +86,7 @@ public class DaylightSensor implements ISided {
      */
     private void setSensitivity(TEBase TE, int sensitivity)
     {
-        int temp = TE.getData() & 0xff9f;
-        temp |= sensitivity << 5;
-
+        int temp = (TE.getData() & ~0x60) | (sensitivity << 5);
         TE.setData(temp);
     }
 

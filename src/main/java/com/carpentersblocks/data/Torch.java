@@ -38,9 +38,7 @@ public class Torch implements ISided {
     @Override
     public void setDirection(TEBase TE, ForgeDirection dir)
     {
-        int temp = TE.getData() & 0xfff8;
-        temp |= dir.ordinal();
-
+        int temp = (TE.getData() & ~0x7) | dir.ordinal();
         TE.setData(temp);
     }
 
@@ -57,9 +55,7 @@ public class Torch implements ISided {
      */
     public void setType(TEBase TE, int type)
     {
-        int temp = TE.getData() & ~0x1e0;
-        temp |= (type & 0xf) << 5;
-
+        int temp = (TE.getData() & ~0x1e0) | ((type & 0xf) << 5);
         TE.setData(temp);
     }
 
@@ -68,10 +64,8 @@ public class Torch implements ISided {
      */
     public State getState(TEBase TE)
     {
-        int temp = TE.getData() & 0x18;
-        int val = temp >> 3;
-
-        return val == State.LIT.ordinal() ? State.LIT : val == State.SMOLDERING.ordinal() ? State.SMOLDERING : State.UNLIT;
+        int temp = (TE.getData() & 0x18) >> 3;
+        return temp == State.LIT.ordinal() ? State.LIT : temp == State.SMOLDERING.ordinal() ? State.SMOLDERING : State.UNLIT;
     }
 
     /**
@@ -85,9 +79,7 @@ public class Torch implements ISided {
             world.playSoundEffect(headCoords[0], headCoords[1], headCoords[2], "random.fizz", 0.5F, 2.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
         }
 
-        int temp = TE.getData() & 0xffe7;
-        temp |= state.ordinal() << 3;
-
+        int temp = (TE.getData() & ~0x18) | (state.ordinal() << 3);
         TE.setData(temp);
     }
 

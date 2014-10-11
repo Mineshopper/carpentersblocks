@@ -36,9 +36,7 @@ public class Button implements ISided {
     @Override
     public void setDirection(TEBase TE, ForgeDirection dir)
     {
-        int temp = TE.getData() & 0xfff8;
-        temp |= dir.ordinal();
-
+        int temp = (TE.getData() & ~0x7) | dir.ordinal();
         TE.setData(temp);
     }
 
@@ -47,8 +45,7 @@ public class Button implements ISided {
      */
     public int getState(TEBase TE)
     {
-        int temp = TE.getData() & 0x8;
-        return temp >> 3;
+        return (TE.getData() & 0x8) >> 3;
     }
 
     /**
@@ -56,17 +53,10 @@ public class Button implements ISided {
      */
     public void setState(TEBase TE, int state, boolean playSound)
     {
-        int temp = TE.getData() & 0xfff7;
-        temp |= state << 3;
-
+        int temp = (TE.getData() & ~0x8) | (state << 3);
         World world = TE.getWorldObj();
 
-        if (
-                !world.isRemote &&
-                BlockProperties.toBlock(BlockProperties.getCover(TE, 6)).getMaterial() != Material.cloth &&
-                playSound &&
-                getState(TE) != state
-                ) {
+        if (!world.isRemote && BlockProperties.toBlock(BlockProperties.getCover(TE, 6)).getMaterial() != Material.cloth && playSound && getState(TE) != state) {
             world.playSoundEffect(TE.xCoord + 0.5D, TE.yCoord + 0.5D, TE.zCoord + 0.5D, "random.click", 0.3F, getState(TE) == STATE_ON ? 0.5F : 0.6F);
         }
 
@@ -78,8 +68,7 @@ public class Button implements ISided {
      */
     public int getPolarity(TEBase TE)
     {
-        int temp = TE.getData() & 0x10;
-        return temp >> 4;
+        return (TE.getData() & 0x10) >> 4;
     }
 
     /**
@@ -87,9 +76,7 @@ public class Button implements ISided {
      */
     public void setPolarity(TEBase TE, int polarity)
     {
-        int temp = TE.getData() & 0xffef;
-        temp |= polarity << 4;
-
+        int temp = (TE.getData() & ~0x10) | (polarity << 4);
         TE.setData(temp);
     }
 

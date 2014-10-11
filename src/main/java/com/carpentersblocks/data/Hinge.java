@@ -50,9 +50,7 @@ public class Hinge {
      */
     public static void setType(TEBase TE, int type)
     {
-        int temp = TE.getData() & 0xfff8;
-        temp |= type;
-
+        int temp = (TE.getData() & ~0x7) | type;
         TE.setData(temp);
     }
 
@@ -61,8 +59,7 @@ public class Hinge {
      */
     public static int getHinge(TEBase TE)
     {
-        int temp = TE.getData() & 0x8;
-        return temp >> 3;
+        return (TE.getData() & 0x8) >> 3;
     }
 
     /**
@@ -70,9 +67,7 @@ public class Hinge {
      */
     public static void setHingeSide(TEBase TE, int hingeSide)
     {
-        int temp = TE.getData() & 0xfff7;
-        temp |= hingeSide << 3;
-
+        int temp = (TE.getData() & ~0x8) | (hingeSide << 3);
         TE.setData(temp);
     }
 
@@ -81,8 +76,7 @@ public class Hinge {
      */
     public static int getFacing(TEBase TE)
     {
-        int temp = TE.getData() & 0x30;
-        return temp >> 4;
+        return (TE.getData() & 0x30) >> 4;
     }
 
     /**
@@ -90,9 +84,7 @@ public class Hinge {
      */
     public static void setFacing(TEBase TE, int facing)
     {
-        int temp = TE.getData() & 0xffcf;
-        temp |= facing << 4;
-
+        int temp = (TE.getData() & ~0x30) | (facing << 4);
         TE.setData(temp);
     }
 
@@ -101,8 +93,7 @@ public class Hinge {
      */
     public static int getState(TEBase TE)
     {
-        int temp = TE.getData() & 0x40;
-        return temp >> 6;
+        return (TE.getData() & 0x40) >> 6;
     }
 
     /**
@@ -110,9 +101,7 @@ public class Hinge {
      */
     public static void setState(TEBase TE, int state, boolean playSound)
     {
-        int temp = TE.getData() & 0xffbf;
-        temp |= state << 6;
-
+        int temp = (TE.getData() & ~0x40) | (state << 6);
         World world = TE.getWorldObj();
 
         if (!world.isRemote && playSound) {
@@ -127,8 +116,7 @@ public class Hinge {
      */
     public static int getPiece(TEBase TE)
     {
-        int temp = TE.getData() & 0x80;
-        return temp >> 7;
+        return (TE.getData() & 0x80) >> 7;
     }
 
     /**
@@ -136,9 +124,7 @@ public class Hinge {
      */
     public static void setPiece(TEBase TE, int piece)
     {
-        int temp = TE.getData() & 0xff7f;
-        temp |= piece << 7;
-
+        int temp = (TE.getData() & ~0x80) | (piece << 7);
         TE.setData(temp);
     }
 
@@ -147,8 +133,7 @@ public class Hinge {
      */
     public static int getRigidity(TEBase TE)
     {
-        int temp = TE.getData() & 0x100;
-        return temp >> 8;
+        return (TE.getData() & 0x100) >> 8;
     }
 
     /**
@@ -156,9 +141,7 @@ public class Hinge {
      */
     public static void setRigidity(TEBase TE, int rigid)
     {
-        int temp = TE.getData() & 0xfeff;
-        temp |= rigid << 8;
-
+        int temp = (TE.getData() & ~0x100) | (rigid << 8);
         TE.setData(temp);
     }
 

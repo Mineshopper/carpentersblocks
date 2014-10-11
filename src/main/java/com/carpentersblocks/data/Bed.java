@@ -30,9 +30,7 @@ public class Bed {
      */
     public static void setType(TEBase TE, int type)
     {
-        int temp = TE.getData() & 0xfff0;
-        temp |= type;
-
+        int temp = (TE.getData() & ~0xf) | type;
         TE.setData(temp);
     }
 
@@ -41,9 +39,7 @@ public class Bed {
      */
     public static boolean isOccupied(TEBase TE)
     {
-        int temp = TE.getData() & 0x10;
-
-        return temp != 0;
+        return (TE.getData() & 0x10) != 0;
     }
 
     /**
@@ -51,7 +47,7 @@ public class Bed {
      */
     public static void setOccupied(TEBase TE, boolean isOccupied)
     {
-        int temp = TE.getData() & 0xffef;
+        int temp = TE.getData() & ~0x10;
 
         if (isOccupied) {
             temp |= 1 << 4;
@@ -92,9 +88,7 @@ public class Bed {
      */
     public static boolean isHeadOfBed(TEBase TE)
     {
-        int temp = TE.getData() & 0x8000;
-
-        return temp != 0;
+        return (TE.getData() & 0x8000) != 0;
     }
 
     /**
@@ -102,9 +96,7 @@ public class Bed {
      */
     public static void setHeadOfBed(TEBase TE)
     {
-        int temp = TE.getData() & 0x7fff;
-        temp |= 1 << 15;
-
+        int temp = (TE.getData() & ~0x8000) | (1 << 15);
         TE.setData(temp);
     }
 
@@ -114,7 +106,6 @@ public class Bed {
     public static ForgeDirection getDirection(TEBase TE)
     {
         int rot = (TE.getData() & 0x6000) >> 13;
-
         return EntityLivingUtil.getRotationFacing(rot).getOpposite();
     }
 
@@ -124,9 +115,7 @@ public class Bed {
      */
     public static void setDirection(TEBase TE, int facing)
     {
-        int temp = TE.getData() & 0x9fff;
-        temp |= facing << 13;
-
+        int temp = (TE.getData() & ~0x6000) | (facing << 13);
         TE.setData(temp);
     }
 
