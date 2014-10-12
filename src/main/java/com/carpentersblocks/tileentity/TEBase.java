@@ -248,8 +248,8 @@ public class TEBase extends TileEntity implements IProtected {
                 getWorldObj().playAuxSFX(2005, xCoord, yCoord, zCoord, 0);
             }
 
-            markDirty();
             world.markBlockForUpdate(xCoord, yCoord, zCoord);
+            markDirty();
 
         }
     }
@@ -266,6 +266,7 @@ public class TEBase extends TileEntity implements IProtected {
         if (hasAttribute(attrId)) {
             dropAttribute(attrId);
             cbAttrMap.remove(attrId);
+            getWorldObj().markBlockForUpdate(xCoord, yCoord, zCoord);
             markDirty();
             return true;
         }
