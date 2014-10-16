@@ -63,7 +63,14 @@ public class FeatureRegistry {
             overlayItems.add(item);
         }
 
-        Property coverExceptionList = config.get("features", "Cover Exceptions", new String[] { "Silverwood Planks", "Greatwood Planks" });
+        Property coverExceptionList = config.get(
+                "features",
+                "Cover Exceptions",
+                new String[] {
+                        "Silverwood Planks", // Thaumcraft
+                        "Greatwood Planks",  // Thaumcraft
+                        "Thatch"  // TerraFirmaCraft
+                });
         coverExceptionList.comment = "This allows restricted blocks to be used as covers.\nAdd your own by supplying the display name for the block (en_US only).";
         for (String item : coverExceptionList.getStringList()) {
             coverExceptions.add(item);

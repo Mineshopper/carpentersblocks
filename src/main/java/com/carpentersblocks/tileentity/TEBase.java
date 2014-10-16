@@ -219,8 +219,6 @@ public class TEBase extends TileEntity implements IProtected {
     {
         if (!hasAttribute(attrId) && itemStack != null) {
 
-            World world = getWorldObj();
-
             ItemStack reducedStack = null;
             if (itemStack != null) {
                 reducedStack = ItemStack.copyItemStack(itemStack);
@@ -229,26 +227,30 @@ public class TEBase extends TileEntity implements IProtected {
 
             cbAttrMap.put(attrId, reducedStack);
 
-            /* Cover attributes change metadata and notify neighbors. */
+            World world = getWorldObj();
+            if (world != null) {
 
-            Block block = itemStack == null ? getBlockType() : BlockProperties.toBlock(itemStack);
+                Block block = itemStack == null ? getBlockType() : BlockProperties.toBlock(itemStack);
 
-            if (attrId < 7) {
-                int metadata = itemStack == null ? 0 : itemStack.getItemDamage();
-                if (attrId == ATTR_COVER[6]) {
-                    world.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, metadata, 0);
+                if (attrId < 7) {
+                    int metadata = itemStack == null ? 0 : itemStack.getItemDamage();
+                    if (attrId == ATTR_COVER[6]) {
+                        world.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, metadata, 0);
+                    }
+                    world.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, block);
+                } else if (attrId == ATTR_PLANT | attrId == ATTR_SOIL) {
+                    world.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, block);
                 }
-                world.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, block);
-            } else if (attrId == ATTR_PLANT | attrId == ATTR_SOIL) {
-                world.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, block);
+
+                if (attrId == ATTR_FERTILIZER) {
+                    /* Play sound when fertilizing plants.. though I've never heard it before. */
+                    getWorldObj().playAuxSFX(2005, xCoord, yCoord, zCoord, 0);
+                }
+
+                world.markBlockForUpdate(xCoord, yCoord, zCoord);
+
             }
 
-            if (attrId == ATTR_FERTILIZER) {
-                /* Play sound when fertilizing plants.. though I've never heard it before. */
-                getWorldObj().playAuxSFX(2005, xCoord, yCoord, zCoord, 0);
-            }
-
-            world.markBlockForUpdate(xCoord, yCoord, zCoord);
             markDirty();
 
         }
