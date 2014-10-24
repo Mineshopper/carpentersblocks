@@ -55,6 +55,9 @@ public class BlockCoverable extends BlockContainer {
     /** Indicates during getDrops that block instance should not be dropped. */
     protected final int METADATA_DROP_ATTR_ONLY = 16;
 
+    /** Whether breakBlock() should drop block attributes. */
+    private boolean enableDrops = false;
+
     /**
      * Stores actions taken on a block in order to properly play sounds,
      * decrement player inventory, and to determine if a block was altered.
@@ -968,6 +971,22 @@ public class BlockCoverable extends BlockContainer {
 
     @Override
     /**
+     * Drops the block items with a specified chance of dropping the specified items
+     */
+    public void dropBlockAsItemWithChance(World world, int x, int y, int z, int metadata, float harvestLevel, int fortune)
+    {
+        /*
+         * When fluids break a block, they automatically call for blocks to drop items.
+         * We only allow item drops in breakBlock() or when called elsewhere within this
+         * mod, so check first.
+         */
+        if (enableDrops) {
+            super.dropBlockAsItemWithChance(world, x, y, z, metadata, harvestLevel, fortune);
+        }
+    }
+
+    @Override
+    /**
      * Ejects contained items into the world, and notifies neighbors of an update, as appropriate
      */
     public void breakBlock(World world, int x, int y, int z, Block block, int metadata)
@@ -975,7 +994,9 @@ public class BlockCoverable extends BlockContainer {
         /* Drop block instance. */
 
         for (ItemStack itemStack : getDrops(world, x, y, z, METADATA_DROP_ATTR_ONLY, 0)) {
+            enableDrops = true;
             dropBlockAsItem(world, x, y, z, itemStack);
+            enableDrops = false;
         }
 
         super.breakBlock(world, x, y, z, block, metadata);
@@ -995,6 +1016,8 @@ public class BlockCoverable extends BlockContainer {
     @Override
     public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int metadata, int fortune)
     {
+        new Exception().printStackTrace();
+
         ArrayList<ItemStack> ret = super.getDrops(world, x, y, z, metadata, fortune);
         TEBase TE = getSimpleTileEntity(world, x, y, z);
 
