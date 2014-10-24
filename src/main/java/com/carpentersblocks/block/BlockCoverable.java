@@ -52,6 +52,9 @@ public class BlockCoverable extends BlockContainer {
     /** Indicates during getDrops that block instance should not be dropped. */
     private final int METADATA_DROP_ATTR_ONLY = 16;
 
+    /** Whether breakBlock() should drop block attributes. */
+    private boolean enableDrops = false;
+
     /**
      * Stores actions taken on a block in order to properly play sounds,
      * decrement player inventory, and to determine if a block was altered.
@@ -172,6 +175,26 @@ public class BlockCoverable extends BlockContainer {
         }
 
         return true;
+    }
+
+    /**
+     * Drops block as {@link ItemStack} and notifies relevant systems of
+     * block removal.  Block attributes will drop later in destruction.
+     * <p>
+     * This is usually called when a {@link #onNeighborBlockChange(World, int, int, int, Block) neighbor changes}.
+     *
+     * @param world the {@link World}
+     * @param x the x coordinate
+     * @param y the y coordinate
+     * @param z the z coordinate
+     * @param dropBlock whether block {@link ItemStack} is dropped
+     */
+    protected void destroyBlock(World world, int x, int y, int z, boolean dropBlock)
+    {
+        if (dropBlock) {
+            dropBlockAsItem(world, x, y, z, new ItemStack(getItemDropped(0, world.rand, 0)));
+        }
+        world.setBlockToAir(x, y, z);
     }
 
     /**
@@ -956,11 +979,14 @@ public class BlockCoverable extends BlockContainer {
      */
     public void breakBlock(World world, int x, int y, int z, Block block, int metadata)
     {
-        /*
-         * Drop block contents excluding the block itself.
-         * The block instance is dropped later in destruction code.
-         */
-        dropBlockAsItem(world, x, y, z, METADATA_DROP_ATTR_ONLY, 0);
+        /* Drop block instance. */
+
+        for (ItemStack itemStack : getDrops(world, x, y, z, METADATA_DROP_ATTR_ONLY, 0)) {
+            enableDrops = true;
+            dropBlockAsItem(world, x, y, z, itemStack);
+            enableDrops = false;
+        }
+
         super.breakBlock(world, x, y, z, block, metadata);
     }
 
