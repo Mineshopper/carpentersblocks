@@ -228,7 +228,7 @@ public class BlockCarpentersLadder extends BlockCoverable {
                 }
 
                 if (dropBlock) {
-                    dropBlockAsItem(world, x, y, z, data, 0);
+                    dropBlockAsItem_do(world, x, y, z, createStackedBlock(0));
                     world.setBlockToAir(x, y, z);
                 }
 

@@ -177,7 +177,7 @@ public class BlockCarpentersTorch extends BlockCoverable {
             TEBase TE = getTileEntity(world, x, y, z);
 
             if (TE != null && Torch.isReady(TE) && !canPlaceBlockOnSide(world, x, y, z, Torch.getFacing(TE).ordinal())) {
-                dropBlockAsItem(world, x, y, z, 0, 0);
+                dropBlockAsItem_do(world, x, y, z, createStackedBlock(0));
                 world.setBlockToAir(x, y, z);
             }
 

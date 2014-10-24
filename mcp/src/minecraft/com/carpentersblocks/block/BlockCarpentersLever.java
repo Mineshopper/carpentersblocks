@@ -157,7 +157,7 @@ public class BlockCarpentersLever extends BlockCoverable {
                     ForgeDirection facing = Lever.getFacing(TE);
 
                     if (!canPlaceBlockOnSide(world, x, y, z, facing.ordinal())) {
-                        dropBlockAsItem(world, x, y, z, 0, 0);
+                        dropBlockAsItem_do(world, x, y, z, createStackedBlock(0));
                         world.setBlockToAir(x, y, z);
                     }
                 }

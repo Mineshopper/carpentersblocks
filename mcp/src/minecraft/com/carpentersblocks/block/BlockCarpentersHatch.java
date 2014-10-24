@@ -337,8 +337,8 @@ public class BlockCarpentersHatch extends BlockCoverable {
         }
 
         if (count == 4) {
+            dropBlockAsItem_do(world, x, y, z, createStackedBlock(0));
             world.setBlockToAir(x, y, z);
-            dropBlockAsItem(world, x, y, z, world.getBlockMetadata(x, y, z), 0);
         } else {
             Hatch.setDir(TE, dir);
         }

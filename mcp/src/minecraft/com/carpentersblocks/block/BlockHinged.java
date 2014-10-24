@@ -364,8 +364,8 @@ public class BlockHinged extends BlockCoverable {
                         world.setBlockToAir(x, y, z);
                         return;
                     } else if (requiresFoundation() && !world.doesBlockHaveSolidTopSurface(x, y - 1, z)) {
+                        dropBlockAsItem_do(world, x, y, z, createStackedBlock(0));
                         world.setBlockToAir(x, y + 1, z);
-                        dropBlockAsItem(world, x, y, z, 0, 0);
                         return;
                     }
                 } else {

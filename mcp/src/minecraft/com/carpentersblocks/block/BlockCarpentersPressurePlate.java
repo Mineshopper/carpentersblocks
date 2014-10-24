@@ -155,7 +155,7 @@ public class BlockCarpentersPressurePlate extends BlockCoverable {
 
             if (TE != null) {
                 if (!world.doesBlockHaveSolidTopSurface(x, y - 1, z)) {
-                    dropBlockAsItem(world, x, y, z, 0, 0);
+                    dropBlockAsItem_do(world, x, y, z, createStackedBlock(0));
                     world.setBlockToAir(x, y, z);
                 }
             }
