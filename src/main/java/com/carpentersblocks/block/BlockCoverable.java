@@ -982,6 +982,8 @@ public class BlockCoverable extends BlockContainer {
          */
         if (enableDrops) {
             super.dropBlockAsItemWithChance(world, x, y, z, metadata, harvestLevel, fortune);
+        } else {
+            dropBlockAsItem(world, x, y, z, createStackedBlock(0));
         }
     }
 
