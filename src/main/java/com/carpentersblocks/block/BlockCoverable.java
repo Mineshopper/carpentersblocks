@@ -975,6 +975,24 @@ public class BlockCoverable extends BlockContainer {
 
     @Override
     /**
+     * Drops the block items with a specified chance of dropping the specified items
+     */
+    public void dropBlockAsItemWithChance(World world, int x, int y, int z, int metadata, float harvestLevel, int fortune)
+    {
+        /*
+         * When fluids break a block, they automatically call for blocks to drop items.
+         * We only allow item drops in breakBlock() or when called elsewhere within this
+         * mod, so check first.
+         */
+        if (enableDrops) {
+            super.dropBlockAsItemWithChance(world, x, y, z, metadata, harvestLevel, fortune);
+        } else {
+            dropBlockAsItem(world, x, y, z, createStackedBlock(0));
+        }
+    }
+
+    @Override
+    /**
      * Ejects contained items into the world, and notifies neighbors of an update, as appropriate
      */
     public void breakBlock(World world, int x, int y, int z, Block block, int metadata)
