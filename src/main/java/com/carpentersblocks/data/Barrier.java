@@ -44,7 +44,7 @@ public class Barrier {
      */
     public static int getPost(TEBase TE)
     {
-        return TE.getData() >> (0x10 >> 4);
+        return (TE.getData() & 0x10) >> 4;
     }
 
     /**
