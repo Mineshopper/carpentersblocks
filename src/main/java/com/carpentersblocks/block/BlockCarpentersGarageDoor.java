@@ -7,6 +7,7 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
@@ -433,5 +434,62 @@ public class BlockCarpentersGarageDoor extends BlockCoverable {
     {
         return BlockRegistry.carpentersGarageDoorRenderID;
     }
+    
+	@Override
+	public ForgeDirection[] getValidRotations(World worldObj, int x, int y,int z) 
+	{
+		ForgeDirection[] axises = {ForgeDirection.UP, ForgeDirection.DOWN};
+		return axises;
+	}
+	
+	@Override
+	public boolean rotateBlock(World world, int x, int y, int z, ForgeDirection axis) 
+	{
+		// to correctly support archimedes' ships mod:
+		// if Axis is DOWN, block rotates to the left, north -> west -> south -> east
+		// if Axis is UP, block rotates to the right:  north -> east -> south -> west
+		
+		TileEntity tile = world.getTileEntity(x, y, z);
+		if (tile != null && tile instanceof TEBase)
+		{
+			TEBase cbTile = (TEBase)tile;
+			int dataAngle = (cbTile.getData() & 0x70) >> 4;
+        	ForgeDirection direction = ForgeDirection.getOrientation(dataAngle);
+        	int newAngle = 0;
+        	
+			switch (axis)
+			{
+				case UP:
+				{
+					switch (direction)
+					{
+						case WEST:{newAngle = (cbTile.getData() & ~0x70) | (ForgeDirection.NORTH.ordinal() << 4); break;}
+						case NORTH:{newAngle = (cbTile.getData() & ~0x70) | (ForgeDirection.EAST.ordinal() << 4); break;}
+						case EAST:{newAngle = (cbTile.getData() & ~0x70) | (ForgeDirection.SOUTH.ordinal() << 4); break;}
+						case SOUTH:{newAngle = (cbTile.getData() & ~0x70) | (ForgeDirection.WEST.ordinal() << 4); break;}
+						default: break;
+					}
+					cbTile.setData(newAngle);
+					return true;
+				}
+				case DOWN:
+				{
+					switch (direction)
+					{
+						case WEST:{newAngle = (cbTile.getData() & ~0x70) | (ForgeDirection.SOUTH.ordinal() << 4); break;}
+						case NORTH:{newAngle = (cbTile.getData() & ~0x70) | (ForgeDirection.EAST.ordinal() << 4); break;}
+						case EAST:{newAngle = (cbTile.getData() & ~0x70) | (ForgeDirection.NORTH.ordinal() << 4); break;}
+						case SOUTH:{newAngle = (cbTile.getData() & ~0x70) | (ForgeDirection.WEST.ordinal() << 4); break;}
+						default: break;
+					}
+					cbTile.setData(newAngle);
+					return true;
+				}
+				default: return false;
+			}
+		}
+		
+		return false;
+	}
 
 }
