@@ -299,5 +299,57 @@ public class BlockCarpentersSafe extends BlockCoverable {
     {
         return BlockRegistry.carpentersSafeRenderID;
     }
+    
+	@Override
+	public ForgeDirection[] getValidRotations(World worldObj, int x, int y,int z) 
+	{
+		ForgeDirection[] axises = {ForgeDirection.UP, ForgeDirection.DOWN};
+		return axises;
+	}
+	
+	@Override
+	public boolean rotateBlock(World world, int x, int y, int z, ForgeDirection axis) 
+	{
+		// to correctly support archimedes' ships mod:
+		// if Axis is DOWN, block rotates to the left, north -> west -> south -> east
+		// if Axis is UP, block rotates to the right:  north -> east -> south -> west
+		
+		TileEntity tile = world.getTileEntity(x, y, z);
+		if (tile != null && tile instanceof TEBase)
+		{
+			TEBase cbTile = (TEBase)tile;
+			ForgeDirection direction = Safe.getFacing(cbTile);
+			switch (axis)
+			{
+				case UP:
+				{
+					switch (direction)
+					{
+						case NORTH:{Safe.setFacing(cbTile, 1); break;}
+						case EAST:{Safe.setFacing(cbTile, 2); break;}
+						case WEST:{Safe.setFacing(cbTile, 3); break;}
+						case SOUTH:{Safe.setFacing(cbTile, 0); break;}
+						default: break;
+					}
+					break;
+				}
+				case DOWN:
+				{
+					switch (direction)
+					{
+						case NORTH:{Safe.setFacing(cbTile, 3); break;}
+						case EAST:{Safe.setFacing(cbTile, 0); break;}
+						case SOUTH:{Safe.setFacing(cbTile, 1); break;}
+						case WEST:{Safe.setFacing(cbTile, 2); break;}
+						default: break;
+					}
+					break;
+				}
+				default: return false;
+			}
+			return true;
+		}
+		return false;
+	}
 
 }

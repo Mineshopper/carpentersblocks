@@ -11,6 +11,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
@@ -376,10 +377,10 @@ public class BlockCarpentersHatch extends BlockCoverable {
         return BlockRegistry.carpentersHatchRenderID;
     }
     
-    @Override
-    public ForgeDirection[] getValidRotations(World worldObj, int x, int y,int z) 
-    {
-        ForgeDirection[] axises = {ForgeDirection.UP, ForgeDirection.DOWN};
+	@Override
+	public ForgeDirection[] getValidRotations(World worldObj, int x, int y,int z) 
+	{
+		ForgeDirection[] axises = {ForgeDirection.UP, ForgeDirection.DOWN};
 		return axises;
 	}
 	
