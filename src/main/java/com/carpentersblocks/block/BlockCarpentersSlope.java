@@ -682,55 +682,55 @@ public class BlockCarpentersSlope extends BlockCoverable {
         return BlockRegistry.carpentersSlopeRenderID;
     }
     
-	@Override
-	public ForgeDirection[] getValidRotations(World worldObj, int x, int y,int z) 
-	{
-		ForgeDirection[] axises = {ForgeDirection.UP, ForgeDirection.DOWN};
-		return axises;
-	}
+@Override
+public ForgeDirection[] getValidRotations(World worldObj, int x, int y,int z) 
+{
+	ForgeDirection[] axises = {ForgeDirection.UP, ForgeDirection.DOWN};
+	return axises;
+}
+
+@Override
+public boolean rotateBlock(World world, int x, int y, int z, ForgeDirection axis) 
+{
+	// to correctly support archimedes' ships mod:
+	// if Axis is DOWN, block rotates to the left, north -> west -> south -> east
+	// if Axis is UP, block rotates to the right:  north -> east -> south -> west
 	
-	@Override
-	public boolean rotateBlock(World world, int x, int y, int z, ForgeDirection axis) 
+	TileEntity tile = world.getTileEntity(x, y, z);
+	if (tile != null && tile instanceof TEBase)
 	{
-		// to correctly support archimedes' ships mod:
-		// if Axis is DOWN, block rotates to the left, north -> west -> south -> east
-		// if Axis is UP, block rotates to the right:  north -> east -> south -> west
-		
-		TileEntity tile = world.getTileEntity(x, y, z);
-		if (tile != null && tile instanceof TEBase)
+		TEBase cbTile = (TEBase)tile;
+		int data = cbTile.getData();
+		int dataAngle = data % 4;
+		switch (axis)
 		{
-			TEBase cbTile = (TEBase)tile;
-			int data = cbTile.getData();
-			int dataAngle = data % 4;
-			switch (axis)
+			case UP:
 			{
-				case UP:
+				switch (dataAngle)
 				{
-					switch (dataAngle)
-					{
-						case 0:{cbTile.setData(data+3); break;}
-						case 1:{cbTile.setData(data+1); break;}
-						case 2:{cbTile.setData(data-2); break;}
-						case 3:{cbTile.setData(data-2); break;}
-					}
-					break;
+					case 0:{cbTile.setData(data+3); break;}
+					case 1:{cbTile.setData(data+1); break;}
+					case 2:{cbTile.setData(data-2); break;}
+					case 3:{cbTile.setData(data-2); break;}
 				}
-				case DOWN:
-				{
-					switch (dataAngle)
-					{
-						case 0:{cbTile.setData(data+2); break;}
-						case 1:{cbTile.setData(data+2); break;}
-						case 2:{cbTile.setData(data-1); break;}
-						case 3:{cbTile.setData(data-3); break;}
-					}
-					break;
-				}
-				default: return false;
+				break;
 			}
-			return true;
+			case DOWN:
+			{
+				switch (dataAngle)
+				{
+					case 0:{cbTile.setData(data+2); break;}
+					case 1:{cbTile.setData(data+2); break;}
+					case 2:{cbTile.setData(data-1); break;}
+					case 3:{cbTile.setData(data-3); break;}
+				}
+				break;
+			}
+			default: return false;
 		}
-		return false;
+		return true;
 	}
+	return false;
+}
 
 }

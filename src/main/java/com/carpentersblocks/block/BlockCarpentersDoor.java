@@ -10,9 +10,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import com.carpentersblocks.CarpentersBlocks;
-import com.carpentersblocks.data.Gate;
 import com.carpentersblocks.data.Hinge;
-import com.carpentersblocks.data.ISided;
 import com.carpentersblocks.tileentity.TEBase;
 import com.carpentersblocks.util.registry.BlockRegistry;
 import com.carpentersblocks.util.registry.IconRegistry;
@@ -96,56 +94,56 @@ public class BlockCarpentersDoor extends BlockHinged {
         return BlockRegistry.carpentersDoorRenderID;
     }
     
-	@Override
-	public ForgeDirection[] getValidRotations(World worldObj, int x, int y,int z) 
-	{
-		ForgeDirection[] axises = {ForgeDirection.UP, ForgeDirection.DOWN};
-		return axises;
-	}
+@Override
+public ForgeDirection[] getValidRotations(World worldObj, int x, int y,int z) 
+{
+	ForgeDirection[] axises = {ForgeDirection.UP, ForgeDirection.DOWN};
+	return axises;
+}
+
+@Override
+public boolean rotateBlock(World world, int x, int y, int z, ForgeDirection axis) 
+{
+	// to correctly support archimedes' ships mod:
+	// if Axis is DOWN, block rotates to the left, north -> west -> south -> east
+	// if Axis is UP, block rotates to the right:  north -> east -> south -> west
 	
-	@Override
-	public boolean rotateBlock(World world, int x, int y, int z, ForgeDirection axis) 
+	TileEntity tile = world.getTileEntity(x, y, z);
+	if (tile != null && tile instanceof TEBase)
 	{
-		// to correctly support archimedes' ships mod:
-		// if Axis is DOWN, block rotates to the left, north -> west -> south -> east
-		// if Axis is UP, block rotates to the right:  north -> east -> south -> west
-		
-		TileEntity tile = world.getTileEntity(x, y, z);
-		if (tile != null && tile instanceof TEBase)
+		TEBase cbTile = (TEBase)tile;
+		int direction = Hinge.getFacing(cbTile);
+		switch (axis)
 		{
-			TEBase cbTile = (TEBase)tile;
-			int direction = Hinge.getFacing(cbTile);
-			switch (axis)
+			case UP: 
 			{
-				case UP: 
+				switch (direction)
 				{
-					switch (direction)
-					{
-						case 0:{Hinge.setFacing(cbTile, 1); break;}
-						case 1:{Hinge.setFacing(cbTile, 2); break;}
-						case 2:{Hinge.setFacing(cbTile, 3); break;}
-						case 3:{Hinge.setFacing(cbTile, 0); break;}
-						default: return false;
-					}
-					break;
+					case 0:{Hinge.setFacing(cbTile, 1); break;}
+					case 1:{Hinge.setFacing(cbTile, 2); break;}
+					case 2:{Hinge.setFacing(cbTile, 3); break;}
+					case 3:{Hinge.setFacing(cbTile, 0); break;}
+					default: return false;
 				}
-				case DOWN:
-				{
-					switch (direction)
-					{
-						case 0:{Hinge.setFacing(cbTile, 3); break;}
-						case 1:{Hinge.setFacing(cbTile, 0); break;}
-						case 2:{Hinge.setFacing(cbTile, 1); break;}
-						case 3:{Hinge.setFacing(cbTile, 2); break;}
-						default: return false;
-					}
-					break;
-				}
-				default: return false;
+				break;
 			}
-			return true;
+			case DOWN:
+			{
+				switch (direction)
+				{
+					case 0:{Hinge.setFacing(cbTile, 3); break;}
+					case 1:{Hinge.setFacing(cbTile, 0); break;}
+					case 2:{Hinge.setFacing(cbTile, 1); break;}
+					case 3:{Hinge.setFacing(cbTile, 2); break;}
+					default: return false;
+				}
+				break;
+			}
+			default: return false;
 		}
-		return false;
+		return true;
 	}
+	return false;
+}
 
 }
