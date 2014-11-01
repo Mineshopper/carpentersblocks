@@ -11,7 +11,6 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-
 import com.carpentersblocks.data.Barrier;
 import com.carpentersblocks.data.Gate;
 import com.carpentersblocks.tileentity.TEBase;
@@ -284,21 +283,21 @@ public class BlockCarpentersGate extends BlockCoverable {
     {
         return BlockRegistry.carpentersGateRenderID;
     }
-    
+
 	@Override
-	public ForgeDirection[] getValidRotations(World worldObj, int x, int y,int z) 
+	public ForgeDirection[] getValidRotations(World worldObj, int x, int y,int z)
 	{
 		ForgeDirection[] axises = {ForgeDirection.UP, ForgeDirection.DOWN};
 		return axises;
 	}
-	
+
 	@Override
-	public boolean rotateBlock(World world, int x, int y, int z, ForgeDirection axis) 
+	public boolean rotateBlock(World world, int x, int y, int z, ForgeDirection axis)
 	{
 		// to correctly support archimedes' ships mod:
 		// if Axis is DOWN, block rotates to the left, north -> west -> south -> east
 		// if Axis is UP, block rotates to the right:  north -> east -> south -> west
-		
+
 		TileEntity tile = world.getTileEntity(x, y, z);
 		if (tile != null && tile instanceof TEBase)
 		{
