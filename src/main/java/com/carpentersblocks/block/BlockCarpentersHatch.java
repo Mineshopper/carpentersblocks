@@ -11,6 +11,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
@@ -375,5 +376,55 @@ public class BlockCarpentersHatch extends BlockCoverable {
     {
         return BlockRegistry.carpentersHatchRenderID;
     }
+    
+	@Override
+	public ForgeDirection[] getValidRotations(World worldObj, int x, int y,int z) 
+	{
+		ForgeDirection[] axises = {ForgeDirection.UP, ForgeDirection.DOWN};
+		return axises;
+	}
+	
+	@Override
+	public boolean rotateBlock(World world, int x, int y, int z, ForgeDirection axis) 
+	{
+		// to correctly support archimedes' ships mod:
+		// if Axis is DOWN, block rotates to the left, north -> west -> south -> east
+		// if Axis is UP, block rotates to the right:  north -> east -> south -> west
+		
+		TileEntity tile = world.getTileEntity(x, y, z);
+		if (tile != null && tile instanceof TEBase)
+		{
+			TEBase cbTile = (TEBase)tile;
+			int direction = Hatch.getDir(cbTile);
+			switch (axis)
+			{
+				case UP:
+				{
+					switch (direction)
+					{
+						case 0:{Hatch.setDir(cbTile, 3); break;}
+						case 1:{Hatch.setDir(cbTile, 2); break;}
+						case 2:{Hatch.setDir(cbTile, 0); break;}
+						case 3:{Hatch.setDir(cbTile, 1); break;}
+					}
+					break;
+				}
+				case DOWN:
+				{
+					switch (direction)
+					{
+						case 0:{Hatch.setDir(cbTile, 2); break;}
+						case 1:{Hatch.setDir(cbTile, 3); break;}
+						case 2:{Hatch.setDir(cbTile, 1); break;}
+						case 3:{Hatch.setDir(cbTile, 0); break;}
+					}
+					break;
+				}
+				default: return false;
+			}
+			return true;
+		}
+		return false;
+	}
 
 }

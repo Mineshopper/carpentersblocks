@@ -5,6 +5,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -155,5 +156,36 @@ public class BlockCarpentersLadder extends BlockSided {
     {
         return BlockRegistry.carpentersLadderRenderID;
     }
+    
+	@Override
+	public ForgeDirection[] getValidRotations(World worldObj, int x, int y,int z) 
+	{
+		ForgeDirection[] axises = {ForgeDirection.UP, ForgeDirection.DOWN};
+		return axises;
+	}
+	
+	@Override
+	public boolean rotateBlock(World world, int x, int y, int z, ForgeDirection axis) 
+	{
+		// to correctly support archimedes' ships mod:
+		// if Axis is DOWN, block rotates to the left, north -> west -> south -> east
+		// if Axis is UP, block rotates to the right:  north -> east -> south -> west
+		
+		TileEntity tile = world.getTileEntity(x, y, z);
+		if (tile != null && tile instanceof TEBase)
+		{
+			TEBase cbTile = (TEBase)tile;
+			int data = cbTile.getData();
+			int dataAngle = data % 2;
+			switch (dataAngle)
+			{
+				case 0:{cbTile.setData(data+1); break;}
+				case 1:{cbTile.setData(data-1); break;}
+				default:return false;
+			}
+			return true;
+		}
+		return false;
+	}
 
 }
