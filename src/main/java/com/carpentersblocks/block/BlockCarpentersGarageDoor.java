@@ -299,20 +299,18 @@ public class BlockCarpentersGarageDoor extends BlockCoverable {
 
             TEBase TE = getTileEntity(world, x, y, z);
             if (TE != null) {
-
                 if (data.isHost(TE) && !(canPlaceBlockOnSide(world, x, y, z, 0) || world.getBlock(x, y + 1, z).equals(this))) {
                     destroy(world, x, y, z, true);
+                } else {
+                    /* Set block open or closed. */
+
+                    int powerState = world.isBlockIndirectlyGettingPowered(x, y, z) ? GarageDoor.STATE_OPEN : GarageDoor.STATE_CLOSED;
+                    if (block != null && block.canProvidePower() && powerState != data.getState(TE)) {
+                        int state = data.isOpen(TE) ? GarageDoor.STATE_CLOSED : GarageDoor.STATE_OPEN;
+                        data.setState(TE, state, false);
+                        propagateChanges(TE, world, x, y, z, true);
+                    }
                 }
-
-                /* Set block open or closed. */
-
-                int powerState = world.isBlockIndirectlyGettingPowered(x, y, z) ? GarageDoor.STATE_OPEN : GarageDoor.STATE_CLOSED;
-                if (block != null && block.canProvidePower() && powerState != data.getState(TE)) {
-                    int state = data.isOpen(TE) ? GarageDoor.STATE_CLOSED : GarageDoor.STATE_OPEN;
-                    data.setState(TE, state, false);
-                    propagateChanges(TE, world, x, y, z, true);
-                }
-
             }
 
         }
@@ -434,21 +432,21 @@ public class BlockCarpentersGarageDoor extends BlockCoverable {
     {
         return BlockRegistry.carpentersGarageDoorRenderID;
     }
-    
+
 	@Override
-	public ForgeDirection[] getValidRotations(World worldObj, int x, int y,int z) 
+	public ForgeDirection[] getValidRotations(World worldObj, int x, int y,int z)
 	{
 		ForgeDirection[] axises = {ForgeDirection.UP, ForgeDirection.DOWN};
 		return axises;
 	}
-	
+
 	@Override
-	public boolean rotateBlock(World world, int x, int y, int z, ForgeDirection axis) 
+	public boolean rotateBlock(World world, int x, int y, int z, ForgeDirection axis)
 	{
 		// to correctly support archimedes' ships mod:
 		// if Axis is DOWN, block rotates to the left, north -> west -> south -> east
 		// if Axis is UP, block rotates to the right:  north -> east -> south -> west
-		
+
 		TileEntity tile = world.getTileEntity(x, y, z);
 		if (tile != null && tile instanceof TEBase)
 		{
@@ -456,7 +454,7 @@ public class BlockCarpentersGarageDoor extends BlockCoverable {
 			int dataAngle = (cbTile.getData() & 0x70) >> 4;
         	ForgeDirection direction = ForgeDirection.getOrientation(dataAngle);
         	int newAngle = 0;
-        	
+
 			switch (axis)
 			{
 				case UP:
@@ -488,7 +486,7 @@ public class BlockCarpentersGarageDoor extends BlockCoverable {
 				default: return false;
 			}
 		}
-		
+
 		return false;
 	}
 
