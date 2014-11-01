@@ -1222,39 +1222,38 @@ public class BlockCoverable extends BlockContainer {
      */
     public boolean shouldSideBeRendered(IBlockAccess world, int x, int y, int z, int side)
     {
-        TEBase TE = getTileEntity(world, x, y, z);
+        // Side checks in out-of-range areas will crash
+        if (y > 0 && y < world.getHeight())
+        {
+            TEBase TE = getTileEntity(world, x, y, z);
+            if (TE != null) {
+                ForgeDirection side_src = ForgeDirection.getOrientation(side);
+                ForgeDirection side_adj = side_src.getOpposite();
 
-        if (TE != null) {
+                TEBase TE_adj = (TEBase) world.getTileEntity(x, y, z);
+                TEBase TE_src = (TEBase) world.getTileEntity(x + side_adj.offsetX, y + side_adj.offsetY, z + side_adj.offsetZ);
 
-            ForgeDirection side_src = ForgeDirection.getOrientation(side);
-            ForgeDirection side_adj = side_src.getOpposite();
+                if (TE_adj.getBlockType().isSideSolid(world, x, y, z, side_adj) == TE_src.getBlockType().isSideSolid(world, x + side_adj.offsetX, y + side_adj.offsetY, z + side_adj.offsetZ, ForgeDirection.getOrientation(side))) {
 
-            TEBase TE_adj = (TEBase) world.getTileEntity(x, y, z);
-            TEBase TE_src = (TEBase) world.getTileEntity(x + side_adj.offsetX, y + side_adj.offsetY, z + side_adj.offsetZ);
+                    if (shareFaces(TE_adj, TE_src, side_adj, side_src)) {
 
-            if (TE_adj.getBlockType().isSideSolid(world, x, y, z, side_adj) == TE_src.getBlockType().isSideSolid(world, x + side_adj.offsetX, y + side_adj.offsetY, z + side_adj.offsetZ, ForgeDirection.getOrientation(side))) {
+                        Block block_adj = BlockProperties.toBlock(BlockProperties.getCover(TE_adj, 6));
+                        Block block_src = BlockProperties.toBlock(BlockProperties.getCover(TE_src, 6));
 
-                if (shareFaces(TE_adj, TE_src, side_adj, side_src)) {
-
-                    Block block_adj = BlockProperties.toBlock(BlockProperties.getCover(TE_adj, 6));
-                    Block block_src = BlockProperties.toBlock(BlockProperties.getCover(TE_src, 6));
-
-                    if (!TE_adj.hasAttribute(TE.ATTR_COVER[6])) {
-                        return TE_src.hasAttribute(TE.ATTR_COVER[6]);
-                    } else {
-                        if (!TE_src.hasAttribute(TE.ATTR_COVER[6]) && block_adj.getRenderBlockPass() == 0) {
-                            return !block_adj.isOpaqueCube();
-                        } else if (TE_src.hasAttribute(TE.ATTR_COVER[6]) && block_src.isOpaqueCube() == block_adj.isOpaqueCube() && block_src.getRenderBlockPass() == block_adj.getRenderBlockPass()) {
-                            return false;
+                        if (!TE_adj.hasAttribute(TE.ATTR_COVER[6])) {
+                            return TE_src.hasAttribute(TE.ATTR_COVER[6]);
                         } else {
-                            return true;
+                            if (!TE_src.hasAttribute(TE.ATTR_COVER[6]) && block_adj.getRenderBlockPass() == 0) {
+                                return !block_adj.isOpaqueCube();
+                            } else if (TE_src.hasAttribute(TE.ATTR_COVER[6]) && block_src.isOpaqueCube() == block_adj.isOpaqueCube() && block_src.getRenderBlockPass() == block_adj.getRenderBlockPass()) {
+                                return false;
+                            } else {
+                                return true;
+                            }
                         }
                     }
-
                 }
-
             }
-
         }
 
         return super.shouldSideBeRendered(world, x, y, z, side);
