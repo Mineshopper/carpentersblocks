@@ -9,7 +9,6 @@ import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;
 import com.carpentersblocks.data.GarageDoor;
 import com.carpentersblocks.renderer.helper.RenderHelper;
-import com.carpentersblocks.util.BlockProperties;
 import com.carpentersblocks.util.registry.IconRegistry;
 
 public class BlockHandlerCarpentersGarageDoor extends BlockHandlerBase {
@@ -114,7 +113,7 @@ public class BlockHandlerCarpentersGarageDoor extends BlockHandlerBase {
      */
     private ItemStack getOpenCover()
     {
-        return BlockProperties.getCover(data.getBottommost(TE.getWorldObj(), TE.xCoord, TE.yCoord, TE.zCoord), coverRendering);
+        return getCoverForRendering(data.getBottommost(TE.getWorldObj(), TE.xCoord, TE.yCoord, TE.zCoord));
     }
 
     /**

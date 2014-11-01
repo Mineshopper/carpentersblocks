@@ -7,6 +7,7 @@ import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
@@ -220,9 +221,17 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
         }
     }
 
-    protected ItemStack getCoverForRendering()
+    /**
+     * Gets cover {@link ItemStack} suitable for pulling block textures
+     * from, regardless if it has an {@link NBTTagCompound}.
+     *
+     * @param TE [optional] the {@link TEBase}, if not {@link #srcBlock}
+     * @return the {@link ItemStack}
+     */
+    protected ItemStack getCoverForRendering(TEBase ... TE)
     {
-        return BlockProperties.getCoverSafe(TE, coverRendering);
+        TEBase temp = TE.length == 0 ? this.TE : TE[0];
+        return BlockProperties.getCoverSafe(temp, coverRendering);
     }
 
     /**
