@@ -397,10 +397,13 @@ public class BlockCoverable extends BlockContainer {
 
                 if (canPlayerActivate(TE, entityPlayer)) {
 
-                    /* Sides 0-5 are side covers, and 6 is the base block. */
-                    int effectiveSide = TE.hasAttribute(TE.ATTR_COVER[side]) ? side : 6;
+                    // Allow block to change TE if needed before altering attributes
+                    TE = getTileEntityForBlockActivation(TE);
 
                     preOnBlockActivated(TE, entityPlayer, side, hitX, hitY, hitZ, actionResult);
+
+                    /* Sides 0-5 are side covers, and 6 is the base block. */
+                    int effectiveSide = TE.hasAttribute(TE.ATTR_COVER[side]) ? side : 6;
 
                     if (PlayerPermissions.canPlayerEdit(TE, TE.xCoord, TE.yCoord, TE.zCoord, entityPlayer)) {
 
@@ -433,7 +436,7 @@ public class BlockCoverable extends BlockContainer {
                                     if (BlockProperties.blockRotates(itemStack)) {
                                         int rot = Direction.rotateOpposite[EntityLivingUtil.getRotationValue(entityPlayer)];
                                         int side_interpolated = entityPlayer.rotationPitch < -45.0F ? 0 : entityPlayer.rotationPitch > 45 ? 1 : rot == 0 ? 3 : rot == 1 ? 4 : rot == 2 ? 2 : 5;
-                                        metadata = block.onBlockPlaced(world, x, y, z, side_interpolated, hitX, hitY, hitZ, metadata);
+                                        metadata = block.onBlockPlaced(world, TE.xCoord, TE.yCoord, TE.zCoord, side_interpolated, hitX, hitY, hitZ, metadata);
                                     }
 
                                     ItemStack tempStack = itemStack.copy();
@@ -441,11 +444,11 @@ public class BlockCoverable extends BlockContainer {
 
                                     /* Base cover should always be checked. */
 
-                                    if (effectiveSide == 6 && (!canCoverSide(TE, world, x, y, z, 6) || TE.hasAttribute(TE.ATTR_COVER[6]))) {
+                                    if (effectiveSide == 6 && (!canCoverSide(TE, world, TE.xCoord, TE.yCoord, TE.zCoord, 6) || TE.hasAttribute(TE.ATTR_COVER[6]))) {
                                         effectiveSide = side;
                                     }
 
-                                    if (canCoverSide(TE, world, x, y, z, effectiveSide) && !TE.hasAttribute(TE.ATTR_COVER[effectiveSide])) {
+                                    if (canCoverSide(TE, world, TE.xCoord, TE.yCoord, TE.zCoord, effectiveSide) && !TE.hasAttribute(TE.ATTR_COVER[effectiveSide])) {
                                         TE.addAttribute(TE.ATTR_COVER[effectiveSide], tempStack);
                                         actionResult.setAltered().decInventory().setSoundSource(itemStack);
                                     }
@@ -484,8 +487,8 @@ public class BlockCoverable extends BlockContainer {
                             actionResult.setSoundSource(BlockProperties.getCover(TE, 6));
                         }
                         damageItemWithChance(world, entityPlayer);
-                        onNeighborBlockChange(world, x, y, z, this);
-                        world.notifyBlocksOfNeighborChange(x, y, z, this);
+                        onNeighborBlockChange(world, TE.xCoord, TE.yCoord, TE.zCoord, this);
+                        world.notifyBlocksOfNeighborChange(TE.xCoord, TE.yCoord, TE.zCoord, this);
 
                     }
 
@@ -1404,6 +1407,21 @@ public class BlockCoverable extends BlockContainer {
     protected boolean canCoverSide(TEBase TE, World world, int x, int y, int z, int side)
     {
         return side == 6;
+    }
+
+    /**
+     * Allows a tile entity called during block activation to be changed before
+     * altering attributes like cover, dye, overlay, etc.
+     * <p>
+     * Primarily offered for the garage door, when open, to swap the top piece
+     * with the bottom piece for consistency.
+     *
+     * @param  TE the originating {@link TEBase}
+     * @return a swapped in {@link TEBase}, or the passed in {@link TEBase}
+     */
+    protected TEBase getTileEntityForBlockActivation(TEBase TE)
+    {
+        return TE;
     }
 
 }

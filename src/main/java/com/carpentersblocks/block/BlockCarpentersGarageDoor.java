@@ -207,6 +207,22 @@ public class BlockCarpentersGarageDoor extends BlockCoverable {
     }
 
     /**
+     * Allows a tile entity called during block activation to be changed before
+     * altering attributes like cover, dye, overlay, etc.
+     * <p>
+     * Primarily offered for the garage door, when open, to swap the top piece
+     * with the bottom piece for consistency.
+     *
+     * @param  TE the originating {@link TEBase}
+     * @return a swapped in {@link TEBase}, or the passed in {@link TEBase}
+     */
+    @Override
+    protected TEBase getTileEntityForBlockActivation(TEBase TE)
+    {
+        return data.isOpen(TE) ? data.getBottommost(TE.getWorldObj(), TE.xCoord, TE.yCoord, TE.zCoord) : TE;
+    }
+
+    /**
      * Called if cover and decoration checks have been performed but
      * returned no changes.
      */
@@ -433,61 +449,61 @@ public class BlockCarpentersGarageDoor extends BlockCoverable {
         return BlockRegistry.carpentersGarageDoorRenderID;
     }
 
-	@Override
-	public ForgeDirection[] getValidRotations(World worldObj, int x, int y,int z)
-	{
-		ForgeDirection[] axises = {ForgeDirection.UP, ForgeDirection.DOWN};
-		return axises;
-	}
+    @Override
+    public ForgeDirection[] getValidRotations(World worldObj, int x, int y,int z)
+    {
+        ForgeDirection[] axises = {ForgeDirection.UP, ForgeDirection.DOWN};
+        return axises;
+    }
 
-	@Override
-	public boolean rotateBlock(World world, int x, int y, int z, ForgeDirection axis)
-	{
-		// to correctly support archimedes' ships mod:
-		// if Axis is DOWN, block rotates to the left, north -> west -> south -> east
-		// if Axis is UP, block rotates to the right:  north -> east -> south -> west
+    @Override
+    public boolean rotateBlock(World world, int x, int y, int z, ForgeDirection axis)
+    {
+        // to correctly support archimedes' ships mod:
+        // if Axis is DOWN, block rotates to the left, north -> west -> south -> east
+        // if Axis is UP, block rotates to the right:  north -> east -> south -> west
 
-		TileEntity tile = world.getTileEntity(x, y, z);
-		if (tile != null && tile instanceof TEBase)
-		{
-			TEBase cbTile = (TEBase)tile;
-			int dataAngle = (cbTile.getData() & 0x70) >> 4;
-        	ForgeDirection direction = ForgeDirection.getOrientation(dataAngle);
-        	int newAngle = 0;
+        TileEntity tile = world.getTileEntity(x, y, z);
+        if (tile != null && tile instanceof TEBase)
+        {
+            TEBase cbTile = (TEBase)tile;
+            int dataAngle = (cbTile.getData() & 0x70) >> 4;
+            ForgeDirection direction = ForgeDirection.getOrientation(dataAngle);
+            int newAngle = 0;
 
-			switch (axis)
-			{
-				case UP:
-				{
-					switch (direction)
-					{
-						case WEST:{newAngle = (cbTile.getData() & ~0x70) | (ForgeDirection.NORTH.ordinal() << 4); break;}
-						case NORTH:{newAngle = (cbTile.getData() & ~0x70) | (ForgeDirection.EAST.ordinal() << 4); break;}
-						case EAST:{newAngle = (cbTile.getData() & ~0x70) | (ForgeDirection.SOUTH.ordinal() << 4); break;}
-						case SOUTH:{newAngle = (cbTile.getData() & ~0x70) | (ForgeDirection.WEST.ordinal() << 4); break;}
-						default: break;
-					}
-					cbTile.setData(newAngle);
-					return true;
-				}
-				case DOWN:
-				{
-					switch (direction)
-					{
-						case WEST:{newAngle = (cbTile.getData() & ~0x70) | (ForgeDirection.SOUTH.ordinal() << 4); break;}
-						case NORTH:{newAngle = (cbTile.getData() & ~0x70) | (ForgeDirection.EAST.ordinal() << 4); break;}
-						case EAST:{newAngle = (cbTile.getData() & ~0x70) | (ForgeDirection.NORTH.ordinal() << 4); break;}
-						case SOUTH:{newAngle = (cbTile.getData() & ~0x70) | (ForgeDirection.WEST.ordinal() << 4); break;}
-						default: break;
-					}
-					cbTile.setData(newAngle);
-					return true;
-				}
-				default: return false;
-			}
-		}
+            switch (axis)
+            {
+                case UP:
+                {
+                    switch (direction)
+                    {
+                        case WEST:{newAngle = (cbTile.getData() & ~0x70) | (ForgeDirection.NORTH.ordinal() << 4); break;}
+                        case NORTH:{newAngle = (cbTile.getData() & ~0x70) | (ForgeDirection.EAST.ordinal() << 4); break;}
+                        case EAST:{newAngle = (cbTile.getData() & ~0x70) | (ForgeDirection.SOUTH.ordinal() << 4); break;}
+                        case SOUTH:{newAngle = (cbTile.getData() & ~0x70) | (ForgeDirection.WEST.ordinal() << 4); break;}
+                        default: break;
+                    }
+                    cbTile.setData(newAngle);
+                    return true;
+                }
+                case DOWN:
+                {
+                    switch (direction)
+                    {
+                        case WEST:{newAngle = (cbTile.getData() & ~0x70) | (ForgeDirection.SOUTH.ordinal() << 4); break;}
+                        case NORTH:{newAngle = (cbTile.getData() & ~0x70) | (ForgeDirection.EAST.ordinal() << 4); break;}
+                        case EAST:{newAngle = (cbTile.getData() & ~0x70) | (ForgeDirection.NORTH.ordinal() << 4); break;}
+                        case SOUTH:{newAngle = (cbTile.getData() & ~0x70) | (ForgeDirection.WEST.ordinal() << 4); break;}
+                        default: break;
+                    }
+                    cbTile.setData(newAngle);
+                    return true;
+                }
+                default: return false;
+            }
+        }
 
-		return false;
-	}
+        return false;
+    }
 
 }
