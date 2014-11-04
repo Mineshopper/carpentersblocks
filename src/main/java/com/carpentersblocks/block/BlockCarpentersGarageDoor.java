@@ -383,7 +383,7 @@ public class BlockCarpentersGarageDoor extends BlockCoverable {
 
         TEBase TE = getTileEntity(world, x, y, z);
         if (TE != null && data.isHost(TE)) {
-            list.add(createStackedBlock(0));
+            list.add(getItemDrop(world, metadata));
         }
 
         list.addAll(super.getDrops(world, x, y, z, METADATA_DROP_ATTR_ONLY, fortune));
