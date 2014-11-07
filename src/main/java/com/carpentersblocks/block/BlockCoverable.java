@@ -198,6 +198,16 @@ public class BlockCoverable extends BlockContainer {
     }
 
     /**
+     * Returns an item stack containing a single instance of the current block type. 'i' is the block's subtype/damage
+     * and is ignored for blocks which do not support subtypes. Blocks which cannot be harvested should return null.
+     */
+    protected ItemStack getItemDrop(World world, int metadata)
+    {
+        int fortune = 1;
+        return new ItemStack(getItemDropped(metadata, world.rand, fortune), 1, metadata);
+    }
+
+    /**
      * Returns adjacent, similar tile entities that can be used for duplicating
      * block properties like dye color, pattern, style, etc.
      *
@@ -987,7 +997,7 @@ public class BlockCoverable extends BlockContainer {
         if (enableDrops) {
             super.dropBlockAsItemWithChance(world, x, y, z, metadata, harvestLevel, fortune);
         } else {
-            dropBlockAsItem(world, x, y, z, createStackedBlock(0));
+            dropBlockAsItem(world, x, y, z, getItemDrop(world, metadata));
         }
     }
 
