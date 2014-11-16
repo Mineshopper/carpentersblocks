@@ -1314,15 +1314,15 @@ public class BlockCoverable extends BlockContainer {
      */
     public boolean isOpaqueCube()
     {
-        if (FeatureRegistry.routableFluids == 2) {
-            try {
-                Class<?> clazz = Class.forName(new Throwable().getStackTrace()[2].getClassName());
-                for (int idx = 0; idx < FancyFluidsHelper.liquidClasses.length; ++idx) {
-                    if (clazz.isAssignableFrom(FancyFluidsHelper.liquidClasses[idx])) {
+        if (FeatureRegistry.enableRoutableFluids) {
+            Class<?> clazz = FancyFluidsHelper.getCallerClass();
+            if (clazz != null) {
+                for (Class clazz1 : FancyFluidsHelper.liquidClasses) {
+                    if (clazz.isAssignableFrom(clazz1)) {
                         return true;
                     }
                 }
-            } catch (Exception e) {}
+            }
         }
 
         return false;

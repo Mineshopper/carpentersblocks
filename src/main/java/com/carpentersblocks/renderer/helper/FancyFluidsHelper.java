@@ -12,8 +12,11 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.IFluidBlock;
+import org.apache.logging.log4j.Level;
 import com.carpentersblocks.tileentity.TEBase;
 import com.carpentersblocks.util.BlockProperties;
+import com.carpentersblocks.util.ModLogger;
+import com.carpentersblocks.util.registry.FeatureRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -21,6 +24,38 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class FancyFluidsHelper {
 
     public final static Class[] liquidClasses = { BlockLiquid.class, IFluidBlock.class};
+    private final static int CALLER_SUN = 0;
+    private final static int CALLER_SEC = 1;
+    private static int callMethod = -1;
+
+    public static Class getCallerClass()
+    {
+        if (callMethod < 0)
+        {
+            try {
+                sun.reflect.Reflection.getCallerClass(2);
+                callMethod = CALLER_SUN;
+            } catch (Exception E) {
+                try {
+                    new SecurityManager() { Class clazz = getClassContext()[2]; };
+                    callMethod = CALLER_SEC;
+                } catch (Exception E1) {
+                    FeatureRegistry.enableRoutableFluids = false;
+                    ModLogger.log(Level.WARN, "Routable fluids failed: %s", E1.getMessage());
+                };
+            };
+        }
+
+        switch (callMethod)
+        {
+            case CALLER_SUN:
+                return sun.reflect.Reflection.getCallerClass(4);
+            case CALLER_SEC:
+                return new SecurityManager() { Class clazz = getClassContext()[4]; }.clazz;
+            default:
+                return null;
+        }
+    }
 
     /**
      * Renders fancy fluid.

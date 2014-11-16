@@ -15,7 +15,7 @@ public class FeatureRegistry {
     public static boolean enableTorchWeatherEffects = true;
     public static boolean enableOwnership           = true;
     public static boolean enableIllumination        = true;
-    public static int     routableFluids            = 0;
+    public static boolean enableRoutableFluids      = false;
 
     public static ArrayList<String> overlayItems    = new ArrayList<String>();
     public static ArrayList<String> coverExceptions = new ArrayList<String>();
@@ -33,12 +33,9 @@ public class FeatureRegistry {
         enableDyeColors     = config.get("features",     "Enable Dye Colors",     enableDyeColors).getBoolean(enableDyeColors);
         enableChiselDesigns = config.get("features", "Enable Chisel Designs", enableChiselDesigns).getBoolean(enableChiselDesigns);
 
-        Property routableFluidsProp = config.get("features", "Routable Fluids", routableFluids);
-        routableFluidsProp.comment = "When enabled, unobstructed stationary fluid adjacent to block will render in the block space."
-                                   + "\n0 is disabled"
-                                   + "\n1 is fast, but adjacent fluid sides may be visible"
-                                   + "\n2 is fancy, but chunk render updates may cause noticeable lag spikes";
-        routableFluids = routableFluidsProp.getInt(routableFluids);
+        Property routableFluidsProp = config.get("features", "Routable Fluids", enableRoutableFluids);
+        routableFluidsProp.comment = "When enabled, unobstructed stationary fluid adjacent to block will render in the block space.\nNote: when enabled, you may experience noticeable chunk update lag spikes.";
+        enableRoutableFluids = routableFluidsProp.getBoolean(enableRoutableFluids);
 
         Property illuminationProp = config.get("features", "Enable Illumination", enableIllumination);
         illuminationProp.comment = "This will enable players to cover blocks with glowstone dust to make them illuminate.";
