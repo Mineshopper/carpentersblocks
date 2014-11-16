@@ -37,8 +37,7 @@ public class FeatureRegistry {
         routableFluidsProp.comment = "When enabled, unobstructed stationary fluid adjacent to block will render in the block space."
                                    + "\n0 is disabled"
                                    + "\n1 is fast, but adjacent fluid sides may be visible"
-                                   + "\n2 is fancy, but is not compatible with Optifine's Multi-Core Chunk Loading"
-                                   + "\n3 is fancy, but chunk render updates may cause massive lag spikes";
+                                   + "\n2 is fancy, but chunk render updates may cause noticeable lag spikes";
         routableFluids = routableFluidsProp.getInt(routableFluids);
 
         Property illuminationProp = config.get("features", "Enable Illumination", enableIllumination);

@@ -1222,12 +1222,6 @@ public class BlockCoverable extends BlockContainer {
     }
 
     @Override
-    public Material getMaterial()
-    {
-        return EventHandler.blockMaterial;
-    }
-
-    @Override
     @SideOnly(Side.CLIENT)
     /**
      * Returns true if the given side of this block type should be rendered, if the adjacent block is at the given
@@ -1320,7 +1314,7 @@ public class BlockCoverable extends BlockContainer {
      */
     public boolean isOpaqueCube()
     {
-        if (FeatureRegistry.routableFluids == 3) {
+        if (FeatureRegistry.routableFluids == 2) {
             try {
                 Class<?> clazz = Class.forName(new Throwable().getStackTrace()[2].getClassName());
                 for (int idx = 0; idx < FancyFluidsHelper.liquidClasses.length; ++idx) {
