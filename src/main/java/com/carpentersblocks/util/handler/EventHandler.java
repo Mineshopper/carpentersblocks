@@ -148,7 +148,7 @@ public class EventHandler {
             ItemStack itemStack = entityPlayer.getHeldItem();
             if (itemStack != null && itemStack.getItem() instanceof ItemBlock && BlockProperties.toBlock(itemStack).equals(BlockRegistry.blockCarpentersSlope)) {
                 if (event.dwheel != 0) {
-                    PacketHandler.sendPacketToServer(new PacketSlopeSelect(event.dwheel > 0));
+                    PacketHandler.sendPacketToServer(new PacketSlopeSelect(entityPlayer.inventory.currentItem, event.dwheel > 0));
                 }
                 event.setCanceled(true);
             }
