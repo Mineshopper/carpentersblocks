@@ -150,7 +150,7 @@ public class EventHandler {
             ItemStack itemStack = entityPlayer.getHeldItem();
             if (itemStack != null && itemStack.getItem() instanceof ItemBlock && Block.blocksList[itemStack.itemID].equals(BlockRegistry.blockCarpentersSlope)) {
                 if (event.dwheel != 0) {
-                    PacketHandler.sendPacketToServer(new PacketSlopeSelect(event.dwheel == 120));
+                    PacketHandler.sendPacketToServer(new PacketSlopeSelect(entityPlayer.inventory.currentItem, event.dwheel == 120));
                 }
                 event.setCanceled(true);
             }
