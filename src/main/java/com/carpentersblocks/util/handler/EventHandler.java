@@ -144,15 +144,19 @@ public class EventHandler {
      */
     public void onMouseEvent(MouseEvent event)
     {
-        EntityPlayer entityPlayer = Minecraft.getMinecraft().thePlayer;
+        // We only want to process wheel events
+        if (event.button < 0)
+        {
+            EntityPlayer entityPlayer = Minecraft.getMinecraft().thePlayer;
 
-        if (entityPlayer.isSneaking()) {
-            ItemStack itemStack = entityPlayer.getHeldItem();
-            if (itemStack != null && itemStack.getItem() instanceof ItemBlock && BlockProperties.toBlock(itemStack).equals(BlockRegistry.blockCarpentersSlope)) {
-                if (event.dwheel != 0) {
-                    PacketHandler.sendPacketToServer(new PacketSlopeSelect(entityPlayer.inventory.currentItem, event.dwheel > 0));
+            if (entityPlayer.isSneaking()) {
+                ItemStack itemStack = entityPlayer.getHeldItem();
+                if (itemStack != null && itemStack.getItem() instanceof ItemBlock && BlockProperties.toBlock(itemStack).equals(BlockRegistry.blockCarpentersSlope)) {
+                    if (event.dwheel != 0) {
+                        PacketHandler.sendPacketToServer(new PacketSlopeSelect(entityPlayer.inventory.currentItem, event.dwheel > 0));
+                    }
+                    event.setCanceled(true);
                 }
-                event.setCanceled(true);
             }
         }
     }
