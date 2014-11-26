@@ -12,6 +12,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.IIcon;
+import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.IBlockAccess;
@@ -536,21 +537,19 @@ public class BlockCarpentersSlope extends BlockCoverable {
     /**
      * Returns general slope orientation based on side clicked and hit coordinates.
      */
-    private int getCorner(float rotationYaw, int side, double hitX, double hitY, double hitZ)
+    private int getCorner(float rotationYaw)
     {
-        int corner;
-
-        if (90 <= rotationYaw && rotationYaw < 180) {
-            corner = CORNER_SE;
-        } else if (180 <= rotationYaw && rotationYaw < 270) {
-            corner = CORNER_SW;
-        } else if (270 <= rotationYaw && rotationYaw < 360) {
-            corner = CORNER_NW;
-        } else {
-            corner = CORNER_NE;
+        switch ((MathHelper.floor_double(rotationYaw * 4.0F / 360.0F) & 3) % 4)
+        {
+            case 0:
+                return CORNER_NE;
+            case 1:
+                return CORNER_SE;
+            case 2:
+                return CORNER_SW;
+            default:
+                return CORNER_NW;
         }
-
-        return corner;
     }
 
     @Override
@@ -568,7 +567,7 @@ public class BlockCarpentersSlope extends BlockCoverable {
             int metadata = world.getBlockMetadata(x, y, z);
 
             boolean isPositive = EventHandler.eventFace > 1 && EventHandler.hitY < 0.5F || EventHandler.eventFace == 1;
-            int corner = getCorner(entityLiving.rotationYaw, EventHandler.eventFace, EventHandler.hitX, EventHandler.hitY, EventHandler.hitZ);
+            int corner = getCorner(entityLiving.rotationYaw);
 
             ForgeDirection dir = EntityLivingUtil.getFacing(entityLiving).getOpposite();
 
