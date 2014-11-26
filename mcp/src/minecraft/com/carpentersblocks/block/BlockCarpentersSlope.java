@@ -10,6 +10,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.Icon;
+import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.IBlockAccess;
@@ -535,19 +536,17 @@ public class BlockCarpentersSlope extends BlockCoverable {
      */
     private int getCorner(float rotationYaw, int side, double hitX, double hitY, double hitZ)
     {
-        int corner;
-
-        if (90 <= rotationYaw && rotationYaw < 180) {
-            corner = CORNER_SE;
-        } else if (180 <= rotationYaw && rotationYaw < 270) {
-            corner = CORNER_SW;
-        } else if (270 <= rotationYaw && rotationYaw < 360) {
-            corner = CORNER_NW;
-        } else {
-            corner = CORNER_NE;
+        switch ((MathHelper.floor_double(rotationYaw * 4.0F / 360.0F) & 3) % 4)
+        {
+            case 0:
+                return CORNER_NE;
+            case 1:
+                return CORNER_SE;
+            case 2:
+                return CORNER_SW;
+            default:
+                return CORNER_NW;
         }
-
-        return corner;
     }
 
     @Override
