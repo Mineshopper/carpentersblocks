@@ -341,16 +341,7 @@ public class BlockCoverable extends BlockContainer {
             
             if (!actionResult.altered) {
                 if (entityPlayer.isSneaking()) {
-                	if (TE.hasAttribute(TE.ATTR_ILLUMINATOR)) {
-            			TE.removeAttribute(TE.ATTR_ILLUMINATOR);
-            	     } else if (TE.hasAttribute(TE.ATTR_OVERLAY[effectiveSide])) {
-            	     	TE.removeAttribute(TE.ATTR_OVERLAY[effectiveSide]);
-            	     } else if (TE.hasAttribute(TE.ATTR_DYE[effectiveSide])) {
-            	     	TE.removeAttribute(TE.ATTR_DYE[effectiveSide]);
-            	     } else if (TE.hasAttribute(TE.ATTR_COVER[effectiveSide])) {
-            	        TE.removeAttribute(TE.ATTR_COVER[effectiveSide]);
-            	        TE.removeChiselDesign(effectiveSide);
-            	     }
+                   checkTileEntityAttribute(TE, effectiveSide);
                 } else {
                     onHammerLeftClick(TE, entityPlayer);  
                 }
@@ -370,6 +361,19 @@ public class BlockCoverable extends BlockContainer {
             
         }
         
+    }
+
+    private void checkTileEntityAttribute (TEBase te, int effectiveSide) {
+		 if (te.hasAttribute(te.ATTR_ILLUMINATOR)) {
+			te.removeAttribute(te.ATTR_ILLUMINATOR);
+	     } else if (te.hasAttribute(te.ATTR_OVERLAY[effectiveSide])) {
+	     	te.removeAttribute(te.ATTR_OVERLAY[effectiveSide]);
+	     } else if (te.hasAttribute(te.ATTR_DYE[effectiveSide])) {
+	     	te.removeAttribute(te.ATTR_DYE[effectiveSide]);
+	     } else if (te.hasAttribute(te.ATTR_COVER[effectiveSide])) {
+	        te.removeAttribute(te.ATTR_COVER[effectiveSide]);
+	        te.removeChiselDesign(effectiveSide);
+	     }
     }
 
     @Override
