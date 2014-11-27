@@ -171,15 +171,15 @@ public class BlockCarpentersBarrier extends BlockCoverable {
     /**
      * Updates the blocks bounds based on its current state. Args: world, x, y, z
      */
-    public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
+    public void setBlockBoundsBasedOnState(IBlockAccess blockAccess, int x, int y, int z)
     {
-        TEBase TE = getTileEntity(world, x, y, z);
+        TEBase TE = getTileEntity(blockAccess, x, y, z);
         int type = Barrier.getType(TE);
 
-        boolean connect_ZN = canConnectBarrierTo(world, x, y, z - 1, ForgeDirection.SOUTH);
-        boolean connect_ZP = canConnectBarrierTo(world, x, y, z + 1, ForgeDirection.NORTH);
-        boolean connect_XN = canConnectBarrierTo(world, x - 1, y, z, ForgeDirection.EAST);
-        boolean connect_XP = canConnectBarrierTo(world, x + 1, y, z, ForgeDirection.WEST);
+        boolean connect_ZN = canConnectBarrierTo(blockAccess, x, y, z - 1, ForgeDirection.SOUTH);
+        boolean connect_ZP = canConnectBarrierTo(blockAccess, x, y, z + 1, ForgeDirection.NORTH);
+        boolean connect_XN = canConnectBarrierTo(blockAccess, x - 1, y, z, ForgeDirection.EAST);
+        boolean connect_XP = canConnectBarrierTo(blockAccess, x + 1, y, z, ForgeDirection.WEST);
 
         float x_Low = 0.0F;
         float x_High = 1.0F;
@@ -248,21 +248,21 @@ public class BlockCarpentersBarrier extends BlockCoverable {
     /**
      * Returns true if block can connect to specified side of neighbor block.
      */
-    public boolean canConnectBarrierTo(IBlockAccess world, int x, int y, int z, ForgeDirection side)
+    public boolean canConnectBarrierTo(IBlockAccess blockAccess, int x, int y, int z, ForgeDirection side)
     {
-        Block block = world.getBlock(x, y, z);
+        Block block = blockAccess.getBlock(x, y, z);
 
         if (block.equals(this) || block.equals(BlockRegistry.blockCarpentersGate)) {
             return true;
         } else {
-            return block.isSideSolid(world, x, y, z, side);
+            return block.isSideSolid(blockAccess, x, y, z, side);
         }
     }
 
     /**
      * Checks if the block is a solid face on the given side, used by placement logic.
      *
-     * @param world The current world
+     * @param blockAccess The current world
      * @param x X Position
      * @param y Y position
      * @param z Z position
@@ -270,7 +270,7 @@ public class BlockCarpentersBarrier extends BlockCoverable {
      * @return True if the block is solid on the specified side.
      */
     @Override
-    public boolean isSideSolid(IBlockAccess world, int x, int y, int z, ForgeDirection side)
+    public boolean isSideSolid(IBlockAccess blockAccess, int x, int y, int z, ForgeDirection side)
     {
         return side.equals(ForgeDirection.UP);
     }
@@ -290,7 +290,7 @@ public class BlockCarpentersBarrier extends BlockCoverable {
      * Returns true if the given side of this block type should be rendered, if the adjacent block is at the given
      * coordinates.  Args: world, x, y, z, side
      */
-    public boolean shouldSideBeRendered(IBlockAccess world, int x, int y, int z, int side)
+    public boolean shouldSideBeRendered(IBlockAccess blockAccess, int x, int y, int z, int side)
     {
         return true;
     }

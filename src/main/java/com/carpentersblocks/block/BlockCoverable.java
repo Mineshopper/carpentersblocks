@@ -151,9 +151,9 @@ public class BlockCoverable extends BlockContainer {
     /**
      * Retrieves the block texture to use based on the display side. Args: iBlockAccess, x, y, z, side
      */
-    public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side)
+    public IIcon getIcon(IBlockAccess blockAccess, int x, int y, int z, int side)
     {
-        TEBase TE = getTileEntity(world, x, y, z);
+        TEBase TE = getTileEntity(blockAccess, x, y, z);
         ItemStack itemStack = BlockProperties.getCover(TE, 6);
         Block block = BlockProperties.toBlock(itemStack);
 
@@ -282,9 +282,9 @@ public class BlockCoverable extends BlockContainer {
      * no longer exists, such as when breaking a block and ejecting
      * attributes.
      */
-    protected TEBase getSimpleTileEntity(IBlockAccess world, int x, int y, int z)
+    protected TEBase getSimpleTileEntity(IBlockAccess blockAccess, int x, int y, int z)
     {
-        TileEntity TE = world.getTileEntity(x, y, z);
+        TileEntity TE = blockAccess.getTileEntity(x, y, z);
         return (TE instanceof TEBase) ? (TEBase) TE : null;
     }
 
@@ -292,10 +292,10 @@ public class BlockCoverable extends BlockContainer {
      * Returns tile entity if block tile entity is instanceof TEBase and
      * also belongs to this block type.
      */
-    protected TEBase getTileEntity(IBlockAccess world, int x, int y, int z)
+    protected TEBase getTileEntity(IBlockAccess blockAccess, int x, int y, int z)
     {
-        TEBase TE = getSimpleTileEntity(world, x, y, z);
-        return TE != null && world.getBlock(x, y, z).equals(this) ? TE : null;
+        TEBase TE = getSimpleTileEntity(blockAccess, x, y, z);
+        return TE != null && blockAccess.getBlock(x, y, z).equals(this) ? TE : null;
     }
 
     /**
@@ -866,30 +866,30 @@ public class BlockCoverable extends BlockContainer {
     /**
      * Chance that fire will spread and consume this block.
      */
-    public int getFlammability(IBlockAccess world, int x, int y, int z, ForgeDirection face)
+    public int getFlammability(IBlockAccess blockAccess, int x, int y, int z, ForgeDirection face)
     {
-        TEBase TE = getTileEntity(world, x, y, z);
+        TEBase TE = getTileEntity(blockAccess, x, y, z);
 
         if (TE != null) {
             return Blocks.fire.getFlammability(BlockProperties.toBlock(BlockProperties.getCover(TE, 6)));
         }
 
-        return super.getFlammability(world, x, y, z, face);
+        return super.getFlammability(blockAccess, x, y, z, face);
     }
 
     @Override
     /**
      * Called when fire is updating on a neighbor block.
      */
-    public int getFireSpreadSpeed(IBlockAccess world, int x, int y, int z, ForgeDirection side)
+    public int getFireSpreadSpeed(IBlockAccess blockAccess, int x, int y, int z, ForgeDirection side)
     {
-        TEBase TE = getTileEntity(world, x, y, z);
+        TEBase TE = getTileEntity(blockAccess, x, y, z);
 
         if (TE != null) {
             return Blocks.fire.getEncouragement(BlockProperties.toBlock(BlockProperties.getCover(TE, 6)));
         }
 
-        return super.getFireSpreadSpeed(world, x, y, z, side);
+        return super.getFireSpreadSpeed(blockAccess, x, y, z, side);
     }
 
     @Override
@@ -932,26 +932,26 @@ public class BlockCoverable extends BlockContainer {
     /**
      * Returns whether block is wood
      */
-    public boolean isWood(IBlockAccess world, int x, int y, int z)
+    public boolean isWood(IBlockAccess blockAccess, int x, int y, int z)
     {
-        TEBase TE = getTileEntity(world, x, y, z);
+        TEBase TE = getTileEntity(blockAccess, x, y, z);
 
         if (TE != null) {
             if (TE.hasAttribute(TE.ATTR_COVER[6])) {
-                return BlockProperties.toBlock(BlockProperties.getCover(TE, 6)).isWood(world,  x,  y,  z);
+                return BlockProperties.toBlock(BlockProperties.getCover(TE, 6)).isWood(blockAccess,  x,  y,  z);
             }
         }
 
-        return super.isWood(world, x, y, z);
+        return super.isWood(blockAccess, x, y, z);
     }
 
     /**
      * Determines if this block is can be destroyed by the specified entities normal behavior.
      */
     @Override
-    public boolean canEntityDestroy(IBlockAccess world, int x, int y, int z, Entity entity)
+    public boolean canEntityDestroy(IBlockAccess blockAccess, int x, int y, int z, Entity entity)
     {
-        TEBase TE = getTileEntity(world, x, y, z);
+        TEBase TE = getTileEntity(blockAccess, x, y, z);
 
         if (TE != null) {
             if (TE.hasAttribute(TE.ATTR_COVER[6])) {
@@ -964,7 +964,7 @@ public class BlockCoverable extends BlockContainer {
             }
         }
 
-        return super.canEntityDestroy(world, x, y, z, entity);
+        return super.canEntityDestroy(blockAccess, x, y, z, entity);
     }
 
     @Override
@@ -1093,7 +1093,7 @@ public class BlockCoverable extends BlockContainer {
      *   Plains check if its grass or dirt
      *   Water check if its still water
      *
-     * @param world The current world
+     * @param blockAccess The current world
      * @param x X Position
      * @param y Y Position
      * @param z Z position
@@ -1102,15 +1102,15 @@ public class BlockCoverable extends BlockContainer {
      * @return True to allow the plant to be planted/stay.
      */
     @Override
-    public boolean canSustainPlant(IBlockAccess world, int x, int y, int z, ForgeDirection side, IPlantable plantable)
+    public boolean canSustainPlant(IBlockAccess blockAccess, int x, int y, int z, ForgeDirection side, IPlantable plantable)
     {
-        TEBase TE = getTileEntity(world, x, y, z);
+        TEBase TE = getTileEntity(blockAccess, x, y, z);
 
         if (TE != null) {
 
             /* If side is not solid, it can't sustain a plant. */
 
-            if (!isSideSolid(world, x, y, z, side)) {
+            if (!isSideSolid(blockAccess, x, y, z, side)) {
                 return false;
             }
 
@@ -1141,32 +1141,32 @@ public class BlockCoverable extends BlockContainer {
                 blocks.add(Blocks.sand);
             }
 
-            switch (plantable.getPlantType(world, x, y + 1, z))
+            switch (plantable.getPlantType(blockAccess, x, y + 1, z))
             {
                 case Desert: return blocks.contains(Blocks.sand);
                 case Nether: return blocks.contains(Blocks.soul_sand);
                 case Plains: return blocks.contains(Blocks.grass) || blocks.contains(Blocks.dirt);
                 case Beach:
                     boolean isBeach = blocks.contains(Blocks.grass) || blocks.contains(Blocks.dirt) || blocks.contains(Blocks.sand);
-                    boolean hasWater = world.getBlock(x - 1, y, z    ).getMaterial() == Material.water ||
-                                       world.getBlock(x + 1, y, z    ).getMaterial() == Material.water ||
-                                       world.getBlock(x,     y, z - 1).getMaterial() == Material.water ||
-                                       world.getBlock(x,     y, z + 1).getMaterial() == Material.water;
+                    boolean hasWater = blockAccess.getBlock(x - 1, y, z    ).getMaterial() == Material.water ||
+                                       blockAccess.getBlock(x + 1, y, z    ).getMaterial() == Material.water ||
+                                       blockAccess.getBlock(x,     y, z - 1).getMaterial() == Material.water ||
+                                       blockAccess.getBlock(x,     y, z + 1).getMaterial() == Material.water;
                     return isBeach && hasWater;
                 default:
                     break;
             }
         }
 
-        return super.canSustainPlant(world, x, y, z, side, plantable);
+        return super.canSustainPlant(blockAccess, x, y, z, side, plantable);
     }
 
     /**
      * Returns whether this block is considered solid.
      */
-    protected boolean isBlockSolid(IBlockAccess world, int x, int y, int z)
+    protected boolean isBlockSolid(IBlockAccess blockAccess, int x, int y, int z)
     {
-        TEBase TE = getTileEntity(world, x, y, z);
+        TEBase TE = getTileEntity(blockAccess, x, y, z);
 
         if (TE != null) {
             return !TE.hasAttribute(TE.ATTR_COVER[6]) || BlockProperties.toBlock(BlockProperties.getCover(TE, 6)).isOpaqueCube();
@@ -1227,20 +1227,20 @@ public class BlockCoverable extends BlockContainer {
      * Returns true if the given side of this block type should be rendered, if the adjacent block is at the given
      * coordinates.  Args: world, x, y, z, side
      */
-    public boolean shouldSideBeRendered(IBlockAccess world, int x, int y, int z, int side)
+    public boolean shouldSideBeRendered(IBlockAccess blockAccess, int x, int y, int z, int side)
     {
         // Side checks in out-of-range areas will crash
-        if (y > 0 && y < world.getHeight())
+        if (y > 0 && y < blockAccess.getHeight())
         {
-            TEBase TE = getTileEntity(world, x, y, z);
+            TEBase TE = getTileEntity(blockAccess, x, y, z);
             if (TE != null) {
                 ForgeDirection side_src = ForgeDirection.getOrientation(side);
                 ForgeDirection side_adj = side_src.getOpposite();
 
-                TEBase TE_adj = (TEBase) world.getTileEntity(x, y, z);
-                TEBase TE_src = (TEBase) world.getTileEntity(x + side_adj.offsetX, y + side_adj.offsetY, z + side_adj.offsetZ);
+                TEBase TE_adj = (TEBase) blockAccess.getTileEntity(x, y, z);
+                TEBase TE_src = (TEBase) blockAccess.getTileEntity(x + side_adj.offsetX, y + side_adj.offsetY, z + side_adj.offsetZ);
 
-                if (TE_adj.getBlockType().isSideSolid(world, x, y, z, side_adj) == TE_src.getBlockType().isSideSolid(world, x + side_adj.offsetX, y + side_adj.offsetY, z + side_adj.offsetZ, ForgeDirection.getOrientation(side))) {
+                if (TE_adj.getBlockType().isSideSolid(blockAccess, x, y, z, side_adj) == TE_src.getBlockType().isSideSolid(blockAccess, x + side_adj.offsetX, y + side_adj.offsetY, z + side_adj.offsetZ, ForgeDirection.getOrientation(side))) {
 
                     if (shareFaces(TE_adj, TE_src, side_adj, side_src)) {
 
@@ -1263,7 +1263,7 @@ public class BlockCoverable extends BlockContainer {
             }
         }
 
-        return super.shouldSideBeRendered(world, x, y, z, side);
+        return super.shouldSideBeRendered(blockAccess, x, y, z, side);
     }
 
     @Override

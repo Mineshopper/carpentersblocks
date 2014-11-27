@@ -269,9 +269,9 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
     /**
      * Updates the blocks bounds based on its current state. Args: world, x, y, z
      */
-    public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
+    public void setBlockBoundsBasedOnState(IBlockAccess blockAccess, int x, int y, int z)
     {
-        TEBase TE = getTileEntity(world, x, y, z);
+        TEBase TE = getTileEntity(blockAccess, x, y, z);
 
         if (TE != null && TE instanceof TECarpentersFlowerPot) {
 
@@ -331,9 +331,9 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
     /**
      * Returns light value based on plant and soil in pot.
      */
-    public int getLightValue(IBlockAccess world, int x, int y, int z)
+    public int getLightValue(IBlockAccess blockAccess, int x, int y, int z)
     {
-        int lightValue = super.getLightValue(world, x, y, z);
+        int lightValue = super.getLightValue(blockAccess, x, y, z);
 
         /*
          * Block.class will call this method by default if the passed
@@ -348,7 +348,7 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
         }
         grabLightValue = true;
 
-        TEBase TE = getTileEntity(world, x, y, z);
+        TEBase TE = getTileEntity(blockAccess, x, y, z);
 
         if (TE != null && TE instanceof TECarpentersFlowerPot) {
 

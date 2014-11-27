@@ -107,9 +107,9 @@ public class BlockCarpentersBlock extends BlockCoverable {
     /**
      * Updates the blocks bounds based on its current state. Args: world, x, y, z
      */
-    public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
+    public void setBlockBoundsBasedOnState(IBlockAccess blockAccess, int x, int y, int z)
     {
-        TEBase TE = getTileEntity(world, x, y, z);
+        TEBase TE = getTileEntity(blockAccess, x, y, z);
 
         if (TE != null) {
             int data = TE.getData();
@@ -168,13 +168,13 @@ public class BlockCarpentersBlock extends BlockCoverable {
     /**
      * Checks if the block is a solid face on the given side, used by placement logic.
      */
-    public boolean isSideSolid(IBlockAccess world, int x, int y, int z, ForgeDirection side)
+    public boolean isSideSolid(IBlockAccess blockAccess, int x, int y, int z, ForgeDirection side)
     {
-        TEBase TE = getTileEntity(world, x, y, z);
+        TEBase TE = getTileEntity(blockAccess, x, y, z);
 
         if (TE != null) {
 
-            if (isBlockSolid(world, x, y, z)) {
+            if (isBlockSolid(blockAccess, x, y, z)) {
 
                 int data = TE.getData();
 
@@ -211,16 +211,16 @@ public class BlockCarpentersBlock extends BlockCoverable {
      * @return Whether Block#isProvidingWeakPower should be called when determining indirect power
      */
     @Override
-    public boolean shouldCheckWeakPower(IBlockAccess world, int x, int y, int z, int side)
+    public boolean shouldCheckWeakPower(IBlockAccess blockAccess, int x, int y, int z, int side)
     {
-        TEBase TE = getTileEntity(world, x, y, z);
+        TEBase TE = getTileEntity(blockAccess, x, y, z);
 
         if (TE != null) {
             int data = TE.getData();
             return data == Slab.BLOCK_FULL;
         }
 
-        return super.shouldCheckWeakPower(world, x, y, z, side);
+        return super.shouldCheckWeakPower(blockAccess, x, y, z, side);
     }
 
     @Override

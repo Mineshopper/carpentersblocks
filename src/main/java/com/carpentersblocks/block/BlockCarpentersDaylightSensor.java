@@ -87,9 +87,9 @@ public class BlockCarpentersDaylightSensor extends BlockSided {
     /**
      * Updates the blocks bounds based on its current state. Args: world, x, y, z
      */
-    public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
+    public void setBlockBoundsBasedOnState(IBlockAccess blockAccess, int x, int y, int z)
     {
-        TEBase TE = getTileEntity(world, x, y, z);
+        TEBase TE = getTileEntity(blockAccess, x, y, z);
 
         if (TE != null) {
             setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 0.25F, data.getDirection(TE));

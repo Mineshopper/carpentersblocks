@@ -217,12 +217,12 @@ public class BlockCarpentersSafe extends BlockCoverable {
      * @param side The side to check
      * @return True if the block is solid on the specified side.
      */
-    public boolean isSideSolid(IBlockAccess world, int x, int y, int z, ForgeDirection side)
+    public boolean isSideSolid(IBlockAccess blockAccess, int x, int y, int z, ForgeDirection side)
     {
-        TEBase TE = getTileEntity(world, x, y, z);
+        TEBase TE = getTileEntity(blockAccess, x, y, z);
 
         if (TE != null) {
-            if (isBlockSolid(world, x, y, z)) {
+            if (isBlockSolid(blockAccess, x, y, z)) {
                 return side != Safe.getFacing(TE);
             }
         }

@@ -238,12 +238,12 @@ public class BlockCarpentersStairs extends BlockCoverable {
     /**
      * Checks if the block is a solid face on the given side, used by placement logic.
      */
-    public boolean isSideSolid(IBlockAccess world, int x, int y, int z, ForgeDirection side)
+    public boolean isSideSolid(IBlockAccess blockAccess, int x, int y, int z, ForgeDirection side)
     {
-        TEBase TE = getTileEntity(world, x, y, z);
+        TEBase TE = getTileEntity(blockAccess, x, y, z);
 
         if (TE != null) {
-            if (isBlockSolid(world, x, y, z)) {
+            if (isBlockSolid(blockAccess, x, y, z)) {
                 return Stairs.stairsList[TE.getData()].isFaceFull(side);
             }
         }

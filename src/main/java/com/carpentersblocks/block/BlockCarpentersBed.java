@@ -51,7 +51,7 @@ public class BlockCarpentersBed extends BlockCoverable {
      * players to sleep in it, though the block has to specifically
      * perform the sleeping functionality in it's activated event.
      */
-    public boolean isBed(IBlockAccess world, int x, int y, int z, EntityLivingBase player)
+    public boolean isBed(IBlockAccess blockAccess, int x, int y, int z, EntityLivingBase player)
     {
         return true;
     }
@@ -205,9 +205,9 @@ public class BlockCarpentersBed extends BlockCoverable {
      * @param player The player or camera entity, null in some cases.
      * @param occupied True if we are occupying the bed, or false if they are stopping use of the bed
      */
-    public void setBedOccupied(IBlockAccess world, int x, int y, int z, EntityPlayer player, boolean occupied)
+    public void setBedOccupied(IBlockAccess blockAccess, int x, int y, int z, EntityPlayer player, boolean occupied)
     {
-        TEBase TE = getTileEntity(world, x, y, z);
+        TEBase TE = getTileEntity(blockAccess, x, y, z);
 
         if (TE != null && !TE.getWorldObj().isRemote) {
 
@@ -233,9 +233,9 @@ public class BlockCarpentersBed extends BlockCoverable {
      * @param z Z Position
      * @return Bed direction
      */
-    public int getBedDirection(IBlockAccess world, int x, int y, int z)
+    public int getBedDirection(IBlockAccess blockAccess, int x, int y, int z)
     {
-        TEBase TE = getTileEntity(world, x, y, z);
+        TEBase TE = getTileEntity(blockAccess, x, y, z);
 
         switch (Bed.getDirection(TE))
         {
