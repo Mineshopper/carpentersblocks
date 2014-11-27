@@ -92,7 +92,7 @@ public class BlockHandlerCarpentersCollapsibleBlock extends BlockHandlerSloped {
 
         /* Render top slopes. */
 
-        if (srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x, y + 1, z, UP) || !CollapsibleUtil.isFullHeight(TE)) {
+        if (srcBlock.shouldSideBeRendered(TE.getWorldObj(), x, y + 1, z, UP) || !CollapsibleUtil.isFullHeight(TE)) {
             VertexHelper.startDrawing(GL11.GL_TRIANGLES);
             isSideSloped = true;
             prepareTopFace(itemStack, x, y, z);
@@ -106,7 +106,7 @@ public class BlockHandlerCarpentersCollapsibleBlock extends BlockHandlerSloped {
         prepareLighting(itemStack);
 
         /* BOTTOM FACE */
-        if (srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x, y - 1, z, DOWN)) {
+        if (srcBlock.shouldSideBeRendered(TE.getWorldObj(), x, y - 1, z, DOWN)) {
             lightingHelper.setupLightingYNeg(itemStack, x, y, z);
             setIDAndRender(itemStack, NORMAL_YN, x, y, z, DOWN);
         }
@@ -114,28 +114,28 @@ public class BlockHandlerCarpentersCollapsibleBlock extends BlockHandlerSloped {
         double oneStep = 1.0D / 15.0D;
 
         /* NORTH FACE */
-        if (srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x, y, z - 1, NORTH)) {
+        if (srcBlock.shouldSideBeRendered(TE.getWorldObj(), x, y, z - 1, NORTH)) {
             if (CollapsibleUtil.offset_XZNN + CollapsibleUtil.offset_XZPN >= oneStep) {
                 prepareFaceZNeg(itemStack, x, y, z);
             }
         }
 
         /* SOUTH FACE */
-        if (srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x, y, z + 1, SOUTH)) {
+        if (srcBlock.shouldSideBeRendered(TE.getWorldObj(), x, y, z + 1, SOUTH)) {
             if (CollapsibleUtil.offset_XZNP + CollapsibleUtil.offset_XZPP >= oneStep) {
                 prepareFaceZPos(itemStack, x, y, z);
             }
         }
 
         /* WEST FACE */
-        if (srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x - 1, y, z, WEST)) {
+        if (srcBlock.shouldSideBeRendered(TE.getWorldObj(), x - 1, y, z, WEST)) {
             if (CollapsibleUtil.offset_XZNN + CollapsibleUtil.offset_XZNP >= oneStep) {
                 prepareFaceXNeg(itemStack, x, y, z);
             }
         }
 
         /* EAST FACE */
-        if (srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x + 1, y, z, EAST)) {
+        if (srcBlock.shouldSideBeRendered(TE.getWorldObj(), x + 1, y, z, EAST)) {
             if (CollapsibleUtil.offset_XZPN + CollapsibleUtil.offset_XZPP >= oneStep) {
                 prepareFaceXPos(itemStack, x, y, z);
             }

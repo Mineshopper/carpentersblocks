@@ -522,22 +522,22 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerSloped {
 
         /* Render non-sloped faces. */
 
-        if (slope.hasSide(ForgeDirection.DOWN) && srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x, y - 1, z, DOWN)) {
+        if (slope.hasSide(ForgeDirection.DOWN) && srcBlock.shouldSideBeRendered(TE.getWorldObj(), x, y - 1, z, DOWN)) {
             prepareFaceYNeg(itemStack, slope, x, y, z);
         }
-        if (slope.hasSide(ForgeDirection.UP) && srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x, y + 1, z, UP)) {
+        if (slope.hasSide(ForgeDirection.UP) && srcBlock.shouldSideBeRendered(TE.getWorldObj(), x, y + 1, z, UP)) {
             prepareFaceYPos(itemStack, slope, x, y, z);
         }
-        if (slope.hasSide(ForgeDirection.NORTH) && srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x, y, z - 1, NORTH)) {
+        if (slope.hasSide(ForgeDirection.NORTH) && srcBlock.shouldSideBeRendered(TE.getWorldObj(), x, y, z - 1, NORTH)) {
             prepareFaceZNeg(itemStack, slope, x, y, z);
         }
-        if (slope.hasSide(ForgeDirection.SOUTH) && srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x, y, z + 1, SOUTH)) {
+        if (slope.hasSide(ForgeDirection.SOUTH) && srcBlock.shouldSideBeRendered(TE.getWorldObj(), x, y, z + 1, SOUTH)) {
             prepareFaceZPos(itemStack, slope, x, y, z);
         }
-        if (slope.hasSide(ForgeDirection.WEST) && srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x - 1, y, z, WEST)) {
+        if (slope.hasSide(ForgeDirection.WEST) && srcBlock.shouldSideBeRendered(TE.getWorldObj(), x - 1, y, z, WEST)) {
             prepareFaceXNeg(itemStack, slope, x, y, z);
         }
-        if (slope.hasSide(ForgeDirection.EAST) && srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x + 1, y, z, EAST)) {
+        if (slope.hasSide(ForgeDirection.EAST) && srcBlock.shouldSideBeRendered(TE.getWorldObj(), x + 1, y, z, EAST)) {
             prepareFaceXPos(itemStack, slope, x, y, z);
         }
 

@@ -770,37 +770,37 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
 
         renderBlocks.enableAO = getEnableAO(itemStack);
 
-        if (renderBlocks.renderAllFaces || srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x, y - 1, z, DOWN) || renderBlocks.renderMinY > 0.0D)
+        if (renderBlocks.renderAllFaces || srcBlock.shouldSideBeRendered(TE.getWorldObj(), x, y - 1, z, DOWN) || renderBlocks.renderMinY > 0.0D)
         {
             lightingHelper.setupLightingYNeg(itemStack, x, y, z);
             delegateSideRender(itemStack, x, y, z, DOWN);
         }
 
-        if (renderBlocks.renderAllFaces || srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x, y + 1, z, UP) || renderBlocks.renderMaxY < 1.0D)
+        if (renderBlocks.renderAllFaces || srcBlock.shouldSideBeRendered(TE.getWorldObj(), x, y + 1, z, UP) || renderBlocks.renderMaxY < 1.0D)
         {
             lightingHelper.setupLightingYPos(itemStack, x, y, z);
             delegateSideRender(itemStack, x, y, z, UP);
         }
 
-        if (renderBlocks.renderAllFaces || srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x, y, z - 1, NORTH) || renderBlocks.renderMinZ > 0.0D)
+        if (renderBlocks.renderAllFaces || srcBlock.shouldSideBeRendered(TE.getWorldObj(), x, y, z - 1, NORTH) || renderBlocks.renderMinZ > 0.0D)
         {
             lightingHelper.setupLightingZNeg(itemStack, x, y, z);
             delegateSideRender(itemStack, x, y, z, NORTH);
         }
 
-        if (renderBlocks.renderAllFaces || srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x, y, z + 1, SOUTH) || renderBlocks.renderMaxZ < 1.0D)
+        if (renderBlocks.renderAllFaces || srcBlock.shouldSideBeRendered(TE.getWorldObj(), x, y, z + 1, SOUTH) || renderBlocks.renderMaxZ < 1.0D)
         {
             lightingHelper.setupLightingZPos(itemStack, x, y, z);
             delegateSideRender(itemStack, x, y, z, SOUTH);
         }
 
-        if (renderBlocks.renderAllFaces || srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x - 1, y, z, WEST) || renderBlocks.renderMinX > 0.0D)
+        if (renderBlocks.renderAllFaces || srcBlock.shouldSideBeRendered(TE.getWorldObj(), x - 1, y, z, WEST) || renderBlocks.renderMinX > 0.0D)
         {
             lightingHelper.setupLightingXNeg(itemStack, x, y, z);
             delegateSideRender(itemStack, x, y, z, WEST);
         }
 
-        if (renderBlocks.renderAllFaces || srcBlock.shouldSideBeRendered(renderBlocks.blockAccess, x + 1, y, z, EAST) || renderBlocks.renderMaxX < 1.0D)
+        if (renderBlocks.renderAllFaces || srcBlock.shouldSideBeRendered(TE.getWorldObj(), x + 1, y, z, EAST) || renderBlocks.renderMaxX < 1.0D)
         {
             lightingHelper.setupLightingXPos(itemStack, x, y, z);
             delegateSideRender(itemStack, x, y, z, EAST);
