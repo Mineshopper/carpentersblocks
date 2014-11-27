@@ -3,6 +3,7 @@ package com.carpentersblocks.block;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.BlockDirectional;
@@ -29,6 +30,7 @@ import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.util.ForgeDirection;
+
 import com.carpentersblocks.api.ICarpentersChisel;
 import com.carpentersblocks.api.ICarpentersHammer;
 import com.carpentersblocks.renderer.helper.FancyFluidsHelper;
@@ -44,6 +46,7 @@ import com.carpentersblocks.util.protection.PlayerPermissions;
 import com.carpentersblocks.util.registry.FeatureRegistry;
 import com.carpentersblocks.util.registry.IconRegistry;
 import com.carpentersblocks.util.registry.ItemRegistry;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -312,77 +315,61 @@ public class BlockCoverable extends BlockContainer {
      */
     public void onBlockClicked(World world, int x, int y, int z, EntityPlayer entityPlayer)
     {
-        if (!world.isRemote)
-        {
-            TEBase TE = getTileEntity(world, x, y, z);
-
-            if (TE != null)
-            {
-                if (PlayerPermissions.canPlayerEdit(TE, TE.xCoord, TE.yCoord, TE.zCoord, entityPlayer))
-                {
-                    ActionResult actionResult = new ActionResult();
-                    ItemStack itemStack = entityPlayer.getCurrentEquippedItem();
-
-                    if (itemStack != null) {
-
-                        int effectiveSide = TE.hasAttribute(TE.ATTR_COVER[EventHandler.eventFace]) ? EventHandler.eventFace : 6;
-                        Item item = itemStack.getItem();
-
-                        if (item instanceof ICarpentersHammer && ((ICarpentersHammer)item).canUseHammer(world, entityPlayer)) {
-
-                            preOnBlockClicked(TE, world, x, y, z, entityPlayer, actionResult);
-
-                            if (!actionResult.altered) {
-
-                                if (entityPlayer.isSneaking()) {
-
-                                    if (TE.hasAttribute(TE.ATTR_ILLUMINATOR)) {
-                                        TE.removeAttribute(TE.ATTR_ILLUMINATOR);
-                                        actionResult.setAltered();
-                                    } else if (TE.hasAttribute(TE.ATTR_OVERLAY[effectiveSide])) {
-                                        TE.removeAttribute(TE.ATTR_OVERLAY[effectiveSide]);
-                                        actionResult.setAltered();
-                                    } else if (TE.hasAttribute(TE.ATTR_DYE[effectiveSide])) {
-                                        TE.removeAttribute(TE.ATTR_DYE[effectiveSide]);
-                                        actionResult.setAltered();
-                                    } else if (TE.hasAttribute(TE.ATTR_COVER[effectiveSide])) {
-                                        TE.removeAttribute(TE.ATTR_COVER[effectiveSide]);
-                                        TE.removeChiselDesign(effectiveSide);
-                                        actionResult.setAltered();
-                                    }
-
-                                } else {
-
-                                    onHammerLeftClick(TE, entityPlayer);
-                                    actionResult.setAltered();
-
-                                }
-
-                            }
-
-                            if (actionResult.altered) {
-                                onNeighborBlockChange(world, x, y, z, this);
-                                world.notifyBlocksOfNeighborChange(x, y, z, this);
-                            }
-
-                        } else if (item instanceof ICarpentersChisel && ((ICarpentersChisel)item).canUseChisel(world, entityPlayer)) {
-
-                            if (entityPlayer.isSneaking()) {
-
-                                if (TE.hasChiselDesign(effectiveSide)) {
-                                    TE.removeChiselDesign(effectiveSide);
-                                }
-
-                            } else if (TE.hasAttribute(TE.ATTR_COVER[effectiveSide])) {
-
-                                onChiselClick(TE, effectiveSide, true);
-
-                            }
-                        }
-                    }
-                }
-            }
+        if (world.isRemote) {
+        	return;
         }
+        		
+        TEBase TE = getTileEntity(world, x, y, z);
+
+        if (TE == null && !PlayerPermissions.canPlayerEdit(TE, TE.xCoord, TE.yCoord, TE.zCoord, entityPlayer)) {
+        	return;
+        }
+        
+        ItemStack itemStack = entityPlayer.getCurrentEquippedItem();
+
+        if (itemStack == null) { 
+        	return;
+        }
+
+        int effectiveSide = TE.hasAttribute(TE.ATTR_COVER[EventHandler.eventFace]) ? EventHandler.eventFace : 6;
+        Item item = itemStack.getItem();
+       
+        if (item instanceof ICarpentersHammer && ((ICarpentersHammer)item).canUseHammer(world, entityPlayer)) {
+        	
+        	ActionResult actionResult = new ActionResult();
+            preOnBlockClicked(TE, world, x, y, z, entityPlayer, actionResult);
+            
+            if (!actionResult.altered) {
+                if (entityPlayer.isSneaking()) {
+                	if (TE.hasAttribute(TE.ATTR_ILLUMINATOR)) {
+            			TE.removeAttribute(TE.ATTR_ILLUMINATOR);
+            	     } else if (TE.hasAttribute(TE.ATTR_OVERLAY[effectiveSide])) {
+            	     	TE.removeAttribute(TE.ATTR_OVERLAY[effectiveSide]);
+            	     } else if (TE.hasAttribute(TE.ATTR_DYE[effectiveSide])) {
+            	     	TE.removeAttribute(TE.ATTR_DYE[effectiveSide]);
+            	     } else if (TE.hasAttribute(TE.ATTR_COVER[effectiveSide])) {
+            	        TE.removeAttribute(TE.ATTR_COVER[effectiveSide]);
+            	        TE.removeChiselDesign(effectiveSide);
+            	     }
+                } else {
+                    onHammerLeftClick(TE, entityPlayer);  
+                }
+                actionResult.setAltered();
+            } else {
+                onNeighborBlockChange(world, x, y, z, this);
+                world.notifyBlocksOfNeighborChange(x, y, z, this);
+            } 
+            
+        } else if (item instanceof ICarpentersChisel && ((ICarpentersChisel)item).canUseChisel(world, entityPlayer)) {
+        	
+            if (entityPlayer.isSneaking() && TE.hasChiselDesign(effectiveSide)) {
+                TE.removeChiselDesign(effectiveSide);  
+            } else if (TE.hasAttribute(TE.ATTR_COVER[effectiveSide])) {
+                onChiselClick(TE, effectiveSide, true);
+            }
+            
+        }
+        
     }
 
     @Override
