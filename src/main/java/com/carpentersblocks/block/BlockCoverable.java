@@ -605,6 +605,17 @@ public class BlockCoverable extends BlockContainer {
 
         return power;
     }
+    
+    /**
+     * Check the tile entity to see if it has the attribute specified by the provided byte.
+     * Includes null check on the tile entity.
+     * @param te
+     * @param b
+     * @return
+     */
+    private boolean TEHasAttribute (TEBase te, byte b) {
+    	return te != null && te.hasAttribute(b);
+    }
 
     @Override
     /**
@@ -618,22 +629,22 @@ public class BlockCoverable extends BlockContainer {
 
         /* Strong power is provided by the base cover, or a side cover if one exists. */
 
-        if (TE != null) {
-            int effectiveSide = ForgeDirection.OPPOSITES[side];
-            if (TE.hasAttribute(TE.ATTR_COVER[effectiveSide])) {
-                Block block = BlockProperties.toBlock(BlockProperties.getCover(TE, effectiveSide));
-                int tempPower = block.isProvidingWeakPower(blockAccess, x, y, z, side);
-                if (tempPower > power) {
-                    power = tempPower;
-                }
-            } else if (TE.hasAttribute(TE.ATTR_COVER[6])) {
-                Block block = BlockProperties.toBlock(BlockProperties.getCover(TE, 6));
-                int tempPower = block.isProvidingWeakPower(blockAccess, x, y, z, side);
-                if (tempPower > power) {
-                    power = tempPower;
-                }
+        
+        int effectiveSide = ForgeDirection.OPPOSITES[side];
+        if (TEHasAttribute(TE, TE.ATTR_COVER[effectiveSide])) {
+            Block block = BlockProperties.toBlock(BlockProperties.getCover(TE, effectiveSide));
+            int tempPower = block.isProvidingWeakPower(blockAccess, x, y, z, side);
+            if (tempPower > power) {
+                power = tempPower;
+            }
+        } else if (TEHasAttribute(TE, TE.ATTR_COVER[6])) {
+            Block block = BlockProperties.toBlock(BlockProperties.getCover(TE, 6));
+            int tempPower = block.isProvidingWeakPower(blockAccess, x, y, z, side);
+            if (tempPower > power) {
+                power = tempPower;
             }
         }
+    
 
         return power;
     }
@@ -690,7 +701,7 @@ public class BlockCoverable extends BlockContainer {
             int effectiveSide = TE.hasAttribute(TE.ATTR_COVER[target.sideHit]) ? target.sideHit : 6;
             ItemStack itemStack = BlockProperties.getCover(TE, effectiveSide);
 
-            if (TE.hasAttribute(TE.ATTR_OVERLAY[effectiveSide])) {
+            if (TEHasAttribute(TE, TE.ATTR_OVERLAY[effectiveSide])) {
                 Overlay overlay = OverlayHandler.getOverlayType(TE.getAttribute(TE.ATTR_OVERLAY[effectiveSide]));
                 if (OverlayHandler.coversFullSide(overlay, target.sideHit)) {
                     itemStack = overlay.getItemStack();
@@ -844,10 +855,8 @@ public class BlockCoverable extends BlockContainer {
     {
         TEBase TE = getTileEntity(world, x, y, z);
 
-        if (TE != null) {
-            if (TE.hasAttribute(TE.ATTR_COVER[6])) {
-                return BlockProperties.toBlock(BlockProperties.getCover(TE, 6)).getBlockHardness(world, x, y, z);
-            }
+        if (TEHasAttribute(TE, TE.ATTR_COVER[6])) {
+            return BlockProperties.toBlock(BlockProperties.getCover(TE, 6)).getBlockHardness(world, x, y, z);
         }
 
         return blockHardness;
@@ -893,10 +902,8 @@ public class BlockCoverable extends BlockContainer {
     {
         TEBase TE = getTileEntity(world, x, y, z);
 
-        if (TE != null) {
-            if (TE.hasAttribute(TE.ATTR_COVER[6])) {
-                return BlockProperties.toBlock(BlockProperties.getCover(TE, 6)).isFireSource(world, x, y, z, side);
-            }
+        if (TEHasAttribute(TE, TE.ATTR_COVER[6])) {
+            return BlockProperties.toBlock(BlockProperties.getCover(TE, 6)).isFireSource(world, x, y, z, side);
         }
 
         return false;
@@ -910,10 +917,8 @@ public class BlockCoverable extends BlockContainer {
     {
         TEBase TE = getTileEntity(world, x, y, z);
 
-        if (TE != null) {
-            if (TE.hasAttribute(TE.ATTR_COVER[6])) {
-                return BlockProperties.toBlock(BlockProperties.getCover(TE, 6)).getExplosionResistance(entity);
-            }
+        if (TEHasAttribute(TE, TE.ATTR_COVER[6])) {
+            return BlockProperties.toBlock(BlockProperties.getCover(TE, 6)).getExplosionResistance(entity);
         }
 
         return this.getExplosionResistance(entity);
@@ -927,10 +932,8 @@ public class BlockCoverable extends BlockContainer {
     {
         TEBase TE = getTileEntity(blockAccess, x, y, z);
 
-        if (TE != null) {
-            if (TE.hasAttribute(TE.ATTR_COVER[6])) {
-                return BlockProperties.toBlock(BlockProperties.getCover(TE, 6)).isWood(blockAccess,  x,  y,  z);
-            }
+        if (TEHasAttribute(TE, TE.ATTR_COVER[6])) {
+            return BlockProperties.toBlock(BlockProperties.getCover(TE, 6)).isWood(blockAccess,  x,  y,  z);
         }
 
         return super.isWood(blockAccess, x, y, z);
@@ -944,14 +947,12 @@ public class BlockCoverable extends BlockContainer {
     {
         TEBase TE = getTileEntity(blockAccess, x, y, z);
 
-        if (TE != null) {
-            if (TE.hasAttribute(TE.ATTR_COVER[6])) {
-                Block block = BlockProperties.toBlock(BlockProperties.getCover(TE, 6));
-                if (entity instanceof EntityWither) {
-                    return !block.equals(Blocks.bedrock) && !block.equals(Blocks.end_portal) && !block.equals(Blocks.end_portal_frame) && !block.equals(Blocks.command_block);
-                } else if (entity instanceof EntityDragon) {
-                    return !block.equals(Blocks.obsidian) && !block.equals(Blocks.end_stone) && !block.equals(Blocks.bedrock);
-                }
+        if (TEHasAttribute(TE, TE.ATTR_COVER[6])) {
+            Block block = BlockProperties.toBlock(BlockProperties.getCover(TE, 6));
+            if (entity instanceof EntityWither) {
+                return !block.equals(Blocks.bedrock) && !block.equals(Blocks.end_portal) && !block.equals(Blocks.end_portal_frame) && !block.equals(Blocks.command_block);
+            } else if (entity instanceof EntityDragon) {
+                return !block.equals(Blocks.obsidian) && !block.equals(Blocks.end_stone) && !block.equals(Blocks.bedrock);
             }
         }
 
@@ -966,10 +967,8 @@ public class BlockCoverable extends BlockContainer {
     {
         TEBase TE = getTileEntity(world, x, y, z);
 
-        if (TE != null) {
-            if (TE.hasAttribute(TE.ATTR_COVER[6])) {
-                BlockProperties.toBlock(BlockProperties.getCover(TE, 6)).onEntityCollidedWithBlock(world, x, y, z, entity);
-            }
+        if (TEHasAttribute(TE, TE.ATTR_COVER[6])) {
+            BlockProperties.toBlock(BlockProperties.getCover(TE, 6)).onEntityCollidedWithBlock(world, x, y, z, entity);
         }
     }
 
@@ -1058,11 +1057,8 @@ public class BlockCoverable extends BlockContainer {
     {
         TEBase TE = getTileEntity(world, x, y, z);
 
-        if (TE != null) {
-
-            if (TE.hasAttribute(TE.ATTR_COVER[6])) {
-                BlockProperties.toBlock(BlockProperties.getCover(TE, 6)).randomDisplayTick(world, x, y, z, random);
-            }
+        if (TEHasAttribute(TE, TE.ATTR_COVER[6])) {
+            BlockProperties.toBlock(BlockProperties.getCover(TE, 6)).randomDisplayTick(world, x, y, z, random);
 
             if (TE.hasAttribute(TE.ATTR_OVERLAY[6])) {
                 if (OverlayHandler.getOverlayType(TE.getAttribute(TE.ATTR_OVERLAY[6])).equals(Overlay.MYCELIUM)) {
