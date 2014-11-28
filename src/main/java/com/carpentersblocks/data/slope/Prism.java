@@ -3,7 +3,7 @@ package com.carpentersblocks.data.slope;
 import com.carpentersblocks.data.Slope;
 import com.carpentersblocks.data.SlopeType;
 
-public class Prism extends SlopeType {
+public class Prism implements SlopeType {
 
 	@Override
 	public int onHammerLeftClick(Slope slope, int slopeID) {

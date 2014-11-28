@@ -4,7 +4,7 @@ import com.carpentersblocks.data.Slope;
 import com.carpentersblocks.data.Slope.Type;
 import com.carpentersblocks.data.SlopeType;
 
-public class WedgeSide extends SlopeType {
+public class WedgeSide implements SlopeType {
 
 	@Override
 	public int onHammerLeftClick(Slope slope, int slopeID) {

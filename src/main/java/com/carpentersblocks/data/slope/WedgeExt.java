@@ -3,7 +3,7 @@ package com.carpentersblocks.data.slope;
 import com.carpentersblocks.data.Slope;
 import com.carpentersblocks.data.SlopeType;
 
-public class WedgeExt extends SlopeType {
+public class WedgeExt implements SlopeType {
 
 	@Override
 	public int onHammerLeftClick(Slope slope, int slopeID) {
