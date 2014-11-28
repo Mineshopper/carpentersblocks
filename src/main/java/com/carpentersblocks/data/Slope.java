@@ -125,6 +125,9 @@ public class Slope {
     /** ID of the slope. */
     public final int slopeID;
 
+    /** Class SlopeType **/
+    public final SlopeType slopeType;
+    
     /** Slope type. */
     public final Type type;
 
@@ -166,6 +169,7 @@ public class Slope {
         this.slopeID = slopeID;
         slopesList[slopeID] = this;
         type = slopeType;
+        this.slopeType = SlopeType.getFromType(type);
         face = faceShape;
         this.faceBias = faceBias;
 

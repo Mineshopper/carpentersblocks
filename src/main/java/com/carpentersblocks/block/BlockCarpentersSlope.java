@@ -82,96 +82,8 @@ public class BlockCarpentersSlope extends BlockCoverable {
         Slope slope = Slope.slopesList[slopeID];
 
         /* Cycle between slope types based on current slope. */
-
-        switch (slope.type)
-        {
-            case WEDGE_SIDE:
-                if (++slopeID > Slope.ID_WEDGE_SW) {
-                    slopeID = Slope.ID_WEDGE_SE;
-                }
-                break;
-            case WEDGE:
-                if (slope.isPositive) {
-                    if (++slopeID > Slope.ID_WEDGE_POS_E) {
-                        slopeID = Slope.ID_WEDGE_POS_N;
-                    }
-                } else {
-                    if (++slopeID > Slope.ID_WEDGE_NEG_E) {
-                        slopeID = Slope.ID_WEDGE_NEG_N;
-                    }
-                }
-                break;
-            case WEDGE_INT:
-                if (slope.isPositive) {
-                    if (++slopeID > Slope.ID_WEDGE_INT_POS_SW) {
-                        slopeID = Slope.ID_WEDGE_INT_POS_SE;
-                    }
-                } else {
-                    if (++slopeID > Slope.ID_WEDGE_INT_NEG_SW) {
-                        slopeID = Slope.ID_WEDGE_INT_NEG_SE;
-                    }
-                }
-                break;
-            case WEDGE_EXT:
-                if (slope.isPositive) {
-                    if (++slopeID > Slope.ID_WEDGE_EXT_POS_SW) {
-                        slopeID = Slope.ID_WEDGE_EXT_POS_SE;
-                    }
-                } else {
-                    if (++slopeID > Slope.ID_WEDGE_EXT_NEG_SW) {
-                        slopeID = Slope.ID_WEDGE_EXT_NEG_SE;
-                    }
-                }
-                break;
-            case OBLIQUE_INT:
-                if (slope.isPositive) {
-                    if (++slopeID > Slope.ID_OBL_INT_POS_SW) {
-                        slopeID = Slope.ID_OBL_INT_POS_SE;
-                    }
-                } else {
-                    if (++slopeID > Slope.ID_OBL_INT_NEG_SW) {
-                        slopeID = Slope.ID_OBL_INT_NEG_SE;
-                    }
-                }
-                break;
-            case OBLIQUE_EXT:
-                if (slope.isPositive) {
-                    if (++slopeID > Slope.ID_OBL_EXT_POS_SW) {
-                        slopeID = Slope.ID_OBL_EXT_POS_SE;
-                    }
-                } else {
-                    if (++slopeID > Slope.ID_OBL_EXT_NEG_SW) {
-                        slopeID = Slope.ID_OBL_EXT_NEG_SE;
-                    }
-                }
-                break;
-            case PRISM_1P:
-                if (++slopeID > Slope.ID_PRISM_1P_POS_E) {
-                    slopeID = Slope.ID_PRISM_1P_POS_N;
-                }
-                break;
-            case PRISM_2P:
-                if (slope.equals(Slope.PRISM_2P_POS_NS)) {
-                    slopeID = Slope.ID_PRISM_2P_POS_WE;
-                } else if (slope.equals(Slope.PRISM_2P_POS_WE)) {
-                    slopeID = Slope.ID_PRISM_2P_POS_NS;
-                } else if (++slopeID > Slope.ID_PRISM_2P_POS_SW) {
-                    slopeID = Slope.ID_PRISM_2P_POS_SE;
-                }
-                break;
-            case PRISM_3P:
-                if (++slopeID > Slope.ID_PRISM_3P_POS_NSE) {
-                    slopeID = Slope.ID_PRISM_3P_POS_NWE;
-                }
-                break;
-            case PRISM_WEDGE:
-                if (++slopeID > Slope.ID_PRISM_WEDGE_POS_E) {
-                    slopeID = Slope.ID_PRISM_WEDGE_POS_N;
-                }
-                break;
-            default: {}
-        }
-
+        slopeID = slope.slopeType.onHammerLeftClick(slope, slopeID);
+        
         TE.setData(slopeID);
 
         return true;
@@ -187,76 +99,8 @@ public class BlockCarpentersSlope extends BlockCoverable {
         Slope slope = Slope.slopesList[slopeID];
 
         /* Transform slope to next type. */
-
-        switch (slope.type)
-        {
-            case WEDGE_SIDE:
-                slopeID += 8;
-                break;
-            case WEDGE:
-                if (slope.isPositive) {
-                    slopeID -= 4;
-                } else {
-                    slopeID += 12;
-                }
-                break;
-            case WEDGE_INT:
-                if (slope.isPositive) {
-                    slopeID -= 4;
-                } else {
-                    slopeID += 12;
-                }
-                break;
-            case WEDGE_EXT:
-                if (slope.isPositive) {
-                    slopeID -= 4;
-                } else {
-                    slopeID += 12;
-                }
-                break;
-            case OBLIQUE_INT:
-                if (slope.isPositive) {
-                    slopeID -= 4;
-                } else {
-                    slopeID += 12;
-                }
-                break;
-            case OBLIQUE_EXT:
-                if (slope.isPositive) {
-                    slopeID -= 4;
-                } else {
-                    slopeID = Slope.ID_PRISM_POS;
-                }
-                break;
-            case PRISM:
-                if (slope.isPositive) {
-                    slopeID = Slope.ID_PRISM_NEG;
-                } else {
-                    slopeID = Slope.ID_PRISM_1P_POS_N;
-                }
-                break;
-            case PRISM_1P:
-                slopeID = Slope.ID_PRISM_2P_POS_NS;
-                break;
-            case PRISM_2P:
-                if (slope.equals(Slope.PRISM_2P_POS_NS) || slope.equals(Slope.PRISM_2P_POS_WE)) {
-                    slopeID = Slope.ID_PRISM_2P_POS_SE;
-                } else {
-                    slopeID = Slope.ID_PRISM_3P_POS_NWE;
-                }
-                break;
-            case PRISM_3P:
-                slopeID = Slope.ID_PRISM_POS_4P;
-                break;
-            case PRISM_4P:
-                slopeID = Slope.ID_PRISM_WEDGE_POS_N;
-                break;
-            case PRISM_WEDGE:
-                slopeID = Slope.ID_WEDGE_SE;
-                break;
-            default: {}
-        }
-
+        slopeID = slope.slopeType.onHammerRightClick(slope, slopeID);
+        
         TE.setData(slopeID);
 
         return true;
