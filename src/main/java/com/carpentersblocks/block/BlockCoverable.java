@@ -968,6 +968,21 @@ public class BlockCoverable extends BlockContainer {
 
     @Override
     /**
+     * Spawns EntityItem in the world for the given ItemStack if the world is not remote.
+     */
+    protected void dropBlockAsItem(World world, int x, int y, int z, ItemStack itemStack)
+    {
+        // Clear metadata for Carpenter's blocks
+        Block block = BlockProperties.toBlock(itemStack);
+        if (block instanceof BlockCoverable) {
+            itemStack.setItemDamage(0);
+        }
+
+        super.dropBlockAsItem(world, x, y, z, itemStack);
+    }
+
+    @Override
+    /**
      * Drops the block items with a specified chance of dropping the specified items
      */
     public void dropBlockAsItemWithChance(World world, int x, int y, int z, int metadata, float harvestLevel, int fortune)
