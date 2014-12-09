@@ -1023,12 +1023,14 @@ public class BlockCoverable extends BlockContainer {
      */
     protected void dropBlockAsItem(World world, int x, int y, int z, ItemStack itemStack)
     {
+
+        // Clear metadata for Carpenter's blocks
         Block block = BlockProperties.toBlock(itemStack);
-        if (block instanceof BlockCoverable)
-        {
+        if (block instanceof BlockCoverable) {
             itemStack.setItemDamage(0);
-            super.dropBlockAsItem(world, x, y, z, itemStack);
         }
+
+        super.dropBlockAsItem(world, x, y, z, itemStack);
     }
 
     /**
