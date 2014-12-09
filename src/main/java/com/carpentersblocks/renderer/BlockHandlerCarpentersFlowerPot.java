@@ -135,17 +135,22 @@ public class BlockHandlerCarpentersFlowerPot extends BlockHandlerBase {
      */
     public boolean renderPlant(ItemStack itemStack, int x, int y, int z)
     {
-        Tessellator tessellator = Tessellator.instance;
-        tessellator.addTranslation(0.0F, 0.25F, 0.0F);
-
         Block block = FlowerPotProperties.toBlock(itemStack);
-        RenderHelperFlowerPot.setPlantColor(this, itemStack, x, y, z);
+        if (block.getRenderBlockPass() != renderPass)
+        {
+            return false;
+        }
 
         /* Crop plants will use fully matured metadata. */
 
         if (block instanceof BlockCrops) {
             itemStack.setItemDamage(7);
         }
+
+        Tessellator tessellator = Tessellator.instance;
+        tessellator.addTranslation(0.0F, 0.25F, 0.0F);
+
+        RenderHelperFlowerPot.setPlantColor(this, itemStack, x, y, z);
 
         IIcon icon = block.getIcon(2, itemStack.getItemDamage());
 
