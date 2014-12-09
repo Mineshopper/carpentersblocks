@@ -741,6 +741,80 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
     }
 
     /**
+     * Renders single-sided face using current render bounds.
+     * <p>
+     * This is needed for panes and screens, and will render if current
+     * render pass and {@link FeatureRegistry#enableAlphaPanes} are compatible.
+     */
+    protected void renderPane(IIcon icon, int x, int y, int z, ForgeDirection facing, boolean enableAO, boolean flipped)
+    {
+        if (renderPass == PASS_OPAQUE ? !FeatureRegistry.enableAlphaPanes : FeatureRegistry.enableAlphaPanes)
+        {
+            doLightAndRenderSide(icon, x, y, z, facing, enableAO);
+            if (flipped) {
+                doLightAndRenderSide(icon, x, y, z, facing.getOpposite(), enableAO);
+            }
+        }
+    }
+
+    /**
+     * Lights and renders a side.
+     * <p>
+     * Used primarily for rendering panes to help cut down on code.
+     *
+     * @param icon
+     * @param x
+     * @param y
+     * @param z
+     * @param facing
+     */
+    private void doLightAndRenderSide(IIcon icon, int x, int y, int z, ForgeDirection facing, boolean enableAO)
+    {
+        ItemStack itemStack = new ItemStack(Blocks.glass);
+        int blockColor = getBlockColor(Blocks.glass, 0, x, y, z, facing.ordinal(), null);
+
+        boolean hasAO = renderBlocks.enableAO;
+        renderBlocks.enableAO = enableAO;
+
+        switch (facing)
+        {
+            case DOWN:
+                lightingHelper.setupLightingYNeg(itemStack, x, y, z);
+                lightingHelper.setupColor(x, y, z, facing.ordinal(), blockColor, null);
+                RenderHelper.renderFaceYNeg(renderBlocks, x, y, z, icon);
+                break;
+            case UP:
+                lightingHelper.setupLightingYPos(itemStack, x, y, z);
+                lightingHelper.setupColor(x, y, z, facing.ordinal(), blockColor, null);
+                RenderHelper.renderFaceYPos(renderBlocks, x, y, z, icon);
+                break;
+            case NORTH:
+                lightingHelper.setupLightingZNeg(itemStack, x, y, z);
+                lightingHelper.setupColor(x, y, z, facing.ordinal(), blockColor, null);
+                RenderHelper.renderFaceZNeg(renderBlocks, x, y, z, icon);
+                break;
+            case SOUTH:
+                lightingHelper.setupLightingZPos(itemStack, x, y, z);
+                lightingHelper.setupColor(x, y, z, facing.ordinal(), blockColor, null);
+                RenderHelper.renderFaceZPos(renderBlocks, x, y, z, icon);
+                break;
+            case WEST:
+                lightingHelper.setupLightingXNeg(itemStack, x, y, z);
+                lightingHelper.setupColor(x, y, z, facing.ordinal(), blockColor, null);
+                RenderHelper.renderFaceXNeg(renderBlocks, x, y, z, icon);
+                break;
+            case EAST:
+                lightingHelper.setupLightingXPos(itemStack, x, y, z);
+                lightingHelper.setupColor(x, y, z, facing.ordinal(), blockColor, null);
+                RenderHelper.renderFaceXPos(renderBlocks, x, y, z, icon);
+                break;
+            default: {}
+        }
+
+        renderBlocks.enableAO = hasAO;
+    }
+
+    /**
      * Blocks override this in order to render everything they need.
      */
     protected void renderCarpentersBlock(int x, int y, int z)

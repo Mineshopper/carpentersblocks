@@ -7,8 +7,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
 import com.carpentersblocks.block.BlockCarpentersDaylightSensor;
 import com.carpentersblocks.data.DaylightSensor;
-import com.carpentersblocks.renderer.helper.RenderHelper;
-import com.carpentersblocks.util.BlockProperties;
 import com.carpentersblocks.util.registry.IconRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -76,44 +74,11 @@ public class BlockHandlerCarpentersDaylightSensor extends BlockHandlerBase {
         DaylightSensor data = new DaylightSensor();
         ((BlockCarpentersDaylightSensor)srcBlock).setBlockBoundsBasedOnState(renderBlocks.blockAccess, x, y, z);
 
-        /* Render glass inlay */
-
-        ItemStack glass = new ItemStack(Blocks.glass);
-        renderBlocks.enableAO = getEnableAO(glass);
-
         ForgeDirection dir = data.getDirection(TE).getOpposite();
-        ForgeDirection facing = dir.getOpposite();
 
-        switch (dir.getOpposite()) {
-            case UP:
-                lightingHelper.setupLightingYPos(glass, x, y, z);
-                lightingHelper.setupColor(x, y, z, facing.ordinal(), getBlockColor(BlockProperties.toBlock(glass), 0, x, y, z, facing.ordinal(), null), null);
-                RenderHelper.renderFaceYPos(renderBlocks, x, y, z, IconRegistry.icon_daylight_sensor_glass_top);
-                break;
-            case NORTH:
-                lightingHelper.setupLightingZNeg(glass, x, y, z);
-                lightingHelper.setupColor(x, y, z, facing.ordinal(), getBlockColor(BlockProperties.toBlock(glass), 0, x, y, z, facing.ordinal(), null), null);
-                RenderHelper.renderFaceZNeg(renderBlocks, x, y, z, IconRegistry.icon_daylight_sensor_glass_top);
-                break;
-            case SOUTH:
-                lightingHelper.setupLightingZPos(glass, x, y, z);
-                lightingHelper.setupColor(x, y, z, facing.ordinal(), getBlockColor(BlockProperties.toBlock(glass), 0, x, y, z, facing.ordinal(), null), null);
-                RenderHelper.renderFaceZPos(renderBlocks, x, y, z, IconRegistry.icon_daylight_sensor_glass_top);
-                break;
-            case WEST:
-                lightingHelper.setupLightingXNeg(glass, x, y, z);
-                lightingHelper.setupColor(x, y, z, facing.ordinal(), getBlockColor(BlockProperties.toBlock(glass), 0, x, y, z, facing.ordinal(), null), null);
-                RenderHelper.renderFaceXNeg(renderBlocks, x, y, z, IconRegistry.icon_daylight_sensor_glass_top);
-                break;
-            case EAST:
-                lightingHelper.setupLightingXPos(glass, x, y, z);
-                lightingHelper.setupColor(x, y, z, facing.ordinal(), getBlockColor(BlockProperties.toBlock(glass), 0, x, y, z, facing.ordinal(), null), null);
-                RenderHelper.renderFaceXPos(renderBlocks, x, y, z, IconRegistry.icon_daylight_sensor_glass_top);
-                break;
-            default: {}
-        }
+        /* Render glass pane */
 
-        renderBlocks.enableAO = false;
+        renderPane(IconRegistry.icon_daylight_sensor_glass_top, x, y, z, dir.getOpposite(), true, false);
 
         /* Render lapis inlay */
 

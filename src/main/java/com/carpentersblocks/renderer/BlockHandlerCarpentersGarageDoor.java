@@ -2,13 +2,11 @@ package com.carpentersblocks.renderer;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;
 import com.carpentersblocks.data.GarageDoor;
-import com.carpentersblocks.renderer.helper.RenderHelper;
 import com.carpentersblocks.util.registry.IconRegistry;
 
 public class BlockHandlerCarpentersGarageDoor extends BlockHandlerBase {
@@ -69,40 +67,26 @@ public class BlockHandlerCarpentersGarageDoor extends BlockHandlerBase {
 
     /**
      * Renders pane.
-     * <p>
-     * TODO: Revisit when alpha pass is properly implemented since alpha renders
-     * both dirs during a single quad draw.
      */
     public void renderPartPane(IIcon icon, int x, int y, int z, float offset)
     {
-        float LIGHTNESS = lightingHelper.LIGHTNESS[dir.ordinal()];
-
-        Tessellator.instance.setBrightness(Blocks.glass.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y, z));
-        Tessellator.instance.setColorOpaque_F(LIGHTNESS, LIGHTNESS, LIGHTNESS);
-
         switch (dir) {
             case NORTH:
                 renderBlocks.setRenderBounds(0.0F, 0.0F, 1.0F - offset, 1.0F, 1.0F, 1.0F - offset);
-                RenderHelper.renderFaceZNeg(renderBlocks, x, y, z, icon);
-                RenderHelper.renderFaceZPos(renderBlocks, x, y, z, icon);
                 break;
             case SOUTH:
                 renderBlocks.setRenderBounds(0.0F, 0.0F, offset, 1.0F, 1.0F, offset);
-                RenderHelper.renderFaceZNeg(renderBlocks, x, y, z, icon);
-                RenderHelper.renderFaceZPos(renderBlocks, x, y, z, icon);
                 break;
             case WEST:
                 renderBlocks.setRenderBounds(1.0F - offset, 0.0F, 0.0F, 1.0F - offset, 1.0F, 1.0F);
-                RenderHelper.renderFaceXNeg(renderBlocks, x, y, z, icon);
-                RenderHelper.renderFaceXPos(renderBlocks, x, y, z, icon);
                 break;
             case EAST:
                 renderBlocks.setRenderBounds(offset, 0.0F, 0.0F, offset, 1.0F, 1.0F);
-                RenderHelper.renderFaceXNeg(renderBlocks, x, y, z, icon);
-                RenderHelper.renderFaceXPos(renderBlocks, x, y, z, icon);
                 break;
             default: {}
         }
+
+        renderPane(icon, x, y, z, dir, true, true);
     }
 
     /**

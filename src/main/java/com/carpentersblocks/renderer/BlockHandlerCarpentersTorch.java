@@ -170,7 +170,7 @@ public class BlockHandlerCarpentersTorch extends BlockHandlerBase {
             if (facing != dir.ordinal()) {
                 renderBlocks.setRenderBounds (0.375D, 0.375D, 0.3125D, 0.625D, 0.75D, 0.3125D);
                 rotateBounds(renderBlocks, nextDir);
-                renderPartPane(IconRegistry.icon_lantern_glass, x, y, z, nextDir);
+                renderPane(IconRegistry.icon_lantern_glass, x, y, z, nextDir.getOpposite(), false, false);
             }
         }
 
@@ -188,37 +188,6 @@ public class BlockHandlerCarpentersTorch extends BlockHandlerBase {
         clearIconOverride(6);
         RenderHelper.clearFloatingIconLock();
         suppressChiselDesign = suppressDyeColor = suppressOverlay = false;
-    }
-
-    /**
-     * Renders pane like glass or screen.
-     * <p>
-     * TODO: Revisit when alpha pass is properly implemented since alpha renders
-     * both sides during a single quad draw.
-     */
-    protected final void renderPartPane(IIcon icon, int x, int y, int z, ForgeDirection dir)
-    {
-        int side = dir.getOpposite().ordinal();
-        float LIGHTNESS = lightingHelper.LIGHTNESS[side];
-
-        Tessellator.instance.setBrightness(Blocks.glass.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y, z));
-        Tessellator.instance.setColorOpaque_F(LIGHTNESS, LIGHTNESS, LIGHTNESS);
-
-        switch (side) {
-            case NORTH:
-                RenderHelper.renderFaceZNeg(renderBlocks, x, y, z, icon);
-                break;
-            case SOUTH:
-                RenderHelper.renderFaceZPos(renderBlocks, x, y, z, icon);
-                break;
-            case WEST:
-                RenderHelper.renderFaceXNeg(renderBlocks, x, y, z, icon);
-                break;
-            case EAST:
-                RenderHelper.renderFaceXPos(renderBlocks, x, y, z, icon);
-                break;
-            default: {}
-        }
     }
 
     @Override

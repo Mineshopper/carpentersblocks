@@ -16,6 +16,7 @@ public class FeatureRegistry {
     public static boolean enableOwnership           = true;
     public static boolean enableIllumination        = true;
     public static boolean enableRoutableFluids      = false;
+    public static boolean enableAlphaPanes          = true;
 
     public static ArrayList<String> overlayItems    = new ArrayList<String>();
     public static ArrayList<String> coverExceptions = new ArrayList<String>();
@@ -52,6 +53,10 @@ public class FeatureRegistry {
         Property torchWeatherEffectsProp = config.get("features", "Enable Torch Weather Effects", enableTorchWeatherEffects);
         torchWeatherEffectsProp.comment = "This controls whether torches extinguish themselves when exposed to rain or snow.";
         enableTorchWeatherEffects = torchWeatherEffectsProp.getBoolean(enableTorchWeatherEffects);
+
+        Property alphaPaneProp = config.get("features", "Enable Pane Alpha Rendering", enableAlphaPanes);
+        alphaPaneProp.comment = "This controls whether panes in doors and hatches should render on alpha pass.\nThis is needed to allow translucent window glass, for instance.";
+        enableAlphaPanes = alphaPaneProp.getBoolean(enableAlphaPanes);
 
         Property overlayList = config.get("features", "Overlay Definitions", new String[] { "Seeds:grass", "Snowball:snow", "String:web", "Vines:vine", "Wheat:hay", "Mushroom:mycelium" });
         overlayList.comment = "This maps items to overlays.\nItems are prefixed with display names (en_US only).\nOverlay suffixes are :grass, :snow, :web, :vine, :hay, :mycelium";
