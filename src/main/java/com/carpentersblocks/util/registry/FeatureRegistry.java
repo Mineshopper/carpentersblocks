@@ -55,7 +55,7 @@ public class FeatureRegistry {
         enableTorchWeatherEffects = torchWeatherEffectsProp.getBoolean(enableTorchWeatherEffects);
 
         Property alphaPaneProp = config.get("features", "Enable Pane Alpha Rendering", enableAlphaPanes);
-        alphaPaneProp.comment = "This controls whether panes in doors and hatches should render on alpha pass.\nThis is needed to allow translucent window glass, for instance.";
+        alphaPaneProp.comment = "This controls whether panes (used in doors, hatches, and other blocks) should render on alpha pass.\nThis is needed to allow translucent window glass, for instance.";
         enableAlphaPanes = alphaPaneProp.getBoolean(enableAlphaPanes);
 
         Property overlayList = config.get("features", "Overlay Definitions", new String[] { "Seeds:grass", "Snowball:snow", "String:web", "Vines:vine", "Wheat:hay", "Mushroom:mycelium" });
