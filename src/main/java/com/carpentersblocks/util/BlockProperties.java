@@ -50,6 +50,21 @@ public class BlockProperties {
     }
 
     /**
+     * Checks whether tile entity has attribute.
+     * <p>
+     * This checks whether tile entity is null before checking
+     * attribute to promote code reuse.
+     *
+     * @param  TE the {@link TEBase} reference
+     * @param  attr the block attribute
+     * @return <code>true</code> if block has attribute
+     */
+    public static boolean hasAttribute(TEBase TE, byte attr)
+    {
+        return TE != null && TE.hasAttribute(attr);
+    }
+
+    /**
      * Takes an ItemStack and returns block, or air block if ItemStack
      * does not contain a block.
      */
