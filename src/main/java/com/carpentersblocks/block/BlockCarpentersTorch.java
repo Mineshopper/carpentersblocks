@@ -255,23 +255,20 @@ public class BlockCarpentersTorch extends BlockSided {
     {
         TEBase TE = getTileEntity(world, x, y, z);
 
-        if (TE != null) {
-
+        if (TE != null)
+        {
             State state = data.getState(TE);
-
-            if (!state.equals(State.UNLIT)) {
-
+            if (!state.equals(State.UNLIT))
+            {
                 double[] headCoords = data.getHeadCoordinates(TE);
-
                 world.spawnParticle("smoke", headCoords[0], headCoords[1], headCoords[2], 0.0D, 0.0D, 0.0D);
-
                 if (state.equals(State.LIT)) {
                     world.spawnParticle("flame", headCoords[0], headCoords[1], headCoords[2], 0.0D, 0.0D, 0.0D);
                 }
-
             }
-
         }
+
+        super.randomDisplayTick(world, x, y, z, random);
     }
 
     @Override
