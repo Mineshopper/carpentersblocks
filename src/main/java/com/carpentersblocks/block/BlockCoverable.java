@@ -1017,6 +1017,20 @@ public class BlockCoverable extends BlockContainer {
         super.breakBlock(world, x, y, z, block, metadata);
     }
 
+    @Override
+    /**
+     * Spawns EntityItem in the world for the given ItemStack if the world is not remote.
+     */
+    protected void dropBlockAsItem(World world, int x, int y, int z, ItemStack itemStack)
+    {
+        Block block = BlockProperties.toBlock(itemStack);
+        if (block instanceof BlockCoverable)
+        {
+            itemStack.setItemDamage(0);
+            super.dropBlockAsItem(world, x, y, z, itemStack);
+        }
+    }
+
     /**
      * This returns a complete list of items dropped from this block.
      *
