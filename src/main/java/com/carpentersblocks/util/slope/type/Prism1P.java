@@ -1,7 +1,7 @@
-package com.carpentersblocks.data.slope;
+package com.carpentersblocks.util.slope.type;
 
 import com.carpentersblocks.data.Slope;
-import com.carpentersblocks.data.SlopeType;
+import com.carpentersblocks.util.slope.SlopeType;
 
 public class Prism1P implements SlopeType {
 

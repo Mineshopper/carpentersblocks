@@ -6,13 +6,11 @@ import static net.minecraftforge.common.util.ForgeDirection.NORTH;
 import static net.minecraftforge.common.util.ForgeDirection.SOUTH;
 import static net.minecraftforge.common.util.ForgeDirection.UP;
 import static net.minecraftforge.common.util.ForgeDirection.WEST;
-
 import java.util.ArrayList;
 import java.util.List;
-
-import com.carpentersblocks.util.slope.SlopeTypeFactory;
-
 import net.minecraftforge.common.util.ForgeDirection;
+import com.carpentersblocks.util.slope.SlopeType;
+import com.carpentersblocks.util.slope.SlopeTypeFactory;
 
 public class Slope {
 
@@ -131,7 +129,7 @@ public class Slope {
 
     /** Class SlopeType **/
     public final SlopeType slopeType;
-    
+
     /** Slope type. */
     public final Type type;
 

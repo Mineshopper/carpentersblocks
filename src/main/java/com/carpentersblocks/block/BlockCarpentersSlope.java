@@ -83,7 +83,7 @@ public class BlockCarpentersSlope extends BlockCoverable {
 
         /* Cycle between slope types based on current slope. */
         slopeID = slope.slopeType.onHammerLeftClick(slope, slopeID);
-        
+
         TE.setData(slopeID);
 
         return true;
@@ -100,7 +100,7 @@ public class BlockCarpentersSlope extends BlockCoverable {
 
         /* Transform slope to next type. */
         slopeID = slope.slopeType.onHammerRightClick(slope, slopeID);
-        
+
         TE.setData(slopeID);
 
         return true;

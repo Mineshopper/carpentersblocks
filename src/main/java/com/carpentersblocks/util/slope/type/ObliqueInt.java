@@ -1,22 +1,22 @@
-package com.carpentersblocks.data.slope;
+package com.carpentersblocks.util.slope.type;
 
 import com.carpentersblocks.data.Slope;
-import com.carpentersblocks.data.SlopeType;
+import com.carpentersblocks.util.slope.SlopeType;
 
-public class Wedge implements SlopeType {
+public class ObliqueInt implements SlopeType {
 
 	@Override
 	public int onHammerLeftClick(Slope slope, int slopeID) {
 		if (slope.isPositive) {
-            if (++slopeID > Slope.ID_WEDGE_POS_E) {
-                slopeID = Slope.ID_WEDGE_POS_N;
+            if (++slopeID > Slope.ID_OBL_INT_POS_SW) {
+                slopeID = Slope.ID_OBL_INT_POS_SE;
             }
         } else {
-            if (++slopeID > Slope.ID_WEDGE_NEG_E) {
-                slopeID = Slope.ID_WEDGE_NEG_N;
+            if (++slopeID > Slope.ID_OBL_INT_NEG_SW) {
+                slopeID = Slope.ID_OBL_INT_NEG_SE;
             }
         }
-	    return slopeID;
+		return slopeID;
 	}
 
 	@Override

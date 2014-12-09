@@ -1,31 +1,30 @@
 package com.carpentersblocks.util.slope;
 
 import com.carpentersblocks.data.Slope.Type;
-import com.carpentersblocks.data.slope.ObliqueExt;
-import com.carpentersblocks.data.slope.ObliqueInt;
-import com.carpentersblocks.data.slope.Prism;
-import com.carpentersblocks.data.slope.Prism1P;
-import com.carpentersblocks.data.slope.Prism2P;
-import com.carpentersblocks.data.slope.Prism3P;
-import com.carpentersblocks.data.slope.Prism4P;
-import com.carpentersblocks.data.slope.PrismWedge;
-import com.carpentersblocks.data.slope.Wedge;
-import com.carpentersblocks.data.slope.WedgeExt;
-import com.carpentersblocks.data.slope.WedgeInt;
-import com.carpentersblocks.data.slope.WedgeSide;
-import com.carpentersblocks.data.SlopeType;
+import com.carpentersblocks.util.slope.type.ObliqueExt;
+import com.carpentersblocks.util.slope.type.ObliqueInt;
+import com.carpentersblocks.util.slope.type.Prism;
+import com.carpentersblocks.util.slope.type.Prism1P;
+import com.carpentersblocks.util.slope.type.Prism2P;
+import com.carpentersblocks.util.slope.type.Prism3P;
+import com.carpentersblocks.util.slope.type.Prism4P;
+import com.carpentersblocks.util.slope.type.PrismWedge;
+import com.carpentersblocks.util.slope.type.Wedge;
+import com.carpentersblocks.util.slope.type.WedgeExt;
+import com.carpentersblocks.util.slope.type.WedgeInt;
+import com.carpentersblocks.util.slope.type.WedgeSide;
 
 public class SlopeTypeFactory {
-	
+
 	private static SlopeTypeFactory instance = null;
-	
+
 	public static SlopeTypeFactory getInstance() {
 		if (instance == null) {
 			instance = new SlopeTypeFactory();
 		}
 		return instance;
 	}
-	
+
 	public SlopeType getSlope(Type type) {
 		switch (type) {
 		case WEDGE_SIDE:
