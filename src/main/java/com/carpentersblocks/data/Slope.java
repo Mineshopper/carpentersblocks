@@ -6,8 +6,12 @@ import static net.minecraftforge.common.util.ForgeDirection.NORTH;
 import static net.minecraftforge.common.util.ForgeDirection.SOUTH;
 import static net.minecraftforge.common.util.ForgeDirection.UP;
 import static net.minecraftforge.common.util.ForgeDirection.WEST;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import com.carpentersblocks.util.slope.SlopeTypeFactory;
+
 import net.minecraftforge.common.util.ForgeDirection;
 
 public class Slope {
@@ -125,6 +129,9 @@ public class Slope {
     /** ID of the slope. */
     public final int slopeID;
 
+    /** Class SlopeType **/
+    public final SlopeType slopeType;
+    
     /** Slope type. */
     public final Type type;
 
@@ -166,6 +173,7 @@ public class Slope {
         this.slopeID = slopeID;
         slopesList[slopeID] = this;
         type = slopeType;
+        this.slopeType = SlopeTypeFactory.getInstance().getSlope(type);
         face = faceShape;
         this.faceBias = faceBias;
 
