@@ -540,10 +540,10 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
     /**
      * Renders multiple textures to side.
      */
-    protected void renderMultiTexturedSide(ItemStack itemStack, int x, int y, int z, int side, IIcon icon)
+    protected void renderMultiTexturedSide(ItemStack itemStack, int x, int y, int z, int side)
     {
         Block block = BlockProperties.toBlock(itemStack);
-        boolean renderCover = (block instanceof BlockCoverable ? 0 : block.getRenderBlockPass()) == renderPass;
+        boolean renderCover = (block instanceof BlockCoverable ? renderPass == 0 : block.canRenderInPass(renderPass));
         boolean hasDesign = TE.hasChiselDesign(coverRendering);
         boolean hasOverlay = TE.hasAttribute(TE.ATTR_OVERLAY[coverRendering]);
         double overlayOffset = 0.0D;
@@ -563,7 +563,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
             if (BlockProperties.blockRotates(itemStack)) {
                 setTextureRotationForDirectionalBlock(side);
             }
-            setColorAndRender(itemStack, x, y, z, side, icon);
+            setColorAndRender(itemStack, x, y, z, side, getIcon(itemStack, side));
             setTextureRotation(side, tempRotation);
         }
 
@@ -609,7 +609,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
         if (renderBlocks.hasOverrideBlockTexture()) {
             setColorAndRender(itemStack, x, y, z, side, renderBlocks.overrideBlockTexture);
         } else {
-            renderMultiTexturedSide(itemStack, x, y, z, side, getIcon(itemStack, side));
+            renderMultiTexturedSide(itemStack, x, y, z, side);
         }
     }
 
