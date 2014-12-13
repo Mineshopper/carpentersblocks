@@ -272,29 +272,19 @@ public class EventHandler {
     @SubscribeEvent
     public void onPlaySoundAtEntityEvent(PlaySoundAtEntityEvent event)
     {
-        if (event != null && event.name != null && event.name.contains(CarpentersBlocks.MODID)) {
-
+        if (event != null && event.name != null && event.name.contains(CarpentersBlocks.MODID))
+        {
             int x = MathHelper.floor_double(event.entity.posX);
             int y = MathHelper.floor_double(event.entity.posY - 0.20000000298023224D - event.entity.yOffset);
             int z = MathHelper.floor_double(event.entity.posZ);
 
-            Block block = event.entity.worldObj.getBlock(x, y, z);
-            String prefix = event.name.substring(0, event.name.indexOf(".") + 1);
+            // Give SoundType a valid resource
+            event.name = Blocks.planks.stepSound.getStepResourcePath();
 
-            if (block instanceof BlockCoverable) {
-
-                block = BlockProperties.toBlock(BlockProperties.getCover((TEBase) event.entity.worldObj.getTileEntity(x, y, z), 6));
-
-                if (block instanceof BlockCoverable) {
-                    event.name = prefix + Blocks.planks.stepSound.soundName;
-                } else if (block.stepSound != null) {
-                    event.name = prefix + block.stepSound.soundName;
-                }
-
-            } else {
-
-                event.name = prefix + Blocks.planks.stepSound.soundName;
-
+            // If covered, change resource to cover's SoundType
+            Block cover = BlockProperties.toBlock(BlockProperties.getCover((TEBase) event.entity.worldObj.getTileEntity(x, y, z), 6));
+            if (!(cover instanceof BlockCoverable)) {
+                event.name = cover.stepSound.getStepResourcePath();
             }
         }
     }
