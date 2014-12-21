@@ -681,6 +681,10 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
      */
     public int getBlockColor(Block block, int metadata, int x, int y, int z, int side, IIcon icon)
     {
+        if (block.hasTileEntity(metadata)) {
+            block = Blocks.dirt;
+        }
+
         TE.setMetadata(metadata);
         int color = OptifineHandler.enableOptifineIntegration ? OptifineHandler.getColorMultiplier(block, TE.getWorldObj(), x, y, z) : block.colorMultiplier(TE.getWorldObj(), x, y, z);
         TE.restoreMetadata();
