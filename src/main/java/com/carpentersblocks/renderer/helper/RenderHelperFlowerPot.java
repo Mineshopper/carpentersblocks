@@ -47,8 +47,6 @@ public class RenderHelperFlowerPot extends RenderHelper {
         Tessellator tessellator = Tessellator.instance;
         tessellator.setBrightness(block.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y, z));
 
-        //setPlantColor(TE, renderBlocks, itemStack, block, x, y, z);
-
         boolean thinPlant = itemStack.getUnlocalizedName().equals("tile.doublePlant.grass");
 
         int metadata = itemStack.getItemDamage();
