@@ -278,13 +278,18 @@ public class EventHandler {
             int y = MathHelper.floor_double(event.entity.posY - 0.20000000298023224D - event.entity.yOffset);
             int z = MathHelper.floor_double(event.entity.posZ);
 
-            // Give SoundType a valid resource
+            // Give SoundType a valid resource by default
             event.name = Blocks.planks.stepSound.getStepResourcePath();
 
             // If covered, change resource to cover's SoundType
-            Block cover = BlockProperties.toBlock(BlockProperties.getCover((TEBase) event.entity.worldObj.getTileEntity(x, y, z), 6));
-            if (!(cover instanceof BlockCoverable)) {
-                event.name = cover.stepSound.getStepResourcePath();
+            TEBase TE = (TEBase) event.entity.worldObj.getTileEntity(x, y, z);
+            if (TE != null)
+            {
+                Block cover = BlockProperties.toBlock(BlockProperties.getCover(TE, 6));
+                if (!(cover instanceof BlockCoverable))
+                {
+                    event.name = cover.stepSound.getStepResourcePath();
+                }
             }
         }
     }
