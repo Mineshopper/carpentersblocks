@@ -23,6 +23,7 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase {
     private boolean hasDesign;
     private boolean bedParallelNeg;
     private boolean bedParallelPos;
+    private boolean isOccupied;
 
     private TEBase TE_head;
     private TEBase TE_foot;
@@ -67,17 +68,23 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase {
     {
         renderBlocks.renderAllFaces = true;
 
-        setParams();
+        // Continue only if bed is complete
+        if (Bed.getOppositeTE(TE) == null) {
+            return;
+        }
+
+        setParams(); // Set up common be parameters
+
+        // Render mattress, pillow and blanket
+
         renderFabricComponents(new ItemStack(Blocks.wool), x, y, z);
 
-        /* Apply frame dye override */
+        // Render frame with dye override
 
-        if (TE_head != null) {
-            if (TE.hasAttribute(TE.ATTR_DYE[6])) {
-                setDyeOverride(DyeHandler.getColor(TE.getAttribute(TE.ATTR_DYE[6])));
-            } else {
-                suppressDyeColor = true;
-            }
+        if (TE_head.hasAttribute(TE_head.ATTR_DYE[6])) {
+            setDyeOverride(DyeHandler.getColor(TE_head.getAttribute(TE_head.ATTR_DYE[6])));
+        } else {
+            suppressDyeColor = true;
         }
 
         switch (Bed.getType(TE)) {
@@ -101,11 +108,17 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase {
         hasDesign = TE.hasDesign();
         bedParallelPos = getIsParallelPos();
         bedParallelNeg = getIsParallelNeg();
-        TE_head = isHead ? TE : Bed.getOppositeTE(TE);
 
-        if (TE_head != null) {
-            TE_foot = Bed.getOppositeTE(TE_head);
+        if (isHead) {
+            TE_head = TE;
+            TE_foot = Bed.getOppositeTE(TE);
+        } else {
+            TE_head = Bed.getOppositeTE(TE);
+            TE_foot = TE;
         }
+
+        // Occupied state could (maybe) not be synchronized
+        isOccupied = Bed.isOccupied(TE_head) || Bed.isOccupied(TE_foot);
 
         if (hasDesign) {
             icon_design = IconRegistry.icon_design_bed.get(DesignHandler.listBed.indexOf(TE.getDesign()));
@@ -152,18 +165,9 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase {
     private void renderBlanket(ItemStack itemStack, int x, int y, int z)
     {
         VertexHelper.setFloatingIconLock();
-        int blanketDyeMetadata = 0;
-        boolean isOccupied = false;
 
-        if (TE_head != null) {
-            isOccupied |= Bed.isOccupied(TE_head);
-        }
-        if (TE_foot != null) {
-            isOccupied |= Bed.isOccupied(TE_foot);
-        }
-
-        if (hasDesign) {
-
+        if (hasDesign)
+        {
             int[] idxHead = { 2, 2, 2, 7, 1, 3 };
             int[] idxFoot = { 5, 5, 2, 7, 4, 6 };
             int[][] idxRot = { { 3, 2, 5, 4 }, { 2, 3, 4, 5 }, { 4, 5, 3, 2 }, { 5, 4, 2, 3 } };
@@ -193,19 +197,14 @@ public class BlockHandlerCarpentersBed extends BlockHandlerBase {
             for (int side = 0; side < 6; ++side) {
                 setIconOverride(side, icon[idx][side]);
             }
-
-        } else {
-
-            if (TE_foot != null) {
-                blanketDyeMetadata = TE.hasAttribute(TE.ATTR_DYE[coverRendering]) ? DyeHandler.getVanillaDmgValue(TE.getAttribute(TE.ATTR_DYE[coverRendering])) : 0;
-            }
-
         }
 
         double yTop = isOccupied ? 0.875D : 0.625D;
         double depth = 0.3125F;
 
-        itemStack.setItemDamage(blanketDyeMetadata);
+        // Color the blanket
+        int dyeColor = TE_foot.hasAttribute(TE_foot.ATTR_DYE[coverRendering]) ? DyeHandler.getVanillaDmgValue(TE_foot.getAttribute(TE_foot.ATTR_DYE[coverRendering])) : 0;
+        itemStack.setItemDamage(dyeColor);
 
         if (isHead) {
             renderBlockWithRotation(itemStack, x, y, z, 0.0625D, yTop - 0.0625D, 0.5D, 0.9375D, yTop, 1.0D, dir);
