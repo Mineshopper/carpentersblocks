@@ -157,7 +157,11 @@ public class BlockCoverable extends BlockContainer {
         ItemStack itemStack = BlockProperties.getCover(TE, 6);
         Block block = BlockProperties.toBlock(itemStack);
 
-        return block instanceof BlockCoverable ? getIcon() : block.getIcon(side, itemStack.getItemDamage());
+        return block instanceof BlockCoverable ? getIcon() : getWrappedIcon(block, blockAccess, x, y, z, side, itemStack.getItemDamage());
+    }
+    
+    private static IIcon getWrappedIcon(Block b, IBlockAccess iba, int x, int y, int z, int side, int meta) {
+        return b instanceof IWrappableBlock ? ((IWrappableBlock)b).getIcon(iba, x, y, z, side, b, meta) : b.getIcon(side, meta);
     }
 
     /**
@@ -850,7 +854,9 @@ public class BlockCoverable extends BlockContainer {
         TEBase TE = getTileEntity(world, x, y, z);
 
         if (BlockProperties.hasAttribute(TE, TE.ATTR_COVER[6])) {
-            return BlockProperties.toBlock(BlockProperties.getCover(TE, 6)).getBlockHardness(world, x, y, z);
+            ItemStack is = BlockProperties.getCover(TE, 6);
+            Block b = BlockProperties.toBlock(is);
+            return b instanceof IWrappableBlock ? ((IWrappableBlock)b).getHardness(world, x, y, z, b, is.getItemDamage()) : b.getBlockHardness(world, x, y, z);
         }
 
         return blockHardness;
@@ -865,7 +871,9 @@ public class BlockCoverable extends BlockContainer {
         TEBase TE = getTileEntity(blockAccess, x, y, z);
 
         if (TE != null) {
-            return Blocks.fire.getFlammability(BlockProperties.toBlock(BlockProperties.getCover(TE, 6)));
+            ItemStack is = BlockProperties.getCover(TE, 6);
+            Block b = BlockProperties.toBlock(is);
+            return b instanceof IWrappableBlock ? ((IWrappableBlock)b).getFlammability(blockAccess, x, y, z, face, b, is.getItemDamage()) : Blocks.fire.getFlammability(b);
         }
 
         return super.getFlammability(blockAccess, x, y, z, face);
@@ -880,7 +888,9 @@ public class BlockCoverable extends BlockContainer {
         TEBase TE = getTileEntity(blockAccess, x, y, z);
 
         if (TE != null) {
-            return Blocks.fire.getEncouragement(BlockProperties.toBlock(BlockProperties.getCover(TE, 6)));
+            ItemStack is = BlockProperties.getCover(TE, 6);
+            Block b = BlockProperties.toBlock(is);
+            return b instanceof IWrappableBlock ? ((IWrappableBlock)b).getFireSpread(blockAccess, x, y, z, side, b, is.getItemDamage()) : Blocks.fire.getEncouragement(b);
         }
 
         return super.getFireSpreadSpeed(blockAccess, x, y, z, side);
@@ -897,7 +907,9 @@ public class BlockCoverable extends BlockContainer {
         TEBase TE = getTileEntity(world, x, y, z);
 
         if (BlockProperties.hasAttribute(TE, TE.ATTR_COVER[6])) {
-            return BlockProperties.toBlock(BlockProperties.getCover(TE, 6)).isFireSource(world, x, y, z, side);
+            ItemStack is = BlockProperties.getCover(TE, 6);
+            Block b = BlockProperties.toBlock(is);
+            return b instanceof IWrappableBlock ? ((IWrappableBlock)b).sustainsFire(world, x, y, z, side, b, is.getItemDamage()) : b.isFireSource(world, x, y, z, side);
         }
 
         return false;
@@ -912,7 +924,9 @@ public class BlockCoverable extends BlockContainer {
         TEBase TE = getTileEntity(world, x, y, z);
 
         if (BlockProperties.hasAttribute(TE, TE.ATTR_COVER[6])) {
-            return BlockProperties.toBlock(BlockProperties.getCover(TE, 6)).getExplosionResistance(entity);
+            ItemStack is = BlockProperties.getCover(TE, 6);
+            Block b = BlockProperties.toBlock(is);
+            return b instanceof IWrappableBlock ? ((IWrappableBlock)b).getBlastResistance(entity, world, x, y, z, explosionX, explosionY, explosionZ, b, is.getItemDamage() : b.getExplosionResistance(entity, world, x, y, z, explosionX, explosionY, explosionZ);
         }
 
         return this.getExplosionResistance(entity);
@@ -927,7 +941,9 @@ public class BlockCoverable extends BlockContainer {
         TEBase TE = getTileEntity(blockAccess, x, y, z);
 
         if (BlockProperties.hasAttribute(TE, TE.ATTR_COVER[6])) {
-            return BlockProperties.toBlock(BlockProperties.getCover(TE, 6)).isWood(blockAccess,  x,  y,  z);
+            ItemStack is = BlockProperties.getCover(TE, 6);
+            Block b = BlockProperties.toBlock(is);
+            return b instanceof IWrappableBlock ? ((IWrappableBlock)b).isLog(blockAccess, x, y, z, b, is.getItemDamage()) : b.isWood(blockAccess, x, y, z);
         }
 
         return super.isWood(blockAccess, x, y, z);
@@ -1226,7 +1242,7 @@ public class BlockCoverable extends BlockContainer {
             if (is != null) {
                 Block b = BlockProperties.toBlock(is);
                 if (b != null) {
-                    return b.colorMultiplier(iba, x, y, z);
+                    return b instanceof IWrappableBlock ? ((IWrappableBlock)b).getColorMultiplier(iba, x, y, z, b, is.getItemDamage()) : b.colorMultiplier(iba, x, y, z);
                 }
             }
         }
