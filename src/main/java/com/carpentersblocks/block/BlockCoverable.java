@@ -1216,6 +1216,22 @@ public class BlockCoverable extends BlockContainer {
             return super.getPlayerRelativeBlockHardness(entityPlayer, world, x, y, z);
         }
     }
+    
+    @SideOnly(Side.CLIENT)
+    @Override
+    public int colorMultiplier(IBlockAccess iba, int x, int y, int z) {
+        TEBase TE = getTileEntity(iba, x, y, z);
+        if (TE != null) {
+            ItemStack is = BlockProperties.getCoverForRendering(TE, 6);
+            if (is != null) {
+                Block b = BlockProperties.toBlock(is);
+                if (b != null) {
+                    return b.colorMultiplier(iba, x, y, z);
+                }
+            }
+        }
+        return super.colorMultiplier(iba, x, y, z);
+    }
 
     @Override
     @SideOnly(Side.CLIENT)
