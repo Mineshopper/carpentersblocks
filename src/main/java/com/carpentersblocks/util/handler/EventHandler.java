@@ -235,31 +235,24 @@ public class EventHandler {
     @SubscribeEvent
     public void onPlaySoundEvent(PlaySoundEvent17 event)
     {
-        if (event != null && event.name != null && event.name.contains(CarpentersBlocks.MODID)) {
-
-            if (FMLCommonHandler.instance().getSide() == Side.CLIENT) {
-
+        if (event != null && event.name != null && event.name.contains(CarpentersBlocks.MODID))
+        {
+            if (FMLCommonHandler.instance().getSide() == Side.CLIENT)
+            {
                 World world = FMLClientHandler.instance().getClient().theWorld;
-                int x = MathHelper.floor_float(event.sound.getXPosF());
-                int y = MathHelper.floor_float(event.sound.getYPosF());
-                int z = MathHelper.floor_float(event.sound.getZPosF());
+                int x = MathHelper.floor_double(event.sound.getXPosF());
+                int y = MathHelper.floor_double(event.sound.getYPosF()) - 1;
+                int z = MathHelper.floor_double(event.sound.getZPosF());
 
                 Block block = world.getBlock(x, y, z);
-
                 TileEntity TE = world.getTileEntity(x, y, z);
 
                 if (TE != null && TE instanceof TEBase) {
-                    block = BlockProperties.toBlock(BlockProperties.getCover((TEBase) TE, 6));
+                    block = BlockProperties.toBlock(BlockProperties.getCoverSafe((TEBase) TE, 6));
                 }
 
-                if (block instanceof BlockCoverable) {
-                    block = Blocks.planks;
-                }
-
-                event.result = new PositionedSoundRecord(new ResourceLocation(block.stepSound.getBreakSound()), (block.stepSound.getVolume() + 1.0F) / 2.0F, block.stepSound.getPitch() * 0.8F, x + 0.5F, y + 0.5F, z + 0.5F);
-
+                event.result = new PositionedSoundRecord(new ResourceLocation(block.stepSound.getStepResourcePath()), block.stepSound.getVolume() * 0.15F, block.stepSound.getPitch(), x + 0.5F, y + 0.5F, z + 0.5F);
             }
-
         }
     }
 
@@ -285,7 +278,7 @@ public class EventHandler {
             TEBase TE = (TEBase) event.entity.worldObj.getTileEntity(x, y, z);
             if (TE != null)
             {
-                Block cover = BlockProperties.toBlock(BlockProperties.getCover(TE, 6));
+                Block cover = BlockProperties.toBlock(BlockProperties.getCoverSafe(TE, 6));
                 if (!(cover instanceof BlockCoverable))
                 {
                     event.name = cover.stepSound.getStepResourcePath();
