@@ -1217,6 +1217,8 @@ public class BlockCoverable extends BlockContainer {
         }
     }
     
+    @SideOnly(Side.CLIENT)
+    @Override
     public int colorMultiplier(IBlockAccess iba, int x, int y, int z) {
         TEBase TE = getTileEntity(iba, x, y, z);
         if (TE != null) {
