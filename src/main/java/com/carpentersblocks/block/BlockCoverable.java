@@ -31,6 +31,7 @@ import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.util.ForgeDirection;
 import com.carpentersblocks.api.ICarpentersChisel;
 import com.carpentersblocks.api.ICarpentersHammer;
+import com.carpentersblocks.api.IWrappableBlock;
 import com.carpentersblocks.renderer.helper.FancyFluidsHelper;
 import com.carpentersblocks.renderer.helper.ParticleHelper;
 import com.carpentersblocks.tileentity.TEBase;
@@ -159,7 +160,7 @@ public class BlockCoverable extends BlockContainer {
 
         return block instanceof BlockCoverable ? getIcon() : getWrappedIcon(block, blockAccess, x, y, z, side, itemStack.getItemDamage());
     }
-    
+
     private static IIcon getWrappedIcon(Block b, IBlockAccess iba, int x, int y, int z, int side, int meta) {
         return b instanceof IWrappableBlock ? ((IWrappableBlock)b).getIcon(iba, x, y, z, side, b, meta) : b.getIcon(side, meta);
     }
@@ -926,7 +927,7 @@ public class BlockCoverable extends BlockContainer {
         if (BlockProperties.hasAttribute(TE, TE.ATTR_COVER[6])) {
             ItemStack is = BlockProperties.getCover(TE, 6);
             Block b = BlockProperties.toBlock(is);
-            return b instanceof IWrappableBlock ? ((IWrappableBlock)b).getBlastResistance(entity, world, x, y, z, explosionX, explosionY, explosionZ, b, is.getItemDamage() : b.getExplosionResistance(entity, world, x, y, z, explosionX, explosionY, explosionZ);
+            return b instanceof IWrappableBlock ? ((IWrappableBlock)b).getBlastResistance(entity, world, x, y, z, explosionX, explosionY, explosionZ, b, is.getItemDamage()) : b.getExplosionResistance(entity, world, x, y, z, explosionX, explosionY, explosionZ);
         }
 
         return this.getExplosionResistance(entity);
@@ -1232,13 +1233,13 @@ public class BlockCoverable extends BlockContainer {
             return super.getPlayerRelativeBlockHardness(entityPlayer, world, x, y, z);
         }
     }
-    
+
     @SideOnly(Side.CLIENT)
     @Override
     public int colorMultiplier(IBlockAccess iba, int x, int y, int z) {
         TEBase TE = getTileEntity(iba, x, y, z);
         if (TE != null) {
-            ItemStack is = BlockProperties.getCoverForRendering(TE, 6);
+            ItemStack is = BlockProperties.getCover(TE, 6);
             if (is != null) {
                 Block b = BlockProperties.toBlock(is);
                 if (b != null) {
