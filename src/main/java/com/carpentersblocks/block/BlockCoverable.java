@@ -1236,18 +1236,19 @@ public class BlockCoverable extends BlockContainer {
 
     @SideOnly(Side.CLIENT)
     @Override
-    public int colorMultiplier(IBlockAccess iba, int x, int y, int z) {
-        TEBase TE = getTileEntity(iba, x, y, z);
-        if (TE != null) {
-            ItemStack is = BlockProperties.getCover(TE, 6);
-            if (is != null) {
-                Block b = BlockProperties.toBlock(is);
-                if (b != null) {
-                    return b instanceof IWrappableBlock ? ((IWrappableBlock)b).getColorMultiplier(iba, x, y, z, b, is.getItemDamage()) : b.colorMultiplier(iba, x, y, z);
-                }
+    public int colorMultiplier(IBlockAccess blockAccess, int x, int y, int z)
+    {
+        TEBase TE = getTileEntity(blockAccess, x, y, z);
+        if (TE != null)
+        {
+            ItemStack itemStack = BlockProperties.getCover(TE, 6);
+            Block block = BlockProperties.toBlock(itemStack);
+            if (!(block instanceof BlockCoverable)) {
+                return block instanceof IWrappableBlock ? ((IWrappableBlock)block).getColorMultiplier(blockAccess, x, y, z, block, itemStack.getItemDamage()) : block.colorMultiplier(blockAccess, x, y, z);
             }
         }
-        return super.colorMultiplier(iba, x, y, z);
+
+        return super.colorMultiplier(blockAccess, x, y, z);
     }
 
     @Override
