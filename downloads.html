@@ -54,22 +54,22 @@ label-release: <span class="label label-danger">
 <div class="download-container">
    <div style="display: table-row;">
       <div class="download-container-version">
-         Carpenter's Blocks 3.3.4.1
+         Carpenter's Blocks 3.3.4.2
          {{ page.label-stable }}
          {{ page.label-begin-minecraft }}MC 1.7.10{{ page.label-end }}
          {{ page.label-begin-forge }}FORGE 10.13.0.1180{{ page.label-end }}
-         {{ page.label-begin-release }}RELEASED 12/30/2014{{ page.label-end }}
+         {{ page.label-begin-release }}RELEASED 01/02/2015{{ page.label-end }}
       </div>
    </div>
    <div style="display: table-row;">
       <div style="display: table-cell;">
-         <button onclick="window.open('http://adf.ly/vjFAu')" class="ad_button">Download</button>
-         <button onclick="window.open('https://dl.dropboxusercontent.com/s/3ndn2dukv90ya46/Carpenter%27s%20Blocks%20v3.3.4.1%20-%20MC%201.7.10.jar')" class="dropbox">&nbsp;</button>
+         <button onclick="window.open('http://adf.ly/vnPsA')" class="ad_button">Download</button>
+         <button onclick="window.open('https://dl.dropboxusercontent.com/s/wcblbuvj4zxmu94/Carpenter%27s%20Blocks%20v3.3.4.2%20-%20MC%201.7.10.jar')" class="dropbox">&nbsp;</button>
          <button class="expand">View Changelog</button>
          <div class="collapsed">
             <ul id="changelog">
-               <li>Fixed possible sound event crash (may fix Thaumcraft crash).</li>
-               <li>Fixed bed dye colors not applying correctly.</li>
+                <li>Added IWrappableBlock interface to API for better block control when being used as a cover. (Reika)</li>
+                <li>Fixed block step sounds not working correctly when other players walk on Carpenter's Blocks.</li>
             </ul>
          </div>
       </div>
@@ -259,6 +259,7 @@ label-release: <span class="label label-danger">
    <h3 style="margin-top: 0;"><span class="label label-primary">Hammer and Chisel Tool API</span></h3>
    <img src="../images/tools.png" style="float: left; padding: 0px 10px 5px 0;"></img>
    <p>If you would like to create your own hammer or chisel that work with this mod, you can use the interfaces provided by the API.</p>
+   <p>An IWrappableBlock interface is also provided to allow greater control over your blocks when used as covers.</p>
    <br style="clear: both;">
    <div style="display: table-row;">
       <div style="display: table-cell;">
