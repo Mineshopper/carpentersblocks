@@ -290,15 +290,13 @@ public class EventHandler {
                 if (TE != null && TE.hasAttribute(TE.ATTR_COVER[6]))
                 {
                     block = BlockProperties.toBlock(BlockProperties.getCoverSafe(TE, 6));
-
-                    /// TODO: blocks without covers aren't playing any sounds!
-
                     if (event.name.startsWith("step.")) {
                         event.result = new PositionedSoundRecord(new ResourceLocation(block.stepSound.getStepResourcePath()), block.stepSound.getVolume() * 0.15F, block.stepSound.getPitch(), x + 0.5F, y + 0.5F, z + 0.5F);
-                    } else { // event.name.startsWith("dig.") usually
-                        event.result = new PositionedSoundRecord(new ResourceLocation(block.stepSound.getBreakSound()), (block.stepSound.getVolume() + 1.0F) / 2.0F, block.stepSound.getPitch() * 0.8F, x + 0.5F, y + 0.5F, z + 0.5F);
+                        return;
                     }
                 }
+
+                event.result = new PositionedSoundRecord(new ResourceLocation(block.stepSound.getBreakSound()), (block.stepSound.getVolume() + 1.0F) / 2.0F, block.stepSound.getPitch() * 0.8F, x + 0.5F, y + 0.5F, z + 0.5F);
             }
         }
     }
