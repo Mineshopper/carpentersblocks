@@ -71,6 +71,6 @@ public interface IWrappableBlock {
     /**
      * Effectively overrides Block.canEntityDestroy
      */
-    public boolean canEntityDestroy(IBlockAccess iba, int x, int y, int z, Block b, int meta);
+    public boolean canEntityDestroy(IBlockAccess iba, int x, int y, int z, Entity e, Block b, int meta);
 
 }
