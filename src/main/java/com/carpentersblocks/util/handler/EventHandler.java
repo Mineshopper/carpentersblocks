@@ -287,16 +287,15 @@ public class EventHandler {
 
                 // Grab approximate origin, and gather accurate block type
                 TEBase TE = getApproximateSoundOrigin(world, x, y, z);
-                if (TE != null && TE.hasAttribute(TE.ATTR_COVER[6]))
-                {
+                if (TE != null && TE.hasAttribute(TE.ATTR_COVER[6])) {
                     block = BlockProperties.toBlock(BlockProperties.getCoverSafe(TE, 6));
-                    if (event.name.startsWith("step.")) {
-                        event.result = new PositionedSoundRecord(new ResourceLocation(block.stepSound.getStepResourcePath()), block.stepSound.getVolume() * 0.15F, block.stepSound.getPitch(), x + 0.5F, y + 0.5F, z + 0.5F);
-                        return;
-                    }
                 }
 
-                event.result = new PositionedSoundRecord(new ResourceLocation(block.stepSound.getBreakSound()), (block.stepSound.getVolume() + 1.0F) / 2.0F, block.stepSound.getPitch() * 0.8F, x + 0.5F, y + 0.5F, z + 0.5F);
+                if (event.name.startsWith("step.")) {
+                    event.result = new PositionedSoundRecord(new ResourceLocation(block.stepSound.getStepResourcePath()), block.stepSound.getVolume() * 0.15F, block.stepSound.getPitch(), x + 0.5F, y + 0.5F, z + 0.5F);
+                } else { // "dig." usually
+                    event.result = new PositionedSoundRecord(new ResourceLocation(block.stepSound.getBreakSound()), (block.stepSound.getVolume() + 1.0F) / 2.0F, block.stepSound.getPitch() * 0.8F, x + 0.5F, y + 0.5F, z + 0.5F);
+                }
             }
         }
     }
