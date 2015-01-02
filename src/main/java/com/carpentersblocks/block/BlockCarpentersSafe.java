@@ -55,7 +55,11 @@ public class BlockCarpentersSafe extends BlockCoverable {
     @Override
     protected boolean canPlayerActivate(TEBase TE, EntityPlayer entityPlayer)
     {
-        return PlayerPermissions.canPlayerEdit(TE, TE.xCoord, TE.yCoord, TE.zCoord, entityPlayer) || !Safe.isLocked(TE);
+        if (PlayerPermissions.hasElevatedPermission(TE, entityPlayer)) {
+            return true;
+        } else {
+            return !Safe.isLocked(TE); // Players with no permissions can only activate safe when unlocked
+        }
     }
 
     @Override

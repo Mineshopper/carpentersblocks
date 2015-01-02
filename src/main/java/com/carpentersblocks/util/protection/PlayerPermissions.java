@@ -10,13 +10,27 @@ public class PlayerPermissions {
      * Returns true if player is operator.
      * Can only return true if called server-side.
      */
-    private static boolean isOp(EntityPlayer entityPlayer)
+    public static boolean isOp(EntityPlayer entityPlayer)
     {
         if (!entityPlayer.worldObj.isRemote) {
             return ((EntityPlayerMP)entityPlayer).mcServer.getConfigurationManager().func_152596_g(entityPlayer.getGameProfile());
         } else {
             return false;
         }
+    }
+
+    /**
+     * If player is an op or the owner of the {@link IProtected} object,
+     * they will have the necessary permissions to activate and/or destroy
+     * a protected block.
+     *
+     * @param  object the {@link IProtected} block or entity
+     * @param  entityPlayer the {@link EntityPlayer}
+     * @return <code>true</code> if player has elevated permission
+     */
+    public static boolean hasElevatedPermission(IProtected object, EntityPlayer entityPlayer)
+    {
+        return isOp(entityPlayer) || ProtectedUtil.isOwner(object, entityPlayer);
     }
 
     /**
