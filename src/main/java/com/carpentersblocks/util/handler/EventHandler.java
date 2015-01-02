@@ -231,6 +231,44 @@ public class EventHandler {
         }
     }
 
+    /**
+     * {@link onPlaySoundEvent} is used differently for singleplayer
+     * and multiplayer sound events. This will try to locate the {@link TEBase}
+     * that best represents the origin of the sound.
+     * <p>
+     * In singleplayer, this is normally the origin since it's used mainly
+     * for placement and destruction sounds.
+     * <p>
+     * In multiplayer, foreign players produce this event for step sounds,
+     * requiring a y offset of -1 to approximate the origin.
+     *
+     * @param  world the {@link World}
+     * @param  x the x coordinate
+     * @param  y the y coordinate
+     * @param  z the z coordinate
+     * @return an approximate {@link TEBase} used for producing a sound
+     */
+    private TEBase getApproximateSoundOrigin(World world, int x, int y, int z)
+    {
+        // Try origin first
+        TileEntity TE = world.getTileEntity(x, y, z);
+        if (TE != null && TE instanceof TEBase)
+        {
+            return (TEBase) TE;
+        }
+        else
+        {
+            // Try y-offset -1
+            TileEntity TE_YN = world.getTileEntity(x, y - 1, z);
+            if (TE_YN != null && TE_YN instanceof TEBase)
+            {
+                return (TEBase) TE_YN;
+            }
+        }
+
+        return null;
+    }
+
     @SideOnly(Side.CLIENT)
     @SubscribeEvent
     public void onPlaySoundEvent(PlaySoundEvent17 event)
@@ -241,17 +279,26 @@ public class EventHandler {
             {
                 World world = FMLClientHandler.instance().getClient().theWorld;
                 int x = MathHelper.floor_double(event.sound.getXPosF());
-                int y = MathHelper.floor_double(event.sound.getYPosF()) - 1;
+                int y = MathHelper.floor_double(event.sound.getYPosF());
                 int z = MathHelper.floor_double(event.sound.getZPosF());
 
-                Block block = world.getBlock(x, y, z);
-                TileEntity TE = world.getTileEntity(x, y, z);
+                // We'll set a default block type to be safe
+                Block block = Blocks.planks;
 
-                if (TE != null && TE instanceof TEBase) {
-                    block = BlockProperties.toBlock(BlockProperties.getCoverSafe((TEBase) TE, 6));
+                // Grab approximate origin, and gather accurate block type
+                TEBase TE = getApproximateSoundOrigin(world, x, y, z);
+                if (TE != null && TE.hasAttribute(TE.ATTR_COVER[6]))
+                {
+                    block = BlockProperties.toBlock(BlockProperties.getCoverSafe(TE, 6));
+
+                    /// TODO: blocks without covers aren't playing any sounds!
+
+                    if (event.name.startsWith("step.")) {
+                        event.result = new PositionedSoundRecord(new ResourceLocation(block.stepSound.getStepResourcePath()), block.stepSound.getVolume() * 0.15F, block.stepSound.getPitch(), x + 0.5F, y + 0.5F, z + 0.5F);
+                    } else { // event.name.startsWith("dig.") usually
+                        event.result = new PositionedSoundRecord(new ResourceLocation(block.stepSound.getBreakSound()), (block.stepSound.getVolume() + 1.0F) / 2.0F, block.stepSound.getPitch() * 0.8F, x + 0.5F, y + 0.5F, z + 0.5F);
+                    }
                 }
-
-                event.result = new PositionedSoundRecord(new ResourceLocation(block.stepSound.getStepResourcePath()), block.stepSound.getVolume() * 0.15F, block.stepSound.getPitch(), x + 0.5F, y + 0.5F, z + 0.5F);
             }
         }
     }
