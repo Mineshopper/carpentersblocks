@@ -3,8 +3,10 @@ package com.carpentersblocks.tileentity;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Random;
 import java.util.UUID;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockDirectional;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -14,6 +16,7 @@ import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import com.carpentersblocks.block.BlockCoverable;
 import com.carpentersblocks.util.BlockProperties;
 import com.carpentersblocks.util.handler.DesignHandler;
 import com.carpentersblocks.util.protection.IProtected;
@@ -215,6 +218,47 @@ public class TEBase extends TileEntity implements IProtected {
         return cbAttrMap.get(attrId);
     }
 
+    public ItemStack getAttributeForDrop(byte attrId)
+    {
+        ItemStack itemStack = cbAttrMap.get(attrId);
+
+        // If cover, check for rotation and restore default metadata
+        if (attrId <= ATTR_COVER[6]) {
+            setDefaultMetadata(itemStack);
+        }
+
+        return itemStack;
+    }
+
+    /**
+     * Will restore cover to default state before returning {@link ItemStack}.
+     * <p>
+     * Corrects log rotation, among other things.
+     *
+     * @param  rand a {@link Random} reference
+     * @param  itemStack the {@link ItemStack}
+     * @return the cover {@link ItemStack} in it's default state
+     */
+    private ItemStack setDefaultMetadata(ItemStack itemStack)
+    {
+        Block block = BlockProperties.toBlock(itemStack);
+
+        // Correct rotation metadata before dropping block
+        if (BlockProperties.blockRotates(itemStack) || block instanceof BlockDirectional)
+        {
+            int dmgDrop = block.damageDropped(itemStack.getItemDamage());
+            Item itemDrop = block.getItemDropped(itemStack.getItemDamage(), getWorldObj().rand, /* Fortune */ 0);
+
+            /* Check if block drops itself, and, if so, correct the damage value to the block's default. */
+
+            if (itemDrop != null && itemDrop.equals(itemStack.getItem()) && dmgDrop != itemStack.getItemDamage()) {
+                itemStack.setItemDamage(dmgDrop);
+            }
+        }
+
+        return itemStack;
+    }
+
     public void addAttribute(byte attrId, ItemStack itemStack)
     {
         if (!hasAttribute(attrId) && itemStack != null) {
@@ -257,46 +301,38 @@ public class TEBase extends TileEntity implements IProtected {
     }
 
     /**
-     * If tile entity contains attribute, will drop attribute
-     * {@link ItemStack} and remove it from the map.
+     * Will remove the attribute from map once block drop is complete.
+     * <p>
+     * Should only be called externally by {@link BlockCoverable#onBlockEventReceived}.
      *
-     * @param  attrId
-     * @return <code>true</code> if attribute was removed
+     * @param attrId
      */
-    public boolean removeAttribute(byte attrId)
+    public void onAttrDropped(byte attrId)
     {
-        if (hasAttribute(attrId)) {
-            dropAttribute(attrId);
-            cbAttrMap.remove(attrId);
-            getWorldObj().markBlockForUpdate(xCoord, yCoord, zCoord);
-            markDirty();
-            return true;
-        }
+        cbAttrMap.remove(attrId);
+        getWorldObj().markBlockForUpdate(xCoord, yCoord, zCoord);
+        markDirty();
+    }
 
-        return false;
+    /**
+     * Initiates block drop event, which will remove attribute from tile entity.
+     *
+     * @param  attrId the attribute ID
+     */
+    public void createBlockDropEvent(byte attrId)
+    {
+        getWorldObj().addBlockEvent(xCoord, yCoord, zCoord, getBlockType(), BlockCoverable.EVENT_ID_DROP_ATTR, attrId);
     }
 
     public void removeAttributes(int side)
     {
-        removeAttribute(ATTR_COVER[side]);
-        removeAttribute(ATTR_DYE[side]);
-        removeAttribute(ATTR_OVERLAY[side]);
+        createBlockDropEvent(ATTR_COVER[side]);
+        createBlockDropEvent(ATTR_DYE[side]);
+        createBlockDropEvent(ATTR_OVERLAY[side]);
 
         if (side == 6) {
-            removeAttribute(ATTR_ILLUMINATOR);
+            createBlockDropEvent(ATTR_ILLUMINATOR);
         }
-    }
-
-    /**
-     * Creates a block event that drops the provided ItemStack.
-     * Used outside block methods since method required in Block.class is protected.
-     *
-     * @param itemStack
-     */
-    public void dropAttribute(byte attrId)
-    {
-        ItemStack itemStack = getAttribute(attrId);
-        getWorldObj().addBlockEvent(xCoord, yCoord, zCoord, getBlockType(), Item.getIdFromItem(itemStack.getItem()), itemStack.getItemDamage());
     }
 
     /**

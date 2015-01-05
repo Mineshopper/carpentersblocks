@@ -1,6 +1,5 @@
 package com.carpentersblocks.util;
 
-import java.util.Random;
 import net.minecraft.block.Block;
 import net.minecraft.block.Block.SoundType;
 import net.minecraft.block.BlockBreakable;
@@ -147,34 +146,6 @@ public class BlockProperties {
         Block block = toBlock(itemStack);
 
         return block.hasTileEntity(itemStack.getItemDamage()) && !(block instanceof BlockCoverable) ? new ItemStack(Blocks.planks) : itemStack;
-    }
-
-    /**
-     * Will restore cover {@link ItemStack} to default state before returning result.
-     * <p>
-     * Corrects log rotation, among other things.
-     *
-     * @param  rand a {@link Random} reference
-     * @param  itemStack the {@link ItemStack}
-     * @return the cover {@link ItemStack} in it's default state
-     */
-    public static ItemStack getCoverForDrop(TEBase TE, int side)
-    {
-        ItemStack itemStack = TE.getAttribute(TE.ATTR_COVER[side]);
-
-        if (itemStack != null) {
-            Block block = toBlock(itemStack);
-            int dmgDrop = block.damageDropped(itemStack.getItemDamage());
-            Item itemDrop = block.getItemDropped(itemStack.getItemDamage(), TE.getWorldObj().rand, /* Fortune */ 0);
-
-            /* Check if block drops itself, and, if so, correct the damage value to the block's default. */
-
-            if (itemDrop != null && itemDrop.equals(itemStack.getItem()) && dmgDrop != itemStack.getItemDamage()) {
-                itemStack.setItemDamage(dmgDrop);
-            }
-        }
-
-        return itemStack;
     }
 
     /**

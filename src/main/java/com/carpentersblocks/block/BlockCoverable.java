@@ -50,6 +50,9 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockCoverable extends BlockContainer {
 
+    /** Block drop event for dropping attribute. */
+    public static int EVENT_ID_DROP_ATTR = 0;
+
     /** Used when grabbing light value of covers. */
     protected boolean grabLightValue = false;
 
@@ -215,15 +218,21 @@ public class BlockCoverable extends BlockContainer {
      * @return true if event was handled
      */
     @Override
-    public boolean onBlockEventReceived(World world, int x, int y, int z, int itemId/*eventId*/, int metadata/*param*/)
+    public boolean onBlockEventReceived(World world, int x, int y, int z, int eventId, int param /*attrId*/)
     {
-        ItemStack itemStack = new ItemStack(Item.getItemById(itemId), 1, metadata);
-
-        if (itemStack != null) {
-            dropBlockAsItem(world, x, y, z, itemStack);
+        if (eventId == EVENT_ID_DROP_ATTR)
+        {
+            TEBase TE = getSimpleTileEntity(world, x, y, z);
+            if (TE != null && TE.hasAttribute((byte) param))
+            {
+                ItemStack itemStack = TE.getAttributeForDrop((byte) param);
+                dropBlockAsItem(world, x, y, z, itemStack);
+                TE.onAttrDropped((byte) param);
+                return true;
+            }
         }
 
-        return true;
+        return super.onBlockEventReceived(world, x, y, z, eventId, param);
     }
 
     /**
@@ -375,13 +384,13 @@ public class BlockCoverable extends BlockContainer {
     private void popAttribute(TEBase TE, int side)
     {
         if (TE.hasAttribute(TE.ATTR_ILLUMINATOR)) {
-            TE.removeAttribute(TE.ATTR_ILLUMINATOR);
+            TE.createBlockDropEvent(TE.ATTR_ILLUMINATOR);
         } else if (TE.hasAttribute(TE.ATTR_OVERLAY[side])) {
-            TE.removeAttribute(TE.ATTR_OVERLAY[side]);
+            TE.createBlockDropEvent(TE.ATTR_OVERLAY[side]);
         } else if (TE.hasAttribute(TE.ATTR_DYE[side])) {
-            TE.removeAttribute(TE.ATTR_DYE[side]);
+            TE.createBlockDropEvent(TE.ATTR_DYE[side]);
         } else if (TE.hasAttribute(TE.ATTR_COVER[side])) {
-            TE.removeAttribute(TE.ATTR_COVER[side]);
+            TE.createBlockDropEvent(TE.ATTR_COVER[side]);
             TE.removeChiselDesign(side);
         }
     }
@@ -1022,13 +1031,12 @@ public class BlockCoverable extends BlockContainer {
      */
     public void breakBlock(World world, int x, int y, int z, Block block, int metadata)
     {
-        /* Drop block instance. */
-
+        // Drop attributes
+        enableDrops = true;
         for (ItemStack itemStack : getDrops(world, x, y, z, METADATA_DROP_ATTR_ONLY, 0)) {
-            enableDrops = true;
             dropBlockAsItem(world, x, y, z, itemStack);
-            enableDrops = false;
         }
+        enableDrops = false;
 
         super.breakBlock(world, x, y, z, block, metadata);
     }
@@ -1057,17 +1065,17 @@ public class BlockCoverable extends BlockContainer {
         if (TE != null) {
             for (int idx = 0; idx < 7; ++idx) {
                 if (TE.hasAttribute(TE.ATTR_COVER[idx])) {
-                    ret.add(BlockProperties.getCoverForDrop(TE, idx));
+                    ret.add(TE.getAttributeForDrop(TE.ATTR_COVER[idx]));
                 }
                 if (TE.hasAttribute(TE.ATTR_OVERLAY[idx])) {
-                    ret.add(TE.getAttribute(TE.ATTR_OVERLAY[idx]));
+                    ret.add(TE.getAttributeForDrop(TE.ATTR_OVERLAY[idx]));
                 }
                 if (TE.hasAttribute(TE.ATTR_DYE[idx])) {
-                    ret.add(TE.getAttribute(TE.ATTR_DYE[idx]));
+                    ret.add(TE.getAttributeForDrop(TE.ATTR_DYE[idx]));
                 }
             }
             if (TE.hasAttribute(TE.ATTR_ILLUMINATOR)) {
-                ret.add(TE.getAttribute(TE.ATTR_ILLUMINATOR));
+                ret.add(TE.getAttributeForDrop(TE.ATTR_ILLUMINATOR));
             }
         }
 

@@ -74,7 +74,7 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
     protected boolean onHammerLeftClick(TEBase TE, EntityPlayer entityPlayer)
     {
         TE.setPrevDesign();
-        TE.removeAttribute(TE.ATTR_COVER[6]);
+        TE.createBlockDropEvent(TE.ATTR_COVER[6]);
         return true;
     }
 
@@ -89,7 +89,7 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
         } else {
             TE.setNextDesign();
         }
-        TE.removeAttribute(TE.ATTR_COVER[6]);
+        TE.createBlockDropEvent(TE.ATTR_COVER[6]);
         return true;
     }
 
@@ -116,13 +116,13 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
                 if (TE.hasAttribute(TE.ATTR_FERTILIZER)) {
                     actionResult.setSoundSource(new ItemStack(Blocks.sand));
                     actionResult.setAltered();
-                    TE.removeAttribute(TE.ATTR_FERTILIZER);
+                    TE.createBlockDropEvent(TE.ATTR_FERTILIZER);
                 }
 
                 if (!actionResult.altered && TE.hasAttribute(TE.ATTR_PLANT)) {
                     actionResult.setSoundSource(TE.getAttribute(TE.ATTR_PLANT));
                     actionResult.setAltered();
-                    TE.removeAttribute(TE.ATTR_PLANT);
+                    TE.createBlockDropEvent(TE.ATTR_PLANT);
                 }
 
             } else if (TE.hasAttribute(TE.ATTR_SOIL)) {
@@ -130,7 +130,7 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
                 if (EventHandler.eventFace == 1 && EventHandler.hitX > 0.375F && EventHandler.hitX < 0.625F && EventHandler.hitZ > 0.375F && EventHandler.hitZ < 0.625F) {
                     actionResult.setSoundSource(TE.getAttribute(TE.ATTR_SOIL));
                     actionResult.setAltered();
-                    TE.removeAttribute(TE.ATTR_SOIL);
+                    TE.createBlockDropEvent(TE.ATTR_SOIL);
                 }
 
             }
@@ -242,7 +242,7 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
 
                     if (profile.equals(Profile.DOUBLEPLANT) || profile.equals(Profile.THIN_DOUBLEPLANT)) {
                         if (world.getBlock(x, y + 1, z).isSideSolid(world, x, y + 1, z, ForgeDirection.DOWN)) {
-                            TE.removeAttribute(TE.ATTR_PLANT);
+                            TE.createBlockDropEvent(TE.ATTR_PLANT);
                         }
                     }
 
