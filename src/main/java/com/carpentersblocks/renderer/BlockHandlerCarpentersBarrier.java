@@ -63,7 +63,7 @@ public class BlockHandlerCarpentersBarrier extends BlockHandlerBase {
     {
         BlockCarpentersBarrier tempBlock = (BlockCarpentersBarrier) srcBlock;
 
-        connect = new boolean[] {
+        boolean[] connect = {
                 tempBlock.canConnectBarrierTo(renderBlocks.blockAccess, x, y - 1, z, ForgeDirection.UP),
                 tempBlock.canConnectBarrierTo(renderBlocks.blockAccess, x, y + 1, z, ForgeDirection.DOWN),
                 tempBlock.canConnectBarrierTo(renderBlocks.blockAccess, x, y, z - 1, ForgeDirection.SOUTH),
@@ -75,11 +75,27 @@ public class BlockHandlerCarpentersBarrier extends BlockHandlerBase {
                 tempBlock.canConnectBarrierTo(renderBlocks.blockAccess, x - 1, y + 1, z, ForgeDirection.EAST),
                 tempBlock.canConnectBarrierTo(renderBlocks.blockAccess, x + 1, y + 1, z, ForgeDirection.WEST),
         };
+        this.connect = connect;
 
-        barrier = new boolean[] {
+        // Drop connections to solid faces if a forced post is used
+        if (Barrier.getPost(TE) == Barrier.HAS_POST)
+        {
+            for (int side = 2; side < 6; ++side)
+            {
+                ForgeDirection dir = ForgeDirection.getOrientation(side);
+                Block block = TE.getWorldObj().getBlock(x - dir.offsetX, y, z - dir.offsetZ);
+                if (block.isSideSolid(TE.getWorldObj(), x - dir.offsetX, y, z - dir.offsetZ, dir.getOpposite()))
+                {
+                    connect[dir.getOpposite().ordinal()] = false;
+                }
+            }
+        }
+
+        boolean[] barrier = {
                 renderBlocks.blockAccess.getBlock(x, y - 1, z).equals(srcBlock),
                 renderBlocks.blockAccess.getBlock(x, y + 1, z).equals(srcBlock)
         };
+        this.barrier = barrier;
     }
 
     /**
