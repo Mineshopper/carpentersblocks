@@ -56,67 +56,38 @@ public abstract class BlockHandlerSloped extends BlockHandlerBase {
      */
     private void populateLighting(ItemStack itemStack, int side)
     {
-        switch (side) {
+        switch (side)
+        {
             case DOWN:
-
                 lightingHelper.setupLightingYNeg(itemStack, TE.xCoord, TE.yCoord, TE.zCoord);
-
-                if (renderBlocks.enableAO) {
-                    ao[DOWN] = new float[] { lightingHelper.ao[TOP_LEFT], lightingHelper.ao[BOTTOM_LEFT], lightingHelper.ao[BOTTOM_RIGHT], lightingHelper.ao[TOP_RIGHT] };
-                    brightness[DOWN] = new int[] { renderBlocks.brightnessTopLeft, renderBlocks.brightnessBottomLeft, renderBlocks.brightnessBottomRight, renderBlocks.brightnessTopRight };
-                }
-
                 break;
             case UP:
-
                 lightingHelper.setupLightingYPos(itemStack, TE.xCoord, TE.yCoord, TE.zCoord);
-
-                if (renderBlocks.enableAO) {
-                    ao[UP] = new float[] { lightingHelper.ao[TOP_LEFT], lightingHelper.ao[BOTTOM_LEFT], lightingHelper.ao[BOTTOM_RIGHT], lightingHelper.ao[TOP_RIGHT] };
-                    brightness[UP] = new int[] { renderBlocks.brightnessTopLeft, renderBlocks.brightnessBottomLeft, renderBlocks.brightnessBottomRight, renderBlocks.brightnessTopRight };
-                }
-
                 break;
             case NORTH:
-
                 lightingHelper.setupLightingZNeg(itemStack, TE.xCoord, TE.yCoord, TE.zCoord);
-
-                if (renderBlocks.enableAO) {
-                    ao[NORTH] = new float[] { lightingHelper.ao[TOP_LEFT], lightingHelper.ao[BOTTOM_LEFT], lightingHelper.ao[BOTTOM_RIGHT], lightingHelper.ao[TOP_RIGHT] };
-                    brightness[NORTH] = new int[] { renderBlocks.brightnessTopLeft, renderBlocks.brightnessBottomLeft, renderBlocks.brightnessBottomRight, renderBlocks.brightnessTopRight };
-                }
-
                 break;
             case SOUTH:
-
                 lightingHelper.setupLightingZPos(itemStack, TE.xCoord, TE.yCoord, TE.zCoord);
-
-                if (renderBlocks.enableAO) {
-                    ao[SOUTH] = new float[] { lightingHelper.ao[TOP_LEFT], lightingHelper.ao[BOTTOM_LEFT], lightingHelper.ao[BOTTOM_RIGHT], lightingHelper.ao[TOP_RIGHT] };
-                    brightness[SOUTH] = new int[] { renderBlocks.brightnessTopLeft, renderBlocks.brightnessBottomLeft, renderBlocks.brightnessBottomRight, renderBlocks.brightnessTopRight };
-                }
-
                 break;
             case WEST:
-
                 lightingHelper.setupLightingXNeg(itemStack, TE.xCoord, TE.yCoord, TE.zCoord);
-
-                if (renderBlocks.enableAO) {
-                    ao[WEST] = new float[] { lightingHelper.ao[TOP_LEFT], lightingHelper.ao[BOTTOM_LEFT], lightingHelper.ao[BOTTOM_RIGHT], lightingHelper.ao[TOP_RIGHT] };
-                    brightness[WEST] = new int[] { renderBlocks.brightnessTopLeft, renderBlocks.brightnessBottomLeft, renderBlocks.brightnessBottomRight, renderBlocks.brightnessTopRight };
-                }
-
                 break;
             case EAST:
-
                 lightingHelper.setupLightingXPos(itemStack, TE.xCoord, TE.yCoord, TE.zCoord);
-
-                if (renderBlocks.enableAO) {
-                    ao[EAST] = new float[] { lightingHelper.ao[TOP_LEFT], lightingHelper.ao[BOTTOM_LEFT], lightingHelper.ao[BOTTOM_RIGHT], lightingHelper.ao[TOP_RIGHT] };
-                    brightness[EAST] = new int[] { renderBlocks.brightnessTopLeft, renderBlocks.brightnessBottomLeft, renderBlocks.brightnessBottomRight, renderBlocks.brightnessTopRight };
-                }
-
                 break;
+        }
+
+        if (renderBlocks.enableAO)
+        {
+            ao[side][0] = lightingHelper.ao[TOP_LEFT];
+            ao[side][1] = lightingHelper.ao[BOTTOM_LEFT];
+            ao[side][2] = lightingHelper.ao[BOTTOM_RIGHT];
+            ao[side][3] = lightingHelper.ao[TOP_RIGHT];
+            brightness[side][0] = renderBlocks.brightnessTopLeft;
+            brightness[side][1] = renderBlocks.brightnessBottomLeft;
+            brightness[side][2] = renderBlocks.brightnessBottomRight;
+            brightness[side][3] = renderBlocks.brightnessTopRight;
         }
     }
 
@@ -127,85 +98,56 @@ public abstract class BlockHandlerSloped extends BlockHandlerBase {
     {
         double renderTemp;
 
-        switch (side) {
+        switch (side)
+        {
             case DOWN:
-
                 renderTemp = renderBlocks.renderMinY;
                 renderBlocks.renderMinY = 0.0D;
                 lightingHelper.setupLightingYNeg(itemStack, TE.xCoord, TE.yCoord + 1, TE.zCoord);
                 renderBlocks.renderMinY = renderTemp;
-
-                if (renderBlocks.enableAO) {
-                    offset_ao[DOWN] = new float[] { lightingHelper.ao[TOP_LEFT], lightingHelper.ao[BOTTOM_LEFT], lightingHelper.ao[BOTTOM_RIGHT], lightingHelper.ao[TOP_RIGHT] };
-                    offset_brightness[DOWN] = new int[] { renderBlocks.brightnessTopLeft, renderBlocks.brightnessBottomLeft, renderBlocks.brightnessBottomRight, renderBlocks.brightnessTopRight };
-                }
-
                 break;
             case UP:
-
                 renderTemp = renderBlocks.renderMaxY;
                 renderBlocks.renderMaxY = 1.0D;
                 lightingHelper.setupLightingYPos(itemStack, TE.xCoord, TE.yCoord - 1, TE.zCoord);
                 renderBlocks.renderMaxY = renderTemp;
-
-                if (renderBlocks.enableAO) {
-                    offset_ao[UP] = new float[] { lightingHelper.ao[TOP_LEFT], lightingHelper.ao[BOTTOM_LEFT], lightingHelper.ao[BOTTOM_RIGHT], lightingHelper.ao[TOP_RIGHT] };
-                    offset_brightness[UP] = new int[] { renderBlocks.brightnessTopLeft, renderBlocks.brightnessBottomLeft, renderBlocks.brightnessBottomRight, renderBlocks.brightnessTopRight };
-                }
-
                 break;
             case NORTH:
-
                 renderTemp = renderBlocks.renderMinZ;
                 renderBlocks.renderMinZ = 0.0D;
                 lightingHelper.setupLightingZNeg(itemStack, TE.xCoord, TE.yCoord, TE.zCoord + 1);
                 renderBlocks.renderMinZ = renderTemp;
-
-                if (renderBlocks.enableAO) {
-                    offset_ao[NORTH] = new float[] { lightingHelper.ao[TOP_LEFT], lightingHelper.ao[BOTTOM_LEFT], lightingHelper.ao[BOTTOM_RIGHT], lightingHelper.ao[TOP_RIGHT] };
-                    offset_brightness[NORTH] = new int[] { renderBlocks.brightnessTopLeft, renderBlocks.brightnessBottomLeft, renderBlocks.brightnessBottomRight, renderBlocks.brightnessTopRight };
-                }
-
                 break;
             case SOUTH:
-
                 renderTemp = renderBlocks.renderMaxZ;
                 renderBlocks.renderMaxZ = 1.0D;
                 lightingHelper.setupLightingZPos(itemStack, TE.xCoord, TE.yCoord, TE.zCoord - 1);
                 renderBlocks.renderMaxZ = renderTemp;
-
-                if (renderBlocks.enableAO) {
-                    offset_ao[SOUTH] = new float[] { lightingHelper.ao[TOP_LEFT], lightingHelper.ao[BOTTOM_LEFT], lightingHelper.ao[BOTTOM_RIGHT], lightingHelper.ao[TOP_RIGHT] };
-                    offset_brightness[SOUTH] = new int[] { renderBlocks.brightnessTopLeft, renderBlocks.brightnessBottomLeft, renderBlocks.brightnessBottomRight, renderBlocks.brightnessTopRight };
-                }
-
                 break;
             case WEST:
-
                 renderTemp = renderBlocks.renderMinX;
                 renderBlocks.renderMinX = 0.0D;
                 lightingHelper.setupLightingXNeg(itemStack, TE.xCoord + 1, TE.yCoord, TE.zCoord);
                 renderBlocks.renderMinX = renderTemp;
-
-                if (renderBlocks.enableAO) {
-                    offset_ao[WEST] = new float[] { lightingHelper.ao[TOP_LEFT], lightingHelper.ao[BOTTOM_LEFT], lightingHelper.ao[BOTTOM_RIGHT], lightingHelper.ao[TOP_RIGHT] };
-                    offset_brightness[WEST] = new int[] { renderBlocks.brightnessTopLeft, renderBlocks.brightnessBottomLeft, renderBlocks.brightnessBottomRight, renderBlocks.brightnessTopRight };
-                }
-
                 break;
             case EAST:
-
                 renderTemp = renderBlocks.renderMaxX;
                 renderBlocks.renderMaxX = 1.0D;
                 lightingHelper.setupLightingXPos(itemStack, TE.xCoord - 1, TE.yCoord, TE.zCoord);
                 renderBlocks.renderMaxX = renderTemp;
-
-                if (renderBlocks.enableAO) {
-                    offset_ao[EAST] = new float[] { lightingHelper.ao[TOP_LEFT], lightingHelper.ao[BOTTOM_LEFT], lightingHelper.ao[BOTTOM_RIGHT], lightingHelper.ao[TOP_RIGHT] };
-                    offset_brightness[EAST] = new int[] { renderBlocks.brightnessTopLeft, renderBlocks.brightnessBottomLeft, renderBlocks.brightnessBottomRight, renderBlocks.brightnessTopRight };
-                }
-
                 break;
+        }
+
+        if (renderBlocks.enableAO)
+        {
+            offset_ao[side][0] = lightingHelper.ao[TOP_LEFT];
+            offset_ao[side][1] = lightingHelper.ao[BOTTOM_LEFT];
+            offset_ao[side][2] = lightingHelper.ao[BOTTOM_RIGHT];
+            offset_ao[side][3] = lightingHelper.ao[TOP_RIGHT];
+            offset_brightness[side][0] = renderBlocks.brightnessTopLeft;
+            offset_brightness[side][1] = renderBlocks.brightnessBottomLeft;
+            offset_brightness[side][2] = renderBlocks.brightnessBottomRight;
+            offset_brightness[side][3] = renderBlocks.brightnessTopRight;
         }
     }
 
