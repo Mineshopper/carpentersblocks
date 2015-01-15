@@ -193,6 +193,16 @@ public class TEBase extends TileEntity implements IProtected {
         super.markDirty();
     }
 
+    @Override
+    /**
+     * Called when the chunk this TileEntity is on is Unloaded.
+     */
+    public void onChunkUnload()
+    {
+        int hash = BlockCoverable.hashCoords(xCoord, yCoord, zCoord);
+        BlockCoverable.cache.remove(hash);
+    }
+
     /**
      * Sets owner of tile entity.
      */
