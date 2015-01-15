@@ -327,56 +327,37 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
         return super.getCollisionBoundingBoxFromPool(world, x, y, z);
     }
 
-    @Override
     /**
-     * Returns light value based on plant and soil in pot.
+     * Gets the current light value based on covers and illumination.
+     *
+     * @param  blockAccess the {@link IBlockAccess} object
+     * @param  x the x coordinate
+     * @param  y the y coordinate
+     * @param  z the z coordinate
+     * @return a light value from 0 to 15
      */
-    public int getLightValue(IBlockAccess blockAccess, int x, int y, int z)
+    @Override
+    protected int getCurrentLightValue(IBlockAccess blockAccess, int x, int y, int z)
     {
-        int lightValue = super.getLightValue(blockAccess, x, y, z);
-
-        /*
-         * Block.class will call this method by default if the passed
-         * in coordinates don't match the expected block type.  Because
-         * we're passing in covers, it may recurse.
-         *
-         * Return 0 when this happens.
-         */
-
-        if (grabLightValue) {
-            return 0;
-        }
-        grabLightValue = true;
-
+        int lightValue = super.getCurrentLightValue(blockAccess, x, y, z);
         TEBase TE = getTileEntity(blockAccess, x, y, z);
 
-        if (TE != null && TE instanceof TECarpentersFlowerPot) {
-
-            if (TE.hasAttribute(TE.ATTR_SOIL)) {
-
+        if (TE != null)
+        {
+            if (TE.hasAttribute(TE.ATTR_SOIL))
+            {
                 ItemStack itemStack = TE.getAttribute(TE.ATTR_SOIL);
                 int temp = getLightValue(TE, FlowerPotProperties.toBlock(itemStack), itemStack.getItemDamage());
-
-                if (temp > lightValue) {
-                    lightValue = temp;
-                }
-
+                lightValue = Math.max(temp, lightValue);
             }
-
-            if (TE.hasAttribute(TE.ATTR_PLANT)) {
-
+            if (TE.hasAttribute(TE.ATTR_PLANT))
+            {
                 ItemStack itemStack = TE.getAttribute(TE.ATTR_PLANT);
                 int temp = getLightValue(TE, FlowerPotProperties.toBlock(itemStack), itemStack.getItemDamage());
-
-                if (temp > lightValue) {
-                    lightValue = temp;
-                }
-
+                lightValue = Math.max(temp, lightValue);
             }
-
         }
 
-        grabLightValue = false;
         return lightValue;
     }
 

@@ -113,34 +113,35 @@ public class BlockCarpentersTorch extends BlockSided {
         }
     }
 
-    @Override
     /**
-     * Returns light value based on cover or side covers.
+     * Gets the current light value based on covers and illumination.
+     *
+     * @param  blockAccess the {@link IBlockAccess} object
+     * @param  x the x coordinate
+     * @param  y the y coordinate
+     * @param  z the z coordinate
+     * @return a light value from 0 to 15
      */
-    public int getLightValue(IBlockAccess blockAccess, int x, int y, int z)
+    @Override
+    protected int getCurrentLightValue(IBlockAccess blockAccess, int x, int y, int z)
     {
+        int lightValue = super.getCurrentLightValue(blockAccess, x, y, z);
         TEBase TE = getTileEntity(blockAccess, x, y, z);
 
-        if (TE != null) {
-
-            int coverLight = super.getLightValue(blockAccess, x, y, z);
-            int torchLight = 0;
-
+        if (TE != null)
+        {
             switch (data.getState(TE)) {
                 case LIT:
-                    torchLight = 15;
+                    lightValue = 15;
                     break;
                 case SMOLDERING:
-                    torchLight = 10;
+                    lightValue = Math.max(10, lightValue);
                     break;
                 default: {}
             }
-
-            return coverLight > torchLight ? coverLight : torchLight;
-
         }
 
-        return super.getLightValue();
+        return lightValue;
     }
 
     /**

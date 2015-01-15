@@ -1,7 +1,9 @@
 package com.carpentersblocks.block;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
@@ -53,14 +55,14 @@ public class BlockCoverable extends BlockContainer {
     /** Block drop event for dropping attribute. */
     public static int EVENT_ID_DROP_ATTR = 0;
 
-    /** Used when grabbing light value of covers. */
-    protected boolean grabLightValue = false;
-
     /** Indicates during getDrops that block instance should not be dropped. */
     protected final int METADATA_DROP_ATTR_ONLY = 16;
 
     /** Whether breakBlock() should drop block attributes. */
     private boolean enableDrops = false;
+
+    /** Caches light values. */
+    public static Map<Integer,Integer> cache = new HashMap<Integer,Integer>();
 
     /**
      * Stores actions taken on a block in order to properly play sounds,
@@ -164,7 +166,8 @@ public class BlockCoverable extends BlockContainer {
         return block instanceof BlockCoverable ? getIcon() : getWrappedIcon(block, blockAccess, x, y, z, side, itemStack.getItemDamage());
     }
 
-    private static IIcon getWrappedIcon(Block b, IBlockAccess iba, int x, int y, int z, int side, int meta) {
+    private static IIcon getWrappedIcon(Block b, IBlockAccess iba, int x, int y, int z, int side, int meta)
+    {
         return b instanceof IWrappableBlock ? ((IWrappableBlock)b).getIcon(iba, x, y, z, side, b, meta) : b.getIcon(side, meta);
     }
 
@@ -788,12 +791,82 @@ public class BlockCoverable extends BlockContainer {
     }
 
     /**
+     * Hashes block coordinates for use in caching values.
+     *
+     * @param x the x coordinate
+     * @param y the y coordinate
+     * @param z the z coordinate
+     * @return
+     */
+    public static int hashCoords(int x, int y, int z)
+    {
+        int hash = 3;
+        hash = 97 * hash + x;
+        hash = 97 * hash + y;
+        hash = 97 * hash + z;
+        return hash;
+    }
+
+    /**
+     * Gets the current light value based on covers and illumination.
+     *
+     * @param  blockAccess the {@link IBlockAccess} object
+     * @param  x the x coordinate
+     * @param  y the y coordinate
+     * @param  z the z coordinate
+     * @return a light value from 0 to 15
+     */
+    protected int getCurrentLightValue(IBlockAccess blockAccess, int x, int y, int z)
+    {
+        int lightValue = 0;
+        TEBase TE = getTileEntity(blockAccess, x, y, z);
+
+        if (TE != null)
+        {
+            if (FeatureRegistry.enableIllumination && TE.hasAttribute(TE.ATTR_ILLUMINATOR)) {
+                lightValue = 15;
+            } else {
+                for (int side = 0; side < 7; ++side) {
+                    if (TE.hasAttribute(TE.ATTR_COVER[side])) {
+                        ItemStack itemStack = BlockProperties.getCover(TE, side);
+                        int tempLight = getLightValue(TE, BlockProperties.toBlock(itemStack), itemStack.getItemDamage());
+                        if (tempLight > lightValue) {
+                            lightValue = tempLight;
+                        }
+                    }
+                }
+            }
+        }
+
+        return lightValue;
+    }
+
+    /**
+     * Updates cached light value for block.
+     * <b>
+     * Several blocks may call for light values at once, and
+     * grabbing the tile entity each time eats into performance.
+     *
+     * @param blockAccess the {@link IBlockAccess} object
+     * @param x
+     * @param y
+     * @param z
+     */
+    public void updateLightValue(IBlockAccess blockAccess, int x, int y, int z)
+    {
+        int lightValue = getCurrentLightValue(blockAccess, x, y, z);
+        cache.put(hashCoords(x, y, z), lightValue);
+    }
+
+    /**
      * Returns light value for block using two methods.  First, it
      * checks if the static light value is not zero.  If zero, it checks
      * using the block metadata.
      *
-     * @param itemStack
-     * @return
+     * @param  TE the {@link TEBase}
+     * @param  block the {@link Block}
+     * @param  metadata the block metadata
+     * @return a light value from 0 to 15
      */
     protected int getLightValue(TEBase TE, Block block, int metadata)
     {
@@ -816,43 +889,14 @@ public class BlockCoverable extends BlockContainer {
     /**
      * Returns light value based on cover or side covers.
      */
-    public int getLightValue(IBlockAccess blockAccess, int x, int y, int z)
+    public final int getLightValue(IBlockAccess blockAccess, int x, int y, int z)
     {
-        int lightValue = 0;
-
-        /*
-         * Block.class will call this method by default if the passed
-         * in coordinates don't match the expected block type.  Because
-         * we're passing in covers, it may recurse.
-         *
-         * Return 0 when this happens.
-         */
-
-        if (grabLightValue) {
-            return 0;
-        }
-        grabLightValue = true;
-
-        TEBase TE = getTileEntity(blockAccess, x, y, z);
-
-        if (TE != null) {
-            if (FeatureRegistry.enableIllumination && TE.hasAttribute(TE.ATTR_ILLUMINATOR)) {
-                lightValue = 15;
-            } else {
-                for (int side = 0; side < 7; ++side) {
-                    if (TE.hasAttribute(TE.ATTR_COVER[side])) {
-                        ItemStack itemStack = BlockProperties.getCover(TE, side);
-                        int tempLight = getLightValue(TE, BlockProperties.toBlock(itemStack), itemStack.getItemDamage());
-                        if (tempLight > lightValue) {
-                            lightValue = tempLight;
-                        }
-                    }
-                }
-            }
+        int hash = hashCoords(x, y, z);
+        if (cache.containsKey(hash)) {
+            return cache.get(hash);
         }
 
-        grabLightValue = false;
-        return lightValue;
+        return 0;
     }
 
     @Override
@@ -1037,6 +1081,9 @@ public class BlockCoverable extends BlockContainer {
             dropBlockAsItem(world, x, y, z, itemStack);
         }
         enableDrops = false;
+
+        // Remove cached light value
+        cache.remove(hashCoords(x, y,z ));
 
         super.breakBlock(world, x, y, z, block, metadata);
     }
@@ -1391,6 +1438,7 @@ public class BlockCoverable extends BlockContainer {
     public void onBlockAdded(World world, int x, int y, int z)
     {
         world.setTileEntity(x, y, z, createNewTileEntity(world, 0));
+        updateLightValue(world, x, y, z);
     }
 
     @Override

@@ -42,6 +42,7 @@ public class TEBase extends TileEntity implements IProtected {
     public static final byte    ATTR_FERTILIZER   = 24;
     public static final byte    ATTR_UPGRADE      = 25;
 
+    /** Map holding all block attributes. */
     protected Map<Byte, ItemStack> cbAttrMap = new HashMap<Byte, ItemStack>();
 
     /** Chisel design for each side and base block. */
@@ -143,6 +144,7 @@ public class TEBase extends TileEntity implements IProtected {
     public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt)
     {
         readFromNBT(pkt.func_148857_g());
+        markDirty();
 
         if (worldObj.isRemote) {
             worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
@@ -180,6 +182,15 @@ public class TEBase extends TileEntity implements IProtected {
          * is not only reasonable, but fixes this behavior.
          */
         return oldBlock != newBlock;
+    }
+
+    @Override
+    public void markDirty()
+    {
+        // Update light value cache
+        ((BlockCoverable)getBlockType()).updateLightValue(getWorldObj(), xCoord, yCoord, zCoord);
+
+        super.markDirty();
     }
 
     /**
