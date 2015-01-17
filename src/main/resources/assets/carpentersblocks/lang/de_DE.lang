@@ -49,12 +49,12 @@ message.trigger_all.name=TRIGGER: Bei allem aktiv.
 message.safe_lock.name=KONTROLLE: Tresor verschlossen.
 message.safe_unlock.name=KONTROLLE: Tresor entriegelt.
 message.automation_all.name=AUTOMATISIERUNG: Items können hineingefügt und herausgenommen werden.
-message.automation_disabled.name=AAUTOMATISIERUNG: Deaktiviert.
+message.automation_disabled.name=AUTOMATISIERUNG: Deaktiviert.
 message.automation_insert.name=AUTOMATISIERUNG: Items können nur hineingefügt werden.
 message.automation_extract.name=AUTOMATISIERUNG: Items können nur herausgenommen werden.
 message.block_lock.name=KONTROLLE: Dieser Block ist verschlossen.
 message.sensitivity_sleep.name=SENSITIVITÄT: Ändert Status bei Spieler-Schlafsgrenze (Sonnenauf- und -untergang).
 message.sensitivity_monsters.name=SENSITIVITÄT: Ändert Status bei Monster-Spawn-Grenze (Stürme eingeschlossen).
-message.sensitivity_dynamic.name=SENSITIVITY: Redstone-Output ändert sich basierend auf der Position der Sonne.
+message.sensitivity_dynamic.name=SENSITIVITÄT: Redstone-Output ändert sich basierend auf der Position der Sonne.
 
 # </file>
