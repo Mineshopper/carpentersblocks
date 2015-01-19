@@ -47,6 +47,7 @@ import com.carpentersblocks.util.protection.PlayerPermissions;
 import com.carpentersblocks.util.registry.FeatureRegistry;
 import com.carpentersblocks.util.registry.IconRegistry;
 import com.carpentersblocks.util.registry.ItemRegistry;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -1399,6 +1400,10 @@ public class BlockCoverable extends BlockContainer {
      */
     public boolean isOpaqueCube()
     {
+        if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
+            return false;
+        }
+
         if (FeatureRegistry.enableRoutableFluids) {
             Class<?> clazz = FancyFluidsHelper.getCallerClass();
             if (clazz != null) {
