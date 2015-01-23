@@ -5,9 +5,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import com.carpentersblocks.util.protection.IProtected;
-import com.carpentersblocks.util.protection.ProtectedUtil;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.relauncher.Side;
 
 public class EntityBase extends Entity implements IProtected {
 
@@ -47,14 +44,6 @@ public class EntityBase extends Entity implements IProtected {
     protected void readEntityFromNBT(NBTTagCompound nbtTagCompound)
     {
         getDataWatcher().updateObject(ID_OWNER, String.valueOf(nbtTagCompound.getString(TAG_OWNER)));
-
-        /*
-         * Attempt to update owner name to new UUID format.
-         * TODO: Remove when player name-changing system is switched on
-         */
-        if (FMLCommonHandler.instance().getSide().equals(Side.SERVER)) {
-            ProtectedUtil.updateOwnerUUID(this);
-        }
     }
 
     @Override

@@ -30,7 +30,7 @@ public class PlayerPermissions {
      */
     public static boolean hasElevatedPermission(IProtected object, EntityPlayer entityPlayer)
     {
-        return isOp(entityPlayer) || ProtectedUtil.isOwner(object, entityPlayer);
+        return isOp(entityPlayer) || isOwner(object, entityPlayer);
     }
 
     /**
@@ -41,12 +41,15 @@ public class PlayerPermissions {
         if (isOp(entityPlayer)) {
             return true;
         } else if (FeatureRegistry.enableOwnership) {
-            // TODO: Replace return value when name-changing system is enabled.
-            // return object.getOwner().equals(entityPlayer.getUniqueID());
-            return ProtectedUtil.isOwner(object, entityPlayer);
+            return isOwner(object, entityPlayer);
         } else {
             return entityPlayer.canPlayerEdit(x, y, z, 0, entityPlayer.getHeldItem());
         }
+    }
+
+    public static boolean isOwner(IProtected object, EntityPlayer entityPlayer)
+    {
+        return object.getOwner().equals(entityPlayer.getUniqueID().toString());
     }
 
 }

@@ -20,9 +20,6 @@ import com.carpentersblocks.block.BlockCoverable;
 import com.carpentersblocks.util.BlockProperties;
 import com.carpentersblocks.util.handler.DesignHandler;
 import com.carpentersblocks.util.protection.IProtected;
-import com.carpentersblocks.util.protection.ProtectedUtil;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.relauncher.Side;
 
 public class TEBase extends TileEntity implements IProtected {
 
@@ -83,14 +80,6 @@ public class TEBase extends TileEntity implements IProtected {
             cbMetadata = nbt.getShort(TAG_METADATA);
             cbDesign = nbt.getString(TAG_DESIGN);
             cbOwner = nbt.getString(TAG_OWNER);
-        }
-
-        /*
-         * Attempt to update owner name to new UUID format.
-         * TODO: Remove when player name-changing system is switched on
-         */
-        if (FMLCommonHandler.instance().getSide().equals(Side.SERVER)) {
-            ProtectedUtil.updateOwnerUUID(this);
         }
     }
 
