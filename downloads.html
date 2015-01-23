@@ -54,22 +54,25 @@ label-release: <span class="label label-danger">
 <div class="download-container">
    <div style="display: table-row;">
       <div class="download-container-version">
-         Carpenter's Blocks 3.3.4.2
+         Carpenter's Blocks 3.3.4.4
          {{ page.label-stable }}
          {{ page.label-begin-minecraft }}MC 1.7.10{{ page.label-end }}
          {{ page.label-begin-forge }}FORGE 10.13.0.1180{{ page.label-end }}
-         {{ page.label-begin-release }}RELEASED 01/02/2015{{ page.label-end }}
+         {{ page.label-begin-release }}RELEASED 01/23/2015{{ page.label-end }}
       </div>
    </div>
    <div style="display: table-row;">
       <div style="display: table-cell;">
-         <button onclick="window.open('http://adf.ly/vnPsA')" class="ad_button">Download</button>
-         <button onclick="window.open('https://dl.dropboxusercontent.com/s/wcblbuvj4zxmu94/Carpenter%27s%20Blocks%20v3.3.4.2%20-%20MC%201.7.10.jar')" class="dropbox">&nbsp;</button>
+         <button onclick="window.open('http://adf.ly/wZqWd')" class="ad_button">Download</button>
+         <button onclick="window.open('https://dl.dropboxusercontent.com/s/3df1p62vkf2517h/Carpenter%27s%20Blocks%20v3.3.4.4%20-%20MC%201.7.10.jar')" class="dropbox">&nbsp;</button>
          <button class="expand">View Changelog</button>
          <div class="collapsed">
             <ul id="changelog">
-                <li>Added IWrappableBlock interface to API for better block control when being used as a cover. (Reika)</li>
-                <li>Fixed block step sounds not working correctly when other players walk on Carpenter's Blocks.</li>
+                <li>Tweaked attribute drops to preserve NBT data and fix some mod drops.</li>
+                <li>Fix posts always connecting to adjacent solid blocks.</li>
+                <li>Now caches block light values to help improve chunk update performance.</li>
+                <li>Fixed server-side crash when FancyFluids is enabled.</li>
+                <li>Removed block ownership conversion compatibility code for name-changing system.</li>
             </ul>
          </div>
       </div>
