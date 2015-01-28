@@ -133,7 +133,13 @@ public class TEBase extends TileEntity implements IProtected {
     public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt)
     {
         readFromNBT(pkt.func_148857_g());
-        markDirty();
+
+        /*
+         * Block.getLightValue() is called often when rendering, requiring
+         * expensive tile entity lookups. When data is loaded, update the
+         * light value cache for this entity to speed up the render process.
+         */
+        ((BlockCoverable)getBlockType()).updateLightValue(getWorldObj(), xCoord, yCoord, zCoord);
 
         if (worldObj.isRemote) {
             worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
@@ -171,15 +177,6 @@ public class TEBase extends TileEntity implements IProtected {
          * is not only reasonable, but fixes this behavior.
          */
         return oldBlock != newBlock;
-    }
-
-    @Override
-    public void markDirty()
-    {
-        // Update light value cache
-        ((BlockCoverable)getBlockType()).updateLightValue(getWorldObj(), xCoord, yCoord, zCoord);
-
-        super.markDirty();
     }
 
     @Override
