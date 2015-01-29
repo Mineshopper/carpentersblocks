@@ -14,6 +14,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
 import com.carpentersblocks.CarpentersBlocks;
+import com.carpentersblocks.api.IWrappableBlock;
 import com.carpentersblocks.block.BlockCoverable;
 import com.carpentersblocks.tileentity.TEBase;
 import com.carpentersblocks.util.handler.ChatHandler;
@@ -145,7 +146,12 @@ public class BlockProperties {
         ItemStack itemStack = getCoverSafe(TE, side);
         Block block = toBlock(itemStack);
 
-        return block.hasTileEntity(itemStack.getItemDamage()) && !(block instanceof BlockCoverable) ? new ItemStack(Blocks.planks) : itemStack;
+        // IWrappable blocks are assumed safe to return unaltered
+        if (block instanceof BlockCoverable || block instanceof IWrappableBlock) {
+            return itemStack;
+        }
+
+        return block.hasTileEntity(itemStack.getItemDamage()) ? new ItemStack(Blocks.planks) : itemStack;
     }
 
     /**
