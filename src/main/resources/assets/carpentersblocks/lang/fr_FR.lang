@@ -1,0 +1,60 @@
+# Carpenter's Blocks Language File = FRANCE FRENCH
+
+# CREATIVE TAB
+itemGroup.carpentersBlocks.name=Blocs du charpentier
+
+# ITEMS
+item.itemCarpentersHammer.name=Marteau du charpentier
+item.itemCarpentersChisel.name=Ciseau du charpentier
+item.itemCarpentersDoor.name=Porte du charpentier
+item.itemCarpentersBed.name=Lit du charpentier
+item.itemCarpentersTile.name=Tuile du charpentier
+
+# BLOCKS
+tile.blockCarpentersBarrier.name=Barrière du charpentier
+tile.blockCarpentersBed.name=Lit du charpentier
+tile.blockCarpentersBlock.name=Blocs du charpentier
+tile.blockCarpentersButton.name=Bouton du charpentier
+tile.blockCarpentersDaylightSensor.name=Capteur de jour du charpentier
+tile.blockCarpentersCollapsibleBlock.name=Bloc démontable du charpentier
+tile.blockCarpentersDoor.name=Porte du charpentier
+tile.blockCarpentersGarageDoor.name=Porte de garage du charpentier
+tile.blockCarpentersGate.name=Pont du charpentier
+tile.blockCarpentersHatch.name=Écoutille du charpentier
+tile.blockCarpentersLadder.name=Echelle du charpentier
+tile.blockCarpentersLever.name=Levier du charpentier
+tile.blockCarpentersPressurePlate.name=Plaque de pression du charpentier
+tile.blockCarpentersSlope.wedge.name=Cale en pente du charpentier
+tile.blockCarpentersSlope.obliqueInterior.name=Pente intérieure oblique du charpentier
+tile.blockCarpentersSlope.obliqueExterior.name=Pente extérieure oblique du charpentier
+tile.blockCarpentersSlope.prism.name=Pente en prisme du charpentier
+tile.blockCarpentersSlope.prismWedge.name=Cale de pente en prisme du charpentier
+tile.blockCarpentersStairs.name=Escaliers du charpentier
+tile.blockCarpentersTorch.name=Torche du charpentier
+tile.blockCarpentersSafe.name=Coffre-fort du charpentier
+tile.blockCarpentersFlowerPot.name=Pot de fleur du charpentier
+
+# ENTITIES
+entity.CarpentersTile.name=Tuile du charpentier
+
+# MESSAGES
+message.polarity_pos.name=POLARITE: Sortie redstone normale.
+message.polarity_neg.name=POLARITE: Sortie redstone inversée.
+message.activation_iron.name=ACTIVATION: Se comportera comme une porte en fer.
+message.activation_wood.name=ACTIVATION: Se comportera comme une porte en bois.
+message.trigger_player.name=DECLENCHEMENT: Activer uniquement par les joueurs.
+message.trigger_monster.name=DECLENCHEMENT: Activer uniquement par les créatures.
+message.trigger_animal.name=DECLENCHEMENT: Activer uniquement par les animaux.
+message.trigger_all.name=DECLENCHEMENT: Activer pour toutes les entités.
+message.safe_lock.name=CONTROLE: Coffre-fort verrouillé.
+message.safe_unlock.name=CONTROLE: Coffre-fort déverrouillé.
+message.automation_all.name=AUTOMATISATION: Les éléments peuvent être insérés ou extraits.
+message.automation_disabled.name=AUTOMATISATION: Désactivé.
+message.automation_insert.name=AUTOMATISATION: Les éléments peuvent être insérés seulement.
+message.automation_extract.name=AUTOMATISATION: Les éléments peuvent être extraits seulement.
+message.block_lock.name=CONTROLE: Ce bloc est verrouillé.
+message.sensitivity_sleep.name=SENSIBILITE: Bascule l'état au seuil de sommeil du joueur (lever du soleil et coucher du soleil).
+message.sensitivity_monsters.name=SENSIBILITE: Bascule l'état au seuil des apparitions de monstre (tempêtes inclue).
+message.sensitivity_dynamic.name=SENSIBILITE: La sortie Redstone change suivant la position du soleil.
+
+# </file>
