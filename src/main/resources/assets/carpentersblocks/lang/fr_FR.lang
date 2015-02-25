@@ -1,7 +1,7 @@
 # Carpenter's Blocks Language File = FRANCE FRENCH
 
 # CREATIVE TAB
-itemGroup.carpentersBlocks.name=Blocs du charpentier
+itemGroup.carpentersBlocks.name=Carpenter's blocks
 
 # ITEMS
 item.itemCarpentersHammer.name=Marteau du charpentier
