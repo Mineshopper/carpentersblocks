@@ -792,23 +792,6 @@ public class BlockCoverable extends BlockContainer {
     }
 
     /**
-     * Hashes block coordinates for use in caching values.
-     *
-     * @param x the x coordinate
-     * @param y the y coordinate
-     * @param z the z coordinate
-     * @return
-     */
-    public static int hashCoords(int x, int y, int z)
-    {
-        int hash = 3;
-        hash = 97 * hash + x;
-        hash = 97 * hash + y;
-        hash = 97 * hash + z;
-        return hash;
-    }
-
-    /**
      * Gets the current light value based on covers and illumination.
      *
      * @param  blockAccess the {@link IBlockAccess} object
@@ -831,9 +814,7 @@ public class BlockCoverable extends BlockContainer {
                     if (TE.hasAttribute(TE.ATTR_COVER[side])) {
                         ItemStack itemStack = BlockProperties.getCover(TE, side);
                         int tempLight = getLightValue(TE, BlockProperties.toBlock(itemStack), itemStack.getItemDamage());
-                        if (tempLight > lightValue) {
-                            lightValue = tempLight;
-                        }
+                        lightValue = Math.max(tempLight, lightValue);
                     }
                 }
             }
@@ -856,7 +837,7 @@ public class BlockCoverable extends BlockContainer {
     public void updateLightValue(IBlockAccess blockAccess, int x, int y, int z)
     {
         int lightValue = getCurrentLightValue(blockAccess, x, y, z);
-        cache.put(hashCoords(x, y, z), lightValue);
+        cache.put(BlockProperties.hashCoords(x, y, z), lightValue);
     }
 
     /**
@@ -892,7 +873,7 @@ public class BlockCoverable extends BlockContainer {
      */
     public final int getLightValue(IBlockAccess blockAccess, int x, int y, int z)
     {
-        int hash = hashCoords(x, y, z);
+        int hash = BlockProperties.hashCoords(x, y, z);
         if (cache.containsKey(hash)) {
             return cache.get(hash);
         }
@@ -1084,7 +1065,7 @@ public class BlockCoverable extends BlockContainer {
         enableDrops = false;
 
         // Remove cached light value
-        cache.remove(hashCoords(x, y,z ));
+        cache.remove(BlockProperties.hashCoords(x, y,z ));
 
         super.breakBlock(world, x, y, z, block, metadata);
     }

@@ -33,6 +33,23 @@ public class BlockProperties {
     }
 
     /**
+     * Hashes block coordinates for use in caching values.
+     *
+     * @param x the x coordinate
+     * @param y the y coordinate
+     * @param z the z coordinate
+     * @return the coordinate hash
+     */
+    public static int hashCoords(int x, int y, int z)
+    {
+        int hash = 3;
+        hash = 97 * hash + x;
+        hash = 97 * hash + y;
+        hash = 97 * hash + z;
+        return hash;
+    }
+
+    /**
      * Adds additional data to unused bits in ItemStack metadata to
      * identify special properties for ItemStack.
      * <p>

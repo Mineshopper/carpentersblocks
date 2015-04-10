@@ -185,7 +185,7 @@ public class TEBase extends TileEntity implements IProtected {
      */
     public void onChunkUnload()
     {
-        int hash = BlockCoverable.hashCoords(xCoord, yCoord, zCoord);
+        int hash = BlockProperties.hashCoords(xCoord, yCoord, zCoord);
         BlockCoverable.cache.remove(hash);
     }
 
