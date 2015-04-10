@@ -78,14 +78,21 @@ public class FancyFluidsHelper {
 
             if (block.getRenderBlockPass() == MinecraftForgeClient.getRenderPass())
             {
-                if (!block.hasTileEntity(metadata) && metadata == 0)
+                if (!block.hasTileEntity(metadata))
                 {
                     LightingHelper lightingHelper = new LightingHelper(renderBlocks);
+
+                    // Set to liquid metadata for accurate brightness and color
+                    TE.setMetadata(metadata);
                     lightingHelper.setupLightingYPos(itemStack, x, y, z);
-                    lightingHelper.setupColor(x, y, z, 1, 16777215, null);
+                    int color = block.colorMultiplier(TE.getWorldObj(), x, y, z);
+                    lightingHelper.setupColor(x, y, z, 1, color, null);
+                    TE.restoreMetadata();
+
                     double fluidHeight = (block instanceof BlockLiquid ? 1.0D - 1.0F / 9.0F : 0.875F) - 0.0010000000474974513D;
                     renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, fluidHeight, 1.0D);
                     RenderHelper.renderFaceYPos(renderBlocks, x, y, z, block.getIcon(1, metadata));
+
                     return true;
                 }
             }
