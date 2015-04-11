@@ -197,22 +197,20 @@ public class EventHandler {
         Entity entity = event.entityLiving;
         World world = entity.worldObj;
 
-        int x = MathHelper.floor_double(entity.posX);
-        int y = MathHelper.floor_double(entity.posY - 0.20000000298023224D - entity.yOffset);
-        int z = MathHelper.floor_double(entity.posZ);
+        /*
+         * The purpose of the function is to manifest sprint particles
+         * and adjust slipperiness when entity is moving on block, so check
+         * that the conditions are met first.
+         */
+        if (!isMovingOnGround(entity))
+        {
+            return;
+        }
 
-        if (world.getBlock(x, y, z) instanceof BlockCoverable) {
+        TEBase TE = getTileEntityAtFeet(entity);
+        if (TE != null) {
 
-            TEBase TE = (TEBase) world.getTileEntity(x, y, z);
-            int effectiveSide = TE.hasAttribute(TE.ATTR_COVER[1]) ? 1 : 6;
-            ItemStack itemStack = BlockProperties.getCover(TE, effectiveSide);
-
-            if (TE.hasAttribute(TE.ATTR_OVERLAY[effectiveSide])) {
-                Overlay overlay = OverlayHandler.getOverlayType(TE.getAttribute(TE.ATTR_OVERLAY[effectiveSide]));
-                if (OverlayHandler.coversFullSide(overlay, 1)) {
-                    itemStack = overlay.getItemStack();
-                }
-            }
+            ItemStack itemStack = getSurfaceItemStack(TE);
 
             /* Spawn sprint particles client-side. */
 
@@ -222,10 +220,11 @@ public class EventHandler {
 
             /* Adjust block slipperiness according to cover. */
 
-            if (BlockProperties.toBlock(itemStack) instanceof BlockCoverable) {
+            Block block = BlockProperties.toBlock(itemStack);
+            if (block instanceof BlockCoverable) {
                 TE.getBlockType().slipperiness = Blocks.dirt.slipperiness;
             } else {
-                TE.getBlockType().slipperiness = BlockProperties.toBlock(itemStack).slipperiness;
+                TE.getBlockType().slipperiness = block.slipperiness;
             }
 
         }
@@ -311,24 +310,95 @@ public class EventHandler {
     {
         if (event != null && event.name != null && event.name.contains(CarpentersBlocks.MODID))
         {
-            int x = MathHelper.floor_double(event.entity.posX);
-            int y = MathHelper.floor_double(event.entity.posY - 0.20000000298023224D - event.entity.yOffset);
-            int z = MathHelper.floor_double(event.entity.posZ);
+            Entity entity = event.entity;
 
-            // Give SoundType a valid resource by default
-            event.name = Blocks.planks.stepSound.getStepResourcePath();
-
-            // If covered, change resource to cover's SoundType
-            TEBase TE = (TEBase) event.entity.worldObj.getTileEntity(x, y, z);
-            if (TE != null)
+            /*
+             * The function to my knowledge is only used for playing walking sounds
+             * at entity, so we'll check for the conditions first.
+             */
+            if (!isMovingOnGround(entity))
             {
-                Block cover = BlockProperties.toBlock(BlockProperties.getCoverSafe(TE, 6));
-                if (!(cover instanceof BlockCoverable))
+                return;
+            }
+
+            TEBase TE = getTileEntityAtFeet(entity);
+            if (TE != null) {
+
+                // Give SoundType a valid resource by default
+                event.name = Blocks.planks.stepSound.getStepResourcePath();
+
+                // Gather accurate SoundType based on block properties
+                Block block = BlockProperties.toBlock(getSurfaceItemStack(TE));
+                if (!(block instanceof BlockCoverable))
                 {
-                    event.name = cover.stepSound.getStepResourcePath();
+                    event.name = block.stepSound.getStepResourcePath();
                 }
+
             }
         }
+    }
+
+    /**
+     * Gets the {@link TEBase} object at player's feet, if one exists.
+     * <p>
+     * It is safer to gather the tile entity reference than a block reference.
+     *
+     * @param entity
+     * @return
+     */
+    private TEBase getTileEntityAtFeet(Entity entity)
+    {
+        int x = MathHelper.floor_double(entity.posX);
+        int y = MathHelper.floor_double(entity.posY - 0.20000000298023224D - entity.yOffset);
+        int z = MathHelper.floor_double(entity.posZ);
+
+        TileEntity tileEntity = entity.worldObj.getTileEntity(x, y, z);
+        if (tileEntity != null && tileEntity instanceof TEBase)
+        {
+            return (TEBase) tileEntity;
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    /**
+     * Gets an {@link ItemStack} that best represents the surface
+     * of a Carpenter's Block.
+     * <p>
+     * The top side cover and any overlays are taken into consideration.
+     *
+     * @param TE
+     * @return
+     */
+    private ItemStack getSurfaceItemStack(TEBase TE)
+    {
+        // Check for top side cover
+        int effectiveSide = TE.hasAttribute(TE.ATTR_COVER[1]) ? 1 : 6;
+        ItemStack itemStack = BlockProperties.getCover(TE, effectiveSide);
+
+        // Check for overlay on cover
+        if (TE.hasAttribute(TE.ATTR_OVERLAY[effectiveSide])) {
+            Overlay overlay = OverlayHandler.getOverlayType(TE.getAttribute(TE.ATTR_OVERLAY[effectiveSide]));
+            if (OverlayHandler.coversFullSide(overlay, 1)) {
+                itemStack = overlay.getItemStack();
+            }
+        }
+
+        return itemStack;
+    }
+
+    /**
+     * Determines if the player is moving in the x, z directions on
+     * solid ground.
+     *
+     * @param entity
+     * @return
+     */
+    private boolean isMovingOnGround(Entity entity)
+    {
+        return entity.onGround && (entity.motionX != 0 || entity.motionZ != 0);
     }
 
 }
