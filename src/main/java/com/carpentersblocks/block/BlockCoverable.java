@@ -59,9 +59,6 @@ public class BlockCoverable extends BlockContainer {
     /** Indicates during getDrops that block instance should not be dropped. */
     protected final int METADATA_DROP_ATTR_ONLY = 16;
 
-    /** Whether breakBlock() should drop block attributes. */
-    private boolean enableDrops = false;
-
     /** Caches light values. */
     public static Map<Integer,Integer> cache = new HashMap<Integer,Integer>();
 
@@ -224,7 +221,7 @@ public class BlockCoverable extends BlockContainer {
     @Override
     public boolean onBlockEventReceived(World world, int x, int y, int z, int eventId, int param /*attrId*/)
     {
-        if (eventId == EVENT_ID_DROP_ATTR)
+        if (!world.isRemote && eventId == EVENT_ID_DROP_ATTR)
         {
             TEBase TE = getSimpleTileEntity(world, x, y, z);
             if (TE != null && TE.hasAttribute((byte) param))
@@ -1035,35 +1032,10 @@ public class BlockCoverable extends BlockContainer {
 
     @Override
     /**
-     * Drops the block items with a specified chance of dropping the specified items
-     */
-    public void dropBlockAsItemWithChance(World world, int x, int y, int z, int metadata, float harvestLevel, int fortune)
-    {
-        /*
-         * When fluids break a block, they automatically call for blocks to drop items.
-         * We only allow item drops in breakBlock() or when called elsewhere within this
-         * mod, so check first.
-         */
-        if (enableDrops) {
-            super.dropBlockAsItemWithChance(world, x, y, z, metadata, harvestLevel, fortune);
-        } else {
-            dropBlockAsItem(world, x, y, z, getItemDrop(world, metadata));
-        }
-    }
-
-    @Override
-    /**
      * Ejects contained items into the world, and notifies neighbors of an update, as appropriate
      */
     public void breakBlock(World world, int x, int y, int z, Block block, int metadata)
     {
-        // Drop attributes
-        enableDrops = true;
-        for (ItemStack itemStack : getDrops(world, x, y, z, METADATA_DROP_ATTR_ONLY, 0)) {
-            dropBlockAsItem(world, x, y, z, itemStack);
-        }
-        enableDrops = false;
-
         // Remove cached light value
         cache.remove(BlockProperties.hashCoords(x, y,z ));
 

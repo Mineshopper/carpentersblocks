@@ -1,6 +1,7 @@
 package com.carpentersblocks.block;
 
 import java.util.ArrayList;
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
@@ -253,17 +254,35 @@ public class BlockCarpentersSafe extends BlockCoverable {
 
         if (TE != null && TE instanceof TECarpentersSafe) {
             if (TE.hasAttribute(TE.ATTR_UPGRADE)) {
-                ret.add(TE.getAttribute(TE.ATTR_UPGRADE));
-            }
-            for (int slot = 0; slot < ((TECarpentersSafe)TE).getSizeInventory(); ++slot) {
-                ItemStack itemStack = ((TECarpentersSafe)TE).getStackInSlot(slot);
-                if (itemStack != null) {
-                    ret.add(itemStack);
-                }
+                ret.add(TE.getAttributeForDrop(TE.ATTR_UPGRADE));
             }
         }
 
         return ret;
+    }
+
+    @Override
+    /**
+     * Ejects contained items into the world, and notifies neighbors of an update, as appropriate
+     */
+    public void breakBlock(World world, int x, int y, int z, Block block, int metadata)
+    {
+        TEBase tileEntity = getSimpleTileEntity(world, x, y, z);
+
+        if (tileEntity != null && tileEntity instanceof TECarpentersSafe)
+        {
+            TECarpentersSafe TE = (TECarpentersSafe) tileEntity;
+            for (int idx = 0; idx < TE.getSizeInventory(); ++idx)
+            {
+                ItemStack itemStack = TE.getStackInSlot(idx);
+                if (itemStack != null)
+                {
+                    dropBlockAsItem(world, x, y, z, itemStack);
+                }
+            }
+        }
+
+        super.breakBlock(world, x, y, z, block, metadata);
     }
 
     @Override
