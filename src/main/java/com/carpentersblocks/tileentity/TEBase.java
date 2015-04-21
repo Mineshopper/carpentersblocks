@@ -139,7 +139,10 @@ public class TEBase extends TileEntity implements IProtected {
          * expensive tile entity lookups. When data is loaded, update the
          * light value cache for this entity to speed up the render process.
          */
-        ((BlockCoverable)getBlockType()).updateLightValue(getWorldObj(), xCoord, yCoord, zCoord);
+        if (getWorldObj().getBlock(xCoord, yCoord, zCoord) instanceof BlockCoverable)
+        {
+            ((BlockCoverable)getBlockType()).updateLightValue(getWorldObj(), xCoord, yCoord, zCoord);
+        }
 
         if (worldObj.isRemote) {
             worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
