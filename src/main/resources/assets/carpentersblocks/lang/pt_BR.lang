@@ -1,0 +1,58 @@
+# Carpenter's Blocks Language File = BRAZILIAN PORTUGUESE
+
+# CREATIVE TAB
+itemGroup.carpentersBlocks.name=Carpenter's Blocks
+
+# ITEMS
+item.itemCarpentersHammer.name=Martelo do Carpinteiro
+item.itemCarpentersChisel.name=Cinzel do Carpinteiro
+item.itemCarpentersDoor.name=Porta do Carpinteiro
+item.itemCarpentersBed.name=Cama do Carpinteiro
+item.itemCarpentersTile.name=Ladrilho do Carpinteiro
+
+# BLOCKS
+tile.blockCarpentersBarrier.name=Barreira do Carpinteiro
+tile.blockCarpentersBed.name=Cama do Carpinteiro
+tile.blockCarpentersBlock.name=Bloco do Carpinteiro
+tile.blockCarpentersButton.name=Botão do Carpinteiro
+tile.blockCarpentersDaylightSensor.name=Sensor de Luz Solar do Carpinteiro
+tile.blockCarpentersCollapsibleBlock.name=Bloco Desmontável do Carpinteiro
+tile.blockCarpentersDoor.name=Porta do Carpinteiro
+tile.blockCarpentersGate.name=Portão do Carpinteiro
+tile.blockCarpentersHatch.name=Alçapão do Carpinteiro
+tile.blockCarpentersLadder.name=Escada do Carpinteiro
+tile.blockCarpentersLever.name=Alavanca do Carpinteiro
+tile.blockCarpentersPressurePlate.name=Placa de Pressão do Carpinteiro
+tile.blockCarpentersSlope.wedge.name=Rampa Reta do Carpinteiro
+tile.blockCarpentersSlope.obliqueInterior.name=Rampa de Interior Oblíquo do Carpinteiro
+tile.blockCarpentersSlope.obliqueExterior.name=Rampa de Exterior Oblíquo do Carpinteiro
+tile.blockCarpentersSlope.prism.name=Rampa em Prisma do Carpinteiro
+tile.blockCarpentersSlope.prismWedge.name=Rampa Reta em Prisma do Carpinteiro
+tile.blockCarpentersStairs.name=Escadas do Carpinteiro
+tile.blockCarpentersTorch.name=Tocha do Carpinteiro
+tile.blockCarpentersSafe.name=Cofre do Carpinteiro
+tile.blockCarpentersFlowerPot.name=Vaso do Carpinteiro
+
+# ENTITIES
+entity.CarpentersTile.name=Ladrilho do Carpinteiro
+
+# MESSAGES
+message.polarity_pos.name=POLARIDADE: Saída de redstone normal.
+message.polarity_neg.name=POLARIDADE: Saída de redstone invertida.
+message.activation_iron.name=ATIVAÇÃO: Vai se comportar como uma porta de ferro.
+message.activation_wood.name=ATIVAÇÃO: Vai se comportar como uma porta de madeira.
+message.trigger_player.name=TRIGGER: Só ativar para jogadores.
+message.trigger_monster.name=TRIGGER: Só ativar para monstros.
+message.trigger_animal.name=TRIGGER: Só ativar para animais.
+message.trigger_all.name=TRIGGER: Ativar para todas as entidades.
+message.safe_lock.name=CONTROLE: Cofre trancado.
+message.safe_unlock.name=CONTROLE: Cofre destrancado.
+message.automation_all.name=AUTOMAÇÃO: Itens podem ser inseridos e extraídos.
+message.automation_disabled.name=AUTOMAÇÃO: Desativada.
+message.automation_insert.name=AUTOMAÇÃO: Itens podem apenas ser inseridos.
+message.automation_extract.name=AUTOMAÇÃO: Itens podem apenas ser extraídos.
+message.block_lock.name=CONTROLE: Esse bloco está trancado.
+message.sensitivity_sleep.name=SENSIBILIDADE: Troca de estado na treshold do sono do jogador (amanhecer e pôr do sol).
+message.sensitivity_monsters.name=SENSIBILIDADE: Troca de estado na treshold de luz de spawn de monstros (incluindo tempestades).
+
+# </file>
