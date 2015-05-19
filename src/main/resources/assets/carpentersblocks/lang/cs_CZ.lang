@@ -8,7 +8,7 @@ item.itemCarpentersHammer.name=Tesařovo kladivo
 item.itemCarpentersChisel.name=Tesařovo dláto
 item.itemCarpentersDoor.name=Tesařovy dveře
 item.itemCarpentersBed.name=Tesařova postel
-item.itemCarpentersTile.name=Tesaařova dlaždice
+item.itemCarpentersTile.name=Tesařova dlaždice
 
 # BLOCKS
 tile.blockCarpentersBarrier.name=Tesařova bariéra
