@@ -54,5 +54,5 @@ message.automation_extract.name=AUTOMAÇÃO: Itens podem apenas ser extraídos.
 message.block_lock.name=CONTROLE: Esse bloco está trancado.
 message.sensitivity_sleep.name=SENSIBILIDADE: Troca de estado na treshold do sono do jogador (amanhecer e pôr do sol).
 message.sensitivity_monsters.name=SENSIBILIDADE: Troca de estado na treshold de luz de spawn de monstros (incluindo tempestades).
-
+message.sensitivity_dynamic.name=SENSIBILIDADE: Saída de redstone muda baseada na posição do sol.
 # </file>
