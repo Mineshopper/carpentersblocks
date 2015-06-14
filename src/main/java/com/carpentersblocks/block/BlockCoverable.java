@@ -103,6 +103,7 @@ public class BlockCoverable extends BlockContainer {
     public BlockCoverable(Material material)
     {
         super(material);
+        setLightLevel(1.0F); // Make mob spawns check block light value
     }
 
     @SideOnly(Side.CLIENT)
@@ -234,26 +235,6 @@ public class BlockCoverable extends BlockContainer {
         }
 
         return super.onBlockEventReceived(world, x, y, z, eventId, param);
-    }
-
-    /**
-     * Drops block as {@link ItemStack} and notifies relevant systems of
-     * block removal.  Block attributes will drop later in destruction.
-     * <p>
-     * This is usually called when a {@link #onNeighborBlockChange(World, int, int, int, Block) neighbor changes}.
-     *
-     * @param world the {@link World}
-     * @param x the x coordinate
-     * @param y the y coordinate
-     * @param z the z coordinate
-     * @param dropBlock whether block {@link ItemStack} is dropped
-     */
-    protected void destroyBlock(World world, int x, int y, int z, boolean dropBlock)
-    {
-        if (dropBlock) {
-            dropBlockAsItem(world, x, y, z, new ItemStack(getItemDropped(0, world.rand, 0)));
-        }
-        world.setBlockToAir(x, y, z);
     }
 
     /**
@@ -658,36 +639,6 @@ public class BlockCoverable extends BlockContainer {
         return power;
     }
 
-    /**
-     * Indicates whether block destruction should be suppressed when block is clicked.
-     * Will return true if player is holding a Carpenter's tool in creative mode.
-     */
-    protected boolean suppressDestroyBlock(EntityPlayer entityPlayer)
-    {
-        ItemStack itemStack = entityPlayer.getHeldItem();
-
-        if (itemStack != null) {
-            Item item = itemStack.getItem();
-            return entityPlayer.capabilities.isCreativeMode && item != null && (item instanceof ICarpentersHammer || item instanceof ICarpentersChisel);
-        }
-
-        return false;
-    }
-
-    @Override
-    /**
-     * Called when a player removes a block.
-     * This controls block break behavior when a player in creative mode left-clicks on block while holding a Carpenter's Hammer
-     */
-    public boolean removedByPlayer(World world, EntityPlayer entityPlayer, int x, int y, int z)
-    {
-        if (!suppressDestroyBlock(entityPlayer)) {
-            return super.removedByPlayer(world, entityPlayer, x, y, z);
-        }
-
-        return false;
-    }
-
     @Override
     @SideOnly(Side.CLIENT)
     /**
@@ -1032,12 +983,105 @@ public class BlockCoverable extends BlockContainer {
 
     @Override
     /**
+     * Called when the player destroys a block with an item that can harvest it. (i, j, k) are the coordinates of the
+     * block and l is the block's subtype/damage.
+     */
+    public void harvestBlock(World p_149636_1_, EntityPlayer p_149636_2_, int p_149636_3_, int p_149636_4_, int p_149636_5_, int p_149636_6_) {}
+
+    /**
+     * Indicates whether block destruction should be suppressed when block is clicked.
+     * Will return true if player is holding a Carpenter's tool in creative mode.
+     */
+    protected boolean suppressDestroyBlock(EntityPlayer entityPlayer)
+    {
+        if (entityPlayer == null) {
+            return false;
+        }
+
+        ItemStack itemStack = entityPlayer.getHeldItem();
+
+        if (itemStack != null) {
+            Item item = itemStack.getItem();
+            return entityPlayer.capabilities.isCreativeMode && item != null && (item instanceof ICarpentersHammer || item instanceof ICarpentersChisel);
+        }
+
+        return false;
+    }
+
+    /**
+     * Drops block as {@link ItemStack} and notifies relevant systems of
+     * block removal.  Block attributes will drop later in destruction.
+     * <p>
+     * This is usually called when a {@link #onNeighborBlockChange(World, int, int, int, Block) neighbor changes}.
+     *
+     * @param world the {@link World}
+     * @param x the x coordinate
+     * @param y the y coordinate
+     * @param z the z coordinate
+     * @param dropBlock whether block {@link ItemStack} is dropped
+     */
+    protected void destroyBlock(World world, int x, int y, int z, boolean dropBlock)
+    {
+        // Drop attributes
+        int metadata = dropBlock ? 0 : METADATA_DROP_ATTR_ONLY;
+        ArrayList<ItemStack> items = getDrops(world, x, y, z, metadata, 0);
+        for (ItemStack item : items) {
+            dropBlockAsItem(world, x, y, z, item);
+        }
+
+        world.setBlockToAir(x, y, z);
+    }
+
+    @Override
+    /**
+     * Called when a player removes a block.  This is responsible for
+     * actually destroying the block, and the block is intact at time of call.
+     * This is called regardless of whether the player can harvest the block or
+     * not.
+     *
+     * Return true if the block is actually destroyed.
+     *
+     * Note: When used in multiplayer, this is called on both client and
+     * server sides!
+     *
+     * @param world The current world
+     * @param player The player damaging the block, may be null
+     * @param x X Position
+     * @param y Y position
+     * @param z Z position
+     * @param willHarvest True if Block.harvestBlock will be called after this, if the return in true.
+     *        Can be useful to delay the destruction of tile entities till after harvestBlock
+     * @return True if the block is actually destroyed.
+     */
+    public boolean removedByPlayer(World world, EntityPlayer entityPlayer, int x, int y, int z, boolean willHarvest)
+    {
+        if (world.isRemote) {
+            return super.removedByPlayer(world, entityPlayer, x, y, z, willHarvest);
+        }
+
+        // Grab drops while tile entity exists (before calling super)
+        int metadata = entityPlayer != null && entityPlayer.capabilities.isCreativeMode ? METADATA_DROP_ATTR_ONLY : 0;
+        ArrayList<ItemStack> items = getDrops(world, x, y, z, metadata, 0);
+
+        // Drop attributes if block destroyed, and no Carpenter's Tool is held by entity
+        if (!suppressDestroyBlock(entityPlayer) && super.removedByPlayer(world, entityPlayer, x, y, z, willHarvest)) {
+            for (ItemStack item : items) {
+                dropBlockAsItem(world, x, y, z, item);
+            }
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    /**
      * Ejects contained items into the world, and notifies neighbors of an update, as appropriate
      */
     public void breakBlock(World world, int x, int y, int z, Block block, int metadata)
     {
         // Remove cached light value
-        cache.remove(BlockProperties.hashCoords(x, y,z ));
+        cache.remove(BlockProperties.hashCoords(x, y, z));
 
         super.breakBlock(world, x, y, z, block, metadata);
     }
@@ -1056,14 +1100,15 @@ public class BlockCoverable extends BlockContainer {
     @Override
     public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int metadata, int fortune)
     {
-        ArrayList<ItemStack> ret = super.getDrops(world, x, y, z, metadata, fortune);
+        ArrayList<ItemStack> ret = super.getDrops(world,  x, y, z, metadata, fortune); // Add block item drop
         TEBase TE = getSimpleTileEntity(world, x, y, z);
 
         if (metadata == METADATA_DROP_ATTR_ONLY) {
             ret.clear(); // Remove block instance from drop list
         }
 
-        if (TE != null) {
+        if (TE != null)
+        {
             for (int idx = 0; idx < 7; ++idx) {
                 if (TE.hasAttribute(TE.ATTR_COVER[idx])) {
                     ret.add(TE.getAttributeForDrop(TE.ATTR_COVER[idx]));
