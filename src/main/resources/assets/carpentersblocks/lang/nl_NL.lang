@@ -1,0 +1,59 @@
+# Carpenter's Blocks Language File = NETHERLANDS DUTCH
+
+# CREATIVE TAB
+itemGroup.carpentersBlocks.name=Carpenter's Blocks
+
+# ITEMS
+item.itemCarpentersHammer.name=Timmermans Hamer
+item.itemCarpentersChisel.name=Timmermans Beitel
+item.itemCarpentersDoor.name=Timmermans Deur
+item.itemCarpentersBed.name=Timmermans Bed
+item.itemCarpentersTile.name=Timmermans Tegel
+
+# BLOCKS
+tile.blockCarpentersBarrier.name=Timmermans Barrière
+tile.blockCarpentersBed.name=Timmermans Bed
+tile.blockCarpentersBlock.name=Timmermans Blok
+tile.blockCarpentersButton.name=Timmermans Knop
+tile.blockCarpentersDaylightSensor.name=Timmermans Daglicht Sensor
+tile.blockCarpentersCollapsibleBlock.name=Inzakbare Timmermans Blok
+tile.blockCarpentersDoor.name=Timmermans Deur
+tile.blockCarpentersGate.name=Timmermans Poort
+tile.blockCarpentersHatch.name=Timmermans Luik
+tile.blockCarpentersLadder.name=Timmermans Ladder
+tile.blockCarpentersLever.name=Timmermans Hendel
+tile.blockCarpentersPressurePlate.name=Timmermans Drukplaat
+tile.blockCarpentersSlope.wedge.name=Timmermans Wig Helling
+tile.blockCarpentersSlope.obliqueInterior.name=Timmermans Inwendig Scheve Helling
+tile.blockCarpentersSlope.obliqueExterior.name=Timmermans Uitwendig Scheve Helling
+tile.blockCarpentersSlope.prism.name=Timmermans Prisma Helling
+tile.blockCarpentersSlope.prismWedge.name=Timmermans Prisma Wig Helling
+tile.blockCarpentersStairs.name=Timmermans Trap
+tile.blockCarpentersTorch.name=Timmermans Fakkel
+tile.blockCarpentersSafe.name=Timmermans Kluis
+tile.blockCarpentersFlowerPot.name=Timmermans Bloempot
+
+# ENTITIES
+entity.CarpentersTile.name=Timmermans Tegel
+
+# MESSAGES
+message.polarity_pos.name=POLARITEIT: Normaal redstone signaal.
+message.polarity_neg.name=POLARITEIT: Averechts redstone signaal.
+message.activation_iron.name=ACTIVATIE: Gedraagt zich als een ijzeren deur.
+message.activation_wood.name=ACTIVATIE: Gedraagt zich als een houten deur.
+message.trigger_player.name=TRIGGER: Activeert alleen voor spelers.
+message.trigger_monster.name=TRIGGER: Activeert alleen voor monsters.
+message.trigger_animal.name=TRIGGER: Activeert alleen voor dieren.
+message.trigger_all.name=TRIGGER: Activeert voor alle entiteiten.
+message.safe_lock.name=CONTROLE: Kluis vergrendeld.
+message.safe_unlock.name=CONTROLE: Kluis ontgrendeld.
+message.automation_all.name=AUTOMATISERING: Voorwerpen kunnen worden ingebracht en onttrokken.
+message.automation_disabled.name=AUTOMATISERING: Uitgeschakeld.
+message.automation_insert.name=AUTOMATISERING: Voorwerpen kunnen alleen worden ingebracht.
+message.automation_extract.name=AUTOMATISERING: Voorwerpen kunnen alleen worden onttrokken.
+message.block_lock.name=CONTROLE: Dit blok is vergrendeld.
+message.sensitivity_sleep.name=GEVOELIGHEID: wisselt van status bij de grenslijn van speler slaap (zonsopkomst en zonsondergang).
+message.sensitivity_monsters.name=GEVOELIGHEID: Wisselt van status bij de grenslijn van monster spawn lichtsterkte (in
+message.sensitivity_dynamic.name=GEVOELIGHEID: Redstone signaal veranderd gebaseerd op de positie van de zon.
+
+# </file>
