@@ -194,11 +194,11 @@ public class RoutableFluidsHelper {
 
         if (flowDir < -999.0F)
         {
-            u_XZNN = (double)icon.getInterpolatedU(0.0D);
-            v_XZNN = (double)icon.getInterpolatedV(0.0D);
+            u_XZNN = icon.getInterpolatedU(0.0D);
+            v_XZNN = icon.getInterpolatedV(0.0D);
             u_XZNP = u_XZNN;
-            v_XZNP = (double)icon.getInterpolatedV(16.0D);
-            u_XZPP = (double)icon.getInterpolatedU(16.0D);
+            v_XZNP = icon.getInterpolatedV(16.0D);
+            u_XZPP = icon.getInterpolatedU(16.0D);
             v_XZPP = v_XZNP;
             u_XZPN = u_XZPP;
             v_XZPN = v_XZNN;
@@ -207,36 +207,36 @@ public class RoutableFluidsHelper {
         {
             float sinDir = MathHelper.sin(flowDir) * 0.25F;
             float cosDir = MathHelper.cos(flowDir) * 0.25F;
-            u_XZNN = (double)icon.getInterpolatedU((double)(8.0F + (-cosDir - sinDir) * 16.0F));
-            v_XZNN = (double)icon.getInterpolatedV((double)(8.0F + (-cosDir + sinDir) * 16.0F));
-            u_XZNP = (double)icon.getInterpolatedU((double)(8.0F + (-cosDir + sinDir) * 16.0F));
-            v_XZNP = (double)icon.getInterpolatedV((double)(8.0F + (cosDir + sinDir) * 16.0F));
-            u_XZPP = (double)icon.getInterpolatedU((double)(8.0F + (cosDir + sinDir) * 16.0F));
-            v_XZPP = (double)icon.getInterpolatedV((double)(8.0F + (cosDir - sinDir) * 16.0F));
-            u_XZPN = (double)icon.getInterpolatedU((double)(8.0F + (cosDir - sinDir) * 16.0F));
-            v_XZPN = (double)icon.getInterpolatedV((double)(8.0F + (-cosDir - sinDir) * 16.0F));
+            u_XZNN = icon.getInterpolatedU(8.0F + (-cosDir - sinDir) * 16.0F);
+            v_XZNN = icon.getInterpolatedV(8.0F + (-cosDir + sinDir) * 16.0F);
+            u_XZNP = icon.getInterpolatedU(8.0F + (-cosDir + sinDir) * 16.0F);
+            v_XZNP = icon.getInterpolatedV(8.0F + (cosDir + sinDir) * 16.0F);
+            u_XZPP = icon.getInterpolatedU(8.0F + (cosDir + sinDir) * 16.0F);
+            v_XZPP = icon.getInterpolatedV(8.0F + (cosDir - sinDir) * 16.0F);
+            u_XZPN = icon.getInterpolatedU(8.0F + (cosDir - sinDir) * 16.0F);
+            v_XZPN = icon.getInterpolatedV(8.0F + (-cosDir - sinDir) * 16.0F);
         }
 
-        double height_XZNN = (double)renderBlocks.getLiquidHeight(x, y, z, material) - offset;
-        double height_XZNP = (double)renderBlocks.getLiquidHeight(x, y, z + 1, material) - offset;
-        double height_XZPN = (double)renderBlocks.getLiquidHeight(x + 1, y, z, material) - offset;
-        double height_XZPP = (double)renderBlocks.getLiquidHeight(x + 1, y, z + 1, material) - offset;
+        double height_XZNN = renderBlocks.getLiquidHeight(x, y, z, material) - offset;
+        double height_XZNP = renderBlocks.getLiquidHeight(x, y, z + 1, material) - offset;
+        double height_XZPN = renderBlocks.getLiquidHeight(x + 1, y, z, material) - offset;
+        double height_XZPP = renderBlocks.getLiquidHeight(x + 1, y, z + 1, material) - offset;
 
         int colorMultiplier = block.colorMultiplier(renderBlocks.blockAccess, x, y, z);
-        float red = (float)(colorMultiplier >> 16 & 255) / 255.0F;
-        float green = (float)(colorMultiplier >> 8 & 255) / 255.0F;
-        float blue = (float)(colorMultiplier & 255) / 255.0F;
+        float red = (colorMultiplier >> 16 & 255) / 255.0F;
+        float green = (colorMultiplier >> 8 & 255) / 255.0F;
+        float blue = (colorMultiplier & 255) / 255.0F;
 
         tessellator.setBrightness(block.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y, z));
         tessellator.setColorOpaque_F(red, green, blue);
-        tessellator.addVertexWithUV((double)x, (double)y + height_XZNN, (double)z, u_XZNN, v_XZNN);
-        tessellator.addVertexWithUV((double)x, (double)y + height_XZNP, (double)(z + 1), u_XZNP, v_XZNP);
-        tessellator.addVertexWithUV((double)(x + 1), (double)y + height_XZPP, (double)(z + 1), u_XZPP, v_XZPP);
-        tessellator.addVertexWithUV((double)(x + 1), (double)y + height_XZPN, (double)z, u_XZPN, v_XZPN);
-        tessellator.addVertexWithUV((double)x, (double)y + height_XZNN, (double)z, u_XZNN, v_XZNN);
-        tessellator.addVertexWithUV((double)(x + 1), (double)y + height_XZPN, (double)z, u_XZPN, v_XZPN);
-        tessellator.addVertexWithUV((double)(x + 1), (double)y + height_XZPP, (double)(z + 1), u_XZPP, v_XZPP);
-        tessellator.addVertexWithUV((double)x, (double)y + height_XZNP, (double)(z + 1), u_XZNP, v_XZNP);
+        tessellator.addVertexWithUV(x, y + height_XZNN, z, u_XZNN, v_XZNN);
+        tessellator.addVertexWithUV(x, y + height_XZNP, z + 1, u_XZNP, v_XZNP);
+        tessellator.addVertexWithUV(x + 1, y + height_XZPP, z + 1, u_XZPP, v_XZPP);
+        tessellator.addVertexWithUV(x + 1, y + height_XZPN, z, u_XZPN, v_XZPN);
+        tessellator.addVertexWithUV(x, y + height_XZNN, z, u_XZNN, v_XZNN);
+        tessellator.addVertexWithUV(x + 1, y + height_XZPN, z, u_XZPN, v_XZPN);
+        tessellator.addVertexWithUV(x + 1, y + height_XZPP, z + 1, u_XZPP, v_XZPP);
+        tessellator.addVertexWithUV(x, y + height_XZNP, z + 1, u_XZNP, v_XZNP);
     }
 
 }
