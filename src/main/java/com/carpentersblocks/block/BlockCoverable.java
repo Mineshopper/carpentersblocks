@@ -34,7 +34,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import com.carpentersblocks.api.ICarpentersChisel;
 import com.carpentersblocks.api.ICarpentersHammer;
 import com.carpentersblocks.api.IWrappableBlock;
-import com.carpentersblocks.renderer.helper.FancyFluidsHelper;
+import com.carpentersblocks.renderer.helper.RoutableFluidsHelper;
 import com.carpentersblocks.renderer.helper.ParticleHelper;
 import com.carpentersblocks.tileentity.TEBase;
 import com.carpentersblocks.util.BlockProperties;
@@ -1403,9 +1403,9 @@ public class BlockCoverable extends BlockContainer {
         }
 
         if (FeatureRegistry.enableRoutableFluids) {
-            Class<?> clazz = FancyFluidsHelper.getCallerClass();
+            Class<?> clazz = RoutableFluidsHelper.getCallerClass();
             if (clazz != null) {
-                for (Class clazz1 : FancyFluidsHelper.liquidClasses) {
+                for (Class clazz1 : RoutableFluidsHelper.liquidClasses) {
                     if (clazz.isAssignableFrom(clazz1)) {
                         return true;
                     }

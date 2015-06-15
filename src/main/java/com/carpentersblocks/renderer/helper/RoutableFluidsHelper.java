@@ -6,8 +6,12 @@ import static net.minecraftforge.common.util.ForgeDirection.SOUTH;
 import static net.minecraftforge.common.util.ForgeDirection.WEST;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
+import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.IIcon;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -21,13 +25,19 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class FancyFluidsHelper {
+public class RoutableFluidsHelper {
 
     public final static Class[] liquidClasses = { BlockLiquid.class, IFluidBlock.class};
     private final static int CALLER_SUN = 0;
     private final static int CALLER_SEC = 1;
     private static int callMethod = -1;
 
+    /**
+     * Returns the most optimal available class for use in rendering
+     * routable fluids.
+     *
+     * @return a class
+     */
     public static Class getCallerClass()
     {
         if (callMethod < 0)
@@ -58,7 +68,7 @@ public class FancyFluidsHelper {
     }
 
     /**
-     * Renders fancy fluid.
+     * Renders routable fluid.
      *
      * @param  TE the {@link TEBase}
      * @param  renderBlocks the {@link RenderBlocks}
@@ -80,19 +90,7 @@ public class FancyFluidsHelper {
             {
                 if (!block.hasTileEntity(metadata))
                 {
-                    LightingHelper lightingHelper = new LightingHelper(renderBlocks);
-
-                    // Set to liquid metadata for accurate brightness and color
-                    TE.setMetadata(metadata);
-                    lightingHelper.setupLightingYPos(itemStack, x, y, z);
-                    int color = block.colorMultiplier(TE.getWorldObj(), x, y, z);
-                    lightingHelper.setupColor(x, y, z, 1, color, null);
-                    TE.restoreMetadata();
-
-                    double fluidHeight = (block instanceof BlockLiquid ? 1.0D - 1.0F / 9.0F : 0.875F) - 0.0010000000474974513D;
-                    renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, fluidHeight, 1.0D);
-                    RenderHelper.renderFaceYPos(renderBlocks, x, y, z, block.getIcon(1, metadata));
-
+                    renderLiquidSurface(TE, renderBlocks, itemStack, x, y, z);
                     return true;
                 }
             }
@@ -159,6 +157,86 @@ public class FancyFluidsHelper {
         }
 
         return null;
+    }
+
+    /**
+     * Performs the rendering of the liquid surface.
+     *
+     * @param TE
+     * @param renderBlocks
+     * @param itemStack
+     * @param x
+     * @param y
+     * @param z
+     */
+    public static void renderLiquidSurface(TEBase TE, RenderBlocks renderBlocks, ItemStack itemStack, int x, int y, int z)
+    {
+        Tessellator tessellator = Tessellator.instance;
+        Block block = BlockProperties.toBlock(itemStack);
+        Material material = block.getMaterial();
+        double offset = 0.0010000000474974513D;
+        IIcon icon = renderBlocks.getBlockIconFromSideAndMetadata(block, 1, itemStack.getItemDamage());
+
+        float flowDir = (float)BlockLiquid.getFlowDirection(renderBlocks.blockAccess, x, y, z, material);
+
+        if (flowDir > -999.0F) {
+            icon = renderBlocks.getBlockIconFromSideAndMetadata(block, 2, itemStack.getItemDamage());
+        }
+
+        double u_XZNN;
+        double u_XZNP;
+        double u_XZPP;
+        double u_XZPN;
+        double v_XZNN;
+        double v_XZNP;
+        double v_XZPP;
+        double v_XZPN;
+
+        if (flowDir < -999.0F)
+        {
+            u_XZNN = (double)icon.getInterpolatedU(0.0D);
+            v_XZNN = (double)icon.getInterpolatedV(0.0D);
+            u_XZNP = u_XZNN;
+            v_XZNP = (double)icon.getInterpolatedV(16.0D);
+            u_XZPP = (double)icon.getInterpolatedU(16.0D);
+            v_XZPP = v_XZNP;
+            u_XZPN = u_XZPP;
+            v_XZPN = v_XZNN;
+        }
+        else
+        {
+            float sinDir = MathHelper.sin(flowDir) * 0.25F;
+            float cosDir = MathHelper.cos(flowDir) * 0.25F;
+            u_XZNN = (double)icon.getInterpolatedU((double)(8.0F + (-cosDir - sinDir) * 16.0F));
+            v_XZNN = (double)icon.getInterpolatedV((double)(8.0F + (-cosDir + sinDir) * 16.0F));
+            u_XZNP = (double)icon.getInterpolatedU((double)(8.0F + (-cosDir + sinDir) * 16.0F));
+            v_XZNP = (double)icon.getInterpolatedV((double)(8.0F + (cosDir + sinDir) * 16.0F));
+            u_XZPP = (double)icon.getInterpolatedU((double)(8.0F + (cosDir + sinDir) * 16.0F));
+            v_XZPP = (double)icon.getInterpolatedV((double)(8.0F + (cosDir - sinDir) * 16.0F));
+            u_XZPN = (double)icon.getInterpolatedU((double)(8.0F + (cosDir - sinDir) * 16.0F));
+            v_XZPN = (double)icon.getInterpolatedV((double)(8.0F + (-cosDir - sinDir) * 16.0F));
+        }
+
+        double height_XZNN = (double)renderBlocks.getLiquidHeight(x, y, z, material) - offset;
+        double height_XZNP = (double)renderBlocks.getLiquidHeight(x, y, z + 1, material) - offset;
+        double height_XZPN = (double)renderBlocks.getLiquidHeight(x + 1, y, z, material) - offset;
+        double height_XZPP = (double)renderBlocks.getLiquidHeight(x + 1, y, z + 1, material) - offset;
+
+        int colorMultiplier = block.colorMultiplier(renderBlocks.blockAccess, x, y, z);
+        float red = (float)(colorMultiplier >> 16 & 255) / 255.0F;
+        float green = (float)(colorMultiplier >> 8 & 255) / 255.0F;
+        float blue = (float)(colorMultiplier & 255) / 255.0F;
+
+        tessellator.setBrightness(block.getMixedBrightnessForBlock(renderBlocks.blockAccess, x, y, z));
+        tessellator.setColorOpaque_F(red, green, blue);
+        tessellator.addVertexWithUV((double)x, (double)y + height_XZNN, (double)z, u_XZNN, v_XZNN);
+        tessellator.addVertexWithUV((double)x, (double)y + height_XZNP, (double)(z + 1), u_XZNP, v_XZNP);
+        tessellator.addVertexWithUV((double)(x + 1), (double)y + height_XZPP, (double)(z + 1), u_XZPP, v_XZPP);
+        tessellator.addVertexWithUV((double)(x + 1), (double)y + height_XZPN, (double)z, u_XZPN, v_XZPN);
+        tessellator.addVertexWithUV((double)x, (double)y + height_XZNN, (double)z, u_XZNN, v_XZNN);
+        tessellator.addVertexWithUV((double)(x + 1), (double)y + height_XZPN, (double)z, u_XZPN, v_XZPN);
+        tessellator.addVertexWithUV((double)(x + 1), (double)y + height_XZPP, (double)(z + 1), u_XZPP, v_XZPP);
+        tessellator.addVertexWithUV((double)x, (double)y + height_XZNP, (double)(z + 1), u_XZNP, v_XZNP);
     }
 
 }

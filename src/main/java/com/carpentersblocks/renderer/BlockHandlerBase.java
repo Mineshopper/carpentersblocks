@@ -17,7 +17,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import org.lwjgl.opengl.GL11;
 import com.carpentersblocks.block.BlockCoverable;
 import com.carpentersblocks.data.Slope;
-import com.carpentersblocks.renderer.helper.FancyFluidsHelper;
+import com.carpentersblocks.renderer.helper.RoutableFluidsHelper;
 import com.carpentersblocks.renderer.helper.LightingHelper;
 import com.carpentersblocks.renderer.helper.RenderHelper;
 import com.carpentersblocks.renderer.helper.VertexHelper;
@@ -129,7 +129,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
             renderSideBlocks(x, y, z);
 
             if (FeatureRegistry.enableRoutableFluids) {
-                VertexHelper.vertexCount += FancyFluidsHelper.render(TE, renderBlocks, x, y, z) ? 4 : 0;
+                VertexHelper.vertexCount += RoutableFluidsHelper.render(TE, renderBlocks, x, y, z) ? 4 : 0;
             }
 
             if (FeatureRegistry.enableRailSlopes)
@@ -137,11 +137,13 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
                 if (blockAccess.isSideSolid(x, y, z, ForgeDirection.UP, false) && blockAccess.getBlock(x, y + 1, z) instanceof BlockRailBase)
                 {
                     int metadata = blockAccess.getBlockMetadata(x, y + 1, z);
+
                     BlockHandlerCarpentersSlope slopeHandler = new BlockHandlerCarpentersSlope();
                     slopeHandler.renderBlocks = this.renderBlocks;
                     slopeHandler.TE = TE;
                     slopeHandler.lightingHelper = lightingHelper;
                     slopeHandler.srcBlock = srcBlock;
+
                     switch (metadata)
                     {
                         case 2: // Sloping down -X (West)
@@ -599,7 +601,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
 
         /* Render BlockGrass side overlay here, if needed. */
 
-        if (renderPass == PASS_OPAQUE & block.equals(Blocks.grass) & side > 0 & !isPositiveFace(side)) {
+        if (renderPass == PASS_OPAQUE && block.equals(Blocks.grass) && side > 0 && !isPositiveFace(side)) {
             if (Minecraft.isFancyGraphicsEnabled()) {
                 setColorAndRender(new ItemStack(Blocks.grass), x, y, z, side, BlockGrass.getIconSideOverlay());
             } else {
@@ -610,13 +612,13 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
         boolean temp_dye_state = suppressDyeColor;
         suppressDyeColor = true;
 
-        if (hasDesign & !suppressChiselDesign & renderPass == PASS_ALPHA) {
+        if (hasDesign && !suppressChiselDesign && renderPass == PASS_ALPHA) {
             RenderHelper.setOffset(RenderHelper.OFFSET_MIN);
             renderChiselDesign(x, y, z, side);
             RenderHelper.clearOffset();
         }
 
-        if (hasOverlay & !suppressOverlay & renderPass == PASS_OPAQUE) {
+        if (hasOverlay && !suppressOverlay && renderPass == PASS_OPAQUE) {
             RenderHelper.setOffset(overlayOffset);
             renderOverlay(x, y, z, side);
             RenderHelper.clearOffset();
