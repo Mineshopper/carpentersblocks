@@ -103,7 +103,7 @@ public class BlockHandlerCarpentersCollapsibleBlock extends BlockHandlerSloped {
 
         VertexHelper.startDrawing(GL11.GL_QUADS);
         renderBlocks.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
-        prepareLighting(itemStack);
+        prepareLighting(itemStack, x, y, z);
 
         /* BOTTOM FACE */
         if (srcBlock.shouldSideBeRendered(TE.getWorldObj(), x, y - 1, z, DOWN)) {
