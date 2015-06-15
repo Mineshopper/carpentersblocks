@@ -17,6 +17,7 @@ public class FeatureRegistry {
     public static boolean enableIllumination        = true;
     public static boolean enableRoutableFluids      = false;
     public static boolean enableAlphaPanes          = true;
+    public static boolean enableRailSlopes          = true;
 
     public static ArrayList<String> overlayItems    = new ArrayList<String>();
     public static ArrayList<String> coverExceptions = new ArrayList<String>();
@@ -57,6 +58,10 @@ public class FeatureRegistry {
         Property alphaPaneProp = config.get("features", "Enable Pane Alpha Rendering", enableAlphaPanes);
         alphaPaneProp.comment = "This controls whether panes (used in doors, hatches, and other blocks) should render on alpha pass.\nThis is needed to allow translucent window glass, for instance.";
         enableAlphaPanes = alphaPaneProp.getBoolean(enableAlphaPanes);
+
+        Property railSlopesProp = config.get("features", "Enable Rail Slope Fill", enableRailSlopes);
+        railSlopesProp.comment = "This allows Carpenter's Blocks with solid top faces to create slopes above them when a sloping rail is above the block.";
+        enableRailSlopes = railSlopesProp.getBoolean(enableRailSlopes);
 
         Property overlayList = config.get("features", "Overlay Definitions", new String[] { "Seeds:grass", "Snowball:snow", "String:web", "Vines:vine", "Wheat:hay", "Mushroom:mycelium" });
         overlayList.comment = "This maps items to overlays.\nItems are prefixed with display names (en_US only).\nOverlay suffixes are :grass, :snow, :web, :vine, :hay, :mycelium";

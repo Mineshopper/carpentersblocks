@@ -43,38 +43,38 @@ public abstract class BlockHandlerSloped extends BlockHandlerBase {
     /**
      * Prepares lighting for block and offset faces.
      */
-    protected void prepareLighting(ItemStack itemStack)
+    protected void prepareLighting(ItemStack itemStack, int x, int y, int z)
     {
         for (int side = 0; side < 6; ++side) {
-            populateLighting(itemStack, side);
-            populateOffsetLighting(itemStack, side);
+            populateLighting(itemStack, x, y, z, side);
+            populateOffsetLighting(itemStack, x, y, z, side);
         }
     }
 
     /**
      * Fills ambient occlusion and brightness tables.
      */
-    private void populateLighting(ItemStack itemStack, int side)
+    private void populateLighting(ItemStack itemStack, int x, int y, int z, int side)
     {
         switch (side)
         {
             case DOWN:
-                lightingHelper.setupLightingYNeg(itemStack, TE.xCoord, TE.yCoord, TE.zCoord);
+                lightingHelper.setupLightingYNeg(itemStack, x, y, z);
                 break;
             case UP:
-                lightingHelper.setupLightingYPos(itemStack, TE.xCoord, TE.yCoord, TE.zCoord);
+                lightingHelper.setupLightingYPos(itemStack, x, y, z);
                 break;
             case NORTH:
-                lightingHelper.setupLightingZNeg(itemStack, TE.xCoord, TE.yCoord, TE.zCoord);
+                lightingHelper.setupLightingZNeg(itemStack, x, y, z);
                 break;
             case SOUTH:
-                lightingHelper.setupLightingZPos(itemStack, TE.xCoord, TE.yCoord, TE.zCoord);
+                lightingHelper.setupLightingZPos(itemStack, x, y, z);
                 break;
             case WEST:
-                lightingHelper.setupLightingXNeg(itemStack, TE.xCoord, TE.yCoord, TE.zCoord);
+                lightingHelper.setupLightingXNeg(itemStack, x, y, z);
                 break;
             case EAST:
-                lightingHelper.setupLightingXPos(itemStack, TE.xCoord, TE.yCoord, TE.zCoord);
+                lightingHelper.setupLightingXPos(itemStack, x, y, z);
                 break;
         }
 
@@ -94,7 +94,7 @@ public abstract class BlockHandlerSloped extends BlockHandlerBase {
     /**
      * Fills ambient occlusion and brightness tables for offset block coordinates.
      */
-    private void populateOffsetLighting(ItemStack itemStack, int side)
+    private void populateOffsetLighting(ItemStack itemStack, int x, int y, int z, int side)
     {
         double renderTemp;
 
@@ -103,37 +103,37 @@ public abstract class BlockHandlerSloped extends BlockHandlerBase {
             case DOWN:
                 renderTemp = renderBlocks.renderMinY;
                 renderBlocks.renderMinY = 0.0D;
-                lightingHelper.setupLightingYNeg(itemStack, TE.xCoord, TE.yCoord + 1, TE.zCoord);
+                lightingHelper.setupLightingYNeg(itemStack, x, y + 1, z);
                 renderBlocks.renderMinY = renderTemp;
                 break;
             case UP:
                 renderTemp = renderBlocks.renderMaxY;
                 renderBlocks.renderMaxY = 1.0D;
-                lightingHelper.setupLightingYPos(itemStack, TE.xCoord, TE.yCoord - 1, TE.zCoord);
+                lightingHelper.setupLightingYPos(itemStack, x, y - 1, z);
                 renderBlocks.renderMaxY = renderTemp;
                 break;
             case NORTH:
                 renderTemp = renderBlocks.renderMinZ;
                 renderBlocks.renderMinZ = 0.0D;
-                lightingHelper.setupLightingZNeg(itemStack, TE.xCoord, TE.yCoord, TE.zCoord + 1);
+                lightingHelper.setupLightingZNeg(itemStack, x, y, z + 1);
                 renderBlocks.renderMinZ = renderTemp;
                 break;
             case SOUTH:
                 renderTemp = renderBlocks.renderMaxZ;
                 renderBlocks.renderMaxZ = 1.0D;
-                lightingHelper.setupLightingZPos(itemStack, TE.xCoord, TE.yCoord, TE.zCoord - 1);
+                lightingHelper.setupLightingZPos(itemStack, x, y, z - 1);
                 renderBlocks.renderMaxZ = renderTemp;
                 break;
             case WEST:
                 renderTemp = renderBlocks.renderMinX;
                 renderBlocks.renderMinX = 0.0D;
-                lightingHelper.setupLightingXNeg(itemStack, TE.xCoord + 1, TE.yCoord, TE.zCoord);
+                lightingHelper.setupLightingXNeg(itemStack, x + 1, y, z);
                 renderBlocks.renderMinX = renderTemp;
                 break;
             case EAST:
                 renderTemp = renderBlocks.renderMaxX;
                 renderBlocks.renderMaxX = 1.0D;
-                lightingHelper.setupLightingXPos(itemStack, TE.xCoord - 1, TE.yCoord, TE.zCoord);
+                lightingHelper.setupLightingXPos(itemStack, x - 1, y, z);
                 renderBlocks.renderMaxX = renderTemp;
                 break;
         }

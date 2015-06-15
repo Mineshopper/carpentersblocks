@@ -2,6 +2,7 @@ package com.carpentersblocks.renderer;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockGrass;
+import net.minecraft.block.BlockRailBase;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
@@ -15,6 +16,7 @@ import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.util.ForgeDirection;
 import org.lwjgl.opengl.GL11;
 import com.carpentersblocks.block.BlockCoverable;
+import com.carpentersblocks.data.Slope;
 import com.carpentersblocks.renderer.helper.FancyFluidsHelper;
 import com.carpentersblocks.renderer.helper.LightingHelper;
 import com.carpentersblocks.renderer.helper.RenderHelper;
@@ -130,6 +132,34 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
                 VertexHelper.vertexCount += FancyFluidsHelper.render(TE, renderBlocks, x, y, z) ? 4 : 0;
             }
 
+            if (FeatureRegistry.enableRailSlopes)
+            {
+                if (blockAccess.isSideSolid(x, y, z, ForgeDirection.UP, false) && blockAccess.getBlock(x, y + 1, z) instanceof BlockRailBase)
+                {
+                    int metadata = blockAccess.getBlockMetadata(x, y + 1, z);
+                    BlockHandlerCarpentersSlope slopeHandler = new BlockHandlerCarpentersSlope();
+                    slopeHandler.renderBlocks = this.renderBlocks;
+                    slopeHandler.TE = TE;
+                    slopeHandler.lightingHelper = lightingHelper;
+                    slopeHandler.srcBlock = srcBlock;
+                    switch (metadata)
+                    {
+                        case 2: // Sloping down -X (West)
+                            slopeHandler.renderSlope(getCoverForRendering(TE), Slope.WEDGE_POS_W, x, y + 1, z, true);
+                            break;
+                        case 3: // Sloping down +X (East)
+                            slopeHandler.renderSlope(getCoverForRendering(TE), Slope.WEDGE_POS_E, x, y + 1, z, true);
+                            break;
+                        case 4: // Sloping down +Z (South)
+                            slopeHandler.renderSlope(getCoverForRendering(TE), Slope.WEDGE_POS_S, x, y + 1, z, true);
+                            break;
+                        case 5: // Sloping down -Z (North)
+                            slopeHandler.renderSlope(getCoverForRendering(TE), Slope.WEDGE_POS_N, x, y + 1, z, true);
+                            break;
+                        default: {}
+                    }
+                }
+            }
         }
 
         return VertexHelper.vertexCount > 0;
