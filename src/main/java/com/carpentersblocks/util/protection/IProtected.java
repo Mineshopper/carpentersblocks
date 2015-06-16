@@ -1,17 +1,17 @@
 package com.carpentersblocks.util.protection;
 
-import java.util.UUID;
 
 public interface IProtected {
 
     /**
-     * Returns object owner as UUID string.
+     * Returns object owner as string (UUID for online-mode, player name for offline-mode).
      */
     public String getOwner();
+
 
     /**
      * Sets owner of object.
      */
-    public void setOwner(UUID uuid);
+    public void setOwner(ProtectedObject obj);
 
 }

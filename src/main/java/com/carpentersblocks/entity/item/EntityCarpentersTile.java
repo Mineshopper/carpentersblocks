@@ -60,7 +60,7 @@ public class EntityCarpentersTile extends EntityBase {
 
     public EntityCarpentersTile(EntityPlayer entityPlayer, World world, int x, int y, int z, ForgeDirection dir, ForgeDirection offset_side, boolean ignoreNeighbors)
     {
-        super(world, entityPlayer.getUniqueID());
+        super(world, entityPlayer);
         posX = x;
         posY = y;
         posZ = z;

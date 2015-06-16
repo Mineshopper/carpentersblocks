@@ -1,5 +1,6 @@
 package com.carpentersblocks.util.protection;
 
+import java.util.UUID;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import com.carpentersblocks.util.registry.FeatureRegistry;
@@ -47,9 +48,21 @@ public class PlayerPermissions {
         }
     }
 
-    public static boolean isOwner(IProtected object, EntityPlayer entityPlayer)
+    /**
+     * Whether the player is the owner of the object.
+     *
+     * @param object
+     * @param entityPlayer
+     * @return <code>true</code> if player is owner
+     */
+    private static boolean isOwner(IProtected object, EntityPlayer entityPlayer)
     {
-        return object.getOwner().equals(entityPlayer.getUniqueID().toString());
+        try {
+            UUID.fromString(object.getOwner());
+            return object.getOwner().equals(entityPlayer.getUniqueID().toString());
+        } catch (IllegalArgumentException e) {
+            return object.getOwner().equals(entityPlayer.getDisplayName());
+        }
     }
 
 }

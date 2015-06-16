@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
-import java.util.UUID;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDirectional;
 import net.minecraft.item.Item;
@@ -20,6 +19,7 @@ import com.carpentersblocks.block.BlockCoverable;
 import com.carpentersblocks.util.BlockProperties;
 import com.carpentersblocks.util.handler.DesignHandler;
 import com.carpentersblocks.util.protection.IProtected;
+import com.carpentersblocks.util.protection.ProtectedObject;
 
 public class TEBase extends TileEntity implements IProtected {
 
@@ -196,9 +196,9 @@ public class TEBase extends TileEntity implements IProtected {
      * Sets owner of tile entity.
      */
     @Override
-    public void setOwner(UUID uuid)
+    public void setOwner(ProtectedObject obj)
     {
-        cbOwner = uuid.toString();
+        cbOwner = obj.toString();
         markDirty();
     }
 

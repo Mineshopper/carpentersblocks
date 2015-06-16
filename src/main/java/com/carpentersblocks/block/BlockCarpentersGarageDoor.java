@@ -19,6 +19,7 @@ import com.carpentersblocks.data.GarageDoor;
 import com.carpentersblocks.tileentity.TEBase;
 import com.carpentersblocks.util.EntityLivingUtil;
 import com.carpentersblocks.util.handler.ChatHandler;
+import com.carpentersblocks.util.protection.ProtectedObject;
 import com.carpentersblocks.util.registry.BlockRegistry;
 import com.carpentersblocks.util.registry.IconRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -201,7 +202,7 @@ public class BlockCarpentersGarageDoor extends BlockCoverable {
                 data.setType(temp, type);
                 data.setState(temp, state, false);
                 data.setRigidity(temp, rigid);
-                temp.setOwner(entity.getUniqueID());
+                temp.setOwner(new ProtectedObject((EntityPlayer)entity));
             }
         }
     }

@@ -44,6 +44,7 @@ import com.carpentersblocks.util.handler.EventHandler;
 import com.carpentersblocks.util.handler.OverlayHandler;
 import com.carpentersblocks.util.handler.OverlayHandler.Overlay;
 import com.carpentersblocks.util.protection.PlayerPermissions;
+import com.carpentersblocks.util.protection.ProtectedObject;
 import com.carpentersblocks.util.registry.FeatureRegistry;
 import com.carpentersblocks.util.registry.IconRegistry;
 import com.carpentersblocks.util.registry.ItemRegistry;
@@ -1253,7 +1254,7 @@ public class BlockCoverable extends BlockContainer {
             TEBase TE = getTileEntity(world, x, y, z);
 
             if (TE != null) {
-                TE.setOwner(entityLiving.getUniqueID());
+                TE.setOwner(new ProtectedObject((EntityPlayer)entityLiving));
             }
 
         }
