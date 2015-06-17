@@ -143,6 +143,7 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
                     slopeHandler.TE = TE;
                     slopeHandler.lightingHelper = lightingHelper;
                     slopeHandler.srcBlock = srcBlock;
+                    slopeHandler.suppressOverlay = true;
 
                     switch (metadata)
                     {
