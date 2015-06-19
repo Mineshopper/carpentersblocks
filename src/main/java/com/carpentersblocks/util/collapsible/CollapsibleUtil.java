@@ -12,24 +12,20 @@ public class CollapsibleUtil {
     public static double offset_XZPN;
     public static double offset_XZPP;
 
-    public static boolean isFullyCollapsed(TEBase TE)
+    /**
+     * Returns true if fully collapsed.
+     */
+    public static boolean isMin(TEBase TE)
     {
-        int combinedHeight = Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZNN) +
-                             Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZNP) +
-                             Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZPN) +
-                             Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZPP);
-
-        return combinedHeight == 16 * 4;
+        return TE.getData() == 0;
     }
 
-    public static boolean isFullHeight(TEBase TE)
+    /**
+     * Returns true if a full cube.
+     */
+    public static boolean isMax(TEBase TE)
     {
-        int combinedHeight = Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZNN) +
-                             Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZNP) +
-                             Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZPN) +
-                             Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZPP);
-
-        return combinedHeight == 0;
+        return TE.getData() == 0xfffff;
     }
 
     /**
@@ -37,12 +33,12 @@ public class CollapsibleUtil {
      */
     public static void computeOffsets(TEBase TE)
     {
-        double BIAS = isFullyCollapsed(TE) ? 0.0D : 1.0D / 1024.0D; /* small offset to prevent Z-fighting at height 1 */
+        double BIAS = isMin(TE) ? 1.0D / 1024.0D : 0.0D; /* small offset to prevent Z-fighting at height 0 */
 
-        offset_XZNN = (Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZNN) - 1.0D) / 15.0D + BIAS;
-        offset_XZNP = (Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZNP) - 1.0D) / 15.0D + BIAS;
-        offset_XZPN = (Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZPN) - 1.0D) / 15.0D + BIAS;
-        offset_XZPP = (Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZPP) - 1.0D) / 15.0D + BIAS;
+        offset_XZNN = Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZNN) / 16.0D + BIAS;
+        offset_XZNP = Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZNP) / 16.0D + BIAS;
+        offset_XZPN = Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZPN) / 16.0D + BIAS;
+        offset_XZPP = Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZPP) / 16.0D + BIAS;
 
         /* Find primary corners and set center yMax offset. */
 
@@ -68,7 +64,7 @@ public class CollapsibleUtil {
         float maxHeight = 0.0F;
 
         for (int quadrant = 0; quadrant < 4; ++quadrant) {
-            float quadHeight = (Collapsible.getQuadHeight(TE, quadrant) - 1.0F) / 15.0F;
+            float quadHeight = Collapsible.getQuadHeight(TE, quadrant) / 16.0F;
             if (quadHeight > maxHeight) {
                 maxHeight = quadHeight;
             }
@@ -108,7 +104,7 @@ public class CollapsibleUtil {
         }
 
         float maxHeight = getBoundsMaxHeight(TE);
-        float height = (Collapsible.getQuadHeight(TE, quad) - 1.0F) / 15.0F;
+        float height = Collapsible.getQuadHeight(TE, quad) / 16.0F;
 
         /* Make quads stagger no more than 0.5F so player can always walk across them. */
         if (maxHeight - height > 0.5F) {

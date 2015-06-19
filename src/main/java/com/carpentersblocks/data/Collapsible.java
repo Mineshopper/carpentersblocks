@@ -1,14 +1,16 @@
 package com.carpentersblocks.data;
 
+import net.minecraftforge.common.util.ForgeDirection;
 import com.carpentersblocks.tileentity.TEBase;
+import com.carpentersblocks.util.collapsible.CollapsibleUtil;
 
 public class Collapsible {
 
     /**
-     * 16-bit data components:
+     * 32-bit data components:
      *
-     * [0000]  [0000]  [0000]  [0000]
-     * XZNN    XZNP    XZPN    XZPP
+     * [000000000000] [00000] [00000] [00000] [00000]
+     * Unused         XZNN    XZNP    XZPN    XZPP
      */
 
     public final static int QUAD_XZNN = 0;
@@ -40,62 +42,86 @@ public class Collapsible {
     }
 
     /**
-     * Sets height of corner as value from 1 to 16.
-     * Will correct out-of-range values automatically, and won't cause block update if height doesn't change.
+     * Sets height of corner as value from 0 to 16.
      */
     public static void setQuadHeight(TEBase TE, int corner, int height)
     {
+        if (height < 0 || height > 16) {
+            return;
+        }
+
         int data = TE.getData();
-        --height;
+        switch (corner) {
+            case QUAD_XZNN:
+                data &= ~0xf8000;
+                data |= height << 15;
+                break;
+            case QUAD_XZNP:
+                data &= ~0x7c00;
+                data |= height << 10;
+                break;
+            case QUAD_XZPN:
+                data &= ~0x3e0;
+                data |= height << 5;
+                break;
+            case QUAD_XZPP:
+                data &= ~0x1f;
+                data |= height;
+                break;
+        }
 
-        if (height >= 0 && height < 16)
-        {
-            switch (corner) {
-                case QUAD_XZNN:
-                    data &= ~0xf000;
-                    data |= 15 - height << 12;
-                    break;
-                case QUAD_XZNP:
-                    data &= ~0x0f00;
-                    data |= 15 - height << 8;
-                    break;
-                case QUAD_XZPN:
-                    data &= ~0x00f0;
-                    data |= 15 - height << 4;
-                    break;
-                case QUAD_XZPP:
-                    data &= ~0xf;
-                    data |= 15 - height;
-                    break;
-            }
-
-            if (TE.getData() != data) {
-                TE.setData(data);
-            }
+        if (TE.getData() != data) {
+            TE.setData(data);
         }
     }
 
     /**
-     * Returns height of corner as value from 1 to 16.
+     * Returns height of corner as value from 0 to 16.
      */
     public static int getQuadHeight(final TEBase TE, int corner)
     {
-        int data = TE.getData();
+        int height = 0;
 
+        int data = TE.getData();
         switch (corner) {
             case QUAD_XZNN:
-                data &= 0xf000;
-                return 16 - (data >> 12);
+                data &= 0xf8000;
+                height = data >> 15;
+                break;
             case QUAD_XZNP:
-                data &= 0x0f00;
-                return 16 - (data >> 8);
+                data &= 0x7c00;
+                height = data >> 10;
+                break;
             case QUAD_XZPN:
-                data &= 0x00f0;
-                return 16 - (data >> 4);
+                data &= 0x3e0;
+                height = data >> 5;
+                break;
             case QUAD_XZPP:
-                return 16 - (data &= 0xf);
+                height = data & 0x1f;
+                break;
+        }
+
+        return height > 16 ? 16 : height;
+    }
+
+    public static boolean isSideSolid(final TEBase TE, ForgeDirection side)
+    {
+        switch (side)
+        {
+            case DOWN:
+                return true;
+            case UP:
+                return CollapsibleUtil.isMax(TE);
+            case NORTH:
+                return Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZNN) + Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZPN) == 32;
+            case SOUTH:
+                return Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZNP) + Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZPP) == 32;
+            case WEST:
+                return Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZNP) + Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZNN) == 32;
+            case EAST:
+                return Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZPN) + Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZPP) == 32;
             default:
-                return 16;
+                return true;
         }
     }
 

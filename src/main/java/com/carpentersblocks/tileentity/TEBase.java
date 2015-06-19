@@ -10,6 +10,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTTagShort;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
@@ -46,7 +47,7 @@ public class TEBase extends TileEntity implements IProtected {
     protected String[] cbChiselDesign = { "", "", "", "", "", "", "" };
 
     /** Holds specific block information like facing, states, etc. */
-    protected short cbMetadata;
+    protected int cbMetadata;
 
     /** Design name. */
     protected String cbDesign = "";
@@ -77,7 +78,13 @@ public class TEBase extends TileEntity implements IProtected {
                 cbChiselDesign[idx] = nbt.getString(TAG_CHISEL_DESIGN + "_" + idx);
             }
 
-            cbMetadata = nbt.getShort(TAG_METADATA);
+            // 3.3.7 DEV converted cbMetadata to integer
+            if (nbt.getTag(TAG_METADATA) instanceof NBTTagShort) {
+                cbMetadata = nbt.getShort(TAG_METADATA);
+            } else {
+                cbMetadata = nbt.getInteger(TAG_METADATA);
+            }
+
             cbDesign = nbt.getString(TAG_DESIGN);
             cbOwner = nbt.getString(TAG_OWNER);
         }
@@ -104,7 +111,7 @@ public class TEBase extends TileEntity implements IProtected {
             nbt.setString(TAG_CHISEL_DESIGN + "_" + idx, cbChiselDesign[idx]);
         }
 
-        nbt.setShort(TAG_METADATA, cbMetadata);
+        nbt.setInteger(TAG_METADATA, cbMetadata);
         nbt.setString(TAG_DESIGN, cbDesign);
         nbt.setString(TAG_OWNER, cbOwner);
     }
@@ -390,7 +397,7 @@ public class TEBase extends TileEntity implements IProtected {
      */
     public int getData()
     {
-        return cbMetadata & 0xffff;
+        return cbMetadata;
     }
 
     /**
@@ -399,7 +406,7 @@ public class TEBase extends TileEntity implements IProtected {
     public boolean setData(int data)
     {
         if (data != getData()) {
-            cbMetadata = (short) data;
+            cbMetadata = data;
             getWorldObj().markBlockForUpdate(xCoord, yCoord, zCoord);
             return true;
         }

@@ -162,26 +162,9 @@ public class BlockCarpentersCollapsibleBlock extends BlockCoverable {
         TEBase TE = getTileEntity(blockAccess, x, y, z);
 
         if (TE != null) {
-
             if (isBlockSolid(blockAccess, x, y, z)) {
-
-                switch (side) {
-                    case UP:
-                        return TE.getData() == 0;
-                    case NORTH:
-                        return Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZNN) + Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZPN) == 32;
-                    case SOUTH:
-                        return Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZNP) + Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZPP) == 32;
-                    case WEST:
-                        return Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZNP) + Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZNN) == 32;
-                    case EAST:
-                        return Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZPN) + Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZPP) == 32;
-                    default:
-                        return true;
-                }
-
+                return Collapsible.isSideSolid(TE, side);
             }
-
         }
 
         return false;
@@ -237,10 +220,10 @@ public class BlockCarpentersCollapsibleBlock extends BlockCoverable {
         Block block = blockAccess.getBlock(x, y, z);
 
         if (!block.getMaterial().blocksMovement()) {
-            return 1;
+            return 0;
         }
 
-        return (int) (block.getBlockBoundsMaxY() * 15.0 + 1.0);
+        return (int) (block.getBlockBoundsMaxY() * 16.0);
     }
 
     @Override
@@ -260,7 +243,7 @@ public class BlockCarpentersCollapsibleBlock extends BlockCoverable {
                 /* Create a linear slope from neighbor blocks and collapsible quadrants. */
 
                 /* Mininum and maximum height of quadrants */
-                final int MIN_HEIGHT = 1;
+                final int MIN_HEIGHT = 0;
                 final int MAX_HEIGHT = 16;
 
                 /* find slopes in landscape */

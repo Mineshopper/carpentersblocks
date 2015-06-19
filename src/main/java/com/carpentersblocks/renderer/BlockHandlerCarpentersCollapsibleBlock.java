@@ -92,7 +92,7 @@ public class BlockHandlerCarpentersCollapsibleBlock extends BlockHandlerSloped {
 
         /* Render top slopes. */
 
-        if (srcBlock.shouldSideBeRendered(TE.getWorldObj(), x, y + 1, z, UP) || !CollapsibleUtil.isFullHeight(TE)) {
+        if (srcBlock.shouldSideBeRendered(TE.getWorldObj(), x, y + 1, z, UP) || !CollapsibleUtil.isMax(TE)) {
             VertexHelper.startDrawing(GL11.GL_TRIANGLES);
             isSideSloped = true;
             prepareTopFace(itemStack, x, y, z);
@@ -111,32 +111,32 @@ public class BlockHandlerCarpentersCollapsibleBlock extends BlockHandlerSloped {
             setIDAndRender(itemStack, NORMAL_YN, x, y, z, DOWN);
         }
 
-        double oneStep = 1.0D / 15.0D;
+        double step = 1.0D / 16.0D;
 
         /* NORTH FACE */
         if (srcBlock.shouldSideBeRendered(TE.getWorldObj(), x, y, z - 1, NORTH)) {
-            if (CollapsibleUtil.offset_XZNN + CollapsibleUtil.offset_XZPN >= oneStep) {
+            if (CollapsibleUtil.offset_XZNN + CollapsibleUtil.offset_XZPN >= step) {
                 prepareFaceZNeg(itemStack, x, y, z);
             }
         }
 
         /* SOUTH FACE */
         if (srcBlock.shouldSideBeRendered(TE.getWorldObj(), x, y, z + 1, SOUTH)) {
-            if (CollapsibleUtil.offset_XZNP + CollapsibleUtil.offset_XZPP >= oneStep) {
+            if (CollapsibleUtil.offset_XZNP + CollapsibleUtil.offset_XZPP >= step) {
                 prepareFaceZPos(itemStack, x, y, z);
             }
         }
 
         /* WEST FACE */
         if (srcBlock.shouldSideBeRendered(TE.getWorldObj(), x - 1, y, z, WEST)) {
-            if (CollapsibleUtil.offset_XZNN + CollapsibleUtil.offset_XZNP >= oneStep) {
+            if (CollapsibleUtil.offset_XZNN + CollapsibleUtil.offset_XZNP >= step) {
                 prepareFaceXNeg(itemStack, x, y, z);
             }
         }
 
         /* EAST FACE */
         if (srcBlock.shouldSideBeRendered(TE.getWorldObj(), x + 1, y, z, EAST)) {
-            if (CollapsibleUtil.offset_XZPN + CollapsibleUtil.offset_XZPP >= oneStep) {
+            if (CollapsibleUtil.offset_XZPN + CollapsibleUtil.offset_XZPP >= step) {
                 prepareFaceXPos(itemStack, x, y, z);
             }
         }
