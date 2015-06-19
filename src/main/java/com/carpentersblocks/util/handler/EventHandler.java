@@ -7,6 +7,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -21,6 +22,7 @@ import net.minecraftforge.client.event.sound.PlaySoundEvent17;
 import net.minecraftforge.event.entity.PlaySoundAtEntityEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.world.BlockEvent;
 import com.carpentersblocks.CarpentersBlocks;
 import com.carpentersblocks.api.ICarpentersChisel;
 import com.carpentersblocks.api.ICarpentersHammer;
@@ -60,6 +62,32 @@ public class EventHandler {
         if (event.gui == null) {
             if (ShadersHandler.enableShadersModCoreIntegration) {
                 ShadersHandler.update();
+            }
+        }
+    }
+
+    @SubscribeEvent
+    /**
+     * Used to prevent block destruction if block is a Carpenter's Block
+     * and player is holding a Carpenter's tool.
+     */
+    public void onBlockBreakEvent(BlockEvent.BreakEvent event)
+    {
+        EntityPlayer entityPlayer = event.getPlayer();
+        ItemStack itemStack = entityPlayer.getHeldItem();
+
+        if (entityPlayer == null || itemStack == null) {
+            return;
+        }
+
+        Item item = itemStack.getItem();
+        if (item == null) {
+            return;
+        }
+
+        if (event.block instanceof BlockCoverable) {
+            if (entityPlayer.capabilities.isCreativeMode && (item instanceof ICarpentersHammer || item instanceof ICarpentersChisel)) {
+                event.setCanceled(true);
             }
         }
     }
