@@ -26,7 +26,7 @@ public class EntityBase extends Entity implements IProtected {
     @Override
     public void setOwner(ProtectedObject obj)
     {
-        getDataWatcher().updateObject(ID_OWNER, obj);
+        getDataWatcher().updateObject(ID_OWNER, obj.toString());
     }
 
     @Override
