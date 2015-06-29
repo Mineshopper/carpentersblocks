@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Random;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDirectional;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -15,12 +16,14 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import com.carpentersblocks.block.BlockCoverable;
 import com.carpentersblocks.util.BlockProperties;
 import com.carpentersblocks.util.handler.DesignHandler;
 import com.carpentersblocks.util.protection.IProtected;
 import com.carpentersblocks.util.protection.ProtectedObject;
+import com.carpentersblocks.util.registry.FeatureRegistry;
 
 public class TEBase extends TileEntity implements IProtected {
 
@@ -40,6 +43,9 @@ public class TEBase extends TileEntity implements IProtected {
     public static final byte    ATTR_FERTILIZER   = 24;
     public static final byte    ATTR_UPGRADE      = 25;
 
+    /** Cached light values. */
+    private static Map<Integer,Integer> cache = new HashMap<Integer,Integer>();
+
     /** Map holding all block attributes. */
     protected Map<Byte, ItemStack> cbAttrMap = new HashMap<Byte, ItemStack>();
 
@@ -54,6 +60,9 @@ public class TEBase extends TileEntity implements IProtected {
 
     /** Owner of tile entity. */
     protected String cbOwner = "";
+
+    /** Indicates lighting calculations are underway. **/
+    protected static boolean calcLighting = false;
 
     @Override
     public void readFromNBT(NBTTagCompound nbt)
@@ -87,6 +96,13 @@ public class TEBase extends TileEntity implements IProtected {
 
             cbDesign = nbt.getString(TAG_DESIGN);
             cbOwner = nbt.getString(TAG_OWNER);
+        }
+
+        // Block either loaded or changed, so mark it for render update
+        World world = getWorldObj();
+        if (world != null) {
+            refreshLighting();
+            world.markBlockForUpdate(xCoord, yCoord, zCoord);
         }
     }
 
@@ -140,22 +156,6 @@ public class TEBase extends TileEntity implements IProtected {
     public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt)
     {
         readFromNBT(pkt.func_148857_g());
-
-        /*
-         * Block.getLightValue() is called often when rendering, requiring
-         * expensive tile entity lookups. When data is loaded, update the
-         * light value cache for this entity to speed up the render process.
-         */
-        if (getWorldObj().getBlock(xCoord, yCoord, zCoord) instanceof BlockCoverable)
-        {
-            ((BlockCoverable)getBlockType()).updateLightValue(getWorldObj(), xCoord, yCoord, zCoord);
-        }
-
-        if (worldObj.isRemote) {
-            worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
-            // TODO: Rename to updateAllLightByTypes
-            worldObj.func_147451_t(xCoord, yCoord, zCoord);
-        }
     }
 
     /**
@@ -187,16 +187,6 @@ public class TEBase extends TileEntity implements IProtected {
          * is not only reasonable, but fixes this behavior.
          */
         return oldBlock != newBlock;
-    }
-
-    @Override
-    /**
-     * Called when the chunk this TileEntity is on is Unloaded.
-     */
-    public void onChunkUnload()
-    {
-        int hash = BlockProperties.hashCoords(xCoord, yCoord, zCoord);
-        BlockCoverable.cache.remove(hash);
     }
 
     /**
@@ -278,43 +268,35 @@ public class TEBase extends TileEntity implements IProtected {
 
     public void addAttribute(byte attrId, ItemStack itemStack)
     {
-        if (!hasAttribute(attrId) && itemStack != null) {
-
-            ItemStack reducedStack = null;
-            if (itemStack != null) {
-                reducedStack = ItemStack.copyItemStack(itemStack);
-                reducedStack.stackSize = 1;
-            }
-
-            cbAttrMap.put(attrId, reducedStack);
-
-            World world = getWorldObj();
-            if (world != null) {
-
-                Block block = itemStack == null ? getBlockType() : BlockProperties.toBlock(itemStack);
-
-                if (attrId < 7) {
-                    int metadata = itemStack == null ? 0 : itemStack.getItemDamage();
-                    if (attrId == ATTR_COVER[6]) {
-                        world.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, metadata, 0);
-                    }
-                    world.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, block);
-                } else if (attrId == ATTR_PLANT | attrId == ATTR_SOIL) {
-                    world.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, block);
-                }
-
-                if (attrId == ATTR_FERTILIZER) {
-                    /* Play sound when fertilizing plants.. though I've never heard it before. */
-                    getWorldObj().playAuxSFX(2005, xCoord, yCoord, zCoord, 0);
-                }
-
-                world.markBlockForUpdate(xCoord, yCoord, zCoord);
-
-            }
-
-            markDirty();
-
+        if (hasAttribute(attrId) || itemStack == null) {
+            return;
         }
+
+        // Reduce stack size to 1 and save attribute
+        ItemStack reducedStack = ItemStack.copyItemStack(itemStack);
+        reducedStack.stackSize = 1;
+        cbAttrMap.put(attrId, reducedStack);
+
+        // Produce world events if specific attributes are set
+        World world = getWorldObj();
+        Block block = BlockProperties.toBlock(itemStack);
+
+        if (attrId < 7) {
+            if (attrId == ATTR_COVER[6]) {
+                int metadata = itemStack.getItemDamage();
+                world.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, metadata, 0);
+            }
+            world.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, block);
+        } else if (attrId == ATTR_PLANT | attrId == ATTR_SOIL) {
+            world.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, block);
+        }
+
+        if (attrId == ATTR_FERTILIZER) {
+            /* Play sound when fertilizing plants.. though I've never heard it before. */
+            getWorldObj().playAuxSFX(2005, xCoord, yCoord, zCoord, 0);
+        }
+
+        markDirty();
     }
 
     /**
@@ -327,7 +309,6 @@ public class TEBase extends TileEntity implements IProtected {
     public void onAttrDropped(byte attrId)
     {
         cbAttrMap.remove(attrId);
-        getWorldObj().markBlockForUpdate(xCoord, yCoord, zCoord);
         markDirty();
     }
 
@@ -375,7 +356,7 @@ public class TEBase extends TileEntity implements IProtected {
     {
         if (!cbChiselDesign.equals(iconName)) {
             cbChiselDesign[side] = iconName;
-            getWorldObj().markBlockForUpdate(xCoord, yCoord, zCoord);
+            markDirty();
             return true;
         }
 
@@ -386,7 +367,7 @@ public class TEBase extends TileEntity implements IProtected {
     {
         if (!cbChiselDesign.equals("")) {
             cbChiselDesign[side] = "";
-            getWorldObj().markBlockForUpdate(xCoord, yCoord, zCoord);
+            markDirty();
         }
     }
 
@@ -407,7 +388,7 @@ public class TEBase extends TileEntity implements IProtected {
     {
         if (data != getData()) {
             cbMetadata = data;
-            getWorldObj().markBlockForUpdate(xCoord, yCoord, zCoord);
+            markDirty();
             return true;
         }
 
@@ -428,7 +409,7 @@ public class TEBase extends TileEntity implements IProtected {
     {
         if (!cbDesign.equals(name)) {
             cbDesign = name;
-            getWorldObj().markBlockForUpdate(xCoord, yCoord, zCoord);
+            markDirty();
             return true;
         }
 
@@ -476,6 +457,109 @@ public class TEBase extends TileEntity implements IProtected {
     {
         int metadata = hasAttribute(ATTR_COVER[6]) ? getAttribute(ATTR_COVER[6]).getItemDamage() : 0;
         getWorldObj().setBlockMetadataWithNotify(xCoord, yCoord, zCoord, metadata, 4);
+    }
+
+    /////////////////////////////////////////////////////////////
+    // Code below implemented strictly for light updates
+    /////////////////////////////////////////////////////////////
+
+    @Override
+    /**
+     * invalidates a tile entity
+     */
+    public void invalidate()
+    {
+        super.invalidate();
+
+        // Remove light value from cache
+        int hash = BlockProperties.hashCoords(xCoord, yCoord, zCoord);
+        cache.remove(hash);
+    }
+
+    public static int getLightValue(IBlockAccess blockAccess, int x, int y, int z)
+    {
+        if (calcLighting) {
+            return 0;
+        }
+
+        int hash = BlockProperties.hashCoords(x, y, z);
+        Integer lookup = TEBase.cache.get(hash);
+        int value = 0;
+
+        if (lookup == null) {
+            TileEntity tileEntity = blockAccess.getTileEntity(x, y, z);
+            if (tileEntity != null && tileEntity instanceof TEBase) {
+                value = ((TEBase)tileEntity).getDynamicLightValue();
+                cache.put(hash, value);
+            }
+        } else {
+            value = lookup.intValue();
+        }
+
+        return value;
+    }
+
+    /**
+     * Returns the current block light value. This is the only method
+     * that will grab the tile entity to calculate lighting, which
+     * is a very expensive operation to call while rendering, as it is
+     * called often.
+     *
+     * @param  blockAccess the {@link IBlockAccess} object
+     * @param  x the x coordinate
+     * @param  y the y coordinate
+     * @param  z the z coordinate
+     * @return a light value from 0 to 15
+     */
+    protected int getDynamicLightValue()
+    {
+        int value = 0;
+
+        if (FeatureRegistry.enableIllumination && hasAttribute(ATTR_ILLUMINATOR)) {
+            return 15;
+        } else {
+            // Find greatest light output from attributes
+            calcLighting = true;
+            Iterator it = cbAttrMap.entrySet().iterator();
+            while (it.hasNext()) {
+                Map.Entry pair = (Map.Entry)it.next();
+                ItemStack itemStack = (ItemStack)pair.getValue();
+                Block block = BlockProperties.toBlock(itemStack);
+                if (block != Blocks.air) {
+                    setMetadata(itemStack.getItemDamage());
+                    if ((value = Math.max(value, block.getLightValue(getWorldObj(), xCoord, yCoord, zCoord))) == 15) {
+                        return 15;
+                    }
+                }
+            }
+            calcLighting = false;
+            restoreMetadata();
+        }
+
+        return value;
+    }
+
+    /**
+     * Forces a lighting update.
+     */
+    private void refreshLighting()
+    {
+        int temp = getDynamicLightValue();
+        int hash = BlockProperties.hashCoords(xCoord, yCoord, zCoord);
+        cache.put(hash, temp);
+        getWorldObj().func_147451_t(xCoord, yCoord, zCoord); // Update block lightmap
+    }
+
+    @Override
+    /**
+     * For tile entities, ensures the chunk containing the tile entity is saved to disk later - the game won't think it
+     * hasn't changed and skip it.
+     */
+    public void markDirty()
+    {
+        refreshLighting();
+        getWorldObj().markBlockForUpdate(xCoord, yCoord, zCoord);
+        super.markDirty();
     }
 
 }

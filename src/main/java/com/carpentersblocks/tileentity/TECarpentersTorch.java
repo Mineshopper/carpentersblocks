@@ -2,6 +2,7 @@ package com.carpentersblocks.tileentity;
 
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
+import net.minecraft.world.IBlockAccess;
 import com.carpentersblocks.data.Torch;
 import com.carpentersblocks.data.Torch.State;
 import com.carpentersblocks.renderer.helper.ParticleHelper;
@@ -37,6 +38,39 @@ public class TECarpentersTorch extends TEBase {
             }
 
         }
+    }
+
+    /**
+     * Returns the current block light value. This is the only method
+     * that will grab the tile entity to calculate lighting, which
+     * is a very expensive operation to call while rendering, as it is
+     * called often.
+     *
+     * @param  blockAccess the {@link IBlockAccess} object
+     * @param  x the x coordinate
+     * @param  y the y coordinate
+     * @param  z the z coordinate
+     * @return a light value from 0 to 15
+     */
+    @Override
+    protected int getDynamicLightValue()
+    {
+        int value = 0;
+
+        // Grab current torch state light value
+        Torch data = new Torch();
+        switch (data.getState(this)) {
+            case LIT:
+                value = 15;
+                break;
+            case SMOLDERING:
+                value = 10;
+            default: {
+                value = Math.max(value, super.getDynamicLightValue());
+            }
+        }
+
+        return value;
     }
 
 }

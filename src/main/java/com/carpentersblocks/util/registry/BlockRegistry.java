@@ -457,7 +457,8 @@ public class BlockRegistry {
                 .setHardness(0.2F)
                 .setStepSound(BlockProperties.stepSound)
                 .setCreativeTab(CarpentersBlocks.creativeTab)
-                .setTickRandomly(true);
+                .setTickRandomly(true)
+                .setLightLevel(1.0F);
             GameRegistry.registerBlock(blockCarpentersTorch, ItemBlockSided.class, "blockCarpentersTorch");
             Blocks.fire.setFireInfo(blockCarpentersTorch, 5, 20);
         }

@@ -327,40 +327,6 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
         return super.getCollisionBoundingBoxFromPool(world, x, y, z);
     }
 
-    /**
-     * Gets the current light value based on covers and illumination.
-     *
-     * @param  blockAccess the {@link IBlockAccess} object
-     * @param  x the x coordinate
-     * @param  y the y coordinate
-     * @param  z the z coordinate
-     * @return a light value from 0 to 15
-     */
-    @Override
-    protected int getCurrentLightValue(IBlockAccess blockAccess, int x, int y, int z)
-    {
-        int lightValue = super.getCurrentLightValue(blockAccess, x, y, z);
-        TEBase TE = getTileEntity(blockAccess, x, y, z);
-
-        if (TE != null)
-        {
-            if (TE.hasAttribute(TE.ATTR_SOIL))
-            {
-                ItemStack itemStack = TE.getAttribute(TE.ATTR_SOIL);
-                int temp = getLightValue(TE, FlowerPotProperties.toBlock(itemStack), itemStack.getItemDamage());
-                lightValue = Math.max(temp, lightValue);
-            }
-            if (TE.hasAttribute(TE.ATTR_PLANT))
-            {
-                ItemStack itemStack = TE.getAttribute(TE.ATTR_PLANT);
-                int temp = getLightValue(TE, FlowerPotProperties.toBlock(itemStack), itemStack.getItemDamage());
-                lightValue = Math.max(temp, lightValue);
-            }
-        }
-
-        return lightValue;
-    }
-
     @Override
     /**
      * Triggered whenever an entity collides with this block (enters into the block). Args: world, x, y, z, entity
