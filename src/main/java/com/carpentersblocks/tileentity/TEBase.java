@@ -196,7 +196,6 @@ public class TEBase extends TileEntity implements IProtected {
     public void setOwner(ProtectedObject obj)
     {
         cbOwner = obj.toString();
-        markDirty();
     }
 
     @Override
