@@ -134,9 +134,10 @@ public class BlockHandlerBase implements ISimpleBlockRenderingHandler {
 
             if (FeatureRegistry.enableRailSlopes)
             {
-                if (blockAccess.isSideSolid(x, y, z, ForgeDirection.UP, false) && blockAccess.getBlock(x, y + 1, z) instanceof BlockRailBase)
+                Block blockYP = blockAccess.getBlock(x, y + 1, z);
+                if (blockAccess.isSideSolid(x, y, z, ForgeDirection.UP, false) && blockYP instanceof BlockRailBase)
                 {
-                    int metadata = blockAccess.getBlockMetadata(x, y + 1, z);
+                    int metadata = ((BlockRailBase)blockYP).getBasicRailMetadata(blockAccess, null, x, y + 1, z);
 
                     BlockHandlerCarpentersSlope slopeHandler = new BlockHandlerCarpentersSlope();
                     slopeHandler.renderBlocks = this.renderBlocks;
