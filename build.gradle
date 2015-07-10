@@ -23,6 +23,9 @@ archivesBaseName = "Carpenter's Blocks"
 
 minecraft {
     version = "1.7.10-10.13.0.1180"
+
+    replace "@VERSION@", project.version
+    replaceIn "CarpentersBlocks.java"
 }
 
 dependencies {
