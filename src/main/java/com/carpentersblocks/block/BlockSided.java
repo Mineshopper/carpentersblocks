@@ -61,13 +61,13 @@ public class BlockSided extends BlockCoverable {
      */
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack itemStack)
     {
-        super.onBlockPlacedBy(world, x, y, z, entityLiving, itemStack);
-
         TEBase TE = getTileEntity(world, x, y, z);
         if (TE != null) {
             int meta = world.getBlockMetadata(x, y, z);
             data.setDirection(TE, ForgeDirection.getOrientation(meta));
         }
+
+        super.onBlockPlacedBy(world, x, y, z, entityLiving, itemStack);
     }
 
     /**

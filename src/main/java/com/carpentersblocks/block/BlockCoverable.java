@@ -367,8 +367,8 @@ public class BlockCoverable extends BlockContainer {
         } else if (TE.hasAttribute(TE.ATTR_DYE[side])) {
             TE.createBlockDropEvent(TE.ATTR_DYE[side]);
         } else if (TE.hasAttribute(TE.ATTR_COVER[side])) {
-            TE.createBlockDropEvent(TE.ATTR_COVER[side]);
             TE.removeChiselDesign(side);
+            TE.createBlockDropEvent(TE.ATTR_COVER[side]);
         }
     }
 
@@ -379,132 +379,128 @@ public class BlockCoverable extends BlockContainer {
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ)
     {
         if (world.isRemote) {
-
             return true;
+        }
 
-        } else {
+        TEBase TE = getTileEntity(world, x, y, z);
 
-            TEBase TE = getTileEntity(world, x, y, z);
+        if (TE == null) {
+            return false;
+        }
 
-            if (TE == null) {
-                return false;
-            }
+        if (!canPlayerActivate(TE, entityPlayer)) {
+            return false;
+        }
 
-            if (!canPlayerActivate(TE, entityPlayer)) {
-                return false;
-            }
+        // Allow block to change TE if needed before altering attributes
+        TE = getTileEntityForBlockActivation(TE);
+        ActionResult actionResult = new ActionResult();
 
-            // Allow block to change TE if needed before altering attributes
-            TE = getTileEntityForBlockActivation(TE);
-            ActionResult actionResult = new ActionResult();
+        preOnBlockActivated(TE, entityPlayer, side, hitX, hitY, hitZ, actionResult);
 
-            preOnBlockActivated(TE, entityPlayer, side, hitX, hitY, hitZ, actionResult);
+        // If no prior event occurred, try regular activation
+        if (!actionResult.altered) {
 
-            // If no prior event occurred, try regular activation
-            if (!actionResult.altered) {
+            if (PlayerPermissions.canPlayerEdit(TE, TE.xCoord, TE.yCoord, TE.zCoord, entityPlayer)) {
 
-                if (PlayerPermissions.canPlayerEdit(TE, TE.xCoord, TE.yCoord, TE.zCoord, entityPlayer)) {
+                ItemStack itemStack = entityPlayer.getCurrentEquippedItem();
 
-                    ItemStack itemStack = entityPlayer.getCurrentEquippedItem();
+                if (itemStack != null) {
 
-                    if (itemStack != null) {
+                    /* Sides 0-5 are side covers, and 6 is the base block. */
+                    int effectiveSide = TE.hasAttribute(TE.ATTR_COVER[side]) ? side : 6;
 
-                        /* Sides 0-5 are side covers, and 6 is the base block. */
-                        int effectiveSide = TE.hasAttribute(TE.ATTR_COVER[side]) ? side : 6;
+                    if (itemStack.getItem() instanceof ICarpentersHammer && ((ICarpentersHammer)itemStack.getItem()).canUseHammer(world, entityPlayer)) {
 
-                        if (itemStack.getItem() instanceof ICarpentersHammer && ((ICarpentersHammer)itemStack.getItem()).canUseHammer(world, entityPlayer)) {
+                        if (onHammerRightClick(TE, entityPlayer)) {
+                            actionResult.setAltered();
+                        }
 
-                            if (onHammerRightClick(TE, entityPlayer)) {
+                    } else if (ItemRegistry.enableChisel && itemStack.getItem() instanceof ICarpentersChisel && ((ICarpentersChisel)itemStack.getItem()).canUseChisel(world, entityPlayer)) {
+
+                        if (TE.hasAttribute(TE.ATTR_COVER[effectiveSide])) {
+                            if (onChiselClick(TE, effectiveSide, false)) {
                                 actionResult.setAltered();
                             }
+                        }
 
-                        } else if (ItemRegistry.enableChisel && itemStack.getItem() instanceof ICarpentersChisel && ((ICarpentersChisel)itemStack.getItem()).canUseChisel(world, entityPlayer)) {
+                    } else if (FeatureRegistry.enableCovers && BlockProperties.isCover(itemStack)) {
 
-                            if (TE.hasAttribute(TE.ATTR_COVER[effectiveSide])) {
-                                if (onChiselClick(TE, effectiveSide, false)) {
-                                    actionResult.setAltered();
-                                }
-                            }
+                        Block block = BlockProperties.toBlock(itemStack);
 
-                        } else if (FeatureRegistry.enableCovers && BlockProperties.isCover(itemStack)) {
+                        /* Will handle blocks that save directions using only y axis (pumpkin) */
+                        int metadata = block instanceof BlockDirectional ? MathHelper.floor_double(entityPlayer.rotationYaw * 4.0F / 360.0F + 2.5D) & 3 : itemStack.getItemDamage();
 
-                            Block block = BlockProperties.toBlock(itemStack);
+                        /* Will handle blocks that save directions using all axes (logs, quartz) */
+                        if (BlockProperties.blockRotates(itemStack)) {
+                            int rot = Direction.rotateOpposite[EntityLivingUtil.getRotationValue(entityPlayer)];
+                            int side_interpolated = entityPlayer.rotationPitch < -45.0F ? 0 : entityPlayer.rotationPitch > 45 ? 1 : rot == 0 ? 3 : rot == 1 ? 4 : rot == 2 ? 2 : 5;
+                            metadata = block.onBlockPlaced(world, TE.xCoord, TE.yCoord, TE.zCoord, side_interpolated, hitX, hitY, hitZ, metadata);
+                        }
 
-                            /* Will handle blocks that save directions using only y axis (pumpkin) */
-                            int metadata = block instanceof BlockDirectional ? MathHelper.floor_double(entityPlayer.rotationYaw * 4.0F / 360.0F + 2.5D) & 3 : itemStack.getItemDamage();
+                        ItemStack tempStack = itemStack.copy();
+                        tempStack.setItemDamage(metadata);
 
-                            /* Will handle blocks that save directions using all axes (logs, quartz) */
-                            if (BlockProperties.blockRotates(itemStack)) {
-                                int rot = Direction.rotateOpposite[EntityLivingUtil.getRotationValue(entityPlayer)];
-                                int side_interpolated = entityPlayer.rotationPitch < -45.0F ? 0 : entityPlayer.rotationPitch > 45 ? 1 : rot == 0 ? 3 : rot == 1 ? 4 : rot == 2 ? 2 : 5;
-                                metadata = block.onBlockPlaced(world, TE.xCoord, TE.yCoord, TE.zCoord, side_interpolated, hitX, hitY, hitZ, metadata);
-                            }
+                        /* Base cover should always be checked. */
 
-                            ItemStack tempStack = itemStack.copy();
-                            tempStack.setItemDamage(metadata);
+                        if (effectiveSide == 6 && (!canCoverSide(TE, world, TE.xCoord, TE.yCoord, TE.zCoord, 6) || TE.hasAttribute(TE.ATTR_COVER[6]))) {
+                            effectiveSide = side;
+                        }
 
-                            /* Base cover should always be checked. */
+                        if (canCoverSide(TE, world, TE.xCoord, TE.yCoord, TE.zCoord, effectiveSide) && !TE.hasAttribute(TE.ATTR_COVER[effectiveSide])) {
+                            TE.addAttribute(TE.ATTR_COVER[effectiveSide], tempStack);
+                            actionResult.setAltered().decInventory().setSoundSource(itemStack);
+                        }
 
-                            if (effectiveSide == 6 && (!canCoverSide(TE, world, TE.xCoord, TE.yCoord, TE.zCoord, 6) || TE.hasAttribute(TE.ATTR_COVER[6]))) {
-                                effectiveSide = side;
-                            }
+                    } else if (entityPlayer.isSneaking()) {
 
-                            if (canCoverSide(TE, world, TE.xCoord, TE.yCoord, TE.zCoord, effectiveSide) && !TE.hasAttribute(TE.ATTR_COVER[effectiveSide])) {
-                                TE.addAttribute(TE.ATTR_COVER[effectiveSide], tempStack);
+                        if (FeatureRegistry.enableIllumination && BlockProperties.isIlluminator(itemStack)) {
+                            if (!TE.hasAttribute(TE.ATTR_ILLUMINATOR)) {
+                                TE.addAttribute(TE.ATTR_ILLUMINATOR, itemStack);
                                 actionResult.setAltered().decInventory().setSoundSource(itemStack);
                             }
-
-                        } else if (entityPlayer.isSneaking()) {
-
-                            if (FeatureRegistry.enableIllumination && BlockProperties.isIlluminator(itemStack)) {
-                                if (!TE.hasAttribute(TE.ATTR_ILLUMINATOR)) {
-                                    TE.addAttribute(TE.ATTR_ILLUMINATOR, itemStack);
-                                    actionResult.setAltered().decInventory().setSoundSource(itemStack);
-                                }
-                            } else if (FeatureRegistry.enableOverlays && BlockProperties.isOverlay(itemStack)) {
-                                if (!TE.hasAttribute(TE.ATTR_OVERLAY[effectiveSide]) && (effectiveSide < 6 && TE.hasAttribute(TE.ATTR_COVER[effectiveSide]) || effectiveSide == 6)) {
-                                    TE.addAttribute(TE.ATTR_OVERLAY[effectiveSide], itemStack);
-                                    actionResult.setAltered().decInventory().setSoundSource(itemStack);
-                                }
-                            } else if (FeatureRegistry.enableDyeColors && BlockProperties.isDye(itemStack, false)) {
-                                if (!TE.hasAttribute(TE.ATTR_DYE[effectiveSide])) {
-                                    TE.addAttribute(TE.ATTR_DYE[effectiveSide], itemStack);
-                                    actionResult.setAltered().decInventory().setSoundSource(itemStack);
-                                }
+                        } else if (FeatureRegistry.enableOverlays && BlockProperties.isOverlay(itemStack)) {
+                            if (!TE.hasAttribute(TE.ATTR_OVERLAY[effectiveSide]) && (effectiveSide < 6 && TE.hasAttribute(TE.ATTR_COVER[effectiveSide]) || effectiveSide == 6)) {
+                                TE.addAttribute(TE.ATTR_OVERLAY[effectiveSide], itemStack);
+                                actionResult.setAltered().decInventory().setSoundSource(itemStack);
                             }
-
+                        } else if (FeatureRegistry.enableDyeColors && BlockProperties.isDye(itemStack, false)) {
+                            if (!TE.hasAttribute(TE.ATTR_DYE[effectiveSide])) {
+                                TE.addAttribute(TE.ATTR_DYE[effectiveSide], itemStack);
+                                actionResult.setAltered().decInventory().setSoundSource(itemStack);
+                            }
                         }
+
                     }
                 }
             }
+        }
 
-            if (!actionResult.altered) {
+        if (!actionResult.altered) {
 
-                // If no prior or regular event occurred, try a post event
-                postOnBlockActivated(TE, entityPlayer, side, hitX, hitY, hitZ, actionResult);
+            // If no prior or regular event occurred, try a post event
+            postOnBlockActivated(TE, entityPlayer, side, hitX, hitY, hitZ, actionResult);
 
-            } else {
+        } else {
 
-                if (actionResult.itemStack == null) {
-                    actionResult.setSoundSource(BlockProperties.getCover(TE, 6));
-                }
-                damageItemWithChance(world, entityPlayer);
-                onNeighborBlockChange(world, TE.xCoord, TE.yCoord, TE.zCoord, this);
-                world.notifyBlocksOfNeighborChange(TE.xCoord, TE.yCoord, TE.zCoord, this);
-
+            if (actionResult.itemStack == null) {
+                actionResult.setSoundSource(BlockProperties.getCover(TE, 6));
             }
-
-            if (actionResult.playSound) {
-                BlockProperties.playBlockSound(TE.getWorldObj(), actionResult.itemStack, TE.xCoord, TE.yCoord, TE.zCoord, false);
-            }
-
-            if (actionResult.decInv) {
-                EntityLivingUtil.decrementCurrentSlot(entityPlayer);
-            }
-
-            return actionResult.altered;
+            damageItemWithChance(world, entityPlayer);
+            onNeighborBlockChange(world, TE.xCoord, TE.yCoord, TE.zCoord, this);
+            world.notifyBlocksOfNeighborChange(TE.xCoord, TE.yCoord, TE.zCoord, this);
 
         }
+
+        if (actionResult.playSound) {
+            BlockProperties.playBlockSound(TE.getWorldObj(), actionResult.itemStack, TE.xCoord, TE.yCoord, TE.zCoord, false);
+        }
+
+        if (actionResult.decInv) {
+            EntityLivingUtil.decrementCurrentSlot(entityPlayer);
+        }
+
+        return actionResult.altered;
     }
 
     /**
