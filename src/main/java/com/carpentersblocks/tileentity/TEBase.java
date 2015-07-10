@@ -64,6 +64,9 @@ public class TEBase extends TileEntity implements IProtected {
     /** Indicates lighting calculations are underway. **/
     protected static boolean calcLighting = false;
 
+    /** Holds last stored metadata. **/
+    private int tempMetadata;
+
     @Override
     public void readFromNBT(NBTTagCompound nbt)
     {
@@ -98,12 +101,8 @@ public class TEBase extends TileEntity implements IProtected {
             cbOwner = nbt.getString(TAG_OWNER);
         }
 
-        // Block either loaded or changed, so mark it for render update
-        World world = getWorldObj();
-        if (world != null) {
-            refreshLighting();
-            world.markBlockForUpdate(xCoord, yCoord, zCoord);
-        }
+        // Block either loaded or changed, update lighting and render state
+        updateWorld();
     }
 
     @Override
@@ -196,6 +195,7 @@ public class TEBase extends TileEntity implements IProtected {
     public void setOwner(ProtectedObject obj)
     {
         cbOwner = obj.toString();
+        markDirty();
     }
 
     @Override
@@ -295,6 +295,7 @@ public class TEBase extends TileEntity implements IProtected {
             getWorldObj().playAuxSFX(2005, xCoord, yCoord, zCoord, 0);
         }
 
+        updateWorld();
         markDirty();
     }
 
@@ -308,6 +309,7 @@ public class TEBase extends TileEntity implements IProtected {
     public void onAttrDropped(byte attrId)
     {
         cbAttrMap.remove(attrId);
+        updateWorld();
         markDirty();
     }
 
@@ -355,6 +357,7 @@ public class TEBase extends TileEntity implements IProtected {
     {
         if (!cbChiselDesign.equals(iconName)) {
             cbChiselDesign[side] = iconName;
+            getWorldObj().markBlockForUpdate(xCoord, yCoord, zCoord);
             markDirty();
             return true;
         }
@@ -366,6 +369,7 @@ public class TEBase extends TileEntity implements IProtected {
     {
         if (!cbChiselDesign.equals("")) {
             cbChiselDesign[side] = "";
+            getWorldObj().markBlockForUpdate(xCoord, yCoord, zCoord);
             markDirty();
         }
     }
@@ -387,6 +391,7 @@ public class TEBase extends TileEntity implements IProtected {
     {
         if (data != getData()) {
             cbMetadata = data;
+            getWorldObj().markBlockForUpdate(xCoord, yCoord, zCoord);
             markDirty();
             return true;
         }
@@ -408,6 +413,7 @@ public class TEBase extends TileEntity implements IProtected {
     {
         if (!cbDesign.equals(name)) {
             cbDesign = name;
+            getWorldObj().markBlockForUpdate(xCoord, yCoord, zCoord);
             markDirty();
             return true;
         }
@@ -446,6 +452,7 @@ public class TEBase extends TileEntity implements IProtected {
      */
     public void setMetadata(int metadata)
     {
+        tempMetadata = getWorldObj().getBlockMetadata(xCoord, yCoord, zCoord);
         getWorldObj().setBlockMetadataWithNotify(xCoord, yCoord, zCoord, metadata, 4);
     }
 
@@ -454,8 +461,7 @@ public class TEBase extends TileEntity implements IProtected {
      */
     public void restoreMetadata()
     {
-        int metadata = hasAttribute(ATTR_COVER[6]) ? getAttribute(ATTR_COVER[6]).getItemDamage() : 0;
-        getWorldObj().setBlockMetadataWithNotify(xCoord, yCoord, zCoord, metadata, 4);
+        getWorldObj().setBlockMetadataWithNotify(xCoord, yCoord, zCoord, tempMetadata, 4);
     }
 
     /////////////////////////////////////////////////////////////
@@ -529,36 +535,29 @@ public class TEBase extends TileEntity implements IProtected {
                     if ((value = Math.max(value, block.getLightValue(getWorldObj(), xCoord, yCoord, zCoord))) == 15) {
                         return 15;
                     }
+                    restoreMetadata();
                 }
             }
             calcLighting = false;
-            restoreMetadata();
         }
 
         return value;
     }
 
     /**
-     * Forces a lighting update.
+     * Performs world update and refreshes lighting.
      */
-    private void refreshLighting()
+    private void updateWorld()
     {
-        int temp = getDynamicLightValue();
-        int hash = BlockProperties.hashCoords(xCoord, yCoord, zCoord);
-        cache.put(hash, temp);
-        getWorldObj().func_147451_t(xCoord, yCoord, zCoord); // Update block lightmap
-    }
-
-    @Override
-    /**
-     * For tile entities, ensures the chunk containing the tile entity is saved to disk later - the game won't think it
-     * hasn't changed and skip it.
-     */
-    public void markDirty()
-    {
-        refreshLighting();
-        getWorldObj().markBlockForUpdate(xCoord, yCoord, zCoord);
-        super.markDirty();
+        World world = getWorldObj();
+        if (world != null)
+        {
+            int temp = getDynamicLightValue();
+            int hash = BlockProperties.hashCoords(xCoord, yCoord, zCoord);
+            cache.put(hash, temp);
+            world.func_147451_t(xCoord, yCoord, zCoord); // Updates block lightmap, should help with spawns
+            world.markBlockForUpdate(xCoord, yCoord, zCoord);
+        }
     }
 
 }
