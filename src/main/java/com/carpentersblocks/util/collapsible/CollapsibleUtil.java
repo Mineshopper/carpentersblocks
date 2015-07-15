@@ -5,6 +5,8 @@ import com.carpentersblocks.tileentity.TEBase;
 
 public class CollapsibleUtil {
 
+    private static Collapsible data = new Collapsible();
+
     public static double CENTER_YMAX;
 
     public static double offset_XZNN;
@@ -17,7 +19,13 @@ public class CollapsibleUtil {
      */
     public static boolean isMin(TEBase TE)
     {
-        return TE.getData() == 0;
+        for (int quad = 0; quad < 4; quad++) {
+            if (data.getQuadDepth(TE, quad) > 0) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -25,7 +33,13 @@ public class CollapsibleUtil {
      */
     public static boolean isMax(TEBase TE)
     {
-        return TE.getData() == 0xfffff;
+        for (int quad = 0; quad < 4; quad++) {
+            if (data.getQuadDepth(TE, quad) < 16) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -33,12 +47,12 @@ public class CollapsibleUtil {
      */
     public static void computeOffsets(TEBase TE)
     {
-        double BIAS = isMin(TE) ? 1.0D / 1024.0D : 0.0D; /* small offset to prevent Z-fighting at height 0 */
+        double BIAS = isMin(TE) ? 1.0D / 1024.0D : 0.0D; /* small offset to prevent Z-fighting at depth 0 */
 
-        offset_XZNN = Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZNN) / 16.0D + BIAS;
-        offset_XZNP = Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZNP) / 16.0D + BIAS;
-        offset_XZPN = Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZPN) / 16.0D + BIAS;
-        offset_XZPP = Collapsible.getQuadHeight(TE, Collapsible.QUAD_XZPP) / 16.0D + BIAS;
+        offset_XZNN = Collapsible.getQuadDepth(TE, Collapsible.QUAD_XZNN) / 16.0D + BIAS;
+        offset_XZNP = Collapsible.getQuadDepth(TE, Collapsible.QUAD_XZNP) / 16.0D + BIAS;
+        offset_XZPN = Collapsible.getQuadDepth(TE, Collapsible.QUAD_XZPN) / 16.0D + BIAS;
+        offset_XZPP = Collapsible.getQuadDepth(TE, Collapsible.QUAD_XZPP) / 16.0D + BIAS;
 
         /* Find primary corners and set center yMax offset. */
 
@@ -57,24 +71,24 @@ public class CollapsibleUtil {
     }
 
     /**
-     * Returns block height determined by the highest quadrant.
+     * Returns block depth determined by the largest quadrant.
      */
-    public static float getBoundsMaxHeight(TEBase TE)
+    public static float getBoundsMaxDepth(TEBase TE)
     {
-        float maxHeight = 0.0F;
+        float maxDepth = 0.0F;
 
-        for (int quadrant = 0; quadrant < 4; ++quadrant) {
-            float quadHeight = Collapsible.getQuadHeight(TE, quadrant) / 16.0F;
-            if (quadHeight > maxHeight) {
-                maxHeight = quadHeight;
+        for (int quad = 0; quad < 4; ++quad) {
+            float depth = Collapsible.getQuadDepth(TE, quad) / 16.0F;
+            if (depth > maxDepth) {
+                maxDepth = depth;
             }
         }
 
-        return maxHeight;
+        return maxDepth;
     }
 
     /**
-     * Will generate four boxes with max height represented by quadrant height.
+     * Will generate four boxes with max height represented by largest quadrant depth.
      */
     public static float[] genBounds(TEBase TE, int quad)
     {
@@ -103,15 +117,18 @@ public class CollapsibleUtil {
                 break;
         }
 
-        float maxHeight = getBoundsMaxHeight(TE);
-        float height = Collapsible.getQuadHeight(TE, quad) / 16.0F;
+        float maxDepth = getBoundsMaxDepth(TE);
+        float depth = Collapsible.getQuadDepth(TE, quad) / 16.0F;
 
-        /* Make quads stagger no more than 0.5F so player can always walk across them. */
-        if (maxHeight - height > 0.5F) {
-            height = maxHeight - 0.5F;
+        // Make quads stagger no more than 0.5F so player can always walk across them
+        if (data.isPositive(TE)) {
+            if (maxDepth - depth > 0.5F) {
+                depth = maxDepth - 0.5F;
+            }
+            return new float[] { xMin, 0.0F, zMin, xMax, depth, zMax };
+        } else {
+            return new float[] { xMin, 1.0F - depth, zMin, xMax, 1.0F, zMax };
         }
-
-        return new float[] { xMin, 0.0F, zMin, xMax, height, zMax };
     }
 
 }

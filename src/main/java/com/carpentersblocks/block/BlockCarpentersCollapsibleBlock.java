@@ -20,25 +20,24 @@ import com.carpentersblocks.util.handler.EventHandler;
 import com.carpentersblocks.util.registry.BlockRegistry;
 import com.carpentersblocks.util.registry.ItemRegistry;
 
-public class BlockCarpentersCollapsibleBlock extends BlockCoverable {
-
-    private static Collapsible data = new Collapsible();
+public class BlockCarpentersCollapsibleBlock extends BlockSided {
 
     public BlockCarpentersCollapsibleBlock(Material material)
     {
-        super(material);
+        super(material, new Collapsible());
     }
 
     @Override
     /**
-     * Raise quadrant of block.
+     * Increase quad depth.
      */
     protected boolean onHammerLeftClick(TEBase TE, EntityPlayer entityPlayer)
     {
+        int stepOffset = Collapsible.INSTANCE.isPositive(TE) ? -1 : 1;
         int quad = Collapsible.getQuad(EventHandler.hitX, EventHandler.hitZ);
-        int quadHeight = Collapsible.getQuadHeight(TE, quad);
+        int depth = Collapsible.getQuadDepth(TE, quad);
 
-        Collapsible.setQuadHeight(TE, quad, --quadHeight);
+        Collapsible.setQuadDepth(TE, quad, depth + stepOffset, false);
         smoothAdjacentCollapsibles(TE, quad);
 
         return true;
@@ -46,14 +45,15 @@ public class BlockCarpentersCollapsibleBlock extends BlockCoverable {
 
     @Override
     /**
-     * Lower quadrant of block.
+     * Decrease quad depth.
      */
     protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer)
     {
+        int stepOffset = Collapsible.INSTANCE.isPositive(TE) ? 1 : -1;
         int quad = Collapsible.getQuad(EventHandler.hitX, EventHandler.hitZ);
-        int quadHeight = Collapsible.getQuadHeight(TE, quad);
+        int depth = Collapsible.getQuadDepth(TE, quad);
 
-        Collapsible.setQuadHeight(TE, quad, ++quadHeight);
+        Collapsible.setQuadDepth(TE, quad, depth + stepOffset, false);
         smoothAdjacentCollapsibles(TE, quad);
 
         return true;
@@ -76,6 +76,7 @@ public class BlockCarpentersCollapsibleBlock extends BlockCoverable {
      */
     private void smoothAdjacentCollapsibles(TEBase TE, int src_quadrant)
     {
+        Collapsible data = Collapsible.INSTANCE;
         World world = TE.getWorldObj();
 
         TEBase TE_XN   = getTileEntity(world, TE.xCoord - 1, TE.yCoord, TE.zCoord);
@@ -87,52 +88,52 @@ public class BlockCarpentersCollapsibleBlock extends BlockCoverable {
         TEBase TE_XZPN = getTileEntity(world, TE.xCoord + 1, TE.yCoord, TE.zCoord - 1);
         TEBase TE_XZPP = getTileEntity(world, TE.xCoord + 1, TE.yCoord, TE.zCoord + 1);
 
-        int height = Collapsible.getQuadHeight(TE, src_quadrant);
+        int depth = Collapsible.getQuadDepth(TE, src_quadrant);
 
         switch (src_quadrant)
         {
             case Collapsible.QUAD_XZNN:
-                if (TE_ZN != null) {
-                    Collapsible.setQuadHeight(TE_ZN, Collapsible.QUAD_XZNP, height);
+                if (TE_ZN != null && data.match(TE, TE_ZN)) {
+                    Collapsible.setQuadDepth(TE_ZN, Collapsible.QUAD_XZNP, depth, true);
                 }
-                if (TE_XZNN != null) {
-                    Collapsible.setQuadHeight(TE_XZNN, Collapsible.QUAD_XZPP, height);
+                if (TE_XZNN != null && data.match(TE, TE_XZNN)) {
+                    Collapsible.setQuadDepth(TE_XZNN, Collapsible.QUAD_XZPP, depth, true);
                 }
-                if (TE_XN != null) {
-                    Collapsible.setQuadHeight(TE_XN, Collapsible.QUAD_XZPN, height);
+                if (TE_XN != null && data.match(TE, TE_XN)) {
+                    Collapsible.setQuadDepth(TE_XN, Collapsible.QUAD_XZPN, depth, true);
                 }
                 break;
             case Collapsible.QUAD_XZNP:
-                if (TE_XN != null) {
-                    Collapsible.setQuadHeight(TE_XN, Collapsible.QUAD_XZPP, height);
+                if (TE_XN != null && data.match(TE, TE_XN)) {
+                    Collapsible.setQuadDepth(TE_XN, Collapsible.QUAD_XZPP, depth, true);
                 }
-                if (TE_XZNP != null) {
-                    Collapsible.setQuadHeight(TE_XZNP, Collapsible.QUAD_XZPN, height);
+                if (TE_XZNP != null && data.match(TE, TE_XZNP)) {
+                    Collapsible.setQuadDepth(TE_XZNP, Collapsible.QUAD_XZPN, depth, true);
                 }
-                if (TE_ZP != null) {
-                    Collapsible.setQuadHeight(TE_ZP, Collapsible.QUAD_XZNN, height);
+                if (TE_ZP != null && data.match(TE, TE_ZP)) {
+                    Collapsible.setQuadDepth(TE_ZP, Collapsible.QUAD_XZNN, depth, true);
                 }
                 break;
             case Collapsible.QUAD_XZPN:
-                if (TE_XP != null) {
-                    Collapsible.setQuadHeight(TE_XP, Collapsible.QUAD_XZNN, height);
+                if (TE_XP != null && data.match(TE, TE_XP)) {
+                    Collapsible.setQuadDepth(TE_XP, Collapsible.QUAD_XZNN, depth, true);
                 }
-                if (TE_XZPN != null) {
-                    Collapsible.setQuadHeight(TE_XZPN, Collapsible.QUAD_XZNP, height);
+                if (TE_XZPN != null && data.match(TE, TE_XZPN)) {
+                    Collapsible.setQuadDepth(TE_XZPN, Collapsible.QUAD_XZNP, depth, true);
                 }
-                if (TE_ZN != null) {
-                    Collapsible.setQuadHeight(TE_ZN, Collapsible.QUAD_XZPP, height);
+                if (TE_ZN != null && data.match(TE, TE_ZN)) {
+                    Collapsible.setQuadDepth(TE_ZN, Collapsible.QUAD_XZPP, depth, true);
                 }
                 break;
             case Collapsible.QUAD_XZPP:
-                if (TE_ZP != null) {
-                    Collapsible.setQuadHeight(TE_ZP, Collapsible.QUAD_XZPN, height);
+                if (TE_ZP != null && data.match(TE, TE_ZP)) {
+                    Collapsible.setQuadDepth(TE_ZP, Collapsible.QUAD_XZPN, depth, true);
                 }
-                if (TE_XZPP != null) {
-                    Collapsible.setQuadHeight(TE_XZPP, Collapsible.QUAD_XZNN, height);
+                if (TE_XZPP != null && data.match(TE, TE_XZPP)) {
+                    Collapsible.setQuadDepth(TE_XZPP, Collapsible.QUAD_XZNN, depth, true);
                 }
-                if (TE_XP != null) {
-                    Collapsible.setQuadHeight(TE_XP, Collapsible.QUAD_XZNP, height);
+                if (TE_XP != null && data.match(TE, TE_XP)) {
+                    Collapsible.setQuadDepth(TE_XP, Collapsible.QUAD_XZNP, depth, true);
                 }
                 break;
         }
@@ -146,10 +147,14 @@ public class BlockCarpentersCollapsibleBlock extends BlockCoverable {
     {
         TEBase TE = getTileEntity(blockAccess, x, y, z);
 
-        float maxHeight = CollapsibleUtil.getBoundsMaxHeight(TE);
-
-        if (maxHeight != 1.0F) {
-            setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, maxHeight, 1.0F);
+        if (TE != null)
+        {
+            float maxDepth = CollapsibleUtil.getBoundsMaxDepth(TE);
+            if (Collapsible.INSTANCE.isPositive(TE)) {
+                setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, maxDepth, 1.0F);
+            } else {
+                setBlockBounds(0.0F, 1.0F - maxDepth, 0.0F, 1.0F, 1.0F, 1.0F);
+            }
         }
     }
 
@@ -232,21 +237,22 @@ public class BlockCarpentersCollapsibleBlock extends BlockCoverable {
      */
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack itemStack)
     {
-        /* If shift key is down, skip auto-setting quadrant heights. */
+        super.onBlockPlacedBy(world, x, y, z, entityLiving, itemStack);
 
-        if (!entityLiving.isSneaking()) {
+        // If sneaking, skip auto-setting quadrant depths
 
+        if (!entityLiving.isSneaking())
+        {
             TEBase TE = getTileEntity(world, x, y, z);
+            if (TE != null)
+            {
+                // Create a linear slope from neighbor blocks and collapsible quadrants
 
-            if (TE != null) {
-
-                /* Create a linear slope from neighbor blocks and collapsible quadrants. */
-
-                /* Mininum and maximum height of quadrants */
+                // Mininum and maximum height of quadrants
                 final int MIN_HEIGHT = 0;
                 final int MAX_HEIGHT = 16;
 
-                /* find slopes in landscape */
+                // Find slopes in landscape
                 int xn = scanX(world, x, y, z, -1, MAX_HEIGHT);
                 int xp = scanX(world, x, y, z, 1, MAX_HEIGHT);
                 int zn = scanZ(world, x, y, z, -1, MAX_HEIGHT);
@@ -258,40 +264,41 @@ public class BlockCarpentersCollapsibleBlock extends BlockCoverable {
                 TEBase TE_ZP = getTileEntity(world, x, y, zp);
 
                 int height_XZNN = MIN_HEIGHT, height_XZPN = MIN_HEIGHT, height_XZPP = MIN_HEIGHT, height_XZNP = MIN_HEIGHT;
+                Collapsible data = Collapsible.INSTANCE;
 
                 int hxn1, hxn2;
-                if(TE_XN != null) {
-                    hxn1 = Collapsible.getQuadHeight(TE_XN, Collapsible.QUAD_XZPN);
-                    hxn2 = Collapsible.getQuadHeight(TE_XN, Collapsible.QUAD_XZPP);
+                if(TE_XN != null && data.match(TE, TE_XN)) {
+                    hxn1 = Collapsible.getQuadDepth(TE_XN, Collapsible.QUAD_XZPN);
+                    hxn2 = Collapsible.getQuadDepth(TE_XN, Collapsible.QUAD_XZPP);
                 } else {
                     hxn1 = hxn2 = getBlockHeight(world, xn, y, z);
                 }
 
                 int hxp1, hxp2;
-                if(TE_XP != null) {
-                    hxp1 = Collapsible.getQuadHeight(TE_XP, Collapsible.QUAD_XZNN);
-                    hxp2 = Collapsible.getQuadHeight(TE_XP, Collapsible.QUAD_XZNP);
+                if(TE_XP != null && data.match(TE, TE_XP)) {
+                    hxp1 = Collapsible.getQuadDepth(TE_XP, Collapsible.QUAD_XZNN);
+                    hxp2 = Collapsible.getQuadDepth(TE_XP, Collapsible.QUAD_XZNP);
                 } else {
                     hxp1 = hxp2 = getBlockHeight(world, xp, y, z);
                 }
 
                 int hzn1, hzn2;
-                if(TE_ZN != null) {
-                    hzn1 = Collapsible.getQuadHeight(TE_ZN, Collapsible.QUAD_XZNP);
-                    hzn2 = Collapsible.getQuadHeight(TE_ZN, Collapsible.QUAD_XZPP);
+                if(TE_ZN != null && data.match(TE, TE_ZN)) {
+                    hzn1 = Collapsible.getQuadDepth(TE_ZN, Collapsible.QUAD_XZNP);
+                    hzn2 = Collapsible.getQuadDepth(TE_ZN, Collapsible.QUAD_XZPP);
                 } else {
                     hzn1 = hzn2 = getBlockHeight(world, x, y, zn);
                 }
 
                 int hzp1, hzp2;
-                if(TE_ZP != null) {
-                    hzp1 = Collapsible.getQuadHeight(TE_ZP, Collapsible.QUAD_XZNN);
-                    hzp2 = Collapsible.getQuadHeight(TE_ZP, Collapsible.QUAD_XZPN);
+                if(TE_ZP != null && data.match(TE, TE_ZP)) {
+                    hzp1 = Collapsible.getQuadDepth(TE_ZP, Collapsible.QUAD_XZNN);
+                    hzp2 = Collapsible.getQuadDepth(TE_ZP, Collapsible.QUAD_XZPN);
                 } else {
                     hzp1 = hzp2 = getBlockHeight(world, x, y, zp);
                 }
 
-                /* lerp between heights, create smooth slope */
+                // Lerp between heights, create smooth slope
                 int xdist = x - xn;
                 double dx1 = (double)(hxp1 - hxn1) / (xp - xn - 1);
                 double dx2 = (double)(hxp2 - hxn2) / (xp - xn - 1);
@@ -308,19 +315,16 @@ public class BlockCarpentersCollapsibleBlock extends BlockCoverable {
                 height_XZPN = Math.max(height_XZPN, (int)(hzn2 + dz2 * (zdist - 1)));
                 height_XZPP = Math.max(height_XZPP, (int)(hzn2 + dz2 * zdist));
 
-                Collapsible.setQuadHeight(TE, Collapsible.QUAD_XZNN, height_XZNN);
-                Collapsible.setQuadHeight(TE, Collapsible.QUAD_XZNP, height_XZNP);
-                Collapsible.setQuadHeight(TE, Collapsible.QUAD_XZPP, height_XZPP);
-                Collapsible.setQuadHeight(TE, Collapsible.QUAD_XZPN, height_XZPN);
+                Collapsible.setQuadDepth(TE, Collapsible.QUAD_XZNN, height_XZNN, false);
+                Collapsible.setQuadDepth(TE, Collapsible.QUAD_XZNP, height_XZNP, false);
+                Collapsible.setQuadDepth(TE, Collapsible.QUAD_XZPP, height_XZPP, false);
+                Collapsible.setQuadDepth(TE, Collapsible.QUAD_XZPN, height_XZPN, false);
 
                 for (int quad = 0; quad < 4; ++quad) {
                     smoothAdjacentCollapsibles(TE, quad);
                 }
             }
-
         }
-
-        super.onBlockPlacedBy(world, x, y, z, entityLiving, itemStack);
     }
 
     @Override
@@ -400,25 +404,38 @@ public class BlockCarpentersCollapsibleBlock extends BlockCoverable {
      */
     protected boolean shareFaces(TEBase TE_adj, TEBase TE_src, ForgeDirection side_adj, ForgeDirection side_src)
     {
-        if (TE_adj.getBlockType() == this) {
+        Collapsible data = Collapsible.INSTANCE;
+        if (TE_adj.getBlockType() == this && data.match(TE_src, TE_adj)) {
             switch (side_adj) {
                 case NORTH:
-                    return data.getQuadHeight(TE_adj, data.QUAD_XZNN) == data.getQuadHeight(TE_src, data.QUAD_XZNP) &&
-                           data.getQuadHeight(TE_adj, data.QUAD_XZPN) == data.getQuadHeight(TE_src, data.QUAD_XZPP);
+                    return data.getQuadDepth(TE_adj, data.QUAD_XZNN) == data.getQuadDepth(TE_src, data.QUAD_XZNP) &&
+                           data.getQuadDepth(TE_adj, data.QUAD_XZPN) == data.getQuadDepth(TE_src, data.QUAD_XZPP);
                 case SOUTH:
-                    return data.getQuadHeight(TE_adj, data.QUAD_XZNP) == data.getQuadHeight(TE_src, data.QUAD_XZNN) &&
-                           data.getQuadHeight(TE_adj, data.QUAD_XZPP) == data.getQuadHeight(TE_src, data.QUAD_XZPN);
+                    return data.getQuadDepth(TE_adj, data.QUAD_XZNP) == data.getQuadDepth(TE_src, data.QUAD_XZNN) &&
+                           data.getQuadDepth(TE_adj, data.QUAD_XZPP) == data.getQuadDepth(TE_src, data.QUAD_XZPN);
                 case WEST:
-                    return data.getQuadHeight(TE_adj, data.QUAD_XZNP) == data.getQuadHeight(TE_src, data.QUAD_XZPP) &&
-                           data.getQuadHeight(TE_adj, data.QUAD_XZNN) == data.getQuadHeight(TE_src, data.QUAD_XZPN);
+                    return data.getQuadDepth(TE_adj, data.QUAD_XZNP) == data.getQuadDepth(TE_src, data.QUAD_XZPP) &&
+                           data.getQuadDepth(TE_adj, data.QUAD_XZNN) == data.getQuadDepth(TE_src, data.QUAD_XZPN);
                 case EAST:
-                    return data.getQuadHeight(TE_adj, data.QUAD_XZPP) == data.getQuadHeight(TE_src, data.QUAD_XZNP) &&
-                           data.getQuadHeight(TE_adj, data.QUAD_XZPN) == data.getQuadHeight(TE_src, data.QUAD_XZNN);
+                    return data.getQuadDepth(TE_adj, data.QUAD_XZPP) == data.getQuadDepth(TE_src, data.QUAD_XZNP) &&
+                           data.getQuadDepth(TE_adj, data.QUAD_XZPN) == data.getQuadDepth(TE_src, data.QUAD_XZNN);
                 default: {}
             }
         }
 
         return super.shareFaces(TE_adj, TE_src, side_adj, side_src);
+    }
+
+    /**
+     * Whether block can be attached to specified side of another block.
+     *
+     * @param  side the side
+     * @return whether side is supported
+     */
+    @Override
+    public boolean canAttachToSide(int side)
+    {
+        return side < 2;
     }
 
     @Override
