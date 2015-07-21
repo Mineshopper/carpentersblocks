@@ -188,7 +188,7 @@ public class TECarpentersSafe extends TEBase implements ISidedInventory {
     @Override
     public boolean isUseableByPlayer(EntityPlayer entityPlayer)
     {
-        if (worldObj.getTileEntity(xCoord, yCoord, zCoord).equals(this)) {
+        if (entityPlayer.getEntityWorld().getTileEntity(xCoord, yCoord, zCoord).equals(this)) {
             return entityPlayer.getDistanceSq(xCoord + 0.5D, yCoord + 0.5D, zCoord + 0.5D) <= 64.0D;
         }
 
