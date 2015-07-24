@@ -438,6 +438,17 @@ public class BlockCarpentersCollapsibleBlock extends BlockSided {
         return side < 2;
     }
 
+    /**
+     * Whether block requires an adjacent block with solid side for support.
+     *
+     * @return whether block can float freely
+     */
+    @Override
+    public boolean canFloat()
+    {
+        return true;
+    }
+
     @Override
     /**
      * The type of render function that is called for this block

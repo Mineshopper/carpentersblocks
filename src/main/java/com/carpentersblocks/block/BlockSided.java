@@ -104,7 +104,7 @@ public class BlockSided extends BlockCoverable {
 
         if (!world.isRemote) {
             TEBase TE = getTileEntity(world, x, y, z);
-            if (TE != null && !canPlaceBlockOnSide(world, x, y, z, data.getDirection(TE).ordinal())) {
+            if (TE != null && !canPlaceBlockOnSide(world, x, y, z, data.getDirection(TE).ordinal()) && !canFloat()) {
                 destroyBlock(world, x, y, z, true);
             }
         }
@@ -224,6 +224,16 @@ public class BlockSided extends BlockCoverable {
     public boolean canAttachToSide(int side)
     {
         return true;
+    }
+
+    /**
+     * Whether block requires an adjacent block with solid side for support.
+     *
+     * @return whether block can float freely
+     */
+    public boolean canFloat()
+    {
+        return false;
     }
 
 }
