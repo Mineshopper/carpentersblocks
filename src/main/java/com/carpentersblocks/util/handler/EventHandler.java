@@ -100,6 +100,10 @@ public class EventHandler {
      */
     public void onPlayerInteractEvent(PlayerInteractEvent event)
     {
+        if (event.isCanceled()) {
+            return;
+        }
+
         Block block = event.entity.worldObj.getBlock(event.x, event.y, event.z);
 
         if (block instanceof BlockCoverable) {
