@@ -168,7 +168,7 @@ public class BlockCarpentersDaylightSensor extends BlockSided {
 
                 if (temp != lightValue) {
                     data.setLightLevel(TE, lightValue);
-                    world.notifyBlocksOfNeighborChange(x, y, z, this);
+                    notifyBlocksOfPowerChange(TE.getWorldObj(), TE.xCoord, TE.yCoord, TE.zCoord);
                 }
 
             }
