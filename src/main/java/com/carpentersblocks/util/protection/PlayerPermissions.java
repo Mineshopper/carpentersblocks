@@ -21,9 +21,7 @@ public class PlayerPermissions {
     }
 
     /**
-     * If player is an op or the owner of the {@link IProtected} object,
-     * they will have the necessary permissions to activate and/or destroy
-     * a protected block.
+     * Whether player is an operator, owner or is in a singleplayer server.
      *
      * @param  object the {@link IProtected} block or entity
      * @param  entityPlayer the {@link EntityPlayer}
@@ -31,7 +29,15 @@ public class PlayerPermissions {
      */
     public static boolean hasElevatedPermission(IProtected object, EntityPlayer entityPlayer)
     {
-        return isOp(entityPlayer) || isOwner(object, entityPlayer);
+        if (((EntityPlayerMP)entityPlayer).mcServer.isSinglePlayer()) {
+            return true;
+        } else if (isOp(entityPlayer)) {
+            return true;
+        } else if (FeatureRegistry.enableOwnership) {
+            return isOwner(object, entityPlayer);
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -39,10 +45,8 @@ public class PlayerPermissions {
      */
     public static boolean canPlayerEdit(IProtected object, int x, int y, int z, EntityPlayer entityPlayer)
     {
-        if (isOp(entityPlayer)) {
+        if (hasElevatedPermission(object, entityPlayer)) {
             return true;
-        } else if (FeatureRegistry.enableOwnership) {
-            return isOwner(object, entityPlayer);
         } else {
             return entityPlayer.canPlayerEdit(x, y, z, 0, entityPlayer.getHeldItem());
         }
