@@ -25,7 +25,7 @@ public class ProtectedObject {
                 return entityPlayer.getDisplayName();
             }
         } else {
-            return "";
+            return entityPlayer.getDisplayName();
         }
     }
 
