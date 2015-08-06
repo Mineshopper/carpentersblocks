@@ -11,6 +11,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
 import com.carpentersblocks.CarpentersBlocks;
@@ -63,6 +64,27 @@ public class BlockProperties {
         hash = 97 * hash + y;
         hash = 97 * hash + z;
         return hash;
+    }
+
+    /**
+     * Returns {@link TEBase} if one exists and the block at coordinates
+     * matches passed in {@link Block}.
+     *
+     * @param block the {@link Block} to match against
+     * @param world the {@link World}
+     * @param x the x coordinate
+     * @param y the y coordinate
+     * @param z the z coordinate
+     * @return a {@link TEBase}
+     */
+    public static TEBase getTileEntity(Block block, World world, int x, int y, int z)
+    {
+        TileEntity tileEntity = world.getTileEntity(x, y, z);
+        if (tileEntity != null && tileEntity instanceof TEBase && world.getBlock(x, y, z).equals(block)) {
+            return (TEBase) tileEntity;
+        }
+
+        return null;
     }
 
     /**

@@ -59,8 +59,11 @@ public class BlockCarpentersGarageDoor extends BlockCoverable {
             temp = 0;
         }
 
-        data.setType(TE, temp);
-        propagateChanges(TE, TE.getWorldObj(), TE.xCoord, TE.yCoord, TE.zCoord, true);
+        ArrayList<TEBase> pieces = data.getConnectingDoors(TE);
+        for (TEBase piece : pieces) {
+            data.setType(piece, temp);
+        }
+
         return true;
     }
 
@@ -87,12 +90,17 @@ public class BlockCarpentersGarageDoor extends BlockCoverable {
                     ChatHandler.sendMessageToPlayer("message.activation_iron.name", entityPlayer);
             }
 
-            data.setRigidity(TE, rigidity);
+            ArrayList<TEBase> pieces = data.getConnectingDoors(TE);
+            for (TEBase piece : pieces) {
+                data.setRigidity(piece, rigidity);
+            }
         } else {
-            data.setType(TE, temp);
+            ArrayList<TEBase> pieces = data.getConnectingDoors(TE);
+            for (TEBase piece : pieces) {
+                data.setType(piece, temp);
+            }
         }
 
-        propagateChanges(TE, TE.getWorldObj(), TE.xCoord, TE.yCoord, TE.zCoord, true);
         return true;
     }
 
@@ -232,77 +240,14 @@ public class BlockCarpentersGarageDoor extends BlockCoverable {
     {
         if (!data.isRigid(TE)) {
             int state = data.getState(TE) == GarageDoor.STATE_OPEN ? GarageDoor.STATE_CLOSED : GarageDoor.STATE_OPEN;
-            data.setState(TE, state, false);
-            propagateChanges(TE, TE.getWorldObj(), TE.xCoord, TE.yCoord, TE.zCoord, true);
+
+            ArrayList<TEBase> pieces = data.getConnectingDoors(TE);
+            for (TEBase piece : pieces) {
+                data.setState(piece, state, false);
+            }
+
             actionResult.setAltered().setNoSound();
         }
-    }
-
-    /**
-     * Propagates block properties to all connecting blocks.
-     * <p>
-     * If notifyNeighbors is true, will notify all columns along a horizontal
-     * line to update.  Only the first method call should set this to true.
-     *
-     * @param TE the host {@link TEBase}
-     * @param world the {@link World}
-     * @param x the x coordinate
-     * @param y the y coordinate
-     * @param z the z coordinate
-     * @param propagate notify adjacent garage doors
-     */
-    private void propagateChanges(TEBase TE, World world, int x, int y, int z, boolean notifyNeighbors)
-    {
-        int state = data.getState(TE);
-        int type = data.getType(TE);
-        int rigid = data.getRigidity(TE);
-
-        if (notifyNeighbors) {
-
-            /* Propagate at level of top garage door only. */
-
-            ForgeDirection facing = data.getDirection(TE);
-            int topY = data.getTopmost(world, x, y, z).yCoord;
-            int propX = x;
-            int propZ = z;
-
-            /* Propagate in first direction. */
-
-            ForgeDirection dir = facing.getRotation(ForgeDirection.UP);
-            do {
-                propX += dir.offsetX;
-                propZ += dir.offsetZ;
-                TEBase temp = getTileEntity(world, propX, topY, propZ);
-                if (temp != null && data.getDirection(temp).equals(facing)) {
-                    propagateChanges(TE, world, propX, topY, propZ, false);
-                }
-            } while (world.getBlock(propX, topY, propZ).equals(this));
-
-            /* Propagate in second direction. */
-
-            dir = dir.getOpposite();
-            propX = x;
-            propZ = z;
-            do {
-                propX += dir.offsetX;
-                propZ += dir.offsetZ;
-                TEBase temp = getTileEntity(world, propX, topY, propZ);
-                if (temp != null && data.getDirection(temp).equals(facing)) {
-                    propagateChanges(TE, world, propX, topY, propZ, false);
-                }
-            } while (world.getBlock(propX, topY, propZ).equals(this));
-
-        }
-
-        y = data.getBottommost(world, x, y, z).yCoord;
-        do {
-            TEBase temp = getTileEntity(world, x, y, z);
-            if (temp != null) {
-                data.setType(temp, type);
-                data.setState(temp, state, notifyNeighbors && data.getState(temp) != state);
-                data.setRigidity(temp, rigid);
-            }
-        } while (world.getBlock(x, ++y, z).equals(this));
     }
 
     @Override
@@ -319,13 +264,37 @@ public class BlockCarpentersGarageDoor extends BlockCoverable {
                 if (data.isHost(TE) && !(canPlaceBlockOnSide(world, x, y, z, 0) || world.getBlock(x, y + 1, z).equals(this))) {
                     destroy(world, x, y, z, true);
                 } else {
-                    /* Set block open or closed. */
-
+                    // Check for new door state (open or closed)
                     int powerState = world.isBlockIndirectlyGettingPowered(x, y, z) ? GarageDoor.STATE_OPEN : GarageDoor.STATE_CLOSED;
                     if (block != null && block.canProvidePower() && powerState != data.getState(TE)) {
-                        int state = data.isOpen(TE) ? GarageDoor.STATE_CLOSED : GarageDoor.STATE_OPEN;
-                        data.setState(TE, state, false);
-                        propagateChanges(TE, world, x, y, z, true);
+                        int old_state = data.getState(TE);
+                        int state = old_state;
+
+                        if (data.isOpen(TE)) {
+                            // Check if a garage door piece is still powered
+                            boolean garageHasPower = false;
+                            ArrayList<TEBase> pieces = data.getConnectingDoors(TE);
+                            for (TEBase piece : pieces) {
+                                if (world.isBlockIndirectlyGettingPowered(piece.xCoord, piece.yCoord, piece.zCoord)) {
+                                    garageHasPower = true;
+                                    break;
+                                }
+                            }
+                            if (!garageHasPower) {
+                                state = data.STATE_CLOSED;
+                            }
+                        } else {
+                            state = data.STATE_OPEN;
+                        }
+
+                        if (state != old_state) {
+                            data.setState(TE, state, false);
+
+                            ArrayList<TEBase> pieces = data.getConnectingDoors(TE);
+                            for (TEBase piece : pieces) {
+                                data.setState(piece, state, false);
+                            }
+                        }
                     }
                 }
             }
