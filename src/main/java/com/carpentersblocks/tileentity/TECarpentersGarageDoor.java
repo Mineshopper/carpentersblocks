@@ -18,8 +18,12 @@ public class TECarpentersGarageDoor extends TEBase {
     public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt)
     {
         if (getWorldObj().isRemote) {
+            GarageDoor data = GarageDoor.INSTANCE;
+            int oldState = data.getState(this);
             super.onDataPacket(net, pkt);
-            new GarageDoor().playStateChangeSound(this);
+            if (data.getState(this) != oldState) {
+                data.playStateChangeSound(this);
+            }
         }
     }
 
