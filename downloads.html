@@ -58,7 +58,7 @@ label-release: <span class="label label-danger">
          {{ page.label-dev }}
          {{ page.label-begin-minecraft }}MC 1.7.10{{ page.label-end }}
          {{ page.label-begin-forge }}FORGE 10.13.0.1180{{ page.label-end }}
-         {{ page.label-begin-release }}UPDATED 08/05/2015{{ page.label-end }}
+         {{ page.label-begin-release }}UPDATED 08/07/2015{{ page.label-end }}
       </div>
    </div>
    <div style="display: table-row;">
@@ -75,12 +75,15 @@ label-release: <span class="label label-danger">
                 <li>Added proper top face rendering to routable fluids.</li>
                 <li>Added permissions support for offline-mode servers.</li>
                 <li>Converted Collapsible Block to 16 steps (existing quad heights will change).</li>
-                <li>Fixed tiles being unplaceable in dev builds.</li>
                 <li>Overhauled cached lighting system; should resolve mob spawns and crop growth.</li>
                 <li>Fixed sided blocks not working in dev builds (lever, pressure plate, etc).</li>
-                <li>Collapsible block can now be placed upside-down (existing ones will break one last time).</li>
+                <li>Collapsible block can now be placed upside-down (existing ones 3.3.6 and earlier will break).</li>
                 <li>Fixed daylight sensor not updating neighbors properly. [mickelus] (8/05)</li>
                 <li>Fixed garage door not checking power state of connected doors. (8/05)</li>
+                <li>Garage door can now be connected in any contiguous configuration and will act as a single entity. (8/07)</li>
+                <li>Garage door open/close sound now only plays from piece closest to player. (8/07)</li>
+                <li>Garage door now fills in voids introduced by destroying barriers beneath a door piece. (8/07)</li>
+                <li>Garage door now better replicates adjacent door properties upon creation. (8/07)</li>
             </ul>
          </div>
       </div>
