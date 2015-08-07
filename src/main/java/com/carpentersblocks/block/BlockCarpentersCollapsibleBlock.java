@@ -233,6 +233,40 @@ public class BlockCarpentersCollapsibleBlock extends BlockSided {
 
     @Override
     /**
+     * Called when a block is placed using its ItemBlock. Args: World, X, Y, Z, side, hitX, hitY, hitZ, block metadata
+     */
+    public int onBlockPlaced(World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int metadata)
+    {
+        // If side not supported, select best side based on y hit coordinates
+        if (!canAttachToSide(side)) {
+            return hitY > 0.5F ? 0 : 1;
+        }
+
+        return side;
+    }
+
+    @Override
+    /**
+     * Checks to see if you can place this block can be placed on that side of a block: BlockLever overrides
+     */
+    public boolean canPlaceBlockOnSide(World world, int x, int y, int z, int side)
+    {
+        if (!canAttachToSide(side)) {
+            ForgeDirection VALID_SIDES[] = { ForgeDirection.DOWN, ForgeDirection.UP };
+            for (ForgeDirection dir : VALID_SIDES) {
+                // If side is not supported, check that either the block above or below CAN support it
+                if (world.getBlock(x - dir.offsetX, y - dir.offsetY, z - dir.offsetZ).isSideSolid(world, x - dir.offsetX, y - dir.offsetY, z - dir.offsetZ, dir)) {
+                    return true;
+                }
+            }
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    @Override
+    /**
      * Called when the block is placed in the world.
      */
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack itemStack)
