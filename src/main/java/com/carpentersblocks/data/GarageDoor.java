@@ -1,12 +1,17 @@
 package com.carpentersblocks.data;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import com.carpentersblocks.tileentity.TEBase;
 import com.carpentersblocks.util.BlockProperties;
 import com.carpentersblocks.util.registry.BlockRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class GarageDoor implements ISided {
 
@@ -77,15 +82,9 @@ public class GarageDoor implements ISided {
     /**
      * Sets state (open or closed).
      */
-    public void setState(TEBase TE, int state, boolean playSound)
+    public void setState(TEBase TE, int state)
     {
         int temp = (TE.getData() & ~0x80) | (state << 7);
-
-        World world = TE.getWorldObj();
-        if (!world.isRemote && playSound) {
-            world.playAuxSFXAtEntity((EntityPlayer)null, 1003, TE.xCoord, TE.yCoord, TE.zCoord, 0);
-        }
-
         TE.setData(temp);
     }
 
@@ -174,6 +173,43 @@ public class GarageDoor implements ISided {
     }
 
     /**
+     * Compares door pieces by distance from player.
+     */
+    @SideOnly(Side.CLIENT)
+    class DoorPieceDistanceComparator implements Comparator<TEBase> {
+        @Override
+        public int compare(TEBase tileEntity1, TEBase tileEntity2) {
+            double dist1 = Minecraft.getMinecraft().thePlayer.getDistance(tileEntity1.xCoord, tileEntity1.yCoord, tileEntity1.zCoord);
+            double dist2 = Minecraft.getMinecraft().thePlayer.getDistance(tileEntity2.xCoord, tileEntity2.yCoord, tileEntity2.zCoord);
+            return dist1 < dist2 ? -1 : 1;
+        }
+    }
+
+    /**
+     * When passed a TEBase, will play state change sound
+     * if piece is nearest to player out of all connecting
+     * door pieces.
+     * <p>
+     * The server would normally handle this and send notification
+     * to all nearby players, but sound source will be dependent
+     * on each player's location.
+     *
+     * @param list an {@link ArrayList<TEBase>} of door pieces
+     * @param entityPlayer the source {@link EntityPlayer}
+     * @return the {@link TEBase} nearest to {@link EntityPlayer}
+     */
+    @SideOnly(Side.CLIENT)
+    public void playStateChangeSound(TEBase TE)
+    {
+        ArrayList<TEBase> list = getConnectingDoors(TE);
+
+        // Only play sound if piece is nearest to player
+        Collections.sort(list, new DoorPieceDistanceComparator());
+        if (list.get(0).equals(TE)) {
+            TE.getWorldObj().playAuxSFXAtEntity((EntityPlayer)null, 1003, TE.xCoord, TE.yCoord, TE.zCoord, 0);
+        }
+    }
+    /**
      * Grabs all doors that face the same direction and
      * that are adjacent to any connecting piece of structure.
      *
@@ -186,8 +222,6 @@ public class GarageDoor implements ISided {
         ArrayList<TEBase> list = new ArrayList<TEBase>();
         addConnectingDoors(TE, list, dir, true);
         addConnectingDoors(TE, list, dir.getOpposite(), false);
-
-        System.out.println("DEBUG: Found " + list.size() + " doors.");
 
         return list;
     }

@@ -7,6 +7,7 @@ import com.carpentersblocks.entity.item.EntityCarpentersTile;
 import com.carpentersblocks.tileentity.TEBase;
 import com.carpentersblocks.tileentity.TECarpentersDaylightSensor;
 import com.carpentersblocks.tileentity.TECarpentersFlowerPot;
+import com.carpentersblocks.tileentity.TECarpentersGarageDoor;
 import com.carpentersblocks.tileentity.TECarpentersSafe;
 import com.carpentersblocks.tileentity.TECarpentersTorch;
 import com.carpentersblocks.util.handler.DesignHandler;
@@ -57,6 +58,7 @@ public class CommonProxy {
         GameRegistry.registerTileEntity(     TECarpentersFlowerPot.class,      "TileEntityCarpentersFlowerPot");
         GameRegistry.registerTileEntity(          TECarpentersSafe.class,           "TileEntityCarpentersSafe");
         GameRegistry.registerTileEntity(         TECarpentersTorch.class,          "TileEntityCarpentersTorch");
+        GameRegistry.registerTileEntity(    TECarpentersGarageDoor.class,     "TileEntityCarpentersGarageDoor");
 
         /* Register entities */
 

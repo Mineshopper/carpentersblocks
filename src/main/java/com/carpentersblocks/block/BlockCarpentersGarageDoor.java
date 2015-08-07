@@ -17,6 +17,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import com.carpentersblocks.CarpentersBlocks;
 import com.carpentersblocks.data.GarageDoor;
 import com.carpentersblocks.tileentity.TEBase;
+import com.carpentersblocks.tileentity.TECarpentersGarageDoor;
 import com.carpentersblocks.util.EntityLivingUtil;
 import com.carpentersblocks.util.handler.ChatHandler;
 import com.carpentersblocks.util.protection.ProtectedObject;
@@ -208,7 +209,7 @@ public class BlockCarpentersGarageDoor extends BlockCoverable {
             if (temp != null) {
                 data.setDirection(temp, dir);
                 data.setType(temp, type);
-                data.setState(temp, state, false);
+                data.setState(temp, state);
                 data.setRigidity(temp, rigid);
                 temp.setOwner(new ProtectedObject((EntityPlayer)entity));
             }
@@ -243,7 +244,7 @@ public class BlockCarpentersGarageDoor extends BlockCoverable {
 
             ArrayList<TEBase> pieces = data.getConnectingDoors(TE);
             for (TEBase piece : pieces) {
-                data.setState(piece, state, false);
+                data.setState(piece, state);
             }
 
             actionResult.setAltered().setNoSound();
@@ -288,11 +289,11 @@ public class BlockCarpentersGarageDoor extends BlockCoverable {
                         }
 
                         if (state != old_state) {
-                            data.setState(TE, state, false);
+                            data.setState(TE, state);
 
                             ArrayList<TEBase> pieces = data.getConnectingDoors(TE);
                             for (TEBase piece : pieces) {
-                                data.setState(piece, state, false);
+                                data.setState(piece, state);
                             }
                         }
                     }
@@ -474,6 +475,12 @@ public class BlockCarpentersGarageDoor extends BlockCoverable {
         }
 
         return false;
+    }
+
+    @Override
+    public TileEntity createNewTileEntity(World world, int metadata)
+    {
+        return new TECarpentersGarageDoor();
     }
 
 }
