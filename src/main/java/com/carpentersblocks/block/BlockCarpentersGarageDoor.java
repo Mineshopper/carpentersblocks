@@ -198,20 +198,11 @@ public class BlockCarpentersGarageDoor extends BlockCoverable {
      */
     private void create(TEBase TE, World world, int x, int y, int z)
     {
-        ForgeDirection dir = data.getDirection(TE);
-        int type = data.getType(TE);
-        int state = data.getState(TE);
-        int rigid = data.getRigidity(TE);
-
-        for (int baseY = y; canPlaceBlockAt(world, x, baseY, z); --baseY) {
-            world.setBlock(x, baseY, z, this);
-            TEBase temp = getTileEntity(world, x, baseY, z);
+        for (; canPlaceBlockAt(world, x, y, z); --y) {
+            world.setBlock(x, y, z, this);
+            TEBase temp = getTileEntity(world, x, y, z);
             if (temp != null) {
-                data.setDirection(temp, dir);
-                data.setType(temp, type);
-                data.setState(temp, state);
-                data.setRigidity(temp, rigid);
-                temp.copyOwner(TE);
+                data.replicate(TE, temp);
             }
         }
     }
@@ -396,21 +387,18 @@ public class BlockCarpentersGarageDoor extends BlockCoverable {
     {
         TEBase TE = getTileEntity(world, x, y, z);
 
-        /* Set direction based on player facing only. */
-
+        // Set direction based on player facing
         ForgeDirection facing = EntityLivingUtil.getFacing(entityLiving).getOpposite();
         data.setDirection(TE, facing);
         data.setHost(TE);
 
-        /* Match type above or below block. */
-
-        for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
-            if (world.getBlock(x - dir.offsetX, y - dir.offsetY, z - dir.offsetZ).equals(this)) {
-                TEBase TE_adj = (TEBase) world.getTileEntity(x - dir.offsetX, y - dir.offsetY, z - dir.offsetZ);
-                data.setType(TE, data.getType(TE_adj));
-            }
+        // Find a nearby door to replicate properties
+        TEBase temp = data.findReferencePiece(world, x, y, z, facing);
+        if (temp != null) {
+            data.replicate(temp, TE);
         }
 
+        // Create remainder of stack below host
         create(TE, world, x, y - 1, z);
 
         super.onBlockPlacedBy(world, x, y, z, entityLiving, itemStack);

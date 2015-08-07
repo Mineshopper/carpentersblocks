@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import com.carpentersblocks.tileentity.TEBase;
@@ -226,6 +227,48 @@ public class GarageDoor implements ISided {
         addConnectingDoors(TE, list, dir.getOpposite(), false);
 
         return list;
+    }
+
+    /**
+     * Helper function for determining properties based on a
+     * nearby garage door piece around the given coordinates.
+     *
+     * @param world the {@link World}
+     * @param x the x coordinate
+     * @param y the y coordinate
+     * @param z the z coordinate
+     * @return a {@link TEBase} with relevant properties
+     */
+    public TEBase findReferencePiece(World world, int x, int y, int z, ForgeDirection axis)
+    {
+        ForgeDirection dir = axis.getRotation(ForgeDirection.UP);
+        do {
+            TEBase temp1 = BlockProperties.getTileEntity(BlockRegistry.blockCarpentersGarageDoor, world, x + dir.offsetX, y, z + dir.offsetZ);
+            TEBase temp2 = BlockProperties.getTileEntity(BlockRegistry.blockCarpentersGarageDoor, world, x - dir.offsetX, y, z - dir.offsetZ);
+            if (temp1 != null && getDirection(temp1).equals(axis)) {
+                return temp1;
+            } else if (temp2 != null && getDirection(temp2).equals(axis)) {
+                return temp2;
+            }
+        } while (world.getBlock(x, --y, z).equals(Blocks.air));
+
+        return null;
+    }
+
+    /**
+     * Copies relevant properties and owner from source tile
+     * entity to destination tile entity.
+     *
+     * @param src the source {@link TEBase}
+     * @param dest the destination {@link TEBase}
+     */
+    public void replicate(final TEBase src, TEBase dest)
+    {
+        setDirection(dest, getDirection(src));
+        setRigidity(dest, getRigidity(src));
+        setState(dest, getState(src));
+        setType(dest, getType(src));
+        dest.copyOwner(src);
     }
 
     /**
