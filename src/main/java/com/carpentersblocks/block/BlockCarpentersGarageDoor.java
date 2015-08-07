@@ -6,6 +6,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
@@ -20,7 +21,6 @@ import com.carpentersblocks.tileentity.TEBase;
 import com.carpentersblocks.tileentity.TECarpentersGarageDoor;
 import com.carpentersblocks.util.EntityLivingUtil;
 import com.carpentersblocks.util.handler.ChatHandler;
-import com.carpentersblocks.util.protection.ProtectedObject;
 import com.carpentersblocks.util.registry.BlockRegistry;
 import com.carpentersblocks.util.registry.IconRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -196,7 +196,7 @@ public class BlockCarpentersGarageDoor extends BlockCoverable {
      * @param y
      * @param z
      */
-    private void create(TEBase TE, World world, EntityLivingBase entity, int x, int y, int z)
+    private void create(TEBase TE, World world, int x, int y, int z)
     {
         ForgeDirection dir = data.getDirection(TE);
         int type = data.getType(TE);
@@ -211,7 +211,7 @@ public class BlockCarpentersGarageDoor extends BlockCoverable {
                 data.setType(temp, type);
                 data.setState(temp, state);
                 data.setRigidity(temp, rigid);
-                temp.setOwner(new ProtectedObject((EntityPlayer)entity));
+                temp.copyOwner(TE);
             }
         }
     }
@@ -298,6 +298,11 @@ public class BlockCarpentersGarageDoor extends BlockCoverable {
                         }
                     }
                 }
+            }
+
+            // Create new door pieces below if bottom block turned to air
+            if (block != this && world.getBlock(x, y - 1, z).equals(Blocks.air)) {
+                create(TE, world, x, y - 1, z);
             }
 
         }
@@ -406,7 +411,7 @@ public class BlockCarpentersGarageDoor extends BlockCoverable {
             }
         }
 
-        create(TE, world, entityLiving, x, y - 1, z);
+        create(TE, world, x, y - 1, z);
 
         super.onBlockPlacedBy(world, x, y, z, entityLiving, itemStack);
     }

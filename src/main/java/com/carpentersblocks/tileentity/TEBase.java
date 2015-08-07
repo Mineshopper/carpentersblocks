@@ -27,12 +27,12 @@ import com.carpentersblocks.util.registry.FeatureRegistry;
 
 public class TEBase extends TileEntity implements IProtected {
 
-    private static final String TAG_ATTR          = "cbAttribute";
-    private static final String TAG_ATTR_LIST     = "cbAttrList";
-    private static final String TAG_METADATA      = "cbMetadata";
-    private static final String TAG_OWNER         = "cbOwner";
-    private static final String TAG_CHISEL_DESIGN = "cbChiselDesign";
-    private static final String TAG_DESIGN        = "cbDesign";
+    protected static final String TAG_ATTR          = "cbAttribute";
+    protected static final String TAG_ATTR_LIST     = "cbAttrList";
+    protected static final String TAG_METADATA      = "cbMetadata";
+    protected static final String TAG_OWNER         = "cbOwner";
+    protected static final String TAG_CHISEL_DESIGN = "cbChiselDesign";
+    protected static final String TAG_DESIGN        = "cbDesign";
 
     public static final byte[]  ATTR_COVER        = {  0,  1,  2,  3,  4,  5,  6 };
     public static final byte[]  ATTR_DYE          = {  7,  8,  9, 10, 11, 12, 13 };
@@ -90,12 +90,8 @@ public class TEBase extends TileEntity implements IProtected {
                 cbChiselDesign[idx] = nbt.getString(TAG_CHISEL_DESIGN + "_" + idx);
             }
 
-            // 3.3.7 DEV converted cbMetadata to integer
-            if (nbt.getTag(TAG_METADATA) instanceof NBTTagShort) {
-                cbMetadata = nbt.getShort(TAG_METADATA);
-            } else {
-                cbMetadata = nbt.getInteger(TAG_METADATA);
-            }
+            // Handle 3.3.7 structure changes
+            convertDataToInt(nbt);
 
             cbDesign = nbt.getString(TAG_DESIGN);
             cbOwner = nbt.getString(TAG_OWNER);
@@ -103,6 +99,24 @@ public class TEBase extends TileEntity implements IProtected {
 
         // Block either loaded or changed, update lighting and render state
         updateWorld();
+    }
+
+    /**
+     * Handles data conversion from short to int for update 3.3.7.
+     *
+     * @param nbt the {@link NBTTagCompound}
+     * @return <code>true</code> if data was converted
+     */
+    private boolean convertDataToInt(NBTTagCompound nbt)
+    {
+        // 3.3.7 DEV converted cbMetadata to integer
+        if (nbt.getTag(TAG_METADATA) instanceof NBTTagShort) {
+            cbMetadata = nbt.getShort(TAG_METADATA);
+            return true;
+        } else {
+            cbMetadata = nbt.getInteger(TAG_METADATA);
+            return false;
+        }
     }
 
     @Override
@@ -186,6 +200,15 @@ public class TEBase extends TileEntity implements IProtected {
          * is not only reasonable, but fixes this behavior.
          */
         return oldBlock != newBlock;
+    }
+
+    /**
+     * Copies owner from TEBase object.
+     */
+    public void copyOwner(final TEBase TE)
+    {
+        cbOwner = TE.getOwner();
+        markDirty();
     }
 
     /**

@@ -22,6 +22,8 @@ public class GarageDoor implements ISided {
      * Unused   Host Rigid State Dir   Type
      */
 
+    public final static GarageDoor INSTANCE = new GarageDoor();
+
     public static final int  TYPE_DEFAULT   = 0;
     public static final int  TYPE_GLASS_TOP = 1;
     public static final int  TYPE_GLASS     = 2;

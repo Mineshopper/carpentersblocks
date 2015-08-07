@@ -50,15 +50,15 @@ public class CommonProxy {
 
         /* Register tile entities */
 
-        GameRegistry.registerTileEntity(                    TEBase.class,          "TileEntityCarpentersSlope"); // Compatibility mapping
-        GameRegistry.registerTileEntity(                    TEBase.class,            "TileEntityCarpentersBed"); // Compatibility mapping
-        GameRegistry.registerTileEntity(                    TEBase.class,          "TileEntityCarpentersBlock");
-        GameRegistry.registerTileEntity(TECarpentersDaylightSensor.class,            "TileEntityCarpentersExt"); // Compatibility mapping
-        GameRegistry.registerTileEntity(TECarpentersDaylightSensor.class, "TileEntityCarpentersDaylightSensor");
-        GameRegistry.registerTileEntity(     TECarpentersFlowerPot.class,      "TileEntityCarpentersFlowerPot");
-        GameRegistry.registerTileEntity(          TECarpentersSafe.class,           "TileEntityCarpentersSafe");
-        GameRegistry.registerTileEntity(         TECarpentersTorch.class,          "TileEntityCarpentersTorch");
-        GameRegistry.registerTileEntity(    TECarpentersGarageDoor.class,     "TileEntityCarpentersGarageDoor");
+        GameRegistry.registerTileEntity(                      TEBase.class,            "TileEntityCarpentersSlope"); // Compatibility mapping
+        GameRegistry.registerTileEntity(                      TEBase.class,              "TileEntityCarpentersBed"); // Compatibility mapping
+        GameRegistry.registerTileEntity(                      TEBase.class,            "TileEntityCarpentersBlock");
+        GameRegistry.registerTileEntity(  TECarpentersDaylightSensor.class,              "TileEntityCarpentersExt"); // Compatibility mapping
+        GameRegistry.registerTileEntity(  TECarpentersDaylightSensor.class,   "TileEntityCarpentersDaylightSensor");
+        GameRegistry.registerTileEntity(       TECarpentersFlowerPot.class,        "TileEntityCarpentersFlowerPot");
+        GameRegistry.registerTileEntity(            TECarpentersSafe.class,             "TileEntityCarpentersSafe");
+        GameRegistry.registerTileEntity(           TECarpentersTorch.class,            "TileEntityCarpentersTorch");
+        GameRegistry.registerTileEntity(      TECarpentersGarageDoor.class,       "TileEntityCarpentersGarageDoor");
 
         /* Register entities */
 

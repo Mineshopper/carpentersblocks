@@ -8,7 +8,6 @@ public interface IProtected {
      */
     public String getOwner();
 
-
     /**
      * Sets owner of object.
      */
