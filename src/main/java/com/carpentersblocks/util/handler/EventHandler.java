@@ -181,7 +181,7 @@ public class EventHandler {
         {
             EntityPlayer entityPlayer = Minecraft.getMinecraft().thePlayer;
 
-            if (entityPlayer.isSneaking()) {
+            if (entityPlayer != null && entityPlayer.isSneaking()) {
                 ItemStack itemStack = entityPlayer.getHeldItem();
                 if (itemStack != null && itemStack.getItem() instanceof ItemBlock && BlockProperties.toBlock(itemStack).equals(BlockRegistry.blockCarpentersSlope)) {
                     if (event.dwheel != 0) {
