@@ -1,6 +1,7 @@
 package com.carpentersblocks.util.protection;
 
 import java.util.UUID;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import com.carpentersblocks.util.registry.FeatureRegistry;
@@ -29,7 +30,7 @@ public class PlayerPermissions {
      */
     public static boolean hasElevatedPermission(IProtected object, EntityPlayer entityPlayer)
     {
-        if (((EntityPlayerMP)entityPlayer).mcServer.isSinglePlayer()) {
+        if (Minecraft.getMinecraft().isSingleplayer()) {
             return true;
         } else if (isOp(entityPlayer)) {
             return true;
