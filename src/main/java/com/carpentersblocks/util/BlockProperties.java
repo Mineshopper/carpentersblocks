@@ -8,7 +8,6 @@ import net.minecraft.block.BlockQuartz;
 import net.minecraft.block.BlockRotatedPillar;
 import net.minecraft.block.BlockSlab;
 import net.minecraft.init.Blocks;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -189,24 +188,39 @@ public class BlockProperties {
     }
 
     /**
-     * Returns cover {@link ItemStack}.
-     * <p>
-     * If cover {@link ItemStack#hasTagCompound()}, will replace {@link Item} with {@link Blocks#planks}.
-     * <p>
-     * This is needed to avoid calling properties for covers that have NBTTagCompounds,
-     * which may rely on data that does not exist.
+     * Filters the {@link ItemStack} to a form that is safe for standard
+     * block calls.  This is necessary for ItemStacks that contain {@link NBTTagCompounds}
+     * or otherwise produce a block that has a {@link TileEntity}.
+     *
+     * @param itemStack the {@link ItemStack}
+     * @return an {@link ItemStack} that is safe from throwing casting crashes during {@link Block} calls
      */
-    public static ItemStack getCover(TEBase TE, int side)
+    public static ItemStack getCallableItemStack(ItemStack itemStack)
     {
-        ItemStack itemStack = getCoverSafe(TE, side);
         Block block = toBlock(itemStack);
 
         // IWrappable blocks are assumed safe to return unaltered
         if (block instanceof BlockCoverable || block instanceof IWrappableBlock) {
             return itemStack;
+        } else {
+            return block.hasTileEntity(itemStack.getItemDamage()) ? new ItemStack(Blocks.planks) : itemStack;
         }
+    }
 
-        return block.hasTileEntity(itemStack.getItemDamage()) ? new ItemStack(Blocks.planks) : itemStack;
+    /**
+     * Returns cover {@link ItemStack}, or instance of {@link BlockCoverable}
+     * if no cover exists on side.
+     * <p>
+     * Note: Side 6 represents the base block.
+     *
+     * @param TE the {@link TEBase}
+     * @param side the side
+     * @return an {@link ItemStack}
+     */
+    public static ItemStack getCover(TEBase TE, int side)
+    {
+        ItemStack itemStack = getCoverSafe(TE, side);
+        return getCallableItemStack(itemStack);
     }
 
     /**

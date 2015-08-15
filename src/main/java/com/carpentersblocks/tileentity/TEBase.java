@@ -551,7 +551,7 @@ public class TEBase extends TileEntity implements IProtected {
             Iterator it = cbAttrMap.entrySet().iterator();
             while (it.hasNext()) {
                 Map.Entry pair = (Map.Entry)it.next();
-                ItemStack itemStack = (ItemStack)pair.getValue();
+                ItemStack itemStack = BlockProperties.getCallableItemStack((ItemStack)pair.getValue());
                 Block block = BlockProperties.toBlock(itemStack);
                 if (block != Blocks.air) {
                     setMetadata(itemStack.getItemDamage());
