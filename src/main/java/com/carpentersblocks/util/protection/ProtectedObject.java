@@ -1,9 +1,9 @@
 package com.carpentersblocks.util.protection;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 
 public class ProtectedObject {
 
@@ -18,15 +18,12 @@ public class ProtectedObject {
     public String toString()
     {
         if (FMLCommonHandler.instance().getSide() == Side.SERVER) {
-            boolean onlineMode = ((EntityPlayerMP)entityPlayer).mcServer.isServerInOnlineMode();
-            if (onlineMode) {
+            if (((EntityPlayerMP)entityPlayer).mcServer.isServerInOnlineMode()) {
                 return entityPlayer.getUniqueID().toString();
-            } else {
-                return entityPlayer.getDisplayName();
             }
-        } else {
-            return entityPlayer.getDisplayName();
         }
+
+        return entityPlayer.getDisplayName();
     }
 
 }

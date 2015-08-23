@@ -419,7 +419,7 @@ public class EntityCarpentersTile extends EntityBase {
 
             boolean dropItem = false;
 
-            if (entity instanceof EntityPlayer && PlayerPermissions.canPlayerEdit(this, MathHelper.floor_double(posX), MathHelper.floor_double(posY), MathHelper.floor_double(posZ), (EntityPlayer) entity)) {
+            if (entity instanceof EntityPlayer && PlayerPermissions.hasElevatedPermission(this, (EntityPlayer)entity)) {
 
                 EntityPlayer entityPlayer = (EntityPlayer) entity;
                 ItemStack itemStack = entityPlayer.getHeldItem();
@@ -469,7 +469,7 @@ public class EntityCarpentersTile extends EntityBase {
 
             return true;
 
-        } else if (PlayerPermissions.canPlayerEdit(this, (int) Math.floor(posX), (int) Math.floor(posY), (int) Math.floor(posZ), entityPlayer)) {
+        } else if (PlayerPermissions.hasElevatedPermission(this, entityPlayer)) {
 
             ItemStack itemStack = entityPlayer.getHeldItem();
 

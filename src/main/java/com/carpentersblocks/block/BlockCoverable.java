@@ -311,7 +311,7 @@ public class BlockCoverable extends BlockContainer {
 
         if (TE == null) {
             return;
-        } else if (!PlayerPermissions.canPlayerEdit(TE, TE.xCoord, TE.yCoord, TE.zCoord, entityPlayer)) {
+        } else if (!PlayerPermissions.hasElevatedPermission(TE, entityPlayer)) {
             return;
         }
 
@@ -401,7 +401,7 @@ public class BlockCoverable extends BlockContainer {
         // If no prior event occurred, try regular activation
         if (!actionResult.altered) {
 
-            if (PlayerPermissions.canPlayerEdit(TE, TE.xCoord, TE.yCoord, TE.zCoord, entityPlayer)) {
+            if (PlayerPermissions.hasElevatedPermission(TE, entityPlayer)) {
 
                 ItemStack itemStack = entityPlayer.getCurrentEquippedItem();
 

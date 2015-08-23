@@ -42,18 +42,6 @@ public class PlayerPermissions {
     }
 
     /**
-     * Returns whether player is allowed to make alterations to object.
-     */
-    public static boolean canPlayerEdit(IProtected object, int x, int y, int z, EntityPlayer entityPlayer)
-    {
-        if (hasElevatedPermission(object, entityPlayer)) {
-            return true;
-        } else {
-            return entityPlayer.canPlayerEdit(x, y, z, 0, entityPlayer.getHeldItem());
-        }
-    }
-
-    /**
      * Whether the player is the owner of the object.
      *
      * @param object
