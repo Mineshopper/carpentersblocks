@@ -4,6 +4,8 @@ import java.util.UUID;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.server.MinecraftServer;
+import com.carpentersblocks.util.handler.EventHandler;
 import com.carpentersblocks.util.registry.FeatureRegistry;
 
 public class PlayerPermissions {
@@ -30,7 +32,9 @@ public class PlayerPermissions {
      */
     public static boolean hasElevatedPermission(IProtected object, EntityPlayer entityPlayer)
     {
-        if (Minecraft.getMinecraft().isSingleplayer()) {
+        if (entityPlayer.worldObj.isRemote && Minecraft.getMinecraft().isSingleplayer()) { // Check if client is playing singleplayer
+            return true;
+        } else if (!entityPlayer.worldObj.isRemote && MinecraftServer.getServer().isSinglePlayer()) { // Check if server is integrated (singleplayer)
             return true;
         } else if (isOp(entityPlayer)) {
             return true;
