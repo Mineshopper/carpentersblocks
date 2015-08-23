@@ -1,7 +1,5 @@
 package com.carpentersblocks.network;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufInputStream;
 import java.io.IOException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
@@ -9,6 +7,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import com.carpentersblocks.tileentity.TEBase;
 import com.carpentersblocks.util.EntityLivingUtil;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufInputStream;
 
 public class PacketEnrichPlant extends TilePacket {
 

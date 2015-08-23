@@ -5,7 +5,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-import com.carpentersblocks.util.handler.EventHandler;
 import com.carpentersblocks.util.registry.FeatureRegistry;
 
 public class PlayerPermissions {
