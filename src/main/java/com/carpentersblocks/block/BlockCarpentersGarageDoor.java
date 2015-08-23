@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -12,6 +13,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
+import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -164,7 +166,67 @@ public class BlockCarpentersGarageDoor extends BlockCoverable {
     }
 
     /**
-     * Will destroy a column of garage doors starting at the bottommost block.
+     * Location sensitive version of getExplosionRestance
+     *
+     * @param par1Entity The entity that caused the explosion
+     * @param world The current world
+     * @param x X Position
+     * @param y Y Position
+     * @param z Z Position
+     * @param explosionX Explosion source X Position
+     * @param explosionY Explosion source X Position
+     * @param explosionZ Explosion source X Position
+     * @return The amount of the explosion absorbed.
+     */
+    @Override
+    public float getExplosionResistance(Entity entity, World world, int x, int y, int z, double explosionX, double explosionY, double explosionZ)
+    {
+        TEBase TE = getTileEntity(world, x, y, z);
+        if (TE != null) {
+            if (data.isOpen(TE)) {
+                return Blocks.bedrock.getExplosionResistance(entity);
+            }
+        }
+
+        return getExplosionResistance(entity);
+    }
+
+    /**
+     * Called upon the block being destroyed by an explosion
+     */
+    @Override
+    public void onBlockDestroyedByExplosion(World world, int x, int y, int z, Explosion explosion)
+    {
+        // Destroy entire stack of doors
+        destroy(world, x, y, z, true);
+    }
+
+    private void destroyInDirection(World world, int x, int y, int z, boolean doDrop, ForgeDirection dir)
+    {
+        if (y < 0 || y > world.getHeight()) {
+            return;
+        }
+
+        Block block = world.getBlock(x, y, z);
+
+        if (block.equals(this)) {
+            boolean dropBlock = false;
+            if (doDrop) {
+                TEBase temp = getTileEntity(world, x, y, z);
+                if (temp != null && data.isHost(temp)) {
+                    dropBlock = true;
+                }
+            }
+            destroyBlock(world, x, y, z, dropBlock);
+        } else if (!block.equals(Blocks.air)) {
+            return;
+        }
+
+        destroyInDirection(world, x, y + dir.offsetY, z, doDrop, dir);
+    }
+
+    /**
+     * Will destroy a column of garage doors.
      *
      * @param world
      * @param x
@@ -175,17 +237,8 @@ public class BlockCarpentersGarageDoor extends BlockCoverable {
     private void destroy(World world, int x, int y, int z, boolean doDrop)
     {
         if (!world.isRemote) {
-            int baseY = data.getBottommost(world, x, y, z).yCoord;
-            do {
-                boolean dropBlock = false;
-                if (doDrop) {
-                    TEBase temp = getTileEntity(world, x, baseY, z);
-                    if (temp != null && data.isHost(temp)) {
-                        dropBlock = true;
-                    }
-                }
-                destroyBlock(world, x, baseY++, z, dropBlock);
-            } while (world.getBlock(x, baseY, z).equals(this));
+            destroyInDirection(world, x, y, z, doDrop, ForgeDirection.UP);
+            destroyInDirection(world, x, y - 1, z, false, ForgeDirection.DOWN);
         }
     }
 
