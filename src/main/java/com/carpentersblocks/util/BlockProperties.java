@@ -24,24 +24,8 @@ import com.carpentersblocks.util.registry.FeatureRegistry;
 
 public class BlockProperties {
 
-    public final static SoundType stepSound = new SoundType(CarpentersBlocks.MODID, 1.0F, 1.0F)
-    {
-        /**
-         * Used when a block breaks, e.g.: Player break, Sheep eating grass, etc..
-         */
-        @Override
-        public String getBreakSound()
-        {
-            return Blocks.log.stepSound.getBreakSound();
-        }
-
-        @Override
-        public String getStepResourcePath()
-        {
-            return Blocks.log.stepSound.getStepResourcePath();
-        }
-    };
-    public final static int       MASK_DEFAULT_ICON = 0x10;
+    public final static SoundType stepSound = new SoundType(CarpentersBlocks.MODID, 1.0F, 1.0F);
+    public final static int MASK_DEFAULT_ICON = 0x10;
 
     public static boolean isMetadataDefaultIcon(int metadata)
     {
