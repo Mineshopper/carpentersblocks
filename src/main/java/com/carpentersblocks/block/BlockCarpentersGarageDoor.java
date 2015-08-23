@@ -183,7 +183,7 @@ public class BlockCarpentersGarageDoor extends BlockCoverable {
     {
         TEBase TE = getTileEntity(world, x, y, z);
         if (TE != null) {
-            if (data.isOpen(TE)) {
+            if (data.isOpen(TE) && !data.isHost(TE)) {
                 return Blocks.bedrock.getExplosionResistance(entity);
             }
         }
