@@ -22,6 +22,7 @@ import com.carpentersblocks.tileentity.TECarpentersGarageDoor;
 import com.carpentersblocks.util.EntityLivingUtil;
 import com.carpentersblocks.util.handler.ChatHandler;
 import com.carpentersblocks.util.registry.BlockRegistry;
+import com.carpentersblocks.util.registry.FeatureRegistry;
 import com.carpentersblocks.util.registry.IconRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -292,8 +293,10 @@ public class BlockCarpentersGarageDoor extends BlockCoverable {
             }
 
             // Create new door pieces below if bottom block turned to air
-            if (block != this && world.getBlock(x, y - 1, z).equals(Blocks.air)) {
-                create(TE, world, x, y - 1, z);
+            if (FeatureRegistry.enableGarageDoorVoidFill) {
+                if (block != this && world.getBlock(x, y - 1, z).equals(Blocks.air)) {
+                    create(TE, world, x, y - 1, z);
+                }
             }
 
         }

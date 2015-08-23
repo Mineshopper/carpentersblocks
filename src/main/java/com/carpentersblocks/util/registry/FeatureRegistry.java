@@ -18,6 +18,7 @@ public class FeatureRegistry {
     public static boolean enableRoutableFluids      = false;
     public static boolean enableAlphaPanes          = true;
     public static boolean enableRailSlopes          = true;
+    public static boolean enableGarageDoorVoidFill  = true;
 
     public static ArrayList<String> overlayItems    = new ArrayList<String>();
     public static ArrayList<String> coverExceptions = new ArrayList<String>();
@@ -62,6 +63,10 @@ public class FeatureRegistry {
         Property railSlopesProp = config.get("features", "Enable Rail Slope Fill", enableRailSlopes);
         railSlopesProp.comment = "This allows Carpenter's Blocks with solid top faces to create slopes above them when a sloping rail is above the block.";
         enableRailSlopes = railSlopesProp.getBoolean(enableRailSlopes);
+
+        Property garageDoorVoidFillProp = config.get("features", "Enable Garage Door Void Autofill", enableGarageDoorVoidFill);
+        garageDoorVoidFillProp.comment = "This allows garage doors to automatically fill in gaps when barriers beneath doors are destroyed.";
+        enableGarageDoorVoidFill = garageDoorVoidFillProp.getBoolean(enableGarageDoorVoidFill);
 
         Property overlayList = config.get("features", "Overlay Definitions", new String[] { "Seeds:grass", "Snowball:snow", "String:web", "Vines:vine", "Wheat:hay", "Mushroom:mycelium" });
         overlayList.comment = "This maps items to overlays.\nItems are prefixed with display names (en_US only).\nOverlay suffixes are :grass, :snow, :web, :vine, :hay, :mycelium";
