@@ -21,6 +21,35 @@ label-end: </span>
 -->
 
 <div>
+   {{ page.label-begin-version }}3.3.7{{ page.label-end }}
+   {{ page.label-begin-release }}RELEASED 09/03/2015{{ page.label-end }}
+</div>
+<ul>
+	<li>Reorganized block drop code to address dupe bugs and other issues.</li>
+	<li>Resolved light cache crash experienced when using more recent Forge versions.</li>
+	<li>Overhauled cached lighting system; should resolve mob spawns and crop growth.</li>
+	<li>Added rail slope fill configuration option (for sloped rails above Carpenter's Blocks).</li>
+	<li>Added proper top face rendering to routable fluids.</li>
+	<li>Added permissions support for offline-mode servers.</li>
+	<li>Added inverted Collapsible block, and converted to 16-step increments (existing ones will break, sorry).</li>
+	<li>Fixed daylight sensor not updating neighbors properly. [mickelus]</li>
+	<li>Many garage door changes, including:</li>
+	<ul id="changelog">
+		<li>Fixed garage door not checking power state of connected doors.</li>
+		<li>Garage door can now be connected in any contiguous configuration and will act as a single entity.</li>
+		<li>Garage door open/close sound now only plays from piece closest to player.</li>
+		<li>Garage door now fills in voids introduced by destroying barriers beneath a door piece (configurable).</li>
+		<li>Garage door now better replicates adjacent door properties upon creation.</li>
+		<li>Garage doors in open state no longer susceptible to explosion damage.</li>
+		<li>Garage doors in closed state now destroy properly from explosions.</li>
+	</ul>
+	<li>Reverted Presence sound fix -- fixes only hearing default wooden block sounds.</li>
+	<li>Tweaked permissions to correct some false positives, such as safe breaking animations.</li>
+</ul>
+
+<hr>
+
+<div>
    {{ page.label-begin-version }}3.3.6{{ page.label-end }}
    {{ page.label-begin-release }}RELEASED 04/10/2015{{ page.label-end }}
 </div>

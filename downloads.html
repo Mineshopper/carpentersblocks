@@ -54,63 +54,40 @@ label-release: <span class="label label-danger">
 <div class="download-container">
    <div style="display: table-row;">
       <div class="download-container-version">
-         Carpenter's Blocks 3.3.7 DEV
-         {{ page.label-dev }}
+         Carpenter's Blocks 3.3.7
+         {{ page.label-stable }}
          {{ page.label-begin-minecraft }}MC 1.7.10{{ page.label-end }}
          {{ page.label-begin-forge }}FORGE 10.13.0.1180{{ page.label-end }}
-         {{ page.label-begin-release }}UPDATED 08/23/2015{{ page.label-end }}
+         {{ page.label-begin-release }}RELEASED 09/03/2015{{ page.label-end }}
       </div>
    </div>
    <div style="display: table-row;">
       <div style="display: table-cell;">
-         <button onclick="window.open('http://adf.ly/1IwHTC')" class="ad_button">Download</button>
-         <button onclick="window.open('https://dl.dropboxusercontent.com/s/s9znw0qzpjtfa1a/Carpenter%27s%20Blocks%20v3.3.7%20DEV%20-%20MC%201.7.10.jar')" class="dropbox">&nbsp;</button>
+         <button onclick="window.open('http://adf.ly/1NfwEu')" class="ad_button">Download</button>
+         <button onclick="window.open('https://dl.dropboxusercontent.com/s/wodar9eqt3soqnr/Carpenter%27s%20Blocks%20v3.3.7%20-%20MC%201.7.10.jar')" class="dropbox">&nbsp;</button>
          <button class="expand">View Changelog</button>
          <div class="collapsed">
             <ul id="changelog">
                 <li>Reorganized block drop code to address dupe bugs and other issues.</li>
                 <li>Resolved light cache crash experienced when using more recent Forge versions.</li>
+                <li>Overhauled cached lighting system; should resolve mob spawns and crop growth.</li>
                 <li>Added rail slope fill configuration option (for sloped rails above Carpenter's Blocks).</li>
                 <li>Added proper top face rendering to routable fluids.</li>
                 <li>Added permissions support for offline-mode servers.</li>
-                <li>Converted Collapsible Block to 16 steps (existing quad heights will change).</li>
-                <li>Overhauled cached lighting system; should resolve mob spawns and crop growth.</li>
-                <li>Collapsible block can now be placed upside-down (existing ones 3.3.6 and earlier will break).</li>
-                <li>Fixed daylight sensor not updating neighbors properly. [mickelus] (8/05)</li>
-                <li>Fixed garage door not checking power state of connected doors. (8/05)</li>
-                <li>Garage door can now be connected in any contiguous configuration and will act as a single entity. (8/07)</li>
-                <li>Garage door open/close sound now only plays from piece closest to player. (8/07)</li>
-                <li>Garage door now fills in voids introduced by destroying barriers beneath a door piece. (8/07)</li>
-                <li>Garage door now better replicates adjacent door properties upon creation. (8/07)</li>
-                <li>Reverted Presence sound fix -- fixes only hearing default wooden block sounds. (8/23)</li>
-                <li>Garage doors in open state no longer susceptible to explosion damage. (8/23)</li>
-                <li>Garage doors in closed state now destroy properly from explosions. (8/23)</li>
-                <li>Garage door autofill added as configuration option. (8/23)</li>
-                <li>Tweaked permissions to correct some false positives. (8/23)</li>
-            </ul>
-         </div>
-      </div>
-   </div>
-</div>
-
-<div class="download-container">
-   <div style="display: table-row;">
-      <div class="download-container-version">
-         Carpenter's Blocks 3.3.6
-         {{ page.label-stable }}
-         {{ page.label-begin-minecraft }}MC 1.7.10{{ page.label-end }}
-         {{ page.label-begin-forge }}FORGE 10.13.0.1180{{ page.label-end }}
-         {{ page.label-begin-release }}RELEASED 04/10/2015{{ page.label-end }}
-      </div>
-   </div>
-   <div style="display: table-row;">
-      <div style="display: table-cell;">
-         <button onclick="window.open('http://adf.ly/1EIoft')" class="ad_button">Download</button>
-         <button onclick="window.open('https://dl.dropboxusercontent.com/s/wv9c5c05oga30og/Carpenter%27s%20Blocks%20v3.3.6%20-%20MC%201.7.10.jar')" class="dropbox">&nbsp;</button>
-         <button class="expand">View Changelog</button>
-         <div class="collapsed">
-            <ul id="changelog">
-                <li>Fixed routable fluid incorrect biome coloring.</li>
+                <li>Added inverted Collapsible block, and converted to 16-step increments (existing ones will break, sorry).</li>
+                <li>Fixed daylight sensor not updating neighbors properly. [mickelus]</li>
+                <li>Many garage door changes, including:</li>
+                <ul id="changelog">
+                	<li>Fixed garage door not checking power state of connected doors.</li>
+                	<li>Garage door can now be connected in any contiguous configuration and will act as a single entity.</li>
+                	<li>Garage door open/close sound now only plays from piece closest to player.</li>
+                	<li>Garage door now fills in voids introduced by destroying barriers beneath a door piece (configurable).</li>
+                	<li>Garage door now better replicates adjacent door properties upon creation.</li>
+                	<li>Garage doors in open state no longer susceptible to explosion damage.</li>
+                	<li>Garage doors in closed state now destroy properly from explosions.</li>
+		</ul>
+                <li>Reverted Presence sound fix -- fixes only hearing default wooden block sounds.</li>
+                <li>Tweaked permissions to correct some false positives, such as safe breaking animations.</li>
             </ul>
          </div>
       </div>
