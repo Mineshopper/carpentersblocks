@@ -5,6 +5,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
+import org.apache.logging.log4j.Level;
+import com.carpentersblocks.util.ModLogger;
 import com.carpentersblocks.util.registry.FeatureRegistry;
 
 public class PlayerPermissions {
@@ -27,15 +29,18 @@ public class PlayerPermissions {
      *
      * @param  object the {@link IProtected} block or entity
      * @param  entityPlayer the {@link EntityPlayer}
+     * @param  enforceOwnership whether ownership is required, bypassing configuration settings
      * @return <code>true</code> if player has elevated permission
      */
-    public static boolean hasElevatedPermission(IProtected object, EntityPlayer entityPlayer)
+    public static boolean hasElevatedPermission(IProtected object, EntityPlayer entityPlayer, boolean enforceOwnership)
     {
         if (entityPlayer.worldObj.isRemote && Minecraft.getMinecraft().isSingleplayer()) { // Check if client is playing singleplayer
             return true;
         } else if (!entityPlayer.worldObj.isRemote && MinecraftServer.getServer().isSinglePlayer()) { // Check if server is integrated (singleplayer)
             return true;
         } else if (isOp(entityPlayer)) {
+            return true;
+        } else if (!enforceOwnership && !FeatureRegistry.enableOwnership) {
             return true;
         } else {
             return isOwner(object, entityPlayer);
@@ -47,18 +52,16 @@ public class PlayerPermissions {
      *
      * @param object
      * @param entityPlayer
-     * @return <code>true</code> if player is owner or {@link FeatureRegistry#enableOwnership} is <code>false</code>
+     * @return <code>true</code> if player is owner
      */
     private static boolean isOwner(IProtected object, EntityPlayer entityPlayer)
     {
-    	if (!FeatureRegistry.enableOwnership) {
-    		return true;
-    	}
-
         try {
             UUID.fromString(object.getOwner());
+            ModLogger.log(Level.INFO, "Checking against UUID");
             return object.getOwner().equals(entityPlayer.getUniqueID().toString());
         } catch (IllegalArgumentException e) {
+            ModLogger.log(Level.INFO, "Checking against player name");
             return object.getOwner().equals(entityPlayer.getDisplayName());
         }
     }

@@ -56,7 +56,7 @@ public class BlockCarpentersSafe extends BlockCoverable {
     @Override
     protected boolean canPlayerActivate(TEBase TE, EntityPlayer entityPlayer)
     {
-        if (PlayerPermissions.hasElevatedPermission(TE, entityPlayer)) {
+        if (PlayerPermissions.hasElevatedPermission(TE, entityPlayer, true)) {
             return true;
         } else {
             return !Safe.isLocked(TE); // Players with no permissions can only activate safe when unlocked
@@ -295,7 +295,7 @@ public class BlockCarpentersSafe extends BlockCoverable {
         TEBase TE = getTileEntity(world, x, y, z);
 
         if (TE != null) {
-            if (Safe.isOpen(TE) || !PlayerPermissions.hasElevatedPermission(TE, entityPlayer)) {
+            if (Safe.isOpen(TE) || !PlayerPermissions.hasElevatedPermission(TE, entityPlayer, true)) {
                 return -1; // Unbreakable
             }
         }

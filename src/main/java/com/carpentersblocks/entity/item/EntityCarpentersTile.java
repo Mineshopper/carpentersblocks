@@ -419,7 +419,7 @@ public class EntityCarpentersTile extends EntityBase {
 
             boolean dropItem = false;
 
-            if (entity instanceof EntityPlayer && PlayerPermissions.hasElevatedPermission(this, (EntityPlayer)entity)) {
+            if (entity instanceof EntityPlayer && PlayerPermissions.hasElevatedPermission(this, (EntityPlayer)entity, false)) {
 
                 EntityPlayer entityPlayer = (EntityPlayer) entity;
                 ItemStack itemStack = entityPlayer.getHeldItem();
@@ -469,7 +469,7 @@ public class EntityCarpentersTile extends EntityBase {
 
             return true;
 
-        } else if (PlayerPermissions.hasElevatedPermission(this, entityPlayer)) {
+        } else if (PlayerPermissions.hasElevatedPermission(this, entityPlayer, false)) {
 
             ItemStack itemStack = entityPlayer.getHeldItem();
 
