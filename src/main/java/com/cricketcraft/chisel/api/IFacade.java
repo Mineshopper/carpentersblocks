@@ -12,7 +12,7 @@ public interface IFacade
 {
     /**
      * Gets the block this facade is acting as.
-     * 
+     *
      * @param world {@link World}
      * @param x X coord of your block
      * @param y Y coord of your block
@@ -26,7 +26,7 @@ public interface IFacade
 
     /**
      * Gets the metadata of the block that this facade is acting as.
-     * 
+     *
      * @param world {@link World}
      * @param x X coord of your block
      * @param y Y coord of your block

@@ -1,13 +1,11 @@
 package com.carpentersblocks.util.protection;
 
 import java.util.UUID;
-
-import com.carpentersblocks.util.registry.FeatureRegistry;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
+import com.carpentersblocks.util.registry.FeatureRegistry;
 
 public class PlayerPermissions {
 
@@ -56,7 +54,7 @@ public class PlayerPermissions {
     	if (!FeatureRegistry.enableOwnership) {
     		return true;
     	}
-    	
+
         try {
             UUID.fromString(object.getOwner());
             return object.getOwner().equals(entityPlayer.getUniqueID().toString());

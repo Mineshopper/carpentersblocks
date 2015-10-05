@@ -458,11 +458,11 @@ public class BlockRegistry {
                 .setStepSound(BlockProperties.stepSound)
                 .setCreativeTab(CarpentersBlocks.creativeTab)
                 .setLightLevel(1.0F);
-            
+
             if (FeatureRegistry.enableTorchWeatherEffects) {
             	blockCarpentersTorch.setTickRandomly(true);
             }
-            
+
             GameRegistry.registerBlock(blockCarpentersTorch, ItemBlockSided.class, "blockCarpentersTorch");
             Blocks.fire.setFireInfo(blockCarpentersTorch, 5, 20);
         }

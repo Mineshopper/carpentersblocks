@@ -66,7 +66,7 @@ public class TEBase extends TileEntity implements IProtected {
 
     /** Holds last stored metadata. **/
     private int tempMetadata;
-    
+
     /** The most recent light value of block. **/
     public int lightValue;
 
@@ -522,12 +522,12 @@ public class TEBase extends TileEntity implements IProtected {
                 Block block = BlockProperties.toBlock(itemStack);
 
                 if (block != Blocks.air) {
-                    
+
                     // Determine metadata-sensitive light value (usually recursive, and not useful)
                     setMetadata(itemStack.getItemDamage());
                     int sensitiveLight = block.getLightValue(getWorldObj(), xCoord, yCoord, zCoord);
                     restoreMetadata();
-                    
+
                     if (sensitiveLight > 0) {
                         value = Math.max(value, sensitiveLight);
                     } else {
