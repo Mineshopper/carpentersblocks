@@ -33,10 +33,10 @@ public class DaylightSensor implements ISided {
      * Sets direction.
      */
     @Override
-    public void setDirection(TEBase TE, ForgeDirection dir)
+    public boolean setDirection(TEBase TE, ForgeDirection dir)
     {
         int temp = (TE.getData() & ~0x380) | (dir.ordinal() << 7);
-        TE.setData(temp);
+        return TE.setData(temp);
     }
 
     /**

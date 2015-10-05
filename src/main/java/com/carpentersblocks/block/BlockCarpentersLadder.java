@@ -1,11 +1,11 @@
 package com.carpentersblocks.block;
 
+import java.util.Arrays;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -13,6 +13,7 @@ import com.carpentersblocks.data.Ladder;
 import com.carpentersblocks.tileentity.TEBase;
 import com.carpentersblocks.util.EntityLivingUtil;
 import com.carpentersblocks.util.registry.BlockRegistry;
+import com.carpentersblocks.util.registry.FeatureRegistry;
 
 public class BlockCarpentersLadder extends BlockSided {
 
@@ -98,33 +99,50 @@ public class BlockCarpentersLadder extends BlockSided {
 
     @Override
     /**
+     * Gets placement direction when first placed in world.
+     *
+     * @param world the {@link World}
+     * @param x the x coordinate
+     * @param y the y coordinate
+     * @param z the z coordinate
+     * @return the {@link ForgeDirection}
+     */
+    protected ForgeDirection getPlacementDirection(World world, int x, int y, int z, EntityLivingBase entityLiving)
+    {
+        // Need to interpret DOWN and UP orientation as axis assignment
+        if (world.getBlockMetadata(x, y, z) < 2) {
+            ForgeDirection facing = EntityLivingUtil.getFacing(entityLiving).getOpposite();
+            if (facing.offsetX != 0) {
+                return ForgeDirection.getOrientation(Ladder.DIR_ON_Z);
+            } else {
+                return ForgeDirection.getOrientation(Ladder.DIR_ON_X);
+            }
+        } else {
+            return super.getPlacementDirection(world, x, y, z, entityLiving);
+        }
+    }
+
+    @Override
+    /**
      * Called when the block is placed in the world.
      */
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack itemStack)
     {
-        /* Need to interpret DOWN and UP orientation as axis assignment. */
-
-        if (world.getBlockMetadata(x, y, z) < 2) {
-            ForgeDirection facing = EntityLivingUtil.getFacing(entityLiving).getOpposite();
-            if (facing.offsetX != 0) {
-                world.setBlockMetadataWithNotify(x, y, z, Ladder.DIR_ON_Z, 0);
-            } else {
-                world.setBlockMetadataWithNotify(x, y, z, Ladder.DIR_ON_X, 0);
-            }
-        }
-
-        /* Match type above or below ladder. */
-
-        for (int side = 0; side < 2; ++side) {
-            TEBase TE = getTileEntity(world, x, y, z);
-            ForgeDirection dir = ForgeDirection.getOrientation(side);
-            if (world.getBlock(x, y + dir.offsetY, z).equals(this)) {
-                TEBase TE_adj = (TEBase) world.getTileEntity(x, y + dir.offsetY, z);
-                data.setType(TE, data.getType(TE_adj));
-            }
-        }
-
         super.onBlockPlacedBy(world, x, y, z, entityLiving, itemStack);
+
+        if (!entityLiving.isSneaking())
+        {
+            // Copy type and direction of adjacent ladder type
+            for (int side = 0; side < 2; ++side) {
+                TEBase TE = getTileEntity(world, x, y, z);
+                ForgeDirection dir = ForgeDirection.getOrientation(side);
+                if (world.getBlock(x, y - dir.offsetY, z).equals(this)) {
+                    TEBase TE_adj = (TEBase) world.getTileEntity(x, y - dir.offsetY, z);
+                    data.setType(TE, data.getType(TE_adj));
+                    data.setDirection(TE, data.getDirection(TE_adj));
+                }
+            }
+        }
     }
 
     @Override
@@ -149,15 +167,6 @@ public class BlockCarpentersLadder extends BlockSided {
     }
 
     @Override
-    /**
-     * The type of render function that is called for this block
-     */
-    public int getRenderType()
-    {
-        return BlockRegistry.carpentersLadderRenderID;
-    }
-
-    @Override
     public ForgeDirection[] getValidRotations(World worldObj, int x, int y,int z)
     {
         ForgeDirection[] axises = {ForgeDirection.UP, ForgeDirection.DOWN};
@@ -167,25 +176,24 @@ public class BlockCarpentersLadder extends BlockSided {
     @Override
     public boolean rotateBlock(World world, int x, int y, int z, ForgeDirection axis)
     {
-        // to correctly support archimedes' ships mod:
-        // if Axis is DOWN, block rotates to the left, north -> west -> south -> east
-        // if Axis is UP, block rotates to the right:  north -> east -> south -> west
-
-        TileEntity tile = world.getTileEntity(x, y, z);
-        if (tile != null && tile instanceof TEBase)
-        {
-            TEBase cbTile = (TEBase)tile;
-            int data = cbTile.getData();
-            int dataAngle = data % 2;
-            switch (dataAngle)
-            {
-                case 0:{cbTile.setData(data+1); break;}
-                case 1:{cbTile.setData(data-1); break;}
-                default:return false;
+        if (Arrays.asList(getRotationAxes()).contains(axis)) {
+            TEBase TE = getTileEntity(world, x, y, z);
+            if (TE != null && data.isFreestanding(TE)) {
+                int side = data.getDirection(TE).ordinal() == data.DIR_ON_X ? data.DIR_ON_Z : data.DIR_ON_X;
+                return data.setDirection(TE, ForgeDirection.getOrientation(side));
             }
-            return true;
         }
-        return false;
+
+        return super.rotateBlock(world, x, y, z, axis);
+    }
+
+    @Override
+    /**
+     * The type of render function that is called for this block
+     */
+    public int getRenderType()
+    {
+        return BlockRegistry.carpentersLadderRenderID;
     }
 
 }

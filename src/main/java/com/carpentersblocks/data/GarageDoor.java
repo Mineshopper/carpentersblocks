@@ -68,10 +68,10 @@ public class GarageDoor implements ISided {
      * Sets direction.
      */
     @Override
-    public void setDirection(TEBase TE, ForgeDirection dir)
+    public boolean setDirection(TEBase TE, ForgeDirection dir)
     {
         int temp = (TE.getData() & ~0x70) | (dir.ordinal() << 4);
-        TE.setData(temp);
+        return TE.setData(temp);
     }
 
     /**

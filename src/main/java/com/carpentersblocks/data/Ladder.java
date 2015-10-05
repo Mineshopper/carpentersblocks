@@ -26,10 +26,10 @@ public class Ladder implements ISided {
     }
 
     @Override
-    public void setDirection(TEBase TE, ForgeDirection dir)
+    public boolean setDirection(TEBase TE, ForgeDirection dir)
     {
         int temp = (TE.getData() & ~0x7) | dir.ordinal();
-        TE.setData(temp);
+        return TE.setData(temp);
     }
 
     /**

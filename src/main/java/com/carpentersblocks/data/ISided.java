@@ -10,9 +10,9 @@ public interface ISided {
      *
      * @param  TE the {@link TEBase}
      * @param  side the side
-     * @return nothing
+     * @return <code>true</code> if direction not already set
      */
-    public void setDirection(TEBase TE, ForgeDirection dir);
+    public boolean setDirection(TEBase TE, ForgeDirection dir);
 
     /**
      * Gets block direction.

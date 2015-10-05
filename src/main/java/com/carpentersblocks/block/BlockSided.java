@@ -1,5 +1,6 @@
 package com.carpentersblocks.block;
 
+import java.util.Arrays;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityLivingBase;
@@ -63,11 +64,38 @@ public class BlockSided extends BlockCoverable {
     {
         super.onBlockPlacedBy(world, x, y, z, entityLiving, itemStack);
 
-        TEBase TE = getTileEntity(world, x, y, z);
-        if (TE != null) {
-            int meta = world.getBlockMetadata(x, y, z);
-            data.setDirection(TE, ForgeDirection.getOrientation(meta));
+        if (!ignoreSidePlacement()) {
+            TEBase TE = getTileEntity(world, x, y, z);
+            if (TE != null) {
+                ForgeDirection dir = getPlacementDirection(world, x, y, z, entityLiving);
+                data.setDirection(TE, dir);
+            }
         }
+    }
+
+    /**
+     * Gets placement direction when first placed in world.
+     *
+     * @param world the {@link World}
+     * @param x the x coordinate
+     * @param y the y coordinate
+     * @param z the z coordinate
+     * @return the {@link ForgeDirection}
+     */
+    protected ForgeDirection getPlacementDirection(World world, int x, int y, int z, EntityLivingBase entityLiving)
+    {
+        int meta = world.getBlockMetadata(x, y, z);
+        return ForgeDirection.getOrientation(meta);
+    }
+
+    /**
+     * Whether side block placed against influences initial direction of block.
+     *
+     * @return <code>true</code> if initial placement direction ignored
+     */
+    protected boolean ignoreSidePlacement()
+    {
+        return false;
     }
 
     /**
@@ -234,6 +262,30 @@ public class BlockSided extends BlockCoverable {
     public boolean canFloat()
     {
         return false;
+    }
+
+    @Override
+    public boolean rotateBlock(World world, int x, int y, int z, ForgeDirection axis)
+    {
+        if (Arrays.asList(getRotationAxes()).contains(axis)) {
+            TEBase TE = getTileEntity(world, x, y, z);
+            if (TE != null) {
+                ForgeDirection dir = data.getDirection(TE);
+                return data.setDirection(TE, dir.getRotation(axis));
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Get supported axes of rotation.
+     *
+     * @return an array of {@link ForgeDirection} enums.
+     */
+    protected ForgeDirection[] getRotationAxes()
+    {
+        return new ForgeDirection[] { ForgeDirection.DOWN, ForgeDirection.UP };
     }
 
 }

@@ -19,7 +19,9 @@ import com.carpentersblocks.util.registry.IconRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class BlockCarpentersBlock extends BlockCoverable {
+public class BlockCarpentersBlock extends BlockSided {
+
+    private static Slab data = new Slab();
 
     private static float[][] bounds = {
         { 0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F }, // FULL BLOCK
@@ -33,7 +35,7 @@ public class BlockCarpentersBlock extends BlockCoverable {
 
     public BlockCarpentersBlock(Material material)
     {
-        super(material);
+        super(material, data);
     }
 
     @Override
@@ -47,60 +49,34 @@ public class BlockCarpentersBlock extends BlockCoverable {
         return IconRegistry.icon_uncovered_quartered;
     }
 
-    @Override
-    /**
-     * Alter type.
-     */
-    protected boolean onHammerLeftClick(TEBase TE, EntityPlayer entityPlayer)
+    private boolean onHammerInteraction(TEBase TE)
     {
-        int data = TE.getData();
-
-        if (++data > Slab.SLAB_Z_POS) {
-            data = Slab.BLOCK_FULL;
+        if (data.isFullCube(TE)) {
+            ForgeDirection side = ForgeDirection.getOrientation(EventHandler.eventFace).getOpposite();
+            data.setDirection(TE, side);
+        } else {
+            data.setFullCube(TE);
         }
-
-        TE.setData(data);
 
         return true;
     }
 
     @Override
     /**
-     * Alternate between full 1m cube and slab.
+     * Alter type.
+     */
+    protected boolean onHammerLeftClick(TEBase TE, EntityPlayer entityPlayer)
+    {
+        return onHammerInteraction(TE);
+    }
+
+    @Override
+    /**
+     * Alter type.
      */
     protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer)
     {
-        int data = TE.getData();
-
-        if (data == Slab.BLOCK_FULL) {
-            switch (EventHandler.eventFace)
-            {
-                case 0:
-                    data = Slab.SLAB_Y_POS;
-                    break;
-                case 1:
-                    data = Slab.SLAB_Y_NEG;
-                    break;
-                case 2:
-                    data = Slab.SLAB_Z_POS;
-                    break;
-                case 3:
-                    data = Slab.SLAB_Z_NEG;
-                    break;
-                case 4:
-                    data = Slab.SLAB_X_POS;
-                    break;
-                case 5:
-                    data = Slab.SLAB_X_NEG;
-                    break;
-            }
-        } else {
-            data = Slab.BLOCK_FULL;
-        }
-
-        TE.setData(data);
-
-        return true;
+        return onHammerInteraction(TE);
     }
 
     @Override
@@ -263,6 +239,28 @@ public class BlockCarpentersBlock extends BlockCoverable {
      * Returns whether block can support cover on side.
      */
     public boolean canCoverSide(TEBase TE, World world, int x, int y, int z, int side)
+    {
+        return true;
+    }
+
+    @Override
+    /**
+     * Whether block requires an adjacent block with solid side for support.
+     *
+     * @return whether block can float freely
+     */
+    public boolean canFloat()
+    {
+        return true;
+    }
+
+    /**
+     * Whether side block placed against influences initial direction of block.
+     *
+     * @return <code>true</code> if initial placement direction ignored
+     */
+    @Override
+    protected boolean ignoreSidePlacement()
     {
         return true;
     }
