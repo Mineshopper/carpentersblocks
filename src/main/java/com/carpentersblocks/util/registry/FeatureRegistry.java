@@ -19,6 +19,7 @@ public class FeatureRegistry {
     public static boolean enableAlphaPanes          = true;
     public static boolean enableRailSlopes          = true;
     public static boolean enableGarageDoorVoidFill  = true;
+    public static boolean enableFreeStandingLadders = false;
 
     public static ArrayList<String> overlayItems    = new ArrayList<String>();
     public static ArrayList<String> coverExceptions = new ArrayList<String>();
@@ -30,11 +31,12 @@ public class FeatureRegistry {
      */
     public static void preInit(FMLPreInitializationEvent event, Configuration config)
     {
-        enableCovers        = config.get("features",         "Enable Covers",        enableCovers).getBoolean(enableCovers);
-        enableOverlays      = config.get("features",       "Enable Overlays",      enableOverlays).getBoolean(enableOverlays);
-        enableSideCovers    = config.get("features",    "Enable Side Covers",    enableSideCovers).getBoolean(enableSideCovers);
-        enableDyeColors     = config.get("features",     "Enable Dye Colors",     enableDyeColors).getBoolean(enableDyeColors);
-        enableChiselDesigns = config.get("features", "Enable Chisel Designs", enableChiselDesigns).getBoolean(enableChiselDesigns);
+        enableCovers              = config.get("features",         "Enable Covers",        enableCovers).getBoolean(enableCovers);
+        enableOverlays            = config.get("features",       "Enable Overlays",      enableOverlays).getBoolean(enableOverlays);
+        enableSideCovers          = config.get("features",    "Enable Side Covers",    enableSideCovers).getBoolean(enableSideCovers);
+        enableDyeColors           = config.get("features",     "Enable Dye Colors",     enableDyeColors).getBoolean(enableDyeColors);
+        enableChiselDesigns       = config.get("features", "Enable Chisel Designs", enableChiselDesigns).getBoolean(enableChiselDesigns);
+        enableFreeStandingLadders = config.get("features", "Enable Freestanding Ladders", enableFreeStandingLadders).getBoolean(enableFreeStandingLadders);
 
         Property routableFluidsProp = config.get("features", "Routable Fluids", enableRoutableFluids);
         routableFluidsProp.comment = "When enabled, unobstructed stationary fluid adjacent to block will render in the block space.\nNote: when enabled, you may experience noticeable chunk update lag spikes.";

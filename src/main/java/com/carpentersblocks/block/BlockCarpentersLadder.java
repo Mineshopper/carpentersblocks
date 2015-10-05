@@ -99,6 +99,17 @@ public class BlockCarpentersLadder extends BlockSided {
 
     @Override
     /**
+     * Whether block requires an adjacent block with solid side for support.
+     *
+     * @return whether block can float freely
+     */
+    public boolean canFloat()
+    {
+        return FeatureRegistry.enableFreeStandingLadders;
+    }
+
+    @Override
+    /**
      * Gets placement direction when first placed in world.
      *
      * @param world the {@link World}
