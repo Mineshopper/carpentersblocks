@@ -66,6 +66,9 @@ public class TEBase extends TileEntity implements IProtected {
 
     /** Holds last stored metadata. **/
     private int tempMetadata;
+    
+    /** The most recent light value of block. **/
+    public int lightValue;
 
     @Override
     public void readFromNBT(NBTTagCompound nbt)
@@ -491,42 +494,6 @@ public class TEBase extends TileEntity implements IProtected {
     // Code below implemented strictly for light updates
     /////////////////////////////////////////////////////////////
 
-    @Override
-    /**
-     * invalidates a tile entity
-     */
-    public void invalidate()
-    {
-        super.invalidate();
-
-        // Remove light value from cache
-        int hash = BlockProperties.hashCoords(xCoord, yCoord, zCoord);
-        cache.remove(hash);
-    }
-
-    public static int getLightValue(IBlockAccess blockAccess, int x, int y, int z)
-    {
-        if (calcLighting) {
-            return 0;
-        }
-
-        int hash = BlockProperties.hashCoords(x, y, z);
-        Integer lookup = TEBase.cache.get(hash);
-        int value = 0;
-
-        if (lookup == null) {
-            TileEntity tileEntity = blockAccess.getTileEntity(x, y, z);
-            if (tileEntity != null && tileEntity instanceof TEBase) {
-                value = ((TEBase)tileEntity).getDynamicLightValue();
-                cache.put(hash, value);
-            }
-        } else {
-            value = lookup.intValue();
-        }
-
-        return value;
-    }
-
     /**
      * Returns the current block light value. This is the only method
      * that will grab the tile entity to calculate lighting, which
@@ -553,12 +520,21 @@ public class TEBase extends TileEntity implements IProtected {
                 Map.Entry pair = (Map.Entry)it.next();
                 ItemStack itemStack = BlockProperties.getCallableItemStack((ItemStack)pair.getValue());
                 Block block = BlockProperties.toBlock(itemStack);
+
                 if (block != Blocks.air) {
+                    
+                    // Determine metadata-sensitive light value (usually recursive, and not useful)
                     setMetadata(itemStack.getItemDamage());
-                    if ((value = Math.max(value, block.getLightValue(getWorldObj(), xCoord, yCoord, zCoord))) == 15) {
-                        return 15;
-                    }
+                    int sensitiveLight = block.getLightValue(getWorldObj(), xCoord, yCoord, zCoord);
                     restoreMetadata();
+                    
+                    if (sensitiveLight > 0) {
+                        value = Math.max(value, sensitiveLight);
+                    } else {
+                        // Grab default light value for block
+                        value = Math.max(value, block.getLightValue());
+                    }
+
                 }
             }
             calcLighting = false;
@@ -575,9 +551,7 @@ public class TEBase extends TileEntity implements IProtected {
         World world = getWorldObj();
         if (world != null)
         {
-            int temp = getDynamicLightValue();
-            int hash = BlockProperties.hashCoords(xCoord, yCoord, zCoord);
-            cache.put(hash, temp);
+            lightValue = getDynamicLightValue();
             world.func_147451_t(xCoord, yCoord, zCoord); // Updates block lightmap, should help with spawns
             world.markBlockForUpdate(xCoord, yCoord, zCoord);
         }
