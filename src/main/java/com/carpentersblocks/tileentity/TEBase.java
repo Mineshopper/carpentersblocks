@@ -43,9 +43,6 @@ public class TEBase extends TileEntity implements IProtected {
     public static final byte    ATTR_FERTILIZER   = 24;
     public static final byte    ATTR_UPGRADE      = 25;
 
-    /** Cached light values. */
-    private static Map<Integer,Integer> cache = new HashMap<Integer,Integer>();
-
     /** Map holding all block attributes. */
     protected Map<Byte, ItemStack> cbAttrMap = new HashMap<Byte, ItemStack>();
 
@@ -101,7 +98,7 @@ public class TEBase extends TileEntity implements IProtected {
         }
 
         // Block either loaded or changed, update lighting and render state
-        updateWorld();
+        updateWorldAndLighting();
     }
 
     /**
@@ -321,7 +318,7 @@ public class TEBase extends TileEntity implements IProtected {
             getWorldObj().playAuxSFX(2005, xCoord, yCoord, zCoord, 0);
         }
 
-        updateWorld();
+        updateWorldAndLighting();
         markDirty();
     }
 
@@ -335,7 +332,7 @@ public class TEBase extends TileEntity implements IProtected {
     public void onAttrDropped(byte attrId)
     {
         cbAttrMap.remove(attrId);
-        updateWorld();
+        updateWorldAndLighting();
         markDirty();
     }
 
@@ -546,7 +543,7 @@ public class TEBase extends TileEntity implements IProtected {
     /**
      * Performs world update and refreshes lighting.
      */
-    private void updateWorld()
+    private void updateWorldAndLighting()
     {
         World world = getWorldObj();
         if (world != null)
