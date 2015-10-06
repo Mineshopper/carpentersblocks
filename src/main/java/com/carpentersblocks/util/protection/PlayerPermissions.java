@@ -5,8 +5,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-import org.apache.logging.log4j.Level;
-import com.carpentersblocks.util.ModLogger;
 import com.carpentersblocks.util.registry.FeatureRegistry;
 
 public class PlayerPermissions {
@@ -58,10 +56,8 @@ public class PlayerPermissions {
     {
         try {
             UUID.fromString(object.getOwner());
-            ModLogger.log(Level.INFO, "Checking against UUID");
             return object.getOwner().equals(entityPlayer.getUniqueID().toString());
         } catch (IllegalArgumentException e) {
-            ModLogger.log(Level.INFO, "Checking against player name");
             return object.getOwner().equals(entityPlayer.getDisplayName());
         }
     }
