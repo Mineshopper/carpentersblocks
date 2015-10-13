@@ -1,8 +1,8 @@
 package com.carpentersblocks.data;
 
+import java.util.Arrays;
 import net.minecraftforge.common.util.ForgeDirection;
 import com.carpentersblocks.tileentity.TEBase;
-import scala.actors.threadpool.Arrays;
 
 public class Slab implements ISided {
 
