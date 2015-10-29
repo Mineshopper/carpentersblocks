@@ -79,6 +79,14 @@ public class RoutableFluidsHelper {
      */
     public static boolean render(TEBase TE, RenderBlocks renderBlocks, int x, int y, int z)
     {
+        // Do not render if fluid is above block
+        Class clazz_YP = renderBlocks.blockAccess.getBlock(x, y + 1, z).getClass();
+        for (Class clazz : liquidClasses) {
+            if (clazz.isAssignableFrom(clazz_YP)) {
+                return false;
+            }
+        }
+        
         ItemStack itemStack = getFluidBlock(renderBlocks.blockAccess, x, y, z);
 
         if (itemStack != null) {
@@ -127,11 +135,11 @@ public class RoutableFluidsHelper {
         for (int idx = 0; idx < offsetXZ.length; ++idx) {
 
             Block block = blockAccess.getBlock(x + offsetXZ[idx][0], y, z + offsetXZ[idx][1]);
-            Class clazz = block.getClass();
+            Class clazz_offset = block.getClass();
 
             boolean isLiquid = false;
-            for (int idx1 = 0; idx1 < liquidClasses.length; ++idx1) {
-                if (liquidClasses[idx1].isAssignableFrom(clazz)) {
+            for (Class clazz : liquidClasses) {
+                if (clazz.isAssignableFrom(clazz_offset)) {
                     isLiquid = true;
                     break;
                 }
