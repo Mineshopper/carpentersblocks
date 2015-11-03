@@ -15,7 +15,9 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fluids.BlockFluidBase;
 import net.minecraftforge.fluids.IFluidBlock;
+import net.minecraftforge.fluids.RenderBlockFluid;
 import org.apache.logging.log4j.Level;
 import com.carpentersblocks.tileentity.TEBase;
 import com.carpentersblocks.util.BlockProperties;
@@ -98,7 +100,11 @@ public class RoutableFluidsHelper {
             {
                 if (!block.hasTileEntity(metadata))
                 {
-                    renderLiquidSurface(TE, renderBlocks, itemStack, x, y, z);
+                    if (block instanceof BlockLiquid) {
+                        renderLiquidSurface(TE, renderBlocks, itemStack, x, y, z);
+                    } else {
+                        RenderBlockFluid.instance.renderWorldBlock(renderBlocks.blockAccess, x, y, z, block, 0, renderBlocks);
+                    }                    
                     return true;
                 }
             }
@@ -185,8 +191,13 @@ public class RoutableFluidsHelper {
         double offset = 0.0010000000474974513D;
         IIcon icon = renderBlocks.getBlockIconFromSideAndMetadata(block, 1, itemStack.getItemDamage());
 
-        float flowDir = (float)BlockLiquid.getFlowDirection(renderBlocks.blockAccess, x, y, z, material);
-
+        float flowDir = -1000;
+        if (block instanceof BlockLiquid) {
+            flowDir = (float) BlockLiquid.getFlowDirection(renderBlocks.blockAccess, x, y, z, material);
+        } else if (block instanceof BlockFluidBase) {
+            flowDir = (float) BlockFluidBase.getFlowDirection(renderBlocks.blockAccess, x, y, z);
+        }
+        
         if (flowDir > -999.0F) {
             icon = renderBlocks.getBlockIconFromSideAndMetadata(block, 2, itemStack.getItemDamage());
         }
