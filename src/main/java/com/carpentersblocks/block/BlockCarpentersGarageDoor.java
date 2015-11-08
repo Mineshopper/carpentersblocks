@@ -441,6 +441,8 @@ public class BlockCarpentersGarageDoor extends BlockCoverable {
      */
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack itemStack)
     {
+        super.onBlockPlacedBy(world, x, y, z, entityLiving, itemStack);
+
         TEBase TE = getTileEntity(world, x, y, z);
 
         // Set direction based on player facing
@@ -456,8 +458,6 @@ public class BlockCarpentersGarageDoor extends BlockCoverable {
 
         // Create remainder of stack below host
         create(TE, world, x, y - 1, z);
-
-        super.onBlockPlacedBy(world, x, y, z, entityLiving, itemStack);
     }
 
     @Override

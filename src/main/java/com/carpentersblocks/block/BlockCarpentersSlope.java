@@ -403,6 +403,8 @@ public class BlockCarpentersSlope extends BlockCoverable {
      */
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack itemStack)
     {
+        super.onBlockPlacedBy(world, x, y, z, entityLiving, itemStack);
+
         TEBase TE = getTileEntity(world, x, y, z);
 
         if (TE != null) {
@@ -506,8 +508,6 @@ public class BlockCarpentersSlope extends BlockCoverable {
             TE.setData(slopeID);
 
         }
-
-        super.onBlockPlacedBy(world, x, y, z, entityLiving, itemStack);
     }
 
     @Override
