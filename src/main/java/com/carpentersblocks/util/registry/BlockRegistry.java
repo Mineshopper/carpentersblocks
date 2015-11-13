@@ -99,7 +99,7 @@ public class BlockRegistry {
     public static int recipeQuantityHatch            = 1;
     public static int recipeQuantityLadder           = 4;
     public static int recipeQuantityLever            = 1;
-    public static int recipeQuantityPath             = 9;
+    public static int recipeQuantityPath             = 8;
     public static int recipeQuantityPressurePlate    = 1;
     public static int recipeQuantitySafe             = 1;
     public static int recipeQuantitySlope            = 6;
