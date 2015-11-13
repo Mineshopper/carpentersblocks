@@ -23,6 +23,7 @@ tile.blockCarpentersGate.name=Carpenter's Gate
 tile.blockCarpentersHatch.name=Carpenter's Hatch
 tile.blockCarpentersLadder.name=Carpenter's Ladder
 tile.blockCarpentersLever.name=Carpenter's Lever
+tile.blockCarpentersPath.name=Carpenter's Path
 tile.blockCarpentersPressurePlate.name=Carpenter's Pressure Plate
 tile.blockCarpentersSlope.wedge.name=Carpenter's Wedge Slope
 tile.blockCarpentersSlope.obliqueInterior.name=Carpenter's Oblique Interior Slope

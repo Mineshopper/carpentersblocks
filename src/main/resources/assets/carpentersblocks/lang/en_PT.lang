@@ -22,6 +22,7 @@ tile.blockCarpentersGate.name=Stumpcutter's Picket Gate
 tile.blockCarpentersHatch.name=Stumpcutter's Hatch
 tile.blockCarpentersLadder.name=Stumpcutter's Riggin'
 tile.blockCarpentersLever.name=Stumpcutter's Leverrr
+tile.blockCarpentersPath.name=Stumpcutter's Gangplank
 tile.blockCarpentersPressurePlate.name=Stumpcutter's Booby Trap
 tile.blockCarpentersSlope.wedge.name=Stumpcutter's Sea Legs Block
 tile.blockCarpentersSlope.obliqueInterior.name=Stumpcutter's Inship Sea Legs Chunk
