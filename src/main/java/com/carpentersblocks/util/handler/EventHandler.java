@@ -27,7 +27,6 @@ import com.carpentersblocks.CarpentersBlocks;
 import com.carpentersblocks.api.ICarpentersChisel;
 import com.carpentersblocks.api.ICarpentersHammer;
 import com.carpentersblocks.block.BlockCoverable;
-import com.carpentersblocks.network.PacketActivateBlock;
 import com.carpentersblocks.network.PacketSlopeSelect;
 import com.carpentersblocks.renderer.helper.ParticleHelper;
 import com.carpentersblocks.tileentity.TEBase;
@@ -100,7 +99,7 @@ public class EventHandler {
      */
     public void onPlayerInteractEvent(PlayerInteractEvent event)
     {
-        if (event.isCanceled()) {
+        if (event.entityPlayer.worldObj.isRemote || event.isCanceled()) {
             return;
         }
 
@@ -123,10 +122,10 @@ public class EventHandler {
                 hitX = hitY = hitZ = 1.0F;
             }
 
+            boolean toolEquipped = itemStack != null && (itemStack.getItem() instanceof ICarpentersHammer || itemStack.getItem() instanceof ICarpentersChisel);
+
             switch (event.action) {
                 case LEFT_CLICK_BLOCK:
-
-                    boolean toolEquipped = itemStack != null && (itemStack.getItem() instanceof ICarpentersHammer || itemStack.getItem() instanceof ICarpentersChisel);
 
                     /*
                      * Creative mode doesn't normally invoke onBlockClicked(), but rather it tries
@@ -143,23 +142,14 @@ public class EventHandler {
                 case RIGHT_CLICK_BLOCK:
 
                     /*
-                     * To enable full functionality with the hammer, we need to override pretty
-                     * much everything that happens on sneak right-click.
-                     *
-                     * onBlockActivated() isn't called if the player is sneaking, so do it here.
-                     *
-                     * The server will receive the packet and attempt to alter the Carpenter's
-                     * block.  If nothing changes, vanilla behavior will resume - the Item(Block)
-                     * in the ItemStack (if applicable) will be created adjacent to block.
+                     * Support sneak right-click with the hammer or chisel.
                      */
 
-                    if (eventEntityPlayer.isSneaking()) {
-                        if (!(itemStack != null && itemStack.getItem() instanceof ItemBlock && !BlockProperties.isOverlay(itemStack))) {
-                            event.setCanceled(true); // Normally prevents server event, but sometimes it doesn't, so check below
-                            if (event.entity.worldObj.isRemote) {
-                                PacketHandler.sendPacketToServer(new PacketActivateBlock(event.x, event.y, event.z, event.face));
-                            }
-                        }
+                    if (eventEntityPlayer.isSneaking() && toolEquipped) {
+                        int x = event.x;
+                        int y = event.y;
+                        int z = event.z;
+                        eventEntityPlayer.worldObj.getBlock(x, y, z).onBlockActivated(eventEntityPlayer.worldObj, x, y, z, eventEntityPlayer, event.face, 1.0F, 1.0F, 1.0F);
                     }
 
                     break;
