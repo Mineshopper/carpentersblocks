@@ -88,7 +88,7 @@ public class RoutableFluidsHelper {
                 return false;
             }
         }
-        
+
         ItemStack itemStack = getFluidBlock(renderBlocks.blockAccess, x, y, z);
 
         if (itemStack != null) {
@@ -104,7 +104,7 @@ public class RoutableFluidsHelper {
                         renderLiquidSurface(TE, renderBlocks, itemStack, x, y, z);
                     } else {
                         RenderBlockFluid.instance.renderWorldBlock(renderBlocks.blockAccess, x, y, z, block, 0, renderBlocks);
-                    }                    
+                    }
                     return true;
                 }
             }
@@ -197,7 +197,7 @@ public class RoutableFluidsHelper {
         } else if (block instanceof BlockFluidBase) {
             flowDir = (float) BlockFluidBase.getFlowDirection(renderBlocks.blockAccess, x, y, z);
         }
-        
+
         if (flowDir > -999.0F) {
             icon = renderBlocks.getBlockIconFromSideAndMetadata(block, 2, itemStack.getItemDamage());
         }

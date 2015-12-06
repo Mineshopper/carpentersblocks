@@ -1304,7 +1304,7 @@ public class BlockCoverable extends BlockContainer {
         if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
             return false;
         }
-        
+
         if (FeatureRegistry.enableRoutableFluids) {
             // Server condition may fail, so don't throw error if performing server-side
             try {
