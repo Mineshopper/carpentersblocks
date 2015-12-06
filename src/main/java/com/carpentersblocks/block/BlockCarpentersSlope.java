@@ -9,7 +9,6 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
@@ -78,15 +77,7 @@ public class BlockCarpentersSlope extends BlockCoverable {
      */
     protected boolean onHammerLeftClick(TEBase TE, EntityPlayer entityPlayer)
     {
-        int slopeID = TE.getData();
-        Slope slope = Slope.slopesList[slopeID];
-
-        /* Cycle between slope types based on current slope. */
-        slopeID = slope.slopeType.onHammerLeftClick(slope, slopeID);
-
-        TE.setData(slopeID);
-
-        return true;
+        return rotateBlock(TE.getWorldObj(), TE.xCoord, TE.yCoord, TE.zCoord, ForgeDirection.UP);
     }
 
     @Override
@@ -95,15 +86,7 @@ public class BlockCarpentersSlope extends BlockCoverable {
      */
     protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer)
     {
-        int slopeID = TE.getData();
-        Slope slope = Slope.slopesList[slopeID];
-
-        /* Transform slope to next type. */
-        slopeID = slope.slopeType.onHammerRightClick(slope, slopeID);
-
-        TE.setData(slopeID);
-
-        return true;
+        return rotateBlock(TE.getWorldObj(), TE.xCoord, TE.yCoord, TE.zCoord, ForgeDirection.DOWN);
     }
 
     @SideOnly(Side.CLIENT)
@@ -143,8 +126,7 @@ public class BlockCarpentersSlope extends BlockCoverable {
 
             if (TE != null) {
 
-                int slopeID = TE.getData();
-                Slope slope = Slope.slopesList[slopeID];
+                Slope slope = Slope.getSlope(TE);
 
                 switch (slope.getPrimaryType()) {
                     case PRISM:
@@ -180,7 +162,7 @@ public class BlockCarpentersSlope extends BlockCoverable {
 
         if (TE != null) {
 
-            Slope slope = Slope.slopesList[TE.getData()];
+            Slope slope = Slope.getSlope(TE);
             SlopeUtil slopeUtil = new SlopeUtil();
 
             int numPasses = slopeUtil.getNumPasses(slope);
@@ -232,7 +214,7 @@ public class BlockCarpentersSlope extends BlockCoverable {
 
             AxisAlignedBB box = null;
 
-            Slope slope = Slope.slopesList[TE.getData()];
+            Slope slope = Slope.getSlope(TE);
             SlopeUtil slopeUtil = new SlopeUtil();
 
             int precision = slopeUtil.getNumBoxesPerPass(slope);
@@ -272,7 +254,7 @@ public class BlockCarpentersSlope extends BlockCoverable {
 
         if (TE != null) {
             if (isBlockSolid(blockAccess, x, y, z)) {
-                return Slope.slopesList[TE.getData()].isFaceFull(side);
+                return Slope.getSlope(TE).isFaceFull(side);
             }
         }
 
@@ -287,8 +269,8 @@ public class BlockCarpentersSlope extends BlockCoverable {
     {
         if (TE_adj.getBlockType() == this) {
 
-            Slope slope_src = Slope.slopesList[TE_src.getData()];
-            Slope slope_adj = Slope.slopesList[TE_adj.getData()];
+            Slope slope_src = Slope.getSlope(TE_src);
+            Slope slope_adj = Slope.getSlope(TE_adj);
 
             if (!slope_adj.hasSide(side_adj)) {
                 return false;
@@ -528,52 +510,13 @@ public class BlockCarpentersSlope extends BlockCoverable {
     @Override
     public ForgeDirection[] getValidRotations(World worldObj, int x, int y,int z)
     {
-        ForgeDirection[] axises = {ForgeDirection.UP, ForgeDirection.DOWN};
-        return axises;
+        return new ForgeDirection[] { ForgeDirection.UP, ForgeDirection.DOWN };
     }
 
     @Override
     public boolean rotateBlock(World world, int x, int y, int z, ForgeDirection axis)
     {
-        // to correctly support archimedes' ships mod:
-        // if Axis is DOWN, block rotates to the left, north -> west -> south -> east
-        // if Axis is UP, block rotates to the right:  north -> east -> south -> west
-
-        TileEntity tile = world.getTileEntity(x, y, z);
-        if (tile != null && tile instanceof TEBase)
-        {
-            TEBase cbTile = (TEBase)tile;
-            int data = cbTile.getData();
-            int dataAngle = data % 4;
-            switch (axis)
-            {
-                case UP:
-                {
-                    switch (dataAngle)
-                    {
-                        case 0:{cbTile.setData(data+3); break;}
-                        case 1:{cbTile.setData(data+1); break;}
-                        case 2:{cbTile.setData(data-2); break;}
-                        case 3:{cbTile.setData(data-2); break;}
-                    }
-                    break;
-                }
-                case DOWN:
-                {
-                    switch (dataAngle)
-                    {
-                        case 0:{cbTile.setData(data+2); break;}
-                        case 1:{cbTile.setData(data+2); break;}
-                        case 2:{cbTile.setData(data-1); break;}
-                        case 3:{cbTile.setData(data-3); break;}
-                    }
-                    break;
-                }
-                default: return false;
-            }
-            return true;
-        }
-        return false;
+        return Slope.rotate(world, x, y, z, axis);
     }
 
 }

@@ -98,7 +98,7 @@ public class HelperOrthoWedge extends RenderHelper {
     {
         prepareRender(renderBlocks, ForgeDirection.NORTH, x, y, z, icon);
 
-        Slope slope = Slope.slopesList[slopeID];
+        Slope slope = Slope.getSlopeById(slopeID);
 
         if (slope.isPositive) {
             if (slope.facings.contains(ForgeDirection.WEST)) {
@@ -130,7 +130,7 @@ public class HelperOrthoWedge extends RenderHelper {
     {
         prepareRender(renderBlocks, ForgeDirection.SOUTH, x, y, z, icon);
 
-        Slope slope = Slope.slopesList[slopeID];
+        Slope slope = Slope.getSlopeById(slopeID);
 
         if (slope.isPositive) {
             if (slope.facings.contains(ForgeDirection.WEST)) {
@@ -162,7 +162,7 @@ public class HelperOrthoWedge extends RenderHelper {
     {
         prepareRender(renderBlocks, ForgeDirection.WEST, x, y, z, icon);
 
-        Slope slope = Slope.slopesList[slopeID];
+        Slope slope = Slope.getSlopeById(slopeID);
 
         if (slope.isPositive) {
             if (slope.facings.contains(ForgeDirection.NORTH)) {
@@ -194,7 +194,7 @@ public class HelperOrthoWedge extends RenderHelper {
     {
         prepareRender(renderBlocks, ForgeDirection.EAST, x, y, z, icon);
 
-        Slope slope = Slope.slopesList[slopeID];
+        Slope slope = Slope.getSlopeById(slopeID);
 
         if (slope.isPositive) {
             if (slope.facings.contains(ForgeDirection.NORTH)) {

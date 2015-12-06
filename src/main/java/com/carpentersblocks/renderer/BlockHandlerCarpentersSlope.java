@@ -245,7 +245,7 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerSloped {
         if (isSideSloped)
         {
             Block block = BlockProperties.toBlock(itemStack);
-            Slope slope = Slope.slopesList[TE.getData()];
+            Slope slope = Slope.getSlope(TE);
             int metadata = itemStack.getItemDamage();
 
             if (!TE.hasAttribute(TE.ATTR_COVER[6])) {
@@ -551,14 +551,14 @@ public class BlockHandlerCarpentersSlope extends BlockHandlerSloped {
      */
     public void renderBaseBlock(ItemStack itemStack, int x, int y, int z)
     {
-        Slope slope = Slope.slopesList[TE.getData()];
+        Slope slope = Slope.getSlope(TE);
         renderSlope(itemStack, slope, x, y, z, false);
     }
 
     @Override
     protected boolean isPositiveFace(int side)
     {
-        return super.isPositiveFace(side) || isSideSloped && Slope.slopesList[TE.getData()].isPositive;
+        return super.isPositiveFace(side) || isSideSloped && Slope.getSlope(TE).isPositive;
     }
 
     /**

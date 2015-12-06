@@ -8,18 +8,16 @@ import static net.minecraftforge.common.util.ForgeDirection.UP;
 import static net.minecraftforge.common.util.ForgeDirection.WEST;
 import java.util.ArrayList;
 import java.util.List;
+import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+import com.carpentersblocks.tileentity.TEBase;
+import com.carpentersblocks.util.BlockProperties;
+import com.carpentersblocks.util.ModLogger;
+import com.carpentersblocks.util.registry.BlockRegistry;
 import com.carpentersblocks.util.slope.SlopeType;
 import com.carpentersblocks.util.slope.SlopeTypeFactory;
 
 public class Slope {
-
-    /**
-     * 16-bit data components:
-     *
-     * [0000000000000000]
-     * slopeID
-     */
 
     public final static byte ID_WEDGE_SE          = 0;
     public final static byte ID_WEDGE_NW          = 1;
@@ -87,6 +85,43 @@ public class Slope {
     public final static byte ID_PRISM_WEDGE_POS_W = 63;
     public final static byte ID_PRISM_WEDGE_POS_E = 64;
 
+    private final static byte ROTATION_Y[][] = {
+        {
+            ID_WEDGE_NE, ID_WEDGE_SW, ID_WEDGE_NW, ID_WEDGE_SE, ID_WEDGE_NEG_W, ID_WEDGE_NEG_E, ID_WEDGE_NEG_S,
+            ID_WEDGE_NEG_N, ID_WEDGE_POS_W, ID_WEDGE_POS_E, ID_WEDGE_POS_S, ID_WEDGE_POS_N,
+            ID_WEDGE_INT_NEG_NE, ID_WEDGE_INT_NEG_SW, ID_WEDGE_INT_NEG_NW, ID_WEDGE_INT_NEG_SE,
+            ID_WEDGE_INT_POS_NE, ID_WEDGE_INT_POS_SW, ID_WEDGE_INT_POS_NW, ID_WEDGE_INT_POS_SE,
+            ID_WEDGE_EXT_NEG_NE, ID_WEDGE_EXT_NEG_SW, ID_WEDGE_EXT_NEG_NW, ID_WEDGE_EXT_NEG_SE,
+            ID_WEDGE_EXT_POS_NE, ID_WEDGE_EXT_POS_SW, ID_WEDGE_EXT_POS_NW, ID_WEDGE_EXT_POS_SE,
+            ID_OBL_INT_NEG_NE, ID_OBL_INT_NEG_SW, ID_OBL_INT_NEG_NW, ID_OBL_INT_NEG_SE,
+            ID_OBL_INT_POS_NE, ID_OBL_INT_POS_SW, ID_OBL_INT_POS_NW, ID_OBL_INT_POS_SE,
+            ID_OBL_EXT_NEG_NE, ID_OBL_EXT_NEG_SW, ID_OBL_EXT_NEG_NW, ID_OBL_EXT_NEG_SE,
+            ID_OBL_EXT_POS_NE, ID_OBL_EXT_POS_SW, ID_OBL_EXT_POS_NW, ID_OBL_EXT_POS_SE,
+            ID_PRISM_NEG, ID_PRISM_POS, ID_PRISM_1P_POS_W, ID_PRISM_1P_POS_E, ID_PRISM_1P_POS_S,
+            ID_PRISM_1P_POS_N, ID_PRISM_2P_POS_WE, ID_PRISM_2P_POS_NS, ID_PRISM_2P_POS_NE,
+            ID_PRISM_2P_POS_SW, ID_PRISM_2P_POS_NW, ID_PRISM_2P_POS_SE, ID_PRISM_3P_POS_NSW,
+            ID_PRISM_3P_POS_NSE, ID_PRISM_3P_POS_SWE, ID_PRISM_3P_POS_NWE, ID_PRISM_POS_4P,
+            ID_PRISM_WEDGE_POS_W, ID_PRISM_WEDGE_POS_E, ID_PRISM_WEDGE_POS_S, ID_PRISM_WEDGE_POS_N
+        },
+        {
+            ID_WEDGE_SW, ID_WEDGE_NE, ID_WEDGE_SE, ID_WEDGE_NW, ID_WEDGE_NEG_E, ID_WEDGE_NEG_W, ID_WEDGE_NEG_N,
+            ID_WEDGE_NEG_S, ID_WEDGE_POS_E, ID_WEDGE_POS_W, ID_WEDGE_POS_N, ID_WEDGE_POS_S,
+            ID_WEDGE_INT_NEG_SW, ID_WEDGE_INT_NEG_NE, ID_WEDGE_INT_NEG_SE, ID_WEDGE_INT_NEG_NW,
+            ID_WEDGE_INT_POS_SW, ID_WEDGE_INT_POS_NE, ID_WEDGE_INT_POS_SE, ID_WEDGE_INT_POS_NW,
+            ID_WEDGE_EXT_NEG_SW, ID_WEDGE_EXT_NEG_NE, ID_WEDGE_EXT_NEG_SE, ID_WEDGE_EXT_NEG_NW,
+            ID_WEDGE_EXT_POS_SW, ID_WEDGE_EXT_POS_NE, ID_WEDGE_EXT_POS_SE, ID_WEDGE_EXT_POS_NW,
+            ID_OBL_INT_NEG_SW, ID_OBL_INT_NEG_NE, ID_OBL_INT_NEG_SE, ID_OBL_INT_NEG_NW,
+            ID_OBL_INT_POS_SW, ID_OBL_INT_POS_NE, ID_OBL_INT_POS_SE, ID_OBL_INT_POS_NW,
+            ID_OBL_EXT_NEG_SW, ID_OBL_EXT_NEG_NE, ID_OBL_EXT_NEG_SE, ID_OBL_EXT_NEG_NW,
+            ID_OBL_EXT_POS_SW, ID_OBL_EXT_POS_NE, ID_OBL_EXT_POS_SE, ID_OBL_EXT_POS_NW,
+            ID_PRISM_NEG, ID_PRISM_POS, ID_PRISM_1P_POS_E, ID_PRISM_1P_POS_W, ID_PRISM_1P_POS_N,
+            ID_PRISM_1P_POS_S, ID_PRISM_2P_POS_WE, ID_PRISM_2P_POS_NS, ID_PRISM_2P_POS_SW,
+            ID_PRISM_2P_POS_NE, ID_PRISM_2P_POS_SE, ID_PRISM_2P_POS_NW, ID_PRISM_3P_POS_NSE,
+            ID_PRISM_3P_POS_NSW, ID_PRISM_3P_POS_NWE, ID_PRISM_3P_POS_SWE, ID_PRISM_POS_4P,
+            ID_PRISM_WEDGE_POS_E, ID_PRISM_WEDGE_POS_W, ID_PRISM_WEDGE_POS_N, ID_PRISM_WEDGE_POS_S
+        }
+    };
+
     public enum Type
     {
         WEDGE_SIDE,
@@ -122,7 +157,7 @@ public class Slope {
     public final static byte XYPP = 4;
 
     /** Array containing registered slopes. */
-    public static final Slope[] slopesList = new Slope[65];
+    private static final Slope[] slopesList = new Slope[65];
 
     /** ID of the slope. */
     public final int slopeID;
@@ -166,7 +201,7 @@ public class Slope {
      */
     public final List<ForgeDirection> facings;
 
-    public Slope(int slopeID, Type slopeType, ForgeDirection[] facings, Face[] faceShape, int[] faceBias)
+    private Slope(int slopeID, Type slopeType, ForgeDirection[] facings, Face[] faceShape, int[] faceBias)
     {
         this.slopeID = slopeID;
         slopesList[slopeID] = this;
@@ -286,6 +321,53 @@ public class Slope {
     public int getFaceBias(ForgeDirection side)
     {
         return faceBias[side.ordinal()];
+    }
+
+    public static Slope getSlope(TEBase TE)
+    {
+        int slopeID = TE.getData();
+
+        if (slopeID >= slopesList.length) {
+            ModLogger.info("Detected abnormal slope data, adjusting to safe value.");
+            TE.setData(slopeID = 0);
+        }
+
+        return slopesList[slopeID];
+    }
+
+    public static Slope getSlopeById(int slopeID)
+    {
+        if (slopeID >= slopesList.length) {
+            slopeID = 0;
+        }
+
+        return slopesList[slopeID];
+    }
+
+    public static boolean rotate(World world, int x, int y, int z, ForgeDirection axis)
+    {
+        TEBase TE = BlockProperties.getTileEntity(BlockRegistry.blockCarpentersSlope, world, x, y, z);
+        if (TE != null)
+        {
+            int data = TE.getData();
+
+            // Detect unsupported rotation axis
+            if (axis.offsetY == 0) {
+                return false;
+            }
+
+            // Detect abnormal slope data
+            if (data >= slopesList.length) {
+                ModLogger.info("Detected abnormal slope data at (%d,%d,%d), resetting to default.", x, y, z);
+                TE.setData(0);
+                return false;
+            }
+
+            int newData = Slope.ROTATION_Y[axis.ordinal()][data];
+            TE.setData(newData);
+            return true;
+        }
+        return false;
     }
 
 }

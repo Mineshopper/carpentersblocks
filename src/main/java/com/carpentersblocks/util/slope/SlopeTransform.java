@@ -15,12 +15,12 @@ public class SlopeTransform {
      */
     public static int transformWedge(World world, int slopeID, int x, int y, int z)
     {
-        Slope slope_XN = world.getBlock(x - 1, y, z) instanceof BlockCarpentersSlope ? Slope.slopesList[((TEBase) world.getTileEntity(x - 1, y, z)).getData()] : null;
-        Slope slope_XP = world.getBlock(x + 1, y, z) instanceof BlockCarpentersSlope ? Slope.slopesList[((TEBase) world.getTileEntity(x + 1, y, z)).getData()] : null;
-        Slope slope_YN = world.getBlock(x, y - 1, z) instanceof BlockCarpentersSlope ? Slope.slopesList[((TEBase) world.getTileEntity(x, y - 1, z)).getData()] : null;
-        Slope slope_YP = world.getBlock(x, y + 1, z) instanceof BlockCarpentersSlope ? Slope.slopesList[((TEBase) world.getTileEntity(x, y + 1, z)).getData()] : null;
-        Slope slope_ZN = world.getBlock(x, y, z - 1) instanceof BlockCarpentersSlope ? Slope.slopesList[((TEBase) world.getTileEntity(x, y, z - 1)).getData()] : null;
-        Slope slope_ZP = world.getBlock(x, y, z + 1) instanceof BlockCarpentersSlope ? Slope.slopesList[((TEBase) world.getTileEntity(x, y, z + 1)).getData()] : null;
+        Slope slope_XN = world.getBlock(x - 1, y, z) instanceof BlockCarpentersSlope ? Slope.getSlope(((TEBase) world.getTileEntity(x - 1, y, z))) : null;
+        Slope slope_XP = world.getBlock(x + 1, y, z) instanceof BlockCarpentersSlope ? Slope.getSlope(((TEBase) world.getTileEntity(x + 1, y, z))) : null;
+        Slope slope_YN = world.getBlock(x, y - 1, z) instanceof BlockCarpentersSlope ? Slope.getSlope(((TEBase) world.getTileEntity(x, y - 1, z))) : null;
+        Slope slope_YP = world.getBlock(x, y + 1, z) instanceof BlockCarpentersSlope ? Slope.getSlope(((TEBase) world.getTileEntity(x, y + 1, z))) : null;
+        Slope slope_ZN = world.getBlock(x, y, z - 1) instanceof BlockCarpentersSlope ? Slope.getSlope(((TEBase) world.getTileEntity(x, y, z - 1))) : null;
+        Slope slope_ZP = world.getBlock(x, y, z + 1) instanceof BlockCarpentersSlope ? Slope.getSlope(((TEBase) world.getTileEntity(x, y, z + 1))) : null;
 
         /* Transform into horizontal wedge. */
 
@@ -39,7 +39,7 @@ public class SlopeTransform {
 
         /* Transform into corner wedge. */
 
-        Slope slope = Slope.slopesList[slopeID];
+        Slope slope = Slope.getSlopeById(slopeID);
         Type primary_type = slope.getPrimaryType();
 
         if (primary_type.equals(Type.WEDGE)) {
@@ -186,12 +186,12 @@ public class SlopeTransform {
      */
     public static void transformAdjacentWedges(World world, int slopeID, int x, int y, int z)
     {
-        Slope slope_XN = world.getBlock(x - 1, y, z) instanceof BlockCarpentersSlope ? Slope.slopesList[((TEBase) world.getTileEntity(x - 1, y, z)).getData()] : null;
-        Slope slope_XP = world.getBlock(x + 1, y, z) instanceof BlockCarpentersSlope ? Slope.slopesList[((TEBase) world.getTileEntity(x + 1, y, z)).getData()] : null;
-        Slope slope_ZN = world.getBlock(x, y, z - 1) instanceof BlockCarpentersSlope ? Slope.slopesList[((TEBase) world.getTileEntity(x, y, z - 1)).getData()] : null;
-        Slope slope_ZP = world.getBlock(x, y, z + 1) instanceof BlockCarpentersSlope ? Slope.slopesList[((TEBase) world.getTileEntity(x, y, z + 1)).getData()] : null;
+        Slope slope_XN = world.getBlock(x - 1, y, z) instanceof BlockCarpentersSlope ? Slope.getSlope(((TEBase) world.getTileEntity(x - 1, y, z))) : null;
+        Slope slope_XP = world.getBlock(x + 1, y, z) instanceof BlockCarpentersSlope ? Slope.getSlope(((TEBase) world.getTileEntity(x + 1, y, z))) : null;
+        Slope slope_ZN = world.getBlock(x, y, z - 1) instanceof BlockCarpentersSlope ? Slope.getSlope(((TEBase) world.getTileEntity(x, y, z - 1))) : null;
+        Slope slope_ZP = world.getBlock(x, y, z + 1) instanceof BlockCarpentersSlope ? Slope.getSlope(((TEBase) world.getTileEntity(x, y, z + 1))) : null;
 
-        Slope slope = Slope.slopesList[slopeID];
+        Slope slope = Slope.getSlopeById(slopeID);
         Type primary_type = slope.getPrimaryType();
 
         if (primary_type.equals(Type.WEDGE)) {
@@ -297,10 +297,10 @@ public class SlopeTransform {
      */
     public static void transformAdjacentPrisms(World world, int x, int y, int z)
     {
-        Slope slope_XN = world.getBlock(x - 1, y, z) instanceof BlockCarpentersSlope ? Slope.slopesList[((TEBase) world.getTileEntity(x - 1, y, z)).getData()] : null;
-        Slope slope_XP = world.getBlock(x + 1, y, z) instanceof BlockCarpentersSlope ? Slope.slopesList[((TEBase) world.getTileEntity(x + 1, y, z)).getData()] : null;
-        Slope slope_ZN = world.getBlock(x, y, z - 1) instanceof BlockCarpentersSlope ? Slope.slopesList[((TEBase) world.getTileEntity(x, y, z - 1)).getData()] : null;
-        Slope slope_ZP = world.getBlock(x, y, z + 1) instanceof BlockCarpentersSlope ? Slope.slopesList[((TEBase) world.getTileEntity(x, y, z + 1)).getData()] : null;
+        Slope slope_XN = world.getBlock(x - 1, y, z) instanceof BlockCarpentersSlope ? Slope.getSlope(((TEBase) world.getTileEntity(x - 1, y, z))) : null;
+        Slope slope_XP = world.getBlock(x + 1, y, z) instanceof BlockCarpentersSlope ? Slope.getSlope(((TEBase) world.getTileEntity(x + 1, y, z))) : null;
+        Slope slope_ZN = world.getBlock(x, y, z - 1) instanceof BlockCarpentersSlope ? Slope.getSlope(((TEBase) world.getTileEntity(x, y, z - 1))) : null;
+        Slope slope_ZP = world.getBlock(x, y, z + 1) instanceof BlockCarpentersSlope ? Slope.getSlope(((TEBase) world.getTileEntity(x, y, z + 1))) : null;
 
         if (slope_XN != null && slope_XN.getPrimaryType().equals(Type.PRISM)) {
             ((TEBase) world.getTileEntity(x - 1, y, z)).setData(transformPrism(world, slope_XN.slopeID, x - 1, y, z));
@@ -321,10 +321,10 @@ public class SlopeTransform {
      */
     public static int transformPrism(World world, int slopeID, int x, int y, int z)
     {
-        Slope slope_XN = world.getBlock(x - 1, y, z) instanceof BlockCarpentersSlope ? Slope.slopesList[((TEBase) world.getTileEntity(x - 1, y, z)).getData()] : null;
-        Slope slope_XP = world.getBlock(x + 1, y, z) instanceof BlockCarpentersSlope ? Slope.slopesList[((TEBase) world.getTileEntity(x + 1, y, z)).getData()] : null;
-        Slope slope_ZN = world.getBlock(x, y, z - 1) instanceof BlockCarpentersSlope ? Slope.slopesList[((TEBase) world.getTileEntity(x, y, z - 1)).getData()] : null;
-        Slope slope_ZP = world.getBlock(x, y, z + 1) instanceof BlockCarpentersSlope ? Slope.slopesList[((TEBase) world.getTileEntity(x, y, z + 1)).getData()] : null;
+        Slope slope_XN = world.getBlock(x - 1, y, z) instanceof BlockCarpentersSlope ? Slope.getSlope(((TEBase) world.getTileEntity(x - 1, y, z))) : null;
+        Slope slope_XP = world.getBlock(x + 1, y, z) instanceof BlockCarpentersSlope ? Slope.getSlope(((TEBase) world.getTileEntity(x + 1, y, z))) : null;
+        Slope slope_ZN = world.getBlock(x, y, z - 1) instanceof BlockCarpentersSlope ? Slope.getSlope(((TEBase) world.getTileEntity(x, y, z - 1))) : null;
+        Slope slope_ZP = world.getBlock(x, y, z + 1) instanceof BlockCarpentersSlope ? Slope.getSlope(((TEBase) world.getTileEntity(x, y, z + 1))) : null;
 
         boolean prism_XN = slope_XN != null && (slope_XN.getPrimaryType().equals(Type.PRISM) || slope_XN.getPrimaryType().equals(Type.PRISM_WEDGE) && slope_XN.facings.contains(ForgeDirection.EAST ));
         boolean prism_XP = slope_XP != null && (slope_XP.getPrimaryType().equals(Type.PRISM) || slope_XP.getPrimaryType().equals(Type.PRISM_WEDGE) && slope_XP.facings.contains(ForgeDirection.WEST ));
