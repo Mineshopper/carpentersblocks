@@ -1304,16 +1304,19 @@ public class BlockCoverable extends BlockContainer {
         if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
             return false;
         }
-
+        
         if (FeatureRegistry.enableRoutableFluids) {
-            Class<?> clazz = RoutableFluidsHelper.getCallerClass();
-            if (clazz != null) {
-                for (Class clazz1 : RoutableFluidsHelper.liquidClasses) {
-                    if (clazz.isAssignableFrom(clazz1)) {
-                        return true;
+            // Server condition may fail, so don't throw error if performing server-side
+            try {
+                Class<?> clazz = RoutableFluidsHelper.getCallerClass();
+                if (clazz != null) {
+                    for (Class clazz1 : RoutableFluidsHelper.liquidClasses) {
+                        if (clazz.isAssignableFrom(clazz1)) {
+                            return true;
+                        }
                     }
                 }
-            }
+            } catch (Exception e) {}
         }
 
         return false;
