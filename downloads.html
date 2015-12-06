@@ -54,17 +54,17 @@ label-release: <span class="label label-danger">
 <div class="download-container">
    <div style="display: table-row;">
       <div class="download-container-version">
-         Carpenter's Blocks 3.3.8 DEV R4
+         Carpenter's Blocks 3.3.8 DEV R5
          {{ page.label-dev }}
          {{ page.label-begin-minecraft }}MC 1.7.10{{ page.label-end }}
          {{ page.label-begin-forge }}FORGE 10.13.0.1180{{ page.label-end }}
-         {{ page.label-begin-release }}RELEASED 11/02/2015{{ page.label-end }}
+         {{ page.label-begin-release }}RELEASED 12/05/2015{{ page.label-end }}
       </div>
    </div>
    <div style="display: table-row;">
       <div style="display: table-cell;">
-         <button onclick="window.open('http://adf.ly/1Qy74b')" class="ad_button">Download</button>
-         <button onclick="window.open('https://dl.dropboxusercontent.com/s/xpwg3ppxzhskthk/Carpenter%27s%20Blocks%20v3.3.8_dev_r4%20-%20MC%201.7.10.jar')" class="dropbox">&nbsp;</button>
+         <button onclick="window.open('http://adf.ly/1StSya')" class="ad_button">Download</button>
+         <button onclick="window.open('https://dl.dropboxusercontent.com/s/meexnwvlggtci3j/Carpenter%27s%20Blocks%20v3.3.8_dev_r5%20-%20MC%201.7.10.jar')" class="dropbox">&nbsp;</button>
          <button class="expand">View Changelog</button>
          <div class="collapsed">
             <ul id="changelog">
@@ -74,6 +74,9 @@ label-release: <span class="label label-danger">
                <li>[R2] Fixed bad import causing click crash.</li>
                <li>[R3] Fixed routable fluid rendering while under fluid blocks.</li>
                <li>[R4] Fixed routable fluid crash with Flux Goo and other Forge-type fluids.</li>
+               <li>[R5] Corrected player interaction events to better support MyTown2, others. [krwminer]</li>
+               <li>[R5] Suppressed routable fluids exception occasionally thrown server-side.</li>
+               <li>[R5] Fixed invalid slope rotations causing unrecoverable crashes. Now resets abnormal slopes automatically.</li>
             </ul>
          </div>
       </div>
