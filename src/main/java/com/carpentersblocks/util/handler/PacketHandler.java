@@ -8,7 +8,6 @@ import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.network.play.client.C17PacketCustomPayload;
 import com.carpentersblocks.CarpentersBlocks;
 import com.carpentersblocks.network.ICarpentersPacket;
-import com.carpentersblocks.network.PacketActivateBlock;
 import com.carpentersblocks.network.PacketEnrichPlant;
 import com.carpentersblocks.network.PacketSlopeSelect;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -25,7 +24,6 @@ public class PacketHandler {
         packetCarrier = new ArrayList<Class>();
         packetCarrier.add(PacketEnrichPlant.class);
         packetCarrier.add(PacketSlopeSelect.class);
-        packetCarrier.add(PacketActivateBlock.class);
     }
 
     @SubscribeEvent
