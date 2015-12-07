@@ -54,17 +54,17 @@ label-release: <span class="label label-danger">
 <div class="download-container">
    <div style="display: table-row;">
       <div class="download-container-version">
-         Carpenter's Blocks 3.3.8 DEV R5
+         Carpenter's Blocks 3.3.8 DEV R6
          {{ page.label-dev }}
          {{ page.label-begin-minecraft }}MC 1.7.10{{ page.label-end }}
          {{ page.label-begin-forge }}FORGE 10.13.0.1180{{ page.label-end }}
-         {{ page.label-begin-release }}RELEASED 12/05/2015{{ page.label-end }}
+         {{ page.label-begin-release }}RELEASED 12/06/2015{{ page.label-end }}
       </div>
    </div>
    <div style="display: table-row;">
       <div style="display: table-cell;">
-         <button onclick="window.open('http://adf.ly/1StSya')" class="ad_button">Download</button>
-         <button onclick="window.open('https://dl.dropboxusercontent.com/s/meexnwvlggtci3j/Carpenter%27s%20Blocks%20v3.3.8_dev_r5%20-%20MC%201.7.10.jar')" class="dropbox">&nbsp;</button>
+         <button onclick="window.open('http://adf.ly/1SxfMK')" class="ad_button">Download</button>
+         <button onclick="window.open('https://dl.dropboxusercontent.com/s/1e8hfrdrwflsq1o/Carpenter%27s%20Blocks%20v3.3.8_dev_r6%20-%20MC%201.7.10.jar')" class="dropbox">&nbsp;</button>
          <button class="expand">View Changelog</button>
          <div class="collapsed">
             <ul id="changelog">
@@ -77,6 +77,7 @@ label-release: <span class="label label-danger">
                <li>[R5] Corrected player interaction events to better support MyTown2, others. [krwminer]</li>
                <li>[R5] Suppressed routable fluids exception occasionally thrown server-side.</li>
                <li>[R5] Fixed invalid slope rotations causing unrecoverable crashes. Now resets abnormal slopes automatically.</li>
+               <li>[R6] Refactored garage door connection code to hopefully resolve recursion crashes. Added new multiblock size limit to configuration file.</li>
             </ul>
          </div>
       </div>
