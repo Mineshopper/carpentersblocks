@@ -1,6 +1,7 @@
 package com.carpentersblocks.block;
 
 import java.util.ArrayList;
+import java.util.Set;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -63,9 +64,9 @@ public class BlockCarpentersGarageDoor extends BlockCoverable {
             temp = 0;
         }
 
-        ArrayList<TEBase> pieces = data.getConnectingDoors(TE);
-        for (TEBase piece : pieces) {
-            data.setType(piece, temp);
+        Set<TEBase> pieces = data.getBlocks(TE, this);
+        for (TEBase TE_block : pieces) {
+            data.setType(TE_block, temp);
         }
 
         return true;
@@ -94,12 +95,12 @@ public class BlockCarpentersGarageDoor extends BlockCoverable {
                     ChatHandler.sendMessageToPlayer("message.activation_iron.name", entityPlayer);
             }
 
-            ArrayList<TEBase> pieces = data.getConnectingDoors(TE);
+            Set<TEBase> pieces = data.getBlocks(TE, this);
             for (TEBase piece : pieces) {
                 data.setRigidity(piece, rigidity);
             }
         } else {
-            ArrayList<TEBase> pieces = data.getConnectingDoors(TE);
+            Set<TEBase> pieces = data.getBlocks(TE, this);
             for (TEBase piece : pieces) {
                 data.setType(piece, temp);
             }
@@ -287,7 +288,7 @@ public class BlockCarpentersGarageDoor extends BlockCoverable {
         if (!data.isRigid(TE)) {
             int state = data.getState(TE) == GarageDoor.STATE_OPEN ? GarageDoor.STATE_CLOSED : GarageDoor.STATE_OPEN;
 
-            ArrayList<TEBase> pieces = data.getConnectingDoors(TE);
+            Set<TEBase> pieces = data.getBlocks(TE, this);
             for (TEBase piece : pieces) {
                 data.setState(piece, state);
             }
@@ -319,7 +320,7 @@ public class BlockCarpentersGarageDoor extends BlockCoverable {
                         if (data.isOpen(TE)) {
                             // Check if a garage door piece is still powered
                             boolean garageHasPower = false;
-                            ArrayList<TEBase> pieces = data.getConnectingDoors(TE);
+                            Set<TEBase> pieces = data.getBlocks(TE, this);
                             for (TEBase piece : pieces) {
                                 if (world.isBlockIndirectlyGettingPowered(piece.xCoord, piece.yCoord, piece.zCoord)) {
                                     garageHasPower = true;
@@ -336,7 +337,7 @@ public class BlockCarpentersGarageDoor extends BlockCoverable {
                         if (state != old_state) {
                             data.setState(TE, state);
 
-                            ArrayList<TEBase> pieces = data.getConnectingDoors(TE);
+                            Set<TEBase> pieces = data.getBlocks(TE, this);
                             for (TEBase piece : pieces) {
                                 data.setState(piece, state);
                             }

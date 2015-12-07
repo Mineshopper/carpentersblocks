@@ -24,7 +24,8 @@ public class FeatureRegistry {
     public static ArrayList<String> overlayItems    = new ArrayList<String>();
     public static ArrayList<String> coverExceptions = new ArrayList<String>();
 
-    public static int slopeSmoothness = 2;
+    public static int     slopeSmoothness           = 2;
+    public static int     multiBlockSizeLimit       = 500;
 
     /**
      * Initializes configuration properties.
@@ -53,6 +54,10 @@ public class FeatureRegistry {
         Property slopeSmoothnessProp = config.get("features", "Smoothness", slopeSmoothness);
         slopeSmoothnessProp.comment = "This controls the smoothness of the slope faces.\nNote: smoothness of 2 is similar to stairs, while a value above 25 is generally fluid.";
         slopeSmoothness = slopeSmoothnessProp.getInt(slopeSmoothness);
+
+        Property multiBlockSizeLimitProp = config.get("features", "MultiBlock Size Limit", multiBlockSizeLimit);
+        multiBlockSizeLimitProp.comment = "This controls how many blocks can be connected as a single entity.\nNote: only applies to Garage Doors.";
+        multiBlockSizeLimit = multiBlockSizeLimitProp.getInt(multiBlockSizeLimit);
 
         Property torchWeatherEffectsProp = config.get("features", "Enable Torch Weather Effects", enableTorchWeatherEffects);
         torchWeatherEffectsProp.comment = "This controls whether torches extinguish themselves when exposed to rain or snow.";
