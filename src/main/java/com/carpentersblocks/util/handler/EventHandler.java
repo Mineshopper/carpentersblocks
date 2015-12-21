@@ -122,10 +122,9 @@ public class EventHandler {
                 hitX = hitY = hitZ = 1.0F;
             }
 
-            boolean toolEquipped = itemStack != null && (itemStack.getItem() instanceof ICarpentersHammer || itemStack.getItem() instanceof ICarpentersChisel);
-
             switch (event.action) {
                 case LEFT_CLICK_BLOCK:
+                    boolean toolEquipped = itemStack != null && (itemStack.getItem() instanceof ICarpentersHammer || itemStack.getItem() instanceof ICarpentersChisel);
 
                     /*
                      * Creative mode doesn't normally invoke onBlockClicked(), but rather it tries
@@ -142,14 +141,11 @@ public class EventHandler {
                 case RIGHT_CLICK_BLOCK:
 
                     /*
-                     * Support sneak right-click with the hammer or chisel.
+                     * Make sure sneak right-click makes it through the onBlockActivate.
                      */
 
-                    if (eventEntityPlayer.isSneaking() && toolEquipped) {
-                        int x = event.x;
-                        int y = event.y;
-                        int z = event.z;
-                        eventEntityPlayer.worldObj.getBlock(x, y, z).onBlockActivated(eventEntityPlayer.worldObj, x, y, z, eventEntityPlayer, event.face, 1.0F, 1.0F, 1.0F);
+                    if (eventEntityPlayer.isSneaking() && !(itemStack != null && itemStack.getItem() instanceof ItemBlock && !BlockProperties.isOverlay(itemStack))) {
+                        block.onBlockActivated(eventEntityPlayer.worldObj, event.x, event.y, event.z, eventEntityPlayer, event.face, 1.0F, 1.0F, 1.0F);
                     }
 
                     break;
