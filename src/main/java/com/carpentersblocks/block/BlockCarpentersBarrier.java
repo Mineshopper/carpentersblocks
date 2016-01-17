@@ -174,75 +174,79 @@ public class BlockCarpentersBarrier extends BlockCoverable {
     public void setBlockBoundsBasedOnState(IBlockAccess blockAccess, int x, int y, int z)
     {
         TEBase TE = getTileEntity(blockAccess, x, y, z);
-        int type = Barrier.getType(TE);
-
-        boolean connect_ZN = canConnectBarrierTo(blockAccess, x, y, z - 1, ForgeDirection.SOUTH);
-        boolean connect_ZP = canConnectBarrierTo(blockAccess, x, y, z + 1, ForgeDirection.NORTH);
-        boolean connect_XN = canConnectBarrierTo(blockAccess, x - 1, y, z, ForgeDirection.EAST);
-        boolean connect_XP = canConnectBarrierTo(blockAccess, x + 1, y, z, ForgeDirection.WEST);
-
-        float x_Low = 0.0F;
-        float x_High = 1.0F;
-        float z_Low = 0.0F;
-        float z_High = 1.0F;
-
-        if (type <= Barrier.TYPE_VANILLA_X3) {
-
-            x_Low = 0.375F;
-            x_High = 0.625F;
-            z_Low = 0.375F;
-            z_High = 0.625F;
-
-            if (connect_ZN) {
-                z_Low = 0.0F;
+        
+        if (TE != null)
+        {        
+            int type = Barrier.getType(TE);
+    
+            boolean connect_ZN = canConnectBarrierTo(blockAccess, x, y, z - 1, ForgeDirection.SOUTH);
+            boolean connect_ZP = canConnectBarrierTo(blockAccess, x, y, z + 1, ForgeDirection.NORTH);
+            boolean connect_XN = canConnectBarrierTo(blockAccess, x - 1, y, z, ForgeDirection.EAST);
+            boolean connect_XP = canConnectBarrierTo(blockAccess, x + 1, y, z, ForgeDirection.WEST);
+    
+            float x_Low = 0.0F;
+            float x_High = 1.0F;
+            float z_Low = 0.0F;
+            float z_High = 1.0F;
+    
+            if (type <= Barrier.TYPE_VANILLA_X3) {
+    
+                x_Low = 0.375F;
+                x_High = 0.625F;
+                z_Low = 0.375F;
+                z_High = 0.625F;
+    
+                if (connect_ZN) {
+                    z_Low = 0.0F;
+                }
+    
+                if (connect_ZP) {
+                    z_High = 1.0F;
+                }
+    
+                if (connect_XN) {
+                    x_Low = 0.0F;
+                }
+    
+                if (connect_XP) {
+                    x_High = 1.0F;
+                }
+    
+            } else {
+    
+                x_Low = 0.25F;
+                x_High = 0.75F;
+                z_Low = 0.25F;
+                z_High = 0.75F;
+    
+                if (connect_ZN) {
+                    z_Low = 0.0F;
+                }
+    
+                if (connect_ZP) {
+                    z_High = 1.0F;
+                }
+    
+                if (connect_XN) {
+                    x_Low = 0.0F;
+                }
+    
+                if (connect_XP) {
+                    x_High = 1.0F;
+                }
+    
+                if (connect_ZN && connect_ZP && !connect_XN && !connect_XP) {
+                    x_Low = 0.3125F;
+                    x_High = 0.6875F;
+                } else if (!connect_ZN && !connect_ZP && connect_XN && connect_XP) {
+                    z_Low = 0.3125F;
+                    z_High = 0.6875F;
+                }
+    
             }
-
-            if (connect_ZP) {
-                z_High = 1.0F;
-            }
-
-            if (connect_XN) {
-                x_Low = 0.0F;
-            }
-
-            if (connect_XP) {
-                x_High = 1.0F;
-            }
-
-        } else {
-
-            x_Low = 0.25F;
-            x_High = 0.75F;
-            z_Low = 0.25F;
-            z_High = 0.75F;
-
-            if (connect_ZN) {
-                z_Low = 0.0F;
-            }
-
-            if (connect_ZP) {
-                z_High = 1.0F;
-            }
-
-            if (connect_XN) {
-                x_Low = 0.0F;
-            }
-
-            if (connect_XP) {
-                x_High = 1.0F;
-            }
-
-            if (connect_ZN && connect_ZP && !connect_XN && !connect_XP) {
-                x_Low = 0.3125F;
-                x_High = 0.6875F;
-            } else if (!connect_ZN && !connect_ZP && connect_XN && connect_XP) {
-                z_Low = 0.3125F;
-                z_High = 0.6875F;
-            }
-
+    
+            setBlockBounds(x_Low, 0.0F, z_Low, x_High, 1.0F, z_High);
         }
-
-        setBlockBounds(x_Low, 0.0F, z_Low, x_High, 1.0F, z_High);
     }
 
     /**
