@@ -67,6 +67,8 @@ public class TEBase extends TileEntity implements IProtected {
     /** The most recent light value of block. **/
     public int lightValue;
 
+    
+    /** Comment **/
     @Override
     public void readFromNBT(NBTTagCompound nbt)
     {
