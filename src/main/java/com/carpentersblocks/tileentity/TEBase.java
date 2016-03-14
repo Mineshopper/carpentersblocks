@@ -67,14 +67,52 @@ public class TEBase extends TileEntity implements IProtected {
     /** The most recent light value of block. **/
     public int lightValue;
 
+    
+    /** Comment **/
     @Override
     public void readFromNBT(NBTTagCompound nbt)
     {
         super.readFromNBT(nbt);
+        // These next lines are to enforce the cbAttrList, id short value to be what is represented in cbAttrList texture string.  This allows for compatibility with adding portability to worlds that may have different block id mappings.   
+        NBTTagList nbttaglist1 = nbt.getTagList(TAG_ATTR_LIST, 10); //sets up the nbt tag "cbAttrList" to be read and written to.
+        for (int idx = 0; idx < nbttaglist1.tagCount(); ++idx) {
+            NBTTagCompound nbt1a = nbttaglist1.getCompoundTagAt(idx); 
+            
+            if (nbt1a.getShort("cbAttribute")!= 20 ){ //if cbAttribute is 20 then it is one of the special textures and its id isn't a block. 
+            		
+            	if (Block.blockRegistry.containsId(nbt1a.getShort("id"))){ // if the id can't be cast as a block, then it skips this
+            			if ((Block.blockRegistry.getNameForObject(Block.getBlockById((int)nbt1a.getShort("id")))) != (nbt1a.getString("Texture"))&& (nbt1a.getString("Texture"))!= ""){
+        	        	//compares the registry name for the id number stored in cbAttrList with the texture name stored in cbAttrList.
+            				if (Block.blockRegistry.containsKey(nbt1a.getString("Texture"))){ //if the texture name isn't a known block
+            					nbt1a.setShort("id",(short)Block.getIdFromBlock((Block.getBlockFromName(nbt1a.getString("Texture")))));
+            					//sets the id number to the id number of the block represented by the Texture tag in cbAttrList.
+            				}
+            				else {
+            					nbt.removeTag(TAG_ATTR_LIST); //if the Texture block represented in the tag isn't a known block, then it clears the all the texture data in the block.
+            					System.out.println("Texture Block Does Not Exist!  Removing all textures from block");
+            				}
+        	
 
+            			}
+            	}
+            	else{
+            		if (Block.blockRegistry.containsKey(nbt1a.getString("Texture"))){ // if the texture is a known block but the id isn't.
+            			nbt1a.setShort("id",(short)Block.getIdFromBlock((Block.getBlockFromName(nbt1a.getString("Texture")))));
+            			//sets the id to the known texture block's id.  
+            		}
+            		else {
+            			nbt.removeTag(TAG_ATTR_LIST); //if the id number isn't a block and the texture isn't a known block then it clears all the texture data cbAttList.
+            			System.out.println("Texture Block Does Not Exist! Removing all textures from block");
+            		}
+            	
+            	}
+            }
+            else{
+            	//  This means that the texture is one of the "special texture" such as grass, wheat and mycellium tops.  System.out.println("Special Texture");
+            }
+        }
         cbAttrMap.clear();
-
-        if (nbt.hasKey("owner")) {
+        if (nbt.hasKey("owner")) {        	    	
             MigrationHelper.updateMappingsOnRead(this, nbt);
         } else {
             NBTTagList nbttaglist = nbt.getTagList(TAG_ATTR_LIST, 10);
@@ -125,7 +163,6 @@ public class TEBase extends TileEntity implements IProtected {
         super.writeToNBT(nbt);
 
         NBTTagList itemstack_list = new NBTTagList();
-
         Iterator iterator = cbAttrMap.entrySet().iterator();
         while (iterator.hasNext()) {
             Map.Entry entry = (Map.Entry) iterator.next();
@@ -133,9 +170,20 @@ public class TEBase extends TileEntity implements IProtected {
             nbt1.setByte(TAG_ATTR, (Byte) entry.getKey());
             ((ItemStack)entry.getValue()).writeToNBT(nbt1);
             itemstack_list.appendTag(nbt1);
-        }
-        nbt.setTag(TAG_ATTR_LIST, itemstack_list);
+            if ((Block.blockRegistry.getNameForObject(Block.getBlockById((int)nbt1.getShort("id"))) != (nbt1.getString("Texture")))&& ((nbt1.getString("Texture"))!= "")&& nbt1.getShort("cbAttribute")!= 20){
+            	//if the id and the texture don't match and "Texture" has been initialized as something, then it sets the id to what the "texture" represents.
+            	nbt1.setShort("id", (short)Block.getIdFromBlock((Block.getBlockFromName(nbt1.getString("Texture")))));
+            }
 
+            if (((nbt1.getString("Texture")) == "")&& (nbt1.getShort("cbAttribute")!= 20)){ //if the "Texture" is empty, then it sets the "Texture" to represent what the id is.
+            	nbt1.setString("Texture",Block.blockRegistry.getNameForObject(Block.getBlockFromItem(((ItemStack)entry.getValue()).getItem())));
+            	}
+            	//unless bad values are hacked in through editing nbt in game, this part should stay stable since the rest of the program doesn't allow non blocks, 
+            	//with only a few exceptions to be placed into a block for texturing.  consequently, the id should be from an actual block and the block texture an actual block in the current game.
+        	}
+        
+        nbt.setTag(TAG_ATTR_LIST, itemstack_list);
+        
         for (int idx = 0; idx < 7; ++idx) {
             nbt.setString(TAG_CHISEL_DESIGN + "_" + idx, cbChiselDesign[idx]);
         }
