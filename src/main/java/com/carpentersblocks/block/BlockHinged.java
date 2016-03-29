@@ -417,11 +417,13 @@ public class BlockHinged extends BlockCoverable {
         } else {
             TE_adj = (TEBase) world.getTileEntity(TE.xCoord, TE.yCoord + 1, TE.zCoord);
         }
-
-        Hinge.setState(TE_adj, state, false);
-        Hinge.setHingeSide(TE_adj, hinge);
-        Hinge.setType(TE_adj, type);
-        Hinge.setRigidity(TE_adj, rigidity);
+        
+        if (TE_adj != null) {
+            Hinge.setState(TE_adj, state, false);
+            Hinge.setHingeSide(TE_adj, hinge);
+            Hinge.setType(TE_adj, type);
+            Hinge.setRigidity(TE_adj, rigidity);
+        }
     }
 
 }
