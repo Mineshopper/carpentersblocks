@@ -6,10 +6,12 @@ import java.util.List;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.network.play.client.C17PacketCustomPayload;
+import org.apache.logging.log4j.Level;
 import com.carpentersblocks.CarpentersBlocks;
 import com.carpentersblocks.network.ICarpentersPacket;
 import com.carpentersblocks.network.PacketEnrichPlant;
 import com.carpentersblocks.network.PacketSlopeSelect;
+import com.carpentersblocks.util.ModLogger;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.network.FMLNetworkEvent.ServerCustomPacketEvent;
 import cpw.mods.fml.common.network.internal.FMLProxyPacket;
@@ -32,14 +34,16 @@ public class PacketHandler {
         ByteBufInputStream bbis = new ByteBufInputStream(event.packet.payload());
         EntityPlayer entityPlayer = ((NetHandlerPlayServer) event.handler).playerEntity;
         int packetId = bbis.readInt();
-
-        try {
-            ICarpentersPacket packetClass = (ICarpentersPacket) packetCarrier.get(packetId).newInstance();
-            packetClass.processData(entityPlayer, bbis);
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (packetId < packetCarrier.size()) {
+            try {
+                ICarpentersPacket packetClass = (ICarpentersPacket) packetCarrier.get(packetId).newInstance();
+                packetClass.processData(entityPlayer, bbis);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            ModLogger.log(Level.WARN, "Encountered out of range packet Id: " + packetId);
         }
-
         bbis.close();
     }
 
