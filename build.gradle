@@ -22,10 +22,16 @@ group= "com.carpentersblocks" // http://maven.apache.org/guides/mini/guide-namin
 archivesBaseName = "Carpenter's Blocks"
 
 minecraft {
-    version = "1.7.10-10.13.0.1180"
+    version = "1.7.10-10.13.4.1558-1.7.10"
 
     replace "@VERSION@", project.version
     replaceIn "CarpentersBlocks.java"
+}
+sourceSets {
+    main {
+        java { srcDirs = ["$projectDir/src/main/java"] }
+        resources { srcDirs = ["$projectDir/src/main/resources"] }
+    }
 }
 
 dependencies {
