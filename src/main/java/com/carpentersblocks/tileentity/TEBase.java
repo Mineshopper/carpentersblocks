@@ -78,7 +78,7 @@ public class TEBase extends TileEntity implements IProtected {
         for (int idx = 0; idx < nbttaglist1.tagCount(); ++idx) {
             NBTTagCompound nbt1a = nbttaglist1.getCompoundTagAt(idx); 
             
-            if (nbt1a.getShort("cbAttribute")!= 20 ){ //if cbAttribute is 20 then it is one of the special textures and its id isn't a block. 
+            if (nbt1a.getShort("cbAttribute") < 7 ){ //if cbAttribute is 0 through 6 then it is not one of the special textures and its id isn't a block or glowstone dust. 
             		
             	if (Block.blockRegistry.containsId(nbt1a.getShort("id"))){ // if the id can't be cast as a block, then it skips this
             			if ((Block.blockRegistry.getNameForObject(Block.getBlockById((int)nbt1a.getShort("id")))) != (nbt1a.getString("Texture"))&& (nbt1a.getString("Texture"))!= ""){
@@ -108,7 +108,7 @@ public class TEBase extends TileEntity implements IProtected {
             	}
             }
             else{
-            	//  This means that the texture is one of the "special texture" such as grass, wheat and mycellium tops.  System.out.println("Special Texture");
+            	//  This means that the texture is one of the "special texture" such as grass, wheat and mycellium tops.  It also includes glowstone dust (cbAttribute=21)
             }
         }
         cbAttrMap.clear();
