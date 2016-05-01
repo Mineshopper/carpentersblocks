@@ -1,11 +1,15 @@
 package com.carpentersblocks.tileentity;
 
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import org.apache.logging.log4j.Level;
+import com.carpentersblocks.util.Attribute;
+import com.carpentersblocks.util.ModLogger;
 
-public class MigrationHelper {
-
+public class TileEntityHelper {
+    
     /**
      * Updates data prior to version 3.3.1 to new format.
      *
@@ -17,7 +21,7 @@ public class MigrationHelper {
         String TAG_OWNER         = "owner";
         String TAG_CHISEL_DESIGN = "chiselDesign";
         String TAG_DESIGN        = "design";
-
+        
         TE.cbMetadata = nbt.getShort(TAG_METADATA);
         TE.cbDesign = nbt.getString(TAG_DESIGN);
         TE.cbOwner = nbt.getString(TAG_OWNER);
@@ -69,5 +73,5 @@ public class MigrationHelper {
             }
         }
     }
-
+    
 }

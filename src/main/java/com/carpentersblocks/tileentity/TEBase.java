@@ -19,6 +19,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import com.carpentersblocks.block.BlockCoverable;
+import com.carpentersblocks.util.Attribute;
 import com.carpentersblocks.util.BlockProperties;
 import com.carpentersblocks.util.handler.DesignHandler;
 import com.carpentersblocks.util.protection.IProtected;
@@ -27,24 +28,24 @@ import com.carpentersblocks.util.registry.FeatureRegistry;
 
 public class TEBase extends TileEntity implements IProtected {
 
-    protected static final String TAG_ATTR          = "cbAttribute";
-    protected static final String TAG_ATTR_LIST     = "cbAttrList";
-    protected static final String TAG_METADATA      = "cbMetadata";
-    protected static final String TAG_OWNER         = "cbOwner";
-    protected static final String TAG_CHISEL_DESIGN = "cbChiselDesign";
-    protected static final String TAG_DESIGN        = "cbDesign";
+    public static final String TAG_ATTR             = "cbAttribute";
+    public static final String TAG_ATTR_LIST        = "cbAttrList";
+    public static final String TAG_METADATA         = "cbMetadata";
+    public static final String TAG_OWNER            = "cbOwner";
+    public static final String TAG_CHISEL_DESIGN    = "cbChiselDesign";
+    public static final String TAG_DESIGN           = "cbDesign";
 
-    public static final byte[]  ATTR_COVER        = {  0,  1,  2,  3,  4,  5,  6 };
-    public static final byte[]  ATTR_DYE          = {  7,  8,  9, 10, 11, 12, 13 };
-    public static final byte[]  ATTR_OVERLAY      = { 14, 15, 16, 17, 18, 19, 20 };
-    public static final byte    ATTR_ILLUMINATOR  = 21;
-    public static final byte    ATTR_PLANT        = 22;
-    public static final byte    ATTR_SOIL         = 23;
-    public static final byte    ATTR_FERTILIZER   = 24;
-    public static final byte    ATTR_UPGRADE      = 25;
-
+    public static final byte[] ATTR_COVER        = {  0,  1,  2,  3,  4,  5,  6 };
+    public static final byte[] ATTR_DYE          = {  7,  8,  9, 10, 11, 12, 13 };
+    public static final byte[] ATTR_OVERLAY      = { 14, 15, 16, 17, 18, 19, 20 };
+    public static final byte   ATTR_ILLUMINATOR  = 21;
+    public static final byte   ATTR_PLANT        = 22;
+    public static final byte   ATTR_SOIL         = 23;
+    public static final byte   ATTR_FERTILIZER   = 24;
+    public static final byte   ATTR_UPGRADE      = 25;
+    
     /** Map holding all block attributes. */
-    protected Map<Byte, ItemStack> cbAttrMap = new HashMap<Byte, ItemStack>();
+    protected Map<Byte, Attribute> cbAttrMap = new HashMap<Byte, Attribute>();
 
     /** Chisel design for each side and base block. */
     protected String[] cbChiselDesign = { "", "", "", "", "", "", "" };
@@ -73,55 +74,20 @@ public class TEBase extends TileEntity implements IProtected {
     public void readFromNBT(NBTTagCompound nbt)
     {
         super.readFromNBT(nbt);
-        // These next lines are to enforce the cbAttrList, id short value to be what is represented in cbAttrList texture string.  This allows for compatibility with adding portability to worlds that may have different block id mappings.   
-        NBTTagList nbttaglist1 = nbt.getTagList(TAG_ATTR_LIST, 10); //sets up the nbt tag "cbAttrList" to be read and written to.
-        for (int idx = 0; idx < nbttaglist1.tagCount(); ++idx) {
-            NBTTagCompound nbt1a = nbttaglist1.getCompoundTagAt(idx); 
-            
-            if (nbt1a.getShort("cbAttribute") < 7 ){ //if cbAttribute is 0 through 6 then it is not one of the special textures and its id isn't a block or glowstone dust. 
-            		
-            	if (Block.blockRegistry.containsId(nbt1a.getShort("id"))){ // if the id can't be cast as a block, then it skips this
-            			if ((Block.blockRegistry.getNameForObject(Block.getBlockById((int)nbt1a.getShort("id")))) != (nbt1a.getString("Texture"))&& (nbt1a.getString("Texture"))!= ""){
-        	        	//compares the registry name for the id number stored in cbAttrList with the texture name stored in cbAttrList.
-            				if (Block.blockRegistry.containsKey(nbt1a.getString("Texture"))){ //if the texture name isn't a known block
-            					nbt1a.setShort("id",(short)Block.getIdFromBlock((Block.getBlockFromName(nbt1a.getString("Texture")))));
-            					//sets the id number to the id number of the block represented by the Texture tag in cbAttrList.
-            				}
-            				else {
-            					nbt.removeTag(TAG_ATTR_LIST); //if the Texture block represented in the tag isn't a known block, then it clears the all the texture data in the block.
-            					System.out.println("Texture Block Does Not Exist!  Removing all textures from block");
-            				}
-        	
 
-            			}
-            	}
-            	else{
-            		if (Block.blockRegistry.containsKey(nbt1a.getString("Texture"))){ // if the texture is a known block but the id isn't.
-            			nbt1a.setShort("id",(short)Block.getIdFromBlock((Block.getBlockFromName(nbt1a.getString("Texture")))));
-            			//sets the id to the known texture block's id.  
-            		}
-            		else {
-            			nbt.removeTag(TAG_ATTR_LIST); //if the id number isn't a block and the texture isn't a known block then it clears all the texture data cbAttList.
-            			System.out.println("Texture Block Does Not Exist! Removing all textures from block");
-            		}
-            	
-            	}
-            }
-            else{
-            	//  This means that the texture is one of the "special texture" such as grass, wheat and mycellium tops.  It also includes glowstone dust (cbAttribute=21)
-            }
-        }
         cbAttrMap.clear();
         if (nbt.hasKey("owner")) {        	    	
-            MigrationHelper.updateMappingsOnRead(this, nbt);
+            TileEntityHelper.updateMappingsOnRead(this, nbt);
         } else {
             NBTTagList nbttaglist = nbt.getTagList(TAG_ATTR_LIST, 10);
             for (int idx = 0; idx < nbttaglist.tagCount(); ++idx) {
                 NBTTagCompound nbt1 = nbttaglist.getCompoundTagAt(idx);
-                ItemStack tempStack = ItemStack.loadItemStackFromNBT(nbt1);
-                tempStack.stackSize = 1; // All ItemStacks pre-3.2.7 DEV R3 stored original stack sizes, reduce them here.
-                byte attrId = (byte) (nbt1.getByte(TAG_ATTR) & 255);
-                cbAttrMap.put(attrId, tempStack);
+                Attribute attribute = Attribute.loadAttributeFromNBT(nbt1);
+                if (attribute.getItemStack() != null) {
+                    attribute.getItemStack().stackSize = 1; // All ItemStacks pre-3.2.7 DEV R3 stored original stack sizes, reduce them here.                
+                    byte attrId = (byte) (nbt1.getByte(TAG_ATTR) & 255);
+                    cbAttrMap.put(attrId, attribute);
+                }
             }
 
             for (int idx = 0; idx < 7; ++idx) {
@@ -139,6 +105,31 @@ public class TEBase extends TileEntity implements IProtected {
         updateWorldAndLighting();
     }
 
+    @Override
+    public void writeToNBT(NBTTagCompound nbt)
+    {
+        super.writeToNBT(nbt);
+
+        NBTTagList tagList = new NBTTagList();
+        Iterator iterator = cbAttrMap.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry entry = (Map.Entry) iterator.next();
+            NBTTagCompound nbt1 = new NBTTagCompound();
+            nbt1.setByte(TAG_ATTR, (Byte) entry.getKey());
+            ((Attribute)entry.getValue()).writeToNBT(nbt1);
+            tagList.appendTag(nbt1);
+        }        
+        nbt.setTag(TAG_ATTR_LIST, tagList);
+        
+        for (int idx = 0; idx < 7; ++idx) {
+            nbt.setString(TAG_CHISEL_DESIGN + "_" + idx, cbChiselDesign[idx]);
+        }
+
+        nbt.setInteger(TAG_METADATA, cbMetadata);
+        nbt.setString(TAG_DESIGN, cbDesign);
+        nbt.setString(TAG_OWNER, cbOwner);
+    }
+    
     /**
      * Handles data conversion from short to int for update 3.3.7.
      *
@@ -155,42 +146,6 @@ public class TEBase extends TileEntity implements IProtected {
             cbMetadata = nbt.getInteger(TAG_METADATA);
             return false;
         }
-    }
-
-    @Override
-    public void writeToNBT(NBTTagCompound nbt)
-    {
-        super.writeToNBT(nbt);
-
-        NBTTagList itemstack_list = new NBTTagList();
-        Iterator iterator = cbAttrMap.entrySet().iterator();
-        while (iterator.hasNext()) {
-            Map.Entry entry = (Map.Entry) iterator.next();
-            NBTTagCompound nbt1 = new NBTTagCompound();
-            nbt1.setByte(TAG_ATTR, (Byte) entry.getKey());
-            ((ItemStack)entry.getValue()).writeToNBT(nbt1);
-            itemstack_list.appendTag(nbt1);
-            if ((Block.blockRegistry.getNameForObject(Block.getBlockById((int)nbt1.getShort("id"))) != (nbt1.getString("Texture")))&& ((nbt1.getString("Texture"))!= "")&& nbt1.getShort("cbAttribute")!= 20){
-            	//if the id and the texture don't match and "Texture" has been initialized as something, then it sets the id to what the "texture" represents.
-            	nbt1.setShort("id", (short)Block.getIdFromBlock((Block.getBlockFromName(nbt1.getString("Texture")))));
-            }
-
-            if (((nbt1.getString("Texture")) == "")&& (nbt1.getShort("cbAttribute")!= 20)){ //if the "Texture" is empty, then it sets the "Texture" to represent what the id is.
-            	nbt1.setString("Texture",Block.blockRegistry.getNameForObject(Block.getBlockFromItem(((ItemStack)entry.getValue()).getItem())));
-            	}
-            	//unless bad values are hacked in through editing nbt in game, this part should stay stable since the rest of the program doesn't allow non blocks, 
-            	//with only a few exceptions to be placed into a block for texturing.  consequently, the id should be from an actual block and the block texture an actual block in the current game.
-        	}
-        
-        nbt.setTag(TAG_ATTR_LIST, itemstack_list);
-        
-        for (int idx = 0; idx < 7; ++idx) {
-            nbt.setString(TAG_CHISEL_DESIGN + "_" + idx, cbChiselDesign[idx]);
-        }
-
-        nbt.setInteger(TAG_METADATA, cbMetadata);
-        nbt.setString(TAG_DESIGN, cbDesign);
-        nbt.setString(TAG_OWNER, cbOwner);
     }
 
     @Override
@@ -292,12 +247,17 @@ public class TEBase extends TileEntity implements IProtected {
 
     public ItemStack getAttribute(byte attrId)
     {
-        return cbAttrMap.get(attrId);
+        Attribute attribute = cbAttrMap.get(attrId);
+        if (attribute != null) {
+            return attribute.getItemStack();
+        }
+        
+        return null;
     }
 
     public ItemStack getAttributeForDrop(byte attrId)
     {
-        ItemStack itemStack = cbAttrMap.get(attrId);
+        ItemStack itemStack = cbAttrMap.get(attrId).getItemStack();
 
         // If cover, check for rotation and restore default metadata
         if (attrId <= ATTR_COVER[6]) {
@@ -345,7 +305,7 @@ public class TEBase extends TileEntity implements IProtected {
         // Reduce stack size to 1 and save attribute
         ItemStack reducedStack = ItemStack.copyItemStack(itemStack);
         reducedStack.stackSize = 1;
-        cbAttrMap.put(attrId, reducedStack);
+        cbAttrMap.put(attrId, new Attribute(reducedStack));
 
         // Produce world events if specific attributes are set
         World world = getWorldObj();
@@ -563,7 +523,7 @@ public class TEBase extends TileEntity implements IProtected {
             Iterator it = cbAttrMap.entrySet().iterator();
             while (it.hasNext()) {
                 Map.Entry pair = (Map.Entry)it.next();
-                ItemStack itemStack = BlockProperties.getCallableItemStack((ItemStack)pair.getValue());
+                ItemStack itemStack = BlockProperties.getCallableItemStack(((Attribute)pair.getValue()).getItemStack());
                 Block block = BlockProperties.toBlock(itemStack);
 
                 if (block != Blocks.air) {
