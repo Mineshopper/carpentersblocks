@@ -54,76 +54,31 @@ label-release: <span class="label label-danger">
 <div class="download-container">
    <div style="display: table-row;">
       <div class="download-container-version">
-         Carpenter's Blocks 3.3.8 DEV R9
-         {{ page.label-dev }}
-         {{ page.label-begin-minecraft }}MC 1.7.10{{ page.label-end }}
-         {{ page.label-begin-forge }}FORGE 10.13.0.1180{{ page.label-end }}
-         {{ page.label-begin-release }}RELEASED 04/30/2016{{ page.label-end }}
-      </div>
-   </div>
-   <div style="display: table-row;">
-      <div style="display: table-cell;">
-         <button onclick="window.open('http://adf.ly/1ZyG4K')" class="ad_button">Download</button>
-         <button onclick="window.open('https://dl.dropboxusercontent.com/s/xvwb46gfnrnhocu/Carpenter%27s%20Blocks%20v3.3.8_dev_r9%20-%20MC%201.7.10.jar')" class="dropbox">&nbsp;</button>
-         <button class="expand">View Changelog</button>
-         <div class="collapsed">
-            <ul id="changelog">
-               <li>[R1] Tweaked cached lighting code for greater compatibility, but increased latency.</li>
-               <li>[R1] Added rotation support to slab, lever, button, ladder, daylight sensor, pressure plate and torch.</li>
-               <li>[R1] Fixed ownership always being enforced.</li>
-               <li>[R2] Fixed bad import causing click crash.</li>
-               <li>[R3] Fixed routable fluid rendering while under fluid blocks.</li>
-               <li>[R4] Fixed routable fluid crash with Flux Goo and other Forge-type fluids.</li>
-               <li>[R5] Corrected player interaction events to better support MyTown2, others. [krwminer]</li>
-               <li>[R5] Suppressed routable fluids exception occasionally thrown server-side.</li>
-               <li>[R5] Fixed invalid slope rotations causing unrecoverable crashes. Now resets abnormal slopes automatically.</li>
-               <li>[R6] Refactored garage door connection code to hopefully resolve recursion crashes. Added new multiblock size limit to configuration file.</li>
-               <li>[R7] Fixed sneak right-click not working for overlays, possibly other features. [krwminer]</li>
-               <li>[R8] Fixed possible npe when colliding with barrier block.</li>
-			   <li>[R9] Now attempts to recover missing attributes if a mod goes missing or changes Ids. [AnvilPuncher]</li>
-            </ul>
-         </div>
-      </div>
-   </div>
-</div>
-
-<div class="download-container">
-   <div style="display: table-row;">
-      <div class="download-container-version">
-         Carpenter's Blocks 3.3.7
+         Carpenter's Blocks 3.3.8
          {{ page.label-stable }}
          {{ page.label-begin-minecraft }}MC 1.7.10{{ page.label-end }}
          {{ page.label-begin-forge }}FORGE 10.13.0.1180{{ page.label-end }}
-         {{ page.label-begin-release }}RELEASED 09/03/2015{{ page.label-end }}
+         {{ page.label-begin-release }}RELEASED 05/26/2016{{ page.label-end }}
       </div>
    </div>
    <div style="display: table-row;">
       <div style="display: table-cell;">
-         <button onclick="window.open('http://adf.ly/1NfwEu')" class="ad_button">Download</button>
-         <button onclick="window.open('https://dl.dropboxusercontent.com/s/wodar9eqt3soqnr/Carpenter%27s%20Blocks%20v3.3.7%20-%20MC%201.7.10.jar')" class="dropbox">&nbsp;</button>
+         <button onclick="window.open('http://adf.ly/1ae8LM')" class="ad_button">Download</button>
+         <button onclick="window.open('https://dl.dropboxusercontent.com/s/jl2lqlkg1zkftd6/Carpenter%27s%20Blocks%20v3.3.8%20-%20MC%201.7.10.jar')" class="dropbox">&nbsp;</button>
          <button class="expand">View Changelog</button>
          <div class="collapsed">
             <ul id="changelog">
-                <li>Reorganized block drop code to address dupe bugs and other issues.</li>
-                <li>Resolved light cache crash experienced when using more recent Forge versions.</li>
-                <li>Overhauled cached lighting system; should resolve mob spawns and crop growth.</li>
-                <li>Added rail slope fill configuration option (for sloped rails above Carpenter's Blocks).</li>
-                <li>Added proper top face rendering to routable fluids.</li>
-                <li>Added permissions support for offline-mode servers.</li>
-                <li>Added inverted Collapsible block, and converted to 16-step increments (existing ones will break, sorry).</li>
-                <li>Fixed daylight sensor not updating neighbors properly. [mickelus]</li>
-                <li>Many garage door changes, including:</li>
-                <ul id="changelog">
-                	<li>Fixed garage door not checking power state of connected doors.</li>
-                	<li>Garage door can now be connected in any contiguous configuration and will act as a single entity.</li>
-                	<li>Garage door open/close sound now only plays from piece closest to player.</li>
-                	<li>Garage door now fills in voids introduced by destroying barriers beneath a door piece (configurable).</li>
-                	<li>Garage door now better replicates adjacent door properties upon creation.</li>
-                	<li>Garage doors in open state no longer susceptible to explosion damage.</li>
-                	<li>Garage doors in closed state now destroy properly from explosions.</li>
-		</ul>
-                <li>Reverted Presence sound fix -- fixes only hearing default wooden block sounds.</li>
-                <li>Tweaked permissions to correct some false positives, such as safe breaking animations.</li>
+				<li>Tweaked cached lighting code for greater compatibility, but increased latency.</li>
+				<li>Added rotation support to slab, lever, button, ladder, daylight sensor, pressure plate and torch.</li>
+				<li>Fixed ownership always being enforced.</li>
+				<li>Fixed routable fluid rendering while under fluid blocks.</li>
+				<li>Fixed routable fluid crash with Flux Goo and other Forge-type fluids.</li>
+				<li>Corrected player interaction events to better support MyTown2, others. [krwminer]</li>
+				<li>Suppressed routable fluids exception occasionally thrown server-side.</li>
+				<li>Fixed invalid slope rotations causing unrecoverable crashes. Now resets abnormal slopes automatically.</li>
+				<li>Refactored garage door connection code to prevent recursion crashes. Added new multiblock size limit to configuration file.</li>
+				<li>Fixed possible null pointer exception when colliding with barrier block.</li>
+				<li>Will now attempt to recover missing attributes if a mod goes missing or changes Ids. [AnvilPuncher]</li>
             </ul>
          </div>
       </div>

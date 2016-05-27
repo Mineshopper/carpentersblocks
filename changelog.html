@@ -21,6 +21,24 @@ label-end: </span>
 -->
 
 <div>
+   {{ page.label-begin-version }}3.3.8{{ page.label-end }}
+   {{ page.label-begin-release }}RELEASED 05/26/2016{{ page.label-end }}
+</div>
+<ul>
+	<li>Tweaked cached lighting code for greater compatibility, but increased latency.</li>
+	<li>Added rotation support to slab, lever, button, ladder, daylight sensor, pressure plate and torch.</li>
+	<li>Fixed ownership always being enforced.</li>
+	<li>Fixed routable fluid rendering while under fluid blocks.</li>
+	<li>Fixed routable fluid crash with Flux Goo and other Forge-type fluids.</li>
+	<li>Corrected player interaction events to better support MyTown2, others. [krwminer]</li>
+	<li>Suppressed routable fluids exception occasionally thrown server-side.</li>
+	<li>Fixed invalid slope rotations causing unrecoverable crashes. Now resets abnormal slopes automatically.</li>
+	<li>Refactored garage door connection code to prevent recursion crashes. Added new multiblock size limit to configuration file.</li>
+	<li>Fixed possible null pointer exception when colliding with barrier block.</li>
+	<li>Will now attempt to recover missing attributes if a mod goes missing or changes Ids. [AnvilPuncher]</li>
+</ul>
+
+<div>
    {{ page.label-begin-version }}3.3.7{{ page.label-end }}
    {{ page.label-begin-release }}RELEASED 09/03/2015{{ page.label-end }}
 </div>
