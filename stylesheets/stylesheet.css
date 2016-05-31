@@ -162,11 +162,37 @@ header .inner {
    padding: 10px 5px 0px 0px;
 }
 
-.dropbox {
+.ad_button:hover, .direct_button:hover {
+	opacity: 0.75;
+}
+
+.ad_button {
+   font-weight: bold;
    width: 90px;
-   border: 2px solid #007ee5;
    border-radius: 2px;
-   background: url('../images/dropbox_logo.png') no-repeat scroll 0 0 #007ee5;
+   border: 2px solid #008dff;
+   background: #25649d; /* Old browsers */
+   background: -moz-linear-gradient(45deg, #25649d 0%, #3489d8 100%); /* FF3.6-15 */
+   background: -webkit-linear-gradient(45deg, #25649d 0%,#3489d8 100%); /* Chrome10-25,Safari5.1-6 */
+   background: linear-gradient(45deg, #25649d 0%,#3489d8 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#25649d', endColorstr='#3489d8',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+}
+
+.span_ad_start {
+   display: inline;
+   color: #ffcb07;
+}
+
+.span_ad_end {
+   display: inline;
+   color: #f1f1f1;
+}
+
+.direct_button {
+   width: 90px;
+   border: 2px solid #008dff;
+   border-radius: 2px;
+   background: url('../images/direct_download.jpg') no-repeat scroll 0 0 #ffffff;
    background-size: 80px;
    background-position: center;   
    color: transparent;
@@ -174,10 +200,6 @@ header .inner {
 
 .dropbox:hover {
    opacity: 0.75;
-}
-
-.ad_button {
-   //display: none;
 }
 
 /*******************************************************************************
