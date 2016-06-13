@@ -738,9 +738,8 @@ public class BlockCoverable extends BlockContainer {
     {
         TEBase TE = getSimpleTileEntity(blockAccess, x, y, z);
         if (TE != null) {
-            return TE.lightValue;
+            return TE.getLightValue();
         }
-
         return 0;
     }
 

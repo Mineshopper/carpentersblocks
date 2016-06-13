@@ -1,5 +1,6 @@
 package com.carpentersblocks.tileentity;
 
+import net.minecraft.init.Blocks;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.world.IBlockAccess;
@@ -61,10 +62,10 @@ public class TECarpentersTorch extends TEBase {
         Torch data = new Torch();
         switch (data.getState(this)) {
             case LIT:
-                value = 15;
+                value = Blocks.torch.getLightValue();
                 break;
             case SMOLDERING:
-                value = 10;
+                value = (int) (Blocks.torch.getLightValue() * 0.66F);
             default: {
                 value = Math.max(value, super.getDynamicLightValue());
             }

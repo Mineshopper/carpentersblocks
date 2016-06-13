@@ -66,7 +66,7 @@ public class TEBase extends TileEntity implements IProtected {
     private int tempMetadata;
 
     /** The most recent light value of block. **/
-    public int lightValue;
+    private int lightValue = -1;
 
     
     /** Comment **/
@@ -500,6 +500,20 @@ public class TEBase extends TileEntity implements IProtected {
     /////////////////////////////////////////////////////////////
 
     /**
+     * Grabs light value from cache.
+     * <p>
+     * If not cached, will calculate value first.
+     * 
+     * @return the light value
+     */
+    public int getLightValue() {
+        if (lightValue == -1 && !calcLighting) {
+            updateCachedLighting();
+        }
+        return lightValue;
+    }
+    
+    /**
      * Returns the current block light value. This is the only method
      * that will grab the tile entity to calculate lighting, which
      * is a very expensive operation to call while rendering, as it is
@@ -547,6 +561,14 @@ public class TEBase extends TileEntity implements IProtected {
 
         return value;
     }
+    
+    /**
+     * Updates light value and world lightmap.
+     */
+    private void updateCachedLighting() {
+        lightValue = getDynamicLightValue();
+        getWorldObj().func_147451_t(xCoord, yCoord, zCoord); // Updates block lightmap, should help with spawns
+    }
 
     /**
      * Performs world update and refreshes lighting.
@@ -554,12 +576,10 @@ public class TEBase extends TileEntity implements IProtected {
     private void updateWorldAndLighting()
     {
         World world = getWorldObj();
-        if (world != null)
-        {
-            lightValue = getDynamicLightValue();
-            world.func_147451_t(xCoord, yCoord, zCoord); // Updates block lightmap, should help with spawns
+        if (world != null) {
+            updateCachedLighting();
             world.markBlockForUpdate(xCoord, yCoord, zCoord);
         }
     }
-
+    
 }
