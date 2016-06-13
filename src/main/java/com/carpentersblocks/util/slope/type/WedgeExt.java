@@ -6,7 +6,8 @@ import com.carpentersblocks.util.slope.SlopeType;
 public class WedgeExt implements SlopeType {
 
 	@Override
-	public int onHammerLeftClick(Slope slope, int slopeID) {
+	public Slope onHammerLeftClick(Slope slope) {
+	    int slopeID = slope.slopeID;
 		if (slope.isPositive) {
             if (++slopeID > Slope.ID_WEDGE_EXT_POS_SW) {
                 slopeID = Slope.ID_WEDGE_EXT_POS_SE;
@@ -16,17 +17,18 @@ public class WedgeExt implements SlopeType {
                 slopeID = Slope.ID_WEDGE_EXT_NEG_SE;
             }
         }
-		return slopeID;
+		return Slope.getSlopeById(slopeID);
 	}
 
 	@Override
-	public int onHammerRightClick(Slope slope, int slopeID) {
+	public Slope onHammerRightClick(Slope slope) {
+	    int slopeID = slope.slopeID;
 		if (slope.isPositive) {
             slopeID -= 4;
         } else {
             slopeID += 12;
         }
-		return slopeID;
+		return Slope.getSlopeById(slopeID);
 	}
 
 }

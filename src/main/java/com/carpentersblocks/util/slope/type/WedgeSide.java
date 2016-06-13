@@ -6,16 +6,18 @@ import com.carpentersblocks.util.slope.SlopeType;
 public class WedgeSide implements SlopeType {
 
 	@Override
-	public int onHammerLeftClick(Slope slope, int slopeID) {
+	public Slope onHammerLeftClick(Slope slope) {
+	    int slopeID = slope.slopeID;
 		if (++slopeID > Slope.ID_WEDGE_SW) {
             slopeID = Slope.ID_WEDGE_SE;
         }
-		return slopeID;
+		return Slope.getSlopeById(slopeID);
 	}
 
 	@Override
-	public int onHammerRightClick(Slope slope, int slopeID) {
+	public Slope onHammerRightClick(Slope slope) {
+	    int slopeID = slope.slopeID;
 		slopeID += 8;
-		return slopeID;
+		return Slope.getSlopeById(slopeID);
 	}
 }
