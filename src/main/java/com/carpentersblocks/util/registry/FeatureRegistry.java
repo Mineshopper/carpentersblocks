@@ -32,11 +32,11 @@ public class FeatureRegistry {
      */
     public static void preInit(FMLPreInitializationEvent event, Configuration config)
     {
-        enableCovers              = config.get("features",         "Enable Covers",        enableCovers).getBoolean(enableCovers);
-        enableOverlays            = config.get("features",       "Enable Overlays",      enableOverlays).getBoolean(enableOverlays);
-        enableSideCovers          = config.get("features",    "Enable Side Covers",    enableSideCovers).getBoolean(enableSideCovers);
-        enableDyeColors           = config.get("features",     "Enable Dye Colors",     enableDyeColors).getBoolean(enableDyeColors);
-        enableChiselDesigns       = config.get("features", "Enable Chisel Designs", enableChiselDesigns).getBoolean(enableChiselDesigns);
+        enableCovers              = config.get("features",               "Enable Covers",              enableCovers).getBoolean(enableCovers);
+        enableOverlays            = config.get("features",             "Enable Overlays",            enableOverlays).getBoolean(enableOverlays);
+        enableSideCovers          = config.get("features",          "Enable Side Covers",          enableSideCovers).getBoolean(enableSideCovers);
+        enableDyeColors           = config.get("features",           "Enable Dye Colors",           enableDyeColors).getBoolean(enableDyeColors);
+        enableChiselDesigns       = config.get("features",       "Enable Chisel Designs",       enableChiselDesigns).getBoolean(enableChiselDesigns);
         enableFreeStandingLadders = config.get("features", "Enable Freestanding Ladders", enableFreeStandingLadders).getBoolean(enableFreeStandingLadders);
 
         Property routableFluidsProp = config.get("features", "Routable Fluids", enableRoutableFluids);
