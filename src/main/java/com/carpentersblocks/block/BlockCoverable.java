@@ -754,6 +754,9 @@ public class BlockCoverable extends BlockContainer {
         if (BlockProperties.hasAttribute(TE, TE.ATTR_COVER[6])) {
             ItemStack is = BlockProperties.getCover(TE, 6);
             Block b = BlockProperties.toBlock(is);
+            if (b instanceof BlockCoverable) {
+                return blockHardness;
+            }
             return b instanceof IWrappableBlock ? ((IWrappableBlock)b).getHardness(world, x, y, z, b, is.getItemDamage()) : b.getBlockHardness(world, x, y, z);
         }
 
@@ -764,17 +767,15 @@ public class BlockCoverable extends BlockContainer {
     /**
      * Chance that fire will spread and consume this block.
      */
-    public int getFlammability(IBlockAccess blockAccess, int x, int y, int z, ForgeDirection face)
+    public int getFlammability(IBlockAccess blockAccess, int x, int y, int z, ForgeDirection side)
     {
         TEBase TE = getTileEntity(blockAccess, x, y, z);
-
         if (TE != null) {
-            ItemStack is = BlockProperties.getCover(TE, 6);
+            ItemStack is = BlockProperties.getFeatureSensitiveSideItemStack(TE, side);
             Block b = BlockProperties.toBlock(is);
-            return b instanceof IWrappableBlock ? ((IWrappableBlock)b).getFlammability(blockAccess, x, y, z, face, b, is.getItemDamage()) : Blocks.fire.getFlammability(b);
+            return b instanceof IWrappableBlock ? ((IWrappableBlock)b).getFlammability(blockAccess, x, y, z, side, b, is.getItemDamage()) : Blocks.fire.getFlammability(b);
         }
-
-        return super.getFlammability(blockAccess, x, y, z, face);
+        return super.getFlammability(blockAccess, x, y, z, side);
     }
 
     @Override
@@ -784,9 +785,8 @@ public class BlockCoverable extends BlockContainer {
     public int getFireSpreadSpeed(IBlockAccess blockAccess, int x, int y, int z, ForgeDirection side)
     {
         TEBase TE = getTileEntity(blockAccess, x, y, z);
-
         if (TE != null) {
-            ItemStack is = BlockProperties.getCover(TE, 6);
+            ItemStack is = BlockProperties.getFeatureSensitiveSideItemStack(TE, side);
             Block b = BlockProperties.toBlock(is);
             return b instanceof IWrappableBlock ? ((IWrappableBlock)b).getFireSpread(blockAccess, x, y, z, side, b, is.getItemDamage()) : Blocks.fire.getEncouragement(b);
         }
@@ -803,13 +803,14 @@ public class BlockCoverable extends BlockContainer {
     public boolean isFireSource(World world, int x, int y, int z, ForgeDirection side)
     {
         TEBase TE = getTileEntity(world, x, y, z);
-
-        if (BlockProperties.hasAttribute(TE, TE.ATTR_COVER[6])) {
-            ItemStack is = BlockProperties.getCover(TE, 6);
+        if (TE != null) {
+            ItemStack is = BlockProperties.getFeatureSensitiveSideItemStack(TE, side);
             Block b = BlockProperties.toBlock(is);
+            if (b instanceof BlockCoverable) {
+                return false;
+            }
             return b instanceof IWrappableBlock ? ((IWrappableBlock)b).sustainsFire(world, x, y, z, side, b, is.getItemDamage()) : b.isFireSource(world, x, y, z, side);
-        }
-
+        }        
         return false;
     }
 
@@ -824,6 +825,9 @@ public class BlockCoverable extends BlockContainer {
         if (BlockProperties.hasAttribute(TE, TE.ATTR_COVER[6])) {
             ItemStack is = BlockProperties.getCover(TE, 6);
             Block b = BlockProperties.toBlock(is);
+            if (b instanceof BlockCoverable) {
+                return this.getExplosionResistance(entity);
+            }
             return b instanceof IWrappableBlock ? ((IWrappableBlock)b).getBlastResistance(entity, world, x, y, z, explosionX, explosionY, explosionZ, b, is.getItemDamage()) : b.getExplosionResistance(entity, world, x, y, z, explosionX, explosionY, explosionZ);
         }
 
@@ -841,6 +845,9 @@ public class BlockCoverable extends BlockContainer {
         if (BlockProperties.hasAttribute(TE, TE.ATTR_COVER[6])) {
             ItemStack is = BlockProperties.getCover(TE, 6);
             Block b = BlockProperties.toBlock(is);
+            if (b instanceof BlockCoverable) {
+                return true;
+            }
             return b instanceof IWrappableBlock ? ((IWrappableBlock)b).isLog(blockAccess, x, y, z, b, is.getItemDamage()) : b.isWood(blockAccess, x, y, z);
         }
 

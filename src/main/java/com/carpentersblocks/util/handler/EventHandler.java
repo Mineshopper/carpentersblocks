@@ -19,6 +19,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.MouseEvent;
 import net.minecraftforge.client.event.sound.PlaySoundEvent17;
+import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.event.entity.PlaySoundAtEntityEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -31,7 +32,6 @@ import com.carpentersblocks.network.PacketSlopeSelect;
 import com.carpentersblocks.renderer.helper.ParticleHelper;
 import com.carpentersblocks.tileentity.TEBase;
 import com.carpentersblocks.util.BlockProperties;
-import com.carpentersblocks.util.handler.OverlayHandler.Overlay;
 import com.carpentersblocks.util.registry.BlockRegistry;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -228,7 +228,7 @@ public class EventHandler {
         TEBase TE = getTileEntityAtFeet(entity);
         if (TE != null) {
 
-            ItemStack itemStack = getSurfaceItemStack(TE);
+            ItemStack itemStack = BlockProperties.getFeatureSensitiveSideItemStack(TE, ForgeDirection.UP);
 
             /* Spawn sprint particles client-side. */
 
@@ -346,7 +346,7 @@ public class EventHandler {
                 event.name = Blocks.planks.stepSound.getStepResourcePath();
 
                 // Gather accurate SoundType based on block properties
-                Block block = BlockProperties.toBlock(getSurfaceItemStack(TE));
+                Block block = BlockProperties.toBlock(BlockProperties.getFeatureSensitiveSideItemStack(TE, ForgeDirection.UP));
                 if (!(block instanceof BlockCoverable))
                 {
                     event.name = block.stepSound.getStepResourcePath();
@@ -379,32 +379,6 @@ public class EventHandler {
         {
             return null;
         }
-    }
-
-    /**
-     * Gets an {@link ItemStack} that best represents the surface
-     * of a Carpenter's Block.
-     * <p>
-     * The top side cover and any overlays are taken into consideration.
-     *
-     * @param TE
-     * @return
-     */
-    private ItemStack getSurfaceItemStack(TEBase TE)
-    {
-        // Check for top side cover
-        int effectiveSide = TE.hasAttribute(TE.ATTR_COVER[1]) ? 1 : 6;
-        ItemStack itemStack = BlockProperties.getCover(TE, effectiveSide);
-
-        // Check for overlay on cover
-        if (TE.hasAttribute(TE.ATTR_OVERLAY[effectiveSide])) {
-            Overlay overlay = OverlayHandler.getOverlayType(TE.getAttribute(TE.ATTR_OVERLAY[effectiveSide]));
-            if (OverlayHandler.coversFullSide(overlay, 1)) {
-                itemStack = overlay.getItemStack();
-            }
-        }
-
-        return itemStack;
     }
 
     /**

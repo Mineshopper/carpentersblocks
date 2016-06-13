@@ -81,9 +81,11 @@ public class OverlayHandler {
             case HAY:
             case MYCELIUM:
                 return side == 1;
+            case WEB:
+            case VINE:
+                return true;
             default: {}
         }
-
         return true;
     }
 

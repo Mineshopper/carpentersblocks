@@ -12,6 +12,7 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.oredict.OreDictionary;
 import com.carpentersblocks.CarpentersBlocks;
 import com.carpentersblocks.api.IWrappableBlock;
@@ -20,6 +21,7 @@ import com.carpentersblocks.tileentity.TEBase;
 import com.carpentersblocks.util.handler.ChatHandler;
 import com.carpentersblocks.util.handler.DyeHandler;
 import com.carpentersblocks.util.handler.OverlayHandler;
+import com.carpentersblocks.util.handler.OverlayHandler.Overlay;
 import com.carpentersblocks.util.registry.FeatureRegistry;
 
 public class BlockProperties {
@@ -189,7 +191,7 @@ public class BlockProperties {
         ItemStack itemStack = getCoverSafe(TE, side);
         return getCallableItemStack(itemStack);
     }
-
+    
     /**
      * Returns the cover, or if no cover exists, will return the calling block type.
      *
@@ -281,6 +283,39 @@ public class BlockProperties {
         }
 
         return "";
+    }
+    
+    /**
+     * Gets an {@link ItemStack} that best represents the surface
+     * side of a Carpenter's Block.
+     * <p>
+     * The side covers and any overlays are taken into consideration.
+     *
+     * @param TE
+     * @return
+     */
+    public static ItemStack getFeatureSensitiveSideItemStack(TEBase TE, ForgeDirection side)
+    {
+        if (side.equals(ForgeDirection.UNKNOWN)) {
+            return getCover(TE, 6);
+        }
+        ItemStack itemStack = null;
+        int effectiveSide = TE.hasAttribute(TE.ATTR_COVER[side.ordinal()]) ? side.ordinal() : 6;
+        
+        // Check for overlay
+        if (TE.hasAttribute(TE.ATTR_OVERLAY[effectiveSide])) {
+            Overlay overlay = OverlayHandler.getOverlayType(TE.getAttribute(TE.ATTR_OVERLAY[effectiveSide]));
+            if (OverlayHandler.coversFullSide(overlay, side.ordinal())) {
+                itemStack = overlay.getItemStack();
+            }
+        }
+        
+        // Check for side cover
+        if (itemStack == null) {
+            itemStack = getCover(TE, effectiveSide);
+        }
+
+        return itemStack;
     }
 
 }
