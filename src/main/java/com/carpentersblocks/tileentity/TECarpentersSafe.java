@@ -1,12 +1,20 @@
 package com.carpentersblocks.tileentity;
 
+import java.util.Iterator;
+import java.util.List;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
+import net.minecraft.inventory.ContainerChest;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.world.World;
+import org.apache.logging.log4j.Level;
 import com.carpentersblocks.data.Safe;
+import com.carpentersblocks.util.ModLogger;
 
 public class TECarpentersSafe extends TEBase implements ISidedInventory {
 
@@ -42,12 +50,35 @@ public class TECarpentersSafe extends TEBase implements ISidedInventory {
      */
     public void updateEntity()
     {
-        if (!worldObj.isRemote) {
+        World world = getWorldObj();
+        if (!world.isRemote) {
             if (++tickCount >= 20 || forceEntityUpdate) {
                 tickCount = 0;
                 if (contentsChanged) {
-                    worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+                    world.markBlockForUpdate(xCoord, yCoord, zCoord);
                     contentsChanged = forceEntityUpdate = false;
+                }
+                
+                // Close safe if left open
+                if (Safe.isOpen(this)) {
+                    float f = 5.0F;
+                    boolean isOpen = false;
+                    List list = world.getEntitiesWithinAABB(EntityPlayer.class, AxisAlignedBB.getBoundingBox((double)((float)this.xCoord - f), (double)((float)this.yCoord - f), (double)((float)this.zCoord - f), (double)((float)(this.xCoord + 1) + f), (double)((float)(this.yCoord + 1) + f), (double)((float)(this.zCoord + 1) + f)));
+                    Iterator iterator = list.iterator();
+                    while (iterator.hasNext()) {
+                        EntityPlayer entityplayer = (EntityPlayer) iterator.next();
+                        if (entityplayer.openContainer instanceof ContainerChest) {
+                            IInventory iinventory = ((ContainerChest)entityplayer.openContainer).getLowerChestInventory();
+                            if (iinventory.equals(this)) {
+                                isOpen = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (isOpen != Safe.isOpen(this)) {
+                        Safe.setState(this, Safe.STATE_CLOSED);
+                        ModLogger.log(Level.INFO, String.format("Stuck safe door closed at (%d,%d,%d)", xCoord, yCoord, zCoord));
+                    }
                 }
             }
         }
@@ -206,7 +237,7 @@ public class TECarpentersSafe extends TEBase implements ISidedInventory {
     {
         Safe.setState(this, Safe.STATE_CLOSED);
 
-        /* Make updateEntity() check contents immediately on close. */
+        // Make updateEntity() check contents immediately on close
         forceEntityUpdate = true;
     }
 
