@@ -4,8 +4,6 @@ import com.carpentersblocks.data.Slope;
 
 public interface SlopeType {
 
-	public Slope onHammerLeftClick(Slope slope);
-
-	public Slope onHammerRightClick(Slope slope);
+	public Slope getNextSlopeType(Slope slope);
 
 }

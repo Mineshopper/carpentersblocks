@@ -77,10 +77,7 @@ public class BlockCarpentersSlope extends BlockCoverable {
      */
     protected boolean onHammerLeftClick(TEBase TE, EntityPlayer entityPlayer)
     {
-        Slope slope = Slope.getSlope(TE);
-        Slope newSlope = slope.slopeType.onHammerLeftClick(slope);
-        TE.setData(newSlope.slopeID);
-        return true;
+        return rotateBlock(TE.getWorldObj(), TE.xCoord, TE.yCoord, TE.zCoord, ForgeDirection.UP);
     }
 
     @Override
@@ -89,14 +86,10 @@ public class BlockCarpentersSlope extends BlockCoverable {
      */
     protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer)
     {
-        if (entityPlayer.isSneaking()) {
-            Slope slope = Slope.getSlope(TE);
-            Slope newSlope = slope.slopeType.onHammerRightClick(slope);
-            TE.setData(newSlope.slopeID);
-            return true;
-        } else {
-            return rotateBlock(TE.getWorldObj(), TE.xCoord, TE.yCoord, TE.zCoord, ForgeDirection.DOWN);
-        }
+        Slope slope = Slope.getSlope(TE);
+        Slope newSlope = slope.slopeType.getNextSlopeType(slope);
+        TE.setData(newSlope.slopeID);
+        return true;        
     }
 
     @SideOnly(Side.CLIENT)
