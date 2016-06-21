@@ -17,7 +17,7 @@ buildscript {
 
 apply plugin: 'forge'
 
-version = "3.3.8.1 test"
+version = "3.3.8.1_dev_r1"
 group= "com.carpentersblocks" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "Carpenter's Blocks"
 
