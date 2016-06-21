@@ -1,25 +1,18 @@
 package com.carpentersblocks.tileentity;
 
-import java.util.Iterator;
-import java.util.List;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
-import net.minecraft.inventory.ContainerChest;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.world.World;
-import org.apache.logging.log4j.Level;
 import com.carpentersblocks.data.Safe;
-import com.carpentersblocks.util.ModLogger;
 
 public class TECarpentersSafe extends TEBase implements ISidedInventory {
 
     private final String TAG_SLOT    = "Slot";
     private final String TAG_ITEMS   = "Items";
+    private final int EVENT_ID_STATE_CHANGE = 0;
 
     /** Holds contents of block. */
     private ItemStack[] inventoryContents = new ItemStack[54];
@@ -31,7 +24,7 @@ public class TECarpentersSafe extends TEBase implements ISidedInventory {
     private boolean contentsChanged;
 
     /** Indicates safe render update should occur next tick. */
-    private boolean forceEntityUpdate;
+    private boolean stateChanged;
 
     @Override
     /**
@@ -50,36 +43,11 @@ public class TECarpentersSafe extends TEBase implements ISidedInventory {
      */
     public void updateEntity()
     {
-        World world = getWorldObj();
-        if (!world.isRemote) {
-            if (++tickCount >= 20 || forceEntityUpdate) {
-                tickCount = 0;
-                if (contentsChanged) {
-                    world.markBlockForUpdate(xCoord, yCoord, zCoord);
-                    contentsChanged = forceEntityUpdate = false;
-                }
-                
-                // Close safe if left open
-                if (Safe.isOpen(this)) {
-                    float f = 5.0F;
-                    boolean isOpen = false;
-                    List list = world.getEntitiesWithinAABB(EntityPlayer.class, AxisAlignedBB.getBoundingBox((double)((float)this.xCoord - f), (double)((float)this.yCoord - f), (double)((float)this.zCoord - f), (double)((float)(this.xCoord + 1) + f), (double)((float)(this.yCoord + 1) + f), (double)((float)(this.zCoord + 1) + f)));
-                    Iterator iterator = list.iterator();
-                    while (iterator.hasNext()) {
-                        EntityPlayer entityplayer = (EntityPlayer) iterator.next();
-                        if (entityplayer.openContainer instanceof ContainerChest) {
-                            IInventory iinventory = ((ContainerChest)entityplayer.openContainer).getLowerChestInventory();
-                            if (iinventory.equals(this)) {
-                                isOpen = true;
-                                break;
-                            }
-                        }
-                    }
-                    if (isOpen != Safe.isOpen(this)) {
-                        Safe.setState(this, Safe.STATE_CLOSED);
-                        ModLogger.log(Level.INFO, String.format("Stuck safe door closed at (%d,%d,%d)", xCoord, yCoord, zCoord));
-                    }
-                }
+        if (!worldObj.isRemote) {            
+            // For chest capacity indicator, process contents changed only once per second
+            if (contentsChanged && (tickCount % 20 == 0)) {
+                worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+                contentsChanged = false;
             }
         }
     }
@@ -225,20 +193,33 @@ public class TECarpentersSafe extends TEBase implements ISidedInventory {
 
         return false;
     }
+    
+    /**
+     * Called when a client event is received with the event number and argument, see World.sendClientEvent
+     */
+    public boolean receiveClientEvent(int eventId, int eventArg)
+    {
+        if (eventId == EVENT_ID_STATE_CHANGE) {
+            Safe.setState(this, eventArg);
+            String soundName = eventArg == Safe.STATE_OPEN ? "random.door_open" : "random.door_close";
+            worldObj.playSound((double)xCoord + 0.5D, (double)yCoord + 0.5D, (double)zCoord + 0.5D, soundName, 1.0F, worldObj.rand.nextFloat() * 0.1F + 0.9F, false);
+            stateChanged = true;
+            return true;
+        } else {
+            return super.receiveClientEvent(eventId, eventArg);
+        }
+    }
 
     @Override
     public void openInventory()
     {
-        Safe.setState(this, Safe.STATE_OPEN);
+        worldObj.addBlockEvent(this.xCoord, this.yCoord, this.zCoord, this.getBlockType(), EVENT_ID_STATE_CHANGE, Safe.STATE_OPEN);
     }
 
     @Override
     public void closeInventory()
     {
-        Safe.setState(this, Safe.STATE_CLOSED);
-
-        // Make updateEntity() check contents immediately on close
-        forceEntityUpdate = true;
+        worldObj.addBlockEvent(this.xCoord, this.yCoord, this.zCoord, this.getBlockType(), EVENT_ID_STATE_CHANGE, Safe.STATE_CLOSED);
     }
 
     @Override

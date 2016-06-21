@@ -1,7 +1,10 @@
 package com.carpentersblocks.data;
 
+import java.util.List;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.world.World;
+import net.minecraft.inventory.ContainerChest;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.ForgeDirection;
 import com.carpentersblocks.tileentity.TEBase;
 import com.carpentersblocks.util.EntityLivingUtil;
@@ -59,12 +62,6 @@ public class Safe
     public static void setState(TEBase TE, int state)
     {
         int temp = (TE.getData() & ~0x4) | (state << 2);
-        World world = TE.getWorldObj();
-
-        if (!world.isRemote) {
-            world.playAuxSFXAtEntity((EntityPlayer)null, 1003, TE.xCoord, TE.yCoord, TE.zCoord, 0);
-        }
-
         TE.setData(temp);
     }
 
@@ -107,7 +104,21 @@ public class Safe
      */
     public static boolean isOpen(TEBase TE)
     {
-        return getState(TE) == STATE_OPEN;
+        if (getState(TE) == STATE_OPEN) {
+            // Validate safe is open by checking nearby players
+            float f = 5.0F;
+            boolean isOpen = false;
+            List list = TE.getWorldObj().getEntitiesWithinAABB(EntityPlayer.class, AxisAlignedBB.getBoundingBox((double)((float)TE.xCoord - f), (double)((float)TE.yCoord - f), (double)((float)TE.zCoord - f), (double)((float)(TE.xCoord + 1) + f), (double)((float)(TE.yCoord + 1) + f), (double)((float)(TE.zCoord + 1) + f)));
+            for (EntityPlayer entityPlayer : (List<EntityPlayer>) list) {
+                if (entityPlayer.openContainer instanceof ContainerChest) {
+                    IInventory iinventory = ((ContainerChest)entityPlayer.openContainer).getLowerChestInventory();
+                    if (iinventory.equals(TE)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     /**
