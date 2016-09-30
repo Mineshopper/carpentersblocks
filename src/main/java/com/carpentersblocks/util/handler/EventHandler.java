@@ -28,6 +28,7 @@ import com.carpentersblocks.CarpentersBlocks;
 import com.carpentersblocks.api.ICarpentersChisel;
 import com.carpentersblocks.api.ICarpentersHammer;
 import com.carpentersblocks.block.BlockCoverable;
+import com.carpentersblocks.network.PacketActivateBlock;
 import com.carpentersblocks.network.PacketSlopeSelect;
 import com.carpentersblocks.renderer.helper.ParticleHelper;
 import com.carpentersblocks.tileentity.TEBase;
@@ -99,7 +100,7 @@ public class EventHandler {
      */
     public void onPlayerInteractEvent(PlayerInteractEvent event)
     {
-        if (event.entityPlayer.worldObj.isRemote || event.isCanceled()) {
+        if (event.isCanceled()) {
             return;
         }
 
@@ -133,19 +134,34 @@ public class EventHandler {
                      * We'll invoke it here when a Carpenter's tool is being held.
                      */
 
-                    if (toolEquipped && eventEntityPlayer.capabilities.isCreativeMode) {
-                        block.onBlockClicked(eventEntityPlayer.worldObj, event.x, event.y, event.z, eventEntityPlayer);
+                    if (!event.entity.worldObj.isRemote) {
+                        if (toolEquipped && eventEntityPlayer.capabilities.isCreativeMode) {
+                            block.onBlockClicked(eventEntityPlayer.worldObj, event.x, event.y, event.z, eventEntityPlayer);
+                        }
                     }
 
                     break;
                 case RIGHT_CLICK_BLOCK:
 
                     /*
-                     * Make sure sneak right-click makes it through the onBlockActivate.
+                     * To enable full functionality with the hammer, we need to override pretty
+                     * much everything that happens on sneak right-click.
+                     *
+                     * In order to invoke onBlockActivated() server-side, we must send a packet
+                     * from the client.
+                     * 
+                     * The server will receive the packet and attempt to alter the Carpenter's
+                     * block.  If nothing changes, vanilla behavior will resume - the Item(Block)
+                     * in the ItemStack (if applicable) will be created adjacent to block.
                      */
 
-                    if (eventEntityPlayer.isSneaking() && !(itemStack != null && itemStack.getItem() instanceof ItemBlock && !BlockProperties.isOverlay(itemStack))) {
-                        block.onBlockActivated(eventEntityPlayer.worldObj, event.x, event.y, event.z, eventEntityPlayer, event.face, 1.0F, 1.0F, 1.0F);
+                    if (eventEntityPlayer.isSneaking()) {
+                        if (!(itemStack != null && itemStack.getItem() instanceof ItemBlock && !BlockProperties.isOverlay(itemStack))) {
+                            event.setCanceled(true); // Normally prevents server event, but sometimes it doesn't, so check below
+                            if (event.entity.worldObj.isRemote) {
+                                PacketHandler.sendPacketToServer(new PacketActivateBlock(event.x, event.y, event.z, event.face));
+                            }
+                        }
                     }
 
                     break;

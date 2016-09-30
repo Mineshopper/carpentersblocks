@@ -9,6 +9,7 @@ import net.minecraft.network.play.client.C17PacketCustomPayload;
 import org.apache.logging.log4j.Level;
 import com.carpentersblocks.CarpentersBlocks;
 import com.carpentersblocks.network.ICarpentersPacket;
+import com.carpentersblocks.network.PacketActivateBlock;
 import com.carpentersblocks.network.PacketEnrichPlant;
 import com.carpentersblocks.network.PacketSlopeSelect;
 import com.carpentersblocks.util.ModLogger;
@@ -24,6 +25,7 @@ public class PacketHandler {
     private final static List<Class> packetCarrier;
     static {
         packetCarrier = new ArrayList<Class>();
+        packetCarrier.add(PacketActivateBlock.class);
         packetCarrier.add(PacketEnrichPlant.class);
         packetCarrier.add(PacketSlopeSelect.class);
     }
