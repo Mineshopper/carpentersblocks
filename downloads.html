@@ -39,9 +39,9 @@ ad_button_innerhtml: <span class="span_ad_start">ad</span><span class="span_ad_e
 <hr>
 
 <div class="download-container">
-   <h3 style="margin-top: 0;"><span class="label label-danger">Minecraft 1.9 Development</span></h3>
+   <h3 style="margin-top: 0;"><span class="label label-danger">Minecraft 1.10.2 Development</span></h3>
    <div style="padding: 10px;">
-       <p>I am analyzing changes that must be made for a 1.9 port but cannot give an ETA on development at this time.</p>
+       <p>Work is currently underway on a 1.10.2 port.  Porting will be a slow process, as many things both big and small no longer work correctly.  Backports to 1.9 or earlier may be possible, but are not currently in scope of the update effort!</p>
        <p>You can stop by the <a href="http://www.minecraftforum.net/forums/mapping-and-modding/minecraft-mods/1288875-carpenters-blocks#c3461">mod thread</a> for questions or to check progress on the update effort.</p>
    </div>
 </div>
@@ -59,59 +59,26 @@ ad_button_innerhtml: <span class="span_ad_start">ad</span><span class="span_ad_e
 <div class="download-container">
    <div style="display: table-row;">
       <div class="download-container-version">
-         Carpenter's Blocks 3.3.8.1 DEV R1
-         {{ page.label-dev }}
+         Carpenter's Blocks 3.3.8.1
+         {{ page.label-stable }}
          {{ page.label-begin-minecraft }}MC 1.7.10{{ page.label-end }}
          {{ page.label-begin-forge }}FORGE 10.13.0.1180{{ page.label-end }}
-         {{ page.label-begin-release }}RELEASED 06/20/2016{{ page.label-end }}
+         {{ page.label-begin-release }}RELEASED 09/29/2016{{ page.label-end }}
       </div>
    </div>
    <div style="display: table-row;">
       <div style="display: table-cell;">
-         <button onclick="window.open('http://adf.ly/1bPYLp')" class="ad_button">{{ page.ad_button_innerhtml }}</button>
-         <button onclick="window.open('https://www.amazon.com/clouddrive/share/C5fE0WwY3vapOoOFI5Kw42XggQaDKt5jhUCBxJ1qdXT?ref_=cd_ph_share_link_copy')" class="direct_button">&nbsp;</button>
+         <button onclick="window.open('http://adf.ly/1ePgI9')" class="ad_button">{{ page.ad_button_innerhtml }}</button>
+         <button onclick="window.open('https://www.amazon.com/clouddrive/share/5MxodqXuJAS1gTT5YSyu1T5nPa77HezM2VUxYVJNkBV?ref_=cd_ph_share_link_copy')" class="direct_button">&nbsp;</button>
          <button class="expand">View Changelog</button>
          <div class="collapsed">
             <ul id="changelog">
+			   <li>Fixed vine overlay bug introduced in v3.3.8.</li>
                <li>Reduced torch light level to match vanilla torches.</li>
 			   <li>Fixed torches not preventing mob spawns.</li>
 			   <li>Fixed slope rotation/type hammer interaction; left-click rotates, right click changes type.</li>
 			   <li>Fire properties are now side-sensitive. This enables a top netherrack cover to burn indefinitely.</li>
 			   <li>Players can now access Carpenter's Safes that are stuck in 'open' state due to improper shutdown.</li>
-            </ul>
-         </div>
-      </div>
-   </div>
-</div>
-
-<div class="download-container">
-   <div style="display: table-row;">
-      <div class="download-container-version">
-         Carpenter's Blocks 3.3.8
-         {{ page.label-stable }}
-         {{ page.label-begin-minecraft }}MC 1.7.10{{ page.label-end }}
-         {{ page.label-begin-forge }}FORGE 10.13.0.1180{{ page.label-end }}
-         {{ page.label-begin-release }}RELEASED 05/26/2016{{ page.label-end }}
-      </div>
-   </div>
-   <div style="display: table-row;">
-      <div style="display: table-cell;">
-         <button onclick="window.open('http://adf.ly/1akdhX')" class="ad_button">{{ page.ad_button_innerhtml }}</button>
-         <button onclick="window.open('https://www.amazon.com/clouddrive/share/Ru5bpfXhXnhY901kwAKch374D45gHyilRYBf8qLdhJ2?ref_=cd_ph_share_link_copy')" class="direct_button">&nbsp;</button>
-         <button class="expand">View Changelog</button>
-         <div class="collapsed">
-            <ul id="changelog">
-				<li>Tweaked cached lighting code for greater compatibility, but increased latency.</li>
-				<li>Added rotation support to slab, lever, button, ladder, daylight sensor, pressure plate and torch.</li>
-				<li>Fixed ownership always being enforced.</li>
-				<li>Fixed routable fluid rendering while under fluid blocks.</li>
-				<li>Fixed routable fluid crash with Flux Goo and other Forge-type fluids.</li>
-				<li>Corrected player interaction events to better support MyTown2, others. [krwminer]</li>
-				<li>Suppressed routable fluids exception occasionally thrown server-side.</li>
-				<li>Fixed invalid slope rotations causing unrecoverable crashes. Now resets abnormal slopes automatically.</li>
-				<li>Refactored garage door connection code to prevent recursion crashes. Added new multiblock size limit to configuration file.</li>
-				<li>Fixed possible null pointer exception when colliding with barrier block.</li>
-				<li>Will now attempt to recover missing attributes if a mod goes missing or changes Ids. [AnvilPuncher]</li>
             </ul>
          </div>
       </div>
