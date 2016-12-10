@@ -188,20 +188,6 @@ header .inner {
    color: #f1f1f1;
 }
 
-.direct_button {
-   width: 90px;
-   border: 2px solid #008dff;
-   border-radius: 2px;
-   background: url('../images/direct_download.jpg') no-repeat scroll 0 0 #ffffff;
-   background-size: 80px;
-   background-position: center;   
-   color: transparent;
-}
-
-.dropbox:hover {
-   opacity: 0.75;
-}
-
 /*******************************************************************************
 Bootstrap Modifications
 *******************************************************************************/
