@@ -5,4 +5,4 @@ This is a Minecraft Forge mod that adds slopes and a variety of vanilla inspired
 
 ================
 
-This branch is built against Forge 10.12.2.1121 for Minecraft 1.7.2.
+This branch is built against Forge 10.12.2.1161-mc172 for Minecraft 1.7.2.

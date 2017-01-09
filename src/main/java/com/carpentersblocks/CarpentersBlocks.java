@@ -17,12 +17,12 @@ import cpw.mods.fml.common.network.NetworkRegistry;
         modid = CarpentersBlocks.MODID,
         name = "Carpenter's Blocks",
         version = CarpentersBlocks.VERSION,
-        dependencies = "required-after:Forge@[10.12.2.1121,)"
+        dependencies = "required-after:Forge@[10.12.2.1161-mc172,)"
         )
 public class CarpentersBlocks {
 
     public static final String MODID = "CarpentersBlocks";
-    public static final String VERSION = "3.2.8.6";
+    public static final String VERSION = "3.2.8.7";
     public static FMLEventChannel channel;
     public static CreativeTabs creativeTab = new CarpentersBlocksTab(MODID);
 

@@ -12,7 +12,6 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.classloading.FMLForgePlugin;
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.Level;
 import com.carpentersblocks.CarpentersBlocks;
@@ -52,8 +51,12 @@ public class DesignHandler {
      */
     public static void preInit(FMLPreInitializationEvent event)
     {
-        if (FMLForgePlugin.RUNTIME_DEOBF) {
-
+        File filePath = new File(event.getSourceFile().getAbsolutePath());
+        if (filePath.isDirectory()) {
+            for (File file : FileUtils.listFiles(filePath, new String[] { "png" }, true)) {
+                processPath(file.getAbsolutePath().replace("\\", "/"));
+            }
+        } else {
             try {
                 JarFile jarFile = new JarFile(event.getSourceFile());
                 Enumeration enumeration = jarFile.entries();
@@ -62,14 +65,6 @@ public class DesignHandler {
                 }
                 jarFile.close();
             } catch (Exception e) { }
-
-        } else {
-
-            File folder = new File(event.getSourceFile().getAbsolutePath());
-
-            for (File file : FileUtils.listFiles(folder, new String[] { "png" }, true)) {
-                processPath(file.getAbsolutePath().replace("\\", "/"));
-            }
         }
 
         ModLogger.log(Level.INFO, String.format("Designs found: Bed(%s), Chisel(%s), FlowerPot(%s), Tile(%s)", listBed.size(), listChisel.size(), listFlowerPot.size(), listTile.size()));
