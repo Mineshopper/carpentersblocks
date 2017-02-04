@@ -195,7 +195,7 @@ public class GarageDoor extends AbstractMultiBlock implements ISided {
             } else if (temp2 != null && getDirection(temp2).equals(axis)) {
                 return temp2;
             }
-        } while (world.getBlock(x, --y, z).equals(Blocks.air));
+        } while (y > 0 && world.getBlock(x, --y, z).equals(Blocks.air));
 
         return null;
     }
