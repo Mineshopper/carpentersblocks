@@ -6,6 +6,7 @@ label-begin-minecraft: <span class="label label-primary" data-toggle="tooltip" d
 label-begin-release: <span class="label label-default" data-toggle="tooltip" data-placement="top" title="The release date">
 label-end: </span>
 label-dev: <span class="label label-danger" data-toggle="tooltip" data-placement="top" title="This is a development build and may contain critical bugs">DEV</span>
+label-wip: <span class="label label-danger" data-toggle="tooltip" data-placement="top" title="This is a work in progress; expect missing features and bugs">WIP</span>
 label-stable: <span class="label label-success" data-toggle="tooltip" data-placement="top" title="This build has been tested and is considered stable">STABLE</span>
 label-final: <span class="label label-warning" data-toggle="tooltip" data-placement="top" title="This is the final major build for this Minecraft version">FINAL</span>
 label-release: <span class="label label-danger">
@@ -39,20 +40,40 @@ direct_button_innerhtml: <span>Direct</span>
 
 <hr>
 
-<div class="download-container">
-   <h3 style="margin-top: 0;"><span class="label label-danger">Minecraft 1.10.2 Development</span></h3>
-   <div style="padding: 10px;">
-       <p>Work is currently underway on a 1.10.2 port.  Porting will be a slow process, as many things both big and small no longer work correctly.  Backports to 1.9 or earlier may be possible, but are not currently in scope of the update effort!</p>
-       <p>You can stop by the <a href="http://www.minecraftforum.net/forums/mapping-and-modding/minecraft-mods/1288875-carpenters-blocks#c3461">mod thread</a> for questions or to check progress on the update effort.</p>
-   </div>
-</div>
-
-<hr>
-
 <h4>Latest Builds</h4>
 
 <div class="download-container">
 	<p>If you prefer, you can grab the latest stable and verified builds through <a href="http://minecraft.curseforge.com/projects/carpenters-blocks">CurseForge</a>.<br>Optionally, you can grab the files below through various methods and file hosts. Development builds, if available, will only be linked through this page.</p>
+</div>
+
+<h5>Minecraft 1.10.2</h5>
+
+<div class="download-container">
+   <div style="display: table-row;">
+      <div style="border: 5px dashed #d9534f; border-radius: 5px; padding: 5px 10px 5px 10px; margin-bottom: 10px;">
+	     <p><h3 style="font-weight: bold;">ATTENTION!</h3> This is a very early build, with only a handful of basic features supported.  You can stop by the <a href="http://www.minecraftforum.net/forums/mapping-and-modding/minecraft-mods/1288875-carpenters-blocks#c3461">mod thread</a> for questions or to check progress on the update effort.</p>
+      </div>
+   </div>
+   <div style="display: table-row;">
+	  <div class="download-container-version">
+		 Carpenter's Blocks 3.4 WIP
+		 {{ page.label-wip }}
+		 {{ page.label-begin-minecraft }}MC 1.10.2{{ page.label-end }}
+		 {{ page.label-begin-forge }}FORGE 12.18.1.2018{{ page.label-end }}
+		 {{ page.label-begin-release }}RELEASED 02/02/2017{{ page.label-end }}
+	  </div>
+   </div>
+   <div style="display: table-row;">
+	  <div style="display: table-cell;">
+		 <button onclick="window.location.assign('http://carpentersblocks.website/downloads/Carpenter\'s%20Blocks%20v3.4%20POC%20-%20MC%201.10.2.jar')">{{ page.direct_button_innerhtml }}</button>
+		 <button class="expand">View Changelog</button>
+		 <div class="collapsed">
+			<ul id="changelog">
+			   <li>First build for 1.10.2.  WIP with bugs and missing features/blocks.</li>
+			</ul>
+		 </div>
+	  </div>
+   </div>
 </div>
 
 <h5>Minecraft 1.7.10</h5>
