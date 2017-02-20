@@ -2,12 +2,10 @@ package com.carpentersblocks.api;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Implement this on your block class to gain full control over the way it behaves
@@ -25,8 +23,8 @@ public interface IWrappableBlock {
     /**
      * Effectively overrides Block.getIcon
      */
-    @SideOnly(Side.CLIENT)
-    public IIcon getIcon(IBlockAccess iba, int x, int y, int z, int side, Block b, int meta);
+    //@SideOnly(Side.CLIENT)
+    //public IIcon getIcon(IBlockAccess iba, int x, int y, int z, int side, Block b, int meta);
 
     /**
      * Effectively overrides Block.isProvidingWeakPower
@@ -51,17 +49,17 @@ public interface IWrappableBlock {
     /**
      * Effectively overrides Block.getFlammability
      */
-    public int getFlammability(IBlockAccess iba, int x, int y, int z, ForgeDirection side, Block b, int meta);
+    //public int getFlammability(IBlockAccess iba, int x, int y, int z, ForgeDirection side, Block b, int meta);
 
     /**
      * Effectively overrides Block.getFireSpreadSpeed
      */
-    public int getFireSpread(IBlockAccess iba, int x, int y, int z, ForgeDirection side, Block b, int meta);
+    //public int getFireSpread(IBlockAccess iba, int x, int y, int z, ForgeDirection side, Block b, int meta);
 
     /**
      * Effectively overrides Block.isFireSource
      */
-    public boolean sustainsFire(IBlockAccess iba, int x, int y, int z, ForgeDirection side, Block b, int meta);
+    //public boolean sustainsFire(IBlockAccess iba, int x, int y, int z, ForgeDirection side, Block b, int meta);
 
     /**
      * Effectively overrides Block.isWood

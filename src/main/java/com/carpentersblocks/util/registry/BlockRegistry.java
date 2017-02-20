@@ -1,62 +1,35 @@
 package com.carpentersblocks.util.registry;
 
+import com.carpentersblocks.CarpentersBlocks;
+import com.carpentersblocks.block.BlockCarpentersBlock;
+import com.carpentersblocks.block.BlockCarpentersCollapsibleBlock;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.renderer.block.statemap.StateMapperBase;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.oredict.ShapedOreRecipe;
-import com.carpentersblocks.CarpentersBlocks;
-import com.carpentersblocks.block.BlockCarpentersBarrier;
-import com.carpentersblocks.block.BlockCarpentersBed;
-import com.carpentersblocks.block.BlockCarpentersBlock;
-import com.carpentersblocks.block.BlockCarpentersButton;
-import com.carpentersblocks.block.BlockCarpentersCollapsibleBlock;
-import com.carpentersblocks.block.BlockCarpentersDaylightSensor;
-import com.carpentersblocks.block.BlockCarpentersDoor;
-import com.carpentersblocks.block.BlockCarpentersFlowerPot;
-import com.carpentersblocks.block.BlockCarpentersGarageDoor;
-import com.carpentersblocks.block.BlockCarpentersGate;
-import com.carpentersblocks.block.BlockCarpentersHatch;
-import com.carpentersblocks.block.BlockCarpentersLadder;
-import com.carpentersblocks.block.BlockCarpentersLever;
-import com.carpentersblocks.block.BlockCarpentersPressurePlate;
-import com.carpentersblocks.block.BlockCarpentersSafe;
-import com.carpentersblocks.block.BlockCarpentersSlope;
-import com.carpentersblocks.block.BlockCarpentersStairs;
-import com.carpentersblocks.block.BlockCarpentersTorch;
-import com.carpentersblocks.block.ItemBlockCarpentersSlope;
-import com.carpentersblocks.block.ItemBlockSided;
-import com.carpentersblocks.renderer.BlockHandlerCarpentersBarrier;
-import com.carpentersblocks.renderer.BlockHandlerCarpentersBed;
-import com.carpentersblocks.renderer.BlockHandlerCarpentersBlock;
-import com.carpentersblocks.renderer.BlockHandlerCarpentersButton;
-import com.carpentersblocks.renderer.BlockHandlerCarpentersCollapsibleBlock;
-import com.carpentersblocks.renderer.BlockHandlerCarpentersDaylightSensor;
-import com.carpentersblocks.renderer.BlockHandlerCarpentersDoor;
-import com.carpentersblocks.renderer.BlockHandlerCarpentersFlowerPot;
-import com.carpentersblocks.renderer.BlockHandlerCarpentersGarageDoor;
-import com.carpentersblocks.renderer.BlockHandlerCarpentersGate;
-import com.carpentersblocks.renderer.BlockHandlerCarpentersHatch;
-import com.carpentersblocks.renderer.BlockHandlerCarpentersLadder;
-import com.carpentersblocks.renderer.BlockHandlerCarpentersLever;
-import com.carpentersblocks.renderer.BlockHandlerCarpentersPressurePlate;
-import com.carpentersblocks.renderer.BlockHandlerCarpentersSafe;
-import com.carpentersblocks.renderer.BlockHandlerCarpentersSlope;
-import com.carpentersblocks.renderer.BlockHandlerCarpentersStairs;
-import com.carpentersblocks.renderer.BlockHandlerCarpentersTorch;
-import com.carpentersblocks.util.BlockProperties;
-import cpw.mods.fml.client.registry.RenderingRegistry;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.relauncher.Side;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class BlockRegistry {
-
-    /* Blocks references. */
-
+	
+	private static final Material material = Material.WOOD;
+	
+	public static final String REGISTRY_NAME_BLOCK = "carpenters_block";
+	public static final String REGISTRY_NAME_COLLAPSIBLE = "carpenters_collapsible_block";
+	
     public static Block blockCarpentersBarrier;
     public static Block blockCarpentersBed;
     public static Block blockCarpentersBlock;
@@ -76,29 +49,6 @@ public class BlockRegistry {
     public static Block blockCarpentersStairs;
     public static Block blockCarpentersTorch;
 
-    /* Block render IDs. */
-
-    public static int carpentersBarrierRenderID;
-    public static int carpentersBedRenderID;
-    public static int carpentersBlockRenderID;
-    public static int carpentersButtonRenderID;
-    public static int carpentersCollapsibleBlockRenderID;
-    public static int carpentersDaylightSensorRenderID;
-    public static int carpentersDoorRenderID;
-    public static int carpentersFlowerPotRenderID;
-    public static int carpentersGarageDoorRenderID;
-    public static int carpentersGateRenderID;
-    public static int carpentersHatchRenderID;
-    public static int carpentersLadderRenderID;
-    public static int carpentersLeverRenderID;
-    public static int carpentersPressurePlateRenderID;
-    public static int carpentersSafeRenderID;
-    public static int carpentersSlopeRenderID;
-    public static int carpentersStairsRenderID;
-    public static int carpentersTorchRenderID;
-
-    /* Block states. */
-
     public static boolean enableBarrier          = true;
     public static boolean enableBed              = true;
     public static boolean enableButton           = true;
@@ -116,8 +66,6 @@ public class BlockRegistry {
     public static boolean enableSlope            = true;
     public static boolean enableStairs           = true;
     public static boolean enableTorch            = true;
-
-    /* Block recipe quantities. */
 
     public static int recipeQuantityBarrier          = 4;
     public static int recipeQuantityBed              = 1;
@@ -139,10 +87,9 @@ public class BlockRegistry {
     public static int recipeQuantityTorch            = 8;
 
     /**
-     * Run preinitialization routines.
+     * Block preinitialization.
      */
-    public static void preInit(FMLPreInitializationEvent event, Configuration config)
-    {
+    public static void preInit(FMLPreInitializationEvent event, Configuration config) {
         enableBarrier          = config.get("blocks",           "Enable Barrier",          enableBarrier).getBoolean(enableBarrier);
         enableBed              = config.get("blocks",               "Enable Bed",              enableBed).getBoolean(enableBed);
         enableButton           = config.get("blocks",            "Enable Button",           enableButton).getBoolean(enableButton);
@@ -180,107 +127,18 @@ public class BlockRegistry {
         recipeQuantityStairs           = config.get("recipe quantities",            "Stairs",           recipeQuantityStairs).getInt(recipeQuantityStairs);
         recipeQuantityTorch            = config.get("recipe quantities",             "Torch",            recipeQuantityTorch).getInt(recipeQuantityTorch);
 
-        registerBlocks();
-    }
+        // Register blocks
+        
+    	blockCarpentersBlock = new BlockCarpentersBlock(material)
+    		.setUnlocalizedName("blockCarpentersBlock")
+        	.setRegistryName(REGISTRY_NAME_BLOCK)
+        	.setHardness(0.2F)
+            .setCreativeTab(CarpentersBlocks.CREATIVE_TAB);
+        GameRegistry.register(blockCarpentersBlock);
+        GameRegistry.register(new ItemBlock(blockCarpentersBlock), blockCarpentersBlock.getRegistryName());
+        Blocks.FIRE.setFireInfo(blockCarpentersBlock, 5, 20);
 
-    /**
-     * Sets recipes and assigns block render Ids.
-     */
-    public static void init(FMLInitializationEvent event)
-    {
-        if (event.getSide().equals(Side.CLIENT)) {
-
-            /* Carpenter's Block is always enabled because recipes rely on it. */
-
-            carpentersBlockRenderID = RenderingRegistry.getNextAvailableRenderId();
-            RenderingRegistry.registerBlockHandler(carpentersBlockRenderID, new BlockHandlerCarpentersBlock());
-
-            if (enableBarrier) {
-                carpentersBarrierRenderID = RenderingRegistry.getNextAvailableRenderId();
-                RenderingRegistry.registerBlockHandler(carpentersBarrierRenderID, new BlockHandlerCarpentersBarrier());
-            }
-            if (enableButton) {
-                carpentersButtonRenderID = RenderingRegistry.getNextAvailableRenderId();
-                RenderingRegistry.registerBlockHandler(carpentersButtonRenderID, new BlockHandlerCarpentersButton());
-            }
-            if (enableDaylightSensor) {
-                carpentersDaylightSensorRenderID = RenderingRegistry.getNextAvailableRenderId();
-                RenderingRegistry.registerBlockHandler(carpentersDaylightSensorRenderID, new BlockHandlerCarpentersDaylightSensor());
-            }
-            if (enableGarageDoor) {
-                carpentersGarageDoorRenderID = RenderingRegistry.getNextAvailableRenderId();
-                RenderingRegistry.registerBlockHandler(carpentersGarageDoorRenderID, new BlockHandlerCarpentersGarageDoor());
-            }
-            if (enableGate) {
-                carpentersGateRenderID = RenderingRegistry.getNextAvailableRenderId();
-                RenderingRegistry.registerBlockHandler(carpentersGateRenderID, new BlockHandlerCarpentersGate());
-            }
-            if (enableLever) {
-                carpentersLeverRenderID = RenderingRegistry.getNextAvailableRenderId();
-                RenderingRegistry.registerBlockHandler(carpentersLeverRenderID, new BlockHandlerCarpentersLever());
-            }
-            if (enablePressurePlate) {
-                carpentersPressurePlateRenderID = RenderingRegistry.getNextAvailableRenderId();
-                RenderingRegistry.registerBlockHandler(carpentersPressurePlateRenderID, new BlockHandlerCarpentersPressurePlate());
-            }
-            if (enableSlope) {
-                carpentersSlopeRenderID = RenderingRegistry.getNextAvailableRenderId();
-                RenderingRegistry.registerBlockHandler(carpentersSlopeRenderID, new BlockHandlerCarpentersSlope());
-            }
-            if (enableStairs) {
-                carpentersStairsRenderID = RenderingRegistry.getNextAvailableRenderId();
-                RenderingRegistry.registerBlockHandler(carpentersStairsRenderID, new BlockHandlerCarpentersStairs());
-            }
-            if (enableHatch) {
-                carpentersHatchRenderID = RenderingRegistry.getNextAvailableRenderId();
-                RenderingRegistry.registerBlockHandler(carpentersHatchRenderID, new BlockHandlerCarpentersHatch());
-            }
-            if (enableDoor) {
-                carpentersDoorRenderID = RenderingRegistry.getNextAvailableRenderId();
-                RenderingRegistry.registerBlockHandler(carpentersDoorRenderID, new BlockHandlerCarpentersDoor());
-            }
-            if (enableBed) {
-                carpentersBedRenderID = RenderingRegistry.getNextAvailableRenderId();
-                RenderingRegistry.registerBlockHandler(carpentersBedRenderID, new BlockHandlerCarpentersBed());
-            }
-            if (enableLadder) {
-                carpentersLadderRenderID = RenderingRegistry.getNextAvailableRenderId();
-                RenderingRegistry.registerBlockHandler(carpentersLadderRenderID, new BlockHandlerCarpentersLadder());
-            }
-            if (enableCollapsibleBlock) {
-                carpentersCollapsibleBlockRenderID = RenderingRegistry.getNextAvailableRenderId();
-                RenderingRegistry.registerBlockHandler(carpentersCollapsibleBlockRenderID, new BlockHandlerCarpentersCollapsibleBlock());
-            }
-            if (enableTorch) {
-                carpentersTorchRenderID = RenderingRegistry.getNextAvailableRenderId();
-                RenderingRegistry.registerBlockHandler(carpentersTorchRenderID, new BlockHandlerCarpentersTorch());
-            }
-            if (enableSafe) {
-                carpentersSafeRenderID = RenderingRegistry.getNextAvailableRenderId();
-                RenderingRegistry.registerBlockHandler(carpentersSafeRenderID, new BlockHandlerCarpentersSafe());
-            }
-            if (enableFlowerPot) {
-                carpentersFlowerPotRenderID = RenderingRegistry.getNextAvailableRenderId();
-                RenderingRegistry.registerBlockHandler(carpentersFlowerPotRenderID, new BlockHandlerCarpentersFlowerPot());
-            }
-
-        }
-
-        registerRecipes();
-    }
-
-    private static void registerBlocks()
-    {
-        /* Carpenter's Block is always enabled because recipes rely on it. */
-
-        blockCarpentersBlock = new BlockCarpentersBlock(Material.wood)
-            .setBlockName("blockCarpentersBlock")
-            .setHardness(0.2F)
-            .setStepSound(BlockProperties.stepSound)
-            .setCreativeTab(CarpentersBlocks.creativeTab);
-        GameRegistry.registerBlock(blockCarpentersBlock, "blockCarpentersBlock");
-        Blocks.fire.setFireInfo(blockCarpentersBlock, 5, 20);
-
+        /*
         if (enableBarrier) {
             blockCarpentersBarrier = new BlockCarpentersBarrier(Material.wood)
                 .setBlockName("blockCarpentersBarrier")
@@ -297,11 +155,11 @@ public class BlockRegistry {
                 .setHardness(0.4F)
                 .setStepSound(BlockProperties.stepSound);
 
-            /*
+            
              * This must be set to assign burn properties to block.
              * A side-effect of this is that mods like NEI will enable
              * users to place the block itself, which will result in a crash.
-             */
+             
             GameRegistry.registerBlock(blockCarpentersBed, "blockCarpentersBed");
             Blocks.fire.setFireInfo(blockCarpentersBed, 5, 20);
         }
@@ -315,17 +173,18 @@ public class BlockRegistry {
             GameRegistry.registerBlock(blockCarpentersButton, ItemBlockSided.class, "blockCarpentersButton");
             Blocks.fire.setFireInfo(blockCarpentersButton, 5, 20);
         }
-
+        */
         if (enableCollapsibleBlock) {
-            blockCarpentersCollapsibleBlock = new BlockCarpentersCollapsibleBlock(Material.wood)
-                .setBlockName("blockCarpentersCollapsibleBlock")
+            blockCarpentersCollapsibleBlock = new BlockCarpentersCollapsibleBlock(material)
+                .setUnlocalizedName("blockCarpentersCollapsibleBlock")
+                .setRegistryName(REGISTRY_NAME_COLLAPSIBLE)
                 .setHardness(0.2F)
-                .setStepSound(BlockProperties.stepSound)
-                .setCreativeTab(CarpentersBlocks.creativeTab);
-            GameRegistry.registerBlock(blockCarpentersCollapsibleBlock, "blockCarpentersCollapsibleBlock");
-            Blocks.fire.setFireInfo(blockCarpentersCollapsibleBlock, 5, 20);
+                .setCreativeTab(CarpentersBlocks.CREATIVE_TAB);
+            GameRegistry.register(blockCarpentersCollapsibleBlock);
+            GameRegistry.register(new ItemBlock(blockCarpentersCollapsibleBlock), blockCarpentersCollapsibleBlock.getRegistryName());
+            Blocks.FIRE.setFireInfo(blockCarpentersCollapsibleBlock, 5, 20);
         }
-
+        /*
         if (enableDaylightSensor) {
             blockCarpentersDaylightSensor = new BlockCarpentersDaylightSensor(Material.wood)
                 .setBlockName("blockCarpentersDaylightSensor")
@@ -342,11 +201,11 @@ public class BlockRegistry {
                 .setHardness(0.2F)
                 .setStepSound(BlockProperties.stepSound);
 
-            /*
+            
              * This must be set to assign burn properties to block.
              * A side-effect of this is that mods like NEI will enable
              * users to place the block itself, which will result in a crash.
-             */
+             
             GameRegistry.registerBlock(blockCarpentersDoor, "blockCarpentersDoor");
             Blocks.fire.setFireInfo(blockCarpentersDoor, 5, 20);
         }
@@ -465,14 +324,97 @@ public class BlockRegistry {
 
             GameRegistry.registerBlock(blockCarpentersTorch, ItemBlockSided.class, "blockCarpentersTorch");
             Blocks.fire.setFireInfo(blockCarpentersTorch, 5, 20);
-        }
+        }*/
+    }
+    
+    @SideOnly(Side.CLIENT)
+    private static void registerItemBlockRender(Block block) {
+		ModelResourceLocation modelResourceLocation = new ModelResourceLocation(block.getRegistryName(), "inventory");
+		Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(Item.getItemFromBlock(block), 0, modelResourceLocation);
     }
 
-    private static void registerRecipes()
-    {
-        /* Carpenter's Block is always enabled because recipes rely on it. */
+    @SideOnly(Side.CLIENT)
+    public static void registerRenderers() {
+    	registerItemBlockRender(blockCarpentersBlock);
 
-        GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(blockCarpentersBlock, recipeQuantityBlock), "XXX", "XYX", "XXX", 'X', "stickWood", 'Y', "plankWood"));
+        /*
+        if (enableBarrier) {
+            carpentersBarrierRenderID = RenderingRegistry.getNextAvailableRenderId();
+            RenderingRegistry.registerBlockHandler(carpentersBarrierRenderID, new BlockHandlerCarpentersBarrier());
+        }
+        if (enableButton) {
+            carpentersButtonRenderID = RenderingRegistry.getNextAvailableRenderId();
+            RenderingRegistry.registerBlockHandler(carpentersButtonRenderID, new BlockHandlerCarpentersButton());
+        }
+        if (enableDaylightSensor) {
+            carpentersDaylightSensorRenderID = RenderingRegistry.getNextAvailableRenderId();
+            RenderingRegistry.registerBlockHandler(carpentersDaylightSensorRenderID, new BlockHandlerCarpentersDaylightSensor());
+        }
+        if (enableGarageDoor) {
+            carpentersGarageDoorRenderID = RenderingRegistry.getNextAvailableRenderId();
+            RenderingRegistry.registerBlockHandler(carpentersGarageDoorRenderID, new BlockHandlerCarpentersGarageDoor());
+        }
+        if (enableGate) {
+            carpentersGateRenderID = RenderingRegistry.getNextAvailableRenderId();
+            RenderingRegistry.registerBlockHandler(carpentersGateRenderID, new BlockHandlerCarpentersGate());
+        }
+        if (enableLever) {
+            carpentersLeverRenderID = RenderingRegistry.getNextAvailableRenderId();
+            RenderingRegistry.registerBlockHandler(carpentersLeverRenderID, new BlockHandlerCarpentersLever());
+        }
+        if (enablePressurePlate) {
+            carpentersPressurePlateRenderID = RenderingRegistry.getNextAvailableRenderId();
+            RenderingRegistry.registerBlockHandler(carpentersPressurePlateRenderID, new BlockHandlerCarpentersPressurePlate());
+        }
+        if (enableSlope) {
+            carpentersSlopeRenderID = RenderingRegistry.getNextAvailableRenderId();
+            RenderingRegistry.registerBlockHandler(carpentersSlopeRenderID, new BlockHandlerCarpentersSlope());
+        }
+        if (enableStairs) {
+            carpentersStairsRenderID = RenderingRegistry.getNextAvailableRenderId();
+            RenderingRegistry.registerBlockHandler(carpentersStairsRenderID, new BlockHandlerCarpentersStairs());
+        }
+        if (enableHatch) {
+            carpentersHatchRenderID = RenderingRegistry.getNextAvailableRenderId();
+            RenderingRegistry.registerBlockHandler(carpentersHatchRenderID, new BlockHandlerCarpentersHatch());
+        }
+        if (enableDoor) {
+            carpentersDoorRenderID = RenderingRegistry.getNextAvailableRenderId();
+            RenderingRegistry.registerBlockHandler(carpentersDoorRenderID, new BlockHandlerCarpentersDoor());
+        }
+        if (enableBed) {
+            carpentersBedRenderID = RenderingRegistry.getNextAvailableRenderId();
+            RenderingRegistry.registerBlockHandler(carpentersBedRenderID, new BlockHandlerCarpentersBed());
+        }
+        if (enableLadder) {
+            carpentersLadderRenderID = RenderingRegistry.getNextAvailableRenderId();
+            RenderingRegistry.registerBlockHandler(carpentersLadderRenderID, new BlockHandlerCarpentersLadder());
+        }
+        */
+        if (enableCollapsibleBlock) {
+        	registerItemBlockRender(blockCarpentersCollapsibleBlock);
+        }
+        /*
+        if (enableTorch) {
+            carpentersTorchRenderID = RenderingRegistry.getNextAvailableRenderId();
+            RenderingRegistry.registerBlockHandler(carpentersTorchRenderID, new BlockHandlerCarpentersTorch());
+        }
+        if (enableSafe) {
+            carpentersSafeRenderID = RenderingRegistry.getNextAvailableRenderId();
+            RenderingRegistry.registerBlockHandler(carpentersSafeRenderID, new BlockHandlerCarpentersSafe());
+        }
+        if (enableFlowerPot) {
+            carpentersFlowerPotRenderID = RenderingRegistry.getNextAvailableRenderId();
+            RenderingRegistry.registerBlockHandler(carpentersFlowerPotRenderID, new BlockHandlerCarpentersFlowerPot());
+        }
+        */
+    }
+    
+    /**
+     * Block initialiation.
+     */
+    public static void init(FMLInitializationEvent event) {
+        /*GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(blockCarpentersBlock, recipeQuantityBlock), "XXX", "XYX", "XXX", 'X', "stickWood", 'Y', "plankWood"));
 
         if (enableBarrier) {
             GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(blockCarpentersBarrier, recipeQuantityBarrier), " Y ", "XYX", 'X', "stickWood", 'Y', blockCarpentersBlock));
@@ -519,7 +461,7 @@ public class BlockRegistry {
         if (enableTorch) {
             GameRegistry.addRecipe(new ItemStack(blockCarpentersTorch, recipeQuantityTorch), new Object[] { "X", "Y", 'X', new ItemStack(Items.coal, 1, 0), 'Y', blockCarpentersBlock });
             GameRegistry.addRecipe(new ItemStack(blockCarpentersTorch, recipeQuantityTorch), new Object[] { "X", "Y", 'X', new ItemStack(Items.coal, 1, 1), 'Y', blockCarpentersBlock });
-        }
+        }*/
     }
 
 }

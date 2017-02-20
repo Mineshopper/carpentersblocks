@@ -1,42 +1,37 @@
 package com.carpentersblocks.network;
 
 import java.io.IOException;
-import net.minecraft.entity.player.EntityPlayer;
-import io.netty.buffer.ByteBuf;
+
 import io.netty.buffer.ByteBufInputStream;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.math.BlockPos;
 
 public class TilePacket implements ICarpentersPacket {
 
-    protected int x;
-    protected int y;
-    protected int z;
+    protected BlockPos _blockPos;
 
     public TilePacket() {}
 
     /**
-     * Creates a packet that passes x, y, z coordinates.
+     * Creates a packet that holds block information.
+     * 
+     * @param blockPos the block position
      */
-    public TilePacket(int x, int y, int z)
-    {
-        this.x = x;
-        this.y = y;
-        this.z = z;
+    public TilePacket(BlockPos blockPos) {
+        _blockPos = blockPos;
     }
 
     @Override
-    public void processData(EntityPlayer entityPlayer, ByteBufInputStream bbis) throws IOException
-    {
-        x = bbis.readInt();
-        y = bbis.readInt();
-        z = bbis.readInt();
+    public void processData(EntityPlayer entityPlayer, ByteBufInputStream bbis) throws IOException {
+    	_blockPos = new BlockPos(bbis.readInt(), bbis.readInt(), bbis.readInt());
     }
 
     @Override
-    public void appendData(ByteBuf buffer) throws IOException
-    {
-        buffer.writeInt(x);
-        buffer.writeInt(y);
-        buffer.writeInt(z);
+    public void appendData(PacketBuffer buffer) throws IOException {
+        buffer.writeInt(_blockPos.getX());
+        buffer.writeInt(_blockPos.getY());
+        buffer.writeInt(_blockPos.getZ());
     }
 
 }

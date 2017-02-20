@@ -1,11 +1,12 @@
 package com.carpentersblocks.util.protection;
 
 import java.util.UUID;
+
+import com.carpentersblocks.util.registry.FeatureRegistry;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.MinecraftServer;
-import com.carpentersblocks.util.registry.FeatureRegistry;
 
 public class PlayerPermissions {
 
@@ -16,7 +17,7 @@ public class PlayerPermissions {
     public static boolean isOp(EntityPlayer entityPlayer)
     {
         if (!entityPlayer.worldObj.isRemote) {
-            return ((EntityPlayerMP)entityPlayer).mcServer.getConfigurationManager().func_152596_g(entityPlayer.getGameProfile());
+            return ((EntityPlayerMP)entityPlayer).mcServer.getPlayerList().getOppedPlayers().getEntry(entityPlayer.getGameProfile()) != null;
         } else {
             return false;
         }
@@ -34,7 +35,7 @@ public class PlayerPermissions {
     {
         if (entityPlayer.worldObj.isRemote && Minecraft.getMinecraft().isSingleplayer()) { // Check if client is playing singleplayer
             return true;
-        } else if (!entityPlayer.worldObj.isRemote && MinecraftServer.getServer().isSinglePlayer()) { // Check if server is integrated (singleplayer)
+        } else if (!entityPlayer.worldObj.isRemote && Minecraft.getMinecraft().isSingleplayer()) { // Check if server is integrated (singleplayer)
             return true;
         } else if (isOp(entityPlayer)) {
             return true;

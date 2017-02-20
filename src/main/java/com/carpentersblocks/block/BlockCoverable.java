@@ -1,59 +1,58 @@
 package com.carpentersblocks.block;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
+
+import javax.annotation.Nullable;
+
+import com.carpentersblocks.api.ICarpentersChisel;
+import com.carpentersblocks.api.ICarpentersHammer;
+import com.carpentersblocks.block.state.Property;
+import com.carpentersblocks.tileentity.CbTileEntity;
+import com.carpentersblocks.util.EntityLivingUtil;
+import com.carpentersblocks.util.attribute.AbstractAttribute.Key;
+import com.carpentersblocks.util.attribute.EnumAttributeLocation;
+import com.carpentersblocks.util.attribute.EnumAttributeType;
+import com.carpentersblocks.util.block.BlockUtil;
+import com.carpentersblocks.util.handler.DesignHandler;
+import com.carpentersblocks.util.handler.EventHandler;
+import com.carpentersblocks.util.handler.OverlayHandler;
+import com.carpentersblocks.util.protection.PlayerPermissions;
+import com.carpentersblocks.util.protection.ProtectedObject;
+import com.carpentersblocks.util.registry.FeatureRegistry;
+import com.carpentersblocks.util.registry.ItemRegistry;
+
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockContainer;
-import net.minecraft.block.BlockDirectional;
-import net.minecraft.block.BlockRedstoneWire;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.particle.EffectRenderer;
-import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.entity.Entity;
+import net.minecraft.block.state.BlockStateContainer;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.boss.EntityDragon;
-import net.minecraft.entity.boss.EntityWither;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.IIcon;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.BlockRenderLayer;
+import net.minecraft.util.EnumBlockRenderType;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.client.ForgeHooksClient;
-import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.IPlantable;
-import net.minecraftforge.common.util.ForgeDirection;
-import com.carpentersblocks.api.ICarpentersChisel;
-import com.carpentersblocks.api.ICarpentersHammer;
-import com.carpentersblocks.api.IWrappableBlock;
-import com.carpentersblocks.renderer.helper.ParticleHelper;
-import com.carpentersblocks.renderer.helper.RoutableFluidsHelper;
-import com.carpentersblocks.tileentity.TEBase;
-import com.carpentersblocks.util.BlockProperties;
-import com.carpentersblocks.util.EntityLivingUtil;
-import com.carpentersblocks.util.handler.DesignHandler;
-import com.carpentersblocks.util.handler.EventHandler;
-import com.carpentersblocks.util.handler.OverlayHandler;
-import com.carpentersblocks.util.handler.OverlayHandler.Overlay;
-import com.carpentersblocks.util.protection.PlayerPermissions;
-import com.carpentersblocks.util.protection.ProtectedObject;
-import com.carpentersblocks.util.registry.FeatureRegistry;
-import com.carpentersblocks.util.registry.IconRegistry;
-import com.carpentersblocks.util.registry.ItemRegistry;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.common.property.ExtendedBlockState;
+import net.minecraftforge.common.property.IExtendedBlockState;
+import net.minecraftforge.common.property.IUnlistedProperty;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockCoverable extends BlockContainer {
-
+public abstract class BlockCoverable extends Block {
+	
     /** Block drop event for dropping attribute. */
-    public static int EVENT_ID_DROP_ATTR = 0;
+    public static int EVENT_ID_DROP_ATTR = 0x40000000;
 
     /** Indicates during getDrops that block instance should not be dropped. */
     protected final int METADATA_DROP_ATTR_ONLY = 16;
@@ -94,75 +93,10 @@ public class BlockCoverable extends BlockContainer {
     /**
      * Class constructor.
      *
-     * @param material
+     * @param material the block material
      */
-    public BlockCoverable(Material material)
-    {
+    public BlockCoverable(Material material) {
         super(material);
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Override
-    /**
-     * When this method is called, your block should register all the icons it needs with the given IconRegister. This
-     * is the only chance you get to register icons.
-     */
-    public void registerBlockIcons(IIconRegister iconRegister) { }
-
-    @SideOnly(Side.CLIENT)
-    /**
-     * Returns a base icon that doesn't rely on blockIcon, which
-     * is set prior to texture stitch events.
-     *
-     * @return default icon
-     */
-    public IIcon getIcon()
-    {
-        return IconRegistry.icon_uncovered_solid;
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Override
-    /**
-     * Returns the icon on the side given the block metadata.
-     * <p>
-     * Due to the amount of control needed over this, vanilla calls will always return an invisible icon.
-     */
-    public IIcon getIcon(int side, int metadata)
-    {
-        if (BlockProperties.isMetadataDefaultIcon(metadata)) {
-            return getIcon();
-        }
-
-        /*
-         * This icon is a mask (or something) for redstone wire.
-         * We use it here because it renders an invisible icon.
-         *
-         * Using an invisible icon is important because sprint particles are
-         * hard-coded and will always grab particle icons using this method.
-         * We'll throw our own sprint particles in EventHandler.class.
-         */
-
-        return BlockRedstoneWire.getRedstoneWireIcon("cross_overlay");
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Override
-    /**
-     * Retrieves the block texture to use based on the display side. Args: iBlockAccess, x, y, z, side
-     */
-    public IIcon getIcon(IBlockAccess blockAccess, int x, int y, int z, int side)
-    {
-        TEBase TE = getTileEntity(blockAccess, x, y, z);
-        ItemStack itemStack = BlockProperties.getCover(TE, 6);
-        Block block = BlockProperties.toBlock(itemStack);
-
-        return block instanceof BlockCoverable ? getIcon() : getWrappedIcon(block, blockAccess, x, y, z, side, itemStack.getItemDamage());
-    }
-
-    private static IIcon getWrappedIcon(Block b, IBlockAccess iba, int x, int y, int z, int side, int meta)
-    {
-        return b instanceof IWrappableBlock ? ((IWrappableBlock)b).getIcon(iba, x, y, z, side, b, meta) : b.getIcon(side, meta);
     }
 
     /**
@@ -171,9 +105,9 @@ public class BlockCoverable extends BlockContainer {
      *
      * @param  dir the rotated {@link ForgeDirection}
      */
-    protected void setBlockBounds(float minX, float minY, float minZ, float maxX, float maxY, float maxZ, ForgeDirection dir)
+    protected void setBlockBounds(float minX, float minY, float minZ, float maxX, float maxY, float maxZ, EnumFacing facing)
     {
-        switch (dir) {
+/*        switch (dir) {
             case DOWN:
                 setBlockBounds(minX, 1.0F - maxZ, minY, maxX, 1.0F - minZ, maxY);
                 break;
@@ -192,7 +126,7 @@ public class BlockCoverable extends BlockContainer {
             default:
                 setBlockBounds(minX, minY, minZ, maxX, maxY, maxZ);
                 break;
-        }
+        }*/
     }
 
     /**
@@ -206,295 +140,297 @@ public class BlockCoverable extends BlockContainer {
      * they create a block event with parameters itemId and metadata, allowing
      * the {@link ItemStack} to be recreated and dropped.
      *
-     * @param  world the {@link World}
-     * @param  x the x coordinate
-     * @param  y the y coordinate
-     * @param  z the z coordinate
-     * @param  itemId the eventId, repurposed
-     * @param  metadata the event parameter, repurposed
-     * @return true if event was handled
+     * @param world the world
+     * @param blockPos the block position
+     * @param id the Item Id
+     * @param param the ItemStack damage value
+     * @return <code>true</code> if event was handled
      */
     @Override
-    public boolean onBlockEventReceived(World world, int x, int y, int z, int eventId, int param /*attrId*/)
-    {
-        if (!world.isRemote && eventId == EVENT_ID_DROP_ATTR)
-        {
-            TEBase TE = getSimpleTileEntity(world, x, y, z);
-            if (TE != null && TE.hasAttribute((byte) param))
-            {
-                ItemStack itemStack = TE.getAttributeForDrop((byte) param);
-                dropBlockAsItem(world, x, y, z, itemStack);
-                TE.onAttrDropped((byte) param);
-                return true;
+    public boolean eventReceived(IBlockState blockState, World world, BlockPos blockPos, int id, int param) {
+    	if (id == EVENT_ID_DROP_ATTR) {
+            CbTileEntity cbTileEntity = getSimpleTileEntity(world, blockPos);
+            if (cbTileEntity != null) {
+            	Key key = new Key(param);
+            	if (cbTileEntity.getAttributeHelper().hasAttribute(key)) {
+	                ItemStack itemStack = cbTileEntity.getDroppedItemStack(key);
+	                if (cbTileEntity.onAttrDropped(key)) {
+	                	spawnAsEntity(world, blockPos, itemStack);
+	                	return true;
+	                } else {
+	                	return false;
+	                }
+            	}
             }
         }
-
-        return super.onBlockEventReceived(world, x, y, z, eventId, param);
+        return super.eventReceived(blockState, world, blockPos, id, param);
     }
 
     /**
      * Returns an item stack containing a single instance of the current block type. 'i' is the block's subtype/damage
      * and is ignored for blocks which do not support subtypes. Blocks which cannot be harvested should return null.
      */
-    protected ItemStack getItemDrop(World world, int metadata)
-    {
-        int fortune = 1;
-        return new ItemStack(getItemDropped(metadata, world.rand, fortune), 1, metadata);
+    protected ItemStack getItemDrop(World world, int metadata) {
+        return new ItemStack(getItemDropped(getDefaultState(), world.rand, 0), 1, metadata);
     }
 
     /**
      * Returns adjacent, similar tile entities that can be used for duplicating
      * block properties like dye color, pattern, style, etc.
      *
-     * @param  world the world reference
-     * @param  x the x coordinate
-     * @param  y the y coordinate
-     * @param  z the z coordinate
+     * @param world the world reference
+     * @param blockPos the block position
      * @return an array of adjacent, similar tile entities
-     * @see {@link TEBase}
      */
-    protected TEBase[] getAdjacentTileEntities(World world, int x, int y, int z)
-    {
-        return new TEBase[] {
-            getSimpleTileEntity(world, x, y - 1, z),
-            getSimpleTileEntity(world, x, y + 1, z),
-            getSimpleTileEntity(world, x, y, z - 1),
-            getSimpleTileEntity(world, x, y, z + 1),
-            getSimpleTileEntity(world, x - 1, y, z),
-            getSimpleTileEntity(world, x + 1, y, z)
+    protected CbTileEntity[] getAdjacentTileEntities(World world, BlockPos blockPos) {
+        return new CbTileEntity[] {
+            getSimpleTileEntity(world, blockPos.add( 0, -1,  0)),
+            getSimpleTileEntity(world, blockPos.add( 0,  1,  0)),
+            getSimpleTileEntity(world, blockPos.add( 0,  0, -1)),
+            getSimpleTileEntity(world, blockPos.add( 0,  0,  1)),
+            getSimpleTileEntity(world, blockPos.add(-1,  0,  0)),
+            getSimpleTileEntity(world, blockPos.add( 1,  0,  0))
         };
     }
 
     /**
-     * Returns tile entity if block tile entity is instanceof TEBase.
+     * Returns tile entity if block tile entity is instanceof CbTileEntity.
      *
      * Used for generic purposes such as getting pattern, dye color, or
      * cover of another Carpenter's block.  Is also used if block
      * no longer exists, such as when breaking a block and ejecting
      * attributes.
      */
-    protected TEBase getSimpleTileEntity(IBlockAccess blockAccess, int x, int y, int z)
+    protected CbTileEntity getSimpleTileEntity(IBlockAccess blockAccess, BlockPos blockPos)
     {
-        TileEntity TE = blockAccess.getTileEntity(x, y, z);
-        return (TE instanceof TEBase) ? (TEBase) TE : null;
+        TileEntity tileEntity = blockAccess.getTileEntity(blockPos);
+        return (tileEntity instanceof CbTileEntity) ? (CbTileEntity) tileEntity : null;
     }
 
     /**
-     * Returns tile entity if block tile entity is instanceof TEBase and
+     * Returns tile entity if block tile entity is instanceof CbTileEntity and
      * also belongs to this block type.
      */
-    protected TEBase getTileEntity(IBlockAccess blockAccess, int x, int y, int z)
+    protected CbTileEntity getTileEntity(IBlockAccess blockAccess, BlockPos blockPos)
     {
-        TEBase TE = getSimpleTileEntity(blockAccess, x, y, z);
-        return TE != null && blockAccess.getBlock(x, y, z).equals(this) ? TE : null;
+        CbTileEntity cbTileEntity = getSimpleTileEntity(blockAccess, blockPos);
+        return cbTileEntity != null && blockAccess.getBlockState(blockPos).getBlock().equals(this) ? cbTileEntity : null;
     }
 
     /**
      * Returns whether player is allowed to activate this block.
+     * 
+     * @param cbTileEntity the Carpenter's Block tile entity
+     * @param entityPlayer the player
+     * @return <code>true</code> if player can activate block
      */
-    protected boolean canPlayerActivate(TEBase TE, EntityPlayer entityPlayer)
-    {
+    protected boolean canPlayerActivate(CbTileEntity cbTileEntity, EntityPlayer entityPlayer) {
         return true;
     }
-
-    @Override
+    
     /**
-     * Called when the block is clicked by a player. Args: x, y, z, entityPlayer
+     * Called when block is clicked by a player.
+     * 
+     * @param world the world
+     * @param blockPos the block position
+     * @param entityPlayer the player
      */
-    public void onBlockClicked(World world, int x, int y, int z, EntityPlayer entityPlayer)
-    {
-        if (world.isRemote) {
+    @Override
+    public void onBlockClicked(World world, BlockPos blockPos, EntityPlayer entityPlayer) {
+        //if (world.isRemote) {
+        //    return;
+        //}
+
+        CbTileEntity cbTileEntity = getTileEntity(world, blockPos);
+        if (cbTileEntity == null || !PlayerPermissions.hasElevatedPermission(cbTileEntity, entityPlayer, false)) {
             return;
         }
 
-        TEBase TE = getTileEntity(world, x, y, z);
-
-        if (TE == null) {
-            return;
-        } else if (!PlayerPermissions.hasElevatedPermission(TE, entityPlayer, false)) {
-            return;
-        }
-
-        ItemStack itemStack = entityPlayer.getCurrentEquippedItem();
-
+        ItemStack itemStack = entityPlayer.getHeldItem(EventHandler.eventHand);
         if (itemStack == null) {
             return;
         }
 
-        int effectiveSide = TE.hasAttribute(TE.ATTR_COVER[EventHandler.eventFace]) ? EventHandler.eventFace : 6;
+        ActionResult actionResult = new ActionResult();
+        EnumAttributeLocation location = BlockUtil.getAttributeLocationForFacing(cbTileEntity, EventHandler.eventFace);
         Item item = itemStack.getItem();
-
         if (item instanceof ICarpentersHammer && ((ICarpentersHammer)item).canUseHammer(world, entityPlayer)) {
-
-            ActionResult actionResult = new ActionResult();
-            preOnBlockClicked(TE, world, x, y, z, entityPlayer, actionResult);
-
+            preOnBlockClicked(cbTileEntity, entityPlayer, actionResult);
             if (!actionResult.altered) {
                 if (entityPlayer.isSneaking()) {
-                    popAttribute(TE, effectiveSide);
+                    popAttribute(cbTileEntity, location);
+                    actionResult.setAltered();
                 } else {
-                    onHammerLeftClick(TE, entityPlayer);
+                    if (onHammerLeftClick(cbTileEntity, entityPlayer)) {
+                    	actionResult.setAltered();
+                    }
                 }
                 actionResult.setAltered();
             } else {
-                onNeighborBlockChange(world, x, y, z, this);
-                world.notifyBlocksOfNeighborChange(x, y, z, this);
+                //onNeighborChange(world, blockPos, blockPos);
+                //world.notifyNeighborsOfStateChange(blockPos, this);
             }
-
         } else if (item instanceof ICarpentersChisel && ((ICarpentersChisel)item).canUseChisel(world, entityPlayer)) {
-
-            if (entityPlayer.isSneaking() && TE.hasChiselDesign(effectiveSide)) {
-                TE.removeChiselDesign(effectiveSide);
-            } else if (TE.hasAttribute(TE.ATTR_COVER[effectiveSide])) {
-                onChiselClick(TE, effectiveSide, true);
-            }
-
+            if (entityPlayer.isSneaking() && cbTileEntity.getAttributeHelper().hasAttribute(location, EnumAttributeType.DESIGN_CHISEL)) {
+                cbTileEntity.removeAttribute(location, EnumAttributeType.DESIGN_CHISEL);
+            } else if (cbTileEntity.getAttributeHelper().hasAttribute(location, EnumAttributeType.COVER)) {
+                onChiselClick(cbTileEntity, location, EventHandler.eventHand);
+            }            
         }
+        
+        if (actionResult.altered) {
+            //cbTileEntity.markDirty();
+            IBlockState blockState = world.getBlockState(blockPos);
+            world.notifyBlockUpdate(blockPos, blockState, blockState, 3);
+        }
+        
     }
 
     /**
-     * Pops attribute in hard-coded order.
+     * Pops attribute from attribute location.
      *
-     * @param TE
-     * @param side
+     * @param cbTileEntity the Carpenter's Block tile entity
+     * @param location the location to pop attribute from
      */
-    private void popAttribute(TEBase TE, int side)
-    {
-        if (TE.hasAttribute(TE.ATTR_ILLUMINATOR)) {
-            TE.createBlockDropEvent(TE.ATTR_ILLUMINATOR);
-        } else if (TE.hasAttribute(TE.ATTR_OVERLAY[side])) {
-            TE.createBlockDropEvent(TE.ATTR_OVERLAY[side]);
-        } else if (TE.hasAttribute(TE.ATTR_DYE[side])) {
-            TE.createBlockDropEvent(TE.ATTR_DYE[side]);
-        } else if (TE.hasAttribute(TE.ATTR_COVER[side])) {
-            TE.removeChiselDesign(side);
-            TE.createBlockDropEvent(TE.ATTR_COVER[side]);
-        }
+    private void popAttribute(CbTileEntity cbTileEntity, EnumAttributeLocation location) {
+    	// TODO: Work on attribute drops, make them drop using insertion order
+    	
+    	cbTileEntity.removeAttribute(location);
+    	
+/*        if (cbTileEntity.hasAttribute(cbTileEntity.ATTR_ILLUMINATOR)) {
+            cbTileEntity.createBlockDropEvent(cbTileEntity.ATTR_ILLUMINATOR);
+        } else if (cbTileEntity.hasAttribute(cbTileEntity.ATTR_OVERLAY[side])) {
+            cbTileEntity.createBlockDropEvent(cbTileEntity.ATTR_OVERLAY[side]);
+        } else if (cbTileEntity.hasAttribute(cbTileEntity.ATTR_DYE[side])) {
+            cbTileEntity.createBlockDropEvent(cbTileEntity.ATTR_DYE[side]);
+        } else if (cbTileEntity.hasAttribute(cbTileEntity.ATTR_COVER[side])) {
+            cbTileEntity.removeChiselDesign(side);
+            cbTileEntity.createBlockDropEvent(cbTileEntity.ATTR_COVER[side]);
+        }*/
     }
 
-    @Override
     /**
-     * Called upon block activation (right click on the block.)
+     * Called when block is activated.
+     * 
+     * @param world the world
+     * @param blockPos the block position
+     * @param blockState the block state
+     * @param entityPlayer the player
+     * @param hand the active player hand
+     * @param itemStack the active player ItemStack
+     * @param facing the facing
+     * @param hitX the x hit coordinate
+     * @param hitY the y hit coordinate
+     * @param hitZ the z hit coordinate
+     * return <code>true</code> if block property changed
      */
-    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ)
-    {
-        if (world.isRemote) {
-            return true;
-        }
+    @Override
+    public boolean onBlockActivated(World world, BlockPos blockPos, IBlockState blockState, EntityPlayer entityPlayer, EnumHand hand, @Nullable ItemStack itemStack, EnumFacing facing, float hitX, float hitY, float hitZ) {
+        //if (world.isRemote) {
+        //    return true;
+        //}
 
-        TEBase TE = getTileEntity(world, x, y, z);
+        CbTileEntity cbTileEntity = getTileEntity(world, blockPos);
 
-        if (TE == null) {
+        if (cbTileEntity == null) {
             return false;
         }
 
-        if (!canPlayerActivate(TE, entityPlayer)) {
+        if (!canPlayerActivate(cbTileEntity, entityPlayer)) {
             return false;
         }
 
-        // Allow block to change TE if needed before altering attributes
-        TE = getTileEntityForBlockActivation(TE);
+        EnumAttributeLocation location = BlockUtil.getAttributeLocationForFacing(cbTileEntity, facing);
+        
+        // Allow block to change cbTileEntity if needed before altering attributes
+        cbTileEntity = getTileEntityForBlockActivation(cbTileEntity);
         ActionResult actionResult = new ActionResult();
 
-        preOnBlockActivated(TE, entityPlayer, side, hitX, hitY, hitZ, actionResult);
+        preOnBlockActivated(cbTileEntity, entityPlayer, facing, hitX, hitY, hitZ, actionResult);
 
         // If no prior event occurred, try regular activation
         if (!actionResult.altered) {
-
-            if (PlayerPermissions.hasElevatedPermission(TE, entityPlayer, false)) {
-
-                ItemStack itemStack = entityPlayer.getCurrentEquippedItem();
-
+            if (PlayerPermissions.hasElevatedPermission(cbTileEntity, entityPlayer, false)) {
                 if (itemStack != null) {
-
-                    /* Sides 0-5 are side covers, and 6 is the base block. */
-                    int effectiveSide = TE.hasAttribute(TE.ATTR_COVER[side]) ? side : 6;
-
                     if (itemStack.getItem() instanceof ICarpentersHammer && ((ICarpentersHammer)itemStack.getItem()).canUseHammer(world, entityPlayer)) {
-
-                        if (onHammerRightClick(TE, entityPlayer)) {
+                        if (onHammerRightClick(cbTileEntity, entityPlayer)) {
                             actionResult.setAltered();
                         }
-
                     } else if (ItemRegistry.enableChisel && itemStack.getItem() instanceof ICarpentersChisel && ((ICarpentersChisel)itemStack.getItem()).canUseChisel(world, entityPlayer)) {
-
-                        if (TE.hasAttribute(TE.ATTR_COVER[effectiveSide])) {
-                            if (onChiselClick(TE, effectiveSide, false)) {
+                        if (cbTileEntity.getAttributeHelper().hasAttribute(location, EnumAttributeType.COVER)) {
+                            if (onChiselClick(cbTileEntity, location, hand)) {
                                 actionResult.setAltered();
                             }
                         }
+                    } else if (FeatureRegistry.enableCovers && BlockUtil.isCover(itemStack)) {
 
-                    } else if (FeatureRegistry.enableCovers && BlockProperties.isCover(itemStack)) {
-
-                        Block block = BlockProperties.toBlock(itemStack);
+                        Block block = BlockUtil.toBlock(itemStack);
 
                         /* Will handle blocks that save directions using only y axis (pumpkin) */
-                        int metadata = block instanceof BlockDirectional ? MathHelper.floor_double(entityPlayer.rotationYaw * 4.0F / 360.0F + 2.5D) & 3 : itemStack.getItemDamage();
+                        //int metadata = block instanceof BlockDirectional ? MathHelper.floor_double(entityPlayer.rotationYaw * 4.0F / 360.0F + 2.5D) & 3 : itemStack.getItemDamage();
 
                         /* Will handle blocks that save directions using all axes (logs, quartz) */
-                        if (BlockProperties.blockRotates(itemStack)) {
+                        // TODO: Handle later
+                        /*if (BlockProperties.blockRotates(itemStack)) {
                             int rot = Direction.rotateOpposite[EntityLivingUtil.getRotationValue(entityPlayer)];
                             int side_interpolated = entityPlayer.rotationPitch < -45.0F ? 0 : entityPlayer.rotationPitch > 45 ? 1 : rot == 0 ? 3 : rot == 1 ? 4 : rot == 2 ? 2 : 5;
-                            metadata = block.onBlockPlaced(world, TE.xCoord, TE.yCoord, TE.zCoord, side_interpolated, hitX, hitY, hitZ, metadata);
-                        }
+                            metadata = block.onBlockPlaced(world, cbTileEntity.xCoord, cbTileEntity.yCoord, cbTileEntity.zCoord, side_interpolated, hitX, hitY, hitZ, metadata);
+                        }*/
 
                         ItemStack tempStack = itemStack.copy();
-                        tempStack.setItemDamage(metadata);
+                        //tempStack.setItemDamage(metadata);
 
-                        /* Base cover should always be checked. */
-
-                        if (effectiveSide == 6 && (!canCoverSide(TE, world, TE.xCoord, TE.yCoord, TE.zCoord, 6) || TE.hasAttribute(TE.ATTR_COVER[6]))) {
-                            effectiveSide = side;
+                        if (EnumAttributeLocation.HOST.equals(location) && (!canSupportCover(cbTileEntity, location) || cbTileEntity.getAttributeHelper().hasAttribute(EnumAttributeLocation.HOST, EnumAttributeType.COVER))) {
+                            location = EnumAttributeLocation.valueOf(facing.ordinal());
                         }
-
-                        if (canCoverSide(TE, world, TE.xCoord, TE.yCoord, TE.zCoord, effectiveSide) && !TE.hasAttribute(TE.ATTR_COVER[effectiveSide])) {
-                            TE.addAttribute(TE.ATTR_COVER[effectiveSide], tempStack);
+                        
+                        if (canSupportCover(cbTileEntity, location) && !cbTileEntity.getAttributeHelper().hasAttribute(location, EnumAttributeType.COVER)) {
+                            cbTileEntity.addAttribute(location, EnumAttributeType.COVER, tempStack);
                             actionResult.setAltered().decInventory().setSoundSource(itemStack);
                         }
 
                     } else if (entityPlayer.isSneaking()) {
-
-                        if (FeatureRegistry.enableIllumination && BlockProperties.isIlluminator(itemStack)) {
-                            if (!TE.hasAttribute(TE.ATTR_ILLUMINATOR)) {
-                                TE.addAttribute(TE.ATTR_ILLUMINATOR, itemStack);
+                        if (FeatureRegistry.enableIllumination && BlockUtil.isIlluminator(itemStack)) {
+                            if (!cbTileEntity.getAttributeHelper().hasAttribute(location, EnumAttributeType.ILLUMINATOR)) {
+                                cbTileEntity.addAttribute(location, EnumAttributeType.ILLUMINATOR, itemStack);
                                 actionResult.setAltered().decInventory().setSoundSource(itemStack);
                             }
-                        } else if (FeatureRegistry.enableOverlays && BlockProperties.isOverlay(itemStack)) {
-                            if (!TE.hasAttribute(TE.ATTR_OVERLAY[effectiveSide]) && (effectiveSide < 6 && TE.hasAttribute(TE.ATTR_COVER[effectiveSide]) || effectiveSide == 6)) {
-                                TE.addAttribute(TE.ATTR_OVERLAY[effectiveSide], itemStack);
+                        } else if (FeatureRegistry.enableOverlays && BlockUtil.isOverlay(itemStack)) {
+                            if (!cbTileEntity.getAttributeHelper().hasAttribute(location, EnumAttributeType.OVERLAY)) {
+                                cbTileEntity.addAttribute(location, EnumAttributeType.OVERLAY, itemStack);
                                 actionResult.setAltered().decInventory().setSoundSource(itemStack);
                             }
-                        } else if (FeatureRegistry.enableDyeColors && BlockProperties.isDye(itemStack, false)) {
-                            if (!TE.hasAttribute(TE.ATTR_DYE[effectiveSide])) {
-                                TE.addAttribute(TE.ATTR_DYE[effectiveSide], itemStack);
+                        } else if (FeatureRegistry.enableDyeColors && BlockUtil.isDye(itemStack, false)) {
+                            if (!cbTileEntity.getAttributeHelper().hasAttribute(location, EnumAttributeType.DYE)) {
+                                cbTileEntity.addAttribute(location, EnumAttributeType.DYE, itemStack);
                                 actionResult.setAltered().decInventory().setSoundSource(itemStack);
                             }
                         }
-
                     }
                 }
             }
         }
 
         if (!actionResult.altered) {
-
-            // If no prior or regular event occurred, try a post event
-            postOnBlockActivated(TE, entityPlayer, side, hitX, hitY, hitZ, actionResult);
-
+            postOnBlockActivated(cbTileEntity, entityPlayer, facing, hitX, hitY, hitZ, actionResult);
         } else {
-
             if (actionResult.itemStack == null) {
-                actionResult.setSoundSource(BlockProperties.getCover(TE, 6));
+                //actionResult.setSoundSource(BlockProperties.getCover(cbTileEntity, location));
             }
             damageItemWithChance(world, entityPlayer);
-            onNeighborBlockChange(world, TE.xCoord, TE.yCoord, TE.zCoord, this);
-            world.notifyBlocksOfNeighborChange(TE.xCoord, TE.yCoord, TE.zCoord, this);
-
+            //onNeighborChange(world, blockPos, blockPos);
+            //world.notifyNeighborsOfStateChange(blockPos, this);
+        }
+        
+        if (actionResult.altered) {
+            cbTileEntity.update(true);
+        	//cbTileEntity.markDirty();
+            //world.notifyBlockUpdate(blockPos, blockState, blockState, 3);
         }
 
-        if (actionResult.playSound) {
-            BlockProperties.playBlockSound(TE.getWorldObj(), actionResult.itemStack, TE.xCoord, TE.yCoord, TE.zCoord, false);
-        }
+/*        if (actionResult.playSound) {
+            BlockProperties.playBlockSound(world, actionResult.itemStack, blockPos, false);
+        }*/
 
         if (actionResult.decInv) {
             EntityLivingUtil.decrementCurrentSlot(entityPlayer);
@@ -505,133 +441,143 @@ public class BlockCoverable extends BlockContainer {
 
     /**
      * Cycles through chisel patterns.
+     * 
+     * @param cbTileEntity the Carpenter's Block tile entity
+     * @param facing the side being clicked
+     * @param hand the player hand holding tool
      */
-    public boolean onChiselClick(TEBase TE, int side, boolean leftClick)
-    {
-        String design = TE.getChiselDesign(side);
+    public boolean onChiselClick(CbTileEntity cbTileEntity, EnumAttributeLocation location, EnumHand hand) {
+    	String design = "";
+    	if (cbTileEntity.getAttributeHelper().hasAttribute(location, EnumAttributeType.DESIGN_CHISEL)) {
+    		design = (String) cbTileEntity.getAttributeHelper().getAttribute(location, EnumAttributeType.DESIGN_CHISEL).getModel();
+    	}
         String designAdj = "";
 
+        // Attempt to set first design to adjacent
         if (design.equals("")) {
-
-            World world = TE.getWorldObj();
-
-            /* Match pattern with adjacent pattern if possible. */
-
-            TEBase[] TE_list = getAdjacentTileEntities(world, TE.xCoord, TE.yCoord, TE.zCoord);
-
-            for (TEBase TE_current : TE_list) {
-                if (TE_current != null) {
-                    TE_current.getBlockType();
-                    if (TE_current.hasChiselDesign(side)) {
-                        design = TE_current.getChiselDesign(side);
+            World world = cbTileEntity.getWorld();
+            CbTileEntity[] cbTileEntity_list = getAdjacentTileEntities(world, cbTileEntity.getPos());
+            for (CbTileEntity cbTileEntity_current : cbTileEntity_list) {
+                if (cbTileEntity_current != null) {
+                    if (cbTileEntity_current.getAttributeHelper().hasAttribute(EnumAttributeLocation.HOST, EnumAttributeType.DESIGN_CHISEL)) {
+                        design = (String) cbTileEntity_current.getAttributeHelper().getAttribute(EnumAttributeLocation.HOST, EnumAttributeType.DESIGN_CHISEL).getModel();
                         designAdj = design;
+                        // TODO: Can refine this later to include side cover designs
+                        break;
                     }
                 }
             }
-
         }
 
+        // Set next design
         if (designAdj.equals("")) {
-            design = leftClick ? DesignHandler.getPrev("chisel", design) : DesignHandler.getNext("chisel", design);
+            design = EnumHand.MAIN_HAND.equals(hand) ? DesignHandler.getPrev("chisel", design) : DesignHandler.getNext("chisel", design);
         }
 
         if (!design.equals("")) {
-            TE.setChiselDesign(side, design);
+        	cbTileEntity.addAttribute(EnumAttributeLocation.HOST, EnumAttributeType.DESIGN_CHISEL, design);
         }
 
         return true;
     }
 
-    @Override
     /**
-     * Lets the block know when one of its neighbor changes. Doesn't know which neighbor changed (coordinates passed are
-     * their own) Args: x, y, z, neighbor blockID
+     * Called when a neighbor block changes.
+     * <p>
+     * Will drop side covers that are obstructed.
+     * 
+     * @param blockAccess the block accessor
+     * @param blockPos the block position
+     * @param neighborBlockPos the neighbor block position
      */
-    public void onNeighborBlockChange(World world, int x, int y, int z, Block block)
-    {
-        /* This will check for and eject side covers that are obstructed. */
-
-        if (!world.isRemote) {
-            TEBase TE = getTileEntity(world, x, y, z);
-            if (TE != null) {
-                for (int side = 0; side < 6; ++side) {
-                    if (TE.hasAttribute(TE.ATTR_COVER[side])) {
-                        if (!canCoverSide(TE, world, x, y, z, side)) {
-                            TE.removeAttributes(side);
-                            continue;
-                        }
-                        ForgeDirection dir = ForgeDirection.getOrientation(side);
-                        if (world.isSideSolid(x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ, dir.getOpposite()) && isSideSolid(world, x, y, z, dir)) {
-                            TE.removeAttributes(side);
-                        }
+    @Override
+    public void onNeighborChange(IBlockAccess blockAccess, BlockPos blockPos, BlockPos neighborBlockPos) {
+        CbTileEntity cbTileEntity = getTileEntity(blockAccess, blockPos);
+        if (cbTileEntity != null) {
+        	for (EnumFacing facing : EnumFacing.values()) {
+        		EnumAttributeLocation location = EnumAttributeLocation.valueOf(facing.ordinal());
+        		if (cbTileEntity.getAttributeHelper().hasAttribute(location, EnumAttributeType.COVER)) {
+                    if (!canSupportCover(cbTileEntity, location)) {
+                        cbTileEntity.removeAttributes(location);
+                        continue;
+                    }
+                    if (blockAccess.isSideSolid(blockPos.offset(facing), facing.getOpposite(), false) && isSideSolid(getDefaultState(), blockAccess, blockPos.offset(facing), facing.getOpposite())) {
+                        cbTileEntity.removeAttributes(location);
                     }
                 }
-            }
+        	}
         }
     }
 
-    @Override
     /**
-     * Returns true if the block is emitting indirect/weak redstone power on the specified side. If isBlockNormalCube
-     * returns true, standard redstone propagation rules will apply instead and this will not be called. Args: World, X,
-     * Y, Z, side. Note that the side is reversed - eg it is 1 (up) when checking the bottom of the block.
+     * Gets weak redstone power being emitted by block on specified side.
+     * <p>
+     * If {@link #isBlockNormalCube(IBlockState) isBlockNormalCube} returns <code>true</code>,
+     * standard redstone propagation rules will apply instead and this will not be called.
+     * 
+     * @param blockState the block state
+     * @param blockAccess the block accessor
+     * @param blockPos the block position
+     * @param facing the opposite of side being checked
+     * @return redstone power from 0 to 15
      */
-    public int isProvidingWeakPower(IBlockAccess blockAccess, int x, int y, int z, int side)
-    {
-        TEBase TE = getTileEntity(blockAccess, x, y, z);
+    @Override
+    public int getWeakPower(IBlockState blockState, IBlockAccess blockAccess, BlockPos blockPos, EnumFacing facing) {
+        CbTileEntity cbTileEntity = getTileEntity(blockAccess, blockPos);
         int power = 0;
 
-        /* Indirect power is provided by any cover. */
-
-        if (TE != null) {
-            for (int idx = 0; idx < 7; ++idx) {
-                if (TE.hasAttribute(TE.ATTR_COVER[idx])) {
-                    Block block = BlockProperties.toBlock(BlockProperties.getCover(TE, idx));
-                    int tempPower = block.isProvidingWeakPower(blockAccess, x, y, z, side);
-                    if (tempPower > power) {
-                        power = tempPower;
-                    }
-                }
-            }
+        Set<EnumFacing> sides = new HashSet<EnumFacing>();
+        for (EnumAttributeLocation location : EnumAttributeLocation.values()) {
+    		IBlockState tempBlockState = BlockUtil.getAttributeBlockState(cbTileEntity.getAttributeHelper(), location, EnumAttributeType.COVER);
+    		if (!EnumAttributeLocation.HOST.equals(location)) {
+    			for (EnumFacing tempFacing : EnumFacing.values()) {
+    				int tempPower = tempBlockState.getBlock().getWeakPower(tempBlockState, blockAccess, blockPos, tempFacing);
+    	            power = Math.max(power, tempPower);
+    			}
+    		} else {
+    			int tempPower = tempBlockState.getBlock().getWeakPower(tempBlockState, blockAccess, blockPos, facing);
+	            power = Math.max(power, tempPower);
+    		}
+        }
+        
+        return power;
+    }
+    
+    /**
+     * Gets redstone power being emitted on the specified side.
+     * <p>
+     * Note that the side is reversed.
+     * 
+     * @param blockState the block state
+     * @param blockAccess the block accessor
+     * @param blockPos the block position
+     * @param facing the opposite of side being checked
+     * @return redstone power from 0 to 15
+     */
+    @Override
+    public int getStrongPower(IBlockState blockState, IBlockAccess blockAccess, BlockPos blockPos, EnumFacing facing) {
+        CbTileEntity cbTileEntity = getTileEntity(blockAccess, blockPos);
+        int power = 0;
+        
+        Set<IBlockState> blockStates = new HashSet<IBlockState>();
+        IBlockState sideBlockState = BlockUtil.getAttributeBlockState(cbTileEntity.getAttributeHelper(), EnumAttributeLocation.valueOf(facing.getOpposite().ordinal()), EnumAttributeType.COVER);
+        if (sideBlockState != null) {
+        	blockStates.add(sideBlockState);
+        }
+        IBlockState hostBlockState = BlockUtil.getAttributeBlockState(cbTileEntity.getAttributeHelper(), EnumAttributeLocation.HOST, EnumAttributeType.COVER);
+        if (hostBlockState != null) {
+        	blockStates.add(hostBlockState);
+        }
+        
+        for (IBlockState setBlockState : blockStates) {
+            int tempPower = hostBlockState.getBlock().getStrongPower(setBlockState, blockAccess, blockPos, facing);
+            power = Math.max(power, tempPower);
         }
 
         return power;
     }
 
-    @Override
-    /**
-     * Returns true if the block is emitting direct/strong redstone power on the specified side. Args: World, X, Y, Z,
-     * side. Note that the side is reversed - eg it is 1 (up) when checking the bottom of the block.
-     */
-    public int isProvidingStrongPower(IBlockAccess blockAccess, int x, int y, int z, int side)
-    {
-        TEBase TE = getTileEntity(blockAccess, x, y, z);
-        int power = 0;
 
-        /* Strong power is provided by the base cover, or a side cover if one exists. */
-
-
-        int effectiveSide = ForgeDirection.OPPOSITES[side];
-        if (BlockProperties.hasAttribute(TE, TE.ATTR_COVER[effectiveSide])) {
-            Block block = BlockProperties.toBlock(BlockProperties.getCover(TE, effectiveSide));
-            int tempPower = block.isProvidingWeakPower(blockAccess, x, y, z, side);
-            if (tempPower > power) {
-                power = tempPower;
-            }
-        } else if (BlockProperties.hasAttribute(TE, TE.ATTR_COVER[6])) {
-            Block block = BlockProperties.toBlock(BlockProperties.getCover(TE, 6));
-            int tempPower = block.isProvidingWeakPower(blockAccess, x, y, z, side);
-            if (tempPower > power) {
-                power = tempPower;
-            }
-        }
-
-
-        return power;
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
     /**
      * Spawn a digging particle effect in the world, this is a wrapper
      * around EffectRenderer.addBlockHitEffects to allow the block more
@@ -643,17 +589,18 @@ public class BlockCoverable extends BlockContainer {
      * @param effectRenderer A reference to the current effect renderer.
      * @return True to prevent vanilla digging particles form spawning.
      */
-    public boolean addHitEffects(World world, MovingObjectPosition target, EffectRenderer effectRenderer)
-    {
-        TEBase TE = getTileEntity(world, target.blockX, target.blockY, target.blockZ);
+    // TODO: This will have issues with cover blockstate
+/*    @Override
+    @SideOnly(Side.CLIENT)
+    public boolean addHitEffects(IBlockState blockState, World world, RayTraceResult rayTraceResult, ParticleManager particleManager) {
+        CbTileEntity cbTileEntity = getTileEntity(world, rayTraceResult.getBlockPos());
+        if (cbTileEntity != null) {
+        	EnumAttributeLocation
+            int effectiveSide = cbTileEntity.hasAttribute(cbTileEntity.ATTR_COVER[target.sideHit]) ? target.sideHit : 6;
+            ItemStack itemStack = BlockProperties.getCover(cbTileEntity, effectiveSide);
 
-        if (TE != null) {
-
-            int effectiveSide = TE.hasAttribute(TE.ATTR_COVER[target.sideHit]) ? target.sideHit : 6;
-            ItemStack itemStack = BlockProperties.getCover(TE, effectiveSide);
-
-            if (BlockProperties.hasAttribute(TE, TE.ATTR_OVERLAY[effectiveSide])) {
-                Overlay overlay = OverlayHandler.getOverlayType(TE.getAttribute(TE.ATTR_OVERLAY[effectiveSide]));
+            if (BlockProperties.hasAttribute(cbTileEntity, cbTileEntity.ATTR_OVERLAY[effectiveSide])) {
+                Overlay overlay = OverlayHandler.getOverlayType(cbTileEntity.getAttribute(cbTileEntity.ATTR_OVERLAY[effectiveSide]));
                 if (OverlayHandler.coversFullSide(overlay, target.sideHit)) {
                     itemStack = overlay.getItemStack();
                 }
@@ -686,92 +633,69 @@ public class BlockCoverable extends BlockContainer {
                     break;
             }
 
-            ParticleHelper.addHitEffect(TE, target, xOffset, yOffset, zOffset, itemStack, effectRenderer);
+            ParticleHelper.addHitEffect(cbTileEntity, target, xOffset, yOffset, zOffset, itemStack, effectRenderer);
 
             return true;
 
         }
 
         return super.addHitEffects(world, target, effectRenderer);
-    }
+    }*/
 
+    /**
+     * Renders block destruction effects.  This is controlled to prevent block
+     * destroy effects if left-clicked with a Carpenter's Hammer while player
+     * is in creative mode.
+     * 
+     * @param world the world
+     * @param blockPos the block position
+     * @param particleManager the particle manager
+     * @return <code>false</code> if effects are displayed
+     */
     @Override
     @SideOnly(Side.CLIENT)
-    /**
-     * Renders block destruction effects.
-     * This is controlled to prevent block destroy effects if left-clicked with a Carpenter's Hammer while player is in creative mode.
-     *
-     * Returns false to display effects.  True suppresses them (backwards).
-     */
-    public boolean addDestroyEffects(World world, int x, int y, int z, int metadata, EffectRenderer effectRenderer)
-    {
-        /*
-         * We don't have the ability to accurately determine the entity that is
-         * hitting the block. So, instead we're guessing based on who is
-         * closest. This should be adequate most of the time.
-         */
-
-        TEBase TE = getTileEntity(world, x, y, z);
-
-        if (TE != null) {
-
-            EntityPlayer entityPlayer = world.getClosestPlayer(x, y, z, 6.5F);
-
+    public boolean addDestroyEffects(World world, BlockPos blockPos, ParticleManager particleManager) {
+        CbTileEntity cbTileEntity = getTileEntity(world, blockPos);
+        if (cbTileEntity != null) {
+            EntityPlayer entityPlayer = world.getClosestPlayer(blockPos.getX(), blockPos.getY(), blockPos.getZ(), 6.5F, false);
             if (entityPlayer != null) {
                 if (!suppressDestroyBlock(entityPlayer)) {
-                    ParticleHelper.addDestroyEffect(world, x, y, z, BlockProperties.getCover(TE, 6), effectRenderer);
+                	// TODO: Work on this
+                    //ParticleHelper.addDestroyEffect(world, x, y, z, BlockProperties.getCover(cbTileEntity, 6), effectRenderer);
                 } else {
                     return true;
                 }
             }
-
         }
-
         return false;
     }
-
-    @Override
+    
     /**
-     * Returns light value based on cover or side covers.
+     * Returns block light value.
+     * 
+     * @param blockState the block state
+     * @param blockAccess the block accessor
+     * @param blockPos the block position
+     * @return the light value as integer from 0 to 15
      */
-    public int getLightValue(IBlockAccess blockAccess, int x, int y, int z)
-    {
-        TEBase TE = getSimpleTileEntity(blockAccess, x, y, z);
-        if (TE != null) {
-            return TE.getLightValue();
+    @Override
+    public int getLightValue(IBlockState blockState, IBlockAccess blockAccess, BlockPos blockPos) {
+        CbTileEntity cbTileEntity = getSimpleTileEntity(blockAccess, blockPos);
+        if (cbTileEntity != null) {
+            return cbTileEntity.getLightValue();
         }
         return 0;
     }
 
-    @Override
-    /**
-     * Returns the block hardness at a location. Args: world, x, y, z
-     */
-    public float getBlockHardness(World world, int x, int y, int z)
-    {
-        TEBase TE = getTileEntity(world, x, y, z);
-
-        if (BlockProperties.hasAttribute(TE, TE.ATTR_COVER[6])) {
-            ItemStack is = BlockProperties.getCover(TE, 6);
-            Block b = BlockProperties.toBlock(is);
-            if (b instanceof BlockCoverable) {
-                return blockHardness;
-            }
-            return b instanceof IWrappableBlock ? ((IWrappableBlock)b).getHardness(world, x, y, z, b, is.getItemDamage()) : b.getBlockHardness(world, x, y, z);
-        }
-
-        return blockHardness;
-    }
-
-    @Override
-    /**
+/*    @Override
+    *//**
      * Chance that fire will spread and consume this block.
-     */
+     *//*
     public int getFlammability(IBlockAccess blockAccess, int x, int y, int z, ForgeDirection side)
     {
-        TEBase TE = getTileEntity(blockAccess, x, y, z);
-        if (TE != null) {
-            ItemStack is = BlockProperties.getFeatureSensitiveSideItemStack(TE, side);
+        CbTileEntity cbTileEntity = getTileEntity(blockAccess, x, y, z);
+        if (cbTileEntity != null) {
+            ItemStack is = BlockProperties.getFeatureSensitiveSideItemStack(cbTileEntity, side);
             Block b = BlockProperties.toBlock(is);
             return b instanceof IWrappableBlock ? ((IWrappableBlock)b).getFlammability(blockAccess, x, y, z, side, b, is.getItemDamage()) : Blocks.fire.getFlammability(b);
         }
@@ -779,14 +703,14 @@ public class BlockCoverable extends BlockContainer {
     }
 
     @Override
-    /**
+    *//**
      * Called when fire is updating on a neighbor block.
-     */
+     *//*
     public int getFireSpreadSpeed(IBlockAccess blockAccess, int x, int y, int z, ForgeDirection side)
     {
-        TEBase TE = getTileEntity(blockAccess, x, y, z);
-        if (TE != null) {
-            ItemStack is = BlockProperties.getFeatureSensitiveSideItemStack(TE, side);
+        CbTileEntity cbTileEntity = getTileEntity(blockAccess, x, y, z);
+        if (cbTileEntity != null) {
+            ItemStack is = BlockProperties.getFeatureSensitiveSideItemStack(cbTileEntity, side);
             Block b = BlockProperties.toBlock(is);
             return b instanceof IWrappableBlock ? ((IWrappableBlock)b).getFireSpread(blockAccess, x, y, z, side, b, is.getItemDamage()) : Blocks.fire.getEncouragement(b);
         }
@@ -795,16 +719,16 @@ public class BlockCoverable extends BlockContainer {
     }
 
     @Override
-    /**
+    *//**
      * Currently only called by fire when it is on top of this block.
      * Returning true will prevent the fire from naturally dying during updating.
      * Also prevents fire from dying from rain.
-     */
+     *//*
     public boolean isFireSource(World world, int x, int y, int z, ForgeDirection side)
     {
-        TEBase TE = getTileEntity(world, x, y, z);
-        if (TE != null) {
-            ItemStack is = BlockProperties.getFeatureSensitiveSideItemStack(TE, side);
+        CbTileEntity cbTileEntity = getTileEntity(world, x, y, z);
+        if (cbTileEntity != null) {
+            ItemStack is = BlockProperties.getFeatureSensitiveSideItemStack(cbTileEntity, side);
             Block b = BlockProperties.toBlock(is);
             if (b instanceof BlockCoverable) {
                 return false;
@@ -812,182 +736,90 @@ public class BlockCoverable extends BlockContainer {
             return b instanceof IWrappableBlock ? ((IWrappableBlock)b).sustainsFire(world, x, y, z, side, b, is.getItemDamage()) : b.isFireSource(world, x, y, z, side);
         }        
         return false;
-    }
-
-    @Override
-    /**
-     * Location sensitive version of getExplosionRestance
-     */
-    public float getExplosionResistance(Entity entity, World world, int x, int y, int z, double explosionX, double explosionY, double explosionZ)
-    {
-        TEBase TE = getTileEntity(world, x, y, z);
-
-        if (BlockProperties.hasAttribute(TE, TE.ATTR_COVER[6])) {
-            ItemStack is = BlockProperties.getCover(TE, 6);
-            Block b = BlockProperties.toBlock(is);
-            if (b instanceof BlockCoverable) {
-                return this.getExplosionResistance(entity);
-            }
-            return b instanceof IWrappableBlock ? ((IWrappableBlock)b).getBlastResistance(entity, world, x, y, z, explosionX, explosionY, explosionZ, b, is.getItemDamage()) : b.getExplosionResistance(entity, world, x, y, z, explosionX, explosionY, explosionZ);
-        }
-
-        return this.getExplosionResistance(entity);
-    }
-
-    @Override
-    /**
-     * Returns whether block is wood
-     */
-    public boolean isWood(IBlockAccess blockAccess, int x, int y, int z)
-    {
-        TEBase TE = getTileEntity(blockAccess, x, y, z);
-
-        if (BlockProperties.hasAttribute(TE, TE.ATTR_COVER[6])) {
-            ItemStack is = BlockProperties.getCover(TE, 6);
-            Block b = BlockProperties.toBlock(is);
-            if (b instanceof BlockCoverable) {
-                return true;
-            }
-            return b instanceof IWrappableBlock ? ((IWrappableBlock)b).isLog(blockAccess, x, y, z, b, is.getItemDamage()) : b.isWood(blockAccess, x, y, z);
-        }
-
-        return super.isWood(blockAccess, x, y, z);
-    }
+    }*/
 
     /**
-     * Determines if this block is can be destroyed by the specified entities normal behavior.
+     * Called when player destroys a block with an item that can harvest it.
+     * 
+     * @param world the world
+     * @param entityPlayer the player
+     * @param blockPos the block position
+     * @param blockState the block state
+     * @param tileEntity the tile entity
+     * @param itemStack player held ItemStack
      */
     @Override
-    public boolean canEntityDestroy(IBlockAccess blockAccess, int x, int y, int z, Entity entity)
-    {
-        TEBase TE = getTileEntity(blockAccess, x, y, z);
-
-        if (BlockProperties.hasAttribute(TE, TE.ATTR_COVER[6])) {
-            Block block = BlockProperties.toBlock(BlockProperties.getCover(TE, 6));
-            if (entity instanceof EntityWither) {
-                return !block.equals(Blocks.bedrock) && !block.equals(Blocks.end_portal) && !block.equals(Blocks.end_portal_frame) && !block.equals(Blocks.command_block);
-            } else if (entity instanceof EntityDragon) {
-                return !block.equals(Blocks.obsidian) && !block.equals(Blocks.end_stone) && !block.equals(Blocks.bedrock);
-            }
-        }
-
-        return super.canEntityDestroy(blockAccess, x, y, z, entity);
-    }
-
-    @Override
-    /**
-     * Triggered whenever an entity collides with this block (enters into the block). Args: world, x, y, z, entity
-     */
-    public void onEntityCollidedWithBlock(World world, int x, int y, int z, Entity entity)
-    {
-        TEBase TE = getTileEntity(world, x, y, z);
-
-        if (BlockProperties.hasAttribute(TE, TE.ATTR_COVER[6])) {
-            BlockProperties.toBlock(BlockProperties.getCover(TE, 6)).onEntityCollidedWithBlock(world, x, y, z, entity);
-        }
-    }
-
-    @Override
-    /**
-     * Spawns EntityItem in the world for the given ItemStack if the world is not remote.
-     */
-    protected void dropBlockAsItem(World world, int x, int y, int z, ItemStack itemStack)
-    {
-        // Clear metadata for Carpenter's blocks
-        Block block = BlockProperties.toBlock(itemStack);
-        if (block instanceof BlockCoverable) {
-            itemStack.setItemDamage(0);
-        }
-
-        super.dropBlockAsItem(world, x, y, z, itemStack);
-    }
-
-    @Override
-    /**
-     * Called when the player destroys a block with an item that can harvest it. (i, j, k) are the coordinates of the
-     * block and l is the block's subtype/damage.
-     */
-    public void harvestBlock(World p_149636_1_, EntityPlayer p_149636_2_, int p_149636_3_, int p_149636_4_, int p_149636_5_, int p_149636_6_) {}
+    public void harvestBlock(World world, EntityPlayer entityPlayer, BlockPos blockPos, IBlockState blockState, TileEntity tileEntity, ItemStack itemStack) {};
 
     /**
      * Indicates whether block destruction should be suppressed when block is clicked.
-     * Will return true if player is holding a Carpenter's tool in creative mode.
+     * 
+     * @param entityPlayer the player
+     * @return <code>true</code> if block should not be destroyed
      */
-    protected boolean suppressDestroyBlock(EntityPlayer entityPlayer)
-    {
+    protected boolean suppressDestroyBlock(EntityPlayer entityPlayer) {
         if (entityPlayer == null) {
             return false;
         }
-
-        ItemStack itemStack = entityPlayer.getHeldItem();
-
+        ItemStack itemStack = entityPlayer.getHeldItemMainhand();
         if (itemStack != null) {
             Item item = itemStack.getItem();
             return entityPlayer.capabilities.isCreativeMode && item != null && (item instanceof ICarpentersHammer || item instanceof ICarpentersChisel);
         }
-
         return false;
     }
 
     /**
-     * Drops block as {@link ItemStack} and notifies relevant systems of
+     * Drops block as ItemStack and notifies relevant systems of
      * block removal.  Block attributes will drop later in destruction.
      * <p>
-     * This is usually called when a {@link #onNeighborBlockChange(World, int, int, int, Block) neighbor changes}.
+     * This is usually called when a {@link #onNeighborChange(IBlockAccess, BlockPos, BlockPos) neighbor changes}.
      *
-     * @param world the {@link World}
-     * @param x the x coordinate
-     * @param y the y coordinate
-     * @param z the z coordinate
-     * @param dropBlock whether block {@link ItemStack} is dropped
+     * @param world the world
+     * @param blockPos the block position
+     * @param dropBlock whether block ItemStack is dropped
      */
-    protected void destroyBlock(World world, int x, int y, int z, boolean dropBlock)
-    {
-        // Drop attributes
-        int metadata = dropBlock ? 0 : METADATA_DROP_ATTR_ONLY;
-        ArrayList<ItemStack> items = getDrops(world, x, y, z, metadata, 0);
+    protected void destroyBlock(World world, BlockPos blockPos, boolean dropBlock) {
+        //int metadata = dropBlock ? 0 : METADATA_DROP_ATTR_ONLY;
+        List<ItemStack> items = getDrops(world, blockPos, getDefaultState(), 1);
         for (ItemStack item : items) {
-            dropBlockAsItem(world, x, y, z, item);
+        	// TODO: Work on block drops
+            //dropBlockAsItem(world, x, y, z, item);
         }
-
-        world.setBlockToAir(x, y, z);
+        world.setBlockToAir(blockPos);
     }
 
-    @Override
     /**
      * Called when a player removes a block.  This is responsible for
      * actually destroying the block, and the block is intact at time of call.
      * This is called regardless of whether the player can harvest the block or
      * not.
-     *
-     * Return true if the block is actually destroyed.
-     *
+     * <p>
      * Note: When used in multiplayer, this is called on both client and
      * server sides!
      *
-     * @param world The current world
-     * @param player The player damaging the block, may be null
-     * @param x X Position
-     * @param y Y position
-     * @param z Z position
-     * @param willHarvest True if Block.harvestBlock will be called after this, if the return in true.
-     *        Can be useful to delay the destruction of tile entities till after harvestBlock
-     * @return True if the block is actually destroyed.
+     * @param blockState the block state
+     * @param world the world
+     * @param blockPos the block position
+     * @param entityPlayer the player
+     * @param willHarvest <code>true</code> if {@link Block#harvestBlock(World, EntityPlayer, BlockPos, IBlockState, TileEntity, ItemStack) Block.harvestBlock}
+     * 		  will be called after this.  Can be useful to delay the destruction of tile entities until after harvestBlock
+     * @return <code>true</code> if the block is actually destroyed
      */
-    public boolean removedByPlayer(World world, EntityPlayer entityPlayer, int x, int y, int z, boolean willHarvest)
-    {
+    @Override
+    public boolean removedByPlayer(IBlockState blockState, World world, BlockPos blockPos, EntityPlayer entityPlayer, boolean willHarvest) {
         if (world.isRemote) {
-            return super.removedByPlayer(world, entityPlayer, x, y, z, willHarvest);
+            return super.removedByPlayer(blockState, world, blockPos, entityPlayer, willHarvest);
         }
 
         // Grab drops while tile entity exists (before calling super)
-        int metadata = entityPlayer != null && entityPlayer.capabilities.isCreativeMode ? METADATA_DROP_ATTR_ONLY : 0;
-        ArrayList<ItemStack> items = getDrops(world, x, y, z, metadata, 0);
+        //int metadata = entityPlayer != null && entityPlayer.capabilities.isCreativeMode ? METADATA_DROP_ATTR_ONLY : 0;
+        List<ItemStack> itemStacks = getDrops(world, blockPos, blockState, 1);
 
         // Drop attributes if block destroyed, and no Carpenter's Tool is held by entity
-        if (!suppressDestroyBlock(entityPlayer) && super.removedByPlayer(world, entityPlayer, x, y, z, willHarvest)) {
-            for (ItemStack item : items) {
-                dropBlockAsItem(world, x, y, z, item);
+        if (!suppressDestroyBlock(entityPlayer) && super.removedByPlayer(blockState, world, blockPos, entityPlayer, willHarvest)) {
+            for (ItemStack itemStack : itemStacks) {
+            	this.spawnAsEntity(world, blockPos, itemStack);
             }
             return true;
         }
@@ -996,186 +828,152 @@ public class BlockCoverable extends BlockContainer {
     }
 
     /**
-     * This returns a complete list of items dropped from this block.
+     * Gets a complete list of items dropped from this block.
      *
-     * @param world The current world
-     * @param x X Position
-     * @param y Y Position
-     * @param z Z Position
-     * @param metadata Current metadata
-     * @param fortune Breakers fortune level
-     * @return A ArrayList containing all items this block drops
+     * @param blockAccess the block accessor
+     * @param blockPos the block position
+     * @param blockState the block state
+     * @param fortune breakers fortune level
+     * @return a list of ItemStacks to drop
      */
     @Override
-    public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int metadata, int fortune)
-    {
-        ArrayList<ItemStack> ret = super.getDrops(world,  x, y, z, metadata, fortune); // Add block item drop
-        TEBase TE = getSimpleTileEntity(world, x, y, z);
+    public List<ItemStack> getDrops(IBlockAccess blockAccess, BlockPos blockPos, IBlockState blockState, int fortune) {
+        List<ItemStack> list = super.getDrops(blockAccess, blockPos, blockState, fortune); // Add block item drop
 
-        if (metadata == METADATA_DROP_ATTR_ONLY) {
-            ret.clear(); // Remove block instance from drop list
+        // TODO: Adapt to blockstate propery
+/*        if (metadata == METADATA_DROP_ATTR_ONLY) {
+        	list.clear(); // Remove block instance from drop list 
+        }*/
+
+        CbTileEntity cbTileEntity = getSimpleTileEntity(blockAccess, blockPos);
+        if (cbTileEntity != null) {
+        	list.addAll(cbTileEntity.getAllDroppableAttributes());
         }
 
-        if (TE != null)
-        {
-            for (int idx = 0; idx < 7; ++idx) {
-                if (TE.hasAttribute(TE.ATTR_COVER[idx])) {
-                    ret.add(TE.getAttributeForDrop(TE.ATTR_COVER[idx]));
-                }
-                if (TE.hasAttribute(TE.ATTR_OVERLAY[idx])) {
-                    ret.add(TE.getAttributeForDrop(TE.ATTR_OVERLAY[idx]));
-                }
-                if (TE.hasAttribute(TE.ATTR_DYE[idx])) {
-                    ret.add(TE.getAttributeForDrop(TE.ATTR_DYE[idx]));
-                }
-            }
-            if (TE.hasAttribute(TE.ATTR_ILLUMINATOR)) {
-                ret.add(TE.getAttributeForDrop(TE.ATTR_ILLUMINATOR));
-            }
-        }
-
-        return ret;
+        return list;
     }
 
-    @Override
-    @SideOnly(Side.CLIENT)
-    /**
-     * A randomly called display update to be able to add particles or other items for display
-     */
-    public void randomDisplayTick(World world, int x, int y, int z, Random random)
-    {
-        TEBase TE = getTileEntity(world, x, y, z);
 
-        if (TE != null) {
-            if (TE.hasAttribute(TE.ATTR_COVER[6])) {
-                BlockProperties.toBlock(BlockProperties.getCover(TE, 6)).randomDisplayTick(world, x, y, z, random);
+    /**
+     * A randomly called display update to be able to add particles or other items for display.
+     * 
+     * @param world the world
+     */
+    @SideOnly(Side.CLIENT)
+    @Override
+    public void randomDisplayTick(IBlockState blockState, World world, BlockPos blockPos, Random rand) {
+    	// TODO: this may have issues with cover block states, look into calling all but HOST for this
+        CbTileEntity cbTileEntity = getTileEntity(world, blockPos);
+        if (cbTileEntity != null) {
+/*            if (cbTileEntity.hasAttribute(cbTileEntity.ATTR_COVER[6])) {
+                BlockProperties.toBlock(BlockProperties.getCover(cbTileEntity, 6)).randomDisplayTick(world, x, y, z, random);
             }
-            if (TE.hasAttribute(TE.ATTR_OVERLAY[6])) {
-                if (OverlayHandler.getOverlayType(TE.getAttribute(TE.ATTR_OVERLAY[6])).equals(Overlay.MYCELIUM)) {
+            if (cbTileEntity.hasAttribute(cbTileEntity.ATTR_OVERLAY[6])) {
+                if (OverlayHandler.getOverlayType(cbTileEntity.getAttribute(cbTileEntity.ATTR_OVERLAY[6])).equals(Overlay.MYCELIUM)) {
                     Blocks.mycelium.randomDisplayTick(world, x, y, z, random);
                 }
-            }
+            }*/
         }
     }
 
     /**
-     * Determines if this block can support the passed in plant, allowing it to be planted and grow.
-     * Some examples:
-     *   Reeds check if its a reed, or if its sand/dirt/grass and adjacent to water
-     *   Cacti checks if its a cacti, or if its sand
-     *   Nether types check for soul sand
-     *   Crops check for tilled soil
-     *   Caves check if it's a solid surface
-     *   Plains check if its grass or dirt
-     *   Water check if its still water
+     * Determines if this block can support the passed in plant on facing side, allowing it to be planted and grow.
      *
-     * @param blockAccess The current world
-     * @param x X Position
-     * @param y Y Position
-     * @param z Z position
-     * @param side The direction relative to the given position the plant wants to be, typically its UP
-     * @param plantable The plant that wants to check
-     * @return True to allow the plant to be planted/stay.
+     * @param blockState the block state
+     * @param blockAccess the block accessor
+     * @param blockPos the block position
+     * @param facing the side to check
+     * @param plantable the plant to support
+     * @return <code>true</code> if block can sustain plant
      */
     @Override
-    public boolean canSustainPlant(IBlockAccess blockAccess, int x, int y, int z, ForgeDirection side, IPlantable plantable)
-    {
-        TEBase TE = getTileEntity(blockAccess, x, y, z);
-
-        if (TE != null) {
-
-            /* If side is not solid, it can't sustain a plant. */
-
-            if (!isSideSolid(blockAccess, x, y, z, side)) {
+    public boolean canSustainPlant(IBlockState blockState, IBlockAccess blockAccess, BlockPos blockPos, EnumFacing facing, IPlantable plantable) {
+        CbTileEntity cbTileEntity = getTileEntity(blockAccess, blockPos);
+        if (cbTileEntity != null) {
+            if (!isSideSolid(blockState, blockAccess, blockPos, facing)) {
                 return false;
             }
 
-            /*
-             * Add base block, top block, and both of their associated
-             * overlays to judge whether plants can be supported on block.
-             */
-
-            List<Block> blocks = new ArrayList<Block>();
-
-            for (int side1 = 1; side1 < 7; side1 += 5) {
-                if (TE.hasAttribute(TE.ATTR_COVER[side1])) {
-                    blocks.add(BlockProperties.toBlock(BlockProperties.getCover(TE, side1)));
-                }
-                if (TE.hasAttribute(TE.ATTR_OVERLAY[side1])) {
-                    blocks.add(BlockProperties.toBlock(OverlayHandler.getOverlayType(TE.getAttribute(TE.ATTR_OVERLAY[side1])).getItemStack()));
+            // Add representative attribute blocks
+            Set<Block> blocks = new HashSet<Block>();
+            EnumAttributeLocation location = BlockUtil.getAttributeLocationForFacing(cbTileEntity, facing);
+            if (cbTileEntity.getAttributeHelper().hasAttribute(location, EnumAttributeType.COVER)) {
+            	IBlockState sideBlockState = BlockUtil.getAttributeBlockState(cbTileEntity.getAttributeHelper(), location, EnumAttributeType.COVER);
+            	blocks.add(sideBlockState.getBlock());
+            	Material material = sideBlockState.getBlock().getMaterial(sideBlockState);
+            	if (material.equals(Material.GRASS)) {
+           	 		blocks.add(Blocks.GRASS);
+           	 	} else if (material.equals(Material.GROUND)) {
+                	blocks.add(Blocks.DIRT);
+                } else if (material.equals(Material.SAND)) {
+                	blocks.add(Blocks.SAND);
                 }
             }
-
-            /* Add types using cover material */
-
-            Material material = BlockProperties.toBlock(BlockProperties.getCover(TE, 6)).getMaterial();
-            if (material.equals(Material.grass)) {
-                blocks.add(Blocks.grass);
-            } else if (material.equals(Material.ground)) {
-                blocks.add(Blocks.dirt);
-            } else if (material.equals(Material.sand)) {
-                blocks.add(Blocks.sand);
+            if (cbTileEntity.getAttributeHelper().hasAttribute(location, EnumAttributeType.OVERLAY)) {
+            	blocks.add(BlockUtil.toBlock(OverlayHandler.getOverlayType((ItemStack)cbTileEntity.getAttributeHelper().getAttribute(location, EnumAttributeType.OVERLAY).getModel()).getItemStack()));
             }
-
-            switch (plantable.getPlantType(blockAccess, x, y + 1, z))
-            {
-                case Desert: return blocks.contains(Blocks.sand);
-                case Nether: return blocks.contains(Blocks.soul_sand);
-                case Plains: return blocks.contains(Blocks.grass) || blocks.contains(Blocks.dirt);
+            
+            switch (plantable.getPlantType(blockAccess, blockPos.add(0, 1, 0))) {
+                case Desert: return blocks.contains(Blocks.SAND);
+                case Nether: return blocks.contains(Blocks.SOUL_SAND);
+                case Plains: return blocks.contains(Blocks.GRASS) || blocks.contains(Blocks.DIRT);
                 case Beach:
-                    boolean isBeach = blocks.contains(Blocks.grass) || blocks.contains(Blocks.dirt) || blocks.contains(Blocks.sand);
-                    boolean hasWater = blockAccess.getBlock(x - 1, y, z    ).getMaterial() == Material.water ||
-                                       blockAccess.getBlock(x + 1, y, z    ).getMaterial() == Material.water ||
-                                       blockAccess.getBlock(x,     y, z - 1).getMaterial() == Material.water ||
-                                       blockAccess.getBlock(x,     y, z + 1).getMaterial() == Material.water;
+                    boolean isBeach = blocks.contains(Blocks.GRASS) || blocks.contains(Blocks.DIRT) || blocks.contains(Blocks.SAND);
+                    boolean hasWater = blockAccess.getBlockState(blockPos.add(-1, 0,  0)).getMaterial() == Material.WATER ||
+                                       blockAccess.getBlockState(blockPos.add( 1, 0,  0)).getMaterial() == Material.WATER ||
+                                       blockAccess.getBlockState(blockPos.add( 0, 0, -1)).getMaterial() == Material.WATER ||
+                                       blockAccess.getBlockState(blockPos.add( 0, 0,  1)).getMaterial() == Material.WATER;
                     return isBeach && hasWater;
                 default:
                     break;
             }
         }
-
-        return super.canSustainPlant(blockAccess, x, y, z, side, plantable);
+        return super.canSustainPlant(blockState, blockAccess, blockPos, facing, plantable);
     }
 
     /**
-     * Returns whether this block is considered solid.
+     * Gets whether this block is considered solid.
+     * 
+     * @param blockAccess the block accessor
+     * @param blockPos the block position
+     * @return <code>true</code> if block is considered solid
      */
-    protected boolean isBlockSolid(IBlockAccess blockAccess, int x, int y, int z)
-    {
-        TEBase TE = getTileEntity(blockAccess, x, y, z);
-
-        if (TE != null) {
-            return !TE.hasAttribute(TE.ATTR_COVER[6]) || BlockProperties.toBlock(BlockProperties.getCover(TE, 6)).isOpaqueCube();
+    protected boolean isBlockSolid(IBlockAccess blockAccess, BlockPos blockPos) {
+        CbTileEntity cbTileEntity = getTileEntity(blockAccess, blockPos);
+        if (cbTileEntity != null) {
+            return !cbTileEntity.getAttributeHelper().hasAttribute(EnumAttributeLocation.HOST, EnumAttributeType.COVER) || BlockUtil.getAttributeBlockState(cbTileEntity.getAttributeHelper(), EnumAttributeLocation.HOST, EnumAttributeType.COVER).isOpaqueCube();
         } else {
             return false;
         }
     }
 
-    @Override
     /**
      * Called when the block is placed in the world.
+     * 
+     * @param world the world
+     * @param blockPos the block position
+     * @param blockState the block state
+     * @param entityLivingBase the entity
+     * @param itemStack the player held ItemStack
      */
-    public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack itemStack)
-    {
+    @Override
+    public void onBlockPlacedBy(World world, BlockPos blockPos, IBlockState blockState, EntityLivingBase entityLivingBase, ItemStack itemStack) {
         if (!world.isRemote) {
-
-            TEBase TE = getTileEntity(world, x, y, z);
-
-            if (TE != null) {
-                TE.setOwner(new ProtectedObject((EntityPlayer)entityLiving));
+            CbTileEntity cbTileEntity = getTileEntity(world, blockPos);
+            if (cbTileEntity != null) {
+                cbTileEntity.setOwner(new ProtectedObject((EntityPlayer)entityLivingBase));
             }
-
         }
     }
 
-    @Override
-    /**
+    // Below method is likely inherited from base block state
+/*    @Override
+    *//**
      * Gets the hardness of block at the given coordinates in the given world, relative to the ability of the given
      * EntityPlayer.
-     */
-    public float getPlayerRelativeBlockHardness(EntityPlayer entityPlayer, World world, int x, int y, int z)
-    {
-        /* Don't damage block if holding Carpenter's tool. */
+     *//*
+    public float getPlayerRelativeBlockHardness(EntityPlayer entityPlayer, World world, int x, int y, int z) {
+         Don't damage block if holding Carpenter's tool. 
 
         ItemStack itemStack = entityPlayer.getHeldItem();
 
@@ -1186,25 +984,25 @@ public class BlockCoverable extends BlockContainer {
             }
         }
 
-        /* Return block hardness of cover. */
+         Return block hardness of cover. 
 
-        TEBase TE = getTileEntity(world, x, y, z);
+        CbTileEntity cbTileEntity = getTileEntity(world, x, y, z);
 
-        if (TE != null) {
-            return ForgeHooks.blockStrength(BlockProperties.toBlock(BlockProperties.getCover(TE, 6)), entityPlayer, world, x, y, z);
+        if (cbTileEntity != null) {
+            return ForgeHooks.blockStrength(BlockProperties.toBlock(BlockProperties.getCover(cbTileEntity, 6)), entityPlayer, world, x, y, z);
         } else {
             return super.getPlayerRelativeBlockHardness(entityPlayer, world, x, y, z);
         }
-    }
+    }*/
 
-    @SideOnly(Side.CLIENT)
+/*    @SideOnly(Side.CLIENT)
     @Override
     public int colorMultiplier(IBlockAccess blockAccess, int x, int y, int z)
     {
-        TEBase TE = getTileEntity(blockAccess, x, y, z);
-        if (TE != null)
+        CbTileEntity cbTileEntity = getTileEntity(blockAccess, x, y, z);
+        if (cbTileEntity != null)
         {
-            ItemStack itemStack = BlockProperties.getCover(TE, 6);
+            ItemStack itemStack = BlockProperties.getCover(cbTileEntity, 6);
             Block block = BlockProperties.toBlock(itemStack);
             if (!(block instanceof BlockCoverable)) {
                 return block instanceof IWrappableBlock ? ((IWrappableBlock)block).getColorMultiplier(blockAccess, x, y, z, block, itemStack.getItemDamage()) : block.colorMultiplier(blockAccess, x, y, z);
@@ -1212,40 +1010,44 @@ public class BlockCoverable extends BlockContainer {
         }
 
         return super.colorMultiplier(blockAccess, x, y, z);
-    }
+    }*/
 
-    @Override
+/*    *//**
+     * Gets whether side should be rendered.
+     * 
+     * @param blockState the block state
+     * @param blockAccess the
+     * @param blockPos
+     * @param facing
+     * @return
+     *//*
     @SideOnly(Side.CLIENT)
-    /**
-     * Returns true if the given side of this block type should be rendered, if the adjacent block is at the given
-     * coordinates.  Args: world, x, y, z, side
-     */
-    public boolean shouldSideBeRendered(IBlockAccess blockAccess, int x, int y, int z, int side)
+    public boolean shouldSideBeRendered(IBlockState blockState, IBlockAccess blockAccess, BlockPos blockPos, EnumFacing facing)
     {
         // Side checks in out-of-range areas will crash
         if (y > 0 && y < blockAccess.getHeight())
         {
-            TEBase TE = getTileEntity(blockAccess, x, y, z);
-            if (TE != null) {
+            CbTileEntity cbTileEntity = getTileEntity(blockAccess, x, y, z);
+            if (cbTileEntity != null) {
                 ForgeDirection side_src = ForgeDirection.getOrientation(side);
                 ForgeDirection side_adj = side_src.getOpposite();
 
-                TEBase TE_adj = (TEBase) blockAccess.getTileEntity(x, y, z);
-                TEBase TE_src = (TEBase) blockAccess.getTileEntity(x + side_adj.offsetX, y + side_adj.offsetY, z + side_adj.offsetZ);
+                CbTileEntity cbTileEntity_adj = (CbTileEntity) blockAccess.getTileEntity(x, y, z);
+                CbTileEntity cbTileEntity_src = (CbTileEntity) blockAccess.getTileEntity(x + side_adj.offsetX, y + side_adj.offsetY, z + side_adj.offsetZ);
 
-                if (TE_adj.getBlockType().isSideSolid(blockAccess, x, y, z, side_adj) == TE_src.getBlockType().isSideSolid(blockAccess, x + side_adj.offsetX, y + side_adj.offsetY, z + side_adj.offsetZ, ForgeDirection.getOrientation(side))) {
+                if (cbTileEntity_adj.getBlockType().isSideSolid(blockAccess, x, y, z, side_adj) == cbTileEntity_src.getBlockType().isSideSolid(blockAccess, x + side_adj.offsetX, y + side_adj.offsetY, z + side_adj.offsetZ, ForgeDirection.getOrientation(side))) {
 
-                    if (shareFaces(TE_adj, TE_src, side_adj, side_src)) {
+                    if (shareFaces(cbTileEntity_adj, cbTileEntity_src, side_adj, side_src)) {
 
-                        Block block_adj = BlockProperties.toBlock(BlockProperties.getCover(TE_adj, 6));
-                        Block block_src = BlockProperties.toBlock(BlockProperties.getCover(TE_src, 6));
+                        Block block_adj = BlockProperties.toBlock(BlockProperties.getCover(cbTileEntity_adj, 6));
+                        Block block_src = BlockProperties.toBlock(BlockProperties.getCover(cbTileEntity_src, 6));
 
-                        if (!TE_adj.hasAttribute(TE.ATTR_COVER[6])) {
-                            return TE_src.hasAttribute(TE.ATTR_COVER[6]);
+                        if (!cbTileEntity_adj.hasAttribute(cbTileEntity.ATTR_COVER[6])) {
+                            return cbTileEntity_src.hasAttribute(cbTileEntity.ATTR_COVER[6]);
                         } else {
-                            if (!TE_src.hasAttribute(TE.ATTR_COVER[6]) && block_adj.getRenderBlockPass() == 0) {
+                            if (!cbTileEntity_src.hasAttribute(cbTileEntity.ATTR_COVER[6]) && block_adj.getRenderBlockPass() == 0) {
                                 return !block_adj.isOpaqueCube();
-                            } else if (TE_src.hasAttribute(TE.ATTR_COVER[6]) && block_src.isOpaqueCube() == block_adj.isOpaqueCube() && block_src.getRenderBlockPass() == block_adj.getRenderBlockPass()) {
+                            } else if (cbTileEntity_src.hasAttribute(cbTileEntity.ATTR_COVER[6]) && block_src.isOpaqueCube() == block_adj.isOpaqueCube() && block_src.getRenderBlockPass() == block_adj.getRenderBlockPass()) {
                                 return false;
                             } else {
                                 return true;
@@ -1257,54 +1059,37 @@ public class BlockCoverable extends BlockContainer {
         }
 
         return super.shouldSideBeRendered(blockAccess, x, y, z, side);
-    }
+    }*/
 
-    @Override
+    public static int ew = 0;
+    
     /**
-     * Determines if this block should render in this pass.
+     * Gets whether block should render in given layer.
+     * 
+     * @param blockState the block state
+     * @param blockRenderlayer the block render layer
+     * @return <code>true</code> if block can render in layer
      */
-    public boolean canRenderInPass(int pass)
-    {
-        ForgeHooksClient.setRenderPass(pass);
-        return true;
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    /**
-     * Returns which pass this block be rendered on. 0 for solids and 1 for alpha.
-     */
-    public int getRenderBlockPass()
-    {
-        /*
-         * Alpha properties of block or cover depend on this returning a value
-         * of 1, so it's the default value.  However, when rendering in player
-         * hand we'll encounter sorting artifacts, and thus need to enforce
-         * opaque rendering, or 0.
-         */
-
-        if (ForgeHooksClient.getWorldRenderPass() < 0) {
-            return 0;
-        } else {
-            return 1;
-        }
-    }
+	public boolean canRenderInLayer(IBlockState blockState, BlockRenderLayer blockRenderLayer) {
+		return true;
+	}
 
     /**
      * Returns whether two blocks share faces.
-     * Primarily for slopes, stairs and slabs.
+     * <p>
+     * Used for rendering purposes to cull faces.
+     * TODO: Determine if has any effect
      */
-    protected boolean shareFaces(TEBase TE_adj, TEBase TE_src, ForgeDirection side_adj, ForgeDirection side_src)
-    {
-        return TE_adj.getBlockType().isSideSolid(TE_adj.getWorldObj(), TE_adj.xCoord, TE_adj.yCoord, TE_adj.zCoord, side_adj) &&
-               TE_src.getBlockType().isSideSolid(TE_src.getWorldObj(), TE_src.xCoord, TE_src.yCoord, TE_src.zCoord, side_src);
+    protected boolean shareFaces(CbTileEntity cbTileEntity_adj, CbTileEntity cbTileEntity_src, EnumFacing facing_adj, EnumFacing facing_src) {
+        return cbTileEntity_adj.getBlockType().isSideSolid(getDefaultState(), cbTileEntity_adj.getWorld(), cbTileEntity_adj.getPos(), facing_adj) &&
+               cbTileEntity_src.getBlockType().isSideSolid(getDefaultState(), cbTileEntity_src.getWorld(), cbTileEntity_src.getPos(), facing_src);
     }
 
-    @Override
-    /**
+/*    @Override
+    *//**
      * Is this block (a) opaque and (b) a full 1m cube?  This determines whether or not to render the shared face of two
      * adjacent blocks and also whether the player can attach torches, redstone wire, etc to this block.
-     */
+     *//*
     public boolean isOpaqueCube()
     {
         if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
@@ -1326,91 +1111,141 @@ public class BlockCoverable extends BlockContainer {
         }
 
         return false;
-    }
+    }*/
 
-    @Override
-    /**
+    
+/*    *//**
      * If this block doesn't render as an ordinary block it will return False (examples: signs, buttons, stairs, etc)
-     */
-    public boolean renderAsNormalBlock()
-    {
+     *//*
+    @Override
+    public boolean isBlockNormalCube(IBlockState state) {
         return false;
+    }*/
+    
+    @Override
+    public void onBlockDestroyedByPlayer(World worldIn, BlockPos pos, IBlockState state) {
+    	// TODO Auto-generated method stub
+    	super.onBlockDestroyedByPlayer(worldIn, pos, state);
     }
 
     /**
-     * Should block use the brightest neighbor light value as its own
+     * Whether block should be neighbor block brightness
+     * when rendered.
+     * 
+     * @param blockState the block state
+     * @return <code>true</code> if should use neighbor brightness
      */
     @Override
-    public boolean getUseNeighborBrightness()
-    {
+    public boolean getUseNeighborBrightness(IBlockState blockState) {
         return true;
     }
-
+    
     @Override
+    public TileEntity createTileEntity(World world, IBlockState blockState) {
+    	return new CbTileEntity();
+    }
+
     /**
-     * Called whenever the block is added into the world. Args: world, x, y, z
+     * Gets whether block has tile entity for given block state.
+     * 
+     * @param blockState the block state
+     * @return <code>true</code> if has a tile entity
      */
-    public void onBlockAdded(World world, int x, int y, int z)
-    {
-        world.setTileEntity(x, y, z, createNewTileEntity(world, 0));
-    }
-
     @Override
-    public TileEntity createNewTileEntity(World world, int metadata)
-    {
-        return new TEBase();
-    }
-
-    @Override
-    public boolean hasTileEntity(int metadata)
-    {
+    public boolean hasTileEntity(IBlockState blockState) {
         return true;
     }
-
+    
     /**
-     * This method is configured on as as-needed basis.
-     * It's calling order is not guaranteed.
+     * Damages item with chance to deal damage.
+     * <p>
+     * Used to allow Carpenter's Tools to take damage
+     * at a specified rate and chance.
+     * 
+     * @param world the world
+     * @param entityPlayer the player
      */
-    protected void preOnBlockClicked(TEBase TE, World world, int x, int y, int z, EntityPlayer entityPlayer, ActionResult actionResult) {}
-
-    /**
-     * Called before cover or decoration checks are performed.
-     */
-    protected void preOnBlockActivated(TEBase TE, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ, ActionResult actionResult) {}
-
-    /**
-     * Called if cover and decoration checks have been performed but
-     * returned no changes.
-     */
-    protected void postOnBlockActivated(TEBase TE, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ, ActionResult actionResult) {}
-
-    protected boolean onHammerLeftClick(TEBase TE, EntityPlayer entityPlayer)
-    {
-        return false;
-    }
-
-    protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer)
-    {
-        return false;
-    }
-
-    protected void damageItemWithChance(World world, EntityPlayer entityPlayer)
-    {
-        Item item = entityPlayer.getCurrentEquippedItem().getItem();
-
+    protected void damageItemWithChance(World world, EntityPlayer entityPlayer) {
+        Item item = entityPlayer.getHeldItemMainhand().getItem();
         if (item instanceof ICarpentersHammer) {
-            ((ICarpentersHammer) item).onHammerUse(world, entityPlayer);
+            ((ICarpentersHammer)item).onHammerUse(world, entityPlayer);
         } else if (item instanceof ICarpentersChisel) {
-            ((ICarpentersChisel) item).onChiselUse(world, entityPlayer);
+            ((ICarpentersChisel)item).onChiselUse(world, entityPlayer);
         }
     }
 
     /**
-     * Returns whether side of block supports a cover.
+     * Called before click event alters block features such
+     * as cover, overlay, or dye color.
+     * 
+     * @param cbTileEntity the Carpenter's Block tile entity
+     * @param entityPlayer the player
+     * @param actionResult stores action parameters
      */
-    protected boolean canCoverSide(TEBase TE, World world, int x, int y, int z, int side)
-    {
-        return side == 6;
+    protected void preOnBlockClicked(CbTileEntity cbTileEntity, EntityPlayer entityPlayer, ActionResult actionResult) {}
+
+    /**
+     * Called before activation event alters block features
+     * such as cover, overlay, or dye color.
+     * 
+     * @param cbTileEntity the Carpenter's Block tile entity
+     * @param entityPlayer the player
+     * @param facing the activated face
+     * @param hitX the x hit coordinate
+     * @param hitY the y hit coordinate
+     * @param hitZ the z hit coordinate
+     * @param actionResult stores action parameters
+     */
+    protected void preOnBlockActivated(CbTileEntity cbTileEntity, EntityPlayer entityPlayer, EnumFacing facing, float hitX, float hitY, float hitZ, ActionResult actionResult) {}
+
+    /**
+     * Called after attribute changes processed as long as
+     * no changes occurred.
+     * 
+     * @param cbTileEntity the Carpenter's Block tile entity
+     * @param entityPlayer the player
+     * @param facing the activated face
+     * @param hitX the x hit coordinate
+     * @param hitY the y hit coordinate
+     * @param hitZ the z hit coordinate
+     * @param actionResult stores action parameters
+     */
+    protected void postOnBlockActivated(CbTileEntity cbTileEntity, EntityPlayer entityPlayer, EnumFacing facing, float hitX, float hitY, float hitZ, ActionResult actionResult) {}
+
+    /**
+     * Handles hammer left click interactions.
+     * <p>
+     * Override this for block-specific functionality.
+     * 
+     * @param cbTileEntity the Carpenter's Block tile entity
+     * @param entityPlayer the player
+     * @return <code>true</code> if tile entity changed
+     */
+    protected boolean onHammerLeftClick(CbTileEntity cbTileEntity, EntityPlayer entityPlayer) {
+        return false;
+    }
+
+    /**
+     * Handles hammer right click interactions.
+     * <p>
+     * Override this for block-specific functionality.
+     * 
+     * @param cbTileEntity the Carpenter's Block tile entity
+     * @param entityPlayer the player
+     * @return <code>true</code> if tile entity changed
+     */
+    protected boolean onHammerRightClick(CbTileEntity cbTileEntity, EntityPlayer entityPlayer) {
+        return false;
+    }
+
+    /**
+     * Gets whether block location supports a cover.
+     * 
+     * @param cbTileEntity the Carpenter's Block tile entity
+     * @param location the block attribute location
+     */
+    protected boolean canSupportCover(CbTileEntity cbTileEntity, EnumAttributeLocation location) {
+        return true;
     }
 
     /**
@@ -1420,12 +1255,53 @@ public class BlockCoverable extends BlockContainer {
      * Primarily offered for the garage door, when open, to swap the top piece
      * with the bottom piece for consistency.
      *
-     * @param  TE the originating {@link TEBase}
-     * @return a swapped in {@link TEBase}, or the passed in {@link TEBase}
+     * @param cbTileEntity the Carpenter's Block tile entity
+     * @return a swapped in CbTileEntity, or the passed in CbTileEntity
      */
-    protected TEBase getTileEntityForBlockActivation(TEBase TE)
-    {
-        return TE;
+    protected CbTileEntity getTileEntityForBlockActivation(CbTileEntity cbTileEntity) {
+        return cbTileEntity;
+    }
+    
+    @Override
+    protected BlockStateContainer createBlockState() {
+        return new ExtendedBlockState(this, Property.listedProperties, Property.unlistedProperties.toArray(new IUnlistedProperty[Property.unlistedProperties.size()]));
     }
 
+    @Override
+    public IBlockState getExtendedState(IBlockState blockState, IBlockAccess blockAccess, BlockPos blockPos) {
+    	if (blockState instanceof IExtendedBlockState) {
+            CbTileEntity cbTileEntity = getTileEntity(blockAccess, blockPos);
+            return ((IExtendedBlockState)blockState)
+    			.withProperty(Property.BLOCK_POS, blockPos)
+    			.withProperty(Property.CB_METADATA, cbTileEntity.getData())
+    			.withProperty(Property.RENDER_FACE, new Boolean[] {
+    				this.shouldSideBeRendered(blockState, blockAccess, blockPos, EnumFacing.DOWN),
+    				this.shouldSideBeRendered(blockState, blockAccess, blockPos, EnumFacing.UP),
+    				this.shouldSideBeRendered(blockState, blockAccess, blockPos, EnumFacing.NORTH),
+    				this.shouldSideBeRendered(blockState, blockAccess, blockPos, EnumFacing.SOUTH),
+    				this.shouldSideBeRendered(blockState, blockAccess, blockPos, EnumFacing.WEST),
+    				this.shouldSideBeRendered(blockState, blockAccess, blockPos, EnumFacing.EAST)
+    			})
+    			.withProperty(Property.ATTR_MAP, cbTileEntity.getAttributeHelper().copyMap());
+        }
+        return blockState;
+    }
+    
+    /**
+     * The type of render function called. 3 for standard block models, 2 for TESR's, 1 for liquids, -1 is no render
+     */
+    public EnumBlockRenderType getRenderType(IBlockState blockState) {
+        return EnumBlockRenderType.MODEL;
+    }
+    
+    @SideOnly(Side.CLIENT)
+    public BlockRenderLayer getBlockLayer() {
+        return BlockRenderLayer.CUTOUT_MIPPED;
+    }
+    
+    @Override
+    public int getMetaFromState(IBlockState state) {
+    	return 0;
+    }
+    
 }

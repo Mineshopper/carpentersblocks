@@ -1,9 +1,10 @@
 package com.carpentersblocks.util.registry;
 
 import java.util.ArrayList;
+
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 public class FeatureRegistry {
 
@@ -30,8 +31,7 @@ public class FeatureRegistry {
     /**
      * Initializes configuration properties.
      */
-    public static void preInit(FMLPreInitializationEvent event, Configuration config)
-    {
+    public static void preInit(FMLPreInitializationEvent event, Configuration config) {
         enableCovers              = config.get("features",               "Enable Covers",              enableCovers).getBoolean(enableCovers);
         enableOverlays            = config.get("features",             "Enable Overlays",            enableOverlays).getBoolean(enableOverlays);
         enableSideCovers          = config.get("features",          "Enable Side Covers",          enableSideCovers).getBoolean(enableSideCovers);
@@ -40,43 +40,43 @@ public class FeatureRegistry {
         enableFreeStandingLadders = config.get("features", "Enable Freestanding Ladders", enableFreeStandingLadders).getBoolean(enableFreeStandingLadders);
 
         Property routableFluidsProp = config.get("features", "Routable Fluids", enableRoutableFluids);
-        routableFluidsProp.comment = "When enabled, unobstructed stationary fluid adjacent to block will render in the block space.\nNote: when enabled, you may experience noticeable chunk update lag spikes.";
+        routableFluidsProp.setComment("When enabled, unobstructed stationary fluid adjacent to block will render in the block space.\nNote: when enabled, you may experience noticeable chunk update lag spikes.");
         enableRoutableFluids = routableFluidsProp.getBoolean(enableRoutableFluids);
 
         Property illuminationProp = config.get("features", "Enable Illumination", enableIllumination);
-        illuminationProp.comment = "This will enable players to cover blocks with glowstone dust to make them illuminate.";
+        illuminationProp.setComment("This will enable players to cover blocks with glowstone dust to make them illuminate.");
         enableIllumination = illuminationProp.getBoolean(enableIllumination);
 
         Property ownershipProp = config.get("features", "Enable Ownership", enableOwnership);
-        ownershipProp.comment = "This will prevent players besides you and server operators from editing your objects.\nNote: this does not protect objects against destruction (intentional), and may allow activation if appropriate. Also, the Carpenter's Safe is not affected by this.";
+        ownershipProp.setComment("This will prevent players besides you and server operators from editing your objects.\nNote: this does not protect objects against destruction (intentional), and may allow activation if appropriate. Also, the Carpenter's Safe is not affected by this.");
         enableOwnership = ownershipProp.getBoolean(enableOwnership);
 
         Property slopeSmoothnessProp = config.get("features", "Smoothness", slopeSmoothness);
-        slopeSmoothnessProp.comment = "This controls the smoothness of the slope faces.\nNote: smoothness of 2 is similar to stairs, while a value above 25 is generally fluid.";
+        slopeSmoothnessProp.setComment("This controls the smoothness of the slope faces.\nNote: smoothness of 2 is similar to stairs, while a value above 25 is generally fluid.");
         slopeSmoothness = slopeSmoothnessProp.getInt(slopeSmoothness);
 
         Property multiBlockSizeLimitProp = config.get("features", "MultiBlock Size Limit", multiBlockSizeLimit);
-        multiBlockSizeLimitProp.comment = "This controls how many blocks can be connected as a single entity.\nNote: only applies to Garage Doors.";
+        multiBlockSizeLimitProp.setComment("This controls how many blocks can be connected as a single entity.\nNote: only applies to Garage Doors.");
         multiBlockSizeLimit = multiBlockSizeLimitProp.getInt(multiBlockSizeLimit);
 
         Property torchWeatherEffectsProp = config.get("features", "Enable Torch Weather Effects", enableTorchWeatherEffects);
-        torchWeatherEffectsProp.comment = "This controls whether torches extinguish themselves when exposed to rain or snow.";
+        torchWeatherEffectsProp.setComment("This controls whether torches extinguish themselves when exposed to rain or snow.");
         enableTorchWeatherEffects = torchWeatherEffectsProp.getBoolean(enableTorchWeatherEffects);
 
         Property alphaPaneProp = config.get("features", "Enable Pane Alpha Rendering", enableAlphaPanes);
-        alphaPaneProp.comment = "This controls whether panes (used in doors, hatches, and other blocks) should render on alpha pass.\nThis is needed to allow translucent window glass, for instance.";
+        alphaPaneProp.setComment("This controls whether panes (used in doors, hatches, and other blocks) should render on alpha pass.\nThis is needed to allow translucent window glass, for instance.");
         enableAlphaPanes = alphaPaneProp.getBoolean(enableAlphaPanes);
 
         Property railSlopesProp = config.get("features", "Enable Rail Slope Fill", enableRailSlopes);
-        railSlopesProp.comment = "This allows Carpenter's Blocks with solid top faces to create slopes above them when a sloping rail is above the block.";
+        railSlopesProp.setComment("This allows Carpenter's Blocks with solid top faces to create slopes above them when a sloping rail is above the block.");
         enableRailSlopes = railSlopesProp.getBoolean(enableRailSlopes);
 
         Property garageDoorVoidFillProp = config.get("features", "Enable Garage Door Void Autofill", enableGarageDoorVoidFill);
-        garageDoorVoidFillProp.comment = "This allows garage doors to automatically fill in gaps when barriers beneath doors are destroyed.";
+        garageDoorVoidFillProp.setComment("This allows garage doors to automatically fill in gaps when barriers beneath doors are destroyed.");
         enableGarageDoorVoidFill = garageDoorVoidFillProp.getBoolean(enableGarageDoorVoidFill);
 
         Property overlayList = config.get("features", "Overlay Definitions", new String[] { "Seeds:grass", "Snowball:snow", "String:web", "Vines:vine", "Wheat:hay", "Mushroom:mycelium" });
-        overlayList.comment = "This maps items to overlays.\nItems are prefixed with display names (en_US only).\nOverlay suffixes are :grass, :snow, :web, :vine, :hay, :mycelium";
+        overlayList.setComment("This maps items to overlays.\nItems are prefixed with display names (en_US only).\nOverlay suffixes are :grass, :snow, :web, :vine, :hay, :mycelium");
         for (String item : overlayList.getStringList()) {
             overlayItems.add(item);
         }
@@ -89,7 +89,7 @@ public class FeatureRegistry {
                         "Greatwood Planks",  // Thaumcraft
                         "Thatch"  // TerraFirmaCraft
                 });
-        coverExceptionList.comment = "This allows restricted blocks to be used as covers.\nAdd your own by supplying the display name for the block (en_US only).";
+        coverExceptionList.setComment("This allows restricted blocks to be used as covers.\nAdd your own by supplying the display name for the block (en_US only).");
         for (String item : coverExceptionList.getStringList()) {
             coverExceptions.add(item);
         }

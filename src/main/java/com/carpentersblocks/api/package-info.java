@@ -1,5 +1,4 @@
-@API(owner = "CarpentersBlocks", provides = "CarpentersBlocks|API", apiVersion = "3.3.7")
+@API(owner = "CarpentersBlocks", provides = "CarpentersBlocks|API", apiVersion = "3.3.8")
 package com.carpentersblocks.api;
 
-import cpw.mods.fml.common.API;
-
+import net.minecraftforge.fml.common.API;

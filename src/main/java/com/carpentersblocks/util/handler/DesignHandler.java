@@ -5,42 +5,46 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
+
 import javax.imageio.ImageIO;
-import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.client.resources.IResourceManager;
-import net.minecraft.util.IIcon;
-import net.minecraft.util.ResourceLocation;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.Level;
+
 import com.carpentersblocks.CarpentersBlocks;
 import com.carpentersblocks.CarpentersBlocksCachedResources;
 import com.carpentersblocks.util.ModLogger;
 import com.carpentersblocks.util.registry.BlockRegistry;
 import com.carpentersblocks.util.registry.FeatureRegistry;
-import com.carpentersblocks.util.registry.IconRegistry;
 import com.carpentersblocks.util.registry.ItemRegistry;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import com.carpentersblocks.util.registry.SpriteRegistry;
+
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.client.resources.IResourceManager;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class DesignHandler {
 
-    public static ArrayList<String> listChisel    = new ArrayList<String>();
-    public static ArrayList<String> listBed       = new ArrayList<String>();
-    public static ArrayList<String> listFlowerPot = new ArrayList<String>();
-    public static ArrayList<String> listTile      = new ArrayList<String>();
+    public static List<String> listChisel    = new ArrayList<String>();
+    public static List<String> listBed       = new ArrayList<String>();
+    public static List<String> listFlowerPot = new ArrayList<String>();
+    public static List<String> listTile      = new ArrayList<String>();
 
     private static final String PATH_BASE       = "assets/carpentersblocks/textures/blocks/";
     private static final String PATH_EXEMPT     = "template/";
-    private static final String PATH_CHISEL     = "designs/chisel/";
-    private static final String PATH_BED        = "designs/bed/";
-    private static final String PATH_FLOWER_POT = "designs/flowerpot/";
-    private static final String PATH_TILE       = "designs/tile/";
+    private static final String PATH_CHISEL     = "blocks/designs/chisel/";
+    private static final String PATH_BED        = "blocks/designs/bed/";
+    private static final String PATH_FLOWER_POT = "blocks/designs/flowerpot/";
+    private static final String PATH_TILE       = "blocks/designs/tile/";
 
-    private static boolean isPathValid(String path)
-    {
+    private static boolean isPathValid(String path) {
         return path.contains(PATH_BASE) &&
                path.endsWith(".png") &&
                !path.contains(PATH_EXEMPT);
@@ -49,34 +53,36 @@ public class DesignHandler {
     /**
      * Processes design files.
      */
-    public static void preInit(FMLPreInitializationEvent event)
-    {
+    public static void preInit(FMLPreInitializationEvent event) {
         File filePath = new File(event.getSourceFile().getAbsolutePath());
-
         if (filePath.isDirectory()) {
             for (File file : FileUtils.listFiles(filePath, new String[] { "png" }, true)) {
                 processPath(file.getAbsolutePath().replace("\\", "/"));
             }
         } else {
+        	JarFile jarFile = null;
             try {
-                JarFile jarFile = new JarFile(event.getSourceFile());
+                jarFile = new JarFile(event.getSourceFile());
                 Enumeration enumeration = jarFile.entries();
                 while (enumeration.hasMoreElements()) {
                     processPath(((ZipEntry)enumeration.nextElement()).getName());
                 }
-                jarFile.close();
-            } catch (Exception e) { }
+            } catch (Exception ex) {
+            	ex.printStackTrace();
+            } finally {
+            	if (jarFile != null) {
+            		try {
+            			jarFile.close();
+            		} catch (Exception ex1) {}
+            	}
+            }
         }
-
         ModLogger.log(Level.INFO, String.format("Designs found: Bed(%s), Chisel(%s), FlowerPot(%s), Tile(%s)", listBed.size(), listChisel.size(), listFlowerPot.size(), listTile.size()));
     }
 
-    private static void processPath(String path)
-    {
+    private static void processPath(String path) {
         if (isPathValid(path)) {
-
             String name = path.substring(path.lastIndexOf('/') + 1, path.lastIndexOf('.'));
-
             if (path.contains(PATH_CHISEL)) {
                 listChisel.add(name);
             } else if (path.contains(PATH_BED)) {
@@ -86,16 +92,13 @@ public class DesignHandler {
             } else if (path.contains(PATH_TILE)) {
                 listTile.add(name);
             }
-
         }
     }
 
     @SideOnly(Side.CLIENT)
-    public static void addResources(IResourceManager resourceManager)
-    {
-        for (String iconName : listBed)
-        {
-            ArrayList<BufferedImage> tempList = getBedIcons(resourceManager, iconName);
+    public static void addResources(IResourceManager resourceManager) {
+        for (String iconName : listBed) {
+            List<BufferedImage> tempList = getBedIcons(resourceManager, iconName);
             for (BufferedImage image : tempList) {
                 CarpentersBlocksCachedResources.INSTANCE.addResource("/textures/blocks/designs/bed/cache/" + iconName + "_" + tempList.indexOf(image), image);
             }
@@ -103,50 +106,45 @@ public class DesignHandler {
     }
 
     @SideOnly(Side.CLIENT)
-    public static void registerIcons(IIconRegister iconRegister)
-    {
+    public static void registerSprites(TextureMap textureMap) {
         if (BlockRegistry.enableBed) {
-            for (String iconName : listBed) {
-                IIcon[] icons = new IIcon[8];
+            for (String spriteName : listBed) {
+                TextureAtlasSprite[] sprites = new TextureAtlasSprite[8];
                 for (int count = 0; count < 8; ++count) {
-                    icons[count] = iconRegister.registerIcon(CarpentersBlocksCachedResources.INSTANCE.getModId() + ":" + PATH_BED + "cache/" + iconName + "_" + count);
+                	sprites[count] = textureMap.registerSprite(new ResourceLocation(CarpentersBlocksCachedResources.INSTANCE.getModId(), PATH_BED + "cache/" + spriteName + "_" + count));
                 }
-                IconRegistry.icon_design_bed.add(icons);
+                SpriteRegistry.sprite_design_bed.add(sprites);
             }
         }
         if (FeatureRegistry.enableChiselDesigns) {
-            for (String iconName : listChisel) {
-                IconRegistry.icon_design_chisel.add(iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + PATH_CHISEL + iconName));
+            for (String spriteName : listChisel) {
+            	SpriteRegistry.sprite_design_chisel.add(textureMap.registerSprite(new ResourceLocation(CarpentersBlocks.MOD_ID, PATH_CHISEL + spriteName)));
             }
         }
         if (BlockRegistry.enableFlowerPot) {
-            for (String iconName : listFlowerPot) {
-                IconRegistry.icon_design_flower_pot.add(iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + PATH_FLOWER_POT + iconName));
+            for (String spriteName : listFlowerPot) {
+            	SpriteRegistry.sprite_design_flower_pot.add(textureMap.registerSprite(new ResourceLocation(CarpentersBlocks.MOD_ID + ":" + PATH_FLOWER_POT + spriteName)));
             }
         }
         if (ItemRegistry.enableTile) {
-            for (String iconName : listTile) {
-                IconRegistry.icon_design_tile.add(iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + PATH_TILE + iconName));
+            for (String spriteName : listTile) {
+            	SpriteRegistry.sprite_design_tile.add(textureMap.registerSprite(new ResourceLocation(CarpentersBlocks.MOD_ID + ":" + PATH_TILE + spriteName)));
             }
         }
     }
 
-    public static ArrayList<String> getListForType(String type)
-    {
-        return (ArrayList<String>) (
-                type.equals("chisel") ? listChisel.clone() :
-                type.equals("bed") ? listBed.clone() :
-                type.equals("flowerpot") ? listFlowerPot.clone() :
-                type.equals("tile") ? listTile.clone() : null);
+    public static List<String> getListForType(String type) {
+        return type.equals("chisel") ? new ArrayList<String>(listChisel) :
+               type.equals("bed") ? new ArrayList<String>(listBed) :
+               type.equals("flowerpot") ? new ArrayList<String>(listFlowerPot) :
+               type.equals("tile") ? new ArrayList<String>(listTile) : null;
     }
 
     /**
      * Returns name of next tile in list.
      */
-    public static String getNext(String type, String iconName)
-    {
-        ArrayList<String> tempList = getListForType(type);
-
+    public static String getNext(String type, String iconName) {
+        List<String> tempList = getListForType(type);
         if (tempList.isEmpty()) {
             return iconName;
         } else {
@@ -158,10 +156,8 @@ public class DesignHandler {
     /**
      * Returns name of previous tile in list.
      */
-    public static String getPrev(String type, String iconName)
-    {
-        ArrayList<String> tempList = getListForType(type);
-
+    public static String getPrev(String type, String iconName) {
+        List<String> tempList = getListForType(type);
         if (tempList.isEmpty()) {
             return iconName;
         } else {
@@ -171,13 +167,10 @@ public class DesignHandler {
     }
 
     @SideOnly(Side.CLIENT)
-    public static ArrayList<BufferedImage> getBedIcons(IResourceManager resourceManager, String atlas)
-    {
+    public static ArrayList<BufferedImage> getBedIcons(IResourceManager resourceManager, String atlas) {
         ArrayList<BufferedImage> imageList = new ArrayList<BufferedImage>();
-
-        try
-        {
-            ResourceLocation resourceLocation = new ResourceLocation(CarpentersBlocks.MODID + ":textures/blocks/designs/bed/" + atlas + ".png");
+        try {
+            ResourceLocation resourceLocation = new ResourceLocation(CarpentersBlocks.MOD_ID + ":textures/blocks/designs/bed/" + atlas + ".png");
             BufferedImage image = ImageIO.read(resourceManager.getResource(resourceLocation).getInputStream());
 
             int size = image.getWidth() / 3;
@@ -185,10 +178,8 @@ public class DesignHandler {
             int cols = image.getWidth() / size;
             int count = -1;
 
-            for (int x = 0; x < rows; x++)
-            {
-                for (int y = 0; y < cols; y++)
-                {
+            for (int x = 0; x < rows; x++) {
+                for (int y = 0; y < cols; y++) {
                     ++count;
                     switch (count) {
                         case 0:
@@ -220,7 +211,6 @@ public class DesignHandler {
             }
         }
         catch (Exception e) { }
-
         return imageList;
     }
 
