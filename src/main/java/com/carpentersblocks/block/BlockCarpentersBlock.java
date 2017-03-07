@@ -142,6 +142,15 @@ public class BlockCarpentersBlock extends BlockSided {
 
     @Override
     /**
+     * Checks to see if you can place this block can be placed on that side of a block: BlockLever overrides
+     */
+    public boolean canPlaceBlockOnSide(World world, int x, int y, int z, int side)
+    {
+        return canPlaceBlockAt(world, x, y, z);
+    }
+
+    @Override
+    /**
      * Checks if the block is a solid face on the given side, used by placement logic.
      */
     public boolean isSideSolid(IBlockAccess blockAccess, int x, int y, int z, ForgeDirection side)

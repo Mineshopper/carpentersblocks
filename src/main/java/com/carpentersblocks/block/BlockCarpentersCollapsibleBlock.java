@@ -251,18 +251,7 @@ public class BlockCarpentersCollapsibleBlock extends BlockSided {
      */
     public boolean canPlaceBlockOnSide(World world, int x, int y, int z, int side)
     {
-        if (!canAttachToSide(side)) {
-            ForgeDirection VALID_SIDES[] = { ForgeDirection.DOWN, ForgeDirection.UP };
-            for (ForgeDirection dir : VALID_SIDES) {
-                // If side is not supported, check that either the block above or below CAN support it
-                if (world.getBlock(x - dir.offsetX, y - dir.offsetY, z - dir.offsetZ).isSideSolid(world, x - dir.offsetX, y - dir.offsetY, z - dir.offsetZ, dir)) {
-                    return true;
-                }
-            }
-            return false;
-        } else {
-            return true;
-        }
+        return canPlaceBlockAt(world, x, y, z);
     }
 
     @Override
@@ -273,11 +262,11 @@ public class BlockCarpentersCollapsibleBlock extends BlockSided {
     {
         super.onBlockPlacedBy(world, x, y, z, entityLiving, itemStack);
 
-        // If sneaking, skip auto-setting quadrant depths
+        TEBase TE = getTileEntity(world, x, y, z);
 
+        // If sneaking, skip auto-setting quadrant depths
         if (!entityLiving.isSneaking())
         {
-            TEBase TE = getTileEntity(world, x, y, z);
             if (TE != null)
             {
                 // Create a linear slope from neighbor blocks and collapsible quadrants
@@ -358,6 +347,13 @@ public class BlockCarpentersCollapsibleBlock extends BlockSided {
                     smoothAdjacentCollapsibles(TE, quad);
                 }
             }
+        }
+        else
+        {
+            Collapsible.setQuadDepth(TE, Collapsible.QUAD_XZNN, 16, false);
+            Collapsible.setQuadDepth(TE, Collapsible.QUAD_XZNP, 16, false);
+            Collapsible.setQuadDepth(TE, Collapsible.QUAD_XZPP, 16, false);
+            Collapsible.setQuadDepth(TE, Collapsible.QUAD_XZPN, 16, false);
         }
     }
 
