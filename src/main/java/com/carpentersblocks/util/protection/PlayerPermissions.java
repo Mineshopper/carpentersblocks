@@ -35,7 +35,7 @@ public class PlayerPermissions {
     {
         if (entityPlayer.worldObj.isRemote && Minecraft.getMinecraft().isSingleplayer()) { // Check if client is playing singleplayer
             return true;
-        } else if (!entityPlayer.worldObj.isRemote && Minecraft.getMinecraft().isSingleplayer()) { // Check if server is integrated (singleplayer)
+        } else if (!entityPlayer.worldObj.isRemote && entityPlayer.worldObj.getMinecraftServer().isSinglePlayer()) { // Check if server is integrated (singleplayer)
             return true;
         } else if (isOp(entityPlayer)) {
             return true;
