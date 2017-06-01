@@ -45,14 +45,19 @@ public class Attribute {
     {
         ItemStack itemStack = ItemStack.loadItemStackFromNBT(nbt);
         if (itemStack == null) {
-            UniqueIdentifier uniqueId = new UniqueIdentifier(nbt.getString(TAG_UNIQUE_ID));
-            itemStack = GameRegistry.findItemStack(uniqueId.modId, uniqueId.name, 1);
-            if (itemStack != null) {
-                int dmg = nbt.getShort("Damage");
-                itemStack.setItemDamage(dmg);
-                ModLogger.log(Level.WARN, "Invalid Id for attribute '" + uniqueId.toString() + "' corrected.");
+            String uuid = nbt.getString(TAG_UNIQUE_ID);
+            if (uuid.contains(":")) {
+                UniqueIdentifier uniqueId = new UniqueIdentifier(uuid);
+                itemStack = GameRegistry.findItemStack(uniqueId.modId, uniqueId.name, 1);
+                if (itemStack != null) {
+                    int dmg = nbt.getShort("Damage");
+                    itemStack.setItemDamage(dmg);
+                    ModLogger.log(Level.WARN, "Invalid Id for attribute '" + uniqueId.toString() + "' corrected.");
+                } else {
+                    ModLogger.log(Level.WARN, "Block attribute '" + uniqueId.toString() + "' was unable to be recovered. Was a mod removed?");
+                }
             } else {
-                ModLogger.log(Level.WARN, "Block attribute '" + uniqueId.toString() + "' was unable to be recovered. Was a mod removed?");
+                ModLogger.log(Level.WARN, "Unable to resolve attribute '" + uuid + "'");
             }
         }        
         return new Attribute(itemStack);
