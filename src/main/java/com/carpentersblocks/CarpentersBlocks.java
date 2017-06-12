@@ -13,6 +13,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.FMLEventChannel;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 
+@SuppressWarnings("unused")
 @Mod(
         modid = CarpentersBlocks.MOD_ID,
         name = "Carpenter's Blocks",
@@ -24,10 +25,10 @@ public class CarpentersBlocks
     public static final String MOD_ID = "carpentersblocks";
     public static final CreativeTabs CREATIVE_TAB = new CarpentersBlocksTab(MOD_ID);
     public static FMLEventChannel channel;
-    
+
     @SidedProxy(clientSide = "com.carpentersblocks.proxy.ClientProxy", serverSide = "com.carpentersblocks.proxy.CommonProxy")
     public static CommonProxy proxy;
-        
+
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
@@ -41,7 +42,7 @@ public class CarpentersBlocks
             config.save();
         }
     }
-    
+
     @EventHandler
     public void init(FMLInitializationEvent event) {
     	proxy.init(event);

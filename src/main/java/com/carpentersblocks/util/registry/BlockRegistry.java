@@ -20,6 +20,8 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 
+import static com.carpentersblocks.CarpentersBlocks.MOD_ID;
+
 public class BlockRegistry {
 	
 	private static final Material material = Material.WOOD;
@@ -128,7 +130,7 @@ public class BlockRegistry {
         
     	blockCarpentersBlock = new BlockCarpentersBlock(material)
     		.setUnlocalizedName("blockCarpentersBlock")
-        	.setRegistryName(REGISTRY_NAME_BLOCK)
+            .setRegistryName(MOD_ID + ":" + REGISTRY_NAME_BLOCK)
         	.setHardness(0.2F)
             .setCreativeTab(CarpentersBlocks.CREATIVE_TAB);
         GameRegistry.register(blockCarpentersBlock);
