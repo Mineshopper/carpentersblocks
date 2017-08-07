@@ -21,6 +21,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -67,9 +68,9 @@ public class BlockCarpentersCollapsibleBlock extends BlockFacing {
     /**
      * Damages hammer with a chance to not damage.
      */
-    protected void damageItemWithChance(World world, EntityPlayer entityPlayer) {
+    protected void damageItemWithChance(World world, EntityPlayer entityPlayer, EnumHand hand) {
         if (world.rand.nextFloat() <= ItemRegistry.itemHammerDamageChanceFromCollapsible) {
-            super.damageItemWithChance(world, entityPlayer);
+            super.damageItemWithChance(world, entityPlayer, hand);
         }
     }
     
