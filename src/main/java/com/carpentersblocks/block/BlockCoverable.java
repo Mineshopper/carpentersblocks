@@ -254,7 +254,7 @@ public abstract class BlockCoverable extends Block {
         ActionResult actionResult = new ActionResult();
         EnumAttributeLocation location = BlockUtil.getAttributeLocationForFacing(cbTileEntity, EventHandler.eventFace);
         Item item = itemStack.getItem();
-        if (item instanceof ICarpentersHammer && ((ICarpentersHammer)item).canUseHammer(world, entityPlayer)) {
+        if (item instanceof ICarpentersHammer && ((ICarpentersHammer)item).canUseHammer(world, entityPlayer, EnumHand.MAIN_HAND)) {
             preOnBlockClicked(cbTileEntity, entityPlayer, actionResult);
             if (!actionResult.altered) {
                 if (entityPlayer.isSneaking()) {
@@ -270,7 +270,7 @@ public abstract class BlockCoverable extends Block {
                 //onNeighborChange(world, blockPos, blockPos);
                 //world.notifyNeighborsOfStateChange(blockPos, this);
             }
-        } else if (item instanceof ICarpentersChisel && ((ICarpentersChisel)item).canUseChisel(world, entityPlayer)) {
+        } else if (item instanceof ICarpentersChisel && ((ICarpentersChisel)item).canUseChisel(world, entityPlayer, EnumHand.MAIN_HAND)) {
             if (entityPlayer.isSneaking() && cbTileEntity.getAttributeHelper().hasAttribute(location, EnumAttributeType.DESIGN_CHISEL)) {
                 cbTileEntity.removeAttribute(location, EnumAttributeType.DESIGN_CHISEL);
             } else if (cbTileEntity.getAttributeHelper().hasAttribute(location, EnumAttributeType.COVER)) {
@@ -352,11 +352,11 @@ public abstract class BlockCoverable extends Block {
         if (!actionResult.altered) {
             if (PlayerPermissions.hasElevatedPermission(cbTileEntity, entityPlayer, false)) {
                 if (itemStack != null) {
-                    if (itemStack.getItem() instanceof ICarpentersHammer && ((ICarpentersHammer)itemStack.getItem()).canUseHammer(world, entityPlayer)) {
+                    if (itemStack.getItem() instanceof ICarpentersHammer && ((ICarpentersHammer)itemStack.getItem()).canUseHammer(world, entityPlayer, hand)) {
                         if (onHammerRightClick(cbTileEntity, entityPlayer)) {
                             actionResult.setAltered();
                         }
-                    } else if (ItemRegistry.enableChisel && itemStack.getItem() instanceof ICarpentersChisel && ((ICarpentersChisel)itemStack.getItem()).canUseChisel(world, entityPlayer)) {
+                    } else if (ItemRegistry.enableChisel && itemStack.getItem() instanceof ICarpentersChisel && ((ICarpentersChisel)itemStack.getItem()).canUseChisel(world, entityPlayer, hand)) {
                         if (cbTileEntity.getAttributeHelper().hasAttribute(location, EnumAttributeType.COVER)) {
                             if (onChiselClick(cbTileEntity, location, hand)) {
                                 actionResult.setAltered();
@@ -417,7 +417,7 @@ public abstract class BlockCoverable extends Block {
             if (actionResult.itemStack == null) {
                 //actionResult.setSoundSource(BlockProperties.getCover(cbTileEntity, location));
             }
-            damageItemWithChance(world, entityPlayer);
+            damageItemWithChance(world, entityPlayer, hand);
             //onNeighborChange(world, blockPos, blockPos);
             //world.notifyNeighborsOfStateChange(blockPos, this);
         }
@@ -475,6 +475,7 @@ public abstract class BlockCoverable extends Block {
         }
 
         if (!design.equals("")) {
+            cbTileEntity.removeAttribute(EnumAttributeLocation.HOST, EnumAttributeType.DESIGN_CHISEL);
         	cbTileEntity.addAttribute(EnumAttributeLocation.HOST, EnumAttributeType.DESIGN_CHISEL, design);
         }
 
@@ -1165,12 +1166,12 @@ public abstract class BlockCoverable extends Block {
      * @param world the world
      * @param entityPlayer the player
      */
-    protected void damageItemWithChance(World world, EntityPlayer entityPlayer) {
-        Item item = entityPlayer.getHeldItemMainhand().getItem();
+    protected void damageItemWithChance(World world, EntityPlayer entityPlayer, EnumHand hand) {
+        Item item = entityPlayer.getHeldItem(hand).getItem();
         if (item instanceof ICarpentersHammer) {
-            ((ICarpentersHammer)item).onHammerUse(world, entityPlayer);
+            ((ICarpentersHammer)item).onHammerUse(world, entityPlayer, hand);
         } else if (item instanceof ICarpentersChisel) {
-            ((ICarpentersChisel)item).onChiselUse(world, entityPlayer);
+            ((ICarpentersChisel)item).onChiselUse(world, entityPlayer, hand);
         }
     }
 
