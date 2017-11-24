@@ -1,0 +1,20 @@
+{
+  "type": "forge:ore_shaped",
+  "pattern": [
+    "XX ",
+    " #X",
+	" # "
+  ],
+  "key": {
+    "X": {
+	  "type": "forge:ore_dict",
+      "ore": "ingotIron"
+    },
+	"#": {
+      "item": "carpentersblocks:carpenters_block"
+    }
+  },
+  "result": {
+    "item": "carpentersblocks:carpenters_hammer"
+  }
+}

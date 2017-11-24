@@ -1,0 +1,16 @@
+{
+  "type": "forge:ore_shaped",
+  "pattern": [
+    "   ",
+    "   ",
+	" ##"
+  ],
+  "key": {
+	"#": {
+      "item": "carpentersblocks:carpenters_block"
+    }
+  },
+  "result": {
+    "item": "carpentersblocks:carpenters_pressure_plate"
+  }
+}
