@@ -1,6 +1,6 @@
 {
     "parent": "block/cube_all",
     "textures": {
-        "all": "carpentersblocks:blocks/general/uncovered_full_frame"
+        "all": "carpentersblocks:blocks/general/uncovered_quartered_frame"
     }
 }

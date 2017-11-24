@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.function.Function;
 
-import com.carpentersblocks.renderer.BakedBlock;
+import com.carpentersblocks.renderer.bakedblock.BakedBlock;
 import com.carpentersblocks.util.registry.SpriteRegistry;
 import com.google.common.collect.ImmutableSet;
 
