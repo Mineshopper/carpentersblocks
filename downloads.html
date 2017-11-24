@@ -46,31 +46,36 @@ direct_button_innerhtml: <span>Direct</span>
 	<p>If you prefer, you can grab the latest stable and verified builds through <a href="http://minecraft.curseforge.com/projects/carpenters-blocks">CurseForge</a>.<br>Optionally, you can grab the files below through various methods and file hosts. Development builds, if available, will only be linked through this page.</p>
 </div>
 
-<h5>Minecraft 1.10.2</h5>
+<h5>Minecraft 1.12.2</h5>
 
 <div class="download-container">
    <div style="display: table-row;">
       <div style="border: 5px dashed #d9534f; border-radius: 5px; padding: 5px 10px 5px 10px; margin-bottom: 10px;">
 	     <p><h3 style="font-weight: bold;">ATTENTION!</h3> This is a very early build, with only a handful of basic features supported.  You can stop by the <a href="http://www.minecraftforum.net/forums/mapping-and-modding/minecraft-mods/1288875-carpenters-blocks#c3461">mod thread</a> for questions or to check progress on the update effort.</p>
+		 <p>I cannot guarantee every feature from MC 1.7 will make it due to the sheer amount of time it is taking to port the mod.  Currently, I am focusing on quality while adding some new functionality (100% side cover compatibility, JSON-based collision system).  When porting additional blocks I will likely run into new requirements, so I cannot give an ETA on releases.</p>
+		 <p>Thanks to everyone for your continued support!</p>
       </div>
    </div>
    <div style="display: table-row;">
 	  <div class="download-container-version">
-		 Carpenter's Blocks 3.4.001 POC
+		 Carpenter's Blocks 3.4.002 POC
 		 {{ page.label-wip }}
-		 {{ page.label-begin-minecraft }}MC 1.10.2{{ page.label-end }}
-		 {{ page.label-begin-forge }}FORGE 12.18.1.2018{{ page.label-end }}
-		 {{ page.label-begin-release }}RELEASED 03/23/2017{{ page.label-end }}
+		 {{ page.label-begin-minecraft }}MC 1.12.2{{ page.label-end }}
+		 {{ page.label-begin-forge }}FORGE 14.23.0.2491{{ page.label-end }}
+		 {{ page.label-begin-release }}RELEASED 011/24/2017{{ page.label-end }}
 	  </div>
    </div>
    <div style="display: table-row;">
 	  <div style="display: table-cell;">
-		 <button onclick="window.location.assign('http://carpentersblocks.website/downloads/Carpenter\'s%20Blocks%20v3.4.001%20POC%20-%20MC%201.10.2.jar')">{{ page.direct_button_innerhtml }}</button>
+		 <button onclick="window.location.assign('http://carpentersblocks.website/downloads/Carpenter\'s%20Blocks%20v3.4.002%20POC%20-%20MC%201.12.2.jar')">{{ page.direct_button_innerhtml }}</button>
 		 <button class="expand">View Changelog</button>
 		 <div class="collapsed">
 			<ul id="changelog">
-			   <li>Reenabled recipes.</li>
-			   <li>Fixed server crash (render bug still present on servers!!!).</li>
+			   <li>Updated POC to MC 1.12.2.</li>
+			   <li>Fixed render bug on server.</li>
+			   <li>Added Carpenter's Pressure Plate.</li>
+			   <li>Implemented custom JSON block state system.</li>
+			   <li>Various fixes for the carpenter's chisel. [tterrag1098]</li>
 			</ul>
 		 </div>
 	  </div>
