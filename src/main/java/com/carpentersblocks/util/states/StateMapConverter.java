@@ -1,5 +1,6 @@
 package com.carpentersblocks.util.states;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -18,7 +19,6 @@ import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.AxisDirection;
 import net.minecraft.util.math.Vec3d;
-import scala.actors.threadpool.Arrays;
 
 public class StateMapConverter {
 
