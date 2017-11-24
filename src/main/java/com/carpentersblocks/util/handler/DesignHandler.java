@@ -17,9 +17,7 @@ import org.apache.logging.log4j.Level;
 import com.carpentersblocks.CarpentersBlocks;
 import com.carpentersblocks.CarpentersBlocksCachedResources;
 import com.carpentersblocks.util.ModLogger;
-import com.carpentersblocks.util.registry.BlockRegistry;
-import com.carpentersblocks.util.registry.FeatureRegistry;
-import com.carpentersblocks.util.registry.ItemRegistry;
+import com.carpentersblocks.util.registry.ConfigRegistry;
 import com.carpentersblocks.util.registry.SpriteRegistry;
 
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -43,6 +41,13 @@ public class DesignHandler {
     private static final String PATH_BED        = "blocks/designs/bed/";
     private static final String PATH_FLOWER_POT = "blocks/designs/flowerpot/";
     private static final String PATH_TILE       = "blocks/designs/tile/";
+    
+    public enum DesignType {
+    	CHISEL,
+    	BED,
+    	FLOWERPOT,
+    	TILE
+    }
 
     private static boolean isPathValid(String path) {
         return path.contains(PATH_BASE) &&
@@ -107,7 +112,7 @@ public class DesignHandler {
 
     @SideOnly(Side.CLIENT)
     public static void registerSprites(TextureMap textureMap) {
-        if (BlockRegistry.enableBed) {
+        if (ConfigRegistry.enableBed) {
             for (String spriteName : listBed) {
                 TextureAtlasSprite[] sprites = new TextureAtlasSprite[8];
                 for (int count = 0; count < 8; ++count) {
@@ -116,34 +121,34 @@ public class DesignHandler {
                 SpriteRegistry.sprite_design_bed.add(sprites);
             }
         }
-        if (FeatureRegistry.enableChiselDesigns) {
+        if (ConfigRegistry.enableChiselDesigns) {
             for (String spriteName : listChisel) {
             	SpriteRegistry.sprite_design_chisel.add(textureMap.registerSprite(new ResourceLocation(CarpentersBlocks.MOD_ID, PATH_CHISEL + spriteName)));
             }
         }
-        if (BlockRegistry.enableFlowerPot) {
+        if (ConfigRegistry.enableFlowerPot) {
             for (String spriteName : listFlowerPot) {
             	SpriteRegistry.sprite_design_flower_pot.add(textureMap.registerSprite(new ResourceLocation(CarpentersBlocks.MOD_ID + ":" + PATH_FLOWER_POT + spriteName)));
             }
         }
-        if (ItemRegistry.enableTile) {
+        if (ConfigRegistry.enableTile) {
             for (String spriteName : listTile) {
             	SpriteRegistry.sprite_design_tile.add(textureMap.registerSprite(new ResourceLocation(CarpentersBlocks.MOD_ID + ":" + PATH_TILE + spriteName)));
             }
         }
     }
 
-    public static List<String> getListForType(String type) {
-        return type.equals("chisel") ? new ArrayList<String>(listChisel) :
-               type.equals("bed") ? new ArrayList<String>(listBed) :
-               type.equals("flowerpot") ? new ArrayList<String>(listFlowerPot) :
-               type.equals("tile") ? new ArrayList<String>(listTile) : null;
+    public static List<String> getListForType(DesignType type) {
+        return type.equals(DesignType.CHISEL) ? new ArrayList<String>(listChisel) :
+               type.equals(DesignType.BED) ? new ArrayList<String>(listBed) :
+               type.equals(DesignType.FLOWERPOT) ? new ArrayList<String>(listFlowerPot) :
+               type.equals(DesignType.TILE) ? new ArrayList<String>(listTile) : null;
     }
 
     /**
      * Returns name of next tile in list.
      */
-    public static String getNext(String type, String iconName) {
+    public static String getNext(DesignType type, String iconName) {
         List<String> tempList = getListForType(type);
         if (tempList.isEmpty()) {
             return iconName;
@@ -156,7 +161,7 @@ public class DesignHandler {
     /**
      * Returns name of previous tile in list.
      */
-    public static String getPrev(String type, String iconName) {
+    public static String getPrev(DesignType type, String iconName) {
         List<String> tempList = getListForType(type);
         if (tempList.isEmpty()) {
             return iconName;

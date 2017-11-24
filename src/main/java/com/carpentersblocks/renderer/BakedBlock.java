@@ -1,8 +1,9 @@
 package com.carpentersblocks.renderer;
 
+import java.util.function.Function;
+
 import com.carpentersblocks.renderer.helper.RenderHelper;
 import com.carpentersblocks.util.registry.SpriteRegistry;
-import com.google.common.base.Function;
 
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
@@ -18,17 +19,12 @@ public class BakedBlock extends AbstractBakedModel {
 	@Override
 	protected void fillQuads(QuadContainer quadContainer) {
 		RenderHelper renderHelper = new RenderHelper();
-		quadContainer.add(renderHelper.getQuadYNeg());
-		quadContainer.add(renderHelper.getQuadYPos());
-		quadContainer.add(renderHelper.getQuadZNeg());
-		quadContainer.add(renderHelper.getQuadZPos());
-		quadContainer.add(renderHelper.getQuadXNeg());
-		quadContainer.add(renderHelper.getQuadXPos());
+		quadContainer.add(renderHelper.getQuadYNeg(SpriteRegistry.sprite_uncovered_full));
+		quadContainer.add(renderHelper.getQuadYPos(SpriteRegistry.sprite_uncovered_full));
+		quadContainer.add(renderHelper.getQuadZNeg(SpriteRegistry.sprite_uncovered_full));
+		quadContainer.add(renderHelper.getQuadZPos(SpriteRegistry.sprite_uncovered_full));
+		quadContainer.add(renderHelper.getQuadXNeg(SpriteRegistry.sprite_uncovered_full));
+		quadContainer.add(renderHelper.getQuadXPos(SpriteRegistry.sprite_uncovered_full));
     }
-
-	@Override
-	protected TextureAtlasSprite getUncoveredSprite() {
-		return SpriteRegistry.sprite_uncovered_full;
-	}
 	
 }

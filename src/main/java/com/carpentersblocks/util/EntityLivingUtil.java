@@ -13,8 +13,11 @@ public class EntityLivingUtil {
     public static void decrementCurrentSlot(EntityPlayer entityPlayer) {
         ItemStack itemStack = entityPlayer.getHeldItemMainhand();
         if (itemStack != null) {
-            if (!entityPlayer.capabilities.isCreativeMode && --itemStack.stackSize <= 0) {
-                entityPlayer.inventory.setInventorySlotContents(entityPlayer.inventory.currentItem, null);
+            if (!entityPlayer.capabilities.isCreativeMode) {
+            	itemStack.shrink(1);
+            	if (itemStack.isEmpty()) {
+	                entityPlayer.inventory.setInventorySlotContents(entityPlayer.inventory.currentItem, null);
+	            }
             }
         }
     }

@@ -23,7 +23,7 @@ public class ChatHandler {
         if (styled) {
             chat.getStyle().setColor(TextFormatting.GOLD);
         }
-        entityPlayer.addChatMessage(chat);
+        entityPlayer.sendMessage(chat);
     }
 
     /**

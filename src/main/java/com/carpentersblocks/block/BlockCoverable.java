@@ -12,17 +12,20 @@ import com.carpentersblocks.api.ICarpentersHammer;
 import com.carpentersblocks.block.state.Property;
 import com.carpentersblocks.tileentity.CbTileEntity;
 import com.carpentersblocks.util.EntityLivingUtil;
+import com.carpentersblocks.util.IConstants;
 import com.carpentersblocks.util.attribute.AbstractAttribute.Key;
 import com.carpentersblocks.util.attribute.EnumAttributeLocation;
 import com.carpentersblocks.util.attribute.EnumAttributeType;
 import com.carpentersblocks.util.block.BlockUtil;
 import com.carpentersblocks.util.handler.DesignHandler;
+import com.carpentersblocks.util.handler.DesignHandler.DesignType;
 import com.carpentersblocks.util.handler.EventHandler;
 import com.carpentersblocks.util.handler.OverlayHandler;
 import com.carpentersblocks.util.protection.PlayerPermissions;
 import com.carpentersblocks.util.protection.ProtectedObject;
-import com.carpentersblocks.util.registry.FeatureRegistry;
-import com.carpentersblocks.util.registry.ItemRegistry;
+import com.carpentersblocks.util.registry.ConfigRegistry;
+import com.carpentersblocks.util.states.factory.StateFactory;
+import com.google.common.collect.Lists;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -39,7 +42,11 @@ import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.StringUtils;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IPlantable;
@@ -127,6 +134,50 @@ public abstract class BlockCoverable extends Block {
                 setBlockBounds(minX, minY, minZ, maxX, maxY, maxZ);
                 break;
         }*/
+    }
+    
+    /**
+     * Gets global bounding box for block.
+     * 
+     * @param blockState the block state
+     * @param blockAccess the IBlockAccess implementor
+     * @param blockPos the block position
+     */
+    protected AxisAlignedBB getGlobalBoundingBox(IBlockState blockState, IBlockAccess blockAccess, BlockPos blockPos) {
+        return super.getBoundingBox(blockState, blockAccess, blockPos).offset(blockPos);
+    }
+    
+    /**
+     * Ray traces through the blocks collision from start vector to end vector returning a ray trace hit.
+     */
+    @Nullable
+    @Override
+    public RayTraceResult collisionRayTrace(IBlockState blockState, World world, BlockPos blockPos, Vec3d start, Vec3d end) {
+        if (this instanceof IStateImplementor) {
+	    	List<RayTraceResult> list = Lists.<RayTraceResult>newArrayList();
+	        CbTileEntity cbTileEntity = getTileEntity(world, blockPos);
+	        if (cbTileEntity != null) {
+	        	for (AxisAlignedBB aabb : StateFactory.getState(cbTileEntity).getAxisAlignedBBs()) {
+	        		list.add(this.rayTrace(blockPos, start, end, aabb));
+	        	}
+	        } else {
+	        	return super.collisionRayTrace(blockState, world, blockPos, start, end);
+	        }
+	        RayTraceResult finalRayTraceResult = null;
+	        double d1 = 0.0D;
+	        for (RayTraceResult rayTraceResult : list) {
+	            if (rayTraceResult != null) {
+	                double d0 = rayTraceResult.hitVec.squareDistanceTo(end);
+	                if (d0 > d1) {
+	                    finalRayTraceResult = rayTraceResult;
+	                    d1 = d0;
+	                }
+	            }
+	        }
+	        return finalRayTraceResult;
+        } else {
+        	return super.collisionRayTrace(blockState, world, blockPos, start, end);
+        }
     }
 
     /**
@@ -237,9 +288,9 @@ public abstract class BlockCoverable extends Block {
      */
     @Override
     public void onBlockClicked(World world, BlockPos blockPos, EntityPlayer entityPlayer) {
-        //if (world.isRemote) {
-        //    return;
-        //}
+        if (world.isRemote) {
+            return;
+        }
 
         CbTileEntity cbTileEntity = getTileEntity(world, blockPos);
         if (cbTileEntity == null || !PlayerPermissions.hasElevatedPermission(cbTileEntity, entityPlayer, false)) {
@@ -258,7 +309,7 @@ public abstract class BlockCoverable extends Block {
             preOnBlockClicked(cbTileEntity, entityPlayer, actionResult);
             if (!actionResult.altered) {
                 if (entityPlayer.isSneaking()) {
-                    popAttribute(cbTileEntity, location);
+                    dropLastAddedAttribute(cbTileEntity, location);
                     actionResult.setAltered();
                 } else {
                     if (onHammerLeftClick(cbTileEntity, entityPlayer)) {
@@ -274,12 +325,12 @@ public abstract class BlockCoverable extends Block {
             if (entityPlayer.isSneaking() && cbTileEntity.getAttributeHelper().hasAttribute(location, EnumAttributeType.DESIGN_CHISEL)) {
                 cbTileEntity.removeAttribute(location, EnumAttributeType.DESIGN_CHISEL);
             } else if (cbTileEntity.getAttributeHelper().hasAttribute(location, EnumAttributeType.COVER)) {
-                onChiselClick(cbTileEntity, location, EventHandler.eventHand);
+                onChiselClick(cbTileEntity, location, EventHandler.eventHand, true);
             }            
         }
         
         if (actionResult.altered) {
-            //cbTileEntity.markDirty();
+            cbTileEntity.markDirty();
             IBlockState blockState = world.getBlockState(blockPos);
             world.notifyBlockUpdate(blockPos, blockState, blockState, 3);
         }
@@ -292,10 +343,8 @@ public abstract class BlockCoverable extends Block {
      * @param cbTileEntity the Carpenter's Block tile entity
      * @param location the location to pop attribute from
      */
-    private void popAttribute(CbTileEntity cbTileEntity, EnumAttributeLocation location) {
-    	// TODO: Work on attribute drops, make them drop using insertion order
-    	
-    	cbTileEntity.removeAttribute(location);
+    private void dropLastAddedAttribute(CbTileEntity cbTileEntity, EnumAttributeLocation location) {
+    	cbTileEntity.removeLastAddedDroppableAttribute(location);
     	
 /*        if (cbTileEntity.hasAttribute(cbTileEntity.ATTR_ILLUMINATOR)) {
             cbTileEntity.createBlockDropEvent(cbTileEntity.ATTR_ILLUMINATOR);
@@ -325,10 +374,10 @@ public abstract class BlockCoverable extends Block {
      * return <code>true</code> if block property changed
      */
     @Override
-    public boolean onBlockActivated(World world, BlockPos blockPos, IBlockState blockState, EntityPlayer entityPlayer, EnumHand hand, @Nullable ItemStack itemStack, EnumFacing facing, float hitX, float hitY, float hitZ) {
-        //if (world.isRemote) {
-        //    return true;
-        //}
+    public boolean onBlockActivated(World world, BlockPos blockPos, IBlockState blockState, EntityPlayer entityPlayer, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+        if (world.isRemote) {
+            return true;
+        }
 
         CbTileEntity cbTileEntity = getTileEntity(world, blockPos);
 
@@ -351,18 +400,19 @@ public abstract class BlockCoverable extends Block {
         // If no prior event occurred, try regular activation
         if (!actionResult.altered) {
             if (PlayerPermissions.hasElevatedPermission(cbTileEntity, entityPlayer, false)) {
-                if (itemStack != null) {
-                    if (itemStack.getItem() instanceof ICarpentersHammer && ((ICarpentersHammer)itemStack.getItem()).canUseHammer(world, entityPlayer, hand)) {
+                if (entityPlayer.getHeldItem(hand) != null) {
+                	ItemStack itemStack = entityPlayer.getHeldItem(hand);
+                	if (itemStack.getItem() instanceof ICarpentersHammer && ((ICarpentersHammer)itemStack.getItem()).canUseHammer(world, entityPlayer, hand)) {
                         if (onHammerRightClick(cbTileEntity, entityPlayer)) {
                             actionResult.setAltered();
                         }
-                    } else if (ItemRegistry.enableChisel && itemStack.getItem() instanceof ICarpentersChisel && ((ICarpentersChisel)itemStack.getItem()).canUseChisel(world, entityPlayer, hand)) {
+                	} else if (ConfigRegistry.enableChisel && itemStack.getItem() instanceof ICarpentersChisel && ((ICarpentersChisel)itemStack.getItem()).canUseChisel(world, entityPlayer, hand)) {
                         if (cbTileEntity.getAttributeHelper().hasAttribute(location, EnumAttributeType.COVER)) {
-                            if (onChiselClick(cbTileEntity, location, hand)) {
+                            if (onChiselClick(cbTileEntity, location, hand, false)) {
                                 actionResult.setAltered();
                             }
                         }
-                    } else if (FeatureRegistry.enableCovers && BlockUtil.isCover(itemStack)) {
+                    } else if (ConfigRegistry.enableCovers && BlockUtil.isCover(itemStack)) {
 
                         Block block = BlockUtil.toBlock(itemStack);
 
@@ -390,17 +440,17 @@ public abstract class BlockCoverable extends Block {
                         }
 
                     } else if (entityPlayer.isSneaking()) {
-                        if (FeatureRegistry.enableIllumination && BlockUtil.isIlluminator(itemStack)) {
+                        if (ConfigRegistry.enableIllumination && BlockUtil.isIlluminator(itemStack)) {
                             if (!cbTileEntity.getAttributeHelper().hasAttribute(location, EnumAttributeType.ILLUMINATOR)) {
                                 cbTileEntity.addAttribute(location, EnumAttributeType.ILLUMINATOR, itemStack);
                                 actionResult.setAltered().decInventory().setSoundSource(itemStack);
                             }
-                        } else if (FeatureRegistry.enableOverlays && BlockUtil.isOverlay(itemStack)) {
+                        } else if (ConfigRegistry.enableOverlays && BlockUtil.isOverlay(itemStack)) {
                             if (!cbTileEntity.getAttributeHelper().hasAttribute(location, EnumAttributeType.OVERLAY)) {
                                 cbTileEntity.addAttribute(location, EnumAttributeType.OVERLAY, itemStack);
                                 actionResult.setAltered().decInventory().setSoundSource(itemStack);
                             }
-                        } else if (FeatureRegistry.enableDyeColors && BlockUtil.isDye(itemStack, false)) {
+                        } else if (ConfigRegistry.enableDyeColors && BlockUtil.isDye(itemStack, false)) {
                             if (!cbTileEntity.getAttributeHelper().hasAttribute(location, EnumAttributeType.DYE)) {
                                 cbTileEntity.addAttribute(location, EnumAttributeType.DYE, itemStack);
                                 actionResult.setAltered().decInventory().setSoundSource(itemStack);
@@ -446,21 +496,22 @@ public abstract class BlockCoverable extends Block {
      * @param facing the side being clicked
      * @param hand the player hand holding tool
      */
-    public boolean onChiselClick(CbTileEntity cbTileEntity, EnumAttributeLocation location, EnumHand hand) {
+    public boolean onChiselClick(CbTileEntity cbTileEntity, EnumAttributeLocation location, EnumHand hand, boolean leftClick) {
     	String design = "";
     	if (cbTileEntity.getAttributeHelper().hasAttribute(location, EnumAttributeType.DESIGN_CHISEL)) {
     		design = (String) cbTileEntity.getAttributeHelper().getAttribute(location, EnumAttributeType.DESIGN_CHISEL).getModel();
     	}
-        String designAdj = "";
+        String designAdj = IConstants.EMPTY_STRING;
 
         // Attempt to set first design to adjacent
-        if (design.equals("")) {
+        if (StringUtils.isNullOrEmpty(design)) {
+        	
             World world = cbTileEntity.getWorld();
             CbTileEntity[] cbTileEntity_list = getAdjacentTileEntities(world, cbTileEntity.getPos());
             for (CbTileEntity cbTileEntity_current : cbTileEntity_list) {
                 if (cbTileEntity_current != null) {
-                    if (cbTileEntity_current.getAttributeHelper().hasAttribute(EnumAttributeLocation.HOST, EnumAttributeType.DESIGN_CHISEL)) {
-                        design = (String) cbTileEntity_current.getAttributeHelper().getAttribute(EnumAttributeLocation.HOST, EnumAttributeType.DESIGN_CHISEL).getModel();
+                    if (cbTileEntity_current.getAttributeHelper().hasAttribute(location, EnumAttributeType.DESIGN_CHISEL)) {
+                        design = (String) cbTileEntity_current.getAttributeHelper().getAttribute(location, EnumAttributeType.DESIGN_CHISEL).getModel();
                         designAdj = design;
                         // TODO: Can refine this later to include side cover designs
                         break;
@@ -470,13 +521,13 @@ public abstract class BlockCoverable extends Block {
         }
 
         // Set next design
-        if (designAdj.equals("")) {
-            design = EnumHand.MAIN_HAND.equals(hand) ? DesignHandler.getPrev("chisel", design) : DesignHandler.getNext("chisel", design);
+        if (StringUtils.isNullOrEmpty(designAdj) && EnumHand.MAIN_HAND.equals(hand)) {
+            design = leftClick ? DesignHandler.getNext(DesignType.CHISEL, design) : DesignHandler.getPrev(DesignType.CHISEL, design);
         }
 
-        if (!design.equals("")) {
-            cbTileEntity.removeAttribute(EnumAttributeLocation.HOST, EnumAttributeType.DESIGN_CHISEL);
-        	cbTileEntity.addAttribute(EnumAttributeLocation.HOST, EnumAttributeType.DESIGN_CHISEL, design);
+        if (!StringUtils.isNullOrEmpty(design)) {
+        	cbTileEntity.removeAttribute(location, EnumAttributeType.DESIGN_CHISEL);
+        	cbTileEntity.addAttribute(location, EnumAttributeType.DESIGN_CHISEL, design);
         }
 
         return true;
@@ -530,14 +581,16 @@ public abstract class BlockCoverable extends Block {
         Set<EnumFacing> sides = new HashSet<EnumFacing>();
         for (EnumAttributeLocation location : EnumAttributeLocation.values()) {
     		IBlockState tempBlockState = BlockUtil.getAttributeBlockState(cbTileEntity.getAttributeHelper(), location, EnumAttributeType.COVER);
-    		if (!EnumAttributeLocation.HOST.equals(location)) {
-    			for (EnumFacing tempFacing : EnumFacing.values()) {
-    				int tempPower = tempBlockState.getBlock().getWeakPower(tempBlockState, blockAccess, blockPos, tempFacing);
-    	            power = Math.max(power, tempPower);
-    			}
-    		} else {
-    			int tempPower = tempBlockState.getBlock().getWeakPower(tempBlockState, blockAccess, blockPos, facing);
-	            power = Math.max(power, tempPower);
+    		if (tempBlockState != null) {
+	    		if (!EnumAttributeLocation.HOST.equals(location)) {
+	    			for (EnumFacing tempFacing : EnumFacing.values()) {
+	    				int tempPower = tempBlockState.getBlock().getWeakPower(tempBlockState, blockAccess, blockPos, tempFacing);
+	    	            power = Math.max(power, tempPower);
+	    			}
+	    		} else {
+	    			int tempPower = tempBlockState.getBlock().getWeakPower(tempBlockState, blockAccess, blockPos, facing);
+		            power = Math.max(power, tempPower);
+	    		}
     		}
         }
         
@@ -1062,8 +1115,6 @@ public abstract class BlockCoverable extends Block {
         return super.shouldSideBeRendered(blockAccess, x, y, z, side);
     }*/
 
-    public static int ew = 0;
-    
     /**
      * Gets whether block should render in given layer.
      * 
@@ -1265,7 +1316,7 @@ public abstract class BlockCoverable extends Block {
     
     @Override
     protected BlockStateContainer createBlockState() {
-        return new ExtendedBlockState(this, Property.listedProperties, Property.unlistedProperties.toArray(new IUnlistedProperty[Property.unlistedProperties.size()]));
+        return new ExtendedBlockState(this, Property.listedProperties, Property._unlistedProperties.toArray(new IUnlistedProperty[Property._unlistedProperties.size()]));
     }
 
     @Override

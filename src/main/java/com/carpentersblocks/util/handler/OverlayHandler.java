@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.carpentersblocks.util.block.BlockUtil;
-import com.carpentersblocks.util.registry.FeatureRegistry;
+import com.carpentersblocks.util.registry.ConfigRegistry;
 import com.carpentersblocks.util.registry.SpriteRegistry;
 
 import net.minecraft.client.Minecraft;
@@ -43,7 +43,7 @@ public class OverlayHandler {
      * Initializes overlay definitions from configuration file.
      */
     public static void init() {
-        for (String name : FeatureRegistry.overlayItems) {
+        for (String name : ConfigRegistry.overlayItems) {
             String itemName = name.substring(0, name.indexOf(":"));
             if (!overlayMap.containsKey(itemName)) {
                 String overlayType = name.substring(name.indexOf(":") + 1).toLowerCase();

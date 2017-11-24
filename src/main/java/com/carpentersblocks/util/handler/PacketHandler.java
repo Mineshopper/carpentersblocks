@@ -36,7 +36,7 @@ public class PacketHandler {
     @SubscribeEvent
     public void onServerPacket(ServerCustomPacketEvent event) throws IOException {
         ByteBufInputStream bbis = new ByteBufInputStream(event.getPacket().payload());
-        EntityPlayer entityPlayer = ((NetHandlerPlayServer) event.getHandler()).playerEntity;
+        EntityPlayer entityPlayer = ((NetHandlerPlayServer) event.getHandler()).player;
         int packetId = bbis.readInt();
         if (packetId < packetCarrier.size()) {
             try {

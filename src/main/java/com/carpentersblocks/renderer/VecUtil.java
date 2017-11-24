@@ -28,16 +28,16 @@ public class VecUtil {
 		public Vec2l(EnumFacing facing, Vec3d vec3d) {
 			switch (facing.getAxis()) {
 				case X:
-					_u = Math.round(vec3d.zCoord * 16);
-					_v = Math.round(vec3d.yCoord * 16);
+					_u = Math.round(vec3d.z * 16);
+					_v = Math.round(vec3d.y * 16);
 					break;
 				case Y:
-	                _u = Math.round(vec3d.xCoord * 16);
-	                _v = Math.round(vec3d.zCoord * 16);
+	                _u = Math.round(vec3d.x * 16);
+	                _v = Math.round(vec3d.z * 16);
 					break;
 				case Z:
-					_u = Math.round(vec3d.xCoord * 16);
-					_v = Math.round(vec3d.yCoord * 16);
+					_u = Math.round(vec3d.x * 16);
+					_v = Math.round(vec3d.y * 16);
 					break;
 			}
 		}
@@ -144,15 +144,20 @@ public class VecUtil {
 			Vec3d closest = null;
 			long minDist = 0;
 			// Get number of matches, and closest point (single match is corner, multiple is unknown)
+			int matchCnt = 0;
 			for (Vec3d Vec3d : vecs) {
 				long dist = squareDistanceTo(facing, bounds[i], Vec3d);
 				if (closest == null || dist < minDist) {
 					minDist = dist;
 					closest = Vec3d;
+				} else if (dist == minDist) {
+					matchCnt++;
 				}
 			}
-			// Add closest to corner
-			cornerList[i].add(closest);
+			if (matchCnt < 2) {
+				// Add closest to corner
+				cornerList[i].add(closest);
+			}
 		}
 		
 		Vec3d[] sortedArray = new Vec3d[4];
@@ -194,80 +199,80 @@ public class VecUtil {
 		switch (quad.getFacing()) {
     		case DOWN:
     			return new UV[] {
-	    			new UV(vecs[0].xCoord, vecs[0].zCoord).invertV(),
-	    			new UV(vecs[1].xCoord, vecs[1].zCoord).invertV(),
-	    			new UV(vecs[2].xCoord, vecs[2].zCoord).invertV(),
-	    			new UV(vecs[3].xCoord, vecs[3].zCoord).invertV()
+	    			new UV(vecs[0].x, vecs[0].z).invertV(),
+	    			new UV(vecs[1].x, vecs[1].z).invertV(),
+	    			new UV(vecs[2].x, vecs[2].z).invertV(),
+	    			new UV(vecs[3].x, vecs[3].z).invertV()
     			};
     		case UP:
 				return new UV[] {
-    				new UV(vecs[0].xCoord, vecs[0].zCoord),
-    				new UV(vecs[1].xCoord, vecs[1].zCoord),
-    				new UV(vecs[2].xCoord, vecs[2].zCoord),
-    				new UV(vecs[3].xCoord, vecs[3].zCoord)
+    				new UV(vecs[0].x, vecs[0].z),
+    				new UV(vecs[1].x, vecs[1].z),
+    				new UV(vecs[2].x, vecs[2].z),
+    				new UV(vecs[3].x, vecs[3].z)
     			};
     		case NORTH:
     			if (floatY) {
     				return new UV[] {
-        				new UV(vecs[3].xCoord, vecs[1].yCoord),
-        				new UV(vecs[2].xCoord, vecs[0].yCoord),
-        				new UV(vecs[1].xCoord, vecs[3].yCoord),
-        				new UV(vecs[0].xCoord, vecs[2].yCoord)
+        				new UV(vecs[0].x, 0.0D).invertU(),
+        				new UV(vecs[1].x, vecs[0].y - vecs[1].y).invertU(),
+        				new UV(vecs[2].x, vecs[3].y - vecs[2].y).invertU(),
+        				new UV(vecs[3].x, 0.0D).invertU()
         			};
     			} else {
     				return new UV[] {
-        				new UV(vecs[0].xCoord, vecs[0].yCoord).invertUV(),
-        				new UV(vecs[1].xCoord, vecs[1].yCoord).invertUV(),
-        				new UV(vecs[2].xCoord, vecs[2].yCoord).invertUV(),
-        				new UV(vecs[3].xCoord, vecs[3].yCoord).invertUV()
+        				new UV(vecs[0].x, vecs[0].y).invertUV(),
+        				new UV(vecs[1].x, vecs[1].y).invertUV(),
+        				new UV(vecs[2].x, vecs[2].y).invertUV(),
+        				new UV(vecs[3].x, vecs[3].y).invertUV()
         			};
     			}
     		case SOUTH:
     			if (floatY) {
     				return new UV[] {
-        				new UV(vecs[0].xCoord, vecs[1].yCoord),
-        				new UV(vecs[1].xCoord, vecs[0].yCoord),
-        				new UV(vecs[2].xCoord, vecs[3].yCoord),
-        				new UV(vecs[3].xCoord, vecs[2].yCoord)
+        				new UV(vecs[0].x, 0.0D),
+        				new UV(vecs[1].x, vecs[0].y - vecs[1].y),
+        				new UV(vecs[2].x, vecs[3].y - vecs[2].y),
+        				new UV(vecs[3].x, 0.0D)
         			};
     			} else {
     				return new UV[] {
-        				new UV(vecs[0].xCoord, vecs[0].yCoord).invertV(),
-        				new UV(vecs[1].xCoord, vecs[1].yCoord).invertV(),
-        				new UV(vecs[2].xCoord, vecs[2].yCoord).invertV(),
-        				new UV(vecs[3].xCoord, vecs[3].yCoord).invertV()
+        				new UV(vecs[0].x, vecs[0].y).invertV(),
+        				new UV(vecs[1].x, vecs[1].y).invertV(),
+        				new UV(vecs[2].x, vecs[2].y).invertV(),
+        				new UV(vecs[3].x, vecs[3].y).invertV()
         			};
     			}
     		case WEST:
     			if (floatY) {
     				return new UV[] {
-        				new UV(vecs[0].zCoord, vecs[1].yCoord),
-        				new UV(vecs[1].zCoord, vecs[0].yCoord),
-        				new UV(vecs[2].zCoord, vecs[3].yCoord),
-        				new UV(vecs[3].zCoord, vecs[2].yCoord)
+        				new UV(vecs[0].z, 0.0D),
+        				new UV(vecs[1].z, vecs[0].y - vecs[1].y),
+        				new UV(vecs[2].z, vecs[3].y - vecs[2].y),
+        				new UV(vecs[3].z, 0.0D)
         			};
     			} else {
     				return new UV[] {
-        				new UV(vecs[0].zCoord, vecs[0].yCoord).invertV(),
-        				new UV(vecs[1].zCoord, vecs[1].yCoord).invertV(),
-        				new UV(vecs[2].zCoord, vecs[2].yCoord).invertV(),
-        				new UV(vecs[3].zCoord, vecs[3].yCoord).invertV()
+        				new UV(vecs[0].z, vecs[0].y).invertV(),
+        				new UV(vecs[1].z, vecs[1].y).invertV(),
+        				new UV(vecs[2].z, vecs[2].y).invertV(),
+        				new UV(vecs[3].z, vecs[3].y).invertV()
         			};
     			}
     		case EAST:
     			if (floatY) {
     				return new UV[] {
-        				new UV(vecs[3].zCoord, vecs[1].yCoord),
-        				new UV(vecs[2].zCoord, vecs[0].yCoord),
-        				new UV(vecs[1].zCoord, vecs[3].yCoord),
-        				new UV(vecs[0].zCoord, vecs[2].yCoord)
+        				new UV(vecs[0].z, 0.0D).invertU(),
+        				new UV(vecs[1].z, vecs[0].y - vecs[1].y).invertU(),
+        				new UV(vecs[2].z, vecs[3].y - vecs[2].y).invertU(),
+        				new UV(vecs[3].z, 0.0D).invertU()
         			};
     			} else {
     				return new UV[] {
-        				new UV(vecs[0].zCoord, vecs[0].yCoord).invertUV(),
-        				new UV(vecs[1].zCoord, vecs[1].yCoord).invertUV(),
-        				new UV(vecs[2].zCoord, vecs[2].yCoord).invertUV(),
-        				new UV(vecs[3].zCoord, vecs[3].yCoord).invertUV()
+        				new UV(vecs[0].z, vecs[0].y).invertUV(),
+        				new UV(vecs[1].z, vecs[1].y).invertUV(),
+        				new UV(vecs[2].z, vecs[2].y).invertUV(),
+        				new UV(vecs[3].z, vecs[3].y).invertUV()
         			};
     			}
 		}
@@ -282,362 +287,361 @@ public class VecUtil {
     			switch (location) {
 	    			case NORTH:
 	    				// Offset -Z
-	    				depth = vecs[0].zCoord - vecs[1].zCoord;
+	    				depth = vecs[0].z - vecs[1].z;
 	    				return new UV[] {
-	    					new UV(vecs[0].xCoord,         1.0D).invertV(),
-	    					new UV(vecs[1].xCoord, 1.0D - depth).invertV(),
-	    					new UV(vecs[2].xCoord, 1.0D - depth).invertV(),
-	    					new UV(vecs[3].xCoord,         1.0D).invertV()
+	    					new UV(vecs[0].x,         1.0D).invertV(),
+	    					new UV(vecs[1].x, 1.0D - depth).invertV(),
+	    					new UV(vecs[2].x, 1.0D - depth).invertV(),
+	    					new UV(vecs[3].x,         1.0D).invertV()
 	    				};
 	    			case SOUTH:
 	    				// Offset +Z
-	    				depth = vecs[0].zCoord - vecs[1].zCoord;
+	    				depth = vecs[0].z - vecs[1].z;
 	    				return new UV[] {
-	    					new UV(vecs[0].xCoord, depth).invertV(),
-	    					new UV(vecs[1].xCoord,  0.0D).invertV(),
-	    					new UV(vecs[2].xCoord,  0.0D).invertV(),
-	    					new UV(vecs[3].xCoord, depth).invertV()
+	    					new UV(vecs[0].x, depth).invertV(),
+	    					new UV(vecs[1].x,  0.0D).invertV(),
+	    					new UV(vecs[2].x,  0.0D).invertV(),
+	    					new UV(vecs[3].x, depth).invertV()
 	    				};
 	    			case WEST:
 	    				// Offset -X
-	    				depth = vecs[3].xCoord - vecs[0].xCoord;
+	    				depth = vecs[3].x - vecs[0].x;
 	    				return new UV[] {
-	    					new UV(1.0D - depth, vecs[0].zCoord).invertV(),
-	    					new UV(1.0D - depth, vecs[1].zCoord).invertV(),
-	    					new UV(1.0D,         vecs[2].zCoord).invertV(),
-	    					new UV(1.0D,         vecs[3].zCoord).invertV()
+	    					new UV(1.0D - depth, vecs[0].z).invertV(),
+	    					new UV(1.0D - depth, vecs[1].z).invertV(),
+	    					new UV(1.0D,         vecs[2].z).invertV(),
+	    					new UV(1.0D,         vecs[3].z).invertV()
 	    				};
 	    			default: //case EAST:
 	    				// Offset +X
-	    				depth = vecs[3].xCoord - vecs[0].xCoord;
+	    				depth = vecs[3].x - vecs[0].x;
 	    				return new UV[] {
-	    					new UV( 0.0D, vecs[0].zCoord).invertV(),
-	    					new UV( 0.0D, vecs[1].zCoord).invertV(),
-	    					new UV(depth, vecs[2].zCoord).invertV(),
-	    					new UV(depth, vecs[3].zCoord).invertV()
+	    					new UV( 0.0D, vecs[0].z).invertV(),
+	    					new UV( 0.0D, vecs[1].z).invertV(),
+	    					new UV(depth, vecs[2].z).invertV(),
+	    					new UV(depth, vecs[3].z).invertV()
 	    				};
     			}
     		case UP:
     			switch (location) {
 	    			case NORTH:
 	    				// Offset -Z
-	    				depth = vecs[1].zCoord - vecs[0].zCoord;
+	    				depth = vecs[1].z - vecs[0].z;
 	    				return new UV[] {
-	    					new UV(vecs[0].xCoord, depth).invertV(),
-	    					new UV(vecs[1].xCoord,  0.0D).invertV(),
-	    					new UV(vecs[2].xCoord,  0.0D).invertV(),
-	    					new UV(vecs[3].xCoord, depth).invertV()
+	    					new UV(vecs[0].x, depth).invertV(),
+	    					new UV(vecs[1].x,  0.0D).invertV(),
+	    					new UV(vecs[2].x,  0.0D).invertV(),
+	    					new UV(vecs[3].x, depth).invertV()
 	    				};
 	    			case SOUTH:
 	    				// Offset +Z
-	    				depth = vecs[1].zCoord - vecs[0].zCoord;
+	    				depth = vecs[1].z - vecs[0].z;
 	    				return new UV[] {
-	    					new UV(vecs[0].xCoord,         1.0D).invertV(),
-	    					new UV(vecs[1].xCoord, 1.0D - depth).invertV(),
-	    					new UV(vecs[2].xCoord, 1.0D - depth).invertV(),
-	    					new UV(vecs[3].xCoord,         1.0D).invertV()
+	    					new UV(vecs[0].x,         1.0D).invertV(),
+	    					new UV(vecs[1].x, 1.0D - depth).invertV(),
+	    					new UV(vecs[2].x, 1.0D - depth).invertV(),
+	    					new UV(vecs[3].x,         1.0D).invertV()
 	    				};
 	    			case WEST:
 	    				// Offset -X
-	    				depth = vecs[3].xCoord - vecs[0].xCoord;
+	    				depth = vecs[3].x - vecs[0].x;
 	    				return new UV[] {
-	    					new UV(1.0D - depth, vecs[0].zCoord),
-	    					new UV(1.0D - depth, vecs[1].zCoord),
-	    					new UV(1.0D,         vecs[2].zCoord),
-	    					new UV(1.0D,         vecs[3].zCoord)
+	    					new UV(1.0D - depth, vecs[0].z),
+	    					new UV(1.0D - depth, vecs[1].z),
+	    					new UV(1.0D,         vecs[2].z),
+	    					new UV(1.0D,         vecs[3].z)
 	    				};
 	    			default: //case EAST:
 	    				// Offset +X
-	    				depth = vecs[3].xCoord - vecs[0].xCoord;
+	    				depth = vecs[3].x - vecs[0].x;
 	    				return new UV[] {
-	    					new UV( 0.0D, vecs[0].zCoord),
-	    					new UV( 0.0D, vecs[1].zCoord),
-	    					new UV(depth, vecs[2].zCoord),
-	    					new UV(depth, vecs[3].zCoord)
+	    					new UV( 0.0D, vecs[0].z),
+	    					new UV( 0.0D, vecs[1].z),
+	    					new UV(depth, vecs[2].z),
+	    					new UV(depth, vecs[3].z)
 	    				};
 				}
     		case NORTH:
     			switch (location) {
 	    			case DOWN:
-	    				depth = vecs[0].yCoord - vecs[1].yCoord;
+	    				depth = vecs[0].y - vecs[1].y;
 	    				if (floatY) {
 		    				return new UV[] {
-		    					new UV(vecs[0].xCoord,  0.0D).invertU(),
-		    					new UV(vecs[1].xCoord, depth).invertU(),
-		    					new UV(vecs[2].xCoord, depth).invertU(),
-		    					new UV(vecs[3].xCoord,  0.0D).invertU()
+		    					new UV(vecs[0].x,  0.0D).invertU(),
+		    					new UV(vecs[1].x, depth).invertU(),
+		    					new UV(vecs[2].x, depth).invertU(),
+		    					new UV(vecs[3].x,  0.0D).invertU()
 		    				};
 	    				} else {
 		    				return new UV[] {
-		    					new UV(vecs[0].xCoord,  0.0D).invertU(),
-		    					new UV(vecs[1].xCoord, depth).invertU(),
-		    					new UV(vecs[2].xCoord, depth).invertU(),
-		    					new UV(vecs[3].xCoord,  0.0D).invertU()
+		    					new UV(vecs[0].x,  0.0D).invertU(),
+		    					new UV(vecs[1].x, depth).invertU(),
+		    					new UV(vecs[2].x, depth).invertU(),
+		    					new UV(vecs[3].x,  0.0D).invertU()
 		    				};
 	    				}
 	    			case UP:
-	    				depth = vecs[0].yCoord - vecs[1].yCoord;
+	    				depth = vecs[0].y - vecs[1].y;
 	    				if (floatY) {
 		    				return new UV[] {
-		    					new UV(vecs[0].xCoord,  0.0D).invertU(),
-		    					new UV(vecs[1].xCoord, depth).invertU(),
-		    					new UV(vecs[2].xCoord, depth).invertU(),
-		    					new UV(vecs[3].xCoord,  0.0D).invertU()
+		    					new UV(vecs[0].x,  0.0D).invertU(),
+		    					new UV(vecs[1].x, depth).invertU(),
+		    					new UV(vecs[2].x, depth).invertU(),
+		    					new UV(vecs[3].x,  0.0D).invertU()
 		    				};
 	    				} else {
 		    				return new UV[] {
-	    						new UV(vecs[0].xCoord, depth).invertUV(),
-		    					new UV(vecs[1].xCoord,  0.0D).invertUV(),
-		    					new UV(vecs[2].xCoord,  0.0D).invertUV(),
-		    					new UV(vecs[3].xCoord, depth).invertUV()
+	    						new UV(vecs[0].x, depth).invertUV(),
+		    					new UV(vecs[1].x,  0.0D).invertUV(),
+		    					new UV(vecs[2].x,  0.0D).invertUV(),
+		    					new UV(vecs[3].x, depth).invertUV()
 		    				};
 	    				}
 	    			case WEST:
-	    				depth = vecs[0].xCoord - vecs[3].xCoord;
+	    				depth = vecs[0].x - vecs[3].x;
 	    				if (floatY) {
 		    				return new UV[] {
-		    					new UV( 0.0D, vecs[1].yCoord),
-		    					new UV( 0.0D, vecs[0].yCoord),
-		    					new UV(depth, vecs[3].yCoord),
-		    					new UV(depth, vecs[2].yCoord)
+		    					new UV( 0.0D, 0.0D),
+		    					new UV( 0.0D, vecs[0].y - vecs[1].y),
+		    					new UV(depth, vecs[3].y - vecs[2].y),
+		    					new UV(depth, 0.0D)
 		    				};
 	    				} else {
 		    				return new UV[] {
-		    					new UV( 0.0D, vecs[0].yCoord).invertV(),
-		    					new UV( 0.0D, vecs[1].yCoord).invertV(),
-		    					new UV(depth, vecs[2].yCoord).invertV(),
-		    					new UV(depth, vecs[3].yCoord).invertV()
+		    					new UV( 0.0D, vecs[0].y).invertV(),
+		    					new UV( 0.0D, vecs[1].y).invertV(),
+		    					new UV(depth, vecs[2].y).invertV(),
+		    					new UV(depth, vecs[3].y).invertV()
 		    				};
 	    				}
 	    			default: //case EAST:
-	    				depth = vecs[0].xCoord - vecs[3].xCoord;
+	    				depth = vecs[0].x - vecs[3].x;
 	    				if (floatY) {
 		    				return new UV[] {
-	            				new UV(depth, vecs[1].yCoord).invertU(),
-	            				new UV(depth, vecs[0].yCoord).invertU(),
-	            				new UV( 0.0D, vecs[3].yCoord).invertU(),
-	            				new UV( 0.0D, vecs[2].yCoord).invertU()
+	            				new UV(depth, 0.0D).invertU(),
+	            				new UV(depth, vecs[0].y - vecs[1].y).invertU(),
+	            				new UV( 0.0D, vecs[3].y - vecs[2].y).invertU(),
+	            				new UV( 0.0D, 0.0D).invertU()
 		    				};
 	    				} else {
 		    				return new UV[] {
-		    					new UV(depth, vecs[0].yCoord).invertUV(),
-		    					new UV(depth, vecs[1].yCoord).invertUV(),
-		    					new UV( 0.0D, vecs[2].yCoord).invertUV(),
-		    					new UV( 0.0D, vecs[3].yCoord).invertUV()
+		    					new UV(depth, vecs[0].y).invertUV(),
+		    					new UV(depth, vecs[1].y).invertUV(),
+		    					new UV( 0.0D, vecs[2].y).invertUV(),
+		    					new UV( 0.0D, vecs[3].y).invertUV()
 		    				};
 	    				}
     			}
     		case SOUTH:
     			switch (location) {
 	    			case DOWN:
-	    				depth = vecs[0].yCoord - vecs[1].yCoord;
+	    				depth = vecs[0].y - vecs[1].y;
 	    				if (floatY) {
 		    				return new UV[] {
-		    					new UV(vecs[0].xCoord,  0.0D),
-		    					new UV(vecs[1].xCoord, depth),
-		    					new UV(vecs[2].xCoord, depth),
-		    					new UV(vecs[3].xCoord,  0.0D)
+		    					new UV(vecs[0].x,  0.0D),
+		    					new UV(vecs[1].x, depth),
+		    					new UV(vecs[2].x, depth),
+		    					new UV(vecs[3].x,  0.0D)
 		    				};
 	    				} else {
 		    				return new UV[] {
-		    					new UV(vecs[0].xCoord,  0.0D),
-		    					new UV(vecs[1].xCoord, depth),
-		    					new UV(vecs[2].xCoord, depth),
-		    					new UV(vecs[3].xCoord,  0.0D)
+		    					new UV(vecs[0].x,  0.0D),
+		    					new UV(vecs[1].x, depth),
+		    					new UV(vecs[2].x, depth),
+		    					new UV(vecs[3].x,  0.0D)
 		    				};
 	    				}
 	    			case UP:
-	    				depth = vecs[0].yCoord - vecs[1].yCoord;
+	    				depth = vecs[0].y - vecs[1].y;
 	    				if (floatY) {
 		    				return new UV[] {
-		    					new UV(vecs[0].xCoord,  0.0D),
-		    					new UV(vecs[1].xCoord, depth),
-		    					new UV(vecs[2].xCoord, depth),
-		    					new UV(vecs[3].xCoord,  0.0D)
+		    					new UV(vecs[0].x,  0.0D),
+		    					new UV(vecs[1].x, depth),
+		    					new UV(vecs[2].x, depth),
+		    					new UV(vecs[3].x,  0.0D)
 		    				};
 	    				} else {
 		    				return new UV[] {
-	    						new UV(vecs[0].xCoord, depth).invertV(),
-		    					new UV(vecs[1].xCoord,  0.0D).invertV(),
-		    					new UV(vecs[2].xCoord,  0.0D).invertV(),
-		    					new UV(vecs[3].xCoord, depth).invertV()
+	    						new UV(vecs[0].x, depth).invertV(),
+		    					new UV(vecs[1].x,  0.0D).invertV(),
+		    					new UV(vecs[2].x,  0.0D).invertV(),
+		    					new UV(vecs[3].x, depth).invertV()
 		    				};
 	    				}
 	    			case WEST:
-	    				depth = vecs[0].xCoord - vecs[3].xCoord;
+	    				depth = vecs[0].x - vecs[3].x;
 	    				if (floatY) {
 		    				return new UV[] {
-		    					new UV(depth, vecs[1].yCoord).invertU(),
-		    					new UV(depth, vecs[0].yCoord).invertU(),
-		    					new UV( 0.0D, vecs[3].yCoord).invertU(),
-		    					new UV( 0.0D, vecs[2].yCoord).invertU()
+		    					new UV(depth, 0.0D).invertU(),
+		    					new UV(depth, vecs[0].y - vecs[1].y).invertU(),
+		    					new UV( 0.0D, vecs[3].y - vecs[2].y).invertU(),
+		    					new UV( 0.0D, 0.0D).invertU()
 		    				};
 	    				} else {
 		    				return new UV[] {
-		    					new UV(depth, vecs[0].yCoord).invertUV(),
-		    					new UV(depth, vecs[1].yCoord).invertUV(),
-		    					new UV( 0.0D, vecs[2].yCoord).invertUV(),
-		    					new UV( 0.0D, vecs[3].yCoord).invertUV()
+		    					new UV(depth, vecs[0].y).invertUV(),
+		    					new UV(depth, vecs[1].y).invertUV(),
+		    					new UV( 0.0D, vecs[2].y).invertUV(),
+		    					new UV( 0.0D, vecs[3].y).invertUV()
 		    				};
 	    				}
 	    			default: //case EAST:
-	    				depth = vecs[0].xCoord - vecs[3].xCoord;
+	    				depth = vecs[0].x - vecs[3].x;
 	    				if (floatY) {
 		    				return new UV[] {
-	            				new UV( 0.0D, vecs[1].yCoord),
-	            				new UV( 0.0D, vecs[0].yCoord),
-	            				new UV(depth, vecs[3].yCoord),
-	            				new UV(depth, vecs[2].yCoord)
+	            				new UV( 0.0D, 0.0D),
+	            				new UV( 0.0D, vecs[0].y - vecs[1].y),
+	            				new UV(depth, vecs[3].y - vecs[2].y),
+	            				new UV(depth, 0.0D)
 		    				};
 	    				} else {
 		    				return new UV[] {
-		    					new UV( 0.0D, vecs[0].yCoord).invertV(),
-		    					new UV( 0.0D, vecs[1].yCoord).invertV(),
-		    					new UV(depth, vecs[2].yCoord).invertV(),
-		    					new UV(depth, vecs[3].yCoord).invertV()
+		    					new UV( 0.0D, vecs[0].y).invertV(),
+		    					new UV( 0.0D, vecs[1].y).invertV(),
+		    					new UV(depth, vecs[2].y).invertV(),
+		    					new UV(depth, vecs[3].y).invertV()
 		    				};
 	    				}
 				}
     		case WEST:
     			switch (location) {
 	    			case DOWN:
-	    				depth = vecs[0].yCoord - vecs[1].yCoord;
+	    				depth = vecs[0].y - vecs[1].y;
 	    				if (floatY) {
 		    				return new UV[] {
-		    					new UV(vecs[0].zCoord,  0.0D),
-		    					new UV(vecs[1].zCoord, depth),
-		    					new UV(vecs[2].zCoord, depth),
-		    					new UV(vecs[3].zCoord,  0.0D)
+		    					new UV(vecs[0].z,  0.0D),
+		    					new UV(vecs[1].z, depth),
+		    					new UV(vecs[2].z, depth),
+		    					new UV(vecs[3].z,  0.0D)
 		    				};
 	    				} else {
 		    				return new UV[] {
-		    					new UV(vecs[0].zCoord,  0.0D),
-		    					new UV(vecs[1].zCoord, depth),
-		    					new UV(vecs[2].zCoord, depth),
-		    					new UV(vecs[3].zCoord,  0.0D)
+		    					new UV(vecs[0].z,  0.0D),
+		    					new UV(vecs[1].z, depth),
+		    					new UV(vecs[2].z, depth),
+		    					new UV(vecs[3].z,  0.0D)
 		    				};
 	    				}
 	    			case UP:
-	    				depth = vecs[0].yCoord - vecs[1].yCoord;
+	    				depth = vecs[0].y - vecs[1].y;
 	    				if (floatY) {
 		    				return new UV[] {
-		    					new UV(vecs[0].zCoord,  0.0D),
-		    					new UV(vecs[1].zCoord, depth),
-		    					new UV(vecs[2].zCoord, depth),
-		    					new UV(vecs[3].zCoord,  0.0D)
+		    					new UV(vecs[0].z,  0.0D),
+		    					new UV(vecs[1].z, depth),
+		    					new UV(vecs[2].z, depth),
+		    					new UV(vecs[3].z,  0.0D)
 		    				};
 	    				} else {
 		    				return new UV[] {
-	    						new UV(vecs[0].zCoord, depth).invertV(),
-		    					new UV(vecs[1].zCoord,  0.0D).invertV(),
-		    					new UV(vecs[2].zCoord,  0.0D).invertV(),
-		    					new UV(vecs[3].zCoord, depth).invertV()
+	    						new UV(vecs[0].z, depth).invertV(),
+		    					new UV(vecs[1].z,  0.0D).invertV(),
+		    					new UV(vecs[2].z,  0.0D).invertV(),
+		    					new UV(vecs[3].z, depth).invertV()
 		    				};
 	    				}
 	    			case NORTH:
-	    				depth = vecs[3].zCoord - vecs[0].zCoord;
+	    				depth = vecs[3].z - vecs[0].z;
 	    				if (floatY) {
 		    				return new UV[] {
-	            				new UV(depth, vecs[1].yCoord).invertU(),
-	            				new UV(depth, vecs[0].yCoord).invertU(),
-	            				new UV( 0.0D, vecs[3].yCoord).invertU(),
-	            				new UV( 0.0D, vecs[2].yCoord).invertU()
+	            				new UV(depth, 0.0D).invertU(),
+	            				new UV(depth, vecs[0].y - vecs[1].y).invertU(),
+	            				new UV( 0.0D, vecs[3].y - vecs[2].y).invertU(),
+	            				new UV( 0.0D, 0.0D).invertU()
 		    				};
 	    				} else {
 		    				return new UV[] {
-		    					new UV(depth, vecs[0].yCoord).invertUV(),
-		    					new UV(depth, vecs[1].yCoord).invertUV(),
-		    					new UV( 0.0D, vecs[2].yCoord).invertUV(),
-		    					new UV( 0.0D, vecs[3].yCoord).invertUV()
+		    					new UV(depth, vecs[0].y).invertUV(),
+		    					new UV(depth, vecs[1].y).invertUV(),
+		    					new UV( 0.0D, vecs[2].y).invertUV(),
+		    					new UV( 0.0D, vecs[3].y).invertUV()
 		    				};
 	    				}
 	    			default: //case SOUTH:
-	    				depth = vecs[3].zCoord - vecs[0].zCoord;
+	    				depth = vecs[3].z - vecs[0].z;
 	    				if (floatY) {
 		    				return new UV[] {
-		    					new UV( 0.0D, vecs[1].yCoord),
-		    					new UV( 0.0D, vecs[0].yCoord),
-		    					new UV(depth, vecs[3].yCoord),
-		    					new UV(depth, vecs[2].yCoord)
+		    					new UV( 0.0D, 0.0D),
+		    					new UV( 0.0D, vecs[0].y - vecs[1].y),
+		    					new UV(depth, vecs[3].y - vecs[2].y),
+		    					new UV(depth, 0.0D)
 		    				};
 	    				} else {
 		    				return new UV[] {
-		    					new UV( 0.0D, vecs[0].yCoord).invertV(),
-		    					new UV( 0.0D, vecs[1].yCoord).invertV(),
-		    					new UV(depth, vecs[2].yCoord).invertV(),
-		    					new UV(depth, vecs[3].yCoord).invertV()
+		    					new UV( 0.0D, vecs[0].y).invertV(),
+		    					new UV( 0.0D, vecs[1].y).invertV(),
+		    					new UV(depth, vecs[2].y).invertV(),
+		    					new UV(depth, vecs[3].y).invertV()
 		    				};
 	    				}
 			}
     		default: //case EAST:
     			switch (location) {
 	    			case DOWN:
-	    				depth = vecs[0].yCoord - vecs[1].yCoord;
+	    				depth = vecs[0].y - vecs[1].y;
 	    				if (floatY) {
 		    				return new UV[] {
-		    					new UV(vecs[0].zCoord,  0.0D).invertU(),
-		    					new UV(vecs[1].zCoord, depth).invertU(),
-		    					new UV(vecs[2].zCoord, depth).invertU(),
-		    					new UV(vecs[3].zCoord,  0.0D).invertU()
+		    					new UV(vecs[0].z,  0.0D).invertU(),
+		    					new UV(vecs[1].z, depth).invertU(),
+		    					new UV(vecs[2].z, depth).invertU(),
+		    					new UV(vecs[3].z,  0.0D).invertU()
 		    				};
 	    				} else {
 		    				return new UV[] {
-		    					new UV(vecs[0].zCoord,  0.0D).invertU(),
-		    					new UV(vecs[1].zCoord, depth).invertU(),
-		    					new UV(vecs[2].zCoord, depth).invertU(),
-		    					new UV(vecs[3].zCoord,  0.0D).invertU()
+		    					new UV(vecs[0].z,  0.0D).invertU(),
+		    					new UV(vecs[1].z, depth).invertU(),
+		    					new UV(vecs[2].z, depth).invertU(),
+		    					new UV(vecs[3].z,  0.0D).invertU()
 		    				};
 	    				}
 	    			case UP:
-	    				depth = vecs[0].yCoord - vecs[1].yCoord;
+	    				depth = vecs[0].y - vecs[1].y;
 	    				if (floatY) {
 		    				return new UV[] {
-		    					new UV(vecs[0].zCoord,  0.0D).invertU(),
-		    					new UV(vecs[1].zCoord, depth).invertU(),
-		    					new UV(vecs[2].zCoord, depth).invertU(),
-		    					new UV(vecs[3].zCoord,  0.0D).invertU()
+		    					new UV(vecs[0].z,  0.0D).invertU(),
+		    					new UV(vecs[1].z, depth).invertU(),
+		    					new UV(vecs[2].z, depth).invertU(),
+		    					new UV(vecs[3].z,  0.0D).invertU()
 		    				};
 	    				} else {
 		    				return new UV[] {
-	    						new UV(vecs[0].zCoord, depth).invertUV(),
-		    					new UV(vecs[1].zCoord,  0.0D).invertUV(),
-		    					new UV(vecs[2].zCoord,  0.0D).invertUV(),
-		    					new UV(vecs[3].zCoord, depth).invertUV()
+	    						new UV(vecs[0].z, depth).invertUV(),
+		    					new UV(vecs[1].z,  0.0D).invertUV(),
+		    					new UV(vecs[2].z,  0.0D).invertUV(),
+		    					new UV(vecs[3].z, depth).invertUV()
 		    				};
 	    				}
 	    			case NORTH:
-	    				depth = vecs[0].zCoord - vecs[3].zCoord;
+	    				depth = vecs[0].z - vecs[3].z;
 	    				if (floatY) {
-	    					// TODO: Test and adjust
 		    				return new UV[] {
-		    					new UV( 0.0D, vecs[1].yCoord),
-		    					new UV( 0.0D, vecs[0].yCoord),
-		    					new UV(depth, vecs[3].yCoord),
-		    					new UV(depth, vecs[2].yCoord)
+		    					new UV( 0.0D, 0.0D),
+		    					new UV( 0.0D, vecs[0].y - vecs[1].y),
+		    					new UV(depth, vecs[3].y - vecs[2].y),
+		    					new UV(depth, 0.0D)
 		    				};
 	    				} else {
 		    				return new UV[] {
-		    					new UV( 0.0D, vecs[0].yCoord).invertV(),
-		    					new UV( 0.0D, vecs[1].yCoord).invertV(),
-		    					new UV(depth, vecs[2].yCoord).invertV(),
-		    					new UV(depth, vecs[3].yCoord).invertV()
+		    					new UV( 0.0D, vecs[0].y).invertV(),
+		    					new UV( 0.0D, vecs[1].y).invertV(),
+		    					new UV(depth, vecs[2].y).invertV(),
+		    					new UV(depth, vecs[3].y).invertV()
 		    				};
 	    				}
 	    			default: //case SOUTH:
-	    				depth = vecs[0].zCoord - vecs[3].zCoord;
+	    				depth = vecs[0].z - vecs[3].z;
 	    				if (floatY) {
 		    				return new UV[] {
-	            				new UV(depth, vecs[1].yCoord).invertU(),
-	            				new UV(depth, vecs[0].yCoord).invertU(),
-	            				new UV( 0.0D, vecs[3].yCoord).invertU(),
-	            				new UV( 0.0D, vecs[2].yCoord).invertU()
+	            				new UV(depth, 0.0D).invertU(),
+	            				new UV(depth, vecs[0].y - vecs[1].y).invertU(),
+	            				new UV( 0.0D, vecs[3].y - vecs[2].y).invertU(),
+	            				new UV( 0.0D, 0.0D).invertU()
 		    				};
 	    				} else {
 		    				return new UV[] {
-		    					new UV(depth, vecs[0].yCoord).invertUV(),
-		    					new UV(depth, vecs[1].yCoord).invertUV(),
-		    					new UV( 0.0D, vecs[2].yCoord).invertUV(),
-		    					new UV( 0.0D, vecs[3].yCoord).invertUV()
+		    					new UV(depth, vecs[0].y).invertUV(),
+		    					new UV(depth, vecs[1].y).invertUV(),
+		    					new UV( 0.0D, vecs[2].y).invertUV(),
+		    					new UV( 0.0D, vecs[3].y).invertUV()
 		    				};
 	    				}
     			}
@@ -829,6 +833,7 @@ public class VecUtil {
 						vecs[0].addVector(depth, 0, 0)));
 				break;
 		}
+		while (list.remove(null));
 		return list;
 	}
 	

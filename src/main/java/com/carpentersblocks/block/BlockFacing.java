@@ -1,10 +1,9 @@
 package com.carpentersblocks.block;
 
 import java.util.Arrays;
+import java.util.Random;
 
-import com.carpentersblocks.block.state.Property;
 import com.carpentersblocks.tileentity.CbTileEntity;
-import com.carpentersblocks.util.block.CollapsibleUtil;
 
 import net.minecraft.block.BlockDirectional;
 import net.minecraft.block.material.Material;
@@ -15,7 +14,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.property.IExtendedBlockState;
 
 public abstract class BlockFacing extends BlockCoverable {
 
@@ -33,7 +31,7 @@ public abstract class BlockFacing extends BlockCoverable {
     @Override
     public boolean canPlaceBlockOnSide(World world, BlockPos blockPos, EnumFacing facing) {
         if (canAttachToFacing(facing)) {
-        	return world.isSideSolid(blockPos.add(facing.getFrontOffsetX(), facing.getFrontOffsetY(), facing.getFrontOffsetZ()), facing);
+        	return world.isSideSolid(blockPos.offset(facing.getOpposite()), facing);
         } else {
             return false;
         }
@@ -43,7 +41,7 @@ public abstract class BlockFacing extends BlockCoverable {
     /**
      * Called when a block is placed using its ItemBlock. Args: World, X, Y, Z, side, hitX, hitY, hitZ, block metadata
      */
-    public IBlockState onBlockPlaced(World world, BlockPos blockPos, EnumFacing facing, float hitX, float hitY, float hitZ, int metadata, EntityLivingBase entityLivingBase) {
+    public IBlockState getStateForPlacement(World world, BlockPos blockPos, EnumFacing facing, float hitX, float hitY, float hitZ, int metadata, EntityLivingBase entityLivingBase) {
         return getDefaultState().withProperty(BlockDirectional.FACING, facing);
     }
     
@@ -56,12 +54,11 @@ public abstract class BlockFacing extends BlockCoverable {
         if (!ignoreSidePlacement()) {
             CbTileEntity cbTileEntity = getTileEntity(world, blockPos);
             if (cbTileEntity != null) {
-            	CollapsibleUtil util = new CollapsibleUtil(cbTileEntity.getData());
                 EnumFacing facing = getPlacementDirection(blockState);
                 setFacing(cbTileEntity, facing);
             }
         }
-        world.notifyNeighborsOfStateChange(blockPos, this);
+        world.notifyNeighborsOfStateChange(blockPos, this, false);
     }
 
     /**
@@ -119,16 +116,17 @@ public abstract class BlockFacing extends BlockCoverable {
      */
     public void notifyBlocksOfPowerChange(World world, IBlockState blockState, BlockPos blockPos) {
     	// Strong power change
-        world.notifyBlockOfStateChange(blockPos, this);
+        world.neighborChanged(blockPos, this, blockPos);
 
         // Weak power change
         if (canProvidePower(blockState)) {
             CbTileEntity cbTileEntity = getTileEntity(world, blockPos);
             if (cbTileEntity != null) {
                 EnumFacing facing = getFacing(cbTileEntity);
-                //world.notifyBlockOfStateChange(blockPos.add(-1, -1, -1), this);
+                BlockPos pos = blockPos.offset(facing.getOpposite());
+                world.neighborChanged(pos, this, pos);
             } else {
-            	//world.notifyNeighborsOfStateChange(blockPos, this);
+            	world.notifyNeighborsOfStateChange(blockPos, this, false);
             }
         }
     }
@@ -208,7 +206,6 @@ public abstract class BlockFacing extends BlockCoverable {
                 //return data.setFacing(cbTileEntity, facing.rotateAround(axis.getAxis()));
             }
         }
-
         return false;
     }
 
@@ -217,9 +214,22 @@ public abstract class BlockFacing extends BlockCoverable {
      *
      * @return an array of axes
      */
-    protected EnumFacing.Axis[] getRotationAxes()
-    {
+    protected EnumFacing.Axis[] getRotationAxes() {
         return new EnumFacing.Axis[] { EnumFacing.Axis.Y };
+    }
+    
+    /**
+     * Ticks the block if it's been scheduled
+     */
+    @Override
+    public void updateTick(World world, BlockPos blockPos, IBlockState blockState, Random rand) {
+    	if (canProvidePower(blockState)) {
+    		CbTileEntity cbTileEntity = getTileEntity(world, blockPos);
+            if (cbTileEntity != null) {
+		        world.notifyNeighborsOfStateChange(blockPos, this, false);
+		        world.notifyNeighborsOfStateChange(blockPos.offset(this.getFacing(cbTileEntity).getOpposite()), this, false);
+            }
+    	}
     }
 
 }

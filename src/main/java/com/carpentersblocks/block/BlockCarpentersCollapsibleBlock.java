@@ -10,7 +10,7 @@ import java.util.List;
 
 import com.carpentersblocks.tileentity.CbTileEntity;
 import com.carpentersblocks.util.block.CollapsibleUtil;
-import com.carpentersblocks.util.registry.ItemRegistry;
+import com.carpentersblocks.util.registry.ConfigRegistry;
 
 import net.minecraft.block.BlockDirectional;
 import net.minecraft.block.material.Material;
@@ -69,7 +69,7 @@ public class BlockCarpentersCollapsibleBlock extends BlockFacing {
      * Damages hammer with a chance to not damage.
      */
     protected void damageItemWithChance(World world, EntityPlayer entityPlayer, EnumHand hand) {
-        if (world.rand.nextFloat() <= ItemRegistry.itemHammerDamageChanceFromCollapsible) {
+        if (world.rand.nextFloat() <= ConfigRegistry.itemHammerDamageChanceFromCollapsible) {
             super.damageItemWithChance(world, entityPlayer, hand);
         }
     }
@@ -168,7 +168,7 @@ public class BlockCarpentersCollapsibleBlock extends BlockFacing {
         CbTileEntity cbTileEntity = getTileEntity(blockAccess, blockPos);
         if (cbTileEntity != null) {
         	CollapsibleUtil util = new CollapsibleUtil(cbTileEntity);
-	        if (isBlockSolid(blockAccess, blockPos, facing)) {
+	        if (isBlockSolid(blockAccess, blockPos)) {
 	            return util.isSideSolid(facing);
 	        }
         }
@@ -227,13 +227,13 @@ public class BlockCarpentersCollapsibleBlock extends BlockFacing {
     /**
      * Called when a block is placed using its ItemBlock. Args: World, X, Y, Z, side, hitX, hitY, hitZ, block metadata
      */
-    public IBlockState onBlockPlaced(World world, BlockPos blockPos, EnumFacing facing, float hitX, float hitY, float hitZ, int metadata, EntityLivingBase entityLivingBase) {
+    public IBlockState getStateForPlacement(World world, BlockPos blockPos, EnumFacing facing, float hitX, float hitY, float hitZ, int metadata, EntityLivingBase entityLivingBase) {
         // If side not supported, select best side based on y hit coordinates
         if (!canAttachToFacing(facing)) {
         	EnumFacing verticalFacing = hitY > 0.5F ? EnumFacing.DOWN : EnumFacing.UP;
         	return getDefaultState().withProperty(BlockDirectional.FACING, verticalFacing);
         }
-        return super.onBlockPlaced(world, blockPos, facing, hitX, hitY, hitZ, metadata, entityLivingBase);
+        return super.getStateForPlacement(world, blockPos, facing, hitX, hitY, hitZ, metadata, entityLivingBase);
     }
 
     @Override
@@ -355,7 +355,7 @@ public class BlockCarpentersCollapsibleBlock extends BlockFacing {
      * mask.) Parameters: World, X, Y, Z, mask, list, colliding entity
      */
     @Override
-    public void addCollisionBoxToList(IBlockState blockState, World world, BlockPos blockPos, AxisAlignedBB axisAlignedBB, List<AxisAlignedBB> collidingBoxes, Entity entity) {
+    public void addCollisionBoxToList(IBlockState blockState, World world, BlockPos blockPos, AxisAlignedBB axisAlignedBB, List<AxisAlignedBB> collidingBoxes, Entity entity, boolean unused) {
     	CbTileEntity cbTileEntity = getTileEntity(world, blockPos);
         if (cbTileEntity != null) {
 	    	CollapsibleUtil util = new CollapsibleUtil(cbTileEntity);

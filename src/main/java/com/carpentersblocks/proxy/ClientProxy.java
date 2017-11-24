@@ -7,7 +7,6 @@ import com.carpentersblocks.util.registry.SpriteRegistry;
 
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.relauncher.Side;
@@ -17,15 +16,15 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class ClientProxy extends CommonProxy {
 
     @Override
-    public void preInit(FMLPreInitializationEvent event, Configuration config) {
-    	super.preInit(event, config);
-        ModelLoaderRegistry.registerLoader(new ModelLoader());        
+    public void preInit(FMLPreInitializationEvent event) {
+    	super.preInit(event);
+    	MinecraftForge.EVENT_BUS.register(new SpriteRegistry());
+        ModelLoaderRegistry.registerLoader(new ModelLoader());
     }
     
     @Override
     public void init(FMLInitializationEvent event) {
         super.init(event);
-        MinecraftForge.EVENT_BUS.register(new SpriteRegistry());
         CarpentersBlocksCachedResources.INSTANCE.init();
         BlockRegistry.registerRenderers();
     	//Minecraft.getMinecraft().getBlockColors().registerBlockColorHandler(CbBlockColor.INSTANCE, BlockRegistry.blockCarpentersBlock);

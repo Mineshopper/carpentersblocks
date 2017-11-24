@@ -13,7 +13,7 @@ import com.carpentersblocks.util.handler.ChatHandler;
 import com.carpentersblocks.util.handler.DyeHandler;
 import com.carpentersblocks.util.handler.OverlayHandler;
 import com.carpentersblocks.util.handler.OverlayHandler.Overlay;
-import com.carpentersblocks.util.registry.FeatureRegistry;
+import com.carpentersblocks.util.registry.ConfigRegistry;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockBreakable;
@@ -166,8 +166,8 @@ public class BlockUtil {
                    block instanceof BlockSlab ||
                    block instanceof BlockPane ||
                    block instanceof BlockBreakable ||
-                   FeatureRegistry.coverExceptions.contains(itemStack.getDisplayName()) ||
-                   FeatureRegistry.coverExceptions.contains(ChatHandler.getDefaultTranslation(itemStack));
+                   ConfigRegistry.coverExceptions.contains(itemStack.getDisplayName()) ||
+                   ConfigRegistry.coverExceptions.contains(ChatHandler.getDefaultTranslation(itemStack));
         }
         return false;
     }
@@ -179,7 +179,7 @@ public class BlockUtil {
      * @return <code>true</code> if {@link ItemStack} contains dustGlowstone ore name
      */
     public static boolean isIlluminator(ItemStack itemStack) {
-        if (itemStack != null) {
+        if (!itemStack.isEmpty()) {
             for (int Id : OreDictionary.getOreIDs(itemStack)) {
                 if (OreDictionary.getOreName(Id).equals("dustGlowstone")) {
                     return true;
@@ -193,7 +193,7 @@ public class BlockUtil {
      * Returns true if ItemStack is a dye.
      */
     public static boolean isDye(ItemStack itemStack, boolean allowWhite) {
-        return itemStack.getItem() != null &&
+        return !itemStack.isEmpty() &&
                DyeHandler.isDye(itemStack, allowWhite);
     }
 
@@ -213,7 +213,7 @@ public class BlockUtil {
      * @return the first matching OreDictionary name, otherwise blank string
      */
     public static String getOreDictMatch(ItemStack itemStack, String ... name) {
-        if (itemStack != null) {
+        if (!itemStack.isEmpty()) {
             for (int Id : OreDictionary.getOreIDs(itemStack)) {
                 for (String oreName : name) {
                     if (OreDictionary.getOreName(Id).equals(oreName)) {

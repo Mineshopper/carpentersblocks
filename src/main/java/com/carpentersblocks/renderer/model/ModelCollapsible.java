@@ -2,10 +2,10 @@ package com.carpentersblocks.renderer.model;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.function.Function;
 
-import com.carpentersblocks.CarpentersBlocks;
-import com.carpentersblocks.renderer.BakedCollapsibleBlock;
-import com.google.common.base.Function;
+import com.carpentersblocks.renderer.bakedblock.BakedCollapsibleBlock;
+import com.carpentersblocks.util.registry.SpriteRegistry;
 import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.client.renderer.block.model.IBakedModel;
@@ -25,7 +25,7 @@ public class ModelCollapsible implements IModel {
 
 	@Override
 	public Collection<ResourceLocation> getTextures() {
-		return ImmutableSet.of(new ResourceLocation(CarpentersBlocks.MOD_ID, "blocks/general/solid"));
+		return ImmutableSet.of(SpriteRegistry.RESOURCE_UNCOVERED_FULL);
 	}
 
 	@Override

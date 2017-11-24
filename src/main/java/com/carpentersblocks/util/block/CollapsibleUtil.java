@@ -32,14 +32,14 @@ public class CollapsibleUtil extends DataUtil implements IDataFacing {
      */
     public static int getHitQuad() {
     	if (EventHandler.eventHitVector != null) {
-	    	if (Math.round(EventHandler.eventHitVector.xCoord) == 0) {
-	    		if (Math.round(EventHandler.eventHitVector.zCoord) == 0) {
+	    	if (Math.round(EventHandler.eventHitVector.x) == 0) {
+	    		if (Math.round(EventHandler.eventHitVector.z) == 0) {
 	    			return QUAD_XZNN;
 	    		} else {
 	    			return QUAD_XZNP;
 	    		}
 	    	} else {
-	    		if (Math.round(EventHandler.eventHitVector.zCoord) == 0) {
+	    		if (Math.round(EventHandler.eventHitVector.z) == 0) {
 	    			return QUAD_XZPN;
 	    		} else {
 	    			return QUAD_XZPP;
@@ -83,15 +83,14 @@ public class CollapsibleUtil extends DataUtil implements IDataFacing {
         offset_XZPN = getQuadDepth(QUAD_XZPN) / 16.0D + BIAS;
         offset_XZPP = getQuadDepth(QUAD_XZPP) / 16.0D + BIAS;
 
-        // Find primary corners and set center yMax offset
-        double NW_SE = Math.abs(offset_XZNN - offset_XZPP);
-        double NE_SW = Math.abs(offset_XZPN - offset_XZNP);
+        // Find highest combined diagonals and set center yMax
+        double NW_SE = offset_XZNN + offset_XZPP;
+        double NE_SW = offset_XZPN + offset_XZNP;
 
-        // Changing this to NW_SE > NE_SW will change how slopes are split
         if (NW_SE < NE_SW) {
-            CENTER_YMAX = (offset_XZPN + offset_XZNP) / 2.0F;
+        	CENTER_YMAX = NE_SW / 2.0F;
         } else {
-            CENTER_YMAX = (offset_XZNN + offset_XZPP) / 2.0F;
+        	CENTER_YMAX = NW_SE / 2.0F;
         }
     }
 

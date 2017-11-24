@@ -2,12 +2,41 @@ package com.carpentersblocks.util.registry;
 
 import java.util.ArrayList;
 
-import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
-public class FeatureRegistry {
+public class ConfigRegistry {
 
+	// Block properties
+    public static boolean enableBarrier          = false;
+    public static boolean enableBed              = false;
+    public static boolean enableButton           = false;
+    public static boolean enableCollapsibleBlock = true;
+    public static boolean enableDaylightSensor   = false;
+    public static boolean enableDoor             = false;
+    public static boolean enableFlowerPot        = false;
+    public static boolean enableGarageDoor       = false;
+    public static boolean enableGate             = false;
+    public static boolean enableHatch            = false;
+    public static boolean enableLadder           = false;
+    public static boolean enableLever            = false;
+    public static boolean enablePressurePlate    = true;
+    public static boolean enableSafe             = false;
+    public static boolean enableSlope            = false;
+    public static boolean enableStairs           = false;
+    public static boolean enableTorch            = false;
+	
+    // Item properties
+    public static boolean enableHammer = true;
+    public static boolean enableChisel = true;
+    public static boolean enableTile   = true;
+    public static int     itemCarpentersToolsUses       = 400;
+    public static boolean itemCarpentersToolsDamageable = true;
+    public static double  itemHammerDamageChanceFromSlopes      = 0.75D;
+    public static double  itemHammerDamageChanceFromStairs      = 1.0D;
+    public static double  itemHammerDamageChanceFromCollapsible = 0.2D;
+    
+    // Features
     public static boolean enableCovers              = true;
     public static boolean enableOverlays            = true;
     public static boolean enableSideCovers          = true;
@@ -21,17 +50,45 @@ public class FeatureRegistry {
     public static boolean enableRailSlopes          = true;
     public static boolean enableGarageDoorVoidFill  = true;
     public static boolean enableFreeStandingLadders = false;
-
+    public static int slopeSmoothness     = 2;
+    public static int multiBlockSizeLimit = 500;
     public static ArrayList<String> overlayItems    = new ArrayList<String>();
     public static ArrayList<String> coverExceptions = new ArrayList<String>();
-
-    public static int     slopeSmoothness           = 2;
-    public static int     multiBlockSizeLimit       = 500;
-
-    /**
-     * Initializes configuration properties.
-     */
-    public static void preInit(FMLPreInitializationEvent event, Configuration config) {
+	
+    public static void loadConfiguration(FMLPreInitializationEvent event) {
+    	net.minecraftforge.common.config.Configuration config = new net.minecraftforge.common.config.Configuration(event.getSuggestedConfigurationFile());
+    	config.load();
+    	
+    	// Blocks
+    	//enableBarrier          = config.get("blocks",           "Enable Barrier",          enableBarrier).getBoolean(enableBarrier);
+        //enableBed              = config.get("blocks",               "Enable Bed",              enableBed).getBoolean(enableBed);
+        //enableButton           = config.get("blocks",            "Enable Button",           enableButton).getBoolean(enableButton);
+        enableCollapsibleBlock = config.get("blocks", "Enable Collapsible Block", enableCollapsibleBlock).getBoolean(enableCollapsibleBlock);
+        //enableDaylightSensor   = config.get("blocks",   "Enable Daylight Sensor",   enableDaylightSensor).getBoolean(enableDaylightSensor);
+        //enableDoor             = config.get("blocks",              "Enable Door",             enableDoor).getBoolean(enableDoor);
+        //enableFlowerPot        = config.get("blocks",        "Enable Flower Pot",        enableFlowerPot).getBoolean(enableFlowerPot);
+        //enableGarageDoor       = config.get("blocks",       "Enable Garage Door",       enableGarageDoor).getBoolean(enableGarageDoor);
+        //enableGate             = config.get("blocks",              "Enable Gate",             enableGate).getBoolean(enableGate);
+        //enableHatch            = config.get("blocks",             "Enable Hatch",            enableHatch).getBoolean(enableHatch);
+        //enableLadder           = config.get("blocks",            "Enable Ladder",           enableLadder).getBoolean(enableLadder);
+        //enableLever            = config.get("blocks",             "Enable Lever",            enableLever).getBoolean(enableLever);
+        enablePressurePlate    = config.get("blocks",    "Enable Pressure Plate",    enablePressurePlate).getBoolean(enablePressurePlate);
+        //enableSafe             = config.get("blocks",              "Enable Safe",             enableSafe).getBoolean(enableSafe);
+        //enableSlope            = config.get("blocks",             "Enable Slope",            enableSlope).getBoolean(enableSlope);
+        //enableStairs           = config.get("blocks",            "Enable Stairs",           enableStairs).getBoolean(enableStairs);
+        //enableTorch            = config.get("blocks",             "Enable Torch",            enableTorch).getBoolean(enableTorch);
+        
+    	// Items
+    	enableHammer = config.get("items", "Enable Hammer", enableHammer).getBoolean(enableHammer);
+        enableChisel = config.get("items", "Enable Chisel", enableChisel).getBoolean(enableChisel);
+        enableTile = config.get("items", "Enable Tile", enableTile).getBoolean(enableTile);
+        itemCarpentersToolsUses = config.get("items", "Vanilla Tool Uses", itemCarpentersToolsUses).getInt(itemCarpentersToolsUses);
+        itemCarpentersToolsDamageable = config.get("items", "Vanilla Tools Damageable", itemCarpentersToolsDamageable).getBoolean(itemCarpentersToolsDamageable);
+        itemHammerDamageChanceFromSlopes = config.get("items", "itemHammerDamageChanceFromSlopes", itemHammerDamageChanceFromSlopes).getDouble(itemHammerDamageChanceFromSlopes);
+        itemHammerDamageChanceFromStairs = config.get("items", "itemHammerDamageChanceFromStairs", itemHammerDamageChanceFromStairs).getDouble(itemHammerDamageChanceFromStairs);
+        itemHammerDamageChanceFromCollapsible = config.get("items", "itemHammerDamageChanceFromCollapsible", itemHammerDamageChanceFromCollapsible).getDouble(itemHammerDamageChanceFromCollapsible);
+        
+        // Features
         enableCovers              = config.get("features",               "Enable Covers",              enableCovers).getBoolean(enableCovers);
         enableOverlays            = config.get("features",             "Enable Overlays",            enableOverlays).getBoolean(enableOverlays);
         enableSideCovers          = config.get("features",          "Enable Side Covers",          enableSideCovers).getBoolean(enableSideCovers);
@@ -93,6 +150,10 @@ public class FeatureRegistry {
         for (String item : coverExceptionList.getStringList()) {
             coverExceptions.add(item);
         }
+        
+	    if (config.hasChanged()) {
+	        config.save();
+	    }
     }
-
+	
 }

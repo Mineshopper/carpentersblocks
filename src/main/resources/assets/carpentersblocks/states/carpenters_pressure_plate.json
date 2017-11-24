@@ -1,0 +1,30 @@
+{
+  "default": {
+    "parts": {
+      "base": {
+        "vertex_min": {
+          "x": 1,
+          "y": 0,
+          "z": 1
+        },
+        "vertex_max": {
+          "x": 15,
+          "y": 1,
+          "z": 15
+        },
+		"icon_name": "carpentersblocks:blocks/general/uncovered_full_frame"
+      }
+    }
+  },
+  "depressed": {
+    "parts": {
+      "base": {
+        "vertex_max": {
+          "x": 15,
+          "y": 0.5,
+          "z": 15
+        }
+      }
+    }
+  }
+}

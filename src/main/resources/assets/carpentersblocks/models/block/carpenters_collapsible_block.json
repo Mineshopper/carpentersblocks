@@ -1,6 +1,6 @@
 {
     "parent": "block/cube_all",
     "textures": {
-        "all": "carpentersblocks:blocks/general/solid"
+        "all": "carpentersblocks:blocks/general/uncovered_solid"
     }
 }

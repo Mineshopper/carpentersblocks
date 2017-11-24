@@ -2,7 +2,7 @@ package com.carpentersblocks.util.protection;
 
 import java.util.UUID;
 
-import com.carpentersblocks.util.registry.FeatureRegistry;
+import com.carpentersblocks.util.registry.ConfigRegistry;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
@@ -16,7 +16,7 @@ public class PlayerPermissions {
      */
     public static boolean isOp(EntityPlayer entityPlayer)
     {
-        if (!entityPlayer.worldObj.isRemote) {
+        if (!entityPlayer.getEntityWorld().isRemote) {
             return ((EntityPlayerMP)entityPlayer).mcServer.getPlayerList().getOppedPlayers().getEntry(entityPlayer.getGameProfile()) != null;
         } else {
             return false;
@@ -33,13 +33,13 @@ public class PlayerPermissions {
      */
     public static boolean hasElevatedPermission(IProtected object, EntityPlayer entityPlayer, boolean enforceOwnership)
     {
-        if (entityPlayer.worldObj.isRemote && Minecraft.getMinecraft().isSingleplayer()) { // Check if client is playing singleplayer
+        if (entityPlayer.getEntityWorld().isRemote && Minecraft.getMinecraft().isSingleplayer()) { // Check if client is playing singleplayer
             return true;
-        } else if (!entityPlayer.worldObj.isRemote && entityPlayer.worldObj.getMinecraftServer().isSinglePlayer()) { // Check if server is integrated (singleplayer)
+        } else if (!entityPlayer.getEntityWorld().isRemote && entityPlayer.getEntityWorld().getMinecraftServer().isSinglePlayer()) { // Check if server is integrated (singleplayer)
             return true;
         } else if (isOp(entityPlayer)) {
             return true;
-        } else if (!enforceOwnership && !FeatureRegistry.enableOwnership) {
+        } else if (!enforceOwnership && !ConfigRegistry.enableOwnership) {
             return true;
         } else {
             return isOwner(object, entityPlayer);
@@ -59,7 +59,7 @@ public class PlayerPermissions {
             UUID.fromString(object.getOwner());
             return object.getOwner().equals(entityPlayer.getUniqueID().toString());
         } catch (IllegalArgumentException e) {
-            return object.getOwner().equals(entityPlayer.getDisplayName());
+            return object.getOwner().equals(entityPlayer.getDisplayNameString());
         }
     }
 

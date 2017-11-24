@@ -31,10 +31,10 @@ public class AttributeHelper {
     	return _map.get(key);
     }
     
-    public AbstractAttribute getLastAttribute(EnumAttributeLocation location) {
+    public AbstractAttribute getLastAddedDroppableAttribute(EnumAttributeLocation location) {
     	AbstractAttribute attribute = null;
     	for (Key key : _map.keySet()) {
-    		if (location.equals(key.getLocation())) {
+    		if (location.equals(key.getLocation()) && _map.get(key).isDroppable()) {
     			attribute = _map.get(key);
     		}
     	}

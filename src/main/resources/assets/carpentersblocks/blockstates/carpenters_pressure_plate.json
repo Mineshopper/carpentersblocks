@@ -1,0 +1,14 @@
+{
+    "forge_marker": 1,
+    "defaults": {
+        "textures": {
+            "all": "carpentersblocks:blocks/general/uncovered_full_frame"
+        },
+        "model": "carpentersblocks:block/carpenters_pressure_plate"
+    },
+    "variants": {
+		"activated=true": [
+            { "model": "carpentersblocks:block/carpenters_pressure_plate_activated" }
+        ]
+    }
+}

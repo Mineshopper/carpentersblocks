@@ -1,6 +1,7 @@
 package com.carpentersblocks.tileentity;
 
 	import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -20,10 +21,10 @@ import com.carpentersblocks.util.attribute.EnumAttributeType;
 import com.carpentersblocks.util.block.BlockUtil;
 import com.carpentersblocks.util.protection.IProtected;
 import com.carpentersblocks.util.protection.ProtectedObject;
-import com.carpentersblocks.util.registry.FeatureRegistry;
+import com.carpentersblocks.util.registry.ConfigRegistry;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -38,6 +39,9 @@ import net.minecraft.world.World;
 		public static final String TAG_ATTR_LIST = "cbAttrList";
 	    public static final String TAG_METADATA  = "cbMetadata";
 	    public static final String TAG_OWNER     = "cbOwner";
+	    
+	    // Holds temporary miscellaneous per-block properties
+	    private Map<String, Object> _properties;
 	    
 	    // Map holding all block attributes
 	    private Map<AbstractAttribute.Key, AbstractAttribute> _cbAttrMap = new LinkedHashMap<AbstractAttribute.Key, AbstractAttribute>();
@@ -113,8 +117,14 @@ import net.minecraft.world.World;
 	        return new SPacketUpdateTileEntity(pos, 0, getUpdateTag());
 	    }
 
+	    @Override
 	    public NBTTagCompound getUpdateTag() {
-	        return writeToNBT(new NBTTagCompound());
+	    	return writeToNBT(super.getUpdateTag());
+	    }
+	    
+	    @Override
+	    public void onDataPacket(net.minecraft.network.NetworkManager net, SPacketUpdateTileEntity pkt) {
+	    	readFromNBT(pkt.getNbtCompound());
 	    }
 
 	    /**
@@ -158,8 +168,8 @@ import net.minecraft.world.World;
 	            return false;
 	        }
 	        if (model instanceof ItemStack) {
-		        ItemStack reducedStack = ItemStack.copyItemStack((ItemStack)model);
-		        reducedStack.stackSize = 1;
+		        ItemStack reducedStack = ((ItemStack)model).copy();
+		        reducedStack.setCount(1);
 		        _cbAttrMap.put(AbstractAttribute.generateKey(location, type), new AttributeItemStack(location, type, reducedStack));
 		        World world = getWorld();
 		        switch (type) {
@@ -227,12 +237,10 @@ import net.minecraft.world.World;
 	    	return _cbAttrMap.remove(attribute.getKey()) != null;
 	    }
 	    
-	    public boolean removeAttribute(EnumAttributeLocation location) {
-	    	AbstractAttribute attribute = _cbAttrHelper.getLastAttribute(location);
+	    public boolean removeLastAddedDroppableAttribute(EnumAttributeLocation location) {
+	    	AbstractAttribute attribute = _cbAttrHelper.getLastAddedDroppableAttribute(location);
 	    	if (attribute instanceof AttributeItemStack) {
 	    		return createBlockDropEvent((AttributeItemStack)attribute);
-	    	} else if (attribute instanceof AttributeString) {
-	    		return onAttrDropped(attribute.getKey());
 	    	}
 	    	return false;
 	    }
@@ -269,13 +277,13 @@ import net.minecraft.world.World;
 	     * @return <code>true</code> if data was updated, or <code>false</code> if no change
 	     */
 	    public boolean setData(int data) {
-	    	if (data == getData()) {
-	    		return false;
+	    	if (!getWorld().isRemote) {
+		    	if (data == getData()) {
+		    		return false;
+		    	}
+	            _cbMetadata = data;
+	            this.update(true);
 	    	}
-            _cbMetadata = data;
-            //IBlockState blockState = getBlockType().getDefaultState();
-            //getWorld().notifyBlockUpdate(pos, blockState, blockState, 3);
-            //markDirty();
             return true;
 	    }
 	    
@@ -323,6 +331,26 @@ import net.minecraft.world.World;
 	    public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newState) {
 	    	return oldState.getBlock() != newState.getBlock();
 	    }
+	    
+	    public Object getProperty(String key) {
+	    	if (_properties == null) {
+	    		return null;
+	    	}
+	    	return _properties.get(key);
+	    }
+	    
+	    public void setProperty(String key, Object value) {
+	    	if (_properties == null) {
+	    		_properties = new HashMap<String, Object>();
+	    	}
+	    	_properties.put(key, value);
+	    }
+	    
+	    public void removeProperty(String key) {
+	    	if (_properties != null) {
+	    		_properties.remove(key);
+	    	}
+	    }
 
 	    ///////////////////////////////////////////////////////
 	    // Code below implemented strictly for light updates //
@@ -349,7 +377,7 @@ import net.minecraft.world.World;
 	     */
 	    protected int getDynamicLightValue() {
 	    	int value = 0;
-	    	if (FeatureRegistry.enableIllumination && _cbAttrHelper.hasAttribute(EnumAttributeLocation.HOST, EnumAttributeType.ILLUMINATOR)) {
+	    	if (ConfigRegistry.enableIllumination && _cbAttrHelper.hasAttribute(EnumAttributeLocation.HOST, EnumAttributeType.ILLUMINATOR)) {
 	    		return 15;
 	    	} else {
 	    		_calcLighting = true;
@@ -379,10 +407,14 @@ import net.minecraft.world.World;
 	     * Performs world update and refreshes lighting.
 	     */
 	    public void update(boolean markDirty) {
-	        World world = this.getWorld();
+	        World world = getWorld();
 	        if (world != null) {
-	            IBlockState blockState = this.getBlockType().getDefaultState();
-	            world.notifyBlockUpdate(pos, blockState, blockState, 3);
+	            IBlockState blockState = world.getBlockState(this.pos);
+	            world.notifyBlockUpdate(pos, blockState, blockState, 4);
+	            Block block = this.getBlockType();
+	            if (block.canProvidePower(blockState)) {
+	            	world.notifyNeighborsOfStateChange(pos, blockType, false);
+	            }
 	            updateCachedLighting();
 	            if (markDirty) {
 	            	this.markDirty();

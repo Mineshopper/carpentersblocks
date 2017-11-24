@@ -1,0 +1,19 @@
+{
+    "parent": "block/thin_block",
+    "textures": {
+        "all": "carpentersblocks:blocks/general/uncovered_full_frame"
+    },
+    "elements": [
+        {   "from": [ 1, 0, 1 ],
+            "to": [ 15, 1, 15 ],
+            "faces": {
+                "down":  { "texture": "all" },
+                "up":    { "texture": "all" },
+                "north": { "texture": "all" },
+                "south": { "texture": "all" },
+                "west":  { "texture": "all" },
+                "east":  { "texture": "all" }
+            }
+        }
+    ]
+}

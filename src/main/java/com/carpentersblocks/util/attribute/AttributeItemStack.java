@@ -36,8 +36,8 @@ public class AttributeItemStack extends AbstractAttribute<ItemStack> {
 
 	@Override
 	public void readModelFromNBT(NBTTagCompound nbt) {
-        ItemStack itemStack = ItemStack.loadItemStackFromNBT(nbt);
-        if (itemStack == null) {
+        ItemStack itemStack = new ItemStack(nbt);
+        if (itemStack.getItem() == null) {
             ResourceLocation resourceLoc = new ResourceLocation(nbt.getString(TAG_RESOURCE_LOC_ID));
             itemStack = GameRegistry.makeItemStack(resourceLoc.toString(), 0, 1, null);
             if (itemStack != null) {

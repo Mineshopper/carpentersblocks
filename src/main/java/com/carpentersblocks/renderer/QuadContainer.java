@@ -1,29 +1,34 @@
 package com.carpentersblocks.renderer;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import com.carpentersblocks.util.attribute.EnumAttributeLocation;
 
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.init.Blocks;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
 
 public class QuadContainer {
-
-	private static final String GRASS_SIDE_OVERLAY = "minecraft:blocks/grass_side_overlay";
+	
 	private List<Quad> _quads;
-	private VertexFormat _format;
+	private VertexFormat _vertexFormat;
 	private boolean _sideCover;
 	private EnumAttributeLocation _location;
+	private boolean _stateful;
 	
-	public QuadContainer(VertexFormat format, EnumAttributeLocation location, boolean sideCover) {
+	public QuadContainer(VertexFormat vertexFormat, EnumAttributeLocation location, boolean sideCover) {
 		_quads = new ArrayList<Quad>();
-		_format = format;
+		_vertexFormat = vertexFormat;
 		_sideCover = sideCover;
 		_location = location;
 	}
@@ -32,10 +37,18 @@ public class QuadContainer {
 		List<Quad> quads = new ArrayList<Quad>();
 		for (Quad quad : _quads) {
 			if (facing.equals(quad.getFacing())) {
-				quads.add(quad);
+				quads.add(new Quad(quad));
 			}
 		}
 		return quads;
+	}
+	
+	public List<Quad> getQuads() {
+		return _quads;
+	}
+	
+	public void addAll(Collection<Quad> collection) {
+		_quads.addAll(collection);
 	}
 	
 	public void add(Quad quad) {
@@ -45,7 +58,7 @@ public class QuadContainer {
 	}
 
 	public QuadContainer toSideLocation(EnumAttributeLocation location, double depth) {
-		QuadContainer quadContainer = new QuadContainer(_format, location, true);
+		QuadContainer quadContainer = new QuadContainer(_vertexFormat, location, true);
 		EnumFacing facing = EnumFacing.getFront(location.ordinal());
 	    List<Quad> quads = getQuads(facing);
 	    for (Quad quad : quads) {
@@ -54,55 +67,104 @@ public class QuadContainer {
 	    	if (sideQuad != null) {
 	    		quadContainer.add(sideQuad.offset(facing.getFrontOffsetX() * depth, facing.getFrontOffsetY() * depth, facing.getFrontOffsetZ() * depth));
 		    	for (Quad perpQuad : VecUtil.getPerpendicularQuads(quad, depth)) {
-		    		quadContainer.add(perpQuad);
+		    		quadContainer.add(new Quad(perpQuad));
 		    	}
 	    	}
 	    }
+	    // Remove duplicate quads with matching vector coordinates
+	    if (quadContainer.getQuads().size() > 6) {
+			List<Quad> list = new ArrayList<Quad>(quadContainer.getQuads());
+			QuadComparator comparator = new QuadComparator();
+			Iterator<Quad> iter = quadContainer.getQuads().iterator();
+			while (iter.hasNext()) {
+				Quad q1 = iter.next();
+				for (Quad q2 : list) {
+					if (q1 != q2 && comparator.compare(q1, q2) == 0) {
+						iter.remove();
+						break;
+					}
+				}
+			}
+		}
 	    return quadContainer;
 	}
 	
-	public List<BakedQuad> getBakedQuads(EnumFacing facing, TextureAtlasSprite sprite, int rgb) {
+	public List<BakedQuad> bakeQuads(List<Quad> quads) {
 		List<BakedQuad> list = new ArrayList<BakedQuad>();
-		for (Quad quad : _quads) {
-			if (facing.equals(quad.getFacing())) {
-				UnpackedBakedQuad.Builder builder = new UnpackedBakedQuad.Builder(_format);
-		        builder.setTexture(sprite);
-		        Vec3d normal = VecUtil.getNormal(quad);
-		        boolean floatY = sprite.getIconName().equals(GRASS_SIDE_OVERLAY) || sprite.getIconName().contains("overlay/overlay_") && sprite.getIconName().endsWith("_side");
-		        UV[] uv = VecUtil.getUV(quad, floatY, _location);
-		        Vec3d[] vecs = quad.getVecs();
-		        putVertex(builder, normal, vecs[0].xCoord, vecs[0].yCoord, vecs[0].zCoord, uv[0].getU(), uv[0].getV(), sprite, rgb); // 0xff0000 Testing
-		        putVertex(builder, normal, vecs[1].xCoord, vecs[1].yCoord, vecs[1].zCoord, uv[1].getU(), uv[1].getV(), sprite, rgb); // 0x00ff00 Testing
-		        putVertex(builder, normal, vecs[2].xCoord, vecs[2].yCoord, vecs[2].zCoord, uv[2].getU(), uv[2].getV(), sprite, rgb); // 0x0000ff Testing
-		        putVertex(builder, normal, vecs[3].xCoord, vecs[3].yCoord, vecs[3].zCoord, uv[3].getU(), uv[3].getV(), sprite, rgb); // 0xffff00 Testing
-		        list.add(builder.build());
-			}
+		for (Quad quad : quads) {
+			Quad cpyQuad = new Quad(quad);
+			list.add(cpyQuad.bake(_vertexFormat, _location));
 		}
 		return list;
 	}
 	
-    private void putVertex(UnpackedBakedQuad.Builder builder, Vec3d normal, double x, double y, double z, float u, float v, TextureAtlasSprite sprite, int rgb) {
-    	for (int idx = 0; idx < _format.getElementCount(); idx++) {
-            switch (_format.getElement(idx).getUsage()) {
-                case POSITION:
-                    builder.put(idx, (float)x, (float)y, (float)z, 1.0f);
-                    break;
-                case COLOR:
-                	builder.put(idx, ((rgb & 0xff0000) >>> 16) / 255.0f, ((rgb & 0xff00) >>> 8) / 255.0f, (rgb & 0xff) / 255.0f, 1.0f);
-                    break;
-                case UV:
-                    if (_format.getElement(idx).getIndex() == 0) {
-                        builder.put(idx, sprite.getInterpolatedU(u), sprite.getInterpolatedV(v), 0f, 1f);
-                    }
-                    break;
-                case NORMAL:
-                    builder.put(idx, (float) normal.xCoord, (float) normal.yCoord, (float) normal.zCoord, 0f);
-                    break;
-                default:
-                    builder.put(idx);
-                    break;
-            }
-        }
-    }
+	public List<BakedQuad> getBakedQuads(EnumFacing facing) {
+		List<BakedQuad> list = new ArrayList<BakedQuad>();
+		for (Quad quad : _quads) {
+			list.add(quad.bake(_vertexFormat, _location));
+		}
+		return list;
+	}
+	
+	public Set<BlockRenderLayer> getRenderLayers(boolean renderAttribute) {
+		Set<BlockRenderLayer> set = new HashSet<BlockRenderLayer>();
+		for (Quad quad : _quads) {
+			set.add(quad.getRenderLayer());
+		}
+		return set;
+	}
+	
+	public boolean hasCoverOverride() {
+		for (Quad quad : _quads) {
+			if (!quad.canCover()) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public boolean getIsStateful() {
+		return _stateful;
+	}
+	
+	public void setStateful(boolean value) {
+		_stateful = value;
+	}
+	
+	public boolean isCoverable(BlockRenderLayer renderLayer) {
+		for (Quad quad : _quads) {
+			if (quad.canCover() && renderLayer.equals(quad.getRenderLayer())) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	private class QuadComparator implements Comparator<Quad> {
+		
+		@Override
+		public int compare(Quad q1, Quad q2) {
+			List<Vec3d> tempList = new ArrayList<Vec3d>();
+			tempList.addAll(Arrays.asList(q1.getVecs()));
+			Iterator<Vec3d> iter = tempList.iterator();
+			while (iter.hasNext()) {
+				Vec3d v1 = iter.next();
+				for (Vec3d v2 : q2.getVecs()) {
+					if (MathHelper.epsilonEquals((float) v1.x, (float) v2.x)
+							&& MathHelper.epsilonEquals((float) v1.y, (float) v2.y)
+							&& MathHelper.epsilonEquals((float) v1.z, (float) v2.z)) {
+						iter.remove();
+						break;
+					}
+				}
+			}
+			if (tempList.isEmpty()) {
+				return 0;
+			} else {
+				return -1;
+			}
+		}
+		
+	}
 	
 }

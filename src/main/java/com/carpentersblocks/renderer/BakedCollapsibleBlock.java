@@ -24,23 +24,18 @@ public class BakedCollapsibleBlock extends AbstractBakedModel {
 		RenderHelperCollapsible _renderHelper = new RenderHelperCollapsible(this);
 		CollapsibleUtil util = _renderHelper.getUtil();
     	if (!util.isFullCube()) {
-    		quadContainer.add(_renderHelper.getQuadYPosZNeg());
-    		quadContainer.add(_renderHelper.getQuadYPosZPos());
-    		quadContainer.add(_renderHelper.getQuadXNegYPos());
-    		quadContainer.add(_renderHelper.getQuadXPosYPos());
+    		quadContainer.add(_renderHelper.getQuadYPosZNeg(SpriteRegistry.sprite_uncovered_solid));
+    		quadContainer.add(_renderHelper.getQuadYPosZPos(SpriteRegistry.sprite_uncovered_solid));
+    		quadContainer.add(_renderHelper.getQuadXNegYPos(SpriteRegistry.sprite_uncovered_solid));
+    		quadContainer.add(_renderHelper.getQuadXPosYPos(SpriteRegistry.sprite_uncovered_solid));
 		} else {
-			quadContainer.add(_renderHelper.getQuadYPos());
+			quadContainer.add(_renderHelper.getQuadYPos(SpriteRegistry.sprite_uncovered_solid));
 		}
-    	quadContainer.add(_renderHelper.getQuadYNeg());
-        quadContainer.add(_renderHelper.getQuadZNeg());
-        quadContainer.add(_renderHelper.getQuadZPos());
-        quadContainer.add(_renderHelper.getQuadXNeg());
-        quadContainer.add(_renderHelper.getQuadXPos());
-	}
-
-	@Override
-	protected TextureAtlasSprite getUncoveredSprite() {
-		return SpriteRegistry.sprite_uncovered_solid;
+    	quadContainer.add(_renderHelper.getQuadYNeg(SpriteRegistry.sprite_uncovered_solid));
+        quadContainer.add(_renderHelper.getQuadZNeg(SpriteRegistry.sprite_uncovered_solid));
+        quadContainer.add(_renderHelper.getQuadZPos(SpriteRegistry.sprite_uncovered_solid));
+        quadContainer.add(_renderHelper.getQuadXNeg(SpriteRegistry.sprite_uncovered_solid));
+        quadContainer.add(_renderHelper.getQuadXPos(SpriteRegistry.sprite_uncovered_solid));
 	}
 	
 }

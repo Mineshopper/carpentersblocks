@@ -4,7 +4,7 @@ import com.carpentersblocks.util.registry.ItemRegistry;
 
 import net.minecraft.client.resources.I18n;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -16,8 +16,8 @@ public class CarpentersBlocksTab extends CreativeTabs {
 
     @SideOnly(Side.CLIENT)
     @Override
-    public Item getTabIconItem() {
-        return ItemRegistry.itemCarpentersHammer;
+    public ItemStack getTabIconItem() {
+        return new ItemStack(ItemRegistry.itemCarpentersHammer);
     }
 
     @Override

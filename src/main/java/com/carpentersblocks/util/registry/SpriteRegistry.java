@@ -17,6 +17,15 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class SpriteRegistry {
 
+	public static final ResourceLocation RESOURCE_UNCOVERED_SOLID 			= new ResourceLocation(CarpentersBlocks.MOD_ID, "blocks/general/uncovered_solid");
+	public static final ResourceLocation RESOURCE_UNCOVERED_FULL	 		= new ResourceLocation(CarpentersBlocks.MOD_ID, "blocks/general/uncovered_full_frame");
+	public static final ResourceLocation RESOURCE_UNCOVERED_QUARTERED 		= new ResourceLocation(CarpentersBlocks.MOD_ID, "blocks/general/uncovered_quartered_frame");
+	public static final ResourceLocation RESOURCE_OVERLAY_FAST_GRASS_SIDE 	= new ResourceLocation(CarpentersBlocks.MOD_ID, "blocks/overlay/overlay_fast_grass_side");
+	public static final ResourceLocation RESOURCE_OVERLAY_HAY_SIDE 			= new ResourceLocation(CarpentersBlocks.MOD_ID, "blocks/overlay/overlay_hay_side");
+	public static final ResourceLocation RESOURCE_OVERLAY_SNOW_SIDE 		= new ResourceLocation(CarpentersBlocks.MOD_ID, "blocks/overlay/overlay_snow_side");
+	public static final ResourceLocation RESOURCE_OVERLAY_MYCELIUM_SIDE 	= new ResourceLocation(CarpentersBlocks.MOD_ID, "blocks/overlay/overlay_mycelium_side");
+	public static final ResourceLocation RESOURCE_TILE_BLANK 				= new ResourceLocation(CarpentersBlocks.MOD_ID, "blocks/tile/blank");
+	
     public static TextureAtlasSprite sprite_uncovered_full;
     public static TextureAtlasSprite sprite_uncovered_quartered;
     public static TextureAtlasSprite sprite_uncovered_solid;
@@ -55,22 +64,22 @@ public class SpriteRegistry {
     public static ArrayList<TextureAtlasSprite[]> sprite_design_bed        = new ArrayList<TextureAtlasSprite[]>();
     public static ArrayList<TextureAtlasSprite>   sprite_design_flower_pot = new ArrayList<TextureAtlasSprite>();
     public static ArrayList<TextureAtlasSprite>   sprite_design_tile       = new ArrayList<TextureAtlasSprite>();
-
-    @SubscribeEvent
+    
     /**
      * This will load all icons that are used universally for all blocks.
      */
+    @SubscribeEvent
     public void registerSprites(TextureStitchEvent.Pre event) {
         if (event.getMap().equals(Minecraft.getMinecraft().getTextureMapBlocks())) {
             CarpentersBlocksCachedResources.INSTANCE.rebuildCache();
-            sprite_uncovered_solid         = event.getMap().registerSprite(new ResourceLocation(CarpentersBlocks.MOD_ID, "blocks/general/solid"));
-            sprite_uncovered_full          = event.getMap().registerSprite(new ResourceLocation(CarpentersBlocks.MOD_ID, "blocks/general/full_frame"));
-            sprite_uncovered_quartered     = event.getMap().registerSprite(new ResourceLocation(CarpentersBlocks.MOD_ID, "blocks/general/quartered_frame"));
-            sprite_overlay_fast_grass_side = event.getMap().registerSprite(new ResourceLocation(CarpentersBlocks.MOD_ID, "blocks/overlay/overlay_fast_grass_side"));
-            sprite_overlay_hay_side        = event.getMap().registerSprite(new ResourceLocation(CarpentersBlocks.MOD_ID, "blocks/overlay/overlay_hay_side"));
-            sprite_overlay_snow_side       = event.getMap().registerSprite(new ResourceLocation(CarpentersBlocks.MOD_ID, "blocks/overlay/overlay_snow_side"));
-            sprite_overlay_mycelium_side   = event.getMap().registerSprite(new ResourceLocation(CarpentersBlocks.MOD_ID, "blocks/overlay/overlay_mycelium_side"));
-            sprite_tile_blank              = event.getMap().registerSprite(new ResourceLocation(CarpentersBlocks.MOD_ID, "blocks/tile/blank"));
+            sprite_uncovered_solid         = event.getMap().registerSprite(RESOURCE_UNCOVERED_SOLID);
+            sprite_uncovered_full          = event.getMap().registerSprite(RESOURCE_UNCOVERED_FULL);
+            sprite_uncovered_quartered     = event.getMap().registerSprite(RESOURCE_UNCOVERED_QUARTERED);
+            sprite_overlay_fast_grass_side = event.getMap().registerSprite(RESOURCE_OVERLAY_FAST_GRASS_SIDE);
+            sprite_overlay_hay_side        = event.getMap().registerSprite(RESOURCE_OVERLAY_HAY_SIDE);
+            sprite_overlay_snow_side       = event.getMap().registerSprite(RESOURCE_OVERLAY_SNOW_SIDE);
+            sprite_overlay_mycelium_side   = event.getMap().registerSprite(RESOURCE_OVERLAY_MYCELIUM_SIDE);
+            sprite_tile_blank              = event.getMap().registerSprite(RESOURCE_TILE_BLANK);
             sprite_design_chisel.clear();
             sprite_design_bed.clear();
             sprite_design_flower_pot.clear();

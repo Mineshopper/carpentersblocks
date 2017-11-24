@@ -1,5 +1,6 @@
 package com.carpentersblocks.util.attribute;
 
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 /**
@@ -101,6 +102,10 @@ public abstract class AbstractAttribute<K> {
 			return _location.ordinal() << 16 | _type.ordinal();
 		}
 	
+    }
+    
+    public boolean isDroppable() {
+    	return this._model instanceof ItemStack;
     }
     
     public abstract AbstractAttribute copy();
