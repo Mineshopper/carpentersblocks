@@ -20,12 +20,12 @@ plugins {
     id "net.minecraftforge.gradle.forge" version "2.0.2"
 }
 */
-version = "3.4.001 POC"
+version = "3.4.002 POC"
 group= "com.carpentersblocks" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "Carpenter's Blocks"
 
 minecraft {
-    version = "1.10.2-12.18.1.2018"
+    version = "1.12.2-14.23.0.2491"
     runDir = "run"
 	replace "@VERSION@", project.version
     replaceIn "CarpentersBlocks.java"
