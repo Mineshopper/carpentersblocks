@@ -49,6 +49,7 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.property.ExtendedBlockState;
 import net.minecraftforge.common.property.IExtendedBlockState;
@@ -298,7 +299,7 @@ public abstract class BlockCoverable extends Block {
         }
 
         ItemStack itemStack = entityPlayer.getHeldItem(EventHandler.eventHand);
-        if (itemStack == null) {
+        if (itemStack.isEmpty()) {
             return;
         }
 
@@ -400,7 +401,7 @@ public abstract class BlockCoverable extends Block {
         // If no prior event occurred, try regular activation
         if (!actionResult.altered) {
             if (PlayerPermissions.hasElevatedPermission(cbTileEntity, entityPlayer, false)) {
-                if (entityPlayer.getHeldItem(hand) != null) {
+                if (!entityPlayer.getHeldItem(hand).isEmpty()) {
                 	ItemStack itemStack = entityPlayer.getHeldItem(hand);
                 	if (itemStack.getItem() instanceof ICarpentersHammer && ((ICarpentersHammer)itemStack.getItem()).canUseHammer(world, entityPlayer, hand)) {
                         if (onHammerRightClick(cbTileEntity, entityPlayer)) {
@@ -816,7 +817,7 @@ public abstract class BlockCoverable extends Block {
             return false;
         }
         ItemStack itemStack = entityPlayer.getHeldItemMainhand();
-        if (itemStack != null) {
+        if (!itemStack.isEmpty()) {
             Item item = itemStack.getItem();
             return entityPlayer.capabilities.isCreativeMode && item != null && (item instanceof ICarpentersHammer || item instanceof ICarpentersChisel);
         }
@@ -1020,6 +1021,35 @@ public abstract class BlockCoverable extends Block {
         }
     }
 
+    /**
+     * Get the hardness of this Block relative to the ability of the given player
+     */
+    @Deprecated
+    @Override
+    public float getPlayerRelativeBlockHardness(IBlockState blockState, EntityPlayer entityPlayer, World world, BlockPos blockPos) {
+    	ItemStack itemStack = entityPlayer.getHeldItem(EventHandler.eventHand);
+    	
+    	// Carpenter's tools should not damage block
+        if (!itemStack.isEmpty()) {
+            Item item = itemStack.getItem();
+            if (item instanceof ICarpentersHammer || item instanceof ICarpentersChisel) {
+                return -1;
+            }
+        }
+        
+        // Return cover block hardness if one is present
+        CbTileEntity cbTileEntity = getTileEntity(world, blockPos);
+        if (cbTileEntity != null) {
+        	IBlockState outBlockState = BlockUtil.getAttributeBlockState(cbTileEntity.getAttributeHelper(), EnumAttributeLocation.HOST, EnumAttributeType.COVER);
+        	if (outBlockState == null) {
+        		outBlockState = blockState;
+        	}
+        	return ForgeHooks.blockStrength(outBlockState, entityPlayer, world, blockPos);
+        } else {
+            return super.getPlayerRelativeBlockHardness(blockState, entityPlayer, world, blockPos);
+        }
+    }
+    
     // Below method is likely inherited from base block state
 /*    @Override
     *//**

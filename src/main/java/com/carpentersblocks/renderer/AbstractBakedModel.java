@@ -99,7 +99,7 @@ public abstract class AbstractBakedModel implements IBakedModel {
 
     @Override
     public List<BakedQuad> getQuads(IBlockState blockState, EnumFacing facing, long rand) {
-    	if (!BlockUtil.validateBlockState(blockState) || facing != null) {
+    	if (!BlockUtil.validateBlockState(blockState) || facing != null || MinecraftForgeClient.getRenderLayer() == null) {
     		return Collections.emptyList();
     	}
     	_rand = rand;
@@ -149,28 +149,17 @@ public abstract class AbstractBakedModel implements IBakedModel {
     		boolean hasOverlay = _cbAttrHelper.hasAttribute(location, EnumAttributeType.OVERLAY);
 	        boolean hasChiselDesign = _cbAttrHelper.hasAttribute(location, EnumAttributeType.DESIGN_CHISEL);
 	        
-	    	
-	        boolean hasDye = _cbAttrHelper.hasAttribute(location, EnumAttributeType.DYE);
-	        int dyeColor = !hasDye ? IConstants.DEFAULT_RGB : DyeHandler.getColor(((AttributeItemStack)_cbAttrHelper.getAttribute(location, EnumAttributeType.DYE)).getModel());
-	        IBlockState attributeState = BlockUtil.getAttributeBlockState(_cbAttrHelper, location, EnumAttributeType.COVER);
-	        
 	    	// Set side cover depth
 	        if (!EnumAttributeLocation.HOST.equals(location)) {
-		    	if (attributeState != null) {
-			    	if (isSnowState(attributeState)) {
-			    		_sideDepth = SNOW_SIDE_DEPTH;
-			    	} else {
-			    		_sideDepth = SIDE_DEPTH;
-			    	}
-		    	}
-		    	// TODO: Copy quad properties to new side quads
+		    	_sideDepth = getSideCoverDepth(location);
 		    	quadContainer = _quadContainer.toSideLocation(location, _sideDepth);
 	        }
 	        
-	        Map<EnumFacing, List<Quad>> coverQuadMap = getCoveredQuads(quadContainer, location, renderLayer, dyeColor);
+	        Map<EnumFacing, List<Quad>> coverQuadMap = getCoveredQuads(quadContainer, location, renderLayer);
 	        
 	        // Find required render layers for cover
 	    	boolean renderAttribute = false;
+	    	IBlockState attributeState = BlockUtil.getAttributeBlockState(_cbAttrHelper, location, EnumAttributeType.COVER);
 	    	if (attributeState != null) {
 	    		renderAttribute = attributeState.getBlock().canRenderInLayer(attributeState, renderLayer);
 	    	}
@@ -273,14 +262,19 @@ public abstract class AbstractBakedModel implements IBakedModel {
     			blockState.getBlock().equals(Blocks.SNOW_LAYER);
     }
     
-    private Map<EnumFacing, List<Quad>> getCoveredQuads(QuadContainer quadContainer, EnumAttributeLocation location, BlockRenderLayer renderLayer, int dyeRgb) {
+    private Map<EnumFacing, List<Quad>> getCoveredQuads(QuadContainer quadContainer, EnumAttributeLocation location, BlockRenderLayer renderLayer) {
     	Map<EnumFacing, List<Quad>> map = new HashMap<EnumFacing, List<Quad>>();
     	boolean canRenderCover = false;
+    	boolean hasDye = _cbAttrHelper.hasAttribute(location, EnumAttributeType.DYE);
+    	int dyeRgb = 0;
+    	if (hasDye) {
+    		dyeRgb = DyeHandler.getColor(((AttributeItemStack)_cbAttrHelper.getAttribute(location, EnumAttributeType.DYE)).getModel());
+    	}
     	boolean hasCover = _cbAttrHelper.hasAttribute(location, EnumAttributeType.COVER);
     	BlockColors blockColors = Minecraft.getMinecraft().getBlockColors();
     	IBlockState blockState = null;
     	
-    	// Discover dynamic quads to donate texture and tint color
+    	// Discover cover quads to donate texture and tint color
     	Map<EnumFacing, List<BakedQuad>> bakedQuads = new HashMap<EnumFacing, List<BakedQuad>>();
     	if (hasCover) {
 	    	ItemStack coverStack = ((AttributeItemStack)_cbAttrHelper.getAttribute(location, EnumAttributeType.COVER)).getModel();
@@ -288,10 +282,8 @@ public abstract class AbstractBakedModel implements IBakedModel {
 		    	IBakedModel itemModel = Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getItemModel(coverStack);
 		    	blockState = BlockUtil.getAttributeBlockState(_cbAttrHelper, location, EnumAttributeType.COVER);
 		    	canRenderCover = blockState.getBlock().canRenderInLayer(blockState, renderLayer);
-		    	if (blockState.getBlock().canRenderInLayer(blockState, renderLayer)) {
-		    		for (EnumFacing facing : EnumFacing.values()) {
-			    		bakedQuads.put(facing, itemModel.getQuads(blockState, facing, _rand));
-			    	}
+	    		for (EnumFacing facing : EnumFacing.values()) {
+		    		bakedQuads.put(facing, itemModel.getQuads(blockState, facing, _rand));
 		    	}
 	    	}
     	}
@@ -301,51 +293,56 @@ public abstract class AbstractBakedModel implements IBakedModel {
     		attrRgb = blockColors.colorMultiplier(blockState, Minecraft.getMinecraft().world, _blockPos, ForgeHooksClient.getWorldRenderPass());
     	}
     	
-    	// If can be covered in any layer, do not render uncovered
-    	boolean canRenderUncovered = hasCover && !quadContainer.isCoverable(renderLayer) || !hasCover;
-    	
-    	// Apply cover properties to quads
+    	// Add quads
     	for (EnumFacing facing : EnumFacing.values()) {
     		map.put(facing, new ArrayList<Quad>());
-    		if (bakedQuads.get(facing) != null) {
-				for (BakedQuad bakedQuad : bakedQuads.get(facing)) {
-					for (Quad quad : quadContainer.getQuads(facing)) {
-	    	    		if (quad.canCover()) {
-	    	    			quad.setRgb(dyeRgb);
-	    	    			if (hasCover) {
-	    	    				if (canRenderCover) {
-	    	    					if (bakedQuad.getTintIndex() > -1 && dyeRgb != IConstants.DEFAULT_RGB) {
-	    	    						quad.setRgb(attrRgb);
-	    	    					}
-									quad.setSprite(bakedQuad.getSprite());
-									map.get(facing).add(quad);
-									continue;
-	    	    				}
-	    	    			} else if (canRenderUncovered && quad.getRenderLayer().equals(renderLayer)) { // Uncovered quads
-	    	    				map.get(facing).add(quad);
-	    	    			}
-	    	    		} else if (canRenderUncovered && quad.getRenderLayer().equals(renderLayer)){
-	    	    			map.get(facing).add(quad);
-	    	    		}
-					}
-				}
-	    	} else {
-	    		for (Quad quad : quadContainer.getQuads(facing)) {
-	    			quad.setRgb(dyeRgb);
-		    		if (canRenderUncovered && quad.getRenderLayer().equals(renderLayer)){
-		    			map.get(facing).add(quad);
-		    		}
+    		for (Quad quad : quadContainer.getQuads(facing)) {
+	    		if (quad.canCover()) { // Quad can be covered
+	    			if (hasCover) {
+	    				if (canRenderCover && bakedQuads.get(facing) != null) {
+	    					for (BakedQuad bakedQuad : bakedQuads.get(facing)) {
+	    						Quad newQuad = new Quad(quad);
+	    						if (Blocks.GRASS.equals(blockState.getBlock())) {
+    								if (isTintedGrassSprite(bakedQuad.getSprite())) {
+    									newQuad.setRgb(attrRgb);
+    								} else if (hasDye) {
+    									newQuad.setRgb(dyeRgb);
+    								}
+    							} else if (bakedQuad.getTintIndex() > -1) {
+    								if (hasDye) {
+    									newQuad.setRgb(dyeRgb);
+    								} else {
+    									newQuad.setRgb(attrRgb);
+    								}
+	    				    	} else if (hasDye) {
+	    				    		newQuad.setRgb(dyeRgb);
+	    				    	}
+    	    					newQuad.setSprite(bakedQuad.getSprite());
+								map.get(facing).add(newQuad);
+	    					}
+	    				}
+	    				continue;
+	    			}
+	    		}
+	    		if (quad.getRenderLayer().equals(renderLayer)) {
+	    			if (hasDye) {
+	    				quad.setRgb(dyeRgb);
+	    			}
+	    			map.get(facing).add(quad);
 	    		}
 	    	}
     	}
     
     	return map;
     }
-
+    
+    private boolean isTintedGrassSprite(TextureAtlasSprite sprite) {
+    	return "minecraft:blocks/grass_top".equalsIgnoreCase(sprite.getIconName()) || "minecraft:blocks/grass_side_overlay".equalsIgnoreCase(sprite.getIconName());
+    }
+    
     private List<BakedQuad> getQuadsForSide(QuadContainer quadContainer, EnumFacing facing, TextureAtlasSprite spriteOverride, Integer rgbOverride, boolean isCover) {
     	List<Quad> srcQuads = quadContainer.getQuads(facing);
     	List<Quad> destQuads = new ArrayList<Quad>(srcQuads.size());
-    	// Sprite override applies to all parts... might need property in state file
     	for (Quad quad : srcQuads) {
     		Quad newQuad = new Quad(quad);
 			if (quad.canCover() && spriteOverride != null) {
@@ -448,6 +445,15 @@ public abstract class AbstractBakedModel implements IBakedModel {
 	        	return Quad.getQuad(facing, bakedQuad.getSprite(), bakedQuad.getTintIndex(), new Vec3d(xMax, yMax, zMax), new Vec3d(xMax, yMin, zMax), new Vec3d(xMax, yMin, zMin), new Vec3d(xMax, yMax, zMin));
         }
 	}
+    
+    private double getSideCoverDepth(EnumAttributeLocation location) {
+    	IBlockState blockState = BlockUtil.getAttributeBlockState(_cbAttrHelper, location, EnumAttributeType.COVER);
+    	if (EnumAttributeLocation.UP.equals(location) && blockState != null && isSnowState(blockState)) {
+    		return SNOW_SIDE_DEPTH;
+    	} else {
+    		return SIDE_DEPTH;
+    	}
+    }
     
     /**
      * Fills quad container with all block quads.
