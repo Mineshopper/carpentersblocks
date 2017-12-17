@@ -4,6 +4,7 @@ import java.util.function.Function;
 
 import com.carpentersblocks.renderer.AbstractBakedModel;
 import com.carpentersblocks.renderer.QuadContainer;
+import com.carpentersblocks.renderer.helper.RenderHelper;
 import com.carpentersblocks.renderer.helper.RenderHelperCollapsible;
 import com.carpentersblocks.util.block.CollapsibleUtil;
 import com.carpentersblocks.util.registry.SpriteRegistry;
@@ -24,21 +25,21 @@ public class BakedCollapsibleBlock extends AbstractBakedModel {
 	
 	@Override
 	protected void fillQuads(QuadContainer quadContainer) {
-		RenderHelperCollapsible _renderHelper = new RenderHelperCollapsible(this);
-		CollapsibleUtil util = _renderHelper.getUtil();
+		CollapsibleUtil util = new CollapsibleUtil(_cbMetadata);
+		util.computeOffsets();
     	if (!util.isFullCube()) {
-    		quadContainer.add(_renderHelper.getQuadYPosZNeg(SpriteRegistry.sprite_uncovered_solid));
-    		quadContainer.add(_renderHelper.getQuadYPosZPos(SpriteRegistry.sprite_uncovered_solid));
-    		quadContainer.add(_renderHelper.getQuadXNegYPos(SpriteRegistry.sprite_uncovered_solid));
-    		quadContainer.add(_renderHelper.getQuadXPosYPos(SpriteRegistry.sprite_uncovered_solid));
+    		quadContainer.add(RenderHelperCollapsible.getQuadYPosZNeg(util, SpriteRegistry.sprite_uncovered_solid));
+    		quadContainer.add(RenderHelperCollapsible.getQuadYPosZPos(util, SpriteRegistry.sprite_uncovered_solid));
+    		quadContainer.add(RenderHelperCollapsible.getQuadXNegYPos(util, SpriteRegistry.sprite_uncovered_solid));
+    		quadContainer.add(RenderHelperCollapsible.getQuadXPosYPos(util, SpriteRegistry.sprite_uncovered_solid));
 		} else {
-			quadContainer.add(_renderHelper.getQuadYPos(SpriteRegistry.sprite_uncovered_solid));
+			quadContainer.add(RenderHelper.getQuadYPos(SpriteRegistry.sprite_uncovered_solid));
 		}
-    	quadContainer.add(_renderHelper.getQuadYNeg(SpriteRegistry.sprite_uncovered_solid));
-        quadContainer.add(_renderHelper.getQuadZNeg(SpriteRegistry.sprite_uncovered_solid));
-        quadContainer.add(_renderHelper.getQuadZPos(SpriteRegistry.sprite_uncovered_solid));
-        quadContainer.add(_renderHelper.getQuadXNeg(SpriteRegistry.sprite_uncovered_solid));
-        quadContainer.add(_renderHelper.getQuadXPos(SpriteRegistry.sprite_uncovered_solid));
+    	quadContainer.add(RenderHelper.getQuadYNeg(SpriteRegistry.sprite_uncovered_solid));
+        quadContainer.add(RenderHelperCollapsible.getQuadZNeg(util, SpriteRegistry.sprite_uncovered_solid));
+        quadContainer.add(RenderHelperCollapsible.getQuadZPos(util, SpriteRegistry.sprite_uncovered_solid));
+        quadContainer.add(RenderHelperCollapsible.getQuadXNeg(util, SpriteRegistry.sprite_uncovered_solid));
+        quadContainer.add(RenderHelperCollapsible.getQuadXPos(util, SpriteRegistry.sprite_uncovered_solid));
 	}
 	
 }

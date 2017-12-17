@@ -20,6 +20,8 @@ public class SpriteRegistry {
 	public static final ResourceLocation RESOURCE_UNCOVERED_SOLID 			= new ResourceLocation(CarpentersBlocks.MOD_ID, "blocks/general/uncovered_solid");
 	public static final ResourceLocation RESOURCE_UNCOVERED_FULL	 		= new ResourceLocation(CarpentersBlocks.MOD_ID, "blocks/general/uncovered_full_frame");
 	public static final ResourceLocation RESOURCE_UNCOVERED_QUARTERED 		= new ResourceLocation(CarpentersBlocks.MOD_ID, "blocks/general/uncovered_quartered_frame");
+	public static final ResourceLocation RESOURCE_UNCOVERED_OBLIQUE_POS     = new ResourceLocation(CarpentersBlocks.MOD_ID, "blocks/slope/uncovered_oblique_pos");
+	public static final ResourceLocation RESOURCE_UNCOVERED_OBLIQUE_NEG     = new ResourceLocation(CarpentersBlocks.MOD_ID, "blocks/slope/uncovered_oblique_neg");
 	public static final ResourceLocation RESOURCE_OVERLAY_FAST_GRASS_SIDE 	= new ResourceLocation(CarpentersBlocks.MOD_ID, "blocks/overlay/overlay_fast_grass_side");
 	public static final ResourceLocation RESOURCE_OVERLAY_HAY_SIDE 			= new ResourceLocation(CarpentersBlocks.MOD_ID, "blocks/overlay/overlay_hay_side");
 	public static final ResourceLocation RESOURCE_OVERLAY_SNOW_SIDE 		= new ResourceLocation(CarpentersBlocks.MOD_ID, "blocks/overlay/overlay_snow_side");
@@ -75,6 +77,8 @@ public class SpriteRegistry {
             sprite_uncovered_solid         = event.getMap().registerSprite(RESOURCE_UNCOVERED_SOLID);
             sprite_uncovered_full          = event.getMap().registerSprite(RESOURCE_UNCOVERED_FULL);
             sprite_uncovered_quartered     = event.getMap().registerSprite(RESOURCE_UNCOVERED_QUARTERED);
+            sprite_uncovered_oblique_pos   = event.getMap().registerSprite(RESOURCE_UNCOVERED_OBLIQUE_POS);
+            sprite_uncovered_oblique_neg   = event.getMap().registerSprite(RESOURCE_UNCOVERED_OBLIQUE_NEG);
             sprite_overlay_fast_grass_side = event.getMap().registerSprite(RESOURCE_OVERLAY_FAST_GRASS_SIDE);
             sprite_overlay_hay_side        = event.getMap().registerSprite(RESOURCE_OVERLAY_HAY_SIDE);
             sprite_overlay_snow_side       = event.getMap().registerSprite(RESOURCE_OVERLAY_SNOW_SIDE);

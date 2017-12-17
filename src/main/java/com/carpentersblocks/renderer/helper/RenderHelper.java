@@ -14,7 +14,7 @@ public class RenderHelper {
     /**
      * Renders the given texture to the bottom face of the block. Args: slope, x, y, z, texture
      */
-    public Quad getQuadYNeg(TextureAtlasSprite sprite) {
+    public static Quad getQuadYNeg(TextureAtlasSprite sprite) {
         return Quad.getQuad(
             EnumFacing.DOWN,
             sprite,
@@ -28,7 +28,7 @@ public class RenderHelper {
     /**
      * Renders the given texture to the top face of the block. Args: slope, x, y, z, texture
      */
-    public Quad getQuadYPos(TextureAtlasSprite sprite) {
+    public static Quad getQuadYPos(TextureAtlasSprite sprite) {
         return Quad.getQuad(
             EnumFacing.UP,
             sprite,
@@ -42,7 +42,7 @@ public class RenderHelper {
     /**
      * Renders the given texture to the North face of the block.  Args: slope, x, y, z, texture
      */
-    public Quad getQuadZNeg(TextureAtlasSprite sprite) {
+    public static Quad getQuadZNeg(TextureAtlasSprite sprite) {
         return Quad.getQuad(
             EnumFacing.NORTH,
             sprite,
@@ -56,7 +56,7 @@ public class RenderHelper {
     /**
      * Renders the given texture to the South face of the block.  Args: slope, x, y, z, texture
      */
-    public Quad getQuadZPos(TextureAtlasSprite sprite) {
+    public static Quad getQuadZPos(TextureAtlasSprite sprite) {
         return Quad.getQuad(
             EnumFacing.SOUTH,
             sprite,
@@ -70,7 +70,7 @@ public class RenderHelper {
     /**
      * Renders the given texture to the West face of the block.  Args: slope, x, y, z, texture
      */
-    public Quad getQuadXNeg(TextureAtlasSprite sprite) {
+    public static Quad getQuadXNeg(TextureAtlasSprite sprite) {
         return Quad.getQuad(
             EnumFacing.WEST,
             sprite,
@@ -84,7 +84,7 @@ public class RenderHelper {
     /**
      * Renders the given texture to the East face of the block.  Args: slope, x, y, z, texture
      */
-    public Quad getQuadXPos(TextureAtlasSprite sprite) {
+    public static Quad getQuadXPos(TextureAtlasSprite sprite) {
         return Quad.getQuad(
             EnumFacing.EAST,
             sprite,

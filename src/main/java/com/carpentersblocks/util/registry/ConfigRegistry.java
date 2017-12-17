@@ -22,7 +22,7 @@ public class ConfigRegistry {
     public static boolean enableLever            = false;
     public static boolean enablePressurePlate    = true;
     public static boolean enableSafe             = false;
-    public static boolean enableSlope            = false;
+    public static boolean enableSlope            = true;
     public static boolean enableStairs           = false;
     public static boolean enableTorch            = false;
 	
@@ -74,7 +74,7 @@ public class ConfigRegistry {
         //enableLever            = config.get("blocks",             "Enable Lever",            enableLever).getBoolean(enableLever);
         enablePressurePlate    = config.get("blocks",    "Enable Pressure Plate",    enablePressurePlate).getBoolean(enablePressurePlate);
         //enableSafe             = config.get("blocks",              "Enable Safe",             enableSafe).getBoolean(enableSafe);
-        //enableSlope            = config.get("blocks",             "Enable Slope",            enableSlope).getBoolean(enableSlope);
+        enableSlope            = config.get("blocks",             "Enable Slope",            enableSlope).getBoolean(enableSlope);
         //enableStairs           = config.get("blocks",            "Enable Stairs",           enableStairs).getBoolean(enableStairs);
         //enableTorch            = config.get("blocks",             "Enable Torch",            enableTorch).getBoolean(enableTorch);
         

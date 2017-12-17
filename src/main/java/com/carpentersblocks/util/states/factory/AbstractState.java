@@ -16,9 +16,6 @@ import net.minecraft.util.math.Vec3d;
 
 public abstract class AbstractState {
 	
-	protected final static double QUARTER_RADIAN = Math.PI / 2;
-	protected final static double RADIAN = Math.PI;
-	
 	protected CbTileEntity _cbTileEntity;
 	protected State _state;
 	

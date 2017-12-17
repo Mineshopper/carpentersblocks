@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
 
@@ -29,6 +30,24 @@ public class Quad {
 	private Quad(EnumFacing facing, Vec3d ... vecs) {
 		_facing = facing;
 		_vecs = vecs;
+	}
+	
+	public enum Rotation {
+		
+		QUARTER(Math.PI / 2),
+		HALF(Math.PI),
+		THREE_QUARTER(Math.PI * 3 / 2);
+		
+		private double _value;
+		
+		Rotation(double value) {
+			_value = value;
+		}
+		
+		public double getValue() {
+			return _value;
+		}
+		
 	}
 	
 	/**
@@ -56,9 +75,6 @@ public class Quad {
 	
 	public static Quad getQuad(EnumFacing facing, TextureAtlasSprite sprite, Vec3d ... inVecs) {
 		Vec3d[] vec3ds = VecUtil.buildVecs(facing, inVecs);
-		if (vec3ds == null || vec3ds.length != 4) {
-			return null;
-		}
 		return getQuad(facing, sprite, IConstants.DEFAULT_RGB, false, BlockRenderLayer.CUTOUT_MIPPED, inVecs);
 	}
 	
@@ -100,10 +116,6 @@ public class Quad {
 	
 	public Vec3d[] getVecs() {
 		return _vecs;
-	}
-	
-	private void setVecs(Vec3d[] vecs) {
-		_vecs = vecs;
 	}
 	
 	public TextureAtlasSprite getSprite() {
@@ -160,7 +172,7 @@ public class Quad {
 	                    	1f
 	                    );
 	                    break;
-	                case COLOR:
+	                case COLOR: {
 	                	builder.put(
 	                		idx,
 	                		((_rgb & 0xff0000) >> 16) / 255.0f,
@@ -168,6 +180,7 @@ public class Quad {
 	                		(_rgb & 0xff) / 255.0f, 1.0f
 	                	);
 	                    break;
+	                }
 	                case UV:
 	                    if (vertexFormat.getElement(idx).getIndex() == 0) {
 	                        builder.put(
@@ -202,5 +215,55 @@ public class Quad {
         }
 		return builder.build();
 	}
+	
+	public void setVecs(Vec3d[] vecs) {
+		_vecs = VecUtil.buildVecs(this._facing, vecs);
+	}
+	
+	/**
+	 * Rotates quads about axis. Positive axis is clockwise rotation.
+	 * Negative axis is counter-clockwise rotation.
+	 * 
+	 * @param axis the axis of rotation
+	 * @param rotation the rotation enum
+	 */
+	public void rotate(com.carpentersblocks.util.RotationUtil.Rotation rotation) {
+		Vec3d[] newVecs = new Vec3d[_vecs.length];
+		EnumFacing newFacing = rotation.getRotatedFacing(_facing);
+		for (int i = 0; i < _vecs.length; ++i) {
+			Vec3d vec3d = _vecs[i];
+			Vec3d vec3dRot = vec3d.add(Vec3d.ZERO);
+			if (rotation.getRadians(Axis.X) > 0) {
+				vec3dRot = rotateAroundX(vec3dRot, rotation.getRadians(Axis.X));
+			}
+			if (rotation.getRadians(Axis.Y) > 0) {
+				vec3dRot = rotateAroundY(vec3dRot, rotation.getRadians(Axis.Y));
+			}
+			if (rotation.getRadians(Axis.Z) > 0) {
+				vec3dRot = rotateAroundZ(vec3dRot, rotation.getRadians(Axis.Z));
+			}
+			newVecs[i] = vec3dRot;
+		}
+		_facing = newFacing;
+		_vecs = VecUtil.buildVecs(_facing, newVecs);
+	}
+	
+	private Vec3d rotateAroundX(Vec3d vec3d, double radians) {
+    	double y = 0.5D + (vec3d.z - 0.5D) * Math.sin(radians) + (vec3d.y - 0.5D) * Math.cos(radians);
+    	double z = 0.5D + (vec3d.z - 0.5D) * Math.cos(radians) - (vec3d.y - 0.5D) * Math.sin(radians);
+    	return new Vec3d(vec3d.x, y, z);
+    }
+	
+	private Vec3d rotateAroundY(Vec3d vec3d, double radians) {
+    	double z = 0.5D + (vec3d.x - 0.5D) * Math.sin(radians) + (vec3d.z - 0.5D) * Math.cos(radians);
+    	double x = 0.5D + (vec3d.x - 0.5D) * Math.cos(radians) - (vec3d.z - 0.5D) * Math.sin(radians);
+    	return new Vec3d(x, vec3d.y, z);
+    }
+    
+	private Vec3d rotateAroundZ(Vec3d vec3d, double radians) {
+    	double x = 0.5D + (vec3d.y - 0.5D) * Math.sin(radians) + (vec3d.x - 0.5D) * Math.cos(radians);
+    	double y = 0.5D + (vec3d.y - 0.5D) * Math.cos(radians) - (vec3d.x - 0.5D) * Math.sin(radians);
+    	return new Vec3d(x, y, vec3d.z);
+    }
 	
 }

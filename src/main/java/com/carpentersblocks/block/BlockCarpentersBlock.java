@@ -1,7 +1,14 @@
 package com.carpentersblocks.block;
 
+import com.carpentersblocks.block.data.SlopeData;
+import com.carpentersblocks.tileentity.CbTileEntity;
+import com.carpentersblocks.util.RotationUtil;
+import com.carpentersblocks.util.RotationUtil.Rotation;
+import com.carpentersblocks.util.handler.EventHandler;
+
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
@@ -14,6 +21,22 @@ public class BlockCarpentersBlock extends BlockCoverable {
         super(material);
     }
 
+    @Override
+    /**
+     * Alters block direction.
+     */
+    protected boolean onHammerLeftClick(CbTileEntity cbTileEntity, EntityPlayer entityPlayer) {
+    	return true;
+    }
+
+    @Override
+    /**
+     * Alters block type.
+     */
+    protected boolean onHammerRightClick(CbTileEntity cbTileEntity, EntityPlayer entityPlayer) {
+        return true;        
+    }
+    
     @Override
     @SideOnly(Side.CLIENT)
     public boolean shouldSideBeRendered(IBlockState blockState, IBlockAccess worldIn, BlockPos pos, EnumFacing side) {

@@ -100,6 +100,7 @@ public abstract class AbstractBakedModel implements IBakedModel {
     @Override
     public List<BakedQuad> getQuads(IBlockState blockState, EnumFacing facing, long rand) {
     	if (!BlockUtil.validateBlockState(blockState) || facing != null || MinecraftForgeClient.getRenderLayer() == null) {
+    		// TODO: Look into at net.minecraftforge.client.ForgeHooksClient.getDamageModel(ForgeHooksClient.java:668)
     		return Collections.emptyList();
     	}
     	_rand = rand;

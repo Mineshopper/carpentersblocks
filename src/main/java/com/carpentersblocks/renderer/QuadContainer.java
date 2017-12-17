@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import com.carpentersblocks.util.RotationUtil.Rotation;
 import com.carpentersblocks.util.attribute.EnumAttributeLocation;
 
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -165,6 +166,18 @@ public class QuadContainer {
 			}
 		}
 		
+	}
+	
+	/**
+	 * Rotates quads about facing axis.
+	 * 
+	 * @param facing defines the axis of rotation
+	 * @param rotation the rotation enum
+	 */
+	public void rotate(Rotation rotation) {
+		for (Quad quad : _quads) {
+			quad.rotate(rotation);
+		}
 	}
 	
 }

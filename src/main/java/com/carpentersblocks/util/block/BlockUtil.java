@@ -28,6 +28,8 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -43,6 +45,25 @@ public class BlockUtil {
         } else {
             return Blocks.AIR;
         }
+    }
+    
+    /**
+     * Returns {@link CbTileEntity} if one exists and the block at coordinates
+     * matches passed in {@link Block}.
+     *
+     * @param block the {@link Block} to match against
+     * @param world the {@link World}
+     * @param blockPos the block position
+     * @return a {@link CbTileEntity}
+     */
+    public static CbTileEntity getTileEntity(Block block, World world, BlockPos blockPos)
+    {
+        TileEntity tileEntity = world.getTileEntity(blockPos);
+        if (tileEntity != null && tileEntity instanceof CbTileEntity && world.getBlockState(blockPos).getBlock().equals(block)) {
+            return (CbTileEntity) tileEntity;
+        }
+
+        return null;
     }
     
     public static boolean validateBlockState(IBlockState blockState) {

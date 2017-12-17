@@ -1,16 +1,23 @@
-package com.carpentersblocks.renderer;
+ package com.carpentersblocks.renderer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 import com.carpentersblocks.util.attribute.EnumAttributeLocation;
 
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
 public class VecUtil {
@@ -86,8 +93,40 @@ public class VecUtil {
 		}
 	}
 	
+	// DEBUG
+	public static boolean isValid(Vec3d[] vecs) {
+		if (vecs == null || vecs.length != 4) {
+			return false;
+		}
+		Set<Vec3d> set = new HashSet<Vec3d>(Arrays.asList(vecs));
+		return set.size() >= 3; // Need 3 unique to calculate normal
+	}
+	// END DEBUG
+	
+	/**
+	 * Check for malformed quad vertices.
+	 * 
+	 * @param quad the quad
+	 * @return <code>true</code> if quad is valid<br><code>false</code> if quad is invalid
+	 */
 	public static boolean isValid(Quad quad) {
-		return quad != null && quad.getVecs() != null && quad.getVecs().length == 4;
+		if (quad == null || quad.getVecs() == null || quad.getVecs().length != 4) {
+			return false;
+		}
+		Vec3d[] vecs = quad.getVecs();
+		Comparator<Vec3d> comparator = new Comparator<Vec3d>() {
+			@Override
+			public int compare(Vec3d vec1, Vec3d vec2) {
+				if (MathHelper.epsilonEquals((float) vec1.x, (float) vec2.x)
+						&& MathHelper.epsilonEquals((float) vec1.y, (float) vec2.y)
+						&& MathHelper.epsilonEquals((float) vec1.z, (float) vec2.z)) {
+					return 0;
+				}
+				return 1;
+			}
+		};
+		Set<Vec3d> set = new HashSet<Vec3d>(Arrays.asList(vecs));
+		return set.size() >= 3; // Need 3 unique to calculate normal
 	}
 
 	private static long squareDistanceTo(EnumFacing facing, Vec2l vec2l, Vec3d Vec3d) {
@@ -100,7 +139,7 @@ public class VecUtil {
 	public static Vec3d[] buildVecs(EnumFacing facing, Vec3d[] vecs) {
 		Set<Vec3d> set = new HashSet<Vec3d>(Arrays.asList(vecs));
 		if (set.size() == 3) {
-			return sortTriangle(facing, vecs);
+			return sortTriangle(facing, set.toArray(new Vec3d[set.size()]));
 		} else if (set.size() == 4) {
 			return sortQuad(facing, vecs);
 		} else {
@@ -139,46 +178,50 @@ public class VecUtil {
 		// Generate bounds
 		Vec2l[] bounds = getBoundingPlane(facing, inVecs);
 
-		//  If one Vec3d is closest to corner, remove corner and map it
+		// Generate corner lists with closest vectors
 		for (int i = 0; i < bounds.length; ++i) {
-			Vec3d closest = null;
-			long minDist = 0;
-			// Get number of matches, and closest point (single match is corner, multiple is unknown)
-			int matchCnt = 0;
-			for (Vec3d Vec3d : vecs) {
-				long dist = squareDistanceTo(facing, bounds[i], Vec3d);
-				if (closest == null || dist < minDist) {
-					minDist = dist;
-					closest = Vec3d;
-				} else if (dist == minDist) {
-					matchCnt++;
+			SortedMap<Long,List<Vec3d>> map = new TreeMap<Long,List<Vec3d>>();
+			for (Vec3d vec3d : vecs) {
+				long dist = squareDistanceTo(facing, bounds[i], vec3d);
+				if (!map.containsKey(dist)) {
+					map.put(dist, new ArrayList<Vec3d>());
 				}
+				map.get(dist).add(vec3d);
 			}
-			if (matchCnt < 2) {
-				// Add closest to corner
-				cornerList[i].add(closest);
+			cornerList[i].addAll(map.get(map.firstKey()));
+		}
+
+		// Clear any ambiguous corner vectors
+		for (int i = 0; i < cornerList.length; ++i) {
+			if (cornerList[i].size() > 1) {
+				cornerList[i].clear();
 			}
 		}
 		
-		Vec3d[] sortedArray = new Vec3d[4];
-		
-		// If list has single point, assign and remove from other points
+		// Map corner matches to final vector array
+		Vec3d[] finalVecs = new Vec3d[4];
 		for (int i = 0; i < cornerList.length; ++i) {
 			List<Vec3d> list = cornerList[i];
-			if (list.size() == 1) {
-				sortedArray[i] = list.get(0);
-				vecs.remove(sortedArray[i]);
+			if (list.size() > 0) {
+				finalVecs[i] = list.get(0);
 			}
 		}
-
-		// Remaining ambiguous point should map to any unassigned corners
-		for (int i = 0; i < sortedArray.length; ++i) {
-			if (sortedArray[i] == null) {
-				sortedArray[i] = vecs.get(0);
-			}
+		
+		// Fill remaining corners
+		if (finalVecs[0] == null) {
+			finalVecs[0] = finalVecs[1];
+		} else if (finalVecs[1] == null) {
+			finalVecs[1] = finalVecs[0];
 		}
-
-		return sortedArray;
+		if (finalVecs[2] == null) {
+			finalVecs[2] = finalVecs[3];
+		} else if (finalVecs[3] == null) {
+			finalVecs[3] = finalVecs[2];
+		}
+		
+		// TODO: Fill adjacent null vectors
+		
+		return finalVecs;
 	}
 	
 	public static Vec3d getNormal(Quad quad) {

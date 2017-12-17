@@ -4,6 +4,7 @@ import com.carpentersblocks.CarpentersBlocks;
 import com.carpentersblocks.block.BlockCarpentersBlock;
 import com.carpentersblocks.block.BlockCarpentersCollapsibleBlock;
 import com.carpentersblocks.block.BlockCarpentersPressurePlate;
+import com.carpentersblocks.block.BlockCarpentersSlope;
 import com.carpentersblocks.util.states.StateMap;
 import com.carpentersblocks.util.states.loader.StateLoader;
 
@@ -27,6 +28,7 @@ public class BlockRegistry {
 	public static final String REGISTRY_NAME_BLOCK = "carpenters_block";
 	public static final String REGISTRY_NAME_COLLAPSIBLE_BLOCK = "carpenters_collapsible_block";
 	public static final String REGISTRY_NAME_PRESSURE_PLATE = "carpenters_pressure_plate";
+	public static final String REGISTRY_NAME_SLOPE = "carpenters_slope";
 	private static final String VARIANT_INVENTORY = "inventory";
 	
     public static Block blockCarpentersBarrier;
@@ -211,17 +213,14 @@ public class BlockRegistry {
             Blocks.fire.setFireInfo(blockCarpentersSafe, 5, 20);
     	}
     	*/
-    	/*
     	if (ConfigRegistry.enableSlope) {
-    		blockCarpentersSlope = new BlockCarpentersSlope(Material.wood)
-                .setBlockName("blockCarpentersSlope")
+    		blockCarpentersSlope = new BlockCarpentersSlope(Material.WOOD)
+                .setUnlocalizedName("blockCarpentersSlope")
+                .setRegistryName(REGISTRY_NAME_SLOPE)
                 .setHardness(0.2F)
-                .setStepSound(BlockProperties.stepSound)
-                .setCreativeTab(CarpentersBlocks.creativeTab);
-            GameRegistry.registerBlock(blockCarpentersSlope, ItemBlockCarpentersSlope.class, "blockCarpentersSlope");
-            Blocks.fire.setFireInfo(blockCarpentersSlope, 5, 20);
+                .setCreativeTab(CarpentersBlocks.CREATIVE_TAB);
+            Blocks.FIRE.setFireInfo(blockCarpentersSlope, 5, 20);
     	}
-    	*/
     	/*
     	if (ConfigRegistry.enableStairs) {
     	  	blockCarpentersStairs = new BlockCarpentersStairs(Material.wood)
@@ -356,7 +355,7 @@ public class BlockRegistry {
     		event.getRegistry().register(new ItemBlock(this.blockCarpentersSafe));
     	}
     	if (ConfigRegistry.enableSlope) {
-    		event.getRegistry().register(new ItemBlock(this.blockCarpentersSlope));
+    		event.getRegistry().register(new ItemBlock(this.blockCarpentersSlope).setRegistryName(this.REGISTRY_NAME_SLOPE));
     	}
     	if (ConfigRegistry.enableStairs) {
     		event.getRegistry().register(new ItemBlock(this.blockCarpentersStairs));
@@ -406,11 +405,10 @@ public class BlockRegistry {
         	registerItemBlockRender(blockCarpentersPressurePlate, VARIANT_INVENTORY, 0);
         	registerItemBlockRender(blockCarpentersPressurePlate, "depressed", 1);
         }
-        /*
-        if (enableSlope) {
-            carpentersSlopeRenderID = RenderingRegistry.getNextAvailableRenderId();
-            RenderingRegistry.registerBlockHandler(carpentersSlopeRenderID, new BlockHandlerCarpentersSlope());
+        if (ConfigRegistry.enableSlope) {
+        	registerItemBlockRender(blockCarpentersSlope, VARIANT_INVENTORY, 0);
         }
+        /*
         if (enableStairs) {
             carpentersStairsRenderID = RenderingRegistry.getNextAvailableRenderId();
             RenderingRegistry.registerBlockHandler(carpentersStairsRenderID, new BlockHandlerCarpentersStairs());
