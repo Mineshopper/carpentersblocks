@@ -1,11 +1,5 @@
 package com.carpentersblocks.renderer.helper.slope.oblique;
 
-import com.carpentersblocks.block.data.SlopeData;
-import com.carpentersblocks.renderer.Quad;
-
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 

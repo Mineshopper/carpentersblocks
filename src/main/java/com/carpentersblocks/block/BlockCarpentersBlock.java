@@ -1,10 +1,6 @@
 package com.carpentersblocks.block;
 
-import com.carpentersblocks.block.data.SlopeData;
 import com.carpentersblocks.tileentity.CbTileEntity;
-import com.carpentersblocks.util.RotationUtil;
-import com.carpentersblocks.util.RotationUtil.Rotation;
-import com.carpentersblocks.util.handler.EventHandler;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;

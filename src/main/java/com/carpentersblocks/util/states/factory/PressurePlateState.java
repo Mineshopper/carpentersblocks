@@ -2,7 +2,6 @@ package com.carpentersblocks.util.states.factory;
 
 import com.carpentersblocks.renderer.Quad;
 import com.carpentersblocks.tileentity.CbTileEntity;
-import com.carpentersblocks.util.IConstants;
 import com.carpentersblocks.util.block.PressurePlateUtil;
 import com.carpentersblocks.util.states.StateUtil;
 

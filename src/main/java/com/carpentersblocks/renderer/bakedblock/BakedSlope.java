@@ -1,7 +1,7 @@
 package com.carpentersblocks.renderer.bakedblock;
 
-import static net.minecraft.util.EnumFacing.SOUTH;
 import static net.minecraft.util.EnumFacing.EAST;
+import static net.minecraft.util.EnumFacing.SOUTH;
 import static net.minecraft.util.EnumFacing.WEST;
 
 import java.util.function.Function;
