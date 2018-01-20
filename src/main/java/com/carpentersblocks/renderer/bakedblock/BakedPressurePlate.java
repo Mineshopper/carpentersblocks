@@ -3,7 +3,7 @@ package com.carpentersblocks.renderer.bakedblock;
 import java.util.function.Function;
 
 import com.carpentersblocks.renderer.AbstractBakedModel;
-import com.carpentersblocks.renderer.QuadContainer;
+import com.carpentersblocks.renderer.RenderPkg;
 import com.carpentersblocks.util.states.StatePart;
 import com.carpentersblocks.util.states.StateUtil;
 
@@ -22,11 +22,10 @@ public class BakedPressurePlate extends AbstractBakedModel {
 	}
 	
 	@Override
-	protected void fillQuads(QuadContainer quadContainer) {
+	protected void fillQuads(RenderPkg renderPkg) {
 		StateUtil util = new StateUtil();
-		quadContainer.setStateful(true);
-		for (StatePart part : _state.getStateParts()) {
-			quadContainer.addAll(util.getQuads(part));
+		for (StatePart part : renderPkg.getState().getStateParts()) {
+			renderPkg.addAll(util.getQuads(part));
 		}
 	}
 	

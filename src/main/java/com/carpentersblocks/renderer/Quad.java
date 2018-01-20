@@ -1,5 +1,8 @@
 package com.carpentersblocks.renderer;
 
+import java.util.Arrays;
+import java.util.LinkedHashSet;
+
 import com.carpentersblocks.util.IConstants;
 import com.carpentersblocks.util.attribute.EnumAttributeLocation;
 import com.carpentersblocks.util.registry.SpriteRegistry;
@@ -24,12 +27,14 @@ public class Quad {
 	private int _rgb;
 	private boolean _maxBrightness;
 	private BlockRenderLayer _renderLayer;
+	private Vec3d _normal;
+	boolean _isOblique;
 	
 	private Quad() { }
 	
 	private Quad(EnumFacing facing, Vec3d ... vecs) {
-		_facing = facing;
 		_vecs = vecs;
+		applyFacing(facing);
 	}
 	
 	public enum Rotation {
@@ -67,6 +72,8 @@ public class Quad {
 		_renderLayer = srcQuad.getRenderLayer();
 		_rgb = srcQuad.getRgb();
 		_sprite = srcQuad.getSprite();
+		_normal = new Vec3d(srcQuad.getNormal().x, srcQuad.getNormal().y, srcQuad.getNormal().z);
+		_isOblique = srcQuad.isObliqueSlope();
 	}
 	
 	public static Quad getQuad(EnumFacing facing, Vec3d ... inVecs) {
@@ -100,18 +107,15 @@ public class Quad {
 	}
 	
 	public Quad offset(double x, double y, double z) {
-		for (int i = 0; i < _vecs.length; ++i) {
-			_vecs[i] = _vecs[i].addVector(x, y, z);
+		Quad quad = new Quad(this);
+		for (int i = 0; i < quad._vecs.length; ++i) {
+			quad._vecs[i] = quad._vecs[i].addVector(x, y, z);
 		}
-		return this;
+		return quad;
 	}
 	
 	public EnumFacing getFacing() {
 		return _facing;
-	}
-	
-	public void setFacing(EnumFacing facing) {
-		_facing = facing;
 	}
 	
 	public Vec3d[] getVecs() {
@@ -157,10 +161,10 @@ public class Quad {
 	public BakedQuad bake(VertexFormat vertexFormat, EnumAttributeLocation location) {
 		UnpackedBakedQuad.Builder builder = new UnpackedBakedQuad.Builder(vertexFormat);
         builder.setTexture(_sprite);
-        Vec3d normal = VecUtil.getNormal(this);
         boolean floatY = _sprite.getIconName().equals(GRASS_SIDE_OVERLAY) || _sprite.getIconName().contains("overlay/overlay_") && _sprite.getIconName().endsWith("_side");
         UV[] uv = VecUtil.getUV(this, floatY, location);
         for (int i = 0; i < 4; ++i) {
+        	//int color = i == 0 ? 0xff0000 : i == 1 ? 0x00ff00 : i == 2 ? 0x0000ff : 0xffff00; // Debug
 	        for (int idx = 0; idx < vertexFormat.getElementCount(); idx++) {
 	            switch (vertexFormat.getElement(idx).getUsage()) {
 	                case POSITION:
@@ -202,9 +206,9 @@ public class Quad {
 	                case NORMAL:
 	                	builder.put(
 	                		idx,
-	                		(float) normal.x,
-	                		(float) normal.y,
-	                		(float) normal.z,
+	                		(float) _normal.x,
+	                		(float) _normal.y,
+	                		(float) _normal.z,
 	                		0f);
 	                    break;
 	                default:
@@ -214,10 +218,6 @@ public class Quad {
 	        }
         }
 		return builder.build();
-	}
-	
-	public void setVecs(Vec3d[] vecs) {
-		_vecs = VecUtil.buildVecs(this._facing, vecs);
 	}
 	
 	/**
@@ -244,8 +244,8 @@ public class Quad {
 			}
 			newVecs[i] = vec3dRot;
 		}
-		_facing = newFacing;
-		_vecs = VecUtil.buildVecs(_facing, newVecs);
+		_vecs = newVecs;
+		applyFacing(newFacing);
 	}
 	
 	private Vec3d rotateAroundX(Vec3d vec3d, double radians) {
@@ -265,5 +265,70 @@ public class Quad {
     	double y = 0.5D + (vec3d.y - 0.5D) * Math.cos(radians) - (vec3d.x - 0.5D) * Math.sin(radians);
     	return new Vec3d(x, y, vec3d.z);
     }
+	
+	public boolean isSloped(Axis axis) {
+		double axis1 = Axis.X.equals(axis) ? _normal.x : Axis.Y.equals(axis) ? _normal.y : _normal.z;
+		return compare(axis1, -1.0D) > 0 &&
+				compare(axis1, 0.0D) != 0 &&
+				compare(axis1, 1.0D) < 0;
+	}
+	
+	public EnumFacing getCardinalFacing() {
+		double x = _normal.x;
+		double z = _normal.z;
+		if (compare(x, -1.0D) > 0 && compare(x, 0.0D) != 0 && compare(x, 1.0D) < 0) {
+			return x < 0.0D ? EnumFacing.WEST : EnumFacing.EAST;
+		} else {
+			return z < 0.0D ? EnumFacing.NORTH : EnumFacing.SOUTH;
+		}
+	}
+	
+	/**
+	 * Applies facing and calculates properties.
+	 * <p>
+	 * Quad must be rotated to match facing prior to calling this
+	 * or runtime exception can occur.
+	 * 
+	 * @param facing the new facing
+	 */
+	public void applyFacing(EnumFacing facing) {
+		_facing = facing;
+		_vecs = VecUtil.buildVecs(facing, _vecs);
+		Vec3d[] vecs1 = new LinkedHashSet<Vec3d>(Arrays.asList(this.getVecs())).toArray(new Vec3d[this.getVecs().length]);
+		_normal = (vecs1[1].subtract(vecs1[0])).crossProduct(vecs1[2].subtract(vecs1[1])).normalize();
+		_isOblique = isSloped(Axis.Y) && (isSloped(Axis.X) || isSloped(Axis.Z));
+	}
+	
+	public static int compare(double d1, double d2) {
+		double epsilon = 0.0001;
+		double diff = d1 - d2;
+		if (diff < -epsilon) {
+			return -1;
+		} else if (diff > epsilon) {
+			return 1;
+		} else {
+			return 0;
+		}
+	}
+	
+	public Vec3d getNormal() {
+		return _normal;
+	}
+	
+	public boolean isObliqueSlope() {
+		return _isOblique;
+	}
+	
+	public EnumFacing getSideCoverOffset() {
+		if (isSloped(Axis.Y)) {
+			if (_normal.y > 0.0D) {
+				return EnumFacing.UP;
+			} else {
+				return EnumFacing.DOWN;
+			}
+		} else {
+			return _facing;
+		}
+	}
 	
 }

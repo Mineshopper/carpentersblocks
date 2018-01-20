@@ -12,10 +12,13 @@ import java.util.Set;
 import com.carpentersblocks.util.RotationUtil.Rotation;
 import com.carpentersblocks.util.attribute.EnumAttributeLocation;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.vertex.VertexFormat;
+import net.minecraft.init.Blocks;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
@@ -23,29 +26,35 @@ public class QuadContainer {
 	
 	private List<Quad> _quads;
 	private VertexFormat _vertexFormat;
-	private boolean _sideCover;
 	private EnumAttributeLocation _location;
-	private boolean _stateful;
+	private final static double MAX_UP_SLOPE = Math.sin(35 * Math.PI / 180);
+	private final static double MAX_SIDE_SLOPE = -Math.sin(55 * Math.PI / 180);
 	
-	public QuadContainer(VertexFormat vertexFormat, EnumAttributeLocation location, boolean sideCover) {
+	public QuadContainer(VertexFormat vertexFormat, EnumAttributeLocation location) {
 		_quads = new ArrayList<Quad>();
 		_vertexFormat = vertexFormat;
-		_sideCover = sideCover;
 		_location = location;
 	}
 	
-	public List<Quad> getQuads(EnumFacing facing) {
+	public VertexFormat getVertexFormat() {
+		return _vertexFormat;
+	}
+	
+	public List<Quad> getQuads(IBlockState blockState, EnumFacing ... facings) {
+		//transformForBlockState(false, blockState);
 		List<Quad> quads = new ArrayList<Quad>();
 		for (Quad quad : _quads) {
-			if (facing.equals(quad.getFacing())) {
+			if (facings.length == 0) {
 				quads.add(new Quad(quad));
+			} else {
+				for (EnumFacing facing : facings) {
+					if (facing.equals(quad.getFacing())) {
+						quads.add(new Quad(quad));
+					}
+				}
 			}
 		}
 		return quads;
-	}
-	
-	public List<Quad> getQuads() {
-		return _quads;
 	}
 	
 	public void addAll(Collection<Quad> collection) {
@@ -58,25 +67,31 @@ public class QuadContainer {
 		}
 	}
 
-	public QuadContainer toSideLocation(EnumAttributeLocation location, double depth) {
-		QuadContainer quadContainer = new QuadContainer(_vertexFormat, location, true);
+	public QuadContainer toSideLocation(IBlockState blockState, EnumAttributeLocation location, double depth) {
+		QuadContainer quadContainer = new QuadContainer(_vertexFormat, location);
 		EnumFacing facing = EnumFacing.getFront(location.ordinal());
-	    List<Quad> quads = getQuads(facing);
-	    for (Quad quad : quads) {
-	    	//quadContainer.add(new Quad(quad).setFacing(facing.getOpposite())); // Should only add this if face is visible (if host is translucent/mipped)
-	    	Quad sideQuad = Quad.getQuad(facing, quad.getVecs());
-	    	if (sideQuad != null) {
-	    		quadContainer.add(sideQuad.offset(facing.getFrontOffsetX() * depth, facing.getFrontOffsetY() * depth, facing.getFrontOffsetZ() * depth));
-		    	for (Quad perpQuad : VecUtil.getPerpendicularQuads(quad, depth)) {
-		    		quadContainer.add(new Quad(perpQuad));
+		//transformForBlockState(true, blockState);
+	    for (Quad quad : _quads) {
+	    	EnumFacing offsetFacing = quad.getSideCoverOffset();
+	    	if (facing.equals(offsetFacing)) {
+		    	//quadContainer.add(new Quad(quad).setFacing(facing.getOpposite())); // Should only add this if face is visible (if host is translucent/mipped)
+		    	Quad sideQuad = new Quad(quad);
+		    	sideQuad.applyFacing(offsetFacing);
+		    	if (sideQuad != null) {
+		    		quadContainer.add(sideQuad.offset(offsetFacing.getFrontOffsetX() * depth, offsetFacing.getFrontOffsetY() * depth, offsetFacing.getFrontOffsetZ() * depth));
+			    	for (Quad perpQuad : VecUtil.getPerpendicularQuads(quad, depth)) {
+			    		quadContainer.add(new Quad(perpQuad));
+			    	}
 		    	}
 	    	}
 	    }
+	    //quadContainer.transformForBlockState(false, blockState);
+	    
 	    // Remove duplicate quads with matching vector coordinates
-	    if (quadContainer.getQuads().size() > 6) {
-			List<Quad> list = new ArrayList<Quad>(quadContainer.getQuads());
+	    if (quadContainer._quads.size() > 6) {
+			List<Quad> list = new ArrayList<Quad>(quadContainer._quads);
 			QuadComparator comparator = new QuadComparator();
-			Iterator<Quad> iter = quadContainer.getQuads().iterator();
+			Iterator<Quad> iter = quadContainer._quads.iterator();
 			while (iter.hasNext()) {
 				Quad q1 = iter.next();
 				for (Quad q2 : list) {
@@ -122,14 +137,6 @@ public class QuadContainer {
 			}
 		}
 		return false;
-	}
-	
-	public boolean getIsStateful() {
-		return _stateful;
-	}
-	
-	public void setStateful(boolean value) {
-		_stateful = value;
 	}
 	
 	public boolean isCoverable(BlockRenderLayer renderLayer) {
@@ -178,6 +185,61 @@ public class QuadContainer {
 		for (Quad quad : _quads) {
 			quad.rotate(rotation);
 		}
+	}
+	
+	/**
+	 * For sloped quads, maps correct facing for quad
+	 * based on UP, DOWN, or side facing orientation
+	 * and block type.
+	 * 
+	 * @param blockState cover blockstate
+	 */
+	public void transformForBlockState(boolean isSideCover, IBlockState blockState) {
+		if (!isSideCover && blockState == null) {
+			return;
+		}
+		List<Quad> list = new ArrayList<Quad>();
+		for (Quad quad : _quads) {
+			if (quad.isSloped(Axis.Y)) {
+				if (isSideCover) {
+					if (!Axis.Y.equals(quad.getFacing())) {
+						Quad newQuad = new Quad(quad);
+						newQuad.applyFacing(quad.getNormal().y > 0.0D ? EnumFacing.UP : EnumFacing.DOWN);
+						list.add(newQuad);
+					} else {
+						list.add(new Quad(quad));
+					}
+				} else {
+					if (Blocks.GRASS.equals(blockState.getBlock())) {
+						Quad newQuad = new Quad(quad);
+						if (Quad.compare(quad.getNormal().y, MAX_UP_SLOPE) >= 0) {
+							if (!EnumFacing.UP.equals(quad.getFacing())) {
+								newQuad.applyFacing(EnumFacing.UP);
+							}
+						} else if (Quad.compare(quad.getNormal().y, MAX_SIDE_SLOPE) >= 0) {
+							if (!quad.getCardinalFacing().equals(quad.getFacing())) {
+								newQuad.applyFacing(quad.getCardinalFacing());
+							}
+						} else {
+							if (!EnumFacing.DOWN.equals(quad.getFacing())) {
+								newQuad.applyFacing(EnumFacing.DOWN);
+							}
+						}
+						list.add(newQuad);
+					} else {
+						Quad newQuad = new Quad(quad);
+						if (!quad.getCardinalFacing().equals(quad.getFacing())) {
+							newQuad.applyFacing(quad.getCardinalFacing());
+						}
+						list.add(newQuad);
+					}
+				}
+			} else {
+				list.add(new Quad(quad));
+			}
+		}
+		_quads.clear();
+		_quads.addAll(list);
 	}
 	
 }

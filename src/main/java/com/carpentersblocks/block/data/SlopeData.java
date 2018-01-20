@@ -19,7 +19,8 @@ public class SlopeData extends RotatableData {
 	public enum Type {
 		
 		WEDGE,
-		OBLIQUE_INTERIOR;
+		OBLIQUE_INTERIOR,
+		OBLIQUE_EXTERIOR;
 		
 	}
 	

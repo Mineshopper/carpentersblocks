@@ -447,6 +447,19 @@ public class BlockCarpentersSlope extends BlockCoverable {
     }
     
     /**
+     * Used to determine ambient occlusion and culling when rebuilding chunks for render
+     */
+	@Override
+    public boolean isOpaqueCube(IBlockState blockState) {
+        return false;
+    }
+
+	@Override
+    public boolean isFullCube(IBlockState blockState) {
+        return false;
+    }
+    
+    /**
      * Check if the face of a block should block rendering.
      *
      * Faces which are fully opaque should return true, faces with transparency

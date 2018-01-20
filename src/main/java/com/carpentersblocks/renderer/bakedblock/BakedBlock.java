@@ -3,7 +3,7 @@ package com.carpentersblocks.renderer.bakedblock;
 import java.util.function.Function;
 
 import com.carpentersblocks.renderer.AbstractBakedModel;
-import com.carpentersblocks.renderer.QuadContainer;
+import com.carpentersblocks.renderer.RenderPkg;
 import com.carpentersblocks.renderer.helper.RenderHelper;
 import com.carpentersblocks.util.registry.SpriteRegistry;
 
@@ -19,14 +19,14 @@ public class BakedBlock extends AbstractBakedModel {
 	}
     
 	@Override
-	protected void fillQuads(QuadContainer quadContainer) {
+	protected void fillQuads(RenderPkg renderPkg) {
 		RenderHelper renderHelper = new RenderHelper();
-		quadContainer.add(renderHelper.getQuadYNeg(SpriteRegistry.sprite_uncovered_quartered));
-		quadContainer.add(renderHelper.getQuadYPos(SpriteRegistry.sprite_uncovered_quartered));
-		quadContainer.add(renderHelper.getQuadZNeg(SpriteRegistry.sprite_uncovered_quartered));
-		quadContainer.add(renderHelper.getQuadZPos(SpriteRegistry.sprite_uncovered_quartered));
-		quadContainer.add(renderHelper.getQuadXNeg(SpriteRegistry.sprite_uncovered_quartered));
-		quadContainer.add(renderHelper.getQuadXPos(SpriteRegistry.sprite_uncovered_quartered));
+		renderPkg.add(renderHelper.getQuadYNeg(SpriteRegistry.sprite_uncovered_quartered));
+		renderPkg.add(renderHelper.getQuadYPos(SpriteRegistry.sprite_uncovered_quartered));
+		renderPkg.add(renderHelper.getQuadZNeg(SpriteRegistry.sprite_uncovered_quartered));
+		renderPkg.add(renderHelper.getQuadZPos(SpriteRegistry.sprite_uncovered_quartered));
+		renderPkg.add(renderHelper.getQuadXNeg(SpriteRegistry.sprite_uncovered_quartered));
+		renderPkg.add(renderHelper.getQuadXPos(SpriteRegistry.sprite_uncovered_quartered));
     }
 	
 }

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -216,24 +215,105 @@ public class VecUtil {
 			finalVecs[3] = finalVecs[2];
 		}
 		
-		// TODO: Fill adjacent null vectors
-		
 		return finalVecs;
 	}
 	
-	public static Vec3d getNormal(Quad quad) {
-		Vec3d[] vecs1 = new LinkedHashSet<Vec3d>(Arrays.asList(quad.getVecs())).toArray(new Vec3d[quad.getVecs().length]);
-		return (vecs1[1].subtract(vecs1[0])).crossProduct(vecs1[2].subtract(vecs1[1])).normalize();
-	}
-	
 	public static UV[] getUV(Quad quad, boolean floatY, EnumAttributeLocation location) {
-		if (quad.getFacing().ordinal() != location.ordinal() && !location.equals(EnumAttributeLocation.HOST)) {
+		if (quad.isObliqueSlope()) {
+			return getUVObliqueSlope(quad, floatY);
+		} else if (quad.getFacing().ordinal() != location.ordinal() && !location.equals(EnumAttributeLocation.HOST)) {
 			return getUVSideCover(quad, floatY, location);
 		} else {
 			return getUV(quad, floatY);
 		}
 	}
 
+	// TODO: Work on this
+	public static UV[] getUVObliqueSlope(Quad quad, boolean floatY) {
+		Vec3d[] vecs = quad.getVecs();
+		switch (quad.getFacing()) {
+    		case DOWN:
+    			return new UV[] {
+	    			new UV(vecs[0].x, vecs[0].z).invertV(),
+	    			new UV(vecs[1].x, vecs[1].z).invertV(),
+	    			new UV(vecs[2].x, vecs[2].z).invertV(),
+	    			new UV(vecs[3].x, vecs[3].z).invertV()
+    			};
+    		case UP:
+				return new UV[] {
+    				new UV(vecs[0].x, vecs[0].z),
+    				new UV(vecs[1].x, vecs[1].z),
+    				new UV(vecs[2].x, vecs[2].z),
+    				new UV(vecs[3].x, vecs[3].z)
+    			};
+    		case NORTH:
+    			if (floatY) {
+    				return new UV[] {
+        				new UV(vecs[0].x, 0.0D).invertU(),
+        				new UV(vecs[1].x, vecs[0].y - vecs[1].y).invertU(),
+        				new UV(vecs[2].x, vecs[3].y - vecs[2].y).invertU(),
+        				new UV(vecs[3].x, 0.0D).invertU()
+        			};
+    			} else {
+    				return new UV[] {
+        				new UV(vecs[0].x, vecs[0].y).invertUV(),
+        				new UV(vecs[1].x, vecs[1].y).invertUV(),
+        				new UV(vecs[2].x, vecs[2].y).invertUV(),
+        				new UV(vecs[3].x, vecs[3].y).invertUV()
+        			};
+    			}
+    		case SOUTH:
+    			if (floatY) {
+    				return new UV[] {
+        				new UV(vecs[0].x, 0.0D),
+        				new UV(vecs[1].x, vecs[0].y - vecs[1].y),
+        				new UV(vecs[2].x, vecs[3].y - vecs[2].y),
+        				new UV(vecs[3].x, 0.0D)
+        			};
+    			} else {
+    				return new UV[] {
+        				new UV(vecs[0].x, vecs[0].y).invertV(),
+        				new UV(vecs[1].x, vecs[1].y).invertV(),
+        				new UV(vecs[2].x, vecs[2].y).invertV(),
+        				new UV(vecs[3].x, vecs[3].y).invertV()
+        			};
+    			}
+    		case WEST:
+    			if (floatY) {
+    				return new UV[] {
+        				new UV(vecs[0].z, 0.0D),
+        				new UV(vecs[1].z, vecs[0].y - vecs[1].y),
+        				new UV(vecs[2].z, vecs[3].y - vecs[2].y),
+        				new UV(vecs[3].z, 0.0D)
+        			};
+    			} else {
+    				return new UV[] {
+        				new UV(vecs[0].z, vecs[0].y).invertV(),
+        				new UV(vecs[1].z, vecs[1].y).invertV(),
+        				new UV(vecs[2].z, vecs[2].y).invertV(),
+        				new UV(vecs[3].z, vecs[3].y).invertV()
+        			};
+    			}
+    		case EAST:
+    			if (floatY) {
+    				return new UV[] {
+        				new UV(vecs[0].z, 0.0D).invertU(),
+        				new UV(vecs[1].z, vecs[0].y - vecs[1].y).invertU(),
+        				new UV(vecs[2].z, vecs[3].y - vecs[2].y).invertU(),
+        				new UV(vecs[3].z, 0.0D).invertU()
+        			};
+    			} else {
+    				return new UV[] {
+        				new UV(vecs[0].z, vecs[0].y).invertUV(),
+        				new UV(vecs[1].z, vecs[1].y).invertUV(),
+        				new UV(vecs[2].z, vecs[2].y).invertUV(),
+        				new UV(vecs[3].z, vecs[3].y).invertUV()
+        			};
+    			}
+		}
+		return null;
+	}
+	
 	public static UV[] getUV(Quad quad, boolean floatY) {
 		Vec3d[] vecs = quad.getVecs();
 		switch (quad.getFacing()) {
@@ -691,7 +771,7 @@ public class VecUtil {
 	public static List<Quad> getPerpendicularQuads(Quad quad, double depth) {
 		List<Quad> list = new ArrayList<Quad>();
 		Vec3d[] vecs = quad.getVecs();
-		switch (quad.getFacing()) {
+		switch (quad.getSideCoverOffset()) {
 			case DOWN:
 				// NORTH
 				list.add(Quad.getQuad(
