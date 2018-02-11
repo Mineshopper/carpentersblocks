@@ -161,10 +161,16 @@ public class Quad {
 	public BakedQuad bake(VertexFormat vertexFormat, EnumAttributeLocation location) {
 		UnpackedBakedQuad.Builder builder = new UnpackedBakedQuad.Builder(vertexFormat);
         builder.setTexture(_sprite);
+        
+        // Oblique sloped quads always render using cardinal facing
+        if (_isOblique) {
+        	applyFacing(this.getCardinalFacing());
+        }
+        
         boolean floatY = _sprite.getIconName().equals(GRASS_SIDE_OVERLAY) || _sprite.getIconName().contains("overlay/overlay_") && _sprite.getIconName().endsWith("_side");
         UV[] uv = VecUtil.getUV(this, floatY, location);
         for (int i = 0; i < 4; ++i) {
-        	//int color = i == 0 ? 0xff0000 : i == 1 ? 0x00ff00 : i == 2 ? 0x0000ff : 0xffff00; // Debug
+        	//_rgb = i == 0 ? 0xff0000 : i == 1 ? 0x00ff00 : i == 2 ? 0x0000ff : 0xffff00; // Debug
 	        for (int idx = 0; idx < vertexFormat.getElementCount(); idx++) {
 	            switch (vertexFormat.getElement(idx).getUsage()) {
 	                case POSITION:
@@ -266,6 +272,10 @@ public class Quad {
     	return new Vec3d(x, y, vec3d.z);
     }
 	
+	public EnumFacing getYSlope() {
+		return _normal.y > 0.0D ? EnumFacing.UP : EnumFacing.DOWN;
+	}
+	
 	public boolean isSloped(Axis axis) {
 		double axis1 = Axis.X.equals(axis) ? _normal.x : Axis.Y.equals(axis) ? _normal.y : _normal.z;
 		return compare(axis1, -1.0D) > 0 &&
@@ -287,7 +297,7 @@ public class Quad {
 	 * Applies facing and calculates properties.
 	 * <p>
 	 * Quad must be rotated to match facing prior to calling this
-	 * or runtime exception can occur.
+	 * or runtime exception may occur.
 	 * 
 	 * @param facing the new facing
 	 */

@@ -41,7 +41,7 @@ public class QuadContainer {
 	}
 	
 	public List<Quad> getQuads(IBlockState blockState, EnumFacing ... facings) {
-		//transformForBlockState(false, blockState);
+		transformForBlockState(false, blockState);
 		List<Quad> quads = new ArrayList<Quad>();
 		for (Quad quad : _quads) {
 			if (facings.length == 0) {
@@ -70,7 +70,6 @@ public class QuadContainer {
 	public QuadContainer toSideLocation(IBlockState blockState, EnumAttributeLocation location, double depth) {
 		QuadContainer quadContainer = new QuadContainer(_vertexFormat, location);
 		EnumFacing facing = EnumFacing.getFront(location.ordinal());
-		//transformForBlockState(true, blockState);
 	    for (Quad quad : _quads) {
 	    	EnumFacing offsetFacing = quad.getSideCoverOffset();
 	    	if (facing.equals(offsetFacing)) {
@@ -78,14 +77,13 @@ public class QuadContainer {
 		    	Quad sideQuad = new Quad(quad);
 		    	sideQuad.applyFacing(offsetFacing);
 		    	if (sideQuad != null) {
-		    		quadContainer.add(sideQuad.offset(offsetFacing.getFrontOffsetX() * depth, offsetFacing.getFrontOffsetY() * depth, offsetFacing.getFrontOffsetZ() * depth));
-			    	for (Quad perpQuad : VecUtil.getPerpendicularQuads(quad, depth)) {
+		    		quadContainer.add(sideQuad.offset(sideQuad.getFacing().getFrontOffsetX() * depth, sideQuad.getFacing().getFrontOffsetY() * depth, sideQuad.getFacing().getFrontOffsetZ() * depth));
+			    	for (Quad perpQuad : VecUtil.getPerpendicularQuads(sideQuad, depth)) {
 			    		quadContainer.add(new Quad(perpQuad));
 			    	}
 		    	}
 	    	}
 	    }
-	    //quadContainer.transformForBlockState(false, blockState);
 	    
 	    // Remove duplicate quads with matching vector coordinates
 	    if (quadContainer._quads.size() > 6) {

@@ -13,6 +13,7 @@ import java.util.TreeMap;
 import com.carpentersblocks.util.attribute.EnumAttributeLocation;
 
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
@@ -60,10 +61,10 @@ public class VecUtil {
 	}
 	
 	private static Vec2l[] getBoundingPlane(EnumFacing facing, Vec3d[] vecs) {
-		long minU = 0;
-		long maxU = 16;
-		long minV = 0;
-		long maxV = 16;
+		long minU = Long.MAX_VALUE;
+		long maxU = Long.MIN_VALUE;
+		long minV = Long.MAX_VALUE;
+		long maxV = Long.MIN_VALUE;
 		for (Vec3d vec : vecs) {
 			Vec2l vec2l = new Vec2l(facing, vec);
 			minU = Math.min(minU, vec2l.getU());
@@ -220,7 +221,7 @@ public class VecUtil {
 	
 	public static UV[] getUV(Quad quad, boolean floatY, EnumAttributeLocation location) {
 		if (quad.isObliqueSlope()) {
-			return getUVObliqueSlope(quad, floatY);
+			return getUVObliqueSlope(quad, floatY, location);
 		} else if (quad.getFacing().ordinal() != location.ordinal() && !location.equals(EnumAttributeLocation.HOST)) {
 			return getUVSideCover(quad, floatY, location);
 		} else {
@@ -228,90 +229,109 @@ public class VecUtil {
 		}
 	}
 
-	// TODO: Work on this
-	public static UV[] getUVObliqueSlope(Quad quad, boolean floatY) {
+	// TODO: Work on this; need to adjust for depth
+	public static UV[] getUVObliqueSlope(Quad quad, boolean floatY, EnumAttributeLocation location) {
 		Vec3d[] vecs = quad.getVecs();
-		switch (quad.getFacing()) {
-    		case DOWN:
-    			return new UV[] {
-	    			new UV(vecs[0].x, vecs[0].z).invertV(),
-	    			new UV(vecs[1].x, vecs[1].z).invertV(),
-	    			new UV(vecs[2].x, vecs[2].z).invertV(),
-	    			new UV(vecs[3].x, vecs[3].z).invertV()
-    			};
-    		case UP:
-				return new UV[] {
-    				new UV(vecs[0].x, vecs[0].z),
-    				new UV(vecs[1].x, vecs[1].z),
-    				new UV(vecs[2].x, vecs[2].z),
-    				new UV(vecs[3].x, vecs[3].z)
-    			};
+		
+		// Set midpoint corner
+		boolean[] midPt = new boolean[4];
+		if (vecs[0].equals(vecs[1])) {
+			if (vecs[0].y < vecs[3].y) {
+				midPt[3] = true;
+			} else if (vecs[0].y > vecs[2].y){
+				midPt[2] = true;
+			}
+		} else { // (vecs[2].equals(vecs[3])) {
+			if (vecs[0].y > vecs[3].y) {
+				midPt[0] = true;
+			} else if (vecs[1].y < vecs[2].y) {
+				midPt[1] = true;
+			}
+		}
+		
+		// If side location, translate on y-axis back to [0,1] bounds
+		if (!EnumAttributeLocation.HOST.equals(location)) {
+			quad = new Quad(quad);
+			vecs = quad.getVecs();
+			double translation;
+			if (EnumFacing.DOWN.equals(quad.getYSlope())) {
+				translation = -1 * Math.min(vecs[1].y, vecs[2].y);
+			} else {
+				translation = -1 * (Math.max(vecs[0].y, vecs[3].y) - 1.0D);
+			}
+			if (Double.compare(0.0D, translation) != 0) {
+				for (int i = 0; i < vecs.length; ++i) {
+					vecs[i] = vecs[i].addVector(0, translation, 0);
+				}
+			}
+		}
+		
+		switch (quad.getCardinalFacing()) {
     		case NORTH:
     			if (floatY) {
     				return new UV[] {
-        				new UV(vecs[0].x, 0.0D).invertU(),
-        				new UV(vecs[1].x, vecs[0].y - vecs[1].y).invertU(),
-        				new UV(vecs[2].x, vecs[3].y - vecs[2].y).invertU(),
-        				new UV(vecs[3].x, 0.0D).invertU()
+        				new UV(midPt[0] ? 0.5D : vecs[0].x, 0.0D).invertU(),
+        				new UV(midPt[1] ? 0.5D : vecs[1].x, vecs[0].y - vecs[1].y).invertU(),
+        				new UV(midPt[2] ? 0.5D : vecs[2].x, vecs[3].y - vecs[2].y).invertU(),
+        				new UV(midPt[3] ? 0.5D : vecs[3].x, 0.0D).invertU()
         			};
     			} else {
     				return new UV[] {
-        				new UV(vecs[0].x, vecs[0].y).invertUV(),
-        				new UV(vecs[1].x, vecs[1].y).invertUV(),
-        				new UV(vecs[2].x, vecs[2].y).invertUV(),
-        				new UV(vecs[3].x, vecs[3].y).invertUV()
+        				new UV(midPt[0] ? 0.5D : vecs[0].x, vecs[0].y).invertUV(),
+        				new UV(midPt[1] ? 0.5D : vecs[1].x, vecs[1].y).invertUV(),
+        				new UV(midPt[2] ? 0.5D : vecs[2].x, vecs[2].y).invertUV(),
+        				new UV(midPt[3] ? 0.5D : vecs[3].x, vecs[3].y).invertUV()
         			};
     			}
     		case SOUTH:
     			if (floatY) {
     				return new UV[] {
-        				new UV(vecs[0].x, 0.0D),
-        				new UV(vecs[1].x, vecs[0].y - vecs[1].y),
-        				new UV(vecs[2].x, vecs[3].y - vecs[2].y),
-        				new UV(vecs[3].x, 0.0D)
+        				new UV(midPt[0] ? 0.5D : vecs[0].x, 0.0D),
+        				new UV(midPt[1] ? 0.5D : vecs[1].x, vecs[0].y - vecs[1].y),
+        				new UV(midPt[2] ? 0.5D : vecs[2].x, vecs[3].y - vecs[2].y),
+        				new UV(midPt[3] ? 0.5D : vecs[3].x, 0.0D)
         			};
     			} else {
     				return new UV[] {
-        				new UV(vecs[0].x, vecs[0].y).invertV(),
-        				new UV(vecs[1].x, vecs[1].y).invertV(),
-        				new UV(vecs[2].x, vecs[2].y).invertV(),
-        				new UV(vecs[3].x, vecs[3].y).invertV()
+        				new UV(midPt[0] ? 0.5D : vecs[0].x, vecs[0].y).invertV(),
+        				new UV(midPt[1] ? 0.5D : vecs[1].x, vecs[1].y).invertV(),
+        				new UV(midPt[2] ? 0.5D : vecs[2].x, vecs[2].y).invertV(),
+        				new UV(midPt[3] ? 0.5D : vecs[3].x, vecs[3].y).invertV()
         			};
     			}
     		case WEST:
     			if (floatY) {
     				return new UV[] {
-        				new UV(vecs[0].z, 0.0D),
-        				new UV(vecs[1].z, vecs[0].y - vecs[1].y),
-        				new UV(vecs[2].z, vecs[3].y - vecs[2].y),
-        				new UV(vecs[3].z, 0.0D)
+        				new UV(midPt[0] ? 0.5D : vecs[0].z, 0.0D),
+        				new UV(midPt[1] ? 0.5D : vecs[1].z, vecs[0].y - vecs[1].y),
+        				new UV(midPt[2] ? 0.5D : vecs[2].z, vecs[3].y - vecs[2].y),
+        				new UV(midPt[3] ? 0.5D : vecs[3].z, 0.0D)
         			};
     			} else {
     				return new UV[] {
-        				new UV(vecs[0].z, vecs[0].y).invertV(),
-        				new UV(vecs[1].z, vecs[1].y).invertV(),
-        				new UV(vecs[2].z, vecs[2].y).invertV(),
-        				new UV(vecs[3].z, vecs[3].y).invertV()
+        				new UV(midPt[0] ? 0.5D : vecs[0].z, vecs[0].y).invertV(),
+        				new UV(midPt[1] ? 0.5D : vecs[1].z, vecs[1].y).invertV(),
+        				new UV(midPt[2] ? 0.5D : vecs[2].z, vecs[2].y).invertV(),
+        				new UV(midPt[3] ? 0.5D : vecs[3].z, vecs[3].y).invertV()
         			};
     			}
-    		case EAST:
+    		default: // EAST
     			if (floatY) {
     				return new UV[] {
-        				new UV(vecs[0].z, 0.0D).invertU(),
-        				new UV(vecs[1].z, vecs[0].y - vecs[1].y).invertU(),
-        				new UV(vecs[2].z, vecs[3].y - vecs[2].y).invertU(),
-        				new UV(vecs[3].z, 0.0D).invertU()
+        				new UV(midPt[0] ? 0.5D : vecs[0].z, 0.0D).invertU(),
+        				new UV(midPt[1] ? 0.5D : vecs[1].z, vecs[0].y - vecs[1].y).invertU(),
+        				new UV(midPt[2] ? 0.5D : vecs[2].z, vecs[3].y - vecs[2].y).invertU(),
+        				new UV(midPt[3] ? 0.5D : vecs[3].z, 0.0D).invertU()
         			};
     			} else {
     				return new UV[] {
-        				new UV(vecs[0].z, vecs[0].y).invertUV(),
-        				new UV(vecs[1].z, vecs[1].y).invertUV(),
-        				new UV(vecs[2].z, vecs[2].y).invertUV(),
-        				new UV(vecs[3].z, vecs[3].y).invertUV()
+        				new UV(midPt[0] ? 0.5D : vecs[0].z, vecs[0].y).invertUV(),
+        				new UV(midPt[1] ? 0.5D : vecs[1].z, vecs[1].y).invertUV(),
+        				new UV(midPt[2] ? 0.5D : vecs[2].z, vecs[2].y).invertUV(),
+        				new UV(midPt[3] ? 0.5D : vecs[3].z, vecs[3].y).invertUV()
         			};
     			}
 		}
-		return null;
 	}
 	
 	public static UV[] getUV(Quad quad, boolean floatY) {

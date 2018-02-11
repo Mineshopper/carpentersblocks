@@ -6,6 +6,12 @@ public class UV {
 	private double _v;
 	
 	public UV(double u, double v) {
+		
+		/*if (_translation != null) {
+			u = Math.min(1, Math.max(0, u));
+			v = Math.min(1, Math.max(0, v));
+		}*/
+		
 		_u = u * 16;
 		_v = v * 16;
 		boolean resize = false;
