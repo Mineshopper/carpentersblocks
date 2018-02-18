@@ -278,7 +278,6 @@ public class RenderPkg {
     	
     	int attrRgb = -1;
     	if (blockState != null) {
-    		//quadContainer.transformForBlockState(blockState);
     		attrRgb = blockColors.colorMultiplier(blockState, Minecraft.getMinecraft().world, _blockPos, ForgeHooksClient.getWorldRenderPass());
     	}
     	

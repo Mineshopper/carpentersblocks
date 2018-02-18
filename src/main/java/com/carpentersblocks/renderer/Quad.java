@@ -2,6 +2,7 @@ package com.carpentersblocks.renderer;
 
 import java.util.Arrays;
 import java.util.LinkedHashSet;
+import java.util.Set;
 
 import com.carpentersblocks.util.IConstants;
 import com.carpentersblocks.util.attribute.EnumAttributeLocation;
@@ -306,7 +307,7 @@ public class Quad {
 		_vecs = VecUtil.buildVecs(facing, _vecs);
 		Vec3d[] vecs1 = new LinkedHashSet<Vec3d>(Arrays.asList(this.getVecs())).toArray(new Vec3d[this.getVecs().length]);
 		_normal = (vecs1[1].subtract(vecs1[0])).crossProduct(vecs1[2].subtract(vecs1[1])).normalize();
-		_isOblique = isSloped(Axis.Y) && (isSloped(Axis.X) || isSloped(Axis.Z));
+		_isOblique = isSloped(Axis.Y) && (isSloped(Axis.X) && isSloped(Axis.Z));
 	}
 	
 	public static int compare(double d1, double d2) {

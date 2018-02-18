@@ -268,12 +268,13 @@ public class VecUtil {
 		
 		switch (quad.getCardinalFacing()) {
     		case NORTH:
-    			if (floatY) {
+    			// Midpoint is characteristic of sorting algorithm for triangles; covers built-in cases
+    			if (floatY && midPt[0]) {
     				return new UV[] {
-        				new UV(midPt[0] ? 0.5D : vecs[0].x, 0.0D).invertU(),
-        				new UV(midPt[1] ? 0.5D : vecs[1].x, vecs[0].y - vecs[1].y).invertU(),
-        				new UV(midPt[2] ? 0.5D : vecs[2].x, vecs[3].y - vecs[2].y).invertU(),
-        				new UV(midPt[3] ? 0.5D : vecs[3].x, 0.0D).invertU()
+        				new UV(0.5D, 0.0D).invertU(),
+        				new UV(vecs[1].x, vecs[0].y - vecs[1].y).invertU(),
+        				new UV(vecs[2].x, vecs[0].y - vecs[2].y).invertU(),
+        				new UV(vecs[3].x, vecs[0].y - vecs[3].y).invertU()
         			};
     			} else {
     				return new UV[] {
@@ -284,12 +285,12 @@ public class VecUtil {
         			};
     			}
     		case SOUTH:
-    			if (floatY) {
+    			if (floatY && midPt[0]) {
     				return new UV[] {
-        				new UV(midPt[0] ? 0.5D : vecs[0].x, 0.0D),
-        				new UV(midPt[1] ? 0.5D : vecs[1].x, vecs[0].y - vecs[1].y),
-        				new UV(midPt[2] ? 0.5D : vecs[2].x, vecs[3].y - vecs[2].y),
-        				new UV(midPt[3] ? 0.5D : vecs[3].x, 0.0D)
+        				new UV(0.5D, 0.0D),
+        				new UV(vecs[1].x, vecs[0].y - vecs[1].y),
+        				new UV(vecs[2].x, vecs[0].y - vecs[2].y),
+        				new UV(vecs[3].x, vecs[0].y - vecs[3].y)
         			};
     			} else {
     				return new UV[] {
@@ -300,12 +301,12 @@ public class VecUtil {
         			};
     			}
     		case WEST:
-    			if (floatY) {
+    			if (floatY && midPt[0]) {
     				return new UV[] {
-        				new UV(midPt[0] ? 0.5D : vecs[0].z, 0.0D),
-        				new UV(midPt[1] ? 0.5D : vecs[1].z, vecs[0].y - vecs[1].y),
-        				new UV(midPt[2] ? 0.5D : vecs[2].z, vecs[3].y - vecs[2].y),
-        				new UV(midPt[3] ? 0.5D : vecs[3].z, 0.0D)
+        				new UV(0.5D, 0.0D),
+        				new UV(vecs[1].z, vecs[0].y - vecs[1].y),
+        				new UV(vecs[2].z, vecs[0].y - vecs[2].y),
+        				new UV(vecs[3].z, vecs[0].y - vecs[3].y)
         			};
     			} else {
     				return new UV[] {
@@ -316,12 +317,12 @@ public class VecUtil {
         			};
     			}
     		default: // EAST
-    			if (floatY) {
+    			if (floatY && midPt[0]) {
     				return new UV[] {
-        				new UV(midPt[0] ? 0.5D : vecs[0].z, 0.0D).invertU(),
-        				new UV(midPt[1] ? 0.5D : vecs[1].z, vecs[0].y - vecs[1].y).invertU(),
-        				new UV(midPt[2] ? 0.5D : vecs[2].z, vecs[3].y - vecs[2].y).invertU(),
-        				new UV(midPt[3] ? 0.5D : vecs[3].z, 0.0D).invertU()
+        				new UV(0.5D, 0.0D).invertU(),
+        				new UV(vecs[1].z, vecs[0].y - vecs[1].y).invertU(),
+        				new UV(vecs[2].z, vecs[0].y - vecs[2].y).invertU(),
+        				new UV(vecs[3].z, vecs[0].y - vecs[3].y).invertU()
         			};
     			} else {
     				return new UV[] {
