@@ -19,8 +19,6 @@ public class CommonProxy {
 
     public void preInit(FMLPreInitializationEvent event) {
     	ConfigRegistry.loadConfiguration(event);
-    	BlockRegistry.preInit(event);
-    	ItemRegistry.preInit(event);
         MinecraftForge.EVENT_BUS.register(new BlockRegistry());
         MinecraftForge.EVENT_BUS.register(new ItemRegistry());
         DesignHandler.preInit(event);

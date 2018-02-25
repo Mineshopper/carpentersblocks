@@ -9,7 +9,6 @@ import net.minecraft.item.Item;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class ItemRegistry {
@@ -20,7 +19,8 @@ public class ItemRegistry {
     public static Item itemCarpentersBed;
     public static Item itemCarpentersTile;
     
-    public static void preInit(FMLPreInitializationEvent event) {
+    @SubscribeEvent
+    public void registerItems(RegistryEvent.Register<Item> event) {
     	if (ConfigRegistry.enableHammer) {
 			itemCarpentersHammer = new ItemCarpentersHammer()
 				.setRegistryName("carpenters_hammer")
@@ -30,8 +30,9 @@ public class ItemRegistry {
 			if (ConfigRegistry.itemCarpentersToolsDamageable) {
 				itemCarpentersHammer.setMaxDamage(ConfigRegistry.itemCarpentersToolsUses);
 			}
-		}
-		if (ConfigRegistry.enableChisel) {
+    		event.getRegistry().register(this.itemCarpentersHammer);
+    	}
+    	if (ConfigRegistry.enableChisel) {
 			itemCarpentersChisel = new ItemCarpentersChisel()
 				.setRegistryName("carpenters_chisel")
 				.setUnlocalizedName("itemCarpentersChisel")
@@ -40,16 +41,6 @@ public class ItemRegistry {
 			if (ConfigRegistry.itemCarpentersToolsDamageable) {
 				itemCarpentersChisel.setMaxDamage(ConfigRegistry.itemCarpentersToolsUses);
 			}
-		}
-		// TODO: Register other items
-    }
-    
-    @SubscribeEvent
-    public void registerItems(RegistryEvent.Register<Item> event) {
-    	if (ConfigRegistry.enableHammer) {
-    		event.getRegistry().register(this.itemCarpentersHammer);
-    	}
-    	if (ConfigRegistry.enableChisel) {
     		event.getRegistry().register(this.itemCarpentersChisel);
     	}
     	// TODO: Register other items

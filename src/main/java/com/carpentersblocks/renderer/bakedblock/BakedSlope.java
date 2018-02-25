@@ -10,7 +10,6 @@ import com.carpentersblocks.block.data.SlopeData;
 import com.carpentersblocks.block.data.SlopeData.Type;
 import com.carpentersblocks.renderer.AbstractBakedModel;
 import com.carpentersblocks.renderer.Quad;
-import com.carpentersblocks.renderer.QuadContainer;
 import com.carpentersblocks.renderer.RenderPkg;
 import com.carpentersblocks.renderer.helper.RenderHelper;
 import com.carpentersblocks.util.RotationUtil.Rotation;
@@ -142,5 +141,5 @@ public class BakedSlope extends AbstractBakedModel {
                 new Vec3d(0.0D, 0.0D, 0.0D),
                 new Vec3d(0.0D, 0.0D, 1.0D)));
 	}
-
+	
 }

@@ -26,7 +26,7 @@ public class ClientProxy extends CommonProxy {
     public void init(FMLInitializationEvent event) {
         super.init(event);
         CarpentersBlocksCachedResources.INSTANCE.init();
-        BlockRegistry.registerRenderers();
+        //BlockRegistry.registerRenderers();
     	//Minecraft.getMinecraft().getBlockColors().registerBlockColorHandler(CbBlockColor.INSTANCE, BlockRegistry.blockCarpentersBlock);
     	
         // TODO: Check if these are needed

@@ -10,13 +10,13 @@ import com.carpentersblocks.util.states.loader.StateLoader;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
+import net.minecraftforge.client.event.ModelRegistryEvent;
+import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -50,17 +50,19 @@ public class BlockRegistry {
     public static Block blockCarpentersStairs;
     public static Block blockCarpentersTorch;
     
-    public static void preInit(FMLPreInitializationEvent event) {
+    @SubscribeEvent
+    public void registerBlocks(RegistryEvent.Register<Block> event) {
     	{ // Carpenters Block always enabled
-	    	blockCarpentersBlock = new BlockCarpentersBlock(material)
-        		.setUnlocalizedName("blockCarpentersBlock")
-            	.setRegistryName(REGISTRY_NAME_BLOCK)
-            	.setHardness(0.2F)
-                .setCreativeTab(CarpentersBlocks.CREATIVE_TAB);
-	        Blocks.FIRE.setFireInfo(blockCarpentersBlock, 5, 20);
+    		blockCarpentersBlock = new BlockCarpentersBlock(material)
+            		.setUnlocalizedName("blockCarpentersBlock")
+                	.setRegistryName(REGISTRY_NAME_BLOCK)
+                	.setHardness(0.2F)
+                    .setCreativeTab(CarpentersBlocks.CREATIVE_TAB);
+    	    Blocks.FIRE.setFireInfo(blockCarpentersBlock, 5, 20);
+    		event.getRegistry().register(this.blockCarpentersBlock);
     	}
-    	/*
 		if (ConfigRegistry.enableBarrier) {
+			/*
     		blockCarpentersBarrier = new BlockCarpentersBarrier(Material.wood)
                 .setBlockName("blockCarpentersBarrier")
                 .setHardness(0.2F)
@@ -68,10 +70,11 @@ public class BlockRegistry {
                 .setCreativeTab(CarpentersBlocks.creativeTab);
             GameRegistry.registerBlock(blockCarpentersBarrier, "blockCarpentersBarrier");
             Blocks.fire.setFireInfo(blockCarpentersBarrier, 5, 20);
+            */
+    		event.getRegistry().register(this.blockCarpentersBarrier);
     	}
-    	*/
-    	/*
     	if (ConfigRegistry.enableBed) {
+    		/*
     		blockCarpentersBed = new BlockCarpentersBed(Material.wood)
 				.setBlockName("blockCarpentersBed")
 				.setHardness(0.4F)
@@ -81,10 +84,11 @@ public class BlockRegistry {
 			// users to place the block itself, which will result in a crash.
             GameRegistry.registerBlock(blockCarpentersBed, "blockCarpentersBed");
             Blocks.fire.setFireInfo(blockCarpentersBed, 5, 20);
+            */
+    		event.getRegistry().register(this.blockCarpentersBed);
     	}
-    	*/
-    	/*
     	if (ConfigRegistry.enableButton) {
+    		/*
     		blockCarpentersButton = new BlockCarpentersButton(Material.circuits)
                 .setBlockName("blockCarpentersButton")
                 .setHardness(0.2F)
@@ -92,8 +96,9 @@ public class BlockRegistry {
                 .setCreativeTab(CarpentersBlocks.creativeTab);
             GameRegistry.registerBlock(blockCarpentersButton, ItemBlockSided.class, "blockCarpentersButton");
             Blocks.fire.setFireInfo(blockCarpentersButton, 5, 20);
+            */
+    		event.getRegistry().register(this.blockCarpentersButton);
     	}
-    	*/
     	if (ConfigRegistry.enableCollapsibleBlock) {
     		blockCarpentersCollapsibleBlock = new BlockCarpentersCollapsibleBlock(material)
                 .setUnlocalizedName("blockCarpentersCollapsibleBlock")
@@ -101,9 +106,10 @@ public class BlockRegistry {
                 .setHardness(0.2F)
                 .setCreativeTab(CarpentersBlocks.CREATIVE_TAB);
             Blocks.FIRE.setFireInfo(blockCarpentersCollapsibleBlock, 5, 20);
+    		event.getRegistry().register(this.blockCarpentersCollapsibleBlock);
     	}
-    	/*
     	if (ConfigRegistry.enableDaylightSensor) {
+    		/*
     		blockCarpentersDaylightSensor = new BlockCarpentersDaylightSensor(Material.wood)
                 .setBlockName("blockCarpentersDaylightSensor")
                 .setHardness(0.2F)
@@ -111,10 +117,11 @@ public class BlockRegistry {
                 .setCreativeTab(CarpentersBlocks.creativeTab);
             GameRegistry.registerBlock(blockCarpentersDaylightSensor, ItemBlockSided.class, "blockCarpentersDaylightSensor");
             Blocks.fire.setFireInfo(blockCarpentersDaylightSensor, 5, 20);
+            */
+    		event.getRegistry().register(this.blockCarpentersDaylightSensor);
     	}
-    	*/
-    	/*
     	if (ConfigRegistry.enableDoor) {
+    		/*
     		blockCarpentersDoor = new BlockCarpentersDoor(Material.wood)
                 .setBlockName("blockCarpentersDoor")
                 .setHardness(0.2F)
@@ -124,10 +131,11 @@ public class BlockRegistry {
             // users to place the block itself, which will result in a crash.
             GameRegistry.registerBlock(blockCarpentersDoor, "blockCarpentersDoor");
             Blocks.fire.setFireInfo(blockCarpentersDoor, 5, 20);
+            */
+    		event.getRegistry().register(this.blockCarpentersDoor);
     	}
-    	*/
-    	/*
     	if (ConfigRegistry.enableFlowerPot) {
+    		/*
     		blockCarpentersFlowerPot = new BlockCarpentersFlowerPot(Material.circuits)
                 .setBlockName("blockCarpentersFlowerPot")
                 .setHardness(0.5F)
@@ -135,10 +143,11 @@ public class BlockRegistry {
                 .setCreativeTab(CarpentersBlocks.creativeTab);
             GameRegistry.registerBlock(blockCarpentersFlowerPot, "blockCarpentersFlowerPot");
             Blocks.fire.setFireInfo(blockCarpentersFlowerPot, 5, 20);
+            */
+    		event.getRegistry().register(this.blockCarpentersFlowerPot);
     	}
-    	*/
-    	/*
     	if (ConfigRegistry.enableGarageDoor) {
+    		/*
     		blockCarpentersGarageDoor = new BlockCarpentersGarageDoor(Material.wood)
                 .setBlockName("blockCarpentersGarageDoor")
                 .setHardness(0.2F)
@@ -146,10 +155,11 @@ public class BlockRegistry {
                 .setCreativeTab(CarpentersBlocks.creativeTab);
             GameRegistry.registerBlock(blockCarpentersGarageDoor, "blockCarpentersGarageDoor");
             Blocks.fire.setFireInfo(blockCarpentersGarageDoor, 5, 20);
+            */
+    		event.getRegistry().register(this.blockCarpentersGarageDoor);
     	}
-    	*/
-    	/*
     	if (ConfigRegistry.enableGate) {
+    		/*
     		blockCarpentersGate = new BlockCarpentersGate(Material.wood)
                 .setBlockName("blockCarpentersGate")
                 .setHardness(0.2F)
@@ -157,10 +167,11 @@ public class BlockRegistry {
                 .setCreativeTab(CarpentersBlocks.creativeTab);
             GameRegistry.registerBlock(blockCarpentersGate, "blockCarpentersGate");
             Blocks.fire.setFireInfo(blockCarpentersGate, 5, 20);
+            */
+    		event.getRegistry().register(this.blockCarpentersGate);
     	}
-    	*/
-    	/*
     	if (ConfigRegistry.enableHatch) {
+    		/*
     		blockCarpentersHatch = new BlockCarpentersHatch(Material.wood)
                 .setBlockName("blockCarpentersHatch")
                 .setHardness(0.2F)
@@ -168,10 +179,11 @@ public class BlockRegistry {
                 .setCreativeTab(CarpentersBlocks.creativeTab);
             GameRegistry.registerBlock(blockCarpentersHatch, "blockCarpentersHatch");
             Blocks.fire.setFireInfo(blockCarpentersHatch, 5, 20);
+            */
+    		event.getRegistry().register(this.blockCarpentersHatch);
     	}
-    	*/
-    	/*
     	if (ConfigRegistry.enableLadder) {
+    		/*
     		blockCarpentersLadder = new BlockCarpentersLadder(Material.wood)
                 .setBlockName("blockCarpentersLadder")
                 .setHardness(0.2F)
@@ -179,10 +191,11 @@ public class BlockRegistry {
                 .setCreativeTab(CarpentersBlocks.creativeTab);
             GameRegistry.registerBlock(blockCarpentersLadder, "blockCarpentersLadder");
             Blocks.fire.setFireInfo(blockCarpentersLadder, 5, 20);
+            */
+    		event.getRegistry().register(this.blockCarpentersLadder);
     	}
-    	*/
-    	/*
     	if (ConfigRegistry.enableLever) {
+    		/*
     		blockCarpentersLever = new BlockCarpentersLever(Material.circuits)
                 .setBlockName("blockCarpentersLever")
                 .setHardness(0.2F)
@@ -190,8 +203,9 @@ public class BlockRegistry {
                 .setCreativeTab(CarpentersBlocks.creativeTab);
             GameRegistry.registerBlock(blockCarpentersLever, ItemBlockSided.class, "blockCarpentersLever");
             Blocks.fire.setFireInfo(blockCarpentersLever, 5, 20);
+            */
+    		event.getRegistry().register(this.blockCarpentersLever);
     	}
-    	*/
     	if (ConfigRegistry.enablePressurePlate) {
         	StateLoader stateLoader = new StateLoader(REGISTRY_NAME_PRESSURE_PLATE);
         	StateMap stateMap = stateLoader.getStateMap();
@@ -201,9 +215,10 @@ public class BlockRegistry {
 	            .setHardness(0.2F)
 	            .setCreativeTab(CarpentersBlocks.CREATIVE_TAB);
 	        Blocks.FIRE.setFireInfo(blockCarpentersPressurePlate, 5, 20);
+    		event.getRegistry().register(this.blockCarpentersPressurePlate);
     	}
-    	/*
     	if (ConfigRegistry.enableSafe) {
+    		/*
     		blockCarpentersSafe = new BlockCarpentersSafe(Material.wood)
                 .setBlockName("blockCarpentersSafe")
                 .setHardness(2.5F)
@@ -211,18 +226,20 @@ public class BlockRegistry {
                 .setCreativeTab(CarpentersBlocks.creativeTab);
             GameRegistry.registerBlock(blockCarpentersSafe, "blockCarpentersSafe");
             Blocks.fire.setFireInfo(blockCarpentersSafe, 5, 20);
+            */
+    		event.getRegistry().register(this.blockCarpentersSafe);
     	}
-    	*/
     	if (ConfigRegistry.enableSlope) {
     		blockCarpentersSlope = new BlockCarpentersSlope(Material.WOOD)
-                .setUnlocalizedName("blockCarpentersSlope")
-                .setRegistryName(REGISTRY_NAME_SLOPE)
-                .setHardness(0.2F)
-                .setCreativeTab(CarpentersBlocks.CREATIVE_TAB);
+                    .setUnlocalizedName("blockCarpentersSlope")
+                    .setRegistryName(REGISTRY_NAME_SLOPE)
+                    .setHardness(0.2F)
+                    .setCreativeTab(CarpentersBlocks.CREATIVE_TAB);
             Blocks.FIRE.setFireInfo(blockCarpentersSlope, 5, 20);
+    		event.getRegistry().register(this.blockCarpentersSlope);
     	}
-    	/*
     	if (ConfigRegistry.enableStairs) {
+    		/*
     	  	blockCarpentersStairs = new BlockCarpentersStairs(Material.wood)
                 .setBlockName("blockCarpentersStairs")
                 .setHardness(0.2F)
@@ -230,10 +247,11 @@ public class BlockRegistry {
                 .setCreativeTab(CarpentersBlocks.creativeTab);
             GameRegistry.registerBlock(blockCarpentersStairs, "blockCarpentersStairs");
             Blocks.fire.setFireInfo(blockCarpentersStairs, 5, 20);
+            */
+    		event.getRegistry().register(this.blockCarpentersStairs);
     	}
-    	*/
-    	/*
     	if (ConfigRegistry.enableTorch) {
+    		/*
     		blockCarpentersTorch = new BlockCarpentersTorch(Material.circuits)
                 .setBlockName("blockCarpentersTorch")
                 .setHardness(0.2F)
@@ -245,64 +263,7 @@ public class BlockRegistry {
             }
             GameRegistry.registerBlock(blockCarpentersTorch, ItemBlockSided.class, "blockCarpentersTorch");
             Blocks.fire.setFireInfo(blockCarpentersTorch, 5, 20);
-    	}
-    	*/
-    }
-    
-    @SubscribeEvent
-    public void registerBlocks(RegistryEvent.Register<Block> event) {
-    	{ // Carpenters Block always enabled
-    		event.getRegistry().register(this.blockCarpentersBlock);
-    	}
-		if (ConfigRegistry.enableBarrier) {
-    		event.getRegistry().register(this.blockCarpentersBarrier);
-    	}
-    	if (ConfigRegistry.enableBed) {
-    		event.getRegistry().register(this.blockCarpentersBed);
-    	}
-    	if (ConfigRegistry.enableButton) {
-    		event.getRegistry().register(this.blockCarpentersButton);
-    	}
-    	if (ConfigRegistry.enableCollapsibleBlock) {
-    		event.getRegistry().register(this.blockCarpentersCollapsibleBlock);
-    	}
-    	if (ConfigRegistry.enableDaylightSensor) {
-    		event.getRegistry().register(this.blockCarpentersDaylightSensor);
-    	}
-    	if (ConfigRegistry.enableDoor) {
-    		event.getRegistry().register(this.blockCarpentersDoor);
-    	}
-    	if (ConfigRegistry.enableFlowerPot) {
-    		event.getRegistry().register(this.blockCarpentersFlowerPot);
-    	}
-    	if (ConfigRegistry.enableGarageDoor) {
-    		event.getRegistry().register(this.blockCarpentersGarageDoor);
-    	}
-    	if (ConfigRegistry.enableGate) {
-    		event.getRegistry().register(this.blockCarpentersGate);
-    	}
-    	if (ConfigRegistry.enableHatch) {
-    		event.getRegistry().register(this.blockCarpentersHatch);
-    	}
-    	if (ConfigRegistry.enableLadder) {
-    		event.getRegistry().register(this.blockCarpentersLadder);
-    	}
-    	if (ConfigRegistry.enableLever) {
-    		event.getRegistry().register(this.blockCarpentersLever);
-    	}
-    	if (ConfigRegistry.enablePressurePlate) {
-    		event.getRegistry().register(this.blockCarpentersPressurePlate);
-    	}
-    	if (ConfigRegistry.enableSafe) {
-    		event.getRegistry().register(this.blockCarpentersSafe);
-    	}
-    	if (ConfigRegistry.enableSlope) {
-    		event.getRegistry().register(this.blockCarpentersSlope);
-    	}
-    	if (ConfigRegistry.enableStairs) {
-    		event.getRegistry().register(this.blockCarpentersStairs);
-    	}
-    	if (ConfigRegistry.enableTorch) {
+            */
     		event.getRegistry().register(this.blockCarpentersTorch);
     	}
     }
@@ -365,14 +326,9 @@ public class BlockRegistry {
     	}
     }
     
+    @SubscribeEvent
     @SideOnly(Side.CLIENT)
-    private static void registerItemBlockRender(Block block, String variant, int metadata) {
-		ModelResourceLocation modelResourceLocation = new ModelResourceLocation(block.getRegistryName(), variant);
-		Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(Item.getItemFromBlock(block), metadata, modelResourceLocation);
-    }
-
-    @SideOnly(Side.CLIENT)
-    public static void registerRenderers() {
+    public void registerModels(ModelRegistryEvent event) {
     	registerItemBlockRender(blockCarpentersBlock, VARIANT_INVENTORY, 0);
 
         /*
@@ -447,6 +403,12 @@ public class BlockRegistry {
             RenderingRegistry.registerBlockHandler(carpentersFlowerPotRenderID, new BlockHandlerCarpentersFlowerPot());
         }
         */
+    }
+    
+    @SideOnly(Side.CLIENT)
+    private static void registerItemBlockRender(Block block, String variant, int metadata) {
+		ModelResourceLocation modelResourceLocation = new ModelResourceLocation(block.getRegistryName(), variant);
+		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(block), metadata, modelResourceLocation);
     }
 
 }
