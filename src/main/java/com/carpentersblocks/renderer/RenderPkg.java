@@ -80,6 +80,12 @@ public class RenderPkg {
     	_quadContainer = new QuadContainer(vertexFormat, EnumAttributeLocation.HOST);
     }
     
+    public RenderPkg(VertexFormat vertexFormat, EnumFacing facing, long rand) {
+    	_rand = rand;
+    	_vertexFormat = vertexFormat;
+    	_quadContainer = new QuadContainer(vertexFormat, EnumAttributeLocation.HOST);
+    }
+    
     public AbstractState getState() {
     	return _state;
     }
@@ -110,6 +116,10 @@ public class RenderPkg {
     		return ((IExtendedBlockState)blockState).withProperty(Property.ATTR_BLOCKSTATE, attrBlockState);
     	}
     	return blockState;
+    }
+    
+    public List<BakedQuad> getInventoryQuads() {
+    	return _quadContainer.bakeQuads();
     }
     
     /**

@@ -6,6 +6,10 @@ import static net.minecraft.util.EnumFacing.WEST;
 
 import java.util.function.Function;
 
+import javax.vecmath.Matrix4f;
+
+import org.apache.commons.lang3.tuple.Pair;
+
 import com.carpentersblocks.block.data.SlopeData;
 import com.carpentersblocks.block.data.SlopeData.Type;
 import com.carpentersblocks.renderer.AbstractBakedModel;
@@ -15,11 +19,14 @@ import com.carpentersblocks.renderer.helper.RenderHelper;
 import com.carpentersblocks.util.RotationUtil.Rotation;
 import com.carpentersblocks.util.registry.SpriteRegistry;
 
+import net.minecraft.client.renderer.block.model.IBakedModel;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
+import net.minecraftforge.client.model.PerspectiveMapWrapper;
 import net.minecraftforge.common.model.IModelState;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;

@@ -40,6 +40,15 @@ public class QuadContainer {
 		return _vertexFormat;
 	}
 	
+	public List<BakedQuad> bakeQuads() {
+		List<BakedQuad> list = new ArrayList<BakedQuad>();
+		for (Quad quad : _quads) {
+			Quad cpyQuad = new Quad(quad);
+			list.add(cpyQuad.bake(_vertexFormat, _location));
+		}
+		return list;
+	}
+	
 	public List<Quad> getQuads(IBlockState blockState, EnumFacing ... facings) {
 		transformForBlockState(false, blockState);
 		List<Quad> quads = new ArrayList<Quad>();

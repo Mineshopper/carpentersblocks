@@ -4,14 +4,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
-import com.carpentersblocks.util.attribute.EnumAttributeLocation;
 import com.carpentersblocks.util.block.BlockUtil;
 import com.carpentersblocks.util.registry.SpriteRegistry;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.block.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -36,6 +34,11 @@ public abstract class AbstractBakedModel implements IBakedModel {
     
     @Override
     public List<BakedQuad> getQuads(IBlockState blockState, EnumFacing facing, long rand) {
+    	if (blockState == null && facing == null) {
+    		RenderPkg renderPkg = new RenderPkg(_vertexFormat, facing, rand);
+        	fillQuads(renderPkg);
+        	return renderPkg.getInventoryQuads();
+    	}
     	if (!BlockUtil.validateBlockState(blockState) || facing != null || MinecraftForgeClient.getRenderLayer() == null) {
     		// TODO: Look into at net.minecraftforge.client.ForgeHooksClient.getDamageModel(ForgeHooksClient.java:668)
     		// Damage is not currently rendering
@@ -64,11 +67,6 @@ public abstract class AbstractBakedModel implements IBakedModel {
     @Override
     public boolean isBuiltInRenderer() {
         return false;
-    }
-
-    @Override
-    public ItemCameraTransforms getItemCameraTransforms() {
-        return ItemCameraTransforms.DEFAULT;
     }
     
     @Override

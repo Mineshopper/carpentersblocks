@@ -2,54 +2,42 @@ package com.carpentersblocks.renderer;
 
 import com.carpentersblocks.CarpentersBlocks;
 import com.carpentersblocks.renderer.model.ModelBlock;
-import com.carpentersblocks.renderer.model.ModelCollapsible;
+import com.carpentersblocks.renderer.model.ModelCollapsibleBlock;
 import com.carpentersblocks.renderer.model.ModelPressurePlate;
 import com.carpentersblocks.renderer.model.ModelSlope;
 import com.carpentersblocks.util.registry.BlockRegistry;
 
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.ICustomModelLoader;
 import net.minecraftforge.client.model.IModel;
 
 public class ModelLoader implements ICustomModelLoader {
-
-    public static final ModelResourceLocation RESOURCE_LOC_BLOCK = new ModelResourceLocation(CarpentersBlocks.MOD_ID + ":block/carpenters_block");
-    public static final ModelResourceLocation RESOURCE_LOC_COLLAPSIBLE_BLOCK = new ModelResourceLocation(CarpentersBlocks.MOD_ID + ":block/carpenters_collapsible_block");
-	public static final ModelResourceLocation RESOURCE_LOC_PRESSURE_PLATE = new ModelResourceLocation(CarpentersBlocks.MOD_ID + ":block/carpenters_pressure_plate");
-	public static final ModelResourceLocation RESOURCE_LOC_SLOPE = new ModelResourceLocation(CarpentersBlocks.MOD_ID + ":block/carpenters_slope");
-    
-    public static final ModelBlock MODEL_BLOCK = new ModelBlock();
-    public static final ModelCollapsible MODEL_COLLAPSIBLE_BLOCK = new ModelCollapsible();
-    public static final ModelPressurePlate MODEL_PRESSURE_PLATE = new ModelPressurePlate();
-    public static final ModelSlope MODEL_SLOPE = new ModelSlope();
-
+	
     @Override
-    public boolean accepts(ResourceLocation modelLocation) {
-    	return modelLocation.getResourceDomain().equals(CarpentersBlocks.MOD_ID) && BlockRegistry.REGISTRY_NAME_BLOCK.equals(modelLocation.getResourcePath()) ||
-    		   modelLocation.getResourceDomain().equals(CarpentersBlocks.MOD_ID) && BlockRegistry.REGISTRY_NAME_COLLAPSIBLE_BLOCK.equals(modelLocation.getResourcePath()) ||
-    		   modelLocation.getResourceDomain().equals(CarpentersBlocks.MOD_ID) && BlockRegistry.REGISTRY_NAME_PRESSURE_PLATE.equals(modelLocation.getResourcePath()) ||
-    		   modelLocation.getResourceDomain().equals(CarpentersBlocks.MOD_ID) && BlockRegistry.REGISTRY_NAME_SLOPE.equals(modelLocation.getResourcePath());
+    public boolean accepts(ResourceLocation resourceLocation) {
+    	IModel model = null;
+    	try { model = loadModel(resourceLocation); } catch (Exception ex) {}
+    	return CarpentersBlocks.MOD_ID.equalsIgnoreCase(resourceLocation.getResourceDomain())
+    			&& model != null;
     }
 
     @Override
     public IModel loadModel(ResourceLocation resourceLocation) throws Exception {
-    	if (isModel(resourceLocation, BlockRegistry.REGISTRY_NAME_COLLAPSIBLE_BLOCK)) {
-    		return MODEL_COLLAPSIBLE_BLOCK;
-    	} else if (isModel(resourceLocation, BlockRegistry.REGISTRY_NAME_PRESSURE_PLATE)) {
-    		return MODEL_PRESSURE_PLATE;
-    	} else if (isModel(resourceLocation, BlockRegistry.REGISTRY_NAME_SLOPE)) {
-    		return MODEL_SLOPE;
+    	if (resourceLocation.getResourcePath().equals(BlockRegistry.REGISTRY_NAME_BLOCK)) {
+    		return new ModelBlock();
+    	} else if (resourceLocation.getResourcePath().endsWith(BlockRegistry.REGISTRY_NAME_SLOPE)) {
+    		return new ModelSlope();
+    	} else if (resourceLocation.getResourcePath().equals(BlockRegistry.REGISTRY_NAME_COLLAPSIBLE_BLOCK)) {
+    		return new ModelCollapsibleBlock();
+    	} else if (resourceLocation.getResourcePath().equals(BlockRegistry.REGISTRY_NAME_PRESSURE_PLATE)) {
+    		return new ModelPressurePlate();
+    	} else {
+    		return null;
     	}
-        return MODEL_BLOCK;
     }
 
     @Override
     public void onResourceManagerReload(IResourceManager resourceManager) { }
-    
-    private boolean isModel(ResourceLocation resourceLocation, String registryName) {
-    	return resourceLocation.getResourceDomain().equals(CarpentersBlocks.MOD_ID) && registryName.equals(resourceLocation.getResourcePath());
-    }
     
 }

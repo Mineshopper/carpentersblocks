@@ -16,7 +16,7 @@ import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.common.model.IModelState;
 import net.minecraftforge.common.model.TRSRTransformation;
 
-public class ModelCollapsible implements IModel {
+public class ModelCollapsibleBlock implements IModel {
 
 	@Override
 	public Collection<ResourceLocation> getDependencies() {

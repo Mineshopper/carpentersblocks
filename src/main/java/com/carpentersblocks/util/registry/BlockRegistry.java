@@ -29,7 +29,7 @@ public class BlockRegistry {
 	public static final String REGISTRY_NAME_COLLAPSIBLE_BLOCK = "carpenters_collapsible_block";
 	public static final String REGISTRY_NAME_PRESSURE_PLATE = "carpenters_pressure_plate";
 	public static final String REGISTRY_NAME_SLOPE = "carpenters_slope";
-	private static final String VARIANT_INVENTORY = "inventory";
+	public static final String VARIANT_INVENTORY = "inventory";
 	
     public static Block blockCarpentersBarrier;
     public static Block blockCarpentersBed;
