@@ -13,7 +13,6 @@ import java.util.TreeMap;
 import com.carpentersblocks.util.attribute.EnumAttributeLocation;
 
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
@@ -236,15 +235,15 @@ public class VecUtil {
 		// Set midpoint corner
 		boolean[] midPt = new boolean[4];
 		if (vecs[0].equals(vecs[1])) {
-			if (vecs[0].y < vecs[3].y) {
+			if (Quad.compare(vecs[0].y, vecs[3].y) < 0) {
 				midPt[3] = true;
-			} else if (vecs[0].y > vecs[2].y){
+			} else if (Quad.compare(vecs[0].y, vecs[2].y) > 0) {
 				midPt[2] = true;
 			}
 		} else { // (vecs[2].equals(vecs[3])) {
-			if (vecs[0].y > vecs[3].y) {
+			if (Quad.compare(vecs[0].y, vecs[3].y) > 0) {
 				midPt[0] = true;
-			} else if (vecs[1].y < vecs[2].y) {
+			} else if (Quad.compare(vecs[1].y, vecs[2].y) < 0) {
 				midPt[1] = true;
 			}
 		}
