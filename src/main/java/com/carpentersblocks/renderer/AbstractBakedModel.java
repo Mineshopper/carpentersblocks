@@ -4,12 +4,18 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
+import javax.vecmath.Matrix4f;
+
+import org.apache.commons.lang3.tuple.Pair;
+
+import com.carpentersblocks.util.IConstants;
 import com.carpentersblocks.util.block.BlockUtil;
 import com.carpentersblocks.util.registry.SpriteRegistry;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.block.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -80,5 +86,10 @@ public abstract class AbstractBakedModel implements IBakedModel {
      * @param quadContainer the quad container
      */
     protected abstract void fillQuads(RenderPkg renderPkg);
+    
+    @Override
+    public Pair<? extends IBakedModel, Matrix4f> handlePerspective(TransformType cameraTransformType) {
+    	return Pair.of(this,IConstants.perspectiveMatrix[cameraTransformType.ordinal()]);
+    }
     
 }
