@@ -12,6 +12,7 @@ import com.carpentersblocks.util.registry.ItemRegistry;
 
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
@@ -50,5 +51,7 @@ public class CommonProxy {
             //EntityRegistry.registerModEntity(EntityCarpentersTile.class, "CarpentersTile", ENTITY_ID_TILE, CarpentersBlocks.instance, 64, 999, false);
         }
     }
+
+	public void postInit(FMLPostInitializationEvent event) {}
 	
 }

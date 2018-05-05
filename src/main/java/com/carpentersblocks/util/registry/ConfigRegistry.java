@@ -37,19 +37,20 @@ public class ConfigRegistry {
     public static double  itemHammerDamageChanceFromCollapsible = 0.2D;
     
     // Features
-    public static boolean enableCovers              = true;
-    public static boolean enableOverlays            = true;
-    public static boolean enableSideCovers          = true;
-    public static boolean enableDyeColors           = true;
-    public static boolean enableChiselDesigns       = true;
-    public static boolean enableTorchWeatherEffects = true;
-    public static boolean enableOwnership           = true;
-    public static boolean enableIllumination        = true;
-    public static boolean enableRoutableFluids      = false;
-    public static boolean enableAlphaPanes          = true;
-    public static boolean enableRailSlopes          = true;
-    public static boolean enableGarageDoorVoidFill  = true;
-    public static boolean enableFreeStandingLadders = false;
+    public static boolean enableCovers                = true;
+    public static boolean enableOverlays              = true;
+    public static boolean enableSideCovers            = true;
+    public static boolean enableDyeColors             = true;
+    public static boolean enableChiselDesigns         = true;
+    public static boolean enableTorchWeatherEffects   = true;
+    public static boolean enableOwnership             = true;
+    public static boolean enableIllumination          = true;
+    public static boolean enableRoutableFluids        = false;
+    public static boolean enableAlphaPanes            = true;
+    public static boolean enableRailSlopes            = true;
+    public static boolean enableGarageDoorVoidFill    = true;
+    public static boolean enableFreeStandingLadders   = false;
+    public static boolean enableOptifineCompatibility = false;
     public static int slopeSmoothness     = 2;
     public static int multiBlockSizeLimit = 500;
     public static ArrayList<String> overlayItems    = new ArrayList<String>();
@@ -95,7 +96,7 @@ public class ConfigRegistry {
         enableDyeColors           = config.get("features",           "Enable Dye Colors",           enableDyeColors).getBoolean(enableDyeColors);
         enableChiselDesigns       = config.get("features",       "Enable Chisel Designs",       enableChiselDesigns).getBoolean(enableChiselDesigns);
         enableFreeStandingLadders = config.get("features", "Enable Freestanding Ladders", enableFreeStandingLadders).getBoolean(enableFreeStandingLadders);
-
+        
         Property routableFluidsProp = config.get("features", "Routable Fluids", enableRoutableFluids);
         routableFluidsProp.setComment("When enabled, unobstructed stationary fluid adjacent to block will render in the block space.\nNote: when enabled, you may experience noticeable chunk update lag spikes.");
         enableRoutableFluids = routableFluidsProp.getBoolean(enableRoutableFluids);

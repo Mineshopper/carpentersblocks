@@ -129,7 +129,7 @@ public class BakedSlope extends AbstractBakedModel {
 		renderPkg.add(
     		Quad.getQuad(
     			EnumFacing.UP,
-    			SpriteRegistry.sprite_uncovered_full,
+    			SpriteRegistry.sprite_uncovered_oblique_neg,
     			new Vec3d(0.0D, 1.0D, 0.0D),
     			new Vec3d(0.0D, 0.0D, 1.0D),
     			new Vec3d(1.0D, 0.0D, 0.0D)));

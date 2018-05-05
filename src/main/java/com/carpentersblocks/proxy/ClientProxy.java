@@ -2,12 +2,15 @@ package com.carpentersblocks.proxy;
 
 import com.carpentersblocks.CarpentersBlocksCachedResources;
 import com.carpentersblocks.renderer.ModelLoader;
-import com.carpentersblocks.util.registry.BlockRegistry;
+import com.carpentersblocks.util.ModLogger;
+import com.carpentersblocks.util.registry.ConfigRegistry;
 import com.carpentersblocks.util.registry.SpriteRegistry;
 
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -28,16 +31,19 @@ public class ClientProxy extends CommonProxy {
         CarpentersBlocksCachedResources.INSTANCE.init();
         //BlockRegistry.registerRenderers();
     	//Minecraft.getMinecraft().getBlockColors().registerBlockColorHandler(CbBlockColor.INSTANCE, BlockRegistry.blockCarpentersBlock);
-    	
-        // TODO: Check if these are needed
-        //if (FMLClientHandler.instance().hasOptifine()) {
-        //    OptifineHandler.init();
-        //}
 
         //ShadersHandler.init();
 
         // Register entity renderers
         //RenderingRegistry.registerEntityRenderingHandler(EntityCarpentersTile.class, new RenderCarpentersTile());
+    }
+    
+    @Override
+    public void postInit(FMLPostInitializationEvent event) {
+    	if (FMLClientHandler.instance().hasOptifine()) {
+    		ModLogger.info("Optifine detected. Disabling custom vertexformat.");
+    		ConfigRegistry.enableOptifineCompatibility = true;
+    	}
     }
 	
 }

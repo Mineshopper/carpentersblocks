@@ -10,6 +10,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import com.carpentersblocks.util.IConstants;
 import com.carpentersblocks.util.block.BlockUtil;
+import com.carpentersblocks.util.registry.ConfigRegistry;
 import com.carpentersblocks.util.registry.SpriteRegistry;
 
 import net.minecraft.block.state.IBlockState;
@@ -34,8 +35,12 @@ public abstract class AbstractBakedModel implements IBakedModel {
     }
     
     public VertexFormat getVertexFormat() {
-    	// Add TEX_2S to be able to adjust quad brightness; this breaks compatibility with Optifine
-    	return new VertexFormat(_vertexFormat).addElement(DefaultVertexFormats.TEX_2S);
+    	if (ConfigRegistry.enableOptifineCompatibility) {
+    		return _vertexFormat;
+    	} else {
+	    	// Add TEX_2S to be able to adjust quad brightness; this breaks compatibility with Optifine
+	    	return new VertexFormat(_vertexFormat).addElement(DefaultVertexFormats.TEX_2S);
+    	}
     }
     
     @Override
@@ -89,7 +94,7 @@ public abstract class AbstractBakedModel implements IBakedModel {
     
     @Override
     public Pair<? extends IBakedModel, Matrix4f> handlePerspective(TransformType cameraTransformType) {
-    	return Pair.of(this,IConstants.perspectiveMatrix[cameraTransformType.ordinal()]);
+    	return Pair.of(this, IConstants.perspectiveMatrix[cameraTransformType.ordinal()]);
     }
     
 }
