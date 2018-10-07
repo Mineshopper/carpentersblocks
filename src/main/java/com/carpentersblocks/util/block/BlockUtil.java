@@ -183,12 +183,13 @@ public class BlockUtil {
         if (itemStack.getItem() instanceof ItemBlock && !isOverlay(itemStack)) {
             Block block = toBlock(itemStack);
             IBlockState blockState = block.getStateFromMeta(itemStack.getItemDamage());
-            return block.isFullCube(blockState) ||
+            return !(block instanceof BlockCoverable) && (
+                   block.isFullCube(blockState) ||
                    block instanceof BlockSlab ||
                    block instanceof BlockPane ||
                    block instanceof BlockBreakable ||
                    ConfigRegistry.coverExceptions.contains(itemStack.getDisplayName()) ||
-                   ConfigRegistry.coverExceptions.contains(ChatHandler.getDefaultTranslation(itemStack));
+                   ConfigRegistry.coverExceptions.contains(ChatHandler.getDefaultTranslation(itemStack)));
         }
         return false;
     }
