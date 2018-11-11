@@ -20,7 +20,7 @@ public class CollapsibleUtil extends DataUtil implements IDataFacing {
     public final static int QUAD_XZPP = 3;
     
     public CollapsibleUtil(CbTileEntity cbTileEntity) {
-    	super(cbTileEntity.getData());
+    	super(cbTileEntity.getCbMetadata());
     }
     
     public CollapsibleUtil(int cbMetadata) {
@@ -153,7 +153,7 @@ public class CollapsibleUtil extends DataUtil implements IDataFacing {
         if (depth < 0 || depth > 16) {
             return;
         }
-        int data = cbTileEntity.getData();
+        int data = cbTileEntity.getCbMetadata();
         switch (quad) {
             case QUAD_XZNN:
                 data &= ~0x7c0000;
@@ -172,7 +172,7 @@ public class CollapsibleUtil extends DataUtil implements IDataFacing {
                 data |= depth << 3;
                 break;
         }
-        cbTileEntity.setData(data);
+        cbTileEntity.setCbMetadata(data);
     }
 
     /**
@@ -223,8 +223,8 @@ public class CollapsibleUtil extends DataUtil implements IDataFacing {
     
     @Override
     public boolean setFacing(CbTileEntity cbTileEntity, EnumFacing facing) {
-        int temp = (cbTileEntity.getData() & ~0x7) | facing.ordinal();
-        return cbTileEntity.setData(temp);
+        int temp = (cbTileEntity.getCbMetadata() & ~0x7) | facing.ordinal();
+        return cbTileEntity.setCbMetadata(temp);
     }
 
     @Override

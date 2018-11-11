@@ -1,13 +1,17 @@
 package com.carpentersblocks.renderer;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
-import java.util.Set;
 
+import com.carpentersblocks.block.data.SlopeData;
+import com.carpentersblocks.block.state.Property;
 import com.carpentersblocks.util.IConstants;
 import com.carpentersblocks.util.attribute.EnumAttributeLocation;
+import com.carpentersblocks.util.registry.BlockRegistry;
 import com.carpentersblocks.util.registry.SpriteRegistry;
 
+import net.minecraft.block.Block;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
@@ -159,16 +163,41 @@ public class Quad {
 		return getSprite().getIconName().contains("uncovered_");
 	}
 	
-	public BakedQuad bake(VertexFormat vertexFormat, EnumAttributeLocation location) {
+	public BakedQuad bake(EnumAttributeLocation location) {
+		VertexFormat vertexFormat = RenderPkg._threadLocalVertexFormat.get();
 		UnpackedBakedQuad.Builder builder = new UnpackedBakedQuad.Builder(vertexFormat);
-        builder.setTexture(_sprite);
+        builder.setTexture(_sprite);        
         
+        // If 
+       // applyFacing(this.getCardinalFacing());
         // Oblique sloped quads always render using cardinal facing
-        if (_isOblique) {
-        	applyFacing(this.getCardinalFacing());
-        }
+        //if (this._isOblique && Double.compare(Math.abs(_normal.x), Math.abs(_normal.z)) == 0) {
+        //	applyFacing(this.getCardinalFacing());
+        //}
         
         boolean floatY = _sprite.getIconName().equals(GRASS_SIDE_OVERLAY) || _sprite.getIconName().contains("overlay/overlay_") && _sprite.getIconName().endsWith("_side");
+
+        // TODO: Maybe clean this up if rendering in inventory
+        Block block = (Block) RenderPkg.getThreadedProperty(Property.BLOCK_TYP);
+        Integer cbMetadata = (Integer) RenderPkg.getThreadedProperty(Property.CB_METADATA);
+        
+        if (BlockRegistry.blockCarpentersSlope.equals(block) && _isOblique) {
+        	switch (SlopeData.getType(cbMetadata)) {
+	        	case OBLIQUE_EXTERIOR:
+	        		// Split into two faces (not sure if possible from here)
+	        		break;
+	        	case OBLIQUE_INTERIOR:
+	        		// One face
+	        		break;
+        		default: {}
+        	}
+        } else if (BlockRegistry.blockCarpentersCollapsibleBlock.equals(block) && (isSloped(Axis.X) || isSloped(Axis.Y) || isSloped(Axis.Z))) {
+        	// Find rotated facing and render using it
+        	this._facing = (EnumFacing) RenderPkg.getThreadedProperty(Property.FACING);
+        	this._isOblique = false;
+        	floatY = false;
+        }
+        
         UV[] uv = VecUtil.getUV(this, floatY, location);
         for (int i = 0; i < 4; ++i) {
         	//_rgb = i == 0 ? 0xff0000 : i == 1 ? 0x00ff00 : i == 2 ? 0x0000ff : 0xffff00; // Debug
@@ -285,12 +314,19 @@ public class Quad {
 	}
 	
 	public EnumFacing getCardinalFacing() {
-		double x = _normal.x;
-		double z = _normal.z;
-		if (compare(x, -1.0D) > 0 && compare(x, 0.0D) != 0 && compare(x, 1.0D) < 0) {
-			return x < 0.0D ? EnumFacing.WEST : EnumFacing.EAST;
+		double dg45 = Math.sin(Math.toRadians(45.0D));
+		if (Double.compare(_normal.y, dg45) < 0 && Double.compare(_normal.y, -dg45) > 0) {
+			if (Double.compare(_normal.x, -dg45) < 1) {
+				return EnumFacing.WEST;
+			} else if (Double.compare(_normal.x, dg45) > 0) {
+				return EnumFacing.EAST;
+			} else if (Double.compare(_normal.z, -dg45) < 1) {
+				return EnumFacing.NORTH;
+			} else {
+				return EnumFacing.SOUTH;
+			}
 		} else {
-			return z < 0.0D ? EnumFacing.NORTH : EnumFacing.SOUTH;
+			return Double.compare(_normal.y, 0) > 0 ? EnumFacing.UP : EnumFacing.DOWN;
 		}
 	}
 	
@@ -305,9 +341,14 @@ public class Quad {
 	public void applyFacing(EnumFacing facing) {
 		_facing = facing;
 		_vecs = VecUtil.buildVecs(facing, _vecs);
-		Vec3d[] vecs1 = new LinkedHashSet<Vec3d>(Arrays.asList(this.getVecs())).toArray(new Vec3d[this.getVecs().length]);
+		Vec3d[] vecs1 = null;
+		try {
+			vecs1 = new LinkedHashSet<Vec3d>(Arrays.asList(this.getVecs())).toArray(new Vec3d[this.getVecs().length]);
+		} catch (Exception ex) {
+			int i = 0;
+		}
 		_normal = (vecs1[1].subtract(vecs1[0])).crossProduct(vecs1[2].subtract(vecs1[1])).normalize();
-		_isOblique = isSloped(Axis.Y) && (isSloped(Axis.X) && isSloped(Axis.Z));
+		_isOblique = isSloped(Axis.X) && isSloped(Axis.Y) && isSloped(Axis.Z);
 	}
 	
 	public static int compare(double d1, double d2) {
@@ -328,6 +369,10 @@ public class Quad {
 	
 	public boolean isObliqueSlope() {
 		return _isOblique;
+	}
+	
+	private boolean isTriangle() {
+		return new HashSet<Vec3d>(Arrays.asList(this.getVecs())).size() < 4;
 	}
 	
 	public EnumFacing getSideCoverOffset() {

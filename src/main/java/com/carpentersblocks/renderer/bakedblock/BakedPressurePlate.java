@@ -2,10 +2,14 @@ package com.carpentersblocks.renderer.bakedblock;
 
 import java.util.function.Function;
 
+import com.carpentersblocks.block.IStateImplementor;
+import com.carpentersblocks.block.state.Property;
 import com.carpentersblocks.renderer.AbstractBakedModel;
 import com.carpentersblocks.renderer.RenderPkg;
+import com.carpentersblocks.util.registry.BlockRegistry;
 import com.carpentersblocks.util.states.StatePart;
 import com.carpentersblocks.util.states.StateUtil;
+import com.carpentersblocks.util.states.factory.AbstractState;
 
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
@@ -24,8 +28,13 @@ public class BakedPressurePlate extends AbstractBakedModel {
 	@Override
 	protected void fillQuads(RenderPkg renderPkg) {
 		StateUtil util = new StateUtil();
-		for (StatePart part : renderPkg.getState().getStateParts()) {
-			renderPkg.addAll(util.getQuads(part));
+		AbstractState state = (AbstractState) RenderPkg.getThreadedProperty(Property.CB_STATE);
+		if (state == null) {
+			renderPkg.addAll(((IStateImplementor)BlockRegistry.blockCarpentersPressurePlate).getStateMap().getInventoryQuads());
+		} else {
+			for (StatePart part : state.getStateParts()) {
+				renderPkg.addAll(util.getQuads(part));
+			}
 		}
 	}
 	

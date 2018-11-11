@@ -26,9 +26,9 @@ import com.carpentersblocks.util.handler.DyeHandler;
 import com.carpentersblocks.util.handler.OverlayHandler;
 import com.carpentersblocks.util.handler.OverlayHandler.Overlay;
 import com.carpentersblocks.util.registry.SpriteRegistry;
-import com.carpentersblocks.util.states.factory.AbstractState;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -46,19 +46,18 @@ import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.model.IModelState;
 import net.minecraftforge.common.property.IExtendedBlockState;
+import net.minecraftforge.common.property.IUnlistedProperty;
 
 public class RenderPkg {
 
-    protected AttributeHelper _cbAttrHelper;
-    protected IBlockState _blockState;
-    protected int _cbMetadata;
-    protected BlockPos _blockPos;
-    protected Boolean[] _renderFace;
-    protected AbstractState _state;
+	public static ThreadLocal<IBlockState> _threadLocalBlockState = new ThreadLocal<>();
+	public static ThreadLocal<VertexFormat> _threadLocalVertexFormat = new ThreadLocal<>();
     private long _rand;
+    private AttributeHelper _cbAttrHelper;
+    private BlockPos _blockPos;
+    private Integer _cbMetadata;
     private QuadContainer _quadContainer;
     private BlockRenderLayer _uncoveredRenderLayer;
-    private VertexFormat _vertexFormat;
     private boolean _isSideCover;
     private double _sideDepth;
     private boolean _isSnowCover;
@@ -68,26 +67,22 @@ public class RenderPkg {
     private final static double SNOW_SIDE_DEPTH = 1/8D;
     
     public RenderPkg(VertexFormat vertexFormat, IBlockState blockState, EnumFacing facing, long rand) {
+    	_threadLocalBlockState.set(blockState);
+    	_threadLocalVertexFormat.set(vertexFormat);
     	_rand = rand;
-    	_blockState = blockState;
-    	_vertexFormat = vertexFormat;
-    	_cbMetadata = ((IExtendedBlockState)blockState).getValue(Property.CB_METADATA);
-    	_blockPos = ((IExtendedBlockState)blockState).getValue(Property.BLOCK_POS);
-    	_renderFace = ((IExtendedBlockState)blockState).getValue(Property.RENDER_FACE);
-    	_state = ((IExtendedBlockState)blockState).getValue(Property.CB_STATE);
-    	_cbAttrHelper = new AttributeHelper((Map<Key, AbstractAttribute>) ((IExtendedBlockState)blockState).getValue(Property.ATTR_MAP));
-    	_uncoveredRenderLayer = Minecraft.getMinecraft().world.getBlockState(_blockPos).getBlock().getBlockLayer();
-    	_quadContainer = new QuadContainer(vertexFormat, EnumAttributeLocation.HOST);
+    	_blockPos = (BlockPos) getThreadedProperty(Property.BLOCK_POS);
+    	_cbMetadata = (Integer) getThreadedProperty(Property.CB_METADATA);
+    	Block block = Minecraft.getMinecraft().world.getBlockState(_blockPos).getBlock();
+    	_uncoveredRenderLayer = block.getBlockLayer();
+    	_cbAttrHelper = new AttributeHelper((Map<Key, AbstractAttribute>) getThreadedProperty(Property.ATTR_MAP));
+    	_quadContainer = new QuadContainer(EnumAttributeLocation.HOST);
     }
     
     public RenderPkg(VertexFormat vertexFormat, EnumFacing facing, long rand) {
+    	_threadLocalVertexFormat.set(vertexFormat);
+    	_cbMetadata = 0;
     	_rand = rand;
-    	_vertexFormat = vertexFormat;
-    	_quadContainer = new QuadContainer(vertexFormat, EnumAttributeLocation.HOST);
-    }
-    
-    public AbstractState getState() {
-    	return _state;
+    	_quadContainer = new QuadContainer(EnumAttributeLocation.HOST);
     }
     
 	public void addAll(Collection<Quad> collection) {
@@ -205,7 +200,7 @@ public class RenderPkg {
             for (EnumFacing facing : EnumFacing.VALUES) {
             	if (coverQuadMap.containsKey(facing)) {
             		for (Quad quad : coverQuadMap.get(facing)) {
-            			quads.add(quad.bake(_vertexFormat, location));
+            			quads.add(quad.bake(location));
             		}
             	}
             }
@@ -416,10 +411,6 @@ public class RenderPkg {
     	}
     }
     
-    public int getData() {
-    	return _cbMetadata;
-    }
-    
     protected List<Quad> transform(List<BakedQuad> quads) {
     	List<Quad> outQuads = new ArrayList<Quad>();
     	for (BakedQuad bakedQuad : quads) {
@@ -427,5 +418,25 @@ public class RenderPkg {
     	}
     	return outQuads;
     }
+    
+    public Integer getData() {
+    	return _cbMetadata;
+    }
+    
+    public static Object getThreadedProperty(IProperty property) {
+		IBlockState blockState = _threadLocalBlockState.get();
+		if (blockState != null) {
+			return blockState.getValue(property);
+		}
+		return null;
+    }
+    
+	public static Object getThreadedProperty(IUnlistedProperty property) {
+		IBlockState blockState = _threadLocalBlockState.get();
+		if (blockState != null) {
+			return ((IExtendedBlockState)blockState).getValue(property);
+		}
+		return null;
+	}
 	
 }

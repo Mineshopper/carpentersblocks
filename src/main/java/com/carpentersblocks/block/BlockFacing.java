@@ -3,10 +3,14 @@ package com.carpentersblocks.block;
 import java.util.Arrays;
 import java.util.Random;
 
+import com.carpentersblocks.block.state.Property;
 import com.carpentersblocks.tileentity.CbTileEntity;
+import com.carpentersblocks.util.RotationUtil.Rotation;
 
 import net.minecraft.block.BlockDirectional;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
@@ -14,6 +18,9 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.property.ExtendedBlockState;
+import net.minecraftforge.common.property.IExtendedBlockState;
+import net.minecraftforge.common.property.IUnlistedProperty;
 
 public abstract class BlockFacing extends BlockCoverable {
 
@@ -36,13 +43,13 @@ public abstract class BlockFacing extends BlockCoverable {
             return false;
         }
     }
-
+    
     @Override
     /**
      * Called when a block is placed using its ItemBlock. Args: World, X, Y, Z, side, hitX, hitY, hitZ, block metadata
      */
     public IBlockState getStateForPlacement(World world, BlockPos blockPos, EnumFacing facing, float hitX, float hitY, float hitZ, int metadata, EntityLivingBase entityLivingBase) {
-        return getDefaultState().withProperty(BlockDirectional.FACING, facing);
+    	return this.getDefaultState().withProperty(BlockDirectional.FACING, facing);
     }
     
     @Override
@@ -54,24 +61,11 @@ public abstract class BlockFacing extends BlockCoverable {
         if (!ignoreSidePlacement()) {
             CbTileEntity cbTileEntity = getTileEntity(world, blockPos);
             if (cbTileEntity != null) {
-                EnumFacing facing = getPlacementDirection(blockState);
+                EnumFacing facing = (EnumFacing) blockState.getProperties().get(BlockDirectional.FACING);
                 setFacing(cbTileEntity, facing);
             }
         }
         world.notifyNeighborsOfStateChange(blockPos, this, false);
-    }
-
-    /**
-     * Gets placement direction when first placed in world.
-     *
-     * @param world the {@link World}
-     * @param x the x coordinate
-     * @param y the y coordinate
-     * @param z the z coordinate
-     * @return the {@link ForgeDirection}
-     */
-    protected EnumFacing getPlacementDirection(IBlockState blockState) {
-        return blockState.getValue(BlockDirectional.FACING);
     }
 
     /**
@@ -230,6 +224,25 @@ public abstract class BlockFacing extends BlockCoverable {
 		        world.notifyNeighborsOfStateChange(blockPos.offset(this.getFacing(cbTileEntity).getOpposite()), this, false);
             }
     	}
+    }
+    
+    @Override
+    public IBlockState getExtendedState(IBlockState blockState, IBlockAccess blockAccess, BlockPos blockPos) {
+		IBlockState outBlockState = super.getExtendedState(blockState, blockAccess, blockPos);
+    	CbTileEntity cbTileEntity = getTileEntity(blockAccess, blockPos);
+        if (cbTileEntity != null) {
+        	EnumFacing facing = this.getFacing(cbTileEntity);
+        	return ((IExtendedBlockState)outBlockState).withProperty(Property.FACING, facing);
+        }
+        return outBlockState;
+    }
+    
+    @Override
+    protected BlockStateContainer createBlockState() {
+        return new ExtendedBlockState(
+        	this,
+        	new IProperty[] { BlockDirectional.FACING },
+        	Property._unlistedProperties.toArray(new IUnlistedProperty[Property._unlistedProperties.size()]));
     }
 
 }

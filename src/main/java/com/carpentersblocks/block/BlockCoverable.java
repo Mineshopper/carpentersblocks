@@ -1345,17 +1345,33 @@ public abstract class BlockCoverable extends Block {
     }
     
     @Override
+    /**
+     * Creates extended blockstate container.
+     * 
+     * Note: Listed IProperty properties are cached in chunk and are
+     * necessary for communicating block facing when first placed in world.
+     * Unlisted IUnlistedProperty properties can carry custom data
+     * to render classes, but are not cached in chunk.
+     */
     protected BlockStateContainer createBlockState() {
-        return new ExtendedBlockState(this, Property.listedProperties, Property._unlistedProperties.toArray(new IUnlistedProperty[Property._unlistedProperties.size()]));
+        return new ExtendedBlockState(
+        	this,
+        	Property._listedProperties,
+        	Property._unlistedProperties.toArray(new IUnlistedProperty[Property._unlistedProperties.size()]));
     }
 
     @Override
+    /**
+     * Handles passing block properties for rendering purposes mainly.
+     * This data will not persist in chunk cache, unlike IProperty.
+     */
     public IBlockState getExtendedState(IBlockState blockState, IBlockAccess blockAccess, BlockPos blockPos) {
     	if (blockState instanceof IExtendedBlockState) {
             CbTileEntity cbTileEntity = getTileEntity(blockAccess, blockPos);
             return ((IExtendedBlockState)blockState)
+            	.withProperty(Property.BLOCK_TYP, this)
     			.withProperty(Property.BLOCK_POS, blockPos)
-    			.withProperty(Property.CB_METADATA, cbTileEntity.getData())
+    			.withProperty(Property.CB_METADATA, cbTileEntity.getCbMetadata())
     			.withProperty(Property.RENDER_FACE, new Boolean[] {
     				this.shouldSideBeRendered(blockState, blockAccess, blockPos, EnumFacing.DOWN),
     				this.shouldSideBeRendered(blockState, blockAccess, blockPos, EnumFacing.UP),

@@ -12,7 +12,6 @@ import com.carpentersblocks.tileentity.CbTileEntity;
 import com.carpentersblocks.util.block.CollapsibleUtil;
 import com.carpentersblocks.util.registry.ConfigRegistry;
 
-import net.minecraft.block.BlockDirectional;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -221,19 +220,6 @@ public class BlockCarpentersCollapsibleBlock extends BlockFacing {
             return 0;
         }
         return (int) (blockState.getBoundingBox(blockAccess, blockPos).maxY * 16.0);
-    }
-
-    @Override
-    /**
-     * Called when a block is placed using its ItemBlock. Args: World, X, Y, Z, side, hitX, hitY, hitZ, block metadata
-     */
-    public IBlockState getStateForPlacement(World world, BlockPos blockPos, EnumFacing facing, float hitX, float hitY, float hitZ, int metadata, EntityLivingBase entityLivingBase) {
-        // If side not supported, select best side based on y hit coordinates
-        if (!canAttachToFacing(facing)) {
-        	EnumFacing verticalFacing = hitY > 0.5F ? EnumFacing.DOWN : EnumFacing.UP;
-        	return getDefaultState().withProperty(BlockDirectional.FACING, verticalFacing);
-        }
-        return super.getStateForPlacement(world, blockPos, facing, hitX, hitY, hitZ, metadata, entityLivingBase);
     }
 
     @Override
@@ -457,8 +443,7 @@ public class BlockCarpentersCollapsibleBlock extends BlockFacing {
 
 	@Override
 	public void setFacing(CbTileEntity cbTileEntity, EnumFacing facing) {
-		CollapsibleUtil util = new CollapsibleUtil(cbTileEntity);
-		util.setFacing(cbTileEntity, facing);
+		new CollapsibleUtil(cbTileEntity).setFacing(cbTileEntity, facing);
 	}
 
 	@Override

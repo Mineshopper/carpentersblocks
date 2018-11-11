@@ -46,15 +46,15 @@ public class SlopeData extends RotatableData {
 	 * @param cbTileEntity the tile entity
 	 */
 	public static void setNextType(CbTileEntity cbTileEntity) {
-		Type type = getType(cbTileEntity.getData());
+		Type type = getType(cbTileEntity.getCbMetadata());
 		int newType = type.ordinal() + 1;
 		if (newType > Type.values().length) {
 			newType = 0;
 		}
-		int temp = cbTileEntity.getData();
+		int temp = cbTileEntity.getCbMetadata();
 		temp &= ~TYPE_BITMASK;
 		temp |= newType << TYPE_BITSHIFT;
-		cbTileEntity.setData(temp);
+		cbTileEntity.setCbMetadata(temp);
 	}
 	
 }

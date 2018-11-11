@@ -14,7 +14,6 @@ import com.carpentersblocks.util.attribute.EnumAttributeLocation;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
@@ -25,26 +24,20 @@ import net.minecraft.util.math.Vec3d;
 public class QuadContainer {
 	
 	private List<Quad> _quads;
-	private VertexFormat _vertexFormat;
 	private EnumAttributeLocation _location;
 	private final static double MAX_UP_SLOPE = Math.sin(35 * Math.PI / 180);
 	private final static double MAX_SIDE_SLOPE = -Math.sin(55 * Math.PI / 180);
 	
-	public QuadContainer(VertexFormat vertexFormat, EnumAttributeLocation location) {
+	public QuadContainer(EnumAttributeLocation location) {
 		_quads = new ArrayList<Quad>();
-		_vertexFormat = vertexFormat;
 		_location = location;
-	}
-	
-	public VertexFormat getVertexFormat() {
-		return _vertexFormat;
 	}
 	
 	public List<BakedQuad> bakeQuads() {
 		List<BakedQuad> list = new ArrayList<BakedQuad>();
 		for (Quad quad : _quads) {
 			Quad cpyQuad = new Quad(quad);
-			list.add(cpyQuad.bake(_vertexFormat, _location));
+			list.add(cpyQuad.bake(_location));
 		}
 		return list;
 	}
@@ -77,7 +70,7 @@ public class QuadContainer {
 	}
 
 	public QuadContainer toSideLocation(IBlockState blockState, EnumAttributeLocation location, double depth) {
-		QuadContainer quadContainer = new QuadContainer(_vertexFormat, location);
+		QuadContainer quadContainer = new QuadContainer(location);
 		EnumFacing facing = EnumFacing.getFront(location.ordinal());
 	    for (Quad quad : _quads) {
 	    	EnumFacing offsetFacing = quad.getSideCoverOffset();
@@ -116,7 +109,7 @@ public class QuadContainer {
 		List<BakedQuad> list = new ArrayList<BakedQuad>();
 		for (Quad quad : quads) {
 			Quad cpyQuad = new Quad(quad);
-			list.add(cpyQuad.bake(_vertexFormat, _location));
+			list.add(cpyQuad.bake(_location));
 		}
 		return list;
 	}
@@ -124,7 +117,7 @@ public class QuadContainer {
 	public List<BakedQuad> getBakedQuads(EnumFacing facing) {
 		List<BakedQuad> list = new ArrayList<BakedQuad>();
 		for (Quad quad : _quads) {
-			list.add(quad.bake(_vertexFormat, _location));
+			list.add(quad.bake(_location));
 		}
 		return list;
 	}

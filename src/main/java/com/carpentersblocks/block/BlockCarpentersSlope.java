@@ -42,7 +42,7 @@ public class BlockCarpentersSlope extends BlockCoverable {
      * Alters block type.
      */
     protected boolean onHammerRightClick(CbTileEntity cbTileEntity, EntityPlayer entityPlayer) {
-    	SlopeData.setNextType(cbTileEntity);
+    	new SlopeData().setNextType(cbTileEntity);
         return true;        
     }
 
@@ -440,7 +440,7 @@ public class BlockCarpentersSlope extends BlockCoverable {
     public boolean rotateBlock(World world, BlockPos blockPos, EnumFacing facing) {
         CbTileEntity cbTileEntity = getTileEntity(world, blockPos);
         if (cbTileEntity != null) {
-        	SlopeData.rotate(cbTileEntity, facing.getAxis());
+        	new SlopeData().rotate(cbTileEntity, facing.getAxis());
         	return true;
         }
         return false;

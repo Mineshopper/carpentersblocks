@@ -89,16 +89,6 @@ public class VecUtil {
 		}
 	}
 	
-	// DEBUG
-	public static boolean isValid(Vec3d[] vecs) {
-		if (vecs == null || vecs.length != 4) {
-			return false;
-		}
-		Set<Vec3d> set = new HashSet<Vec3d>(Arrays.asList(vecs));
-		return set.size() >= 3; // Need 3 unique to calculate normal
-	}
-	// END DEBUG
-	
 	/**
 	 * Check for malformed quad vertices.
 	 * 
@@ -173,7 +163,7 @@ public class VecUtil {
 		
 		// Generate bounds
 		Vec2l[] bounds = getBoundingPlane(facing, inVecs);
-
+		
 		// Generate corner lists with closest vectors
 		for (int i = 0; i < bounds.length; ++i) {
 			SortedMap<Long,List<Vec3d>> map = new TreeMap<Long,List<Vec3d>>();
@@ -186,15 +176,23 @@ public class VecUtil {
 			}
 			cornerList[i].addAll(map.get(map.firstKey()));
 		}
-
-		// Clear any ambiguous corner vectors
+		
+		// Save unique Vec3ds for removal from ambiguous points
+		List<Vec3d> removeList = new ArrayList<Vec3d>();
 		for (int i = 0; i < cornerList.length; ++i) {
-			if (cornerList[i].size() > 1) {
-				cornerList[i].clear();
+			if (cornerList[i] != null && cornerList[i].size() == 1) {
+				removeList.add((Vec3d) cornerList[i].get(0));
 			}
 		}
 		
-		// Map corner matches to final vector array
+		// Remove standalone points from other matches
+		for (int i = 0; i < cornerList.length; ++i) {
+			if (cornerList[i] != null && cornerList[i].size() > 1) {
+				cornerList[i].removeAll(removeList);
+			}
+		}
+		
+		// Map corners to finalVecs
 		Vec3d[] finalVecs = new Vec3d[4];
 		for (int i = 0; i < cornerList.length; ++i) {
 			List<Vec3d> list = cornerList[i];
@@ -203,16 +201,30 @@ public class VecUtil {
 			}
 		}
 		
-		// Fill remaining corners
-		if (finalVecs[0] == null) {
-			finalVecs[0] = finalVecs[1];
-		} else if (finalVecs[1] == null) {
-			finalVecs[1] = finalVecs[0];
+		// Count null points; collapsible may be two, slopes should only ever be one
+		int emptyCorner = 0;
+		for (int i = 0; i < cornerList.length; ++i) {
+			if (cornerList[i].isEmpty()) {
+				++emptyCorner;
+			}
 		}
-		if (finalVecs[2] == null) {
-			finalVecs[2] = finalVecs[3];
-		} else if (finalVecs[3] == null) {
-			finalVecs[3] = finalVecs[2];
+		
+		// Fill missing corners
+		if (emptyCorner > 0) {
+			if (finalVecs[0] == null) {
+				finalVecs[0] = finalVecs[1];
+			} else if (finalVecs[1] == null) {
+				finalVecs[1] = finalVecs[0];
+			}
+			if (finalVecs[2] == null) {
+				finalVecs[2] = finalVecs[3];
+			} else if (finalVecs[3] == null) {
+				finalVecs[3] = finalVecs[2];
+			}
+		}
+		
+		if (new HashSet<Vec3d>(Arrays.asList(finalVecs)).size() == 2) {
+			int i = 0;
 		}
 		
 		return finalVecs;
@@ -231,6 +243,10 @@ public class VecUtil {
 	// TODO: Work on this; need to adjust for depth
 	public static UV[] getUVObliqueSlope(Quad quad, boolean floatY, EnumAttributeLocation location) {
 		Vec3d[] vecs = quad.getVecs();
+		
+		// Needs to be selected based on oblique properties:
+		//	1. Hard-coded slope oblique ext/int
+		//	2. Dynamic collapsible oblique (not sure how to map UV)
 		
 		// Set midpoint corner
 		boolean[] midPt = new boolean[4];

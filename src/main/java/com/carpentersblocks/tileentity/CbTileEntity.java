@@ -266,22 +266,22 @@ import net.minecraft.world.World;
 	     *
 	     * @return the data
 	     */
-	    public int getData() {
+	    public int getCbMetadata() {
 	        return _cbMetadata;
 	    }
 
 	    /**
 	     * Sets block-specific data.
 	     * 
-	     * @param data the block data
+	     * @param cbMetadata the block data
 	     * @return <code>true</code> if data was updated, or <code>false</code> if no change
 	     */
-	    public boolean setData(int data) {
+	    public boolean setCbMetadata(int cbMetadata) {
 	    	if (!getWorld().isRemote) {
-		    	if (data == getData()) {
+		    	if (cbMetadata == getCbMetadata()) {
 		    		return false;
 		    	}
-	            _cbMetadata = data;
+	            _cbMetadata = cbMetadata;
 	            this.update(true);
 	    	}
             return true;

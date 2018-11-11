@@ -34,7 +34,7 @@ public class PressurePlateUtil extends DataUtil implements IDataFacing {
     public static final byte TRIGGER_ALL     = 3;
 
     public PressurePlateUtil(CbTileEntity cbTileEntity) {
-    	super(cbTileEntity.getData());
+    	super(cbTileEntity.getCbMetadata());
     }
     
     public PressurePlateUtil(int cbMetadata) {
@@ -43,8 +43,8 @@ public class PressurePlateUtil extends DataUtil implements IDataFacing {
     
 	@Override
 	public boolean setFacing(CbTileEntity cbTileEntity, EnumFacing facing) {
-        int temp = (cbTileEntity.getData() & ~0x7) | facing.ordinal();
-        return cbTileEntity.setData(temp);
+        int temp = (cbTileEntity.getCbMetadata() & ~0x7) | facing.ordinal();
+        return cbTileEntity.setCbMetadata(temp);
 	}
 
 	@Override
@@ -56,14 +56,14 @@ public class PressurePlateUtil extends DataUtil implements IDataFacing {
      * Returns state.
      */
     public int getState(CbTileEntity cbTileEntity) {
-        return (cbTileEntity.getData() & 0x8) >> 3;
+        return (cbTileEntity.getCbMetadata() & 0x8) >> 3;
     }
 
     /**
      * Sets state.
      */
     public void setState(CbTileEntity cbTileEntity, int state, boolean playSound) {
-        int temp = (cbTileEntity.getData() & ~0x8) | (state << 3);
+        int temp = (cbTileEntity.getCbMetadata() & ~0x8) | (state << 3);
         World world = cbTileEntity.getWorld();
         if (!world.isRemote) {
         	IBlockState blockState = BlockUtil.getAttributeBlockState(cbTileEntity.getAttributeHelper(), EnumAttributeLocation.HOST, EnumAttributeType.COVER);
@@ -73,7 +73,7 @@ public class PressurePlateUtil extends DataUtil implements IDataFacing {
 		        }
         	}
         }
-        cbTileEntity.setData(temp);
+        cbTileEntity.setCbMetadata(temp);
     }
 
     /**
@@ -88,22 +88,22 @@ public class PressurePlateUtil extends DataUtil implements IDataFacing {
      */
     private void setPolarity(CbTileEntity cbTileEntity, int polarity) {
         int temp = (getData() & ~0x10) | (polarity << 4);
-        cbTileEntity.setData(temp);
+        cbTileEntity.setCbMetadata(temp);
     }
 
     /**
      * Returns trigger entity.
      */
     public int getTriggerEntity(CbTileEntity cbTileEntity) {
-        return (cbTileEntity.getData() & 0x60) >> 5;
+        return (cbTileEntity.getCbMetadata() & 0x60) >> 5;
     }
 
     /**
      * Sets trigger entity.
      */
     public void setTriggerEntity(CbTileEntity cbTileEntity, int trigger) {
-        int temp = (cbTileEntity.getData() & ~0x60) | (trigger << 5);
-        cbTileEntity.setData(temp);
+        int temp = (cbTileEntity.getCbMetadata() & ~0x60) | (trigger << 5);
+        cbTileEntity.setCbMetadata(temp);
     }
     
     public boolean isDepressed(CbTileEntity cbTileEntity) {
