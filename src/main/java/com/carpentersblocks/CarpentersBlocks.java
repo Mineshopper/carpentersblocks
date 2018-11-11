@@ -17,7 +17,7 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
         modid = CarpentersBlocks.MOD_ID,
         name = "Carpenter's Blocks",
         version = "@VERSION@",
-        dependencies = "required-after:forge@[14.23.0.2491,)"
+        dependencies = "required-after:forge@[14.23.5.2768,)"
         )
 public class CarpentersBlocks {
 	
