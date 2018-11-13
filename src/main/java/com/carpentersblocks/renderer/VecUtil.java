@@ -223,10 +223,6 @@ public class VecUtil {
 			}
 		}
 		
-		if (new HashSet<Vec3d>(Arrays.asList(finalVecs)).size() == 2) {
-			int i = 0;
-		}
-		
 		return finalVecs;
 	}
 	

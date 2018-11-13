@@ -7,6 +7,7 @@ import java.util.LinkedHashSet;
 import com.carpentersblocks.block.data.SlopeData;
 import com.carpentersblocks.block.state.Property;
 import com.carpentersblocks.util.IConstants;
+import com.carpentersblocks.util.ModLogger;
 import com.carpentersblocks.util.attribute.EnumAttributeLocation;
 import com.carpentersblocks.util.registry.BlockRegistry;
 import com.carpentersblocks.util.registry.SpriteRegistry;
@@ -313,21 +314,16 @@ public class Quad {
 				compare(axis1, 1.0D) < 0;
 	}
 	
+	/**
+	 * Return quad facing as NWSE component
+	 * 
+	 * @return
+	 */
 	public EnumFacing getCardinalFacing() {
-		double dg45 = Math.sin(Math.toRadians(45.0D));
-		if (Double.compare(_normal.y, dg45) < 0 && Double.compare(_normal.y, -dg45) > 0) {
-			if (Double.compare(_normal.x, -dg45) < 1) {
-				return EnumFacing.WEST;
-			} else if (Double.compare(_normal.x, dg45) > 0) {
-				return EnumFacing.EAST;
-			} else if (Double.compare(_normal.z, -dg45) < 1) {
-				return EnumFacing.NORTH;
-			} else {
-				return EnumFacing.SOUTH;
-			}
-		} else {
-			return Double.compare(_normal.y, 0) > 0 ? EnumFacing.UP : EnumFacing.DOWN;
+		if (!isSloped(Axis.Y)) {
+			ModLogger.warning("getCardinalFacing called for non-sloping Y-axis");
 		}
+		return EnumFacing.getFacingFromVector((float)_normal.x, 0, (float)_normal.z);
 	}
 	
 	/**
@@ -341,12 +337,7 @@ public class Quad {
 	public void applyFacing(EnumFacing facing) {
 		_facing = facing;
 		_vecs = VecUtil.buildVecs(facing, _vecs);
-		Vec3d[] vecs1 = null;
-		try {
-			vecs1 = new LinkedHashSet<Vec3d>(Arrays.asList(this.getVecs())).toArray(new Vec3d[this.getVecs().length]);
-		} catch (Exception ex) {
-			int i = 0;
-		}
+		Vec3d[] vecs1 = new LinkedHashSet<Vec3d>(Arrays.asList(this.getVecs())).toArray(new Vec3d[this.getVecs().length]);
 		_normal = (vecs1[1].subtract(vecs1[0])).crossProduct(vecs1[2].subtract(vecs1[1])).normalize();
 		_isOblique = isSloped(Axis.X) && isSloped(Axis.Y) && isSloped(Axis.Z);
 	}
