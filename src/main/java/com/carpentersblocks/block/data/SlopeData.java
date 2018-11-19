@@ -4,24 +4,26 @@ import com.carpentersblocks.tileentity.CbTileEntity;
 
 public class SlopeData extends RotatableData {
 	
-	private static final int TYPE_BITMASK = 0x7c0;
+	private static final int TYPE_BITMASK = 0x7c0; // 32 types supported right now
 	private static final int TYPE_BITSHIFT = 6;
-	private static final int TYPE_WEDGE = 0;
-	private static final int TYPE_OBL_INT = 1;
-	private static final int TYPE_OBL_EXT = 2;
-	private static final int TYPE_PRISM = 3;
-	private static final int TYPE_PRISM_1P = 4;
-	private static final int TYPE_PRISM_2P = 5;
-	private static final int TYPE_PRISM_3P = 6;
-	private static final int TYPE_PRISM_4P = 7;
-	private static final int TYPE_PRISM_WEDGE = 8;
 	
 	public enum Type {
-		
 		WEDGE,
+		WEDGE_INTERIOR,
+		WEDGE_EXTERIOR,
 		OBLIQUE_INTERIOR,
-		OBLIQUE_EXTERIOR;
-		
+		OBLIQUE_EXTERIOR,
+		PRISM_WEDGE,
+		PRISM,
+		PRISM_1P,
+		PRISM_2P,
+		PRISM_3P,
+		PRISM_4P,
+		INVERT_PRISM,
+		INVERT_PRISM_1P,
+		INVERT_PRISM_2P,
+		INVERT_PRISM_3P,
+		INVERT_PRISM_4P;
 	}
 	
 	/**
@@ -37,7 +39,7 @@ public class SlopeData extends RotatableData {
 				return type;
 			}
 		}
-		return Type.WEDGE;
+		return Type.values()[0];
 	}
 	
 	/**

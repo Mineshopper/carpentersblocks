@@ -3,6 +3,7 @@ package com.carpentersblocks.renderer;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.Set;
 
 import com.carpentersblocks.block.data.SlopeData;
 import com.carpentersblocks.block.state.Property;
@@ -87,21 +88,16 @@ public class Quad {
 	}
 	
 	public static Quad getQuad(EnumFacing facing, TextureAtlasSprite sprite, Vec3d ... inVecs) {
-		Vec3d[] vec3ds = VecUtil.buildVecs(facing, inVecs);
 		return getQuad(facing, sprite, IConstants.DEFAULT_RGB, false, BlockRenderLayer.CUTOUT_MIPPED, inVecs);
 	}
 	
 	public static Quad getQuad(EnumFacing facing, TextureAtlasSprite sprite, int rgb, Vec3d ... inVecs) {
-		Vec3d[] vec3ds = VecUtil.buildVecs(facing, inVecs);
-		if (vec3ds == null || vec3ds.length != 4) {
-			return null;
-		}
 		return getQuad(facing, sprite, rgb, false, BlockRenderLayer.CUTOUT_MIPPED, inVecs);
 	}
 	
 	public static Quad getQuad(EnumFacing facing, TextureAtlasSprite sprite, int rgb, boolean maxBrightness, BlockRenderLayer renderLayer, Vec3d ... inVecs) {
-		Vec3d[] vec3ds = VecUtil.buildVecs(facing, inVecs);
-		if (vec3ds == null || vec3ds.length != 4) {
+		Vec3d[] vec3ds = VecUtil.sortVec3dsByFacing(facing, inVecs);
+		if (isMalformed(vec3ds)) {
 			return null;
 		}
 		Quad quad = new Quad(facing, vec3ds);
@@ -110,6 +106,18 @@ public class Quad {
 		quad.setRenderLayer(renderLayer);
 		quad.setRgb(rgb);
 		return quad;
+	}
+	
+	/**
+	 * Checks if vec3d array is valid for rendering.
+	 * 
+	 * @param vec3ds the vec3ds
+	 * @return <code>true</code> if vec3d array is null, incorrect length, et cetera.
+	 */
+	private static boolean isMalformed(Vec3d[] vec3ds) {
+		return vec3ds == null
+			|| vec3ds.length != 4
+			|| new HashSet<Vec3d>(Arrays.asList(vec3ds)).size() < 3;
 	}
 	
 	public Quad offset(double x, double y, double z) {
@@ -335,8 +343,10 @@ public class Quad {
 	 * @param facing the new facing
 	 */
 	public void applyFacing(EnumFacing facing) {
+		if (!facing.equals(_facing)) {
+			_vecs = VecUtil.sortVec3dsByFacing(facing, _vecs);
+		}
 		_facing = facing;
-		_vecs = VecUtil.buildVecs(facing, _vecs);
 		Vec3d[] vecs1 = new LinkedHashSet<Vec3d>(Arrays.asList(this.getVecs())).toArray(new Vec3d[this.getVecs().length]);
 		_normal = (vecs1[1].subtract(vecs1[0])).crossProduct(vecs1[2].subtract(vecs1[1])).normalize();
 		_isOblique = isSloped(Axis.X) && isSloped(Axis.Y) && isSloped(Axis.Z);

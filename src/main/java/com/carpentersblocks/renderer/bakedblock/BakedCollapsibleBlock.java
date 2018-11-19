@@ -24,7 +24,12 @@ public class BakedCollapsibleBlock extends AbstractBakedModel {
 	}
 	
 	@Override
-	protected void fillQuads(RenderPkg renderPkg) {
+	protected void fillQuads(RenderPkg renderPkg, boolean isInventory) {
+		if (isInventory) {
+			renderPkg.add(RenderHelper.getQuadYPos(SpriteRegistry.sprite_uncovered_solid).offset(0.0D, -1.0D, 0.0D));
+			renderPkg.add(RenderHelper.getQuadYNeg(SpriteRegistry.sprite_uncovered_solid));
+			return;
+		}
 		CollapsibleUtil util = new CollapsibleUtil(renderPkg.getData());
 		util.computeOffsets();
     	if (!util.isFullCube()) {

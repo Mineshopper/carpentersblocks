@@ -122,38 +122,12 @@ public class VecUtil {
         return u * u + v * v;
 	}
 
-	public static Vec3d[] buildVecs(EnumFacing facing, Vec3d[] vecs) {
-		Set<Vec3d> set = new HashSet<Vec3d>(Arrays.asList(vecs));
-		if (set.size() == 3) {
-			return sortTriangle(facing, set.toArray(new Vec3d[set.size()]));
-		} else if (set.size() == 4) {
-			return sortQuad(facing, vecs);
-		} else {
+	public static Vec3d[] sortVec3dsByFacing(EnumFacing facing, Vec3d[] inVecs) {
+		Set<Vec3d> set = new HashSet<Vec3d>(Arrays.asList(inVecs));
+		if (!(set.size() > 2 || set.size() < 5)) {
 			return null;
 		}
-	}
-	
-	private static Vec3d[] sortQuad(EnumFacing facing, Vec3d[] vecs) {
-		List<Vec3d> consumables = new LinkedList<Vec3d>(Arrays.asList(vecs));
-		Vec3d[] newVecs = { vecs[0], vecs[1], vecs[2], vecs[3] };
-		Vec2l[] bounds = getBoundingPlane(facing, vecs);
-		for (int i = 0; i < bounds.length; ++i) {
-			Vec3d closest = null;
-			long minDist = 0;
-			for (Vec3d Vec3d : consumables) {
-				long dist = squareDistanceTo(facing, bounds[i], Vec3d);
-				if (closest == null || dist < minDist) {
-					minDist = dist;
-					closest = Vec3d;
-				}
-			}
-			consumables.remove(closest);
-			newVecs[i] = closest;
-		}
-		return newVecs;
-	}
-	
-	private static Vec3d[] sortTriangle(EnumFacing facing, Vec3d[] inVecs) {
+		
 		List<Vec3d> vecs = new ArrayList<Vec3d>(Arrays.asList(inVecs));
 		List[] cornerList = {
 				new ArrayList<Vec3d>(),

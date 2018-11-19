@@ -19,14 +19,13 @@ public class BakedBlock extends AbstractBakedModel {
 	}
     
 	@Override
-	protected void fillQuads(RenderPkg renderPkg) {
-		RenderHelper renderHelper = new RenderHelper();
-		renderPkg.add(renderHelper.getQuadYNeg(SpriteRegistry.sprite_uncovered_quartered));
-		renderPkg.add(renderHelper.getQuadYPos(SpriteRegistry.sprite_uncovered_quartered));
-		renderPkg.add(renderHelper.getQuadZNeg(SpriteRegistry.sprite_uncovered_quartered));
-		renderPkg.add(renderHelper.getQuadZPos(SpriteRegistry.sprite_uncovered_quartered));
-		renderPkg.add(renderHelper.getQuadXNeg(SpriteRegistry.sprite_uncovered_quartered));
-		renderPkg.add(renderHelper.getQuadXPos(SpriteRegistry.sprite_uncovered_quartered));
+	protected void fillQuads(RenderPkg renderPkg, boolean isInventory) {
+		renderPkg.add(RenderHelper.getQuadYNeg(SpriteRegistry.sprite_uncovered_quartered));
+		renderPkg.add(RenderHelper.getQuadYPos(SpriteRegistry.sprite_uncovered_quartered));
+		renderPkg.add(RenderHelper.getQuadZNeg(SpriteRegistry.sprite_uncovered_quartered));
+		renderPkg.add(RenderHelper.getQuadZPos(SpriteRegistry.sprite_uncovered_quartered));
+		renderPkg.add(RenderHelper.getQuadXNeg(SpriteRegistry.sprite_uncovered_quartered));
+		renderPkg.add(RenderHelper.getQuadXPos(SpriteRegistry.sprite_uncovered_quartered));
     }
 	
 }

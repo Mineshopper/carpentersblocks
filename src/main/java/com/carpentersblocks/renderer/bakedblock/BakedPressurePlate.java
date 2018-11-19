@@ -26,15 +26,15 @@ public class BakedPressurePlate extends AbstractBakedModel {
 	}
 	
 	@Override
-	protected void fillQuads(RenderPkg renderPkg) {
+	protected void fillQuads(RenderPkg renderPkg, boolean isInventory) {
+		if (isInventory) {
+			renderPkg.addAll(((IStateImplementor)BlockRegistry.blockCarpentersPressurePlate).getStateMap().getInventoryQuads());
+			return;
+		}
 		StateUtil util = new StateUtil();
 		AbstractState state = (AbstractState) RenderPkg.getThreadedProperty(Property.CB_STATE);
-		if (state == null) {
-			renderPkg.addAll(((IStateImplementor)BlockRegistry.blockCarpentersPressurePlate).getStateMap().getInventoryQuads());
-		} else {
-			for (StatePart part : state.getStateParts()) {
-				renderPkg.addAll(util.getQuads(part));
-			}
+		for (StatePart part : state.getStateParts()) {
+			renderPkg.addAll(util.getQuads(part));
 		}
 	}
 	

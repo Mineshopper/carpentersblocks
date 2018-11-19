@@ -86,11 +86,17 @@ public class RenderPkg {
     }
     
 	public void addAll(Collection<Quad> collection) {
-		_quadContainer.addAll(collection);
+		for (Quad quad : collection) {
+			if (quad != null) {
+				_quadContainer.addAll(collection);
+			}
+		}
 	}
     
     public void add(Quad quad) {
-    	_quadContainer.add(quad);
+    	if (quad != null) {
+    		_quadContainer.add(quad);
+    	}
     }
     
 	/**
