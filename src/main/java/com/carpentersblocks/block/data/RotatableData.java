@@ -12,9 +12,7 @@ public abstract class RotatableData {
 	public static void rotate(CbTileEntity cbTileEntity, Axis axis) {
 		int cbMetadata = cbTileEntity.getCbMetadata();
 		Rotation rotation = Rotation.get(cbMetadata).getNext(axis);
-		cbMetadata &= ~ROT_BITMASK;
-		cbMetadata |= rotation.asInt();
-        cbTileEntity.setCbMetadata(cbMetadata);
+		setRotation(cbTileEntity, rotation);
 	}
 	
 	public static void resetRotation(CbTileEntity cbTileEntity) {
@@ -24,6 +22,13 @@ public abstract class RotatableData {
 	
 	public static Rotation getRotation(CbTileEntity cbTileEntity) {
 		return Rotation.get(cbTileEntity.getCbMetadata());
+	}
+	
+	public static void setRotation(CbTileEntity cbTileEntity, Rotation rotation) {
+		int cbMetadata = cbTileEntity.getCbMetadata();
+		cbMetadata &= ~ROT_BITMASK;
+		cbMetadata |= rotation.asInt();
+        cbTileEntity.setCbMetadata(cbMetadata);
 	}
 	
 }

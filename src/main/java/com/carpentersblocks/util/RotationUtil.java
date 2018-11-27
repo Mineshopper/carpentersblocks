@@ -41,29 +41,76 @@ public class RotationUtil {
 	
 	public enum Rotation {
 		
+		/** UP + NORTH */
 		X0_Y0_Z0(ROT_0, ROT_0, ROT_0),
+		
+		/** EAST + NORTH */
 		X0_Y0_Z90(ROT_0, ROT_0, ROT_90),
+		
+		/** DOWN + NORTH */
 		X0_Y0_Z180(ROT_0, ROT_0, ROT_180),
+		
+		/** WEST + NORTH */
 		X0_Y0_Z270(ROT_0, ROT_0, ROT_270),
+		
+		/** UP + EAST */
 		X0_Y90_Z0(ROT_0, ROT_90, ROT_0),
+		
+		/** UP + SOUTH */
 		X0_Y180_Z0(ROT_0, ROT_180, ROT_0),
+		
+		/** EAST + SOUTH */
 		X0_Y180_Z90(ROT_0, ROT_180, ROT_90),
+		
+		/** UP + WEST */
 		X0_Y270_Z0(ROT_0, ROT_270, ROT_0),
+		
+		/** EAST + DOWN */
 		X0_Y270_Z90(ROT_0, ROT_270, ROT_90),
+		
+		/** NORTH + UP */
 		X90_Y0_Z0(ROT_90, ROT_0, ROT_0),
+		
+		/** NORTH + EAST */
 		X90_Y0_Z90(ROT_90, ROT_0, ROT_90),
+		
+		/** NORTH + DOWN */
 		X90_Y0_Z180(ROT_90, ROT_0, ROT_180),
+		
+		/** NORTH + WEST */
 		X90_Y0_Z270(ROT_90, ROT_0, ROT_270),
+		
+		/** EAST + UP */
 		X90_Y90_Z0(ROT_90, ROT_90, ROT_0),
+		
+		/** SOUTH + UP */
 		X90_Y180_Z0(ROT_90, ROT_180, ROT_0),
+		
+		/** SOUTH + WEST */
 		X90_Y180_Z90(ROT_90, ROT_180, ROT_90),
+		
+		/** WEST + UP */
 		X90_Y270_Z0(ROT_90, ROT_270, ROT_0),
+		
+		/** DOWN + SOUTH */
 		X180_Y0_Z0(ROT_180, ROT_0, ROT_0),
+		
+		/** WEST + SOUTH */
 		X180_Y0_Z90(ROT_180, ROT_0, ROT_90),
+		
+		/** DOWN + WEST */
 		X180_Y90_Z0(ROT_180, ROT_90, ROT_0),
+		
+		/** DOWN + EAST */
 		X180_Y270_Z0(ROT_180, ROT_270, ROT_0),
+		
+		/** SOUTH + DOWN */
 		X270_Y0_Z0(ROT_270, ROT_0, ROT_0),
+		
+		/** SOUTH + EAST */
 		X270_Y0_Z90(ROT_270, ROT_0, ROT_90),
+		
+		/** WEST + DOWN */
 		X270_Y90_Z0(ROT_270, ROT_90, ROT_0);
 		
 		private int _x;

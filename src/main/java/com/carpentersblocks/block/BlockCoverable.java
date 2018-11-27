@@ -59,6 +59,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public abstract class BlockCoverable extends Block {
 	
+	protected static ThreadLocal<Float[]> _threadLocalHitCoords = new ThreadLocal<>();
+	protected static ThreadLocal<EnumFacing> _threadLocalFacing = new ThreadLocal<>();
+	
     /** Block drop event for dropping attribute. */
     public static int EVENT_ID_DROP_ATTR = 0x40000000;
 
@@ -376,7 +379,7 @@ public abstract class BlockCoverable extends Block {
      */
     @Override
     public boolean onBlockActivated(World world, BlockPos blockPos, IBlockState blockState, EntityPlayer entityPlayer, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-        if (world.isRemote) {
+    	if (world.isRemote) {
             return true;
         }
 

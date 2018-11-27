@@ -2,14 +2,17 @@ package com.carpentersblocks.util.handler;
 
 import com.carpentersblocks.api.ICarpentersChisel;
 import com.carpentersblocks.api.ICarpentersHammer;
+import com.carpentersblocks.network.PacketSlopeSelect;
 import com.carpentersblocks.tileentity.CbTileEntity;
 import com.carpentersblocks.util.block.BlockUtil;
+import com.carpentersblocks.util.registry.BlockRegistry;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -23,6 +26,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.MouseEvent;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.PlaySoundAtEntityEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -55,6 +59,20 @@ public class EventHandler {
     private boolean isValidBlockEvent(World world, BlockPos pos) {
     	TileEntity tileEntity = world.getTileEntity(pos);
     	return tileEntity != null && tileEntity instanceof CbTileEntity;
+    }
+    
+    @SubscribeEvent
+    /**
+     * Intercept item drops.
+     * @param event
+     */
+    public void onEntityJoinWorldEvent(EntityJoinWorldEvent event) {
+    	if (event.getEntity() != null
+    		&& event.getEntity() instanceof EntityItem
+    		&& BlockRegistry.blockCarpentersSlope.getRegistryName().equals(((EntityItem)event.getEntity()).getItem().getItem().getRegistryName())) {
+    		// Carpenter's Slope should always drop as wedge
+    		((EntityItem)event.getEntity()).getItem().setItemDamage(0);
+    	}
     }
     
     @SubscribeEvent
@@ -141,12 +159,12 @@ public class EventHandler {
             EntityPlayer entityPlayer = Minecraft.getMinecraft().player;
             if (entityPlayer != null && entityPlayer.isSneaking()) {
                 ItemStack itemStack = entityPlayer.getHeldItemMainhand();
-/*                if (itemStack != null && itemStack.getItem() instanceof ItemBlock && BlockProperties.toBlock(itemStack).equals(BlockRegistry.blockCarpentersSlope)) {
+                if (itemStack != null && itemStack.getItem() instanceof ItemBlock && BlockRegistry.blockCarpentersSlope.equals(BlockUtil.toBlock(itemStack))) {
                     if (event.getDwheel() != 0) {
-                        PacketHandler.sendPacketToServer(new PacketSlopeSelect(entityPlayer.inventory.currentItem, event.dwheel > 0));
+                        PacketHandler.sendPacketToServer(new PacketSlopeSelect(entityPlayer.inventory.currentItem, event.getDwheel() > 0));
                     }
                     event.setCanceled(true);
-                }*/
+                }
             }
         }
     }

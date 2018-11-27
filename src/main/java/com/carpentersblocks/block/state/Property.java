@@ -38,7 +38,7 @@ public class Property {
 		_unlistedProperties.add(CB_STATE = new UnlistedProperty(AbstractState.class, "cbState"));
 	}
 	
-	private static class UnlistedProperty implements IUnlistedProperty {
+	public static class UnlistedProperty implements IUnlistedProperty {
 
 		private Class _class;
 		private String _name;

@@ -7,10 +7,12 @@ import static net.minecraft.util.EnumFacing.SOUTH;
 import static net.minecraft.util.EnumFacing.UP;
 import static net.minecraft.util.EnumFacing.WEST;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 import com.carpentersblocks.block.data.SlopeData;
-import com.carpentersblocks.block.data.SlopeData.Type;
 import com.carpentersblocks.renderer.AbstractBakedModel;
 import com.carpentersblocks.renderer.Quad;
 import com.carpentersblocks.renderer.RenderPkg;
@@ -19,6 +21,7 @@ import com.carpentersblocks.renderer.helper.RenderHelperSlope;
 import com.carpentersblocks.util.RotationUtil.Rotation;
 import com.carpentersblocks.util.registry.SpriteRegistry;
 
+import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.util.ResourceLocation;
@@ -30,35 +33,75 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class BakedSlope extends AbstractBakedModel {
 
-	public BakedSlope(IModelState modelState, VertexFormat vertexFormat, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter) {
+	private String _type;
+	
+	private static Map<String, List<BakedQuad>> _inventoryBakedQuads = new HashMap<String, List<BakedQuad>>();
+	
+	public BakedSlope(IModelState modelState, VertexFormat vertexFormat, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter, String type) {
 		super(modelState, vertexFormat, bakedTextureGetter);
+		_type = type;
 	}
 	
 	@Override
-	protected void fillQuads(RenderPkg renderPkg, boolean isInventory) {
-		if (isInventory) {
-			fillWedgeQuads(renderPkg);
-			return;
+	public List<BakedQuad> getInventoryQuads(RenderPkg renderPkg) {
+		if (!_inventoryBakedQuads.containsKey(_type)) {
+			// Need to rotate some of these
+			/*
+			 * 		Rotation rotation = Rotation.get(renderPkg.getData());
+		renderPkg.rotate(rotation);
+			 */
+			switch (_type) {
+				case "wedge":
+					fillWedge(renderPkg);
+					break;
+				case "wedge_interior":
+					fillWedgeInterior(renderPkg);
+					break;
+				case "wedge_exterior":
+					fillWedgeExterior(renderPkg);
+					break;
+				case "oblique_interior":
+					fillObliqueInterior(renderPkg);
+					break;
+				case "oblique_exterior":
+					fillObliqueExterior(renderPkg);
+					break;
+				case "prism_wedge":
+					fillPrismWedge(renderPkg);
+					break;
+				case "prism":
+					fillPrism(renderPkg, 0);
+					break;
+				case "invert_prism":
+					fillInvertPrism(renderPkg, 0);
+					break;
+			}
+			renderPkg.rotate(Rotation.X0_Y90_Z0);
+			_inventoryBakedQuads.put(_type, renderPkg.getInventoryQuads());
 		}
-		Type type = SlopeData.getType(renderPkg.getData());
-		switch (type) {
+		return _inventoryBakedQuads.get(_type);
+	}
+	
+	@Override
+	protected void fillQuads(RenderPkg renderPkg) {
+		switch (SlopeData.getType(renderPkg.getData())) {
 			case WEDGE:
-				fillWedgeQuads(renderPkg);
+				fillWedge(renderPkg);
 				break;
 			case WEDGE_INTERIOR:
-				fillWedgeInteriorQuads(renderPkg);
+				fillWedgeInterior(renderPkg);
 				break;
 			case WEDGE_EXTERIOR:
-				fillWedgeExteriorQuads(renderPkg);
+				fillWedgeExterior(renderPkg);
 				break;
 			case OBLIQUE_INTERIOR:
-				fillObliqueInteriorQuads(renderPkg);
+				fillObliqueInterior(renderPkg);
 				break;
 			case OBLIQUE_EXTERIOR:
-				fillObliqueExteriorQuads(renderPkg);
+				fillObliqueExterior(renderPkg);
 				break;
 			case PRISM_WEDGE:
-				fillSlopePrism(renderPkg);
+				fillPrismWedge(renderPkg);
 				break;
 			case PRISM:
 				fillPrism(renderPkg, 0);
@@ -95,14 +138,14 @@ public class BakedSlope extends AbstractBakedModel {
 		renderPkg.rotate(rotation);
 	}
 	
-	private void fillWedgeQuads(RenderPkg renderPkg) {
+	private void fillWedge(RenderPkg renderPkg) {
 		renderPkg.add(RenderHelper.getQuadYNeg(SpriteRegistry.sprite_uncovered_full));
 		renderPkg.add(RenderHelper.getQuadZNeg(SpriteRegistry.sprite_uncovered_full));
 		renderPkg.add(RenderHelperSlope.getWedgeXNeg());
 		renderPkg.add(RenderHelperSlope.getWedgeXPos());
 		renderPkg.add(
 			Quad.getQuad(
-				UP,
+				SOUTH,
 				SpriteRegistry.sprite_uncovered_full,
 				new Vec3d(1.0D, 0.0D, 1.0D),
 				new Vec3d(1.0D, 1.0D, 0.0D),
@@ -110,7 +153,7 @@ public class BakedSlope extends AbstractBakedModel {
 				new Vec3d(0.0D, 0.0D, 1.0D)));
 	}
 	
-	private void fillWedgeExteriorQuads(RenderPkg renderPkg) {
+	private void fillWedgeExterior(RenderPkg renderPkg) {
 		renderPkg.add(RenderHelper.getQuadYNeg(SpriteRegistry.sprite_uncovered_full));
 		renderPkg.add(RenderHelperSlope.getWedgeXNeg());
 		renderPkg.add(RenderHelperSlope.getWedgeExteriorZNeg());
@@ -130,7 +173,7 @@ public class BakedSlope extends AbstractBakedModel {
 				new Vec3d(0.0D, 1.0D, 0.0D)));
 	}
 
-	private void fillWedgeInteriorQuads(RenderPkg renderPkg) {
+	private void fillWedgeInterior(RenderPkg renderPkg) {
 		renderPkg.add(RenderHelper.getQuadYNeg(SpriteRegistry.sprite_uncovered_full));
 		renderPkg.add(RenderHelper.getQuadXNeg(SpriteRegistry.sprite_uncovered_full));
 		renderPkg.add(RenderHelper.getQuadZNeg(SpriteRegistry.sprite_uncovered_full));
@@ -152,7 +195,7 @@ public class BakedSlope extends AbstractBakedModel {
 				new Vec3d(0.0D, 1.0D, 0.0D)));
 	}
 	
-	private void fillObliqueInteriorQuads(RenderPkg renderPkg) {
+	private void fillObliqueInterior(RenderPkg renderPkg) {
 		renderPkg.add(RenderHelper.getQuadYNeg(SpriteRegistry.sprite_uncovered_full));
 		renderPkg.add(RenderHelper.getQuadZNeg(SpriteRegistry.sprite_uncovered_full));
 		renderPkg.add(RenderHelper.getQuadXNeg(SpriteRegistry.sprite_uncovered_full));
@@ -168,7 +211,7 @@ public class BakedSlope extends AbstractBakedModel {
 		// Right oblique slope part
 		renderPkg.add(
 			Quad.getQuad(
-				UP,
+				SOUTH,
 				SpriteRegistry.sprite_uncovered_oblique_pos,
 				new Vec3d(0.0D, 1.0D, 1.0D),
 				new Vec3d(1.0D, 0.0D, 1.0D),
@@ -176,14 +219,14 @@ public class BakedSlope extends AbstractBakedModel {
 		// Left oblique slope part
 		renderPkg.add(
 			Quad.getQuad(
-				UP,
+				SOUTH,
 				SpriteRegistry.sprite_uncovered_oblique_pos,
 				new Vec3d(0.5D, 1.0D, 0.5D),
 				new Vec3d(1.0D, 0.0D, 1.0D),
 				new Vec3d(1.0D, 1.0D, 0.0D)));
 	}
 	
-	private void fillObliqueExteriorQuads(RenderPkg renderPkg) {
+	private void fillObliqueExterior(RenderPkg renderPkg) {
 		renderPkg.add(
 			Quad.getQuad(
 				DOWN,
@@ -193,7 +236,7 @@ public class BakedSlope extends AbstractBakedModel {
 				new Vec3d(1.0D, 0.0D, 0.0D)));
 		renderPkg.add(
 			Quad.getQuad(
-				UP,
+				SOUTH,
 				SpriteRegistry.sprite_uncovered_oblique_neg,
 				new Vec3d(0.0D, 1.0D, 0.0D),
 				new Vec3d(0.0D, 0.0D, 1.0D),
@@ -208,14 +251,14 @@ public class BakedSlope extends AbstractBakedModel {
 				new Vec3d(0.0D, 0.0D, 1.0D)));
 	}
 	
-	private void fillSlopePrism(RenderPkg renderPkg) {
+	private void fillPrismWedge(RenderPkg renderPkg) {
 		renderPkg.add(RenderHelper.getQuadYNeg(SpriteRegistry.sprite_uncovered_full));
 		renderPkg.add(RenderHelper.getQuadZNeg(SpriteRegistry.sprite_uncovered_full));
 		renderPkg.add(RenderHelperSlope.getWedgeXNeg());
 		renderPkg.add(RenderHelperSlope.getWedgeXPos());
 		renderPkg.add(
 			Quad.getQuad(
-				UP,
+				SOUTH,
 				SpriteRegistry.sprite_uncovered_full,
 				new Vec3d(0.0D, 1.0D, 0.0D),
 				new Vec3d(0.0D, 0.0D, 1.0D),
@@ -223,7 +266,7 @@ public class BakedSlope extends AbstractBakedModel {
 				new Vec3d(0.5D, 1.0D, 0.0D)));
 		renderPkg.add(
 			Quad.getQuad(
-				UP,
+				SOUTH,
 				SpriteRegistry.sprite_uncovered_full,
 				new Vec3d(0.5D, 1.0D, 0.0D),
 				new Vec3d(0.5D, 0.5D, 0.5D),

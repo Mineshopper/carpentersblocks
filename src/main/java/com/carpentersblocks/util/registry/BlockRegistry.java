@@ -362,7 +362,14 @@ public class BlockRegistry {
         	registerItemBlockRender(blockCarpentersPressurePlate, "depressed", 1);
         }
         if (ConfigRegistry.enableSlope) {
-        	registerItemBlockRender(blockCarpentersSlope, VARIANT_INVENTORY, 0);
+        	registerItemBlockRender(blockCarpentersSlope, "wedge", 0);
+        	registerItemBlockRender(blockCarpentersSlope, "wedge_interior", 1);
+        	registerItemBlockRender(blockCarpentersSlope, "wedge_exterior", 2);
+        	registerItemBlockRender(blockCarpentersSlope, "oblique_interior", 3);
+        	registerItemBlockRender(blockCarpentersSlope, "oblique_exterior", 4);
+        	registerItemBlockRender(blockCarpentersSlope, "prism_wedge", 5);
+        	registerItemBlockRender(blockCarpentersSlope, "prism", 6);
+        	registerItemBlockRender(blockCarpentersSlope, "invert_prism", 7);
         }
         /*
         if (enableStairs) {

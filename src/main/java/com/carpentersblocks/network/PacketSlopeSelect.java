@@ -2,6 +2,10 @@ package com.carpentersblocks.network;
 
 import java.io.IOException;
 
+import com.carpentersblocks.block.BlockCarpentersSlope;
+import com.carpentersblocks.util.block.BlockUtil;
+import com.carpentersblocks.util.registry.BlockRegistry;
+
 import io.netty.buffer.ByteBufInputStream;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -24,23 +28,17 @@ public class PacketSlopeSelect implements ICarpentersPacket {
         int slot = bbis.readInt();
         boolean incDmg = bbis.readBoolean();
         ItemStack itemStack = entityPlayer.inventory.getStackInSlot(slot);
-
-        // TODO: Implement with slopes
-/*        if (itemStack != null && BlockProperties.toBlock(itemStack).equals(BlockRegistry.blockCarpentersSlope)) {
-
+        if (itemStack != null && BlockRegistry.blockCarpentersSlope.equals(BlockUtil.toBlock(itemStack))) {
             int maxDmg = BlockCarpentersSlope.slopeType.length - 1;
             int itemDmg = itemStack.getItemDamage();
             itemDmg += incDmg ? 1 : -1;
-
             if (itemDmg > maxDmg) {
                 itemDmg = 0;
             } else if (itemDmg < 0) {
                 itemDmg = maxDmg;
             }
-
             itemStack.setItemDamage(itemDmg);
-
-        }*/
+        }
     }
 
     @Override

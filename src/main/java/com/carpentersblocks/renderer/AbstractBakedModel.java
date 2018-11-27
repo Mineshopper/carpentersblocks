@@ -43,12 +43,13 @@ public abstract class AbstractBakedModel implements IBakedModel {
     	}
     }
     
+    public abstract List<BakedQuad> getInventoryQuads(RenderPkg renderPkg);
+    
     @Override
     public List<BakedQuad> getQuads(IBlockState blockState, EnumFacing facing, long rand) {
-    	if (blockState == null && facing == null) {
+    	if (blockState == null) {
     		RenderPkg renderPkg = new RenderPkg(_vertexFormat, facing, rand);
-        	fillQuads(renderPkg, true);
-        	return renderPkg.getInventoryQuads();
+    		return this.getInventoryQuads(renderPkg);
     	}
     	if (!BlockUtil.validateBlockState(blockState) || facing != null || MinecraftForgeClient.getRenderLayer() == null) {
     		// TODO: Look into at net.minecraftforge.client.ForgeHooksClient.getDamageModel(ForgeHooksClient.java:668)
@@ -56,7 +57,7 @@ public abstract class AbstractBakedModel implements IBakedModel {
     		return Collections.emptyList();
     	}
     	RenderPkg renderPkg = new RenderPkg(this.getVertexFormat(), blockState, facing, rand);
-    	fillQuads(renderPkg, false);
+    	fillQuads(renderPkg);
     	return renderPkg.getQuads();
     }
     
@@ -90,7 +91,7 @@ public abstract class AbstractBakedModel implements IBakedModel {
      * 
      * @param quadContainer the quad container
      */
-    protected abstract void fillQuads(RenderPkg renderPkg, boolean isInventory);
+    protected abstract void fillQuads(RenderPkg renderPkg);
     
     @Override
     public Pair<? extends IBakedModel, Matrix4f> handlePerspective(TransformType cameraTransformType) {

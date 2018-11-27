@@ -2,27 +2,32 @@ package com.carpentersblocks.block;
 
 import com.carpentersblocks.block.data.SlopeData;
 import com.carpentersblocks.tileentity.CbTileEntity;
+import com.carpentersblocks.util.RotationUtil.Rotation;
 import com.carpentersblocks.util.handler.EventHandler;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 public class BlockCarpentersSlope extends BlockCoverable {
-
-    public final static String slopeType[] = { "wedge", "obliqueInterior", "obliqueExterior", "prism", "prismWedge" };
-
-    public final static int META_WEDGE       = 0;
-    public final static int META_OBLIQUE_INT = 1;
-    public final static int META_OBLIQUE_EXT = 2;
-    public final static int META_PRISM       = 3;
-    public final static int META_PRISM_SLOPE = 4;
-
+	
+    public final static String slopeType[] = {
+    	"wedge",
+    	"wedgeInterior",
+    	"wedgeExterior",
+    	"obliqueInterior",
+    	"obliqueExterior",
+    	"prismWedge",
+    	"prism",
+    	"invertPrism" };
+    
     private boolean rayTracing;
 
     public BlockCarpentersSlope(Material material) {
@@ -45,19 +50,6 @@ public class BlockCarpentersSlope extends BlockCoverable {
     	new SlopeData().setNextType(cbTileEntity);
         return true;        
     }
-
-/*    @SideOnly(Side.CLIENT)
-    @Override
-    *//**
-     * Returns a list of blocks with the same ID, but different meta (eg: wood returns 4 blocks)
-     *//*
-    public void getSubBlocks(Item item, CreativeTabs creativeTabs, List list) {
-        list.add(new ItemStack(item, 1, META_WEDGE      ));
-        list.add(new ItemStack(item, 1, META_OBLIQUE_INT));
-        list.add(new ItemStack(item, 1, META_OBLIQUE_EXT));
-        list.add(new ItemStack(item, 1, META_PRISM      ));
-        list.add(new ItemStack(item, 1, META_PRISM_SLOPE));
-    }*/
 
 /*    @Override
     *//**
@@ -229,218 +221,198 @@ public class BlockCarpentersSlope extends BlockCoverable {
         return super.shareFaces(cbTileEntity_adj, cbTileEntity_src, side_adj, side_src);*/
     	return false;
     }
+    
+    @Override
+    public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer, EnumHand hand) {
+    	// IUnlistedProperty values are not retained between this method and onBlockPlacedBy(). Store with thread temporarily.
+    	_threadLocalHitCoords.set(new Float[] { hitX, hitY, hitZ });
+    	_threadLocalFacing.set(facing);
+    	return super.getStateForPlacement(world, pos, facing, hitX, hitY, hitZ, meta, placer, hand);
+    }
+    
+    @Override
+    public void onBlockPlacedBy(World world, BlockPos blockPos, IBlockState blockState, EntityLivingBase entityLivingBase, ItemStack itemStack) {
+    	super.onBlockPlacedBy(world, blockPos, blockState, entityLivingBase, itemStack);
+        CbTileEntity cbTileEntity = getTileEntity(world, blockPos);
+        if (cbTileEntity != null) {
 
-/*    @Override
-    *//**
-     * Called when block is placed in world.
-     *//*
-    public int onBlockPlaced(World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int metadata) {
-        EventHandler.eventFace = side;
-        EventHandler.hitX = hitX;
-        EventHandler.hitY = hitY;
-        EventHandler.hitZ = hitZ;
-        return metadata;
-    }*/
-
-/*    *//**
-     * Returns wedge slope orientation based on side clicked and hit coordinates.
-     *//*
-    private int getWedgeOrientation(EnumFacing dir, int side, double hitX, double hitY, double hitZ) {
-        switch (side) {
-            case 2:
-                hitX = 1.0F - hitX;
-                break;
-            case 4:
-                hitX = hitZ;
-                break;
-            case 5:
-                hitX = 1.0F - hitZ;
-                break;
-        }
-
-        int slopeID;
-
-        if (side > 1) {
-            if (hitY > 0.5F && hitX > 1.0F - hitY && hitX < hitY) {
-                slopeID = side + 2;
-            } else if (hitY < 0.5F && hitX < 1.0F - hitY && hitX > hitY) {
-                slopeID = side + 6;
-            } else if (hitX < 0.2F) {
-                slopeID = side == 2 ? 1 : side == 3 ? 0 : side == 4 ? 3 : 2;
-            } else if (hitX > 0.8F){
-                slopeID = side == 2 ? 2 : side == 3 ? 3 : side == 4 ? 1 : 0;
-            } else if (hitY > 0.5F) {
-                slopeID = side + 2;
-            } else { // hitY < 0.5F
-                slopeID = side + 6;
-            }
-        } else {
-            slopeID = side + 12;
-        }
-
-        if (slopeID > 11) {
-            switch (dir) {
-                case NORTH:
-                    return slopeID == 12 ? Slope.ID_WEDGE_NEG_S : Slope.ID_WEDGE_POS_S;
-                case SOUTH:
-                    return slopeID == 12 ? Slope.ID_WEDGE_NEG_N : Slope.ID_WEDGE_POS_N;
-                case WEST:
-                    return slopeID == 12 ? Slope.ID_WEDGE_NEG_E : Slope.ID_WEDGE_POS_E;
-                case EAST:
-                    return slopeID == 12 ? Slope.ID_WEDGE_NEG_W : Slope.ID_WEDGE_POS_W;
-                default:
-                    return 0;
-            }
-        } else {
-            return slopeID;
-        }
-
-    }*/
-
-    private final int CORNER_SE = 0;
-    private final int CORNER_NE = 1;
-    private final int CORNER_NW = 2;
-    private final int CORNER_SW = 3;
-
-    /**
-     * Returns general slope orientation based on side clicked and hit coordinates.
-     */
-    private int getCorner(float rotationYaw) {
-        switch ((MathHelper.floor(rotationYaw * 4.0F / 360.0F) & 3) % 4) {
-            case 0:
-                return CORNER_NE;
-            case 1:
-                return CORNER_SE;
-            case 2:
-                return CORNER_SW;
-            default:
-                return CORNER_NW;
+        	// Set type
+        	switch (itemStack.getItemDamage()) {
+	        	case 0:
+	        		SlopeData.setType(cbTileEntity, SlopeData.Type.WEDGE);
+	        		break;
+	        	case 1:
+	        		SlopeData.setType(cbTileEntity, SlopeData.Type.WEDGE_INTERIOR);
+	        		break;
+	        	case 2:
+	        		SlopeData.setType(cbTileEntity, SlopeData.Type.WEDGE_EXTERIOR);
+	        		break;
+	        	case 3:
+	        		SlopeData.setType(cbTileEntity, SlopeData.Type.OBLIQUE_INTERIOR);
+	        		break;
+	        	case 4:
+	        		SlopeData.setType(cbTileEntity, SlopeData.Type.OBLIQUE_EXTERIOR);
+	        		break;
+	        	case 5:
+	        		SlopeData.setType(cbTileEntity, SlopeData.Type.PRISM_WEDGE);
+	        		break;
+	        	case 6:
+	        		SlopeData.setType(cbTileEntity, SlopeData.Type.PRISM);
+	        		break;
+        		default: // 7
+        			SlopeData.setType(cbTileEntity, SlopeData.Type.INVERT_PRISM);
+        			break;
+        	}
+        	
+        	// Set rotation
+        	float x = _threadLocalHitCoords.get()[0];
+        	float y = _threadLocalHitCoords.get()[1];
+        	float z = _threadLocalHitCoords.get()[2];
+        	_threadLocalHitCoords.remove();
+        	EnumFacing facing = _threadLocalFacing.get();
+        	_threadLocalFacing.remove();
+        	Rotation rotation = Rotation.X0_Y0_Z0;
+        	EnumFacing cardinalFacing = entityLivingBase.getHorizontalFacing().getOpposite();
+        	switch (facing) {
+	        	case DOWN:
+	        		if (x >= 0.2f && x <= 0.8f && z >= 0.2f && z <= 0.8f) {
+	        			switch (entityLivingBase.getHorizontalFacing()) {
+		        			case NORTH:
+		        				rotation = Rotation.X0_Y0_Z180;
+		        				break;
+		        			case SOUTH:
+		        				rotation = Rotation.X180_Y0_Z0;
+		        				break;
+		        			case WEST:
+		        				rotation = Rotation.X180_Y90_Z0;
+		        				break;
+		        			case EAST:
+		        				rotation = Rotation.X180_Y270_Z0;
+		        				break;
+							default:
+								break;
+	        			}
+	        		} else if (1.0f - x > z && x <= 0.5f && x < z) {
+	        			rotation = Rotation.X180_Y90_Z0;
+        			} else if (z > x && z >= 0.5f) {
+        				rotation = Rotation.X180_Y0_Z0;
+        			} else if (x > 1.0f - z) {
+        				rotation = Rotation.X180_Y270_Z0;
+        			} else {
+        				rotation = Rotation.X0_Y0_Z180;
+        			}
+	        		break;
+	        	case UP:
+	        		if (x >= 0.2f && x <= 0.8f && z >= 0.2f && z <= 0.8f) {
+	        			switch (entityLivingBase.getHorizontalFacing()) {
+		        			case NORTH:
+		        				rotation = Rotation.X0_Y0_Z0;
+		        				break;
+		        			case SOUTH:
+		        				rotation = Rotation.X0_Y180_Z0;
+		        				break;
+		        			case WEST:
+		        				rotation = Rotation.X0_Y270_Z0;
+		        				break;
+		        			case EAST:
+		        				rotation = Rotation.X0_Y90_Z0;
+		        				break;
+							default:
+								break;
+	        			}
+	        		} else if (x < z && x <= 0.5f && 1.0f - x > z) {
+	        			rotation = Rotation.X0_Y270_Z0;
+	        		} else if (1.0f - z > x && z <= 0.5f) {
+	        			rotation = Rotation.X0_Y0_Z0;
+	        		} else if (x > z) {
+	        			rotation = Rotation.X0_Y90_Z0;
+	        		} else {
+	        			rotation = Rotation.X0_Y180_Z0;
+	        		}
+	        		break;
+	        	case NORTH:
+	        		if (x >= 0.2f && x <= 0.8f) {
+	        			if (y >= 0.5f) {
+	        				rotation = Rotation.X90_Y0_Z180;
+	        			} else {
+	        				rotation = Rotation.X90_Y0_Z0;
+	        			}
+	        		} else if (x > y && x >= 0.5f && x > 1.0f - y) {
+	        			rotation = Rotation.X90_Y0_Z270;
+	        		} else if (y > 1.0f - x && y >= 0.5f) {
+	        			rotation = Rotation.X90_Y0_Z180;
+	        		} else if (x < y) {
+	        			rotation = Rotation.X90_Y0_Z90;
+	        		} else {
+	        			rotation = Rotation.X90_Y0_Z0;
+	        		}
+	        		break;
+	        	case SOUTH:
+	        		if (x >= 0.2f && x <= 0.8f) {
+	        			if (y >= 0.5f) {
+	        				rotation = Rotation.X270_Y0_Z0;
+	        			} else {
+	        				rotation = Rotation.X90_Y180_Z0;
+	        			}
+	        		} else if (1.0f - x > y && x <= 0.5f && x < y) {
+	        			rotation = Rotation.X90_Y180_Z90;
+	        		} else if (y > x && y >= 0.5f) {
+	        			rotation = Rotation.X270_Y0_Z0;
+	        		} else if (x > 1.0f - y) {
+	        			rotation = Rotation.X270_Y0_Z90;
+	        		} else {
+	        			rotation = Rotation.X90_Y180_Z0;
+	        		}
+	        		break;
+	        	case WEST:
+	        		if (z >= 0.2f && z <= 0.8f) {
+	        			if (y >= 0.5f) {
+	        				rotation = Rotation.X270_Y90_Z0;
+	        			} else {
+	        				rotation = Rotation.X90_Y270_Z0;
+	        			}
+	        		} else if (1.0f - z > y && z <= 0.5f && z < y) {
+	        			rotation = Rotation.X0_Y0_Z270;
+	        		} else if (y > z && y >= 0.5f) {
+	        			rotation = Rotation.X270_Y90_Z0;
+	        		} else if (z > 1.0f - y) {
+	        			rotation = Rotation.X180_Y0_Z90;
+	        		} else {
+	        			rotation = Rotation.X90_Y270_Z0;
+	        		}
+	        		break;
+	        	case EAST:
+	        		if (z >= 0.2f && z <= 0.8f) {
+	        			if (y >= 0.5f) {
+	        				rotation = Rotation.X0_Y270_Z90;
+	        			} else {
+	        				rotation = Rotation.X90_Y90_Z0;
+	        			}
+	        		} else if (z > y && z >= 0.5f && z > 1.0f - y) {
+	        			rotation = Rotation.X0_Y180_Z90;
+	        		} else if (y > 1.0f - z && y >= 0.5f) {
+	        			rotation = Rotation.X0_Y270_Z90;
+	        		} else if (z < y) {
+	        			rotation = Rotation.X0_Y0_Z90;
+	        		} else {
+	        			rotation = Rotation.X90_Y90_Z0;
+	        		}
+	        		break;
+        	}
+        	SlopeData.setRotation(cbTileEntity, rotation);
         }
     }
 
-    /*@Override
-    *//**
-     * Called when the block is placed in the world.
-     * Uses cardinal direction to adjust metadata if player clicks top or bottom face of block.
-     *//*
-    public void onBlockPlacedBy(World world, BlockPos blockPos, EntityLivingBase entityLiving, ItemStack itemStack) {
-        super.onBlockPlacedBy(world, x, y, z, entityLiving, itemStack);
-
-        CbTileEntity cbTileEntity = getTileEntity(world, x, y, z);
-
-        if (cbTileEntity != null) {
-
-            int slopeID = 0;
-            int metadata = world.getBlockMetadata(x, y, z);
-
-            boolean isPositive = EventHandler.eventFace > 1 && EventHandler.hitY < 0.5F || EventHandler.eventFace == 1;
-            int corner = getCorner(entityLiving.rotationYaw);
-
-            EnumFacing dir = EntityLivingUtil.getFacing(entityLiving).getOpposite();
-
-            switch (metadata) {
-            case META_WEDGE:
-
-                slopeID = getWedgeOrientation(dir, EventHandler.eventFace, EventHandler.hitX, EventHandler.hitY, EventHandler.hitZ);
-
-                if (!entityLiving.isSneaking()) {
-                    slopeID = SlopeTransform.transformWedge(world, slopeID, blockPos);
-                    cbTileEntity.setData(slopeID);
-                    SlopeTransform.transformAdjacentWedges(world, slopeID, blockPos);
-                }
-
-                break;
-            case META_OBLIQUE_INT:
-
-                switch (corner) {
-                case CORNER_SE:
-                    slopeID = isPositive ? Slope.ID_OBL_INT_POS_SE : Slope.ID_OBL_INT_NEG_SE;
-                    break;
-                case CORNER_NE:
-                    slopeID = isPositive ? Slope.ID_OBL_INT_POS_NE : Slope.ID_OBL_INT_NEG_NE;
-                    break;
-                case CORNER_NW:
-                    slopeID = isPositive ? Slope.ID_OBL_INT_POS_NW : Slope.ID_OBL_INT_NEG_NW;
-                    break;
-                case CORNER_SW:
-                    slopeID = isPositive ? Slope.ID_OBL_INT_POS_SW : Slope.ID_OBL_INT_NEG_SW;
-                    break;
-                }
-
-                break;
-            case META_OBLIQUE_EXT:
-
-                switch (corner) {
-                case CORNER_SE:
-                    slopeID = isPositive ? Slope.ID_OBL_EXT_POS_SE : Slope.ID_OBL_EXT_NEG_SE;
-                    break;
-                case CORNER_NE:
-                    slopeID = isPositive ? Slope.ID_OBL_EXT_POS_NE : Slope.ID_OBL_EXT_NEG_NE;
-                    break;
-                case CORNER_NW:
-                    slopeID = isPositive ? Slope.ID_OBL_EXT_POS_NW : Slope.ID_OBL_EXT_NEG_NW;
-                    break;
-                case CORNER_SW:
-                    slopeID = isPositive ? Slope.ID_OBL_EXT_POS_SW : Slope.ID_OBL_EXT_NEG_SW;
-                    break;
-                }
-
-                break;
-            case META_PRISM:
-
-                if (isPositive) {
-
-                    slopeID = Slope.ID_PRISM_POS;
-
-                    if (!entityLiving.isSneaking()) {
-                        slopeID = SlopeTransform.transformPrism(world, slopeID, blockPos);
-                        cbTileEntity.setData(slopeID);
-                        SlopeTransform.transformAdjacentPrisms(world, blockPos);
-                    }
-
-                } else {
-
-                    slopeID = Slope.ID_PRISM_NEG;
-
-                }
-
-                break;
-            case META_PRISM_SLOPE:
-
-                switch (dir) {
-                case NORTH:
-                    slopeID = Slope.ID_PRISM_WEDGE_POS_S;
-                    break;
-                case SOUTH:
-                    slopeID = Slope.ID_PRISM_WEDGE_POS_N;
-                    break;
-                case WEST:
-                    slopeID = Slope.ID_PRISM_WEDGE_POS_E;
-                    break;
-                case EAST:
-                    slopeID = Slope.ID_PRISM_WEDGE_POS_W;
-                    break;
-                default: {}
-                }
-
-                break;
-            }
-
-            cbTileEntity.setData(slopeID);
-
-        }
-    }*/
-
     @Override
     public EnumFacing[] getValidRotations(World world, BlockPos blockPos) {
-        return new EnumFacing[] { EnumFacing.UP, EnumFacing.DOWN };
+        return EnumFacing.VALUES;
     }
 
     @Override
     public boolean rotateBlock(World world, BlockPos blockPos, EnumFacing facing) {
         CbTileEntity cbTileEntity = getTileEntity(world, blockPos);
         if (cbTileEntity != null) {
-        	new SlopeData().rotate(cbTileEntity, facing.getAxis());
+        	SlopeData.rotate(cbTileEntity, facing.getAxis());
         	return true;
         }
         return false;

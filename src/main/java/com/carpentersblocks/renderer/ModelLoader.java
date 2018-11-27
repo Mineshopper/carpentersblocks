@@ -9,6 +9,7 @@ import com.carpentersblocks.renderer.model.ModelPressurePlate;
 import com.carpentersblocks.renderer.model.ModelSlope;
 import com.carpentersblocks.util.registry.BlockRegistry;
 
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.ICustomModelLoader;
@@ -30,7 +31,7 @@ public class ModelLoader implements ICustomModelLoader {
     	if (resourceLocation.getResourcePath().equals(BlockRegistry.REGISTRY_NAME_BLOCK)) {
     		return new ModelBlock();
     	} else if (resourceLocation.getResourcePath().endsWith(BlockRegistry.REGISTRY_NAME_SLOPE)) {
-    		return new ModelSlope();
+    		return new ModelSlope(((ModelResourceLocation)resourceLocation).getVariant());
     	} else if (resourceLocation.getResourcePath().equals(BlockRegistry.REGISTRY_NAME_COLLAPSIBLE_BLOCK)) {
     		return new ModelCollapsibleBlock();
     	} else if (resourceLocation.getResourcePath().equals(BlockRegistry.REGISTRY_NAME_PRESSURE_PLATE)) {

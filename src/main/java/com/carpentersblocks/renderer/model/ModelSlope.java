@@ -18,6 +18,12 @@ import net.minecraftforge.common.model.TRSRTransformation;
 
 public class ModelSlope implements IModel {
 
+	private String _type;
+	
+	public ModelSlope(String type) {
+		this._type = type;
+	}
+	
 	@Override
 	public Collection<ResourceLocation> getDependencies() {
 		return Collections.emptySet();
@@ -30,7 +36,7 @@ public class ModelSlope implements IModel {
 
 	@Override
 	public IBakedModel bake(IModelState state, VertexFormat format, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter) {
-		return new BakedSlope(state, format, bakedTextureGetter);
+		return new BakedSlope(state, format, bakedTextureGetter, _type);
 	}
 
 	@Override
