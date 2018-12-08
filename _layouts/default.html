@@ -11,28 +11,22 @@
       <link rel="icon" href="favicon.ico" type="image/x-icon">
       <script src="javascripts/jquery-2.1.1.min.js"></script>
       <script src="javascripts/bootstrap.min.js"></script>
-	    <script>
-			function download(url) {
-				if (typeof trackOutboundLink !== 'undefined') {
-					trackOutboundLink(url);
-				} else {
-					window.location.assign(url);
-				}
-			}
-		</script>
 		<script async src="https://www.googletagmanager.com/gtag/js?id=UA-52814519-1"></script>
 		<script>
+			var hasAnalytics = false;
+			window.addEventListener("load", function(){ hasAnalytics = window.ga && ga.create; }, false);
 			window.dataLayer = window.dataLayer || [];
 			function gtag(){dataLayer.push(arguments);}
 			gtag('js', new Date());
 			gtag('config', 'UA-52814519-1');
-			var trackOutboundLink = function(url) {
-				gtag('event', 'click', {
-					'event_category': 'outbound',
-					'event_label': url,
-					'transport_type': 'beacon',
-					'event_callback': function(){window.location.assign(url);}
-				});
+			function download(url) {
+				if (hasAnalytics) {
+					gtag('event', 'click', {
+						'event_category': 'outbound',
+						'event_label': url,
+						'transport_type': 'beacon'});
+				}
+				window.location.assign(url);
 			}
 		</script>
       <title>Carpenter's Blocks {% if page.title %} - {{ page.title }} {% endif %}</title>
