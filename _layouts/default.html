@@ -11,6 +11,15 @@
       <link rel="icon" href="favicon.ico" type="image/x-icon">
       <script src="javascripts/jquery-2.1.1.min.js"></script>
       <script src="javascripts/bootstrap.min.js"></script>
+	    <script>
+			function download(url) {
+				if (typeof trackOutboundLink !== 'undefined') {
+					trackOutboundLink(url);
+				} else {
+					window.location.assign(url);
+				}
+			}
+		</script>
 		<script async src="https://www.googletagmanager.com/gtag/js?id=UA-52814519-1"></script>
 		<script>
 			window.dataLayer = window.dataLayer || [];
