@@ -280,3 +280,30 @@ Mobile Theme
    }
    
 }
+
+/*******************************************************************************
+Animations
+*******************************************************************************/
+
+.anim-fade {
+	animation: fadeInOut 0.8s infinite alternate; /* IE 10+, Fx 29+ */
+	-webkit-animation: fadeInOut 0.8s infinite alternate; /* Safari 4+ */
+	-moz-animation: fadeInOut 0.8s infinite alternate; /* Fx 5+ */
+	-o-animation: fadeInOut 0.8s infinite alternate; /* Opera 12+ */
+}
+
+@keyframes fadeInOut {
+	from { opacity: 0; }
+}
+
+@-webkit-keyframes fadeInOut {
+	from { opacity: 0; }
+}
+
+@-moz-keyframes fadeInOut {
+	from { opacity: 0; }
+}
+
+@-o-keyframes fadeInOut {
+	from { opacity: 0; }
+}
