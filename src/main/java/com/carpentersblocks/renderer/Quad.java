@@ -3,9 +3,7 @@ package com.carpentersblocks.renderer;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
-import java.util.Set;
 
-import com.carpentersblocks.block.data.SlopeData;
 import com.carpentersblocks.block.state.Property;
 import com.carpentersblocks.util.IConstants;
 import com.carpentersblocks.util.ModLogger;
@@ -35,7 +33,9 @@ public class Quad {
 	private boolean _maxBrightness;
 	private BlockRenderLayer _renderLayer;
 	private Vec3d _normal;
-	boolean _isOblique;
+	private boolean _isOblique;
+	private Vec3d _uvOffset;
+	private EnumFacing _uvFloat;
 	
 	private Quad() { }
 	
@@ -81,8 +81,10 @@ public class Quad {
 		_sprite = srcQuad.getSprite();
 		_normal = new Vec3d(srcQuad.getNormal().x, srcQuad.getNormal().y, srcQuad.getNormal().z);
 		_isOblique = srcQuad.isObliqueSlope();
+		_uvFloat = srcQuad.getUVFloat();
+		_uvOffset = srcQuad.getUVOffset();
 	}
-	
+
 	public static Quad getQuad(EnumFacing facing, Vec3d ... inVecs) {
 		return getQuad(facing, SpriteRegistry.sprite_uncovered_full, inVecs);
 	}
@@ -96,7 +98,7 @@ public class Quad {
 	}
 	
 	public static Quad getQuad(EnumFacing facing, TextureAtlasSprite sprite, int rgb, boolean maxBrightness, BlockRenderLayer renderLayer, Vec3d ... inVecs) {
-		Vec3d[] vec3ds = VecUtil.sortVec3dsByFacing(facing, inVecs);
+		Vec3d[] vec3ds = QuadUtil.sortVec3dsByFacing(facing, inVecs);
 		if (isMalformed(vec3ds)) {
 			return null;
 		}
@@ -125,6 +127,7 @@ public class Quad {
 		for (int i = 0; i < quad._vecs.length; ++i) {
 			quad._vecs[i] = quad._vecs[i].addVector(x, y, z);
 		}
+		quad.setUVOffset(new Vec3d(-x, -y, -z));
 		return quad;
 	}
 	
@@ -177,37 +180,22 @@ public class Quad {
 		UnpackedBakedQuad.Builder builder = new UnpackedBakedQuad.Builder(vertexFormat);
         builder.setTexture(_sprite);        
         
-        // If 
-       // applyFacing(this.getCardinalFacing());
-        // Oblique sloped quads always render using cardinal facing
-        //if (this._isOblique && Double.compare(Math.abs(_normal.x), Math.abs(_normal.z)) == 0) {
-        //	applyFacing(this.getCardinalFacing());
-        //}
-        
-        boolean floatY = _sprite.getIconName().equals(GRASS_SIDE_OVERLAY) || _sprite.getIconName().contains("overlay/overlay_") && _sprite.getIconName().endsWith("_side");
+        boolean isFloatingOverlay = _sprite.getIconName().equals(GRASS_SIDE_OVERLAY)
+        	|| _sprite.getIconName().contains("overlay/overlay_")
+        	&& _sprite.getIconName().endsWith("_side");
 
         // TODO: Maybe clean this up if rendering in inventory
         Block block = (Block) RenderPkg.getThreadedProperty(Property.BLOCK_TYP);
         Integer cbMetadata = (Integer) RenderPkg.getThreadedProperty(Property.CB_METADATA);
         
-        if (BlockRegistry.blockCarpentersSlope.equals(block) && _isOblique) {
-        	switch (SlopeData.getType(cbMetadata)) {
-	        	case OBLIQUE_EXTERIOR:
-	        		// Split into two faces (not sure if possible from here)
-	        		break;
-	        	case OBLIQUE_INTERIOR:
-	        		// One face
-	        		break;
-        		default: {}
-        	}
-        } else if (BlockRegistry.blockCarpentersCollapsibleBlock.equals(block) && (isSloped(Axis.X) || isSloped(Axis.Y) || isSloped(Axis.Z))) {
+        if (BlockRegistry.blockCarpentersCollapsibleBlock.equals(block) && (isSloped(Axis.X) || isSloped(Axis.Y) || isSloped(Axis.Z))) {
         	// Find rotated facing and render using it
         	this._facing = (EnumFacing) RenderPkg.getThreadedProperty(Property.FACING);
         	this._isOblique = false;
-        	floatY = false;
+        	isFloatingOverlay = false;
         }
         
-        UV[] uv = VecUtil.getUV(this, floatY, location);
+        UV[] uv = QuadUtil.getUV(this, isFloatingOverlay, location);
         for (int i = 0; i < 4; ++i) {
         	//_rgb = i == 0 ? 0xff0000 : i == 1 ? 0x00ff00 : i == 2 ? 0x0000ff : 0xffff00; // Debug
 	        for (int idx = 0; idx < vertexFormat.getElementCount(); idx++) {
@@ -317,9 +305,9 @@ public class Quad {
 	
 	public boolean isSloped(Axis axis) {
 		double axis1 = Axis.X.equals(axis) ? _normal.x : Axis.Y.equals(axis) ? _normal.y : _normal.z;
-		return compare(axis1, -1.0D) > 0 &&
-				compare(axis1, 0.0D) != 0 &&
-				compare(axis1, 1.0D) < 0;
+		return QuadUtil.compare(axis1, -1.0D) > 0 &&
+				QuadUtil.compare(axis1, 0.0D) != 0 &&
+				QuadUtil.compare(axis1, 1.0D) < 0;
 	}
 	
 	/**
@@ -343,25 +331,11 @@ public class Quad {
 	 * @param facing the new facing
 	 */
 	public void applyFacing(EnumFacing facing) {
-		if (!facing.equals(_facing)) {
-			_vecs = VecUtil.sortVec3dsByFacing(facing, _vecs);
-		}
+		_vecs = QuadUtil.sortVec3dsByFacing(facing, _vecs);
 		_facing = facing;
 		Vec3d[] vecs1 = new LinkedHashSet<Vec3d>(Arrays.asList(this.getVecs())).toArray(new Vec3d[this.getVecs().length]);
 		_normal = (vecs1[1].subtract(vecs1[0])).crossProduct(vecs1[2].subtract(vecs1[1])).normalize();
 		_isOblique = isSloped(Axis.X) && isSloped(Axis.Y) && isSloped(Axis.Z);
-	}
-	
-	public static int compare(double d1, double d2) {
-		double epsilon = 0.0001;
-		double diff = d1 - d2;
-		if (diff < -epsilon) {
-			return -1;
-		} else if (diff > epsilon) {
-			return 1;
-		} else {
-			return 0;
-		}
 	}
 	
 	public Vec3d getNormal() {
@@ -376,9 +350,9 @@ public class Quad {
 		return new HashSet<Vec3d>(Arrays.asList(this.getVecs())).size() < 4;
 	}
 	
-	public EnumFacing getSideCoverOffset() {
+	public EnumFacing getSideCoverAltFacing() {
 		if (isSloped(Axis.Y)) {
-			if (_normal.y > 0.0D) {
+			if (Double.compare(_normal.y, 0.0D) > 0) {
 				return EnumFacing.UP;
 			} else {
 				return EnumFacing.DOWN;
@@ -386,6 +360,30 @@ public class Quad {
 		} else {
 			return _facing;
 		}
+	}
+
+	public Vec3d getUVOffset() {
+		if (_uvOffset == null) {
+			return Vec3d.ZERO;
+		}
+		return _uvOffset;
+	}
+
+	public void setUVOffset(Vec3d _uvOffset) {
+		this._uvOffset = _uvOffset;
+	}
+
+	public EnumFacing getUVFloat() {
+		return _uvFloat;
+	}
+
+	public Quad setUVFloat(EnumFacing _uvFloat) {
+		this._uvFloat = _uvFloat;
+		return this;
+	}
+	
+	public boolean hasFloatingUV() {
+		return this._uvFloat != null;
 	}
 	
 }

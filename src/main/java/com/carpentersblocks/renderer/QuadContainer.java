@@ -64,7 +64,7 @@ public class QuadContainer {
 	}
 	
 	public void add(Quad quad) {
-		if (VecUtil.isValid(quad)) {
+		if (QuadUtil.isValid(quad)) {
 			_quads.add(quad);
 		}
 	}
@@ -73,17 +73,13 @@ public class QuadContainer {
 		QuadContainer quadContainer = new QuadContainer(location);
 		EnumFacing facing = EnumFacing.getFront(location.ordinal());
 	    for (Quad quad : _quads) {
-	    	EnumFacing offsetFacing = quad.getSideCoverOffset();
-	    	if (facing.equals(offsetFacing)) {
+	    	EnumFacing offsetFacing = quad.getSideCoverAltFacing(); // Sloped faces should be UP/DOWN
+	    	if (facing.equals(offsetFacing)) { // Side cover direction matches offset facing
 		    	//quadContainer.add(new Quad(quad).setFacing(facing.getOpposite())); // Should only add this if face is visible (if host is translucent/mipped)
-		    	Quad sideQuad = new Quad(quad);
-		    	sideQuad.applyFacing(offsetFacing);
-		    	if (sideQuad != null) {
-		    		quadContainer.add(sideQuad.offset(sideQuad.getFacing().getFrontOffsetX() * depth, sideQuad.getFacing().getFrontOffsetY() * depth, sideQuad.getFacing().getFrontOffsetZ() * depth));
-			    	for (Quad perpQuad : VecUtil.getPerpendicularQuads(sideQuad, depth)) {
-			    		quadContainer.add(new Quad(perpQuad));
-			    	}
-		    	}
+		    	Quad offsetQuad = new Quad(quad);
+		    	offsetQuad.applyFacing(offsetFacing);
+	    		quadContainer.addAll(QuadUtil.getPerpendicularQuads(offsetQuad, depth));
+	    		quadContainer.add(quad.offset(offsetFacing.getFrontOffsetX() * depth, offsetFacing.getFrontOffsetY() * depth, offsetFacing.getFrontOffsetZ() * depth));
 	    	}
 	    }
 	    
@@ -212,11 +208,11 @@ public class QuadContainer {
 				} else {
 					if (Blocks.GRASS.equals(blockState.getBlock())) {
 						Quad newQuad = new Quad(quad);
-						if (Quad.compare(quad.getNormal().y, MAX_UP_SLOPE) >= 0) {
+						if (QuadUtil.compare(quad.getNormal().y, MAX_UP_SLOPE) >= 0) {
 							if (!EnumFacing.UP.equals(quad.getFacing())) {
 								newQuad.applyFacing(EnumFacing.UP);
 							}
-						} else if (Quad.compare(quad.getNormal().y, MAX_SIDE_SLOPE) >= 0) {
+						} else if (QuadUtil.compare(quad.getNormal().y, MAX_SIDE_SLOPE) >= 0) {
 							if (!quad.getCardinalFacing().equals(quad.getFacing())) {
 								newQuad.applyFacing(quad.getCardinalFacing());
 							}
