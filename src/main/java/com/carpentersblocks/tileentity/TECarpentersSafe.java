@@ -7,6 +7,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import com.carpentersblocks.data.Safe;
+import net.minecraft.tileentity.TileEntity;
 
 public class TECarpentersSafe extends TEBase implements ISidedInventory {
 
@@ -187,7 +188,9 @@ public class TECarpentersSafe extends TEBase implements ISidedInventory {
     @Override
     public boolean isUseableByPlayer(EntityPlayer entityPlayer)
     {
-        if (entityPlayer.getEntityWorld().getTileEntity(xCoord, yCoord, zCoord).equals(this)) {
+        TileEntity tileEntity = entityPlayer.getEntityWorld().getTileEntity(xCoord, yCoord, zCoord);
+
+        if(tileEntity != null && tileEntity.equals(this)) {
             return entityPlayer.getDistanceSq(xCoord + 0.5D, yCoord + 0.5D, zCoord + 0.5D) <= 64.0D;
         }
 
