@@ -1,5 +1,7 @@
 package com.carpentersblocks.util.registry;
 
+import com.carpentersblocks.block.*;
+import com.carpentersblocks.renderer.*;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.init.Blocks;
@@ -8,44 +10,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import com.carpentersblocks.CarpentersBlocks;
-import com.carpentersblocks.block.BlockCarpentersBarrier;
-import com.carpentersblocks.block.BlockCarpentersBed;
-import com.carpentersblocks.block.BlockCarpentersBlock;
-import com.carpentersblocks.block.BlockCarpentersButton;
-import com.carpentersblocks.block.BlockCarpentersCollapsibleBlock;
-import com.carpentersblocks.block.BlockCarpentersDaylightSensor;
-import com.carpentersblocks.block.BlockCarpentersDoor;
-import com.carpentersblocks.block.BlockCarpentersFlowerPot;
-import com.carpentersblocks.block.BlockCarpentersGarageDoor;
-import com.carpentersblocks.block.BlockCarpentersGate;
-import com.carpentersblocks.block.BlockCarpentersHatch;
-import com.carpentersblocks.block.BlockCarpentersLadder;
-import com.carpentersblocks.block.BlockCarpentersLever;
-import com.carpentersblocks.block.BlockCarpentersPressurePlate;
-import com.carpentersblocks.block.BlockCarpentersSafe;
-import com.carpentersblocks.block.BlockCarpentersSlope;
-import com.carpentersblocks.block.BlockCarpentersStairs;
-import com.carpentersblocks.block.BlockCarpentersTorch;
-import com.carpentersblocks.block.ItemBlockCarpentersSlope;
-import com.carpentersblocks.block.ItemBlockSided;
-import com.carpentersblocks.renderer.BlockHandlerCarpentersBarrier;
-import com.carpentersblocks.renderer.BlockHandlerCarpentersBed;
-import com.carpentersblocks.renderer.BlockHandlerCarpentersBlock;
-import com.carpentersblocks.renderer.BlockHandlerCarpentersButton;
-import com.carpentersblocks.renderer.BlockHandlerCarpentersCollapsibleBlock;
-import com.carpentersblocks.renderer.BlockHandlerCarpentersDaylightSensor;
-import com.carpentersblocks.renderer.BlockHandlerCarpentersDoor;
-import com.carpentersblocks.renderer.BlockHandlerCarpentersFlowerPot;
-import com.carpentersblocks.renderer.BlockHandlerCarpentersGarageDoor;
-import com.carpentersblocks.renderer.BlockHandlerCarpentersGate;
-import com.carpentersblocks.renderer.BlockHandlerCarpentersHatch;
-import com.carpentersblocks.renderer.BlockHandlerCarpentersLadder;
-import com.carpentersblocks.renderer.BlockHandlerCarpentersLever;
-import com.carpentersblocks.renderer.BlockHandlerCarpentersPressurePlate;
-import com.carpentersblocks.renderer.BlockHandlerCarpentersSafe;
-import com.carpentersblocks.renderer.BlockHandlerCarpentersSlope;
-import com.carpentersblocks.renderer.BlockHandlerCarpentersStairs;
-import com.carpentersblocks.renderer.BlockHandlerCarpentersTorch;
 import com.carpentersblocks.util.BlockProperties;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -70,6 +34,7 @@ public class BlockRegistry {
     public static Block blockCarpentersHatch;
     public static Block blockCarpentersLadder;
     public static Block blockCarpentersLever;
+    public static Block blockCarpentersPath;
     public static Block blockCarpentersPressurePlate;
     public static Block blockCarpentersSafe;
     public static Block blockCarpentersSlope;
@@ -91,6 +56,7 @@ public class BlockRegistry {
     public static int carpentersHatchRenderID;
     public static int carpentersLadderRenderID;
     public static int carpentersLeverRenderID;
+    public static int carpentersPathRenderID;
     public static int carpentersPressurePlateRenderID;
     public static int carpentersSafeRenderID;
     public static int carpentersSlopeRenderID;
@@ -111,6 +77,7 @@ public class BlockRegistry {
     public static boolean enableHatch            = true;
     public static boolean enableLadder           = true;
     public static boolean enableLever            = true;
+    public static boolean enablePath             = true;
     public static boolean enablePressurePlate    = true;
     public static boolean enableSafe             = true;
     public static boolean enableSlope            = true;
@@ -132,6 +99,7 @@ public class BlockRegistry {
     public static int recipeQuantityHatch            = 1;
     public static int recipeQuantityLadder           = 4;
     public static int recipeQuantityLever            = 1;
+    public static int recipeQuantityPath             = 8;
     public static int recipeQuantityPressurePlate    = 1;
     public static int recipeQuantitySafe             = 1;
     public static int recipeQuantitySlope            = 6;
@@ -155,6 +123,7 @@ public class BlockRegistry {
         enableHatch            = config.get("blocks",             "Enable Hatch",            enableHatch).getBoolean(enableHatch);
         enableLadder           = config.get("blocks",            "Enable Ladder",           enableLadder).getBoolean(enableLadder);
         enableLever            = config.get("blocks",             "Enable Lever",            enableLever).getBoolean(enableLever);
+        enablePath             = config.get("blocks",             "Enable Paths",             enablePath).getBoolean(enablePath);
         enablePressurePlate    = config.get("blocks",    "Enable Pressure Plate",    enablePressurePlate).getBoolean(enablePressurePlate);
         enableSafe             = config.get("blocks",              "Enable Safe",             enableSafe).getBoolean(enableSafe);
         enableSlope            = config.get("blocks",             "Enable Slope",            enableSlope).getBoolean(enableSlope);
@@ -174,6 +143,7 @@ public class BlockRegistry {
         recipeQuantityHatch            = config.get("recipe quantities",             "Hatch",            recipeQuantityHatch).getInt(recipeQuantityHatch);
         recipeQuantityLadder           = config.get("recipe quantities",            "Ladder",           recipeQuantityLadder).getInt(recipeQuantityLadder);
         recipeQuantityLever            = config.get("recipe quantities",             "Lever",            recipeQuantityLever).getInt(recipeQuantityLever);
+        recipeQuantityPath             = config.get("recipe quantities",              "Path",             recipeQuantityPath).getInt(recipeQuantityPath);
         recipeQuantityPressurePlate    = config.get("recipe quantities",    "Pressure Plate",    recipeQuantityPressurePlate).getInt(recipeQuantityPressurePlate);
         recipeQuantitySafe             = config.get("recipe quantities",              "Safe",             recipeQuantitySafe).getInt(recipeQuantitySafe);
         recipeQuantitySlope            = config.get("recipe quantities",             "Slope",            recipeQuantitySlope).getInt(recipeQuantitySlope);
@@ -218,6 +188,10 @@ public class BlockRegistry {
             if (enableLever) {
                 carpentersLeverRenderID = RenderingRegistry.getNextAvailableRenderId();
                 RenderingRegistry.registerBlockHandler(carpentersLeverRenderID, new BlockHandlerCarpentersLever());
+            }
+            if (enablePath) {
+                carpentersPathRenderID = RenderingRegistry.getNextAvailableRenderId();
+                RenderingRegistry.registerBlockHandler(carpentersPathRenderID, new BlockHandlerCarpentersPath());
             }
             if (enablePressurePlate) {
                 carpentersPressurePlateRenderID = RenderingRegistry.getNextAvailableRenderId();
@@ -411,12 +385,22 @@ public class BlockRegistry {
             Blocks.fire.setFireInfo(blockCarpentersLever, 5, 20);
         }
 
+        if (enablePath) {
+            blockCarpentersPath = new BlockCarpentersPath(Material.circuits)
+                    .setBlockName("blockCarpentersPath")
+                    .setHardness(0.2F)
+                    .setStepSound(BlockProperties.stepSound)
+                    .setCreativeTab(CarpentersBlocks.creativeTab);
+            GameRegistry.registerBlock(blockCarpentersPath, "blockCarpentersPath");
+            Blocks.fire.setFireInfo(blockCarpentersPath, 5, 20);
+        }
+
         if (enablePressurePlate) {
             blockCarpentersPressurePlate = new BlockCarpentersPressurePlate(Material.circuits)
-                .setBlockName("blockCarpentersPressurePlate")
-                .setHardness(0.2F)
-                .setStepSound(BlockProperties.stepSound)
-                .setCreativeTab(CarpentersBlocks.creativeTab);
+                    .setBlockName("blockCarpentersPressurePlate")
+                    .setHardness(0.2F)
+                    .setStepSound(BlockProperties.stepSound)
+                    .setCreativeTab(CarpentersBlocks.creativeTab);
             GameRegistry.registerBlock(blockCarpentersPressurePlate, ItemBlockSided.class, "blockCarpentersPressurePlate");
             Blocks.fire.setFireInfo(blockCarpentersPressurePlate, 5, 20);
         }
@@ -503,6 +487,9 @@ public class BlockRegistry {
         }
         if (enableLever) {
             GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(blockCarpentersLever, recipeQuantityLever), "X", "Y", 'X', "stickWood", 'Y', blockCarpentersBlock));
+        }
+        if (enablePath) {
+            GameRegistry.addRecipe(new ItemStack(blockCarpentersPath, recipeQuantityPath), new Object[] { "X X", "XXX", "XXX", 'X', blockCarpentersBlock });
         }
         if (enablePressurePlate) {
             GameRegistry.addRecipe(new ItemStack(blockCarpentersPressurePlate, recipeQuantityPressurePlate), new Object[] { "XX", 'X', blockCarpentersBlock });
