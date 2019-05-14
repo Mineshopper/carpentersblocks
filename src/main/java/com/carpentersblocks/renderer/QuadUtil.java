@@ -1,14 +1,16 @@
- package com.carpentersblocks.renderer;
+package com.carpentersblocks.renderer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
+
+import javax.vecmath.Point2d;
 
 import com.carpentersblocks.util.attribute.EnumAttributeLocation;
 
@@ -18,74 +20,60 @@ import net.minecraft.util.math.Vec3d;
 
 public class QuadUtil {
 	
-	public static class Vec2l {
-		
-		private long _u;
-		private long _v;
-		
-		public Vec2l(long u, long v) {
-			_u = u;
-			_v = v;
+	/**
+	 * Reduces vec3d down to point2d representation.
+	 * <p>
+	 * Used to calculate distances between quad boundaries and
+	 * the corners of quad.
+	 * 
+	 * @param facing the quad facing
+	 * @param vec3d the vec3d to convert
+	 * @return point representation of vec3d based on facing
+	 */
+	public static Point2d vec3dToPoint(EnumFacing facing, Vec3d vec3d) {
+		switch (facing.getAxis()) {
+			case X:
+				return new Point2d(vec3d.z, vec3d.y);
+			case Y:
+				return new Point2d(vec3d.x, vec3d.z);
+			default: // case Z:
+				return new Point2d(vec3d.x, vec3d.y);
 		}
-		
-		public Vec2l(EnumFacing facing, Vec3d vec3d) {
-			switch (facing.getAxis()) {
-				case X:
-					_u = Math.round(vec3d.z * 16);
-					_v = Math.round(vec3d.y * 16);
-					break;
-				case Y:
-	                _u = Math.round(vec3d.x * 16);
-	                _v = Math.round(vec3d.z * 16);
-					break;
-				case Z:
-					_u = Math.round(vec3d.x * 16);
-					_v = Math.round(vec3d.y * 16);
-					break;
-			}
-		}
-		
-		public long getU() {
-			return _u;
-		}
-		
-		public long getV() {
-			return _v;
-		}
-		
 	}
 	
-	public static Vec2l getVec2l(EnumFacing facing, Vec3d Vec3d) {
-		return new Vec2l(facing, Vec3d);
-	}
-	
-	private static Vec2l[] getBoundingPlane(EnumFacing facing, Vec3d[] vecs) {
-		long minU = Long.MAX_VALUE;
-		long maxU = Long.MIN_VALUE;
-		long minV = Long.MAX_VALUE;
-		long maxV = Long.MIN_VALUE;
-		for (Vec3d vec : vecs) {
-			Vec2l vec2l = new Vec2l(facing, vec);
-			minU = Math.min(minU, vec2l.getU());
-			maxU = Math.max(maxU, vec2l.getU());
-			minV = Math.min(minV, vec2l.getV());
-			maxV = Math.max(maxV, vec2l.getV());
+	/**
+	 * Gathers minimum and maximum boundaries generated using input vec3ds
+	 * and (0,0) -> (1,1) block dimensions.
+	 * 
+	 * @param facing the quad facing
+	 * @param vec3ds the vec3ds
+	 * @return an array of points defining boundary
+	 */
+	private static Point2d[] getBoundingPlane(EnumFacing facing, List<Vec3d> vec3ds) {
+		double minU = 0.0D;
+		double maxU = 1.0D;
+		double minV = 0.0D;
+		double maxV = 1.0D;
+		for (Vec3d vec : vec3ds) {
+			Point2d pt = vec3dToPoint(facing, vec);
+			minU = Math.min(minU, pt.getX());
+			maxU = Math.max(maxU, pt.getX());
+			minV = Math.min(minV, pt.getY());
+			maxV = Math.max(maxV, pt.getY());
 		}
 		switch (facing) {
 			case DOWN:
-				return new Vec2l[] { new Vec2l(minU, maxV), new Vec2l(minU, minV), new Vec2l(maxU, minV), new Vec2l(maxU, maxV) };
+				return new Point2d[] { new Point2d(minU, maxV), new Point2d(minU, minV), new Point2d(maxU, minV), new Point2d(maxU, maxV) };
 			case UP:
-				return new Vec2l[] { new Vec2l(minU, minV), new Vec2l(minU, maxV), new Vec2l(maxU, maxV), new Vec2l(maxU, minV) };
+				return new Point2d[] { new Point2d(minU, minV), new Point2d(minU, maxV), new Point2d(maxU, maxV), new Point2d(maxU, minV) };
 			case NORTH:
-				return new Vec2l[] { new Vec2l(maxU, maxV), new Vec2l(maxU, minV), new Vec2l(minU, minV), new Vec2l(minU, maxV) };
+				return new Point2d[] { new Point2d(maxU, maxV), new Point2d(maxU, minV), new Point2d(minU, minV), new Point2d(minU, maxV) };
 			case SOUTH:
-				return new Vec2l[] { new Vec2l(minU, maxV), new Vec2l(minU, minV), new Vec2l(maxU, minV), new Vec2l(maxU, maxV) };
+				return new Point2d[] { new Point2d(minU, maxV), new Point2d(minU, minV), new Point2d(maxU, minV), new Point2d(maxU, maxV) };
 			case WEST:
-				return new Vec2l[] { new Vec2l(minU, maxV), new Vec2l(minU, minV), new Vec2l(maxU, minV), new Vec2l(maxU, maxV) };
-			case EAST:
-				return new Vec2l[] { new Vec2l(maxU, maxV), new Vec2l(maxU, minV), new Vec2l(minU, minV), new Vec2l(minU, maxV) };
-			default:
-				return null;
+				return new Point2d[] { new Point2d(minU, maxV), new Point2d(minU, minV), new Point2d(maxU, minV), new Point2d(maxU, maxV) };
+			default: // case EAST:
+				return new Point2d[] { new Point2d(maxU, maxV), new Point2d(maxU, minV), new Point2d(minU, minV), new Point2d(minU, maxV) };
 		}
 	}
 	
@@ -114,92 +102,115 @@ public class QuadUtil {
 		Set<Vec3d> set = new HashSet<Vec3d>(Arrays.asList(vecs));
 		return set.size() >= 3; // Need 3 unique to calculate normal
 	}
-
-	private static long squareDistanceTo(EnumFacing facing, Vec2l vec2l, Vec3d Vec3d) {
-		Vec2l vec2l2 = new Vec2l(facing, Vec3d);
-        long u = vec2l2.getU() - vec2l.getU();
-        long v = vec2l2.getV() - vec2l.getV();
-        return u * u + v * v;
-	}
-
-	public static Vec3d[] sortVec3dsByFacing(EnumFacing facing, Vec3d[] inVecs) {
-		Set<Vec3d> set = new HashSet<Vec3d>(Arrays.asList(inVecs));
-		if (!(set.size() > 2 || set.size() < 5)) {
-			return null;
-		}
-		
-		List<Vec3d> vecs = new ArrayList<Vec3d>(Arrays.asList(inVecs));
-		List[] cornerList = {
-				new ArrayList<Vec3d>(),
-				new ArrayList<Vec3d>(),
-				new ArrayList<Vec3d>(),
-				new ArrayList<Vec3d>() };
-		
-		// Generate bounds
-		Vec2l[] bounds = getBoundingPlane(facing, inVecs);
-		
-		// Generate corner lists with closest vectors
+	
+	/**
+	 * Used for traditional quads and triangles where corners are uniquely identifiable.
+	 * <p>
+	 * These types of quads are required for supporting side covers.
+	 * 
+	 * @param facing quad facing
+	 * @param bounds quad point boundary
+	 * @param vec3ds list of vec3ds
+	 * @return array of mappable corners
+	 */
+	private static Vec3d[] getCornersUsingUniqueness(EnumFacing facing, Point2d[] bounds, List<Vec3d> vec3ds) {
+		Vec3d[] corners = new Vec3d[4];
 		for (int i = 0; i < bounds.length; ++i) {
-			SortedMap<Long,List<Vec3d>> map = new TreeMap<Long,List<Vec3d>>();
-			for (Vec3d vec3d : vecs) {
-				long dist = squareDistanceTo(facing, bounds[i], vec3d);
-				if (!map.containsKey(dist)) {
-					map.put(dist, new ArrayList<Vec3d>());
+			
+			// Gather vector distances to corner
+			double[] proximity = new double[vec3ds.size()];
+			for (int j = 0; j < vec3ds.size(); ++j) {
+				Point2d pt = vec3dToPoint(facing, vec3ds.get(j));
+				proximity[j] = Math.ceil(pt.distance(bounds[i]) * 10000) / 10000;
+			}
+			
+			// Ensure closest corner is unique
+			SortedMap<Double,List<Vec3d>> map = new TreeMap<Double,List<Vec3d>>();
+			for (int j = 0; j < proximity.length; ++j) {
+				if (!map.containsKey(proximity[j])) {
+					map.put(proximity[j], new ArrayList<Vec3d>());
 				}
-				map.get(dist).add(vec3d);
+				map.get(proximity[j]).add(vec3ds.get(j));
 			}
-			cornerList[i].addAll(map.get(map.firstKey()));
-		}
-		
-		// Save unique Vec3ds for removal from ambiguous points
-		List<Vec3d> removeList = new ArrayList<Vec3d>();
-		for (int i = 0; i < cornerList.length; ++i) {
-			if (cornerList[i] != null && cornerList[i].size() == 1) {
-				removeList.add((Vec3d) cornerList[i].get(0));
-			}
-		}
-		
-		// Remove standalone points from other matches
-		for (int i = 0; i < cornerList.length; ++i) {
-			if (cornerList[i] != null && cornerList[i].size() > 1) {
-				cornerList[i].removeAll(removeList);
+			Integer corner = null;
+			// Corner is unique; get corner assignment
+			if (map.get(map.firstKey()).size() == 1) {
+				// Add closest corner
+				for (int j = 0; j < proximity.length; ++j) {
+					if (proximity[j] == map.firstKey()) {
+						corners[i] = map.get(map.firstKey()).get(0);
+						break;
+					}
+				}
 			}
 		}
 		
-		// Map corners to finalVecs
-		Vec3d[] finalVecs = new Vec3d[4];
-		for (int i = 0; i < cornerList.length; ++i) {
-			List<Vec3d> list = cornerList[i];
-			if (list.size() > 0) {
-				finalVecs[i] = list.get(0);
+		// Resolve missing corners
+		List<Vec3d> unassigned = new ArrayList<Vec3d>(vec3ds);
+		unassigned.removeAll(Arrays.asList(corners));
+		if (!unassigned.isEmpty()) {
+			for (int i = 0; i < corners.length; ++i) {
+				if (corners[i] == null) {
+					corners[i] = unassigned.get(0);
+				}
 			}
 		}
 		
-		// Count null points; collapsible may be two, slopes should only ever be one
-		int emptyCorner = 0;
-		for (int i = 0; i < cornerList.length; ++i) {
-			if (cornerList[i].isEmpty()) {
-				++emptyCorner;
-			}
-		}
-		
-		// Fill missing corners
-		if (emptyCorner > 0) {
-			if (finalVecs[0] == null) {
-				finalVecs[0] = finalVecs[1];
-			} else if (finalVecs[1] == null) {
-				finalVecs[1] = finalVecs[0];
-			}
-			if (finalVecs[2] == null) {
-				finalVecs[2] = finalVecs[3];
-			} else if (finalVecs[3] == null) {
-				finalVecs[3] = finalVecs[2];
-			}
-		}
-		
-		return finalVecs;
+		return corners;
 	}
 	
+	/**
+	 * Handles vec3d sorting for a majority of rendering tasks.
+	 * <p>
+	 * This ensures vec3ds are in proper order for the given facing,
+	 * and can be used as a source for generating side covers
+	 * for perpendicular faces.
+	 * 
+	 * @param facing quad facing
+	 * @param inVecs source vec3ds
+	 * @return a sorted array of vec3ds
+	 */
+	public static Vec3d[] sortVec3dsByFacing(EnumFacing facing, Vec3d[] inVecs) {
+		Vec3d[] cornerList = null;
+		Set<Point2d> set = new HashSet<Point2d>();
+		for (int i = 0; i < inVecs.length; ++i) {
+			if (inVecs[i] != null) {
+				set.add(vec3dToPoint(facing, inVecs[i]));
+			}
+		}
+		if (set.size() > 2) {
+			List<Vec3d> list = new ArrayList<Vec3d>(Arrays.asList(inVecs));
+			Point2d[] bounds = getBoundingPlane(facing, list);
+			cornerList = getCornersUsingUniqueness(facing, bounds, list);
+			int cornerCount = 0;
+			for (int i = 0; i < cornerList.length; ++i) {
+				if (cornerList[i] != null) {
+					++cornerCount;
+				}
+			}
+			if (cornerCount >= 3) {
+				if (cornerList[0] == null) {
+					cornerList[0] = cornerList[1];
+				} else if (cornerList[1] == null) {
+					cornerList[1] = cornerList[0];
+				} else if (cornerList[2] == null) {
+					cornerList[2] = cornerList[3];
+				} else if (cornerList[3] == null) {
+					cornerList[3] = cornerList[2];
+				}
+			}
+		}
+		return cornerList;
+	}
+	
+	/**
+	 * Delegates UV mapping to the appropriate method.
+	 * 
+	 * @param quad the quad
+	 * @param isFloatingOverlay whether texture has floating properties, like grass side
+	 * @param location the location of resource on block
+	 * @return array of UV coordinates
+	 */
 	public static UV[] getUV(Quad quad, boolean isFloatingOverlay, EnumAttributeLocation location) {
 		if (quad.isObliqueSlope()) {
 			return getUVObliqueSlope(quad, isFloatingOverlay, location);
@@ -208,7 +219,16 @@ public class QuadUtil {
 		}
 	}
 
-	// TODO: Work on this; need to adjust for depth
+	/**
+	 * Gets UV mapping for oblique sloped faces.
+	 * <p>
+	 * TODO: requires work to match up textures
+	 * 
+	 * @param quad the quad
+	 * @param isFloatingOverlay whether texture has floating properties, like grass side
+	 * @param location the location of resource on block (e.g. side cover, host)
+	 * @return array of UV coordinates
+	 */
 	public static UV[] getUVObliqueSlope(Quad quad, boolean isFloatingOverlay, EnumAttributeLocation location) {
 		Vec3d TL = quad.getVecs()[0];
 		Vec3d BL = quad.getVecs()[1];
@@ -217,13 +237,13 @@ public class QuadUtil {
 		
 		// Set midpoint corner
 		boolean[] midPt = new boolean[4];
-		if (TL.equals(BL)) {
+		if (compare(TL, BL) == 0) {
 			if (compare(TL.y, TR.y) < 0) {
-				midPt[3] = true;
+				midPt[2] = true;
 			} else if (compare(TL.y, BR.y) > 0) {
 				midPt[2] = true;
 			}
-		} else { // (BR.equals(TR)) {
+		} else { // (compare(BR, TR) == 0) {
 			if (compare(TL.y, TR.y) > 0) {
 				midPt[0] = true;
 			} else if (compare(BL.y, BR.y) < 0) {
@@ -251,7 +271,6 @@ public class QuadUtil {
 		
 		switch (quad.getCardinalFacing()) {
     		case NORTH:
-    			// Midpoint is characteristic of sorting algorithm for triangles; covers built-in cases
     			if (isFloatingOverlay && midPt[0]) {
     				return new UV[] {
         				new UV(0.5D, 0.0D).invertU(),
@@ -318,6 +337,13 @@ public class QuadUtil {
 		}
 	}
 	
+	/**
+	 * Gets UV mapping for ordinary (non-triangle shaped) quads.
+	 * 
+	 * @param quad the quad
+	 * @param isFloatingOverlay whether texture has floating properties, like grass side
+	 * @return array of UV coordinates
+	 */
 	public static UV[] getUV(Quad quad, boolean isFloatingOverlay) {
 		Vec3d TL = quad.getVecs()[0];
 		Vec3d BL = quad.getVecs()[1];
@@ -602,175 +628,188 @@ public class QuadUtil {
 		Vec3d[] vecs = quad.getVecs();
 		switch (quad.getSideCoverAltFacing()) {
 			case DOWN:
-				list.add(Quad.getQuad(
+				list.add(Quad.getUnsortedQuad(
 					EnumFacing.NORTH,
 					vecs[2].addVector(0, 0, 0),
 					vecs[2].addVector(0, -depth, 0),
 					vecs[1].addVector(0, -depth, 0),
 					vecs[1].addVector(0, 0, 0)));
-				list.add(Quad.getQuad(
+				list.add(Quad.getUnsortedQuad(
 					EnumFacing.SOUTH,
 					vecs[0].addVector(0, 0, 0),
 					vecs[0].addVector(0, -depth, 0),
 					vecs[3].addVector(0, -depth, 0),
 					vecs[3].addVector(0, 0, 0)));
-				list.add(Quad.getQuad(
+				list.add(Quad.getUnsortedQuad(
 					EnumFacing.WEST,
 					vecs[1].addVector(0, 0, 0),
 					vecs[1].addVector(0, -depth, 0),
 					vecs[0].addVector(0, -depth, 0),
 					vecs[0].addVector(0, 0, 0)));
-				list.add(Quad.getQuad(
+				list.add(Quad.getUnsortedQuad(
 					EnumFacing.EAST,
 					vecs[3].addVector(0, 0, 0),
 					vecs[3].addVector(0, -depth, 0),
 					vecs[2].addVector(0, -depth, 0),
 					vecs[2].addVector(0, 0, 0)));
-				list.removeIf(Objects::isNull);
-				list.forEach(q -> q.setUVFloat(EnumFacing.DOWN));
+				preparePerdendicularQuads(list, EnumFacing.DOWN);
 				break;
 			case UP:
-				list.add(Quad.getQuad(
+				list.add(Quad.getUnsortedQuad(
 					EnumFacing.NORTH,
 					vecs[3].addVector(0, depth, 0),
 					vecs[3].addVector(0, 0, 0),
 					vecs[0].addVector(0, 0, 0),
 					vecs[0].addVector(0, depth, 0)));
-				list.add(Quad.getQuad(
+				list.add(Quad.getUnsortedQuad(
 					EnumFacing.SOUTH,
 					vecs[1].addVector(0, depth, 0),
 					vecs[1].addVector(0, 0, 0),
 					vecs[2].addVector(0, 0, 0),
 					vecs[2].addVector(0, depth, 0)));
-				list.add(Quad.getQuad(
+				list.add(Quad.getUnsortedQuad(
 					EnumFacing.WEST,
 					vecs[0].addVector(0, depth, 0),
 					vecs[0].addVector(0, 0, 0),
 					vecs[1].addVector(0, 0, 0),
 					vecs[1].addVector(0, depth, 0)));
-				list.add(Quad.getQuad(
+				list.add(Quad.getUnsortedQuad(
 					EnumFacing.EAST,
 					vecs[2].addVector(0, depth, 0),
 					vecs[2].addVector(0, 0, 0),
 					vecs[3].addVector(0, 0, 0),
 					vecs[3].addVector(0, depth, 0)));
-				list.removeIf(Objects::isNull);
-				list.forEach(q -> q.setUVFloat(EnumFacing.UP));
+				preparePerdendicularQuads(list, EnumFacing.UP);
 				break;
 			case NORTH:
-				list.add(Quad.getQuad(
+				list.add(Quad.getUnsortedQuad(
 					EnumFacing.DOWN,
 					vecs[2].addVector(0, 0, 0),
 					vecs[2].addVector(0, 0, -depth),
 					vecs[1].addVector(0, 0, -depth),
 					vecs[1].addVector(0, 0, 0)));
-				list.add(Quad.getQuad(
+				list.add(Quad.getUnsortedQuad(
 					EnumFacing.UP,
 					vecs[3].addVector(0, 0, -depth),
 					vecs[3].addVector(0, 0, 0),
 					vecs[0].addVector(0, 0, 0),
 					vecs[0].addVector(0, 0, -depth)));
-				list.add(Quad.getQuad(
+				list.add(Quad.getUnsortedQuad(
 					EnumFacing.WEST,
-					vecs[3].addVector(0, 0, 0),
-					vecs[2].addVector(0, 0, 0),
+					vecs[3].addVector(0, 0, -depth),
 					vecs[2].addVector(0, 0, -depth),
-					vecs[3].addVector(0, 0, -depth)));
-				list.add(Quad.getQuad(
+					vecs[2].addVector(0, 0, 0),
+					vecs[3].addVector(0, 0, 0)));
+				list.add(Quad.getUnsortedQuad(
 					EnumFacing.EAST,
 					vecs[0].addVector(0, 0, 0),
 					vecs[1].addVector(0, 0, 0),
 					vecs[1].addVector(0, 0, -depth),
 					vecs[0].addVector(0, 0, -depth)));
-				list.removeIf(Objects::isNull);
-				list.forEach(q -> q.setUVFloat(EnumFacing.NORTH));
+				preparePerdendicularQuads(list, EnumFacing.NORTH);
 				break;
 			case SOUTH:
-				list.add(Quad.getQuad(
+				list.add(Quad.getUnsortedQuad(
 					EnumFacing.DOWN,
 					vecs[1].addVector(0, 0, depth),
 					vecs[1].addVector(0, 0, 0),
 					vecs[2].addVector(0, 0, 0),
 					vecs[2].addVector(0, 0, depth)));
-				list.add(Quad.getQuad(
+				list.add(Quad.getUnsortedQuad(
 					EnumFacing.UP,
 					vecs[0].addVector(0, 0, 0),
 					vecs[0].addVector(0, 0, depth),
 					vecs[3].addVector(0, 0, depth),
 					vecs[3].addVector(0, 0, 0)));
-				list.add(Quad.getQuad(
+				list.add(Quad.getUnsortedQuad(
 					EnumFacing.WEST,
 					vecs[0].addVector(0, 0, 0),
 					vecs[1].addVector(0, 0, 0),
 					vecs[1].addVector(0, 0, depth),
 					vecs[0].addVector(0, 0, depth)));
-				list.add(Quad.getQuad(
+				list.add(Quad.getUnsortedQuad(
 					EnumFacing.EAST,
 					vecs[3].addVector(0, 0, depth),
 					vecs[2].addVector(0, 0, depth),
 					vecs[2].addVector(0, 0, 0),
 					vecs[3].addVector(0, 0, 0)));
-				list.removeIf(Objects::isNull);
-				list.forEach(q -> q.setUVFloat(EnumFacing.SOUTH));
+				preparePerdendicularQuads(list, EnumFacing.SOUTH);
 				break;
 			case WEST:
-				list.add(Quad.getQuad(
+				list.add(Quad.getUnsortedQuad(
 					EnumFacing.DOWN,
 					vecs[2].addVector(-depth, 0, 0),
 					vecs[1].addVector(-depth, 0, 0),
 					vecs[1].addVector(0, 0, 0),
 					vecs[2].addVector(0, 0, 0)));
-				list.add(Quad.getQuad(
+				list.add(Quad.getUnsortedQuad(
 					EnumFacing.UP,
 					vecs[0].addVector(-depth, 0, 0),
 					vecs[3].addVector(-depth, 0, 0),
 					vecs[3].addVector(0, 0, 0),
 					vecs[0].addVector(0, 0, 0)));
-				list.add(Quad.getQuad(
+				list.add(Quad.getUnsortedQuad(
 					EnumFacing.NORTH,
 					vecs[0].addVector(0, 0, 0),
 					vecs[1].addVector(0, 0, 0),
 					vecs[1].addVector(-depth, 0, 0),
 					vecs[0].addVector(-depth, 0, 0)));
-				list.add(Quad.getQuad(
+				list.add(Quad.getUnsortedQuad(
 					EnumFacing.SOUTH,
 					vecs[3].addVector(-depth, 0, 0),
 					vecs[2].addVector(-depth, 0, 0),
 					vecs[2].addVector(0, 0, 0),
 					vecs[3].addVector(0, 0, 0)));
-				list.removeIf(Objects::isNull);
-				list.forEach(q -> q.setUVFloat(EnumFacing.WEST));
+				preparePerdendicularQuads(list, EnumFacing.WEST);
 				break;
 			case EAST:
-				list.add(Quad.getQuad(
+				list.add(Quad.getUnsortedQuad(
 					EnumFacing.DOWN,
 					vecs[1].addVector(0, 0, 0),
 					vecs[2].addVector(0, 0, 0),
 					vecs[2].addVector(depth, 0, 0),
 					vecs[1].addVector(depth, 0, 0)));
-				list.add(Quad.getQuad(
+				list.add(Quad.getUnsortedQuad(
 					EnumFacing.UP,
 					vecs[3].addVector(0, 0, 0),
 					vecs[0].addVector(0, 0, 0),
 					vecs[0].addVector(depth, 0, 0),
 					vecs[3].addVector(depth, 0, 0)));
-				list.add(Quad.getQuad(
+				list.add(Quad.getUnsortedQuad(
 					EnumFacing.NORTH,
 					vecs[3].addVector(depth, 0, 0),
 					vecs[2].addVector(depth, 0, 0),
 					vecs[2].addVector(0, 0, 0),
 					vecs[3].addVector(0, 0, 0)));
-				list.add(Quad.getQuad(
+				list.add(Quad.getUnsortedQuad(
 					EnumFacing.SOUTH,
 					vecs[0].addVector(0, 0, 0),
 					vecs[1].addVector(0, 0, 0),
 					vecs[1].addVector(depth, 0, 0),
 					vecs[0].addVector(depth, 0, 0)));
-				list.removeIf(Objects::isNull);
-				list.forEach(q -> q.setUVFloat(EnumFacing.EAST));
+				preparePerdendicularQuads(list, EnumFacing.EAST);
 				break;
 		}
 		return list;
+	}
+	
+	/**
+	 * Cleans up any null quads and sets UV float orientation
+	 * for perpendicular quads.
+	 * 
+	 * @param list a list of quads
+	 * @param facing the quad facing
+	 */
+	private static void preparePerdendicularQuads(List<Quad> list, EnumFacing facing) {
+		Iterator<Quad> iter = list.iterator();
+		while (iter.hasNext()) {
+			Quad quad = iter.next();
+			if (quad == null) {
+				iter.remove();
+				continue;
+			}
+			quad.setUVFloat(facing);
+		}
 	}
 	
 	/**
@@ -795,6 +834,22 @@ public class QuadUtil {
 		} else {
 			return 0;
 		}
+	}
+	
+	/**
+	 * Compares {@link Vec3d} values using epsilon of 1/16, since
+	 * Minecraft blocks are 16 pixels across.
+	 * 
+	 * @param v1 first vector
+	 * @param v2 second vector
+	 * @return 	<ul>
+	 * 				<li>-1 if first value is less than second value</li>
+	 * 				<li>0 if both values are equal</li>
+	 * 				<li>1 if first value is greater than second value</li>
+	 * 			</ul>
+	 */
+	public static int compare(Vec3d v1, Vec3d v2) {		
+		return compare(v1.x, v2.x) + compare(v1.y, v2.y) + compare(v1.z, v2.z);
 	}
 	
 }

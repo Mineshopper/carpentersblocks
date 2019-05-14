@@ -25,8 +25,10 @@ public class QuadContainer {
 	
 	private List<Quad> _quads;
 	private EnumAttributeLocation _location;
-	private final static double MAX_UP_SLOPE = Math.sin(35 * Math.PI / 180);
-	private final static double MAX_SIDE_SLOPE = -Math.sin(55 * Math.PI / 180);
+	private final static double MAX_UP_SLOPE_GRASS = Math.sin(35 * Math.PI / 180);
+	private final static double MAX_SIDE_SLOPE_GRASS = -Math.sin(55 * Math.PI / 180);
+	private final static double MAX_UP_SLOPE = Math.sin(46 * Math.PI / 180);
+	private final static double MAX_SIDE_SLOPE = -Math.sin(44 * Math.PI / 180);
 	
 	public QuadContainer(EnumAttributeLocation location) {
 		_quads = new ArrayList<Quad>();
@@ -77,7 +79,7 @@ public class QuadContainer {
 	    	if (facing.equals(offsetFacing)) { // Side cover direction matches offset facing
 		    	//quadContainer.add(new Quad(quad).setFacing(facing.getOpposite())); // Should only add this if face is visible (if host is translucent/mipped)
 		    	Quad offsetQuad = new Quad(quad);
-		    	offsetQuad.applyFacing(offsetFacing);
+		    	offsetQuad.applyFacing(true, offsetFacing);
 	    		quadContainer.addAll(QuadUtil.getPerpendicularQuads(offsetQuad, depth));
 	    		quadContainer.add(quad.offset(offsetFacing.getFrontOffsetX() * depth, offsetFacing.getFrontOffsetY() * depth, offsetFacing.getFrontOffsetZ() * depth));
 	    	}
@@ -206,29 +208,27 @@ public class QuadContainer {
 						list.add(new Quad(quad));
 					}
 				} else {
-					if (Blocks.GRASS.equals(blockState.getBlock())) {
-						Quad newQuad = new Quad(quad);
-						if (QuadUtil.compare(quad.getNormal().y, MAX_UP_SLOPE) >= 0) {
-							if (!EnumFacing.UP.equals(quad.getFacing())) {
-								newQuad.applyFacing(EnumFacing.UP);
-							}
-						} else if (QuadUtil.compare(quad.getNormal().y, MAX_SIDE_SLOPE) >= 0) {
-							if (!quad.getCardinalFacing().equals(quad.getFacing())) {
-								newQuad.applyFacing(quad.getCardinalFacing());
-							}
-						} else {
-							if (!EnumFacing.DOWN.equals(quad.getFacing())) {
-								newQuad.applyFacing(EnumFacing.DOWN);
-							}
+					double MAX_UP_SLOPE = this.MAX_UP_SLOPE;
+					double MAX_SIDE_SLOPE = this.MAX_SIDE_SLOPE;
+					if (Blocks.GRASS.equals(blockState.getBlock()) || Blocks.MYCELIUM.equals(blockState.getBlock())) {
+						MAX_UP_SLOPE = MAX_UP_SLOPE_GRASS;
+						MAX_SIDE_SLOPE = MAX_SIDE_SLOPE_GRASS;
+					}
+					Quad newQuad = new Quad(quad);
+					if (QuadUtil.compare(quad.getNormal().y, MAX_UP_SLOPE) >= 0) {
+						if (!EnumFacing.UP.equals(quad.getFacing())) {
+							newQuad.applyFacing(EnumFacing.UP);
 						}
-						list.add(newQuad);
-					} else {
-						Quad newQuad = new Quad(quad);
+					} else if (QuadUtil.compare(quad.getNormal().y, MAX_SIDE_SLOPE) >= 0) {
 						if (!quad.getCardinalFacing().equals(quad.getFacing())) {
 							newQuad.applyFacing(quad.getCardinalFacing());
 						}
-						list.add(newQuad);
+					} else {
+						if (!EnumFacing.DOWN.equals(quad.getFacing())) {
+							newQuad.applyFacing(EnumFacing.DOWN);
+						}
 					}
+					list.add(newQuad);
 				}
 			} else {
 				list.add(new Quad(quad));

@@ -37,13 +37,6 @@ public class Quad {
 	private Vec3d _uvOffset;
 	private EnumFacing _uvFloat;
 	
-	private Quad() { }
-	
-	private Quad(EnumFacing facing, Vec3d ... vecs) {
-		_vecs = vecs;
-		applyFacing(facing);
-	}
-	
 	public enum Rotation {
 		
 		QUARTER(Math.PI / 2),
@@ -62,66 +55,71 @@ public class Quad {
 		
 	}
 	
+	private Quad() { }
+			
 	/**
 	 * Copy constructor
 	 * 
-	 * @param srcQuad the source quad
+	 * @param src the source quad
 	 */
-	public Quad(Quad srcQuad) {
-		Vec3d[] srcVecs = srcQuad.getVecs();
-		Vec3d[] vecs = new Vec3d[srcVecs.length];
-		for (int i = 0; i < srcVecs.length; i++) {
-			vecs[i] = new Vec3d(srcVecs[i].x, srcVecs[i].y, srcVecs[i].z);
-		}
-		_vecs = vecs;
-		_facing = srcQuad.getFacing();
-		_maxBrightness = srcQuad.isMaxBrightness();
-		_renderLayer = srcQuad.getRenderLayer();
-		_rgb = srcQuad.getRgb();
-		_sprite = srcQuad.getSprite();
-		_normal = new Vec3d(srcQuad.getNormal().x, srcQuad.getNormal().y, srcQuad.getNormal().z);
-		_isOblique = srcQuad.isObliqueSlope();
-		_uvFloat = srcQuad.getUVFloat();
-		_uvOffset = srcQuad.getUVOffset();
+	public Quad(Quad src) {
+		_vecs = Arrays.copyOf(src.getVecs(), src.getVecs().length);
+		_facing = src.getFacing();
+		_maxBrightness = src.isMaxBrightness();
+		_renderLayer = src.getRenderLayer();
+		_rgb = src.getRgb();
+		_sprite = src.getSprite();
+		_normal = new Vec3d(src.getNormal().x, src.getNormal().y, src.getNormal().z);
+		_isOblique = src.isObliqueSlope();
+		_uvFloat = src.getUVFloat();
+		_uvOffset = src.getUVOffset();
 	}
-
+	
 	public static Quad getQuad(EnumFacing facing, Vec3d ... inVecs) {
-		return getQuad(facing, SpriteRegistry.sprite_uncovered_full, inVecs);
+		return getQuad(facing, true, SpriteRegistry.sprite_uncovered_full, inVecs);
+	}
+	
+	public static Quad getUnsortedQuad(EnumFacing facing, Vec3d ... inVecs) {
+		return getQuad(facing, false, SpriteRegistry.sprite_uncovered_full, inVecs);
 	}
 	
 	public static Quad getQuad(EnumFacing facing, TextureAtlasSprite sprite, Vec3d ... inVecs) {
-		return getQuad(facing, sprite, IConstants.DEFAULT_RGB, false, BlockRenderLayer.CUTOUT_MIPPED, inVecs);
+		return getQuad(facing, true, sprite, IConstants.DEFAULT_RGB, false, BlockRenderLayer.CUTOUT_MIPPED, inVecs);
+	}
+	
+	public static Quad getQuad(EnumFacing facing, boolean sortVecs, TextureAtlasSprite sprite, Vec3d ... inVecs) {
+		return getQuad(facing, sortVecs, sprite, IConstants.DEFAULT_RGB, false, BlockRenderLayer.CUTOUT_MIPPED, inVecs);
 	}
 	
 	public static Quad getQuad(EnumFacing facing, TextureAtlasSprite sprite, int rgb, Vec3d ... inVecs) {
-		return getQuad(facing, sprite, rgb, false, BlockRenderLayer.CUTOUT_MIPPED, inVecs);
+		return getQuad(facing, true, sprite, rgb, false, BlockRenderLayer.CUTOUT_MIPPED, inVecs);
 	}
 	
-	public static Quad getQuad(EnumFacing facing, TextureAtlasSprite sprite, int rgb, boolean maxBrightness, BlockRenderLayer renderLayer, Vec3d ... inVecs) {
-		Vec3d[] vec3ds = QuadUtil.sortVec3dsByFacing(facing, inVecs);
-		if (isMalformed(vec3ds)) {
-			return null;
-		}
-		Quad quad = new Quad(facing, vec3ds);
+	public static Quad getQuad(EnumFacing facing, boolean sortVecs, TextureAtlasSprite sprite, int rgb, Vec3d ... inVecs) {
+		return getQuad(facing, sortVecs, sprite, rgb, false, BlockRenderLayer.CUTOUT_MIPPED, inVecs);
+	}
+	
+	public static Quad getQuad(EnumFacing facing, boolean sortVecs, TextureAtlasSprite sprite, int rgb, boolean maxBrightness, BlockRenderLayer renderLayer, Vec3d ... inVecs) {
+		Quad quad = new Quad();
+		quad._vecs = Arrays.copyOf(inVecs, inVecs.length);
 		quad.setSprite(sprite);
 		quad.setMaxBrightness(maxBrightness);
 		quad.setRenderLayer(renderLayer);
 		quad.setRgb(rgb);
+		if (!quad.applyFacing(sortVecs, facing)) {
+			return null;
+		}
 		return quad;
 	}
 	
 	/**
-	 * Checks if vec3d array is valid for rendering.
+	 * Copy constructor with offset.
 	 * 
-	 * @param vec3ds the vec3ds
-	 * @return <code>true</code> if vec3d array is null, incorrect length, et cetera.
+	 * @param x the x offset
+	 * @param y the y offset
+	 * @param z the z offset
+	 * @return
 	 */
-	private static boolean isMalformed(Vec3d[] vec3ds) {
-		return vec3ds == null
-			|| vec3ds.length != 4
-			|| new HashSet<Vec3d>(Arrays.asList(vec3ds)).size() < 3;
-	}
-	
 	public Quad offset(double x, double y, double z) {
 		Quad quad = new Quad(this);
 		for (int i = 0; i < quad._vecs.length; ++i) {
@@ -278,21 +276,42 @@ public class Quad {
 			newVecs[i] = vec3dRot;
 		}
 		_vecs = newVecs;
-		applyFacing(newFacing);
+		applyFacing(true, newFacing);
 	}
 	
+	/**
+	 * Rotates vec3d about X axis.
+	 * 
+	 * @param vec3d the vec3d
+	 * @param radians amount of rotation
+	 * @return the rotated vec3d
+	 */
 	private Vec3d rotateAroundX(Vec3d vec3d, double radians) {
     	double y = 0.5D + (vec3d.z - 0.5D) * Math.sin(radians) + (vec3d.y - 0.5D) * Math.cos(radians);
     	double z = 0.5D + (vec3d.z - 0.5D) * Math.cos(radians) - (vec3d.y - 0.5D) * Math.sin(radians);
     	return new Vec3d(vec3d.x, y, z);
     }
 	
+	/**
+	 * Rotates vec3d about Y axis.
+	 * 
+	 * @param vec3d the vec3d
+	 * @param radians amount of rotation
+	 * @return the rotated vec3d
+	 */
 	private Vec3d rotateAroundY(Vec3d vec3d, double radians) {
     	double z = 0.5D + (vec3d.x - 0.5D) * Math.sin(radians) + (vec3d.z - 0.5D) * Math.cos(radians);
     	double x = 0.5D + (vec3d.x - 0.5D) * Math.cos(radians) - (vec3d.z - 0.5D) * Math.sin(radians);
     	return new Vec3d(x, vec3d.y, z);
     }
     
+	/**
+	 * Rotates vec3d about Z axis.
+	 * 
+	 * @param vec3d the vec3d
+	 * @param radians amount of rotation
+	 * @return the rotated vec3d
+	 */
 	private Vec3d rotateAroundZ(Vec3d vec3d, double radians) {
     	double x = 0.5D + (vec3d.y - 0.5D) * Math.sin(radians) + (vec3d.x - 0.5D) * Math.cos(radians);
     	double y = 0.5D + (vec3d.y - 0.5D) * Math.cos(radians) - (vec3d.x - 0.5D) * Math.sin(radians);
@@ -311,9 +330,9 @@ public class Quad {
 	}
 	
 	/**
-	 * Return quad facing as NWSE component
+	 * Return quad facing as NWSE component.
 	 * 
-	 * @return
+	 * @return the quad facing
 	 */
 	public EnumFacing getCardinalFacing() {
 		if (!isSloped(Axis.Y)) {
@@ -323,19 +342,36 @@ public class Quad {
 	}
 	
 	/**
+	 * Applies facing to quad with <code>sort</code> parameter
+	 * set to <code>true</code>.
+	 * 
+	 * @param facing the new facing
+	 */
+	public void applyFacing(EnumFacing facing) {
+		applyFacing(true, facing);
+	}
+	
+	/**
 	 * Applies facing and calculates properties.
 	 * <p>
 	 * Quad must be rotated to match facing prior to calling this
 	 * or runtime exception may occur.
 	 * 
 	 * @param facing the new facing
+	 * @return <code>true</code> if transformation succeeds, <code>false</code> if it fails.
 	 */
-	public void applyFacing(EnumFacing facing) {
-		_vecs = QuadUtil.sortVec3dsByFacing(facing, _vecs);
+	public boolean applyFacing(boolean sortVecs, EnumFacing facing) {
+		if (sortVecs) {
+			_vecs = QuadUtil.sortVec3dsByFacing(facing, _vecs);
+		}
+		if (!QuadUtil.isValid(this)) {
+			return false;
+		}
 		_facing = facing;
 		Vec3d[] vecs1 = new LinkedHashSet<Vec3d>(Arrays.asList(this.getVecs())).toArray(new Vec3d[this.getVecs().length]);
 		_normal = (vecs1[1].subtract(vecs1[0])).crossProduct(vecs1[2].subtract(vecs1[1])).normalize();
 		_isOblique = isSloped(Axis.X) && isSloped(Axis.Y) && isSloped(Axis.Z);
+		return true;
 	}
 	
 	public Vec3d getNormal() {
