@@ -88,7 +88,7 @@ public class RenderPkg {
 	public void addAll(Collection<Quad> collection) {
 		for (Quad quad : collection) {
 			if (quad != null) {
-				_quadContainer.addAll(collection);
+				_quadContainer.add(quad);
 			}
 		}
 	}
