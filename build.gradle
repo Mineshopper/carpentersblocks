@@ -11,7 +11,7 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 //Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 
 
-version = "3.4.0-poc.5"
+version = "3.4.0-poc.6"
 group = "com.carpentersblocks.carpentersblocks"
 archivesBaseName = "Carpenter's Blocks"
 
