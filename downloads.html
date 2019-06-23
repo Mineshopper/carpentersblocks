@@ -84,25 +84,20 @@ download_button_innerhtml: <span>Download</span>
 <div class="download-container">
    <div style="display: table-row;">
       <div class="download-container-version">
-         Carpenter's Blocks 3.3.8.1
+         Carpenter's Blocks 3.3.8.2
          {{ page.label-stable }}
          {{ page.label-begin-minecraft }}MC 1.7.10{{ page.label-end }}
          {{ page.label-begin-forge }}FORGE 10.13.0.1180{{ page.label-end }}
-         {{ page.label-begin-release }}RELEASED 09/29/2016{{ page.label-end }}
+         {{ page.label-begin-release }}RELEASED 06/02/2019{{ page.label-end }}
       </div>
    </div>
    <div style="display: table-row;">
       <div style="display: table-cell;">
-         <button onclick="download('http://carpentersblocks1.website/downloads/Carpenter\'s%20Blocks%20v3.3.8.1%20-%20MC%201.7.10.jar')">{{ page.download_button_innerhtml }}</button>
+         <button onclick="download('http://carpentersblocks1.website/downloads/Carpenter\'s%20Blocks%20v3.3.8.2%20-%20MC%201.7.10.jar')">{{ page.download_button_innerhtml }}</button>
          <button class="expand">View Changelog</button>
          <div class="collapsed">
             <ul id="changelog">
-			   <li>Fixed vine overlay bug introduced in v3.3.8.</li>
-               <li>Reduced torch light level to match vanilla torches.</li>
-			   <li>Fixed torches not preventing mob spawns.</li>
-			   <li>Fixed slope rotation/type hammer interaction; left-click rotates, right click changes type.</li>
-			   <li>Fire properties are now side-sensitive. This enables a top netherrack cover to burn indefinitely.</li>
-			   <li>Players can now access Carpenter's Safes that are stuck in 'open' state due to improper shutdown.</li>
+			   <li>Fix server crash when safe is broken by another player during usage. [vagola]</li>
             </ul>
          </div>
       </div>
