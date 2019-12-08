@@ -43,7 +43,7 @@ download_button_innerhtml: <span>Download</span>
 <h4>Latest Builds</h4>
 
 <div class="download-container">
-	<p>If you prefer, you can grab the latest stable and verified builds through <a href="http://minecraft.curseforge.com/projects/carpenters-blocks">CurseForge</a>.<br>Optionally, you can grab the files below through various methods and file hosts. Development builds, if available, will only be linked through this page.</p>
+	<p>If you prefer, you can grab the latest stable and verified builds through <a style="cursor: pointer;" onclick="window.open('http://minecraft.curseforge.com/projects/carpenters-blocks')">CurseForge</a>.<br>Optionally, you can grab the files below through various methods and file hosts. Development builds, if available, will only be linked through this page.</p>
 </div>
 
 <h5>Minecraft 1.12.2</h5>
@@ -51,8 +51,8 @@ download_button_innerhtml: <span>Download</span>
 <div class="download-container">
    <div style="display: table-row;">
       <div style="border: 5px dashed #d9534f; border-radius: 5px; padding: 5px 10px 5px 10px; margin-bottom: 10px;">
-	     <p><h3 style="font-weight: bold;" class="anim-fade">ATTENTION!</h3> This is a very early build, with only a handful of blocks and features supported.  You can stop by the <a href="http://www.minecraftforum.net/forums/mapping-and-modding/minecraft-mods/1288875-carpenters-blocks#c3461">mod thread</a> for questions or to check progress on the update effort.</p>
-		 <p><h4>Update May 13, 2019</h4>An update has been pushed to 1.12.2 POC build to address a crash. Initial setup for a 1.13 port is in progress but does not currently compile -- I have no ETA for 1.13 release at this time. Please note that this mod does not officially support Optifine, and you will notice lighting issues and/or other rendering issues.</p>
+	     <p><h3 style="font-weight: bold;" class="anim-fade">ATTENTION!</h3> This is a very early build, with only a handful of blocks and features supported.  Please join the discussion on <a href="https://www.curseforge.com/minecraft/mc-mods/carpenters-blocks">CurseForge</a> if you have questions.</p>
+		 <p><h4>Update December 8, 2019</h4>Mod development is currently on hold.  I do plan on restarting development at a later time but have no ETA.</p>
 		 <p>Thanks to everyone for your continued support!</p>
       </div>
    </div>
@@ -67,7 +67,7 @@ download_button_innerhtml: <span>Download</span>
    </div>
    <div style="display: table-row;">
 	  <div style="display: table-cell;">
-		 <button onclick="download('http://carpentersblocks1.website/downloads/Carpenter\'s%20Blocks%20v3.4.0-poc.6%20-%20MC%201.12.2.jar')">{{ page.download_button_innerhtml }}</button>
+		 <button onclick="download('https://drive.google.com/uc?export=download&id=1tp02FEl4tEOYzkJTM8x_SMiFmyrEU2Ey')">{{ page.download_button_innerhtml }}</button>
 		 <button class="expand">View Changelog</button>
 		 <div class="collapsed">
 			<ul id="changelog">
@@ -93,7 +93,7 @@ download_button_innerhtml: <span>Download</span>
    </div>
    <div style="display: table-row;">
       <div style="display: table-cell;">
-         <button onclick="download('http://carpentersblocks1.website/downloads/Carpenter\'s%20Blocks%20v3.3.8.2%20-%20MC%201.7.10.jar')">{{ page.download_button_innerhtml }}</button>
+         <button onclick="download('https://drive.google.com/uc?export=download&id=1zyENHJV4zD4Y3whp22y4ywSQYKMh7rc9')">{{ page.download_button_innerhtml }}</button>
          <button class="expand">View Changelog</button>
          <div class="collapsed">
             <ul id="changelog">
@@ -119,7 +119,7 @@ download_button_innerhtml: <span>Download</span>
    </div>
    <div style="display: table-row;">
       <div style="display: table-cell;">
-         <button onclick="download('http://carpentersblocks1.website/downloads/Carpenter\'s%20Blocks%20v3.2.8.6%20-%20MC%201.7.2.jar')">{{ page.download_button_innerhtml }}</button>
+         <button onclick="download('https://drive.google.com/uc?export=download&id=1I0YZSZ9-TTMiPSJszVA-YiA9Xs0QCQ7d')">{{ page.download_button_innerhtml }}</button>
          <button class="expand">View Changelog</button>
          <div class="collapsed">
             <ul id="changelog">
@@ -146,7 +146,7 @@ download_button_innerhtml: <span>Download</span>
    </div>
    <div style="display: table-row;">
       <div style="display: table-cell;">
-         <button onclick="download('http://carpentersblocks1.website/downloads/Carpenter\'s%20Blocks%20v3.2.8.6%20-%20MC%201.6.4.jar')">{{ page.download_button_innerhtml }}</button>
+         <button onclick="download('https://drive.google.com/uc?export=download&id=1Jt_5iXdAd8oQzsIC8tugEfzcMUQb1fPG')">{{ page.download_button_innerhtml }}</button>
          <button class="expand">View Changelog</button>
          <div class="collapsed">
             <ul id="changelog">
@@ -173,7 +173,7 @@ download_button_innerhtml: <span>Download</span>
    </div>
    <div style="display: table-row;">
       <div style="display: table-cell;">
-         <button onclick="download('http://carpentersblocks1.website/downloads/Carpenter\'s%20Blocks%20v1.9.9%20-%20MC%201.5.2.zip')">{{ page.download_button_innerhtml }}</button>
+         <button onclick="download('https://drive.google.com/uc?export=download&id=10mSf0zV7Uqog6bo9DaupiXO9s4Tcatrq')">{{ page.download_button_innerhtml }}</button>
          <button class="expand">View Changelog</button>
          <div class="collapsed">
             <ul id="changelog">
@@ -196,7 +196,7 @@ download_button_innerhtml: <span>Download</span>
    </div>
 </div>
 
-<!--
+{% comment %}
 <div class="download-container">
    <div style="display: table-row;">
       <div class="download-container-version">
@@ -217,16 +217,18 @@ download_button_innerhtml: <span>Download</span>
       </div>
    </div>
 </div>
--->
+{% endcomment %}
 
+{% comment %}
 <hr>
 
 <h4>Legacy Builds</h4>
 
 <div class="indent">
    <p>Legacy versions and old source code packages can be found using the button below.</p>
-   <button onclick="window.open('http://carpentersblocks1.website/downloads/')">{{ page.download_button_innerhtml }}</button>
+   <button onclick="window.open('')">{{ page.download_button_innerhtml }}</button>
 </div>
+{% endcomment %}
 
 <hr>
 
@@ -241,7 +243,7 @@ download_button_innerhtml: <span>Download</span>
    <p>This pack includes over 30 chisel designs.  To use these custom designs, drag the image files you want into the mod zip or jar file under: <em>assets/carpentersblocks/textures/blocks/designs/chisel/</em></p>
    <br style="clear: both;">
    <p>Download below contains 32x/64x/128x textures.</p>
-   <button onclick="download('http://carpentersblocks1.website/downloads/Patterns%20for%20CarpentersBlocks.zip')">{{ page.download_button_innerhtml }}</button>
+   <button onclick="download('https://drive.google.com/uc?export=download&id=1LG4fiOfvqZ2ILzIR8z5RfF_drieovpNo')">{{ page.download_button_innerhtml }}</button>
 </div>
    
 <h5>Tile Design Packs</h5>
@@ -251,9 +253,10 @@ download_button_innerhtml: <span>Download</span>
    <img src="../images/kaev-wallpaper.png" style="float: left; padding: 0px 10px 5px 0;"></img>
    <p>Since Kaevator's Wallpaper mod was the inspiration behind tiles, I've compiled the original artwork in a format ready to load as custom tile designs.  Simply place the image files into the mod zip or jar file under: <em>assets/carpentersblocks/textures/blocks/designs/tile/</em></p>
    <br style="clear: both;">
-   <button onclick="download('http://carpentersblocks1.website/downloads/Tile%20Addon%20Pack%20-%20Kaevator%20Wallpapers.zip')">{{ page.download_button_innerhtml }}</button>
+   <button onclick="download('https://drive.google.com/uc?export=download&id=1poVSj6JZHuaUMqJtTXkZPHkNxIweEcOq')">{{ page.download_button_innerhtml }}</button>
 </div>
 
+{% comment %}
 <h5>Add-ons</h5>
 
 <div class="download-container">
@@ -267,6 +270,7 @@ download_button_innerhtml: <span>Download</span>
       </div>
    </div>
 </div>
+{% endcomment %}
 
 <h5>Texture packs</h5>
 
@@ -288,7 +292,7 @@ download_button_innerhtml: <span>Download</span>
    <br style="clear: both;">
    <div style="display: table-row;">
       <div style="display: table-cell;">
-         <button onclick="download('http://carpentersblocks1.website/downloads/carpentersblocks-api.zip')">{{ page.download_button_innerhtml }}</button>
+         <button onclick="download('https://drive.google.com/uc?export=download&id=1VW_nsRksqN_YXfstagL51aLjJF9MihuM')">{{ page.download_button_innerhtml }}</button>
       </div>
    </div>
 </div>
