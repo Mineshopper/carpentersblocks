@@ -1,95 +1,50 @@
 package com.carpentersblocks.block;
 
-import java.util.ArrayList;
-import java.util.Random;
-import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.IIcon;
-import net.minecraft.util.MathHelper;
-import net.minecraft.world.IBlockAccess;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-import com.carpentersblocks.CarpentersBlocks;
-import com.carpentersblocks.data.FlowerPot;
-import com.carpentersblocks.network.PacketEnrichPlant;
-import com.carpentersblocks.tileentity.TEBase;
-import com.carpentersblocks.tileentity.TECarpentersFlowerPot;
-import com.carpentersblocks.util.BlockProperties;
-import com.carpentersblocks.util.flowerpot.FlowerPotHandler;
-import com.carpentersblocks.util.flowerpot.FlowerPotHandler.Profile;
-import com.carpentersblocks.util.flowerpot.FlowerPotProperties;
-import com.carpentersblocks.util.handler.EventHandler;
-import com.carpentersblocks.util.handler.PacketHandler;
-import com.carpentersblocks.util.registry.BlockRegistry;
-import com.carpentersblocks.util.registry.IconRegistry;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import com.carpentersblocks.nbt.CbTileEntity;
+import com.carpentersblocks.util.states.StateMap;
 
-public class BlockCarpentersFlowerPot extends BlockCoverable {
+public class BlockCarpentersFlowerPot extends AbstractCoverableBlock implements IStateImplementor {
 
-    public BlockCarpentersFlowerPot(Material material)
-    {
-        super(material);
+	private static StateMap _stateMap;
+	
+    public BlockCarpentersFlowerPot(Properties properties, StateMap stateMap) {
+        super(properties);
+        _stateMap = stateMap;
     }
 
-    @SideOnly(Side.CLIENT)
-    @Override
-    public void registerBlockIcons(IIconRegister iconRegister)
-    {
-        IconRegistry.icon_flower_pot       = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "flowerpot/flower_pot");
-        IconRegistry.icon_flower_pot_glass = iconRegister.registerIcon(CarpentersBlocks.MODID + ":" + "flowerpot/flower_pot_glass");
-    }
+	@Override
+	public String getStateDescriptor(CbTileEntity cbTileEntity) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
-    @SideOnly(Side.CLIENT)
-    @Override
+	@Override
+	public StateMap getStateMap() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+    
+    //@Override
     /**
-     * Returns the icon on the side given the block metadata.
-     */
-    public IIcon getIcon(int side, int metadata)
-    {
-        /*
-         * This doesn't work perfectly, but it's necessary to render
-         * the pot as an Item in the inventory.  Block destruction will
-         * spawn cover and block icons as a result.
-         */
-        if (side == 1 && metadata == 0) {
-            return IconRegistry.icon_flower_pot;
-        } else {
-            return super.getIcon(side, metadata);
-        }
-    }
-
-    @Override
-    /**
-     * Cycle backward through bed designs.
-     */
-    protected boolean onHammerLeftClick(TEBase TE, EntityPlayer entityPlayer)
-    {
-        TE.setPrevDesign();
-        TE.createBlockDropEvent(TE.ATTR_COVER[6]);
+     * Cycle backward through designs.
+     *
+    protected boolean onHammerLeftClick(CbTileEntity cbTileEntity, PlayerEntity playerEntity) {
+        ((IDesignable)cbTileEntity).setPrevDesign(EnumAttributeLocation.HOST);
+        cbTileEntity.removeAttribute(EnumAttributeType.COVER);
         return true;
     }
 
     @Override
     /**
      * Cycle forward through designs or set to no design.
-     */
-    protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer)
-    {
-        if (entityPlayer.isSneaking()) {
-            TE.removeDesign();
+     *
+    protected boolean onHammerRightClick(CbTileEntity cbTileEntity, PlayerEntity playerEntity) {
+        if (playerEntity.isSneaking()) {
+            ((IDesignable)cbTileEntity).removeDesign(EnumAttributeLocation.HOST);
         } else {
-            TE.setNextDesign();
+        	((IDesignable)cbTileEntity).setNextDesign(EnumAttributeLocation.HOST);
         }
-        TE.createBlockDropEvent(TE.ATTR_COVER[6]);
+        cbTileEntity.removeAttribute(EnumAttributeType.COVER);
         return true;
     }
 
@@ -97,44 +52,39 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
      * Checks if {@link ItemStack} contains fertilizer.
      *
      * @return <code>true</code> if {@link ItemStack} contains fertilizer
-     */
-    public static boolean isFertilizer(ItemStack itemStack)
-    {
-        return itemStack != null ? itemStack.getItem().equals(Items.dye) && itemStack.getItemDamage() == 15 : false;
+     *
+    public static boolean isFertilizer(ItemStack itemStack) {
+        return itemStack != null ? itemStack.getItem().equals(Items.BONE_MEAL) : false;
     }
 
     @Override
     /**
      * Sneak-click removes plant and/or soil.
-     */
-    protected void preOnBlockClicked(TEBase TE, World world, int x, int y, int z, EntityPlayer entityPlayer, ActionResult actionResult)
-    {
-        if (entityPlayer.isSneaking()) {
-
-            if (EventHandler.hitY > 0.375F) {
-
-                if (TE.hasAttribute(TE.ATTR_FERTILIZER)) {
-                    actionResult.setSoundSource(new ItemStack(Blocks.sand));
+     *
+    protected void preOnBlockClicked(CbTileEntity cbTileEntity, PlayerEntity playerEntity, ActionResult actionResult) {
+        if (playerEntity.isSneaking()) {
+            if (EventHandler.eventHitVector.y > 0.375F) {
+                if (cbTileEntity.getAttributeHelper().hasAttribute(EnumAttributeType.FERTILIZER)) {
+                    actionResult.setSoundSource(new ItemStack(Blocks.SAND));
                     actionResult.setAltered();
-                    TE.createBlockDropEvent(TE.ATTR_FERTILIZER);
+                    cbTileEntity.removeAttribute(EnumAttributeType.FERTILIZER);
                 }
-
-                if (!actionResult.altered && TE.hasAttribute(TE.ATTR_PLANT)) {
-                    actionResult.setSoundSource(TE.getAttribute(TE.ATTR_PLANT));
+                if (!actionResult.altered && cbTileEntity.getAttributeHelper().hasAttribute(EnumAttributeType.PLANT)) {
+                    actionResult.setSoundSource(((AttributeItemStack)cbTileEntity.getAttributeHelper().getAttribute(EnumAttributeLocation.HOST, EnumAttributeType.PLANT)).getModel());
                     actionResult.setAltered();
-                    TE.createBlockDropEvent(TE.ATTR_PLANT);
+                    cbTileEntity.removeAttribute(EnumAttributeType.PLANT);
                 }
-
-            } else if (TE.hasAttribute(TE.ATTR_SOIL)) {
-
-                if (EventHandler.eventFace == 1 && EventHandler.hitX > 0.375F && EventHandler.hitX < 0.625F && EventHandler.hitZ > 0.375F && EventHandler.hitZ < 0.625F) {
-                    actionResult.setSoundSource(TE.getAttribute(TE.ATTR_SOIL));
+            } else if (cbTileEntity.getAttributeHelper().hasAttribute(EnumAttributeType.SOIL)) {
+                if (Direction.UP.equals(EventHandler.eventFace)
+                		&& EventHandler.eventHitVector.x > 0.375F
+                		&& EventHandler.eventHitVector.x < 0.625F
+                		&& EventHandler.eventHitVector.z > 0.375F
+                		&& EventHandler.eventHitVector.z < 0.625F) {
+                    actionResult.setSoundSource((ItemStack) cbTileEntity.getAttributeHelper().getAttribute(EnumAttributeLocation.HOST, EnumAttributeType.SOIL).getModel());
                     actionResult.setAltered();
-                    TE.createBlockDropEvent(TE.ATTR_SOIL);
+                    cbTileEntity.removeAttribute(EnumAttributeType.SOIL);
                 }
-
             }
-
         }
     }
 
@@ -142,42 +92,42 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
     /**
      * Everything contained in this will run before default onBlockActivated events take place,
      * but after the player has been verified to have permission to edit block.
-     */
-    protected void preOnBlockActivated(TEBase TE, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ, ActionResult actionResult)
-    {
-        ItemStack itemStack = entityPlayer.getHeldItem();
+     *
+    protected void preOnBlockActivated(CbTileEntity cbTileEntity, PlayerEntity playerEntity, Direction facing, float hitX, float hitY, float hitZ, ActionResult actionResult) {
+        ItemStack itemStack = playerEntity.getHeldItemMainhand();
 
         if (itemStack != null) {
 
-            boolean hasCover = TE.hasAttribute(TE.ATTR_COVER[6]);
-            boolean hasOverlay = TE.hasAttribute(TE.ATTR_OVERLAY[6]);
-            boolean soilAreaClicked = side == 1 && hitX > 0.375F && hitX < 0.625F && hitZ > 0.375F && hitZ < 0.625F;
+            boolean hasCover = cbTileEntity.getAttributeHelper().hasAttribute(EnumAttributeLocation.HOST, EnumAttributeType.COVER);
+            boolean hasOverlay = cbTileEntity.getAttributeHelper().hasAttribute(EnumAttributeLocation.HOST, EnumAttributeType.OVERLAY);
+            boolean hasSoil = cbTileEntity.getAttributeHelper().hasAttribute(EnumAttributeLocation.HOST, EnumAttributeType.SOIL);
+            boolean soilAreaClicked = Direction.UP.equals(facing) && hitX > 0.375F && hitX < 0.625F && hitZ > 0.375F && hitZ < 0.625F;
 
-            if (TE.hasAttribute(TE.ATTR_SOIL)) {
+            if (hasSoil) {
 
                 /*
                  * Leaf blocks can be plants or covers.  We need to differentiate
                  * it based on where the block is clicked, and whether it already
                  * has a cover.
-                 */
+                 *
                 if (!soilAreaClicked) {
-                    if (!hasCover && BlockProperties.isCover(itemStack) || !hasOverlay && BlockProperties.isOverlay(itemStack)) {
+                    if (!hasCover && BlockUtil.isCover(itemStack) || !hasOverlay && BlockUtil.isOverlay(itemStack)) {
                         return;
                     }
                 }
 
-                if (!TE.hasAttribute(TE.ATTR_PLANT) && FlowerPotProperties.isPlant(itemStack)) {
-                    int angle = MathHelper.floor_double((entityPlayer.rotationYaw + 180.0F) * 16.0F / 360.0F + 0.5D) & 15;
-                    FlowerPot.setAngle(TE, angle);
-                    TE.addAttribute(TE.ATTR_PLANT, itemStack);
+                if (!cbTileEntity.getAttributeHelper().hasAttribute(EnumAttributeLocation.HOST, EnumAttributeType.PLANT) && FlowerPotUtil.isPlant(itemStack)) {
+                    int angle = MathHelper.floor((playerEntity.rotationYaw + 180.0F) * 16.0F / 360.0F + 0.5D) & 15;
+                    FlowerPotMetadata.setAngle(cbTileEntity, angle);
+                    cbTileEntity.addAttribute(EnumAttributeLocation.HOST, EnumAttributeType.PLANT, itemStack);
                     actionResult.setAltered().setSoundSource(itemStack).decInventory();
                 }
 
             } else {
 
-                if (FlowerPotProperties.isSoil(itemStack)) {
+                if (FlowerPotUtil.isSoil(itemStack)) {
                     if (hasCover || soilAreaClicked) {
-                        TE.addAttribute(TE.ATTR_SOIL, itemStack);
+                        cbTileEntity.addAttribute(EnumAttributeLocation.HOST, EnumAttributeType.SOIL, itemStack);
                         actionResult.setAltered().setSoundSource(itemStack).decInventory();
                     }
                 }
@@ -190,213 +140,126 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
     @Override
     /**
      * Called upon block activation (right click on the block.)
-     */
-    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityPlayer, int side, float hitX, float hitY, float hitZ)
-    {
+     *
+    public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
         /*
          * Need to handle plant enrichment here since the properties
          * needing to be compared against are client-side only.
          *
          * Client will send relevant properties to the server using a packet,
          * and from there the server will determine if plant should be affected.
-         */
+         *
 
-        if (world.isRemote) {
-            TEBase TE = getTileEntity(world, x, y, z);
-            if (TE != null && TE.hasAttribute(TE.ATTR_PLANT)) {
-                ItemStack itemStack = entityPlayer.getCurrentEquippedItem();
-                if (itemStack != null && itemStack.getItem().equals(Items.dye) && itemStack.getItemDamage() == 15) {
-                    if (!TE.hasAttribute(TE.ATTR_FERTILIZER) && FlowerPotProperties.isPlantColorable(TE)) {
-                        PacketHandler.sendPacketToServer(new PacketEnrichPlant(x, y, z, FlowerPotProperties.getPlantColor(TE)));
-                        return true;
+        if (worldIn.isRemote) {
+            CbTileEntity cbTileEntity = getTileEntity(worldIn, pos);
+            if (cbTileEntity != null && cbTileEntity.getAttributeHelper().hasAttribute(EnumAttributeLocation.HOST, EnumAttributeType.PLANT)) {
+                ItemStack itemStack = player.getHeldItemMainhand();
+                if (itemStack != null && Items.BONE_MEAL.equals(itemStack.getItem())) {
+                    if (!cbTileEntity.getAttributeHelper().hasAttribute(EnumAttributeLocation.HOST, EnumAttributeType.FERTILIZER) && FlowerPotUtil.isPlantColorable(cbTileEntity)) {
+                        PacketHandler.sendPacketToServer(new PacketEnrichPlant(pos, FlowerPotUtil.getPlantColor(cbTileEntity)));
+                        return ActionResultType.CONSUME;
                     }
                 }
             }
         }
 
-        return super.onBlockActivated(world, x, y, z, entityPlayer, side, hitX, hitY, hitZ);
+        return super.onBlockActivated(state, worldIn, pos, player, handIn, hit);
     }
 
     @Override
     /**
      * Lets the block know when one of its neighbor changes. Doesn't know which neighbor changed (coordinates passed are
-     * their own) Args: x, y, z, neighbor blockID
-     */
-    public void onNeighborBlockChange(World world, int x, int y, int z, Block block)
-    {
-        if (!world.isRemote) {
-
-            TEBase TE = getTileEntity(world, x, y, z);
-
-            if (TE != null) {
-
-                if (!canPlaceBlockOnSide(world, x, y, z, 1)) {
-                    destroyBlock(world, x, y, z, true);
+     * their own)
+     *
+    public void onNeighborChange(IWorld blockAccess, BlockPos blockPos, BlockPos neighborBlockPos) {
+    	CbTileEntity cbTileEntity = getTileEntity(blockAccess, blockPos);
+    	World world = cbTileEntity.getWorld();
+    	if (!world.isRemote) {
+            if (cbTileEntity != null) {
+                if (!canPlaceBlockOnSide(world, blockPos, Direction.UP)) {
+                    destroyBlock(world, blockPos, true);
                 }
-
-                /* Eject double tall plant if obstructed. */
-
-                if (TE.hasAttribute(TE.ATTR_PLANT)) {
-
-                    Profile profile = FlowerPotHandler.getPlantProfile(TE);
-
+                // Eject double tall plant if obstructed
+                if (cbTileEntity.getAttributeHelper().hasAttribute(EnumAttributeLocation.HOST, EnumAttributeType.PLANT)) {
+                    Profile profile = FlowerPotUtil.getPlantProfile(cbTileEntity);
                     if (profile.equals(Profile.DOUBLEPLANT) || profile.equals(Profile.THIN_DOUBLEPLANT)) {
-                        if (world.getBlock(x, y + 1, z).isSideSolid(world, x, y + 1, z, ForgeDirection.DOWN)) {
-                            TE.createBlockDropEvent(TE.ATTR_PLANT);
+                    	BlockState blockState = world.getBlockState(blockPos.up());
+                        if (world.getBlockState(blockPos.up()).getBlock().isSideSolid(blockState, world, blockPos.up(), Direction.DOWN)) {
+                        	cbTileEntity.removeAttribute(EnumAttributeType.PLANT);
                         }
                     }
 
                 }
-
             }
-
         }
-
-        super.onNeighborBlockChange(world, x, y, z, block);
+        super.onNeighborChange(blockAccess, blockPos, neighborBlockPos);
     }
 
     /**
      * Checks to see if its valid to put this block at the specified coordinates. Args: world, x, y, z
-     */
+     *
     @Override
-    public boolean canPlaceBlockAt(World world, int x, int y, int z)
-    {
-        Block block_YN = world.getBlock(x, y - 1, z);
-        return block_YN.isSideSolid(world, x, y - 1, z, ForgeDirection.UP) || block_YN.canPlaceTorchOnTop(world, x, y - 1, z);
-    }
-
-    @Override
-    /**
-     * Updates the blocks bounds based on its current state. Args: world, x, y, z
-     */
-    public void setBlockBoundsBasedOnState(IBlockAccess blockAccess, int x, int y, int z)
-    {
-        TEBase TE = getTileEntity(blockAccess, x, y, z);
-
-        if (TE != null && TE instanceof TECarpentersFlowerPot) {
-
-            if (TE.hasAttribute(TE.ATTR_PLANT)) {
-
-                switch (FlowerPotHandler.getPlantProfile(TE)) {
-                    case CACTUS:
-                    case LEAVES:
-                        setBlockBounds(0.3125F, 0.0F, 0.3125F, 0.6875F, 0.99F, 0.6875F);
-                        break;
-                    default:
-                        setBlockBounds(0.3125F, 0.0F, 0.3125F, 0.6875F, 0.75F, 0.6875F);
-                }
-
-            } else {
-
-                setBlockBounds(0.3125F, 0.0F, 0.3125F, 0.6875F, 0.375F, 0.6875F);
-
-            }
-
-        }
-    }
-
-    @Override
-    /**
-     * Returns a bounding box from the pool of bounding boxes (this means this box can change after the pool has been
-     * cleared to be reused)
-     */
-    public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int x, int y, int z)
-    {
-        TEBase TE = getTileEntity(world, x, y, z);
-
-        if (TE != null && TE instanceof TECarpentersFlowerPot) {
-
-            AxisAlignedBB axisAlignedBB = AxisAlignedBB.getBoundingBox(x + 0.3125F, y, z + 0.3125F, x + 0.6875F, y + 0.375F, z + 0.6875F);
-
-            if (TE.hasAttribute(TE.ATTR_PLANT)) {
-
-                switch (FlowerPotHandler.getPlantProfile(TE)) {
-                    case CACTUS:
-                    case LEAVES:
-                        axisAlignedBB = AxisAlignedBB.getBoundingBox(x + 0.3125F, y, z + 0.3125F, x + 0.6875F, y + 0.99F, z + 0.6875F);
-                        break;
-                    default: {}
-                }
-
-            }
-
-            return axisAlignedBB;
-
-        }
-
-        return super.getCollisionBoundingBoxFromPool(world, x, y, z);
+    public boolean canPlaceBlockAt(World world, BlockPos pos) {
+        BlockState downState = world.getBlockState(pos.down());
+        return super.canPlaceBlockAt(world, pos) && (downState.isTopSolid()
+        		|| downState.getBlockFaceShape(world, pos.down(), Direction.UP) == BlockFaceShape.SOLID)
+        		|| downState.getBlock().canPlaceTorchOnTop(downState, world, pos);
     }
 
     @Override
     /**
      * Triggered whenever an entity collides with this block (enters into the block). Args: world, x, y, z, entity
-     */
-    public void onEntityCollidedWithBlock(World world, int x, int y, int z, Entity entity)
-    {
-        TEBase TE = getTileEntity(world, x, y, z);
-
-        if (TE != null && TE instanceof TECarpentersFlowerPot) {
-            if (TE.hasAttribute(TE.ATTR_PLANT)) {
-                ItemStack itemStack = TE.getAttribute(TE.ATTR_PLANT);
-                TE.setMetadata(itemStack.getItemDamage());
-                FlowerPotProperties.toBlock(itemStack).onEntityCollidedWithBlock(world, x, y, z, entity);
-                TE.restoreMetadata();
+     *
+    public void onEntityCollidedWithBlock(World world, BlockPos pos, BlockState state, Entity entity) {
+        CbTileEntity cbTileEntity = getTileEntity(world, pos);
+        if (cbTileEntity != null && cbTileEntity instanceof CbTileEntityFlowerPot) {
+            if (cbTileEntity.getAttributeHelper().hasAttribute(EnumAttributeLocation.HOST, EnumAttributeType.PLANT)) {
+                ItemStack itemStack = ((AttributeItemStack)cbTileEntity.getAttributeHelper().getAttribute(EnumAttributeLocation.HOST, EnumAttributeType.PLANT)).getModel();
+                Block block = FlowerPotUtil.toBlock(itemStack);
+                cbTileEntity.setCbMetadata(itemStack.getItemDamage());
+                BlockState blockState = block.getStateFromMeta(itemStack.getItemDamage());
+                FlowerPotUtil.toBlock(itemStack).onEntityCollidedWithBlock(world, pos, blockState, entity);
+                cbTileEntity.restoreBlockState();
             }
         }
-
-        super.onEntityCollidedWithBlock(world, x, y, z, entity);
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    /**
-     * Returns true only if block is flowerPot
-     */
-    public boolean isFlowerPot()
-    {
-        return true;
-    }
-
-    @Override
-    protected boolean canCoverSide(TEBase TE, World world, int x, int y, int z, int side)
-    {
-        return side == 6 ? !TE.hasDesign() : false;
+        super.onEntityCollidedWithBlock(world, pos, state, entity);
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     /**
      * A randomly called display update to be able to add particles or other items for display
-     */
-    public void randomDisplayTick(World world, int x, int y, int z, Random random)
-    {
-        TEBase TE = getTileEntity(world, x, y, z);
-
-        if (TE != null && TE instanceof TECarpentersFlowerPot) {
+     *
+    public void randomDisplayTick(BlockState blockState, World world, BlockPos blockPos, Random rand) {
+        CbTileEntity cbTileEntity = getTileEntity(world, blockPos);
+        if (cbTileEntity != null && cbTileEntity instanceof CbTileEntityFlowerPot) {
 
             /*
              * Metadata at coordinates are for the base cover only.
              * We need to set it for appropriate attributes in order
              * to get accurate results.
-             */
-
-            if (TE.hasAttribute(TE.ATTR_PLANT)) {
-                ItemStack itemStack = TE.getAttribute(TE.ATTR_PLANT);
-                TE.setMetadata(itemStack.getItemDamage());
-                FlowerPotProperties.toBlock(itemStack).randomDisplayTick(world, x, y, z, random);
-                TE.restoreMetadata();
+             *
+            if (cbTileEntity.getAttributeHelper().hasAttribute(EnumAttributeLocation.HOST, EnumAttributeType.PLANT)) {
+                ItemStack itemStack = ((AttributeItemStack)cbTileEntity.getAttributeHelper().getAttribute(EnumAttributeLocation.HOST, EnumAttributeType.PLANT)).getModel();
+                Block plantBlock = FlowerPotUtil.toBlock(itemStack);
+                BlockState plantBlockState = plantBlock.getStateFromMeta(itemStack.getItemDamage());
+                cbTileEntity.setBlockState(itemStack.getItemDamage());
+                plantBlock.randomDisplayTick(plantBlockState, world, blockPos, rand);
+                cbTileEntity.restoreBlockState();
             }
 
-            if (TE.hasAttribute(TE.ATTR_SOIL)) {
-                ItemStack itemStack = TE.getAttribute(TE.ATTR_SOIL);
-                TE.setMetadata(itemStack.getItemDamage());
-                BlockProperties.toBlock(itemStack).randomDisplayTick(world, x, y, z, random);
-                TE.restoreMetadata();
+            if (cbTileEntity.getAttributeHelper().hasAttribute(EnumAttributeLocation.HOST, EnumAttributeType.SOIL)) {
+                ItemStack itemStack = ((AttributeItemStack)cbTileEntity.getAttributeHelper().getAttribute(EnumAttributeLocation.HOST, EnumAttributeType.SOIL)).getModel();
+                Block soilBlock = BlockUtil.toBlock(itemStack);
+                BlockState soilBlockState = soilBlock.getStateFromMeta(itemStack.getItemDamage());
+                cbTileEntity.setBlockState(itemStack.getItemDamage());
+                soilBlock.randomDisplayTick(soilBlockState, world, blockPos, rand);
+                cbTileEntity.restoreBlockState();
             }
 
         }
 
-        super.randomDisplayTick(world, x, y, z, random);
+        super.randomDisplayTick(blockState, world, blockPos, rand);
     }
 
     /**
@@ -409,41 +272,28 @@ public class BlockCarpentersFlowerPot extends BlockCoverable {
      * @param metadata Current metadata
      * @param fortune Breakers fortune level
      * @return A ArrayList containing all items this block drops
-     */
+     *
     @Override
-    public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int metadata, int fortune)
-    {
-        ArrayList<ItemStack> ret = super.getDrops(world, x, y, z, metadata, fortune);
-        TEBase TE = getSimpleTileEntity(world, x, y, z);
-
-        if (TE != null) {
-            if (TE.hasAttribute(TE.ATTR_FERTILIZER)) {
-                ret.add(TE.getAttribute(TE.ATTR_FERTILIZER));
+    public void getDrops(NonNullList<ItemStack> drops, IWorld world, BlockPos pos, BlockState state, int fortune) {
+        super.getDrops(drops, world, pos, state, fortune);
+        CbTileEntity cbTileEntity = getSimpleTileEntity(world, pos);
+        if (cbTileEntity != null) {
+            if (cbTileEntity.getAttributeHelper().hasAttribute(EnumAttributeLocation.HOST, EnumAttributeType.FERTILIZER)) {
+            	drops.add(((AttributeItemStack)cbTileEntity.getAttributeHelper().getAttribute(EnumAttributeLocation.HOST, EnumAttributeType.FERTILIZER)).getModel());
             }
-            if (TE.hasAttribute(TE.ATTR_PLANT)) {
-                ret.add(TE.getAttribute(TE.ATTR_PLANT));
+            if (cbTileEntity.getAttributeHelper().hasAttribute(EnumAttributeLocation.HOST, EnumAttributeType.PLANT)) {
+            	drops.add(((AttributeItemStack)cbTileEntity.getAttributeHelper().getAttribute(EnumAttributeLocation.HOST, EnumAttributeType.PLANT)).getModel());
             }
-            if (TE.hasAttribute(TE.ATTR_SOIL)) {
-                ret.add(TE.getAttribute(TE.ATTR_SOIL));
+            if (cbTileEntity.getAttributeHelper().hasAttribute(EnumAttributeLocation.HOST, EnumAttributeType.SOIL)) {
+            	drops.add(((AttributeItemStack)cbTileEntity.getAttributeHelper().getAttribute(EnumAttributeLocation.HOST, EnumAttributeType.SOIL)).getModel());
             }
         }
-
-        return ret;
     }
-
-    @Override
-    public TileEntity createNewTileEntity(World world, int metadata)
+    
+/*    @Override
+    protected boolean canCoverSide(CbTileEntity cbTileEntity, World world, BlockPos pos, Direction facing)
     {
-        return new TECarpentersFlowerPot();
-    }
-
-    @Override
-    /**
-     * The type of render function that is called for this block
-     */
-    public int getRenderType()
-    {
-        return BlockRegistry.carpentersFlowerPotRenderID;
-    }
+        return side == 6 ? !cbTileEntity.hasDesign() : false;
+    }*/
 
 }

@@ -1,159 +1,126 @@
 package com.carpentersblocks.block;
 
-import java.util.List;
-import java.util.Random;
-import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
+import com.carpentersblocks.nbt.CbTileEntity;
+import com.carpentersblocks.util.metadata.PressurePlateMetadata;
+import com.carpentersblocks.util.states.StateConstants;
+import com.carpentersblocks.util.states.StateMap;
+
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EnumCreatureType;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.IIcon;
-import net.minecraft.world.IBlockAccess;
-import net.minecraft.world.World;
-import com.carpentersblocks.data.PressurePlate;
-import com.carpentersblocks.tileentity.TEBase;
-import com.carpentersblocks.util.handler.ChatHandler;
-import com.carpentersblocks.util.registry.BlockRegistry;
-import com.carpentersblocks.util.registry.IconRegistry;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
-public class BlockCarpentersPressurePlate extends BlockSided {
-
-    private static PressurePlate data = new PressurePlate();
-
-    /** Whether full bounds should be used for collision purposes. */
-    private boolean fullBounds = false;
-
-    public BlockCarpentersPressurePlate(Material material)
-    {
-        super(material, data);
+public class BlockCarpentersPressurePlate extends BlockFacing implements IStateImplementor {
+	
+	private static final String PROP_FULL_BOUNDS = "FULL_BOUNDS";
+	
+	private static StateMap _stateMap;
+	
+    public BlockCarpentersPressurePlate(Properties properties, StateMap stateMap) {
+        super(properties);
+        _stateMap = stateMap;
     }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    /**
-     * Returns a base icon that doesn't rely on blockIcon, which
-     * is set prior to texture stitch events.
-     */
-    public IIcon getIcon()
-    {
-        return IconRegistry.icon_uncovered_full;
-    }
-
-    @Override
+    
     /**
      * Alters polarity.
-     */
-    protected boolean onHammerLeftClick(TEBase TE, EntityPlayer entityPlayer)
-    {
-        int polarity = data.getPolarity(TE) == data.POLARITY_POSITIVE ? data.POLARITY_NEGATIVE : data.POLARITY_POSITIVE;
-
-        data.setPolarity(TE, polarity);
-        notifyBlocksOfPowerChange(TE.getWorldObj(), TE.xCoord, TE.yCoord, TE.zCoord);
-
-        if (polarity == data.POLARITY_POSITIVE) {
-            ChatHandler.sendMessageToPlayer("message.polarity_pos.name", entityPlayer);
+     *
+    @Override
+    protected boolean onHammerLeftClick(CbTileEntity cbTileEntity, PlayerEntity playerEntity) {
+    	PressurePlateMetadata util = new PressurePlateMetadata(cbTileEntity);
+        util.togglePolarity(cbTileEntity);
+        notifyBlocksOfPowerChange(cbTileEntity.getWorld(), getDefaultState(),cbTileEntity.getPos());
+        if (util.isPositivePolarity(cbTileEntity)) {
+        	ChatHandler.sendMessageToPlayer("message.polarity_neg.name", playerEntity);
         } else {
-            ChatHandler.sendMessageToPlayer("message.polarity_neg.name", entityPlayer);
+        	ChatHandler.sendMessageToPlayer("message.polarity_pos.name", playerEntity);
         }
-
         return true;
     }
 
-    @Override
     /**
      * Alters trigger behavior.
-     */
-    protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer)
-    {
-        int trigger = data.getTriggerEntity(TE);
-
-        if (++trigger > 3) {
-            trigger = 0;
+     *
+    @Override
+    protected boolean onHammerRightClick(CbTileEntity cbTileEntity, PlayerEntity playerEntity) {
+    	PressurePlateMetadata util = new PressurePlateMetadata(cbTileEntity);
+    	util.setNextTriggerType(cbTileEntity);
+        notifyBlocksOfPowerChange(cbTileEntity.getWorld(), getDefaultState(), cbTileEntity.getPos());
+        switch (util.getTriggerEntity(cbTileEntity)) {
+	        case TRIGGER_ALL:
+	        	ChatHandler.sendMessageToPlayer("message.trigger_all.name", playerEntity);
+	        	break;
+	        case TRIGGER_ANIMAL:
+	        	ChatHandler.sendMessageToPlayer("message.trigger_animal.name", playerEntity);
+	        	break;
+	        case TRIGGER_MONSTER:
+	        	ChatHandler.sendMessageToPlayer("message.trigger_monster.name", playerEntity);
+	        	break;
+	        case TRIGGER_PLAYER:
+	        	ChatHandler.sendMessageToPlayer("message.trigger_player.name", playerEntity);
+	        	break;
         }
-
-        data.setTriggerEntity(TE, trigger);
-        notifyBlocksOfPowerChange(TE.getWorldObj(), TE.xCoord, TE.yCoord, TE.zCoord);
-
-        if (trigger == data.TRIGGER_PLAYER) {
-            ChatHandler.sendMessageToPlayer("message.trigger_player.name", entityPlayer);
-        } else if (trigger == data.TRIGGER_MONSTER) {
-            ChatHandler.sendMessageToPlayer("message.trigger_monster.name", entityPlayer);
-        } else if (trigger == data.TRIGGER_ANIMAL) {
-            ChatHandler.sendMessageToPlayer("message.trigger_animal.name", entityPlayer);
-        } else {
-            ChatHandler.sendMessageToPlayer("message.trigger_all.name", entityPlayer);
-        }
-
         return true;
     }
-
-    /**
-     * Returns a bounding box from the pool of bounding boxes (this means this box can change after the pool has been
-     * cleared to be reused)
-     */
-    @Override
-    public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int x, int y, int z)
-    {
-        return null;
-    }
-
-    @Override
+    
     /**
      * Updates the blocks bounds based on its current state. Args: world, x, y, z
-     */
-    public void setBlockBoundsBasedOnState(IBlockAccess blockAccess, int x, int y, int z)
-    {
-        TEBase TE = getTileEntity(blockAccess, x, y, z);
-
-        if (TE != null) {
-            float depth = fullBounds | !isDepressed(TE) ? 0.0625F : 0.03125F;
-            setBlockBounds(0.0625F, 0.0625F, 0.0F, 0.9375F, 0.9375F, depth, data.getDirection(TE));
-        }
-    }
-
+     *
     @Override
+    public AxisAlignedBB getBoundingBox(BlockState blockState, IWorld blockAccess, BlockPos blockPos) {
+        CbTileEntity cbTileEntity = getTileEntity(blockAccess, blockPos);
+        if (cbTileEntity != null) {
+        	if (Boolean.TRUE.equals(cbTileEntity.getProperty(PROP_FULL_BOUNDS))) {
+        		return FULL_BLOCK_AABB;
+        	} else {
+        		return StateFactory.getState(cbTileEntity).getBoundingBox();
+        	}
+        }
+        return super.getBoundingBox(blockState, blockAccess, blockPos);
+    }
+    
+    @Deprecated
+    @Nullable
+    @Override
+    public AxisAlignedBB getCollisionBoundingBox(BlockState blockState, IWorld blockAccess, BlockPos blockPos) {
+    	return NULL_AABB;
+    }
+    
     /**
      * Ticks the block if it's been scheduled
-     */
-    public void updateTick(World world, int x, int y, int z, Random random)
-    {
+     *
+    @Override
+    public void updateTick(World world, BlockPos blockPos, BlockState blockState, Random random) {
         if (!world.isRemote) {
-
-            TEBase TE = getTileEntity(world, x, y, z);
-
-            if (TE != null) {
-
-                boolean depressed = false;
-
-                if (isDepressed(TE)) {
-                    depressed = hasTriggerInBounds(TE);
+            CbTileEntity cbTileEntity = getTileEntity(world, blockPos);
+            if (cbTileEntity != null) {
+            	PressurePlateMetadata util = new PressurePlateMetadata(cbTileEntity);
+            	boolean depressed = false;
+                if (util.isDepressed(cbTileEntity)) {
+                    depressed = hasTriggerInBounds(cbTileEntity);
                 }
-
                 if (depressed) {
-                    world.scheduleBlockUpdate(x, y, z, this, tickRate(world));
-                } else {
-                    toggleOff(TE, world, x, y, z);
+                    world.scheduleBlockUpdate(blockPos, this, tickRate(world), 0);
+                } else if (util.isDepressed(cbTileEntity)) {
+        	    	util.setState(cbTileEntity, util.STATE_NORMAL, true);
+        	        notifyBlocksOfPowerChange(cbTileEntity.getWorld(), getDefaultState(), cbTileEntity.getPos());
                 }
-
             }
-
         }
+        super.updateTick(world, blockPos, blockState, random);
     }
 
-    @Override
     /**
      * Triggered whenever an entity collides with this block (enters into the block). Args: world, x, y, z, entity
-     */
-    public void onEntityCollidedWithBlock(World world, int x, int y, int z, Entity entity)
-    {
+     *
+    @Override
+    public void onEntityCollidedWithBlock(World world, BlockPos blockPos, BlockState blockState, Entity entity) {
         if (!world.isRemote) {
-            TEBase TE = getTileEntity(world, x, y, z);
-            if (TE != null) {
-                if (hasTriggerInBounds(TE)) {
-                    toggleOn(TE, world, x, y, z);
+            CbTileEntity cbTileEntity = getTileEntity(world, blockPos);
+            if (cbTileEntity != null) {
+            	if (canEntityTrigger(cbTileEntity, entity)) {
+                	PressurePlateMetadata util = new PressurePlateMetadata(cbTileEntity);
+                	if (!util.isDepressed(cbTileEntity)) {
+                    	util.setState(cbTileEntity, util.STATE_DEPRESSED, true);
+                        notifyBlocksOfPowerChange(cbTileEntity.getWorld(), getDefaultState(), cbTileEntity.getPos());
+                	}
+                    cbTileEntity.getWorld().scheduleBlockUpdate(cbTileEntity.getPos(), this, 0, 0);
                 }
             }
         }
@@ -163,137 +130,111 @@ public class BlockCarpentersPressurePlate extends BlockSided {
      * Returns whether sensitive area contains an entity that can
      * trigger a state change.
      *
-     * @param  TE the {@link TEBase}
+     * @param  cbTileEntity the {@link CbTileEntity}
      * @return whether sensitive area contains valid {@link Entity}
-     */
-    private boolean hasTriggerInBounds(TEBase TE)
-    {
-        fullBounds = true;
-        List entityList = TE.getWorldObj().getEntitiesWithinAABB(Entity.class, getSensitiveAABB(TE.getWorldObj(), TE.xCoord, TE.yCoord, TE.zCoord));
-        fullBounds = false;
-
+     *
+    private boolean hasTriggerInBounds(CbTileEntity cbTileEntity) {
+    	cbTileEntity.setProperty(PROP_FULL_BOUNDS, Boolean.TRUE);
+        AxisAlignedBB globalAABB = getGlobalBoundingBox(getDefaultState(), cbTileEntity.getWorld(), cbTileEntity.getPos());
+        List entityList = cbTileEntity.getWorld().getEntitiesWithinAABB(Entity.class, globalAABB);
+        cbTileEntity.removeProperty(PROP_FULL_BOUNDS);
         if (!entityList.isEmpty()) {
-            for (int idx = 0; idx < entityList.size(); ++idx) {
-                if (canEntityTrigger(TE, (Entity)entityList.get(idx))) {
+            for (Entity entity : (List<Entity>) entityList) {
+                if (canEntityTrigger(cbTileEntity, entity)) {
                     return true;
                 }
             }
         }
-
         return false;
     }
 
     /**
-     * Gets the area of bounding box that is sensitive to changes.
-     *
-     * @param  x the x coordinate
-     * @param  y the y coordinate
-     * @param  z the z coordinate
-     * @return the {@link AxisAlignedBB}
-     */
-    private AxisAlignedBB getSensitiveAABB(World world, int x, int y, int z)
-    {
-        setBlockBoundsBasedOnState(world, x, y, z);
-        return AxisAlignedBB.getBoundingBox(x + minX, y + minY, z + minZ, x + maxX, y + maxY, z + maxZ);
-    }
-
-    /**
-     * Activates pressure plate.
-     */
-    private void toggleOn(TEBase TE, World world, int x, int y, int z)
-    {
-        data.setState(TE, data.STATE_ON, true);
-        notifyBlocksOfPowerChange(world, x, y, z);
-        world.scheduleBlockUpdate(x, y, z, this, tickRate(world));
-    }
-
-    /**
-     * Deactivates pressure plate.
-     */
-    private void toggleOff(TEBase TE, World world, int x, int y, int z)
-    {
-        data.setState(TE, data.STATE_OFF, true);
-        notifyBlocksOfPowerChange(world, x, y, z);
-    }
-
-    /**
-     * Returns whether pressure plate is in depressed state
-     */
-    private boolean isDepressed(TEBase TE)
-    {
-        return data.getState(TE) == data.STATE_ON;
-    }
-
-    @Override
-    /**
      * Can this block provide power. Only wire currently seems to have this change based on its state.
-     */
-    public boolean canProvidePower()
-    {
+     *
+    @Override
+    public boolean canProvidePower(BlockState blockState) {
         return true;
     }
 
     /**
      * Returns power level (0 or 15)
-     */
+     *
     @Override
-    public int getPowerOutput(TEBase TE)
-    {
-        int polarity = data.getPolarity(TE);
-
-        if (isDepressed(TE)) {
-            return polarity == data.POLARITY_POSITIVE ? 15 : 0;
-        } else {
-            return polarity == data.POLARITY_NEGATIVE ? 15 : 0;
-        }
+    public int getPowerOutput(CbTileEntity cbTileEntity) {
+    	PressurePlateMetadata util = new PressurePlateMetadata(cbTileEntity);
+    	return util.isEmitting(cbTileEntity) ? 15 : 0;
     }
 
     /**
      * Returns whether pressure plate should trigger based on entity colliding with it.
-     */
-    private boolean canEntityTrigger(TEBase TE, Entity entity)
-    {
+     *
+    private boolean canEntityTrigger(CbTileEntity cbTileEntity, Entity entity) {
         if (entity == null) {
             return false;
         }
-
-        int trigger = data.getTriggerEntity(TE);
-
-        if (trigger == data.TRIGGER_PLAYER) {
-            return entity instanceof EntityPlayer;
-        } else if (trigger == data.TRIGGER_MONSTER) {
-            return entity.isCreatureType(EnumCreatureType.monster, false);
-        } else if (trigger == data.TRIGGER_ANIMAL) {
-            return entity.isCreatureType(EnumCreatureType.creature, false);
-        } else {
-            return true;
-        }
+        PressurePlateMetadata util = new PressurePlateMetadata(cbTileEntity);
+        switch (util.getTriggerEntity(cbTileEntity)) {
+	        case TRIGGER_ANIMAL:
+	        	return entity.isCreatureType(EnumCreatureType.CREATURE, false);
+	        case TRIGGER_MONSTER:
+	        	return entity.isCreatureType(EnumCreatureType.MONSTER, false);
+	        case TRIGGER_PLAYER:
+	        	return entity instanceof PlayerEntity;
+	        default: // TRIGGER_ALL
+	        	return true;
+	    }
     }
 
-    @Override
+	@Override
+	public void setFacing(CbTileEntity cbTileEntity, Direction facing) {
+		PressurePlateMetadata util = new PressurePlateMetadata(cbTileEntity);
+		util.setFacing(cbTileEntity, facing);
+	}
+
+	@Override
+	public Direction getFacing(CbTileEntity cbTileEntity) {
+		PressurePlateMetadata util = new PressurePlateMetadata(cbTileEntity);
+		return util.getFacing();
+	}
+	
     /**
-     * Ejects contained items into the world, and notifies neighbours of an update, as appropriate
-     */
-    public void breakBlock(World world, int x, int y, int z, Block block, int metadata)
-    {
-        TEBase TE = getSimpleTileEntity(world, x, y, z);
-
-        if (TE != null) {
-            if (isDepressed(TE)) {
-                notifyBlocksOfPowerChange(world, x, y, z);
-            }
-        }
-
-        super.breakBlock(world, x, y, z, block, metadata);
+     * Used to determine ambient occlusion and culling when rebuilding chunks for render
+     *
+	@Override
+    public boolean isOpaqueCube(BlockState blockState) {
+        return false;
     }
 
-    @Override
+	@Override
+    public boolean isFullCube(BlockState blockState) {
+        return false;
+    }
+
+	@Override
+    public boolean isPassable(IWorld blockAccess, BlockPos blockPos) {
+        return true;
+	}
+
     /**
-     * The type of render function that is called for this block
-     */
-    public int getRenderType()
-    {
-        return BlockRegistry.carpentersPressurePlateRenderID;
-    }
+     * Return true if an entity can be spawned inside the block (used to get the player's bed spawn location)
+     *
+	@Override
+    public boolean canSpawnInBlock() {
+        return true;
+    }*/
 
+	@Override
+	public StateMap getStateMap() {
+		return _stateMap;
+	}
+
+	@Override
+	public String getStateDescriptor(CbTileEntity cbTileEntity) {
+		PressurePlateMetadata util = new PressurePlateMetadata(cbTileEntity);
+		if (util.isDepressed(cbTileEntity)) {
+			return StateConstants.PRESSURE_PLATE_DEPRESSED_STATE;
+		}
+		return StateConstants.DEFAULT_STATE;
+	}
+	
 }

@@ -1,29 +1,27 @@
 package com.carpentersblocks.util.protection;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.relauncher.Side;
+import net.minecraft.entity.player.PlayerEntity;
 
 public class ProtectedObject {
 
-    public EntityPlayer entityPlayer;
+    private PlayerEntity playerEntity;
 
-    public ProtectedObject(EntityPlayer entityPlayer)
-    {
-        this.entityPlayer = entityPlayer;
+	public ProtectedObject(PlayerEntity playerEntity) {
+        this.playerEntity = playerEntity;
     }
+	
+	public PlayerEntity getPlayerEntity() {
+		return playerEntity;
+	}
 
     @Override
-    public String toString()
-    {
-        if (FMLCommonHandler.instance().getSide() == Side.SERVER) {
-            if (((EntityPlayerMP)entityPlayer).mcServer.isServerInOnlineMode()) {
-                return entityPlayer.getUniqueID().toString();
+    public String toString() {
+        if (!playerEntity.level.isClientSide()) {
+            if (playerEntity.getServer().usesAuthentication()) {
+                return playerEntity.getUUID().toString();
             }
         }
-
-        return entityPlayer.getDisplayName();
+        return playerEntity.getDisplayName().getString();
     }
 
 }

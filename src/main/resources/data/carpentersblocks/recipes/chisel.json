@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "X",
+	"#"
+  ],
+  "key": {
+    "X": {
+	  "tag": "forge:ingots/iron"
+    },
+	"#": {
+      "item": "carpentersblocks:block"
+    }
+  },
+  "result": {
+    "item": "carpentersblocks:chisel"
+  }
+}

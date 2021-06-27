@@ -1,56 +1,52 @@
 package com.carpentersblocks.network;
 
-import java.io.IOException;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import com.carpentersblocks.block.BlockCarpentersSlope;
-import com.carpentersblocks.util.BlockProperties;
-import com.carpentersblocks.util.registry.BlockRegistry;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufInputStream;
+import java.util.function.Supplier;
 
-public class PacketSlopeSelect implements ICarpentersPacket {
+import com.carpentersblocks.block.AbstractCoverableBlock;
+import com.carpentersblocks.item.CbItems;
+import com.carpentersblocks.util.BlockUtil;
+
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.NetworkEvent.Context;
+
+public class PacketSlopeSelect implements ICarpentersBlocksPacket {
 
     private int slot = 0;
-    private boolean incDamage = false;
+    private boolean next;
 
     public PacketSlopeSelect() {}
 
-    public PacketSlopeSelect(int slot, boolean incDamage)
-    {
+    public PacketSlopeSelect(int slot, boolean next) {
         this.slot = slot;
-        this.incDamage = incDamage;
+        this.next = next;
     }
-
-    @Override
-    public void processData(EntityPlayer entityPlayer, ByteBufInputStream bbis) throws IOException
-    {
-        int slot = bbis.readInt();
-        boolean incDmg = bbis.readBoolean();
-        ItemStack itemStack = entityPlayer.inventory.getStackInSlot(slot);
-
-        if (itemStack != null && BlockProperties.toBlock(itemStack).equals(BlockRegistry.blockCarpentersSlope)) {
-
-            int maxDmg = BlockCarpentersSlope.slopeType.length - 1;
-            int itemDmg = itemStack.getItemDamage();
-            itemDmg += incDmg ? 1 : -1;
-
-            if (itemDmg > maxDmg) {
-                itemDmg = 0;
-            } else if (itemDmg < 0) {
-                itemDmg = maxDmg;
-            }
-
-            itemStack.setItemDamage(itemDmg);
-
-        }
+    
+    public PacketSlopeSelect(PacketBuffer packetBuffer) {
+    	this.slot = packetBuffer.readByte();
+    	this.next = packetBuffer.readBoolean();
     }
-
-    @Override
-    public void appendData(ByteBuf buffer) throws IOException
-    {
-        buffer.writeInt(slot);
-        buffer.writeBoolean(incDamage);
-    }
-
+    
+	public static void encode(PacketSlopeSelect msg, PacketBuffer buffer) {
+		buffer.writeByte(msg.slot);
+		buffer.writeBoolean(msg.next);
+	}
+	
+	public static void handle(final PacketSlopeSelect msg, Supplier<Context> ctx) {
+		ctx.get().enqueueWork(() -> {
+			ServerPlayerEntity player = ctx.get().getSender();
+			ItemStack itemStack = player.inventory.getItem(msg.slot);
+	        if (itemStack != null && BlockUtil.toBlock(itemStack) instanceof AbstractCoverableBlock) {
+	        	if (msg.next) {
+	        		player.inventory.setItem(msg.slot,
+	        				new ItemStack(CbItems.getNextSlopeSubType(itemStack.getItem().getRegistryName().toString()), itemStack.getCount()));
+	        	} else {
+	        		player.inventory.setItem(msg.slot,
+	        				new ItemStack(CbItems.getPreviousSlopeSubType(itemStack.getItem().getRegistryName().toString()), itemStack.getCount()));
+	        	}
+	        }
+		});
+	}
+	
 }

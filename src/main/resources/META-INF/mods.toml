@@ -1,0 +1,39 @@
+# The name of the mod loader type to load - for regular FML @Mod mods it should be javafml
+modLoader="javafml"
+# A version range to match for said mod loader - for regular FML @Mod it will be the forge version
+# Forge for 1.16.5 is version 36
+loaderVersion="[36,)"
+# The license for your mod. This is mandatory and allows for easier comprehension of your redistributive properties.
+# Review your options at https://choosealicense.com/. All rights reserved is the default copyright stance, and is thus the default here.
+license="GPLv2"
+# A URL to refer people to when problems occur with this mod
+issueTrackerURL="https://github.com/Mineshopper/carpentersblocks/issues"
+# If the mods defined in this file should show as separate resource packs
+showAsResourcePack=false
+
+[[mods]]
+  modId="carpentersblocks"
+  version="${file.jarVersion}"
+  displayName="Carpenter's Blocks"
+  updateJSONURL=""
+  displayURL="https://www.carpentersblocks.com"
+  logoFile="pack.png"
+  credits=""
+  authors="Mineshopper"
+  description='''
+  Adds slopes and a variety of vanilla-inspired blocks that support covers, side covers, overlays, dyes and chiseled patterns.
+  '''
+
+  [[dependencies.carpentersblocks]]
+	modId="forge"
+	mandatory=true
+	versionRange="[36,)"
+	ordering="NONE"
+	side="BOTH"
+
+  [[dependencies.carpentersblocks]]
+	modId="minecraft"
+	mandatory=true
+	versionRange="[1.16.5,1.17)"
+	ordering="NONE"
+	side="BOTH"

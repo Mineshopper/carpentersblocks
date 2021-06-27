@@ -1,0 +1,6 @@
+{
+    "parent": "block/thin_block",
+    "textures": {
+        "all": "carpentersblocks:block/general/uncovered_full_frame"
+    }
+}

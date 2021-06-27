@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "XX ",
+    " #X",
+	" # "
+  ],
+  "key": {
+    "X": {
+	  "tag": "forge:ingots/iron"
+    },
+	"#": {
+      "item": "carpentersblocks:block"
+    }
+  },
+  "result": {
+    "item": "carpentersblocks:hammer"
+  }
+}

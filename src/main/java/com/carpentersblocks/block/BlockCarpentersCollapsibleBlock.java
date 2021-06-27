@@ -1,328 +1,284 @@
 package com.carpentersblocks.block;
 
-import java.util.List;
-import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.Vec3;
-import net.minecraft.world.IBlockAccess;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-import com.carpentersblocks.data.Collapsible;
-import com.carpentersblocks.tileentity.TEBase;
-import com.carpentersblocks.util.collapsible.CollapsibleUtil;
-import com.carpentersblocks.util.handler.EventHandler;
-import com.carpentersblocks.util.registry.BlockRegistry;
-import com.carpentersblocks.util.registry.ItemRegistry;
+public class BlockCarpentersCollapsibleBlock extends BlockFacing {
 
-public class BlockCarpentersCollapsibleBlock extends BlockSided {
-
-    public BlockCarpentersCollapsibleBlock(Material material)
-    {
-        super(material, new Collapsible());
+    public BlockCarpentersCollapsibleBlock(Properties properties) {
+    	super(properties);
+        //setLightOpacity(0);
     }
 
-    @Override
+    //@Override
     /**
-     * Increase quad depth.
-     */
-    protected boolean onHammerLeftClick(TEBase TE, EntityPlayer entityPlayer)
-    {
-        int stepOffset = Collapsible.INSTANCE.isPositive(TE) ? -1 : 1;
-        int quad = Collapsible.getQuad(EventHandler.hitX, EventHandler.hitZ);
-        int depth = Collapsible.getQuadDepth(TE, quad);
-
-        Collapsible.setQuadDepth(TE, quad, depth + stepOffset, false);
-        smoothAdjacentCollapsibles(TE, quad);
-
+     * Decrease quad depth.
+     *
+    protected boolean onHammerLeftClick(CbTileEntity cbTileEntity, PlayerEntity playerEntity) {
+    	CollapsibleMetadata util = new CollapsibleMetadata(cbTileEntity);
+        int quad = util.getHitQuad();
+        int depth = util.getQuadDepth(quad);
+        util.setQuadDepth(cbTileEntity, quad, --depth);
+        smoothAdjacentCollapsibles(cbTileEntity, quad);
         return true;
     }
 
     @Override
     /**
-     * Decrease quad depth.
-     */
-    protected boolean onHammerRightClick(TEBase TE, EntityPlayer entityPlayer)
-    {
-        int stepOffset = Collapsible.INSTANCE.isPositive(TE) ? 1 : -1;
-        int quad = Collapsible.getQuad(EventHandler.hitX, EventHandler.hitZ);
-        int depth = Collapsible.getQuadDepth(TE, quad);
-
-        Collapsible.setQuadDepth(TE, quad, depth + stepOffset, false);
-        smoothAdjacentCollapsibles(TE, quad);
-
+     * Increase quad depth.
+     *
+    protected boolean onHammerRightClick(CbTileEntity cbTileEntity, PlayerEntity playerEntity) {
+    	CollapsibleMetadata util = new CollapsibleMetadata(cbTileEntity);
+        int quad = util.getHitQuad();
+        int depth = util.getQuadDepth(quad);
+        util.setQuadDepth(cbTileEntity, quad, ++depth);
+        smoothAdjacentCollapsibles(cbTileEntity, quad);
         return true;
     }
 
     @Override
     /**
      * Damages hammer with a chance to not damage.
-     */
-    protected void damageItemWithChance(World world, EntityPlayer entityPlayer)
-    {
-        if (world.rand.nextFloat() <= ItemRegistry.itemHammerDamageChanceFromCollapsible) {
-            super.damageItemWithChance(world, entityPlayer);
+     *
+    protected void damageItemWithChance(World world, PlayerEntity playerEntity, Hand hand) {
+        if (world.rand.nextFloat() <= ConfigRegistry.itemHammerDamageChanceFromCollapsible) {
+            super.damageItemWithChance(world, playerEntity, hand);
         }
+    }
+    
+    private boolean isSameOrientation(CbTileEntity cbTileEntity1, CbTileEntity cbTileEntity2) {
+    	return (new CollapsibleMetadata(cbTileEntity1).getFacing()).equals(new CollapsibleMetadata(cbTileEntity2).getFacing());
     }
 
     /**
      * Will attempt to smooth transitions to any adjacent collapsible blocks
-     * given a TE and source quadrant.
-     */
-    private void smoothAdjacentCollapsibles(TEBase TE, int src_quadrant)
-    {
-        Collapsible data = Collapsible.INSTANCE;
-        World world = TE.getWorldObj();
+     * given a cbTileEntity and source quadrant.
+     *
+    private void smoothAdjacentCollapsibles(CbTileEntity cbTileEntity, int src_quadrant) {
+        CollapsibleMetadata util = new CollapsibleMetadata(cbTileEntity);
+        CbTileEntity cbTileEntity_XN   = getTileEntity(cbTileEntity.getWorld(), cbTileEntity.getPos().add(-1,  0,  0));
+        CbTileEntity cbTileEntity_XP   = getTileEntity(cbTileEntity.getWorld(), cbTileEntity.getPos().add( 1,  0,  0));
+        CbTileEntity cbTileEntity_ZN   = getTileEntity(cbTileEntity.getWorld(), cbTileEntity.getPos().add( 0,  0, -1));
+        CbTileEntity cbTileEntity_ZP   = getTileEntity(cbTileEntity.getWorld(), cbTileEntity.getPos().add( 0,  0,  1));
+        CbTileEntity cbTileEntity_XZNN = getTileEntity(cbTileEntity.getWorld(), cbTileEntity.getPos().add(-1,  0, -1));
+        CbTileEntity cbTileEntity_XZNP = getTileEntity(cbTileEntity.getWorld(), cbTileEntity.getPos().add(-1,  0,  1));
+        CbTileEntity cbTileEntity_XZPN = getTileEntity(cbTileEntity.getWorld(), cbTileEntity.getPos().add( 1,  0, -1));
+        CbTileEntity cbTileEntity_XZPP = getTileEntity(cbTileEntity.getWorld(), cbTileEntity.getPos().add( 1,  0,  1));
+        int depth = util.getQuadDepth(src_quadrant);
 
-        TEBase TE_XN   = getTileEntity(world, TE.xCoord - 1, TE.yCoord, TE.zCoord);
-        TEBase TE_XP   = getTileEntity(world, TE.xCoord + 1, TE.yCoord, TE.zCoord);
-        TEBase TE_ZN   = getTileEntity(world, TE.xCoord, TE.yCoord, TE.zCoord - 1);
-        TEBase TE_ZP   = getTileEntity(world, TE.xCoord, TE.yCoord, TE.zCoord + 1);
-        TEBase TE_XZNN = getTileEntity(world, TE.xCoord - 1, TE.yCoord, TE.zCoord - 1);
-        TEBase TE_XZNP = getTileEntity(world, TE.xCoord - 1, TE.yCoord, TE.zCoord + 1);
-        TEBase TE_XZPN = getTileEntity(world, TE.xCoord + 1, TE.yCoord, TE.zCoord - 1);
-        TEBase TE_XZPP = getTileEntity(world, TE.xCoord + 1, TE.yCoord, TE.zCoord + 1);
-
-        int depth = Collapsible.getQuadDepth(TE, src_quadrant);
-
-        switch (src_quadrant)
-        {
-            case Collapsible.QUAD_XZNN:
-                if (TE_ZN != null && data.match(TE, TE_ZN)) {
-                    Collapsible.setQuadDepth(TE_ZN, Collapsible.QUAD_XZNP, depth, true);
+        switch (src_quadrant) {
+            case QUAD_XZNN:
+                if (cbTileEntity_ZN != null && isSameOrientation(cbTileEntity, cbTileEntity_ZN)) {
+                	util.setQuadDepth(cbTileEntity_ZN, QUAD_XZNP, depth);
                 }
-                if (TE_XZNN != null && data.match(TE, TE_XZNN)) {
-                    Collapsible.setQuadDepth(TE_XZNN, Collapsible.QUAD_XZPP, depth, true);
+                if (cbTileEntity_XZNN != null && isSameOrientation(cbTileEntity, cbTileEntity_XZNN)) {
+                	util.setQuadDepth(cbTileEntity_XZNN, QUAD_XZPP, depth);
                 }
-                if (TE_XN != null && data.match(TE, TE_XN)) {
-                    Collapsible.setQuadDepth(TE_XN, Collapsible.QUAD_XZPN, depth, true);
+                if (cbTileEntity_XN != null && isSameOrientation(cbTileEntity, cbTileEntity_XN)) {
+                	util.setQuadDepth(cbTileEntity_XN, QUAD_XZPN, depth);
                 }
                 break;
-            case Collapsible.QUAD_XZNP:
-                if (TE_XN != null && data.match(TE, TE_XN)) {
-                    Collapsible.setQuadDepth(TE_XN, Collapsible.QUAD_XZPP, depth, true);
+            case QUAD_XZNP:
+                if (cbTileEntity_XN != null && isSameOrientation(cbTileEntity, cbTileEntity_XN)) {
+                	util.setQuadDepth(cbTileEntity_XN, QUAD_XZPP, depth);
                 }
-                if (TE_XZNP != null && data.match(TE, TE_XZNP)) {
-                    Collapsible.setQuadDepth(TE_XZNP, Collapsible.QUAD_XZPN, depth, true);
+                if (cbTileEntity_XZNP != null && isSameOrientation(cbTileEntity, cbTileEntity_XZNP)) {
+                	util.setQuadDepth(cbTileEntity_XZNP, QUAD_XZPN, depth);
                 }
-                if (TE_ZP != null && data.match(TE, TE_ZP)) {
-                    Collapsible.setQuadDepth(TE_ZP, Collapsible.QUAD_XZNN, depth, true);
-                }
-                break;
-            case Collapsible.QUAD_XZPN:
-                if (TE_XP != null && data.match(TE, TE_XP)) {
-                    Collapsible.setQuadDepth(TE_XP, Collapsible.QUAD_XZNN, depth, true);
-                }
-                if (TE_XZPN != null && data.match(TE, TE_XZPN)) {
-                    Collapsible.setQuadDepth(TE_XZPN, Collapsible.QUAD_XZNP, depth, true);
-                }
-                if (TE_ZN != null && data.match(TE, TE_ZN)) {
-                    Collapsible.setQuadDepth(TE_ZN, Collapsible.QUAD_XZPP, depth, true);
+                if (cbTileEntity_ZP != null && isSameOrientation(cbTileEntity, cbTileEntity_ZP)) {
+                	util.setQuadDepth(cbTileEntity_ZP, QUAD_XZNN, depth);
                 }
                 break;
-            case Collapsible.QUAD_XZPP:
-                if (TE_ZP != null && data.match(TE, TE_ZP)) {
-                    Collapsible.setQuadDepth(TE_ZP, Collapsible.QUAD_XZPN, depth, true);
+            case QUAD_XZPN:
+                if (cbTileEntity_XP != null && isSameOrientation(cbTileEntity, cbTileEntity_XP)) {
+                	util.setQuadDepth(cbTileEntity_XP, QUAD_XZNN, depth);
                 }
-                if (TE_XZPP != null && data.match(TE, TE_XZPP)) {
-                    Collapsible.setQuadDepth(TE_XZPP, Collapsible.QUAD_XZNN, depth, true);
+                if (cbTileEntity_XZPN != null && isSameOrientation(cbTileEntity, cbTileEntity_XZPN)) {
+                	util.setQuadDepth(cbTileEntity_XZPN, QUAD_XZNP, depth);
                 }
-                if (TE_XP != null && data.match(TE, TE_XP)) {
-                    Collapsible.setQuadDepth(TE_XP, Collapsible.QUAD_XZNP, depth, true);
+                if (cbTileEntity_ZN != null && isSameOrientation(cbTileEntity, cbTileEntity_ZN)) {
+                	util.setQuadDepth(cbTileEntity_ZN, QUAD_XZPP, depth);
+                }
+                break;
+            case QUAD_XZPP:
+                if (cbTileEntity_ZP != null && isSameOrientation(cbTileEntity, cbTileEntity_ZP)) {
+                	util.setQuadDepth(cbTileEntity_ZP, QUAD_XZPN, depth);
+                }
+                if (cbTileEntity_XZPP != null && isSameOrientation(cbTileEntity, cbTileEntity_XZPP)) {
+                	util.setQuadDepth(cbTileEntity_XZPP, QUAD_XZNN, depth);
+                }
+                if (cbTileEntity_XP != null && isSameOrientation(cbTileEntity, cbTileEntity_XP)) {
+                	util.setQuadDepth(cbTileEntity_XP, QUAD_XZNP, depth);
                 }
                 break;
         }
     }
-
+    
     @Override
     /**
      * Updates the blocks bounds based on its current state. Args: world, x, y, z
-     */
-    public void setBlockBoundsBasedOnState(IBlockAccess blockAccess, int x, int y, int z)
-    {
-        TEBase TE = getTileEntity(blockAccess, x, y, z);
-
-        if (TE != null)
-        {
-            float maxDepth = CollapsibleUtil.getBoundsMaxDepth(TE);
-            if (Collapsible.INSTANCE.isPositive(TE)) {
-                setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, maxDepth, 1.0F);
-            } else {
-                setBlockBounds(0.0F, 1.0F - maxDepth, 0.0F, 1.0F, 1.0F, 1.0F);
-            }
+     *
+    public AxisAlignedBB getBoundingBox(BlockState blockState, IWorld blockAccess, BlockPos blockPos) {
+        CbTileEntity cbTileEntity = getTileEntity(blockAccess, blockPos);
+        if (cbTileEntity != null) {
+        	CollapsibleMetadata util = new CollapsibleMetadata(cbTileEntity);
+	        float maxDepth = util.getBoundsMaxDepth();
+	        if (util.isPositive()) {
+	            return new AxisAlignedBB(0.0F, 0.0F, 0.0F, 1.0F, maxDepth, 1.0F);
+	        } else {
+	        	return new AxisAlignedBB(0.0F, 1.0F - maxDepth, 0.0F, 1.0F, 1.0F, 1.0F);
+	        }
         }
+        return super.getBoundingBox(blockState, blockAccess, blockPos);
     }
-
+    
     @Override
     /**
      * Checks if the block is a solid face on the given side, used by placement logic.
-     */
-    public boolean isSideSolid(IBlockAccess blockAccess, int x, int y, int z, ForgeDirection side)
-    {
-        TEBase TE = getTileEntity(blockAccess, x, y, z);
-
-        if (TE != null) {
-            if (isBlockSolid(blockAccess, x, y, z)) {
-                return Collapsible.isSideSolid(TE, side);
-            }
+     *
+    public boolean isSideSolid(BlockState blockState, IWorld blockAccess, BlockPos blockPos, Direction facing) {
+        CbTileEntity cbTileEntity = getTileEntity(blockAccess, blockPos);
+        if (cbTileEntity != null) {
+        	CollapsibleMetadata util = new CollapsibleMetadata(cbTileEntity);
+	        if (isBlockSolid(blockAccess, blockPos)) {
+	            return util.isSideSolid(facing);
+	        }
         }
-
         return false;
     }
 
     /**
      * Returns true if a slope should end at the given coords
-     */
-    private boolean isSlopeBoundary(World world, int x, int y, int z)
-    {
-        TEBase TE = getTileEntity(world, x, y, z);
-
-        if (TE != null) {
+     *
+    private boolean isSlopeBoundary(World world, BlockPos blockPos) {
+        CbTileEntity cbTileEntity = getTileEntity(world, blockPos);
+        if (cbTileEntity != null) {
             return true;
         }
-
-        return world.getBlock(x, y, z).getMaterial().blocksMovement() || !world.getBlock(x, y - 1, z).getMaterial().blocksMovement();
+        boolean blocksMovement_Y = world.getBlockState(blockPos).getMaterial().blocksMovement();
+        boolean blocksMovement_YN = world.getBlockState(blockPos.add(0, -1, 0)).getMaterial().blocksMovement();
+        return blocksMovement_Y || blocksMovement_YN;
     }
 
     /**
      * Scan X axis for slopes
-     */
-    private int scanX(World world, int x, int y, int z, int dir, int maxDist)
-    {
-        for (int nx = x + dir; nx != x + maxDist * dir; nx += dir) {
-            if (isSlopeBoundary(world, nx, y, z)) {
+     *
+    private int scanX(World world, BlockPos blockPos, int dir, int maxDist) {
+        for (int nx = blockPos.getX() + dir; nx != blockPos.getX() + maxDist * dir; nx += dir) {
+            if (isSlopeBoundary(world, new BlockPos(nx, blockPos.getY(), blockPos.getZ()))) {
                 return nx;
             }
         }
-
-        return x + dir;
+        return blockPos.getX() + dir;
     }
 
     /**
      * Scan Z axis for slopes
-     */
-    private int scanZ(World world, int x, int y, int z, int dir, int maxDist)
-    {
-        for (int nz = z + dir; nz != z + maxDist * dir; nz += dir) {
-            if (isSlopeBoundary(world, x, y, nz)) {
+     *
+    private int scanZ(World world, BlockPos blockPos, int dir, int maxDist) {
+        for (int nz = blockPos.getZ() + dir; nz != blockPos.getZ() + maxDist * dir; nz += dir) {
+            if (isSlopeBoundary(world, new BlockPos(blockPos.getX(), blockPos.getY(), nz))) {
                 return nz;
             }
         }
-
-        return z + dir;
+        return blockPos.getZ() + dir;
     }
 
     /**
      * Returns block height
-     */
-    private static int getBlockHeight(IBlockAccess blockAccess, int x, int y, int z)
-    {
-        Block block = blockAccess.getBlock(x, y, z);
-
-        if (!block.getMaterial().blocksMovement()) {
+     *
+    private static int getBlockHeight(IWorld blockAccess, BlockPos blockPos) {
+    	BlockState blockState = blockAccess.getBlockState(blockPos);
+        if (!blockState.getMaterial().blocksMovement()) {
             return 0;
         }
-
-        return (int) (block.getBlockBoundsMaxY() * 16.0);
-    }
-
-    @Override
-    /**
-     * Called when a block is placed using its ItemBlock. Args: World, X, Y, Z, side, hitX, hitY, hitZ, block metadata
-     */
-    public int onBlockPlaced(World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int metadata)
-    {
-        // If side not supported, select best side based on y hit coordinates
-        if (!canAttachToSide(side)) {
-            return hitY > 0.5F ? 0 : 1;
-        }
-
-        return side;
+        return (int) (blockState.getBoundingBox(blockAccess, blockPos).maxY * 16.0);
     }
 
     @Override
     /**
      * Checks to see if you can place this block can be placed on that side of a block: BlockLever overrides
-     */
-    public boolean canPlaceBlockOnSide(World world, int x, int y, int z, int side)
-    {
-        return canPlaceBlockAt(world, x, y, z);
+     *
+    public boolean canPlaceBlockOnSide(World world, BlockPos blockPos, Direction facing) {
+        if (!canAttachToFacing(facing)) {
+            Direction.Plane plane = Direction.Plane.VERTICAL;
+            for (Direction dir : plane.facings()) {
+            	if (world.isSideSolid(blockPos.offset(dir.getOpposite()), dir)) {
+            		return true;
+            	}
+            }
+            return false;
+        } else {
+            return true;
+        }
     }
 
     @Override
     /**
      * Called when the block is placed in the world.
-     */
-    public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityLiving, ItemStack itemStack)
-    {
-        super.onBlockPlacedBy(world, x, y, z, entityLiving, itemStack);
-
-        TEBase TE = getTileEntity(world, x, y, z);
+     *
+    public void onBlockPlacedBy(World world, BlockPos blockPos, BlockState blockState, EntityLivingBase entityLivingBase, ItemStack itemStack) {
+        super.onBlockPlacedBy(world, blockPos, blockState, entityLivingBase, itemStack);
 
         // If sneaking, skip auto-setting quadrant depths
-        if (!entityLiving.isSneaking())
-        {
-            if (TE != null)
-            {
+        if (!entityLivingBase.isSneaking()) {
+            CbTileEntity cbTileEntity = getTileEntity(world, blockPos);
+            if (cbTileEntity != null) {
                 // Create a linear slope from neighbor blocks and collapsible quadrants
+            	CollapsibleMetadata util = new CollapsibleMetadata(cbTileEntity);
 
-                // Mininum and maximum height of quadrants
+                // Minimum and maximum height of quadrants
                 final int MIN_HEIGHT = 0;
                 final int MAX_HEIGHT = 16;
 
                 // Find slopes in landscape
-                int xn = scanX(world, x, y, z, -1, MAX_HEIGHT);
-                int xp = scanX(world, x, y, z, 1, MAX_HEIGHT);
-                int zn = scanZ(world, x, y, z, -1, MAX_HEIGHT);
-                int zp = scanZ(world, x, y, z, 1, MAX_HEIGHT);
+                int xn = scanX(world, blockPos, -1, MAX_HEIGHT);
+                int xp = scanX(world, blockPos, 1, MAX_HEIGHT);
+                int zn = scanZ(world, blockPos, -1, MAX_HEIGHT);
+                int zp = scanZ(world, blockPos, 1, MAX_HEIGHT);
 
-                TEBase TE_XN = getTileEntity(world, xn, y, z);
-                TEBase TE_XP = getTileEntity(world, xp, y, z);
-                TEBase TE_ZN = getTileEntity(world, x, y, zn);
-                TEBase TE_ZP = getTileEntity(world, x, y, zp);
+                CbTileEntity cbTileEntity_XN = getTileEntity(world, blockPos.add(-1, 0,  0));
+                CbTileEntity cbTileEntity_XP = getTileEntity(world, blockPos.add( 1, 0,  0));
+                CbTileEntity cbTileEntity_ZN = getTileEntity(world, blockPos.add( 0, 0, -1));
+                CbTileEntity cbTileEntity_ZP = getTileEntity(world, blockPos.add( 0, 0,  1));
 
                 int height_XZNN = MIN_HEIGHT, height_XZPN = MIN_HEIGHT, height_XZPP = MIN_HEIGHT, height_XZNP = MIN_HEIGHT;
-                Collapsible data = Collapsible.INSTANCE;
-
                 int hxn1, hxn2;
-                if(TE_XN != null && data.match(TE, TE_XN)) {
-                    hxn1 = Collapsible.getQuadDepth(TE_XN, Collapsible.QUAD_XZPN);
-                    hxn2 = Collapsible.getQuadDepth(TE_XN, Collapsible.QUAD_XZPP);
+                
+                if(cbTileEntity_XN != null && isSameOrientation(cbTileEntity, cbTileEntity_XN)) {
+                	CollapsibleMetadata utilXN = new CollapsibleMetadata(cbTileEntity_XN);
+                    hxn1 = utilXN.getQuadDepth(QUAD_XZPN);
+                    hxn2 = utilXN.getQuadDepth(QUAD_XZPP);
                 } else {
-                    hxn1 = hxn2 = getBlockHeight(world, xn, y, z);
+                    hxn1 = hxn2 = getBlockHeight(world, blockPos.add(-1, 0, 0));
                 }
 
                 int hxp1, hxp2;
-                if(TE_XP != null && data.match(TE, TE_XP)) {
-                    hxp1 = Collapsible.getQuadDepth(TE_XP, Collapsible.QUAD_XZNN);
-                    hxp2 = Collapsible.getQuadDepth(TE_XP, Collapsible.QUAD_XZNP);
+                if(cbTileEntity_XP != null && isSameOrientation(cbTileEntity, cbTileEntity_XP)) {
+                	CollapsibleMetadata utilXP = new CollapsibleMetadata(cbTileEntity_XP);
+                    hxp1 = utilXP.getQuadDepth(QUAD_XZNN);
+                    hxp2 = utilXP.getQuadDepth(QUAD_XZNP);
                 } else {
-                    hxp1 = hxp2 = getBlockHeight(world, xp, y, z);
+                    hxp1 = hxp2 = getBlockHeight(world, blockPos.add(1, 0, 0));
                 }
 
                 int hzn1, hzn2;
-                if(TE_ZN != null && data.match(TE, TE_ZN)) {
-                    hzn1 = Collapsible.getQuadDepth(TE_ZN, Collapsible.QUAD_XZNP);
-                    hzn2 = Collapsible.getQuadDepth(TE_ZN, Collapsible.QUAD_XZPP);
+                if(cbTileEntity_ZN != null && isSameOrientation(cbTileEntity, cbTileEntity_ZN)) {
+                	CollapsibleMetadata utilZN = new CollapsibleMetadata(cbTileEntity_ZN);
+                    hzn1 = utilZN.getQuadDepth(QUAD_XZNP);
+                    hzn2 = utilZN.getQuadDepth(QUAD_XZPP);
                 } else {
-                    hzn1 = hzn2 = getBlockHeight(world, x, y, zn);
+                    hzn1 = hzn2 = getBlockHeight(world, blockPos.add(0, 0, -1));
                 }
 
                 int hzp1, hzp2;
-                if(TE_ZP != null && data.match(TE, TE_ZP)) {
-                    hzp1 = Collapsible.getQuadDepth(TE_ZP, Collapsible.QUAD_XZNN);
-                    hzp2 = Collapsible.getQuadDepth(TE_ZP, Collapsible.QUAD_XZPN);
+                if(cbTileEntity_ZP != null && isSameOrientation(cbTileEntity, cbTileEntity_ZP)) {
+                	CollapsibleMetadata utilZP = new CollapsibleMetadata(cbTileEntity_ZP);
+                    hzp1 = utilZP.getQuadDepth(QUAD_XZNN);
+                    hzp2 = utilZP.getQuadDepth(QUAD_XZPN);
                 } else {
-                    hzp1 = hzp2 = getBlockHeight(world, x, y, zp);
+                    hzp1 = hzp2 = getBlockHeight(world, blockPos.add(0, 0, 1));
                 }
 
                 // Lerp between heights, create smooth slope
-                int xdist = x - xn;
+                int xdist = blockPos.getX() - blockPos.add(-1, 0, 0).getX();
                 double dx1 = (double)(hxp1 - hxn1) / (xp - xn - 1);
                 double dx2 = (double)(hxp2 - hxn2) / (xp - xn - 1);
                 height_XZNN = Math.max(height_XZNN, (int)(hxn1 + dx1 * (xdist - 1)));
@@ -330,7 +286,7 @@ public class BlockCarpentersCollapsibleBlock extends BlockSided {
                 height_XZPN = Math.max(height_XZPN, (int)(hxn1 + dx1 * xdist));
                 height_XZPP = Math.max(height_XZPP, (int)(hxn2 + dx2 * xdist));
 
-                int zdist = z - zn;
+                int zdist = blockPos.getZ() - blockPos.add(0, 0, -1).getZ();
                 double dz1 = (double)(hzp1 - hzn1) / (zp - zn - 1);
                 double dz2 = (double)(hzp2 - hzn2) / (zp - zn - 1);
                 height_XZNN = Math.max(height_XZNN, (int)(hzn1 + dz1 * (zdist - 1)));
@@ -338,122 +294,90 @@ public class BlockCarpentersCollapsibleBlock extends BlockSided {
                 height_XZPN = Math.max(height_XZPN, (int)(hzn2 + dz2 * (zdist - 1)));
                 height_XZPP = Math.max(height_XZPP, (int)(hzn2 + dz2 * zdist));
 
-                Collapsible.setQuadDepth(TE, Collapsible.QUAD_XZNN, height_XZNN, false);
-                Collapsible.setQuadDepth(TE, Collapsible.QUAD_XZNP, height_XZNP, false);
-                Collapsible.setQuadDepth(TE, Collapsible.QUAD_XZPP, height_XZPP, false);
-                Collapsible.setQuadDepth(TE, Collapsible.QUAD_XZPN, height_XZPN, false);
+                util.setQuadDepth(cbTileEntity, QUAD_XZNN, height_XZNN);
+                util.setQuadDepth(cbTileEntity, QUAD_XZNP, height_XZNP);
+                util.setQuadDepth(cbTileEntity, QUAD_XZPP, height_XZPP);
+                util.setQuadDepth(cbTileEntity, QUAD_XZPN, height_XZPN);
 
                 for (int quad = 0; quad < 4; ++quad) {
-                    smoothAdjacentCollapsibles(TE, quad);
+                    smoothAdjacentCollapsibles(cbTileEntity, quad);
                 }
             }
-        }
-        else
-        {
-            Collapsible.setQuadDepth(TE, Collapsible.QUAD_XZNN, 16, false);
-            Collapsible.setQuadDepth(TE, Collapsible.QUAD_XZNP, 16, false);
-            Collapsible.setQuadDepth(TE, Collapsible.QUAD_XZPP, 16, false);
-            Collapsible.setQuadDepth(TE, Collapsible.QUAD_XZPN, 16, false);
         }
     }
 
-    @Override
     /**
      * Adds all intersecting collision boxes to a list. (Be sure to only add boxes to the list if they intersect the
      * mask.) Parameters: World, X, Y, Z, mask, list, colliding entity
-     */
-    public void addCollisionBoxesToList(World world, int x, int y, int z, AxisAlignedBB axisAlignedBB, List list, Entity entity)
-    {
-        TEBase TE = getTileEntity(world, x, y, z);
-
-        if (TE != null) {
-
-            AxisAlignedBB colBox = null;
-
-            for (int quad = 0; quad < 4; ++quad)
-            {
-                float[] bounds = CollapsibleUtil.genBounds(TE, quad);
-                colBox = AxisAlignedBB.getBoundingBox(x + bounds[0], y + bounds[1], z + bounds[2], x + bounds[3], y + bounds[4], z + bounds[5]);
-
-                if (axisAlignedBB.intersectsWith(colBox)) {
-                    list.add(colBox);
-                }
-            }
-
-        }
+     *
+    @Override
+    public void addCollisionBoxToList(BlockState blockState, World world, BlockPos blockPos, AxisAlignedBB axisAlignedBB, List<AxisAlignedBB> collidingBoxes, Entity entity, boolean unused) {
+    	CbTileEntity cbTileEntity = getTileEntity(world, blockPos);
+        if (cbTileEntity != null) {
+	    	CollapsibleMetadata util = new CollapsibleMetadata(cbTileEntity);
+	        for (int quad = 0; quad < 4; ++quad) {
+	        	addCollisionBoxToList(blockPos, axisAlignedBB, collidingBoxes, util.genQuadBoundingBox(quad));
+	        }
+    	}
     }
 
     @Override
     /**
      * Ray traces through the blocks collision from start vector to end vector returning a ray trace hit. Args: world,
      * x, y, z, startVec, endVec
-     */
-    public MovingObjectPosition collisionRayTrace(World world, int x, int y, int z, Vec3 startVec, Vec3 endVec)
-    {
-        TEBase TE = getTileEntity(world, x, y, z);
-        MovingObjectPosition finalTrace = null;
+     *
+    public RayTraceResult collisionRayTrace(BlockState blockState, World world, BlockPos blockPos, Vector3d start, Vector3d end) {
+    	CbTileEntity cbTileEntity = getTileEntity(world, blockPos);
+        if (cbTileEntity == null) {
+        	return super.rayTrace(blockPos, start, end, FULL_BLOCK_AABB);
+        }
+	    CollapsibleMetadata util = new CollapsibleMetadata(cbTileEntity);
+        RayTraceResult finalTrace = null;
+        double currDist = 0.0D;
+        double maxDist = 0.0D;
 
-        if (TE != null) {
-
-            double currDist = 0.0D;
-            double maxDist = 0.0D;
-
-            // Determine if ray trace is a hit on block
-            for (int quad = 0; quad < 4; ++quad)
-            {
-                float[] bounds = CollapsibleUtil.genBounds(TE, quad);
-
-                setBlockBounds(bounds[0], bounds[1], bounds[2], bounds[3], bounds[4], bounds[5]);
-                MovingObjectPosition traceResult = super.collisionRayTrace(world, x, y, z, startVec, endVec);
-
-                if (traceResult != null)
-                {
-                    currDist = traceResult.hitVec.squareDistanceTo(endVec);
-                    if (currDist > maxDist) {
-                        finalTrace = traceResult;
-                        maxDist = currDist;
-                    }
+        // Determine if ray trace is a hit on block
+        for (int quad = 0; quad < 4; ++quad) {
+            AxisAlignedBB box = util.genQuadBoundingBox(quad);
+            RayTraceResult traceResult = rayTrace(blockPos, start, end, box);
+            if (traceResult != null) {
+                currDist = traceResult.hitVec.squareDistanceTo(end);
+                if (currDist > maxDist) {
+                    finalTrace = traceResult;
+                    maxDist = currDist;
                 }
             }
-
-            /* Determine true face hit since it's built of quadrants. */
-
-            if (finalTrace != null) {
-                setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
-                finalTrace = super.collisionRayTrace(world, x, y, z, startVec, endVec);
-            }
-
         }
-
         return finalTrace;
     }
 
     @Override
     /**
      * Returns whether sides share faces based on sloping property and face shape.
-     */
-    protected boolean shareFaces(TEBase TE_adj, TEBase TE_src, ForgeDirection side_adj, ForgeDirection side_src)
+     *
+    protected boolean shareFaces(CbTileEntity cbTileEntity_adj, CbTileEntity cbTileEntity_src, Direction side_adj, Direction side_src)
     {
-        Collapsible data = Collapsible.INSTANCE;
-        if (TE_adj.getBlockType() == this && data.match(TE_src, TE_adj)) {
+/*        DataCollapsible data = DataCollapsible.INSTANCE;
+        if (cbTileEntity_adj.getBlockState().getBlock() == this && data.match(cbTileEntity_src, cbTileEntity_adj)) {
             switch (side_adj) {
                 case NORTH:
-                    return data.getQuadDepth(TE_adj, data.QUAD_XZNN) == data.getQuadDepth(TE_src, data.QUAD_XZNP) &&
-                           data.getQuadDepth(TE_adj, data.QUAD_XZPN) == data.getQuadDepth(TE_src, data.QUAD_XZPP);
+                    return data.getQuadDepth(cbTileEntity_adj, data.QUAD_XZNN) == data.getQuadDepth(cbTileEntity_src, data.QUAD_XZNP) &&
+                           data.getQuadDepth(cbTileEntity_adj, data.QUAD_XZPN) == data.getQuadDepth(cbTileEntity_src, data.QUAD_XZPP);
                 case SOUTH:
-                    return data.getQuadDepth(TE_adj, data.QUAD_XZNP) == data.getQuadDepth(TE_src, data.QUAD_XZNN) &&
-                           data.getQuadDepth(TE_adj, data.QUAD_XZPP) == data.getQuadDepth(TE_src, data.QUAD_XZPN);
+                    return data.getQuadDepth(cbTileEntity_adj, data.QUAD_XZNP) == data.getQuadDepth(cbTileEntity_src, data.QUAD_XZNN) &&
+                           data.getQuadDepth(cbTileEntity_adj, data.QUAD_XZPP) == data.getQuadDepth(cbTileEntity_src, data.QUAD_XZPN);
                 case WEST:
-                    return data.getQuadDepth(TE_adj, data.QUAD_XZNP) == data.getQuadDepth(TE_src, data.QUAD_XZPP) &&
-                           data.getQuadDepth(TE_adj, data.QUAD_XZNN) == data.getQuadDepth(TE_src, data.QUAD_XZPN);
+                    return data.getQuadDepth(cbTileEntity_adj, data.QUAD_XZNP) == data.getQuadDepth(cbTileEntity_src, data.QUAD_XZPP) &&
+                           data.getQuadDepth(cbTileEntity_adj, data.QUAD_XZNN) == data.getQuadDepth(cbTileEntity_src, data.QUAD_XZPN);
                 case EAST:
-                    return data.getQuadDepth(TE_adj, data.QUAD_XZPP) == data.getQuadDepth(TE_src, data.QUAD_XZNP) &&
-                           data.getQuadDepth(TE_adj, data.QUAD_XZPN) == data.getQuadDepth(TE_src, data.QUAD_XZNN);
+                    return data.getQuadDepth(cbTileEntity_adj, data.QUAD_XZPP) == data.getQuadDepth(cbTileEntity_src, data.QUAD_XZNP) &&
+                           data.getQuadDepth(cbTileEntity_adj, data.QUAD_XZPN) == data.getQuadDepth(cbTileEntity_src, data.QUAD_XZNN);
                 default: {}
             }
         }
 
-        return super.shareFaces(TE_adj, TE_src, side_adj, side_src);
+        return super.shareFaces(cbTileEntity_adj, cbTileEntity_src, side_adj, side_src);
+    	return false;
     }
 
     /**
@@ -461,31 +385,45 @@ public class BlockCarpentersCollapsibleBlock extends BlockSided {
      *
      * @param  side the side
      * @return whether side is supported
-     */
+     *
     @Override
-    public boolean canAttachToSide(int side)
-    {
-        return side < 2;
+    public boolean canAttachToFacing(Direction facing) {
+        return Arrays.asList(Direction.Plane.VERTICAL.func_239636_a_()).contains(facing);
     }
 
     /**
      * Whether block requires an adjacent block with solid side for support.
      *
      * @return whether block can float freely
-     */
+     *
     @Override
-    public boolean canFloat()
-    {
+    public boolean canFloat() {
         return true;
     }
 
     @Override
-    /**
-     * The type of render function that is called for this block
-     */
-    public int getRenderType()
-    {
-        return BlockRegistry.carpentersCollapsibleBlockRenderID;
+    public boolean isOpaqueCube(BlockState blockState) {
+        return false;
     }
+    
+    @Override
+    public boolean isFullCube(BlockState state) {
+    	return false;
+    }
+
+	@Override
+	public void setFacing(CbTileEntity cbTileEntity, Direction facing) {
+		new CollapsibleMetadata(cbTileEntity).setFacing(cbTileEntity, facing);
+	}
+
+	@Override
+	public Direction getFacing(CbTileEntity cbTileEntity) {
+		return new CollapsibleMetadata(cbTileEntity).getFacing();
+	}
+	
+    @SideOnly(Side.CLIENT)
+    public RenderType getBlockLayer() {
+        return RenderType.SOLID;
+    }*/
 
 }

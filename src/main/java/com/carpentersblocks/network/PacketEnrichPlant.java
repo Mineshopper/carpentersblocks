@@ -1,52 +1,63 @@
 package com.carpentersblocks.network;
 
 import java.io.IOException;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
-import com.carpentersblocks.tileentity.TEBase;
+import java.util.function.Supplier;
+
+import com.carpentersblocks.nbt.CbTileEntity;
+import com.carpentersblocks.nbt.attribute.EnumAttributeLocation;
+import com.carpentersblocks.nbt.attribute.EnumAttributeType;
 import com.carpentersblocks.util.EntityLivingUtil;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufInputStream;
 
-public class PacketEnrichPlant extends TilePacket {
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+import net.minecraftforge.fml.network.NetworkEvent.Context;
 
+public class PacketEnrichPlant implements ICarpentersBlocksPacket {
+
+	private BlockPos blockPos;
     private int hexColor;
 
     public PacketEnrichPlant() {}
 
     /**
      * For the server to examine plant color, since it's a client-side only property.
+     * 
+     * @param blockPos the block position
+     * @param hexColor the integer color
      */
-    public PacketEnrichPlant(int x, int y, int z, int hexColor)
-    {
-        super(x, y, z);
+    public PacketEnrichPlant(BlockPos blockPos, int hexColor) {
+        this.blockPos = blockPos;
         this.hexColor = hexColor;
     }
-
-    @Override
-    public void processData(EntityPlayer entityPlayer, ByteBufInputStream bbis) throws IOException
-    {
-        super.processData(entityPlayer, bbis);
-        World world = entityPlayer.worldObj;
-        hexColor = bbis.readInt();
-
-        TEBase TE = (TEBase) world.getTileEntity(x, y, z);
-
-        if (TE != null) {
-            if (hexColor != 16777215 && !TE.hasAttribute(TE.ATTR_FERTILIZER)) {
-                TE.addAttribute(TE.ATTR_FERTILIZER, new ItemStack(Items.dye, 1, 15));
-                EntityLivingUtil.decrementCurrentSlot(entityPlayer);
-            }
-        }
+    
+    public PacketEnrichPlant(PacketBuffer packetBuffer) {
+        blockPos = packetBuffer.readBlockPos();
+        hexColor = packetBuffer.readInt();
     }
-
-    @Override
-    public void appendData(ByteBuf buffer) throws IOException
-    {
-        super.appendData(buffer);
-        buffer.writeInt(hexColor);
-    }
-
+    
+	public static void encode(PacketEnrichPlant msg, PacketBuffer buffer) {
+		buffer.writeBlockPos(msg.blockPos);
+		buffer.writeInt(msg.hexColor);
+	}
+	
+	public static void handle(final PacketEnrichPlant msg, Supplier<Context> ctx) {
+		ctx.get().enqueueWork(() -> {
+			ServerPlayerEntity player = ctx.get().getSender();
+			World world = player.level;
+	        TileEntity tileEntity = world.getBlockEntity(msg.blockPos);
+	        if (tileEntity != null && tileEntity instanceof CbTileEntity) {
+	        	CbTileEntity cbTileEntity = (CbTileEntity) tileEntity;
+	            if (msg.hexColor != 16777215 && !cbTileEntity.getAttributeHelper().hasAttribute(EnumAttributeLocation.HOST, EnumAttributeType.FERTILIZER)) {
+	            	cbTileEntity.addAttribute(EnumAttributeLocation.HOST, EnumAttributeType.FERTILIZER, new ItemStack(Items.BONE_MEAL));
+	                EntityLivingUtil.decrementCurrentSlot(player);
+	            }
+	        }
+		});
+	}
+	
 }

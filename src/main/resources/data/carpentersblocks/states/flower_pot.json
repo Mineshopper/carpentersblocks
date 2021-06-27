@@ -1,0 +1,119 @@
+{
+	"default": {
+		"parts": {
+			"pot": {
+				"quads": {
+					"rim_north": {
+						"facing": "up",
+						"vertex_min": { "x": 0, "y": 0, "z": 0 },
+						"vertex_max": { "x": 0, "y": 0, "z": 0 }
+					},
+					"rim_south": {
+						"facing": "up",
+						"vertex_min": { "x": 0, "y": 0, "z": 0 },
+						"vertex_max": { "x": 0, "y": 0, "z": 0 }
+					},
+					"rim_west": {
+						"facing": "up",
+						"vertex_min": { "x": 0, "y": 0, "z": 0 },
+						"vertex_max": { "x": 0, "y": 0, "z": 0 }
+					},
+					"rim_east": {
+						"facing": "up",
+						"vertex_min": { "x": 0, "y": 0, "z": 0 },
+						"vertex_max": { "x": 0, "y": 0, "z": 0 }
+					},
+					"bottom_int": {
+						"facing": "up",
+						"vertex_min": { "x": 0, "y": 0, "z": 0 },
+						"vertex_max": { "x": 0, "y": 0, "z": 0 }
+					},
+					"bottom_ext": {
+						"facing": "down",
+						"vertex_min": { "x": 0, "y": 0, "z": 0 },
+						"vertex_max": { "x": 0, "y": 0, "z": 0 }
+					},
+					"north_ext": {
+						"facing": "north",
+						"vertex_min": { "x": 0, "y": 0, "z": 0 },
+						"vertex_max": { "x": 0, "y": 0, "z": 0 }
+					},
+					"south_ext": {
+						"facing": "south",
+						"vertex_min": { "x": 0, "y": 0, "z": 0 },
+						"vertex_max": { "x": 0, "y": 0, "z": 0 }
+					},
+					"west_ext": {
+						"facing": "west",
+						"vertex_min": { "x": 0, "y": 0, "z": 0 },
+						"vertex_max": { "x": 0, "y": 0, "z": 0 }
+					},
+					"east_ext": {
+						"facing": "east",
+						"vertex_min": { "x": 0, "y": 0, "z": 0 },
+						"vertex_max": { "x": 0, "y": 0, "z": 0 }
+					},
+					"north_int": {
+						"facing": "north",
+						"vertex_min": { "x": 0, "y": 0, "z": 0 },
+						"vertex_max": { "x": 0, "y": 0, "z": 0 }
+					},
+					"south_int": {
+						"facing": "south",
+						"vertex_min": { "x": 0, "y": 0, "z": 0 },
+						"vertex_max": { "x": 0, "y": 0, "z": 0 }
+					},
+					"west_int": {
+						"facing": "west",
+						"vertex_min": { "x": 0, "y": 0, "z": 0 },
+						"vertex_max": { "x": 0, "y": 0, "z": 0 }
+					},
+					"east_int": {
+						"facing": "east",
+						"vertex_min": { "x": 0, "y": 0, "z": 0 },
+						"vertex_max": { "x": 0, "y": 0, "z": 0 }
+					}
+				},
+				"icon_name": "carpentersblocks:block/general/uncovered_solid"
+			}
+		}
+	},
+	"with_soil": {
+		"parts": {
+			"soil": {
+				"cuboids": {
+					"soil": {
+						"vertex_min": { "x": 6, "y": 1, "z": 6 },
+						"vertex_max": { "x": 10, "y": 10, "z": 10 }
+					}
+				}
+			}
+		}
+	},
+	"plant_normal": {
+		"parent": "with_soil",
+		"parts": {
+			"plant": {
+				"has_collision": "false",
+				"quads": {
+					"rot_45": {
+						"diffuse_lighting": "false",
+						"draw_reverse" : "true",
+						"rotation_deg": { "x": 0, "y": 45, "z": 0 },
+						"facing": "north",
+						"vertex_min": { "x": 0, "y": 0, "z": 0 },
+						"vertex_max": { "x": 0, "y": 0, "z": 0 }
+					},
+					"rot_135": {
+						"diffuse_lighting": "false",
+						"draw_reverse" : "true",
+						"rotation_deg": { "x": 0, "y": 135, "z": 0 },
+						"facing": "north",
+						"vertex_min": { "x": 0, "y": 0, "z": 0 },
+						"vertex_max": { "x": 0, "y": 0, "z": 0 }
+					}
+				}
+			}
+		}
+	}
+}

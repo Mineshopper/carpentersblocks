@@ -1,0 +1,15 @@
+{
+  "default": {
+    "parts": {
+      "base": {
+		"cuboids": {
+			"full": {
+				"vertex_min": { "x": 0, "y": 0, "z": 0 },
+				"vertex_max": { "x": 15, "y": 15, "z": 15 }
+			}
+		},
+		"icon_name": "carpentersblocks:block/general/uncovered_full_frame"
+      }
+    }
+  }
+}
