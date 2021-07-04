@@ -5,4 +5,7 @@
 !LICENSE-carpentersblocks.txt
 !README.md
 !src/
+!gradlew
+!gradlew.bat
+!gradle/
 Thumbs.db
