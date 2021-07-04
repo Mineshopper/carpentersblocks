@@ -20,20 +20,22 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
-@EventBusSubscriber(modid = CarpentersBlocks.MOD_ID)
+@EventBusSubscriber(modid = CarpentersBlocks.MOD_ID, bus = Bus.MOD)
 public class OverlayHandler {
-
+	
     public enum Overlay {
-        NONE(new ItemStack(Blocks.AIR)),
-        GRASS(new ItemStack(Blocks.GRASS)),
-        SNOW(new ItemStack(Blocks.SNOW)),
-        WEB(new ItemStack(Blocks.COBWEB)),
-        VINE(new ItemStack(Blocks.VINE)),
-        HAY(new ItemStack(Blocks.HAY_BLOCK)),
-        MYCELIUM(new ItemStack(Blocks.MYCELIUM));
-
+    	
+        none(new ItemStack(Blocks.AIR)),
+        grass(new ItemStack(Blocks.GRASS_BLOCK)),
+        snow(new ItemStack(Blocks.SNOW)),
+        web(new ItemStack(Blocks.COBWEB)),
+        vine(new ItemStack(Blocks.VINE)),
+        hay(new ItemStack(Blocks.HAY_BLOCK)),
+        mycelium(new ItemStack(Blocks.MYCELIUM));
+    	
         private ItemStack itemStack;
 
         private Overlay(ItemStack itemStack) {
@@ -43,8 +45,10 @@ public class OverlayHandler {
         public ItemStack getItemStack() {
             return itemStack;
         }
+        
     }
-
+    
+    public static final String OVERLAY_TYPE_SEPARATOR = "|";
     public static Map<String, Overlay> overlayMap = new HashMap<>();
 
     /**
@@ -52,22 +56,22 @@ public class OverlayHandler {
      */
     @SubscribeEvent
     public static void onFMLCommonSetupEvent(FMLCommonSetupEvent event) {
-        for (String name : Configuration.getOverlayItems()) {
-            String itemName = name.substring(0, name.indexOf(":"));
-            if (!overlayMap.containsKey(itemName)) {
-                String overlayType = name.substring(name.indexOf(":") + 1).toLowerCase();
-                if (overlayType.equalsIgnoreCase("grass")) {
-                    overlayMap.put(itemName, Overlay.GRASS);
-                } else if (overlayType.equalsIgnoreCase("snow")) {
-                    overlayMap.put(itemName, Overlay.SNOW);
-                } else if (overlayType.equalsIgnoreCase("web")) {
-                    overlayMap.put(itemName, Overlay.WEB);
-                } else if (overlayType.equalsIgnoreCase("vine")) {
-                    overlayMap.put(itemName, Overlay.VINE);
-                } else if (overlayType.equalsIgnoreCase("hay")) {
-                    overlayMap.put(itemName, Overlay.HAY);
-                } else if (overlayType.equalsIgnoreCase("mycelium")) {
-                    overlayMap.put(itemName, Overlay.MYCELIUM);
+        for (String overlay : Configuration.getOverlayItems()) {
+            String resourceLocation = overlay.substring(0, overlay.indexOf(OVERLAY_TYPE_SEPARATOR));
+            if (!overlayMap.containsKey(resourceLocation)) {
+                String overlayType = overlay.substring(overlay.indexOf(OVERLAY_TYPE_SEPARATOR) + 1);
+                if (overlayType.equals(Overlay.grass.name())) {
+                    overlayMap.put(resourceLocation, Overlay.grass);
+                } else if (overlayType.equals(Overlay.snow.name())) {
+                    overlayMap.put(resourceLocation, Overlay.snow);
+                } else if (overlayType.equals(Overlay.web.name())) {
+                    overlayMap.put(resourceLocation, Overlay.web);
+                } else if (overlayType.equals(Overlay.vine.name())) {
+                    overlayMap.put(resourceLocation, Overlay.vine);
+                } else if (overlayType.equals(Overlay.hay.name())) {
+                    overlayMap.put(resourceLocation, Overlay.hay);
+                } else if (overlayType.equals(Overlay.mycelium.name())) {
+                    overlayMap.put(resourceLocation, Overlay.mycelium);
                 }
             }
         }
@@ -82,13 +86,13 @@ public class OverlayHandler {
      */
     public static boolean coversFullSide(Overlay overlay, Direction facing) {
         switch (overlay) {
-            case GRASS:
-            case SNOW:
-            case HAY:
-            case MYCELIUM:
+            case grass:
+            case snow:
+            case hay:
+            case mycelium:
                 return Direction.UP.equals(facing);
-            case WEB:
-            case VINE:
+            case web:
+            case vine:
                 return true;
             default: {}
         }
@@ -100,7 +104,7 @@ public class OverlayHandler {
      */
     public static Overlay getOverlayType(ItemStack itemStack) {
         Overlay overlay = overlayMap.get(itemStack.getItem().getRegistryName().toString());
-        return overlay == null ? Overlay.NONE : overlay;
+        return overlay == null ? Overlay.none : overlay;
     }
 
     /**
@@ -113,22 +117,22 @@ public class OverlayHandler {
     	Function<ResourceLocation, TextureAtlasSprite> spriteResolver = Minecraft.getInstance().getTextureAtlas(PlayerContainer.BLOCK_ATLAS);
         ItemStack itemStack = overlay.getItemStack();
         switch (overlay) {
-            case GRASS:
+            case grass:
             	switch (facing) {
 	            	case DOWN:
 	            		return null;
 	            	case UP:
-	            		return spriteResolver.apply(new ResourceLocation("minecraft:blocks/grass_top"));
+	            		return spriteResolver.apply(new ResourceLocation("minecraft:block/grass_block_top"));
 	            	default:
 	            		if (Minecraft.useFancyGraphics()) {
-	            			return spriteResolver.apply(new ResourceLocation("minecraft:blocks/grass_side_overlay"));
+	            			return spriteResolver.apply(new ResourceLocation("minecraft:block/grass_block_side_overlay"));
                     	} else {
                     		return TextureAtlasSprites.sprite_overlay_fast_grass_side;
                     	}
             	}
-            case SNOW:
-            case HAY:
-            case MYCELIUM:
+            case snow:
+            case hay:
+            case mycelium:
                 switch (facing) {
                     case DOWN:
                         return null;
@@ -136,18 +140,18 @@ public class OverlayHandler {
                     	return BlockUtil.getParticleTexture(itemStack);
                     default:
                         switch (overlay) {
-                            case SNOW:
+                            case snow:
                                 return TextureAtlasSprites.sprite_overlay_snow_side;
-                            case HAY:
+                            case hay:
                                 return TextureAtlasSprites.sprite_overlay_hay_side;
-                            case MYCELIUM:
+                            case mycelium:
                                 return TextureAtlasSprites.sprite_overlay_mycelium_side;
                             default:
                                 return null;
                         }
                 }
-            case WEB:
-            case VINE:
+            case web:
+            case vine:
                 return BlockUtil.getParticleTexture(itemStack);
             default: {
                 return null;

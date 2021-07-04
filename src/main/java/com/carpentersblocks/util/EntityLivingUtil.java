@@ -11,6 +11,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.RayTraceContext;
+import net.minecraft.util.math.vector.Vector3d;
 
 public class EntityLivingUtil {
 
@@ -68,7 +70,11 @@ public class EntityLivingUtil {
      */
     public static BlockRayTraceResult calculateBlockRayTraceResult(LivingEntity livingEntity) {
     	double blockReach = Minecraft.getInstance().gameMode.getPickRange();
-    	return (BlockRayTraceResult) livingEntity.pick(blockReach, 0.0f, false);
+        Vector3d playerRotation = livingEntity.getViewVector(0);
+        Vector3d rayPath = playerRotation.scale(blockReach);
+        Vector3d from = livingEntity.getEyePosition(0);
+        Vector3d to = from.add(rayPath);
+        return livingEntity.level.clip(new RayTraceContext(from, to, RayTraceContext.BlockMode.OUTLINE, RayTraceContext.FluidMode.NONE, null));
     }
 
 }

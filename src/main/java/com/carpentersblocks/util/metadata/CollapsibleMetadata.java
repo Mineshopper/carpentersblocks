@@ -2,6 +2,7 @@ package com.carpentersblocks.util.metadata;
 
 import com.carpentersblocks.nbt.CbTileEntity;
 import com.carpentersblocks.util.EntityLivingUtil;
+import com.carpentersblocks.util.handler.EventHandler;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Direction;
@@ -33,7 +34,7 @@ public class CollapsibleMetadata extends CommonMetadata implements IMetadataFaci
      * Returns corner number.
      */
     public static int getHitQuad(PlayerEntity playerEntity) {
-    	BlockRayTraceResult result = EntityLivingUtil.calculateBlockRayTraceResult(playerEntity);
+    	BlockRayTraceResult result = null;//EventHandler.getRayTraceResult();
     	if (result != null) {
 	    	if (Math.round(result.getLocation().x()) == 0) {
 	    		if (Math.round(result.getLocation().z()) == 0) {

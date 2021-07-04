@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.Level;
@@ -14,9 +16,12 @@ import org.apache.logging.log4j.Level;
 import com.carpentersblocks.CarpentersBlocks;
 import com.carpentersblocks.ModLogger;
 import com.carpentersblocks.item.CbItems;
+import com.carpentersblocks.util.handler.OverlayHandler;
+import com.carpentersblocks.util.handler.OverlayHandler.Overlay;
 import com.google.common.collect.ImmutableMap;
 
 import net.minecraft.item.Item;
+import net.minecraft.item.Items;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.item.crafting.RecipeManager;
@@ -554,9 +559,17 @@ public class Configuration {
 					.defineInRange("multiBlockSizeLimit", 500, 0, 2000);
 		    
 		    overlayItemList = builder
-					.comment("This maps items to overlays.", "Items are prefixed with display names (en_US only).", "Overlay suffixes are :grass, :snow, :web, :vine, :hay, :mycelium")
+					.comment("This maps items to overlays. Items are defined by a resource name, separator '" + OverlayHandler.OVERLAY_TYPE_SEPARATOR + "' and overlay type.",
+							"Supported overlay types are: " + String.join(Stream.of(Overlay.values()).map(o -> o.name()).collect(Collectors.joining(", "))))
 					.translation(CarpentersBlocks.MOD_ID + ".config." + "overlayItemList")
-					.define("overlayItemList", Arrays.asList(new String[] { "Seeds:grass", "Snowball:snow", "String:web", "Vines:vine", "Wheat:hay", "Mushroom:mycelium" }));
+					.define("overlayItemList", Arrays.asList(new String[] {
+							Items.WHEAT_SEEDS.getRegistryName().toString() + OverlayHandler.OVERLAY_TYPE_SEPARATOR + Overlay.grass.name(),
+							Items.SNOWBALL.getRegistryName().toString() + OverlayHandler.OVERLAY_TYPE_SEPARATOR + Overlay.snow.name(),
+							Items.STRING.getRegistryName().toString() + OverlayHandler.OVERLAY_TYPE_SEPARATOR + Overlay.web.name(),
+							Items.VINE.getRegistryName().toString() + OverlayHandler.OVERLAY_TYPE_SEPARATOR + Overlay.vine.name(),
+							Items.WHEAT.getRegistryName().toString() + OverlayHandler.OVERLAY_TYPE_SEPARATOR + Overlay.hay.name(),
+							Items.BROWN_MUSHROOM.getRegistryName().toString() + OverlayHandler.OVERLAY_TYPE_SEPARATOR + Overlay.mycelium.name(),
+					}));
 		    
 		    builder.pop();
 		    builder.push("compatibility");
@@ -564,7 +577,7 @@ public class Configuration {
 		    coverBlockExceptionList = builder
 					.comment("This allows restricted blocks to be used as covers.", "Add your own by supplying the block's resource name (minecraft:block/grass_block, for example).")
 					.translation(CarpentersBlocks.MOD_ID + ".config." + "coverBlockExceptionList")
-					.define("coverBlockExceptionList", Arrays.asList("test"));
+					.define("coverBlockExceptionList", Arrays.asList());
 		    
 		    builder.pop();
 		}

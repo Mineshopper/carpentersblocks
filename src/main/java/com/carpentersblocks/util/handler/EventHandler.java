@@ -11,8 +11,6 @@ import com.carpentersblocks.network.PacketSlopeSelect;
 import com.carpentersblocks.util.BlockUtil;
 import com.carpentersblocks.util.EntityLivingUtil;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -21,19 +19,15 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.InputEvent.MouseScrollEvent;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
-import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.PlaySoundAtEntityEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
-import net.minecraftforge.eventbus.api.Event.Result;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
@@ -42,23 +36,7 @@ public class EventHandler {
 	
     private static boolean isValidBlockEvent(IWorld world, BlockPos pos) {
     	TileEntity tileEntity = world.getBlockEntity(pos);
-    	return tileEntity != null && tileEntity instanceof CbTileEntity;
-    }
-    
-    /**
-     * Intercept item drops.
-     * @param event
-     */
-    @SubscribeEvent
-    public static void onEntityJoinWorldEvent(EntityJoinWorldEvent event) {
-    	/*
-    	if (event.getEntity() != null
-    		&& event.getEntity() instanceof ItemEntity
-    		&& CbBlocks.blockSlope.getRegistryName().equals(((ItemEntity)event.getEntity()).getItem().getItem().getRegistryName())) {
-    		// Carpenter's Slope should always drop as wedge
-    		((ItemEntity)event.getEntity()).getItem().setDamage(0);
-    	}
-    	*/
+    	return tileEntity != null && tileEntity instanceof CbTileEntity && world.isClientSide();
     }
     
     /**
@@ -90,50 +68,6 @@ public class EventHandler {
     	}
     }
     
-    /**
-     * Handles block left-click events.
-     * <p>
-     * Used to invoke {@link Block#onBlockClicked(World, BlockPos, PlayerEntity) onBlockClicked}
-     * when a Carpenter's tool is held.  This would normally destroy a block in creative, or attempt
-     * to damage a block in survival mode.
-     * 
-     * @param event the event
-     */
-    @SubscribeEvent
-    public static void onLeftClickBlock(PlayerInteractEvent.LeftClickBlock event) {
-    	if (isValidBlockEvent(event.getWorld(), event.getPos())) {
-	    	ItemStack itemStack = event.getPlayer().getItemInHand(event.getHand());
-	    	boolean hasTool = itemStack != null && (itemStack.getItem() instanceof ICarpentersHammer || itemStack.getItem() instanceof ICarpentersChisel);
-	        if (hasTool && event.getPlayer().isCreative()) {
-	        	BlockState blockState = event.getPlayer().level.getBlockState(event.getPos());
-	        	blockState.getBlock().attack(blockState, event.getWorld(), event.getPos(), event.getPlayer());
-	            if (event.getWorld().isClientSide()) {
-	            	event.setCanceled(true);
-	            }
-	        }
-    	}
-    }
-        
-    /**
-     * Handles block right-click events.
-     * <p>
-     * Used to invoke {@link Block#onBlockActivated(World, BlockPos, BlockState, PlayerEntity, Hand, ItemStack, Direction, float, float, float) onBlockActivated}
-     * when a Carpenter's tool is held and player is sneaking.  This would normally do nothing.
-     * 
-     * @param event the event
-     */
-    @SubscribeEvent
-    public static void onRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
-    	if (isValidBlockEvent(event.getWorld(), event.getPos())) {
-    		ItemStack itemStack = event.getPlayer().getItemInHand(event.getHand());
-            if (event.getPlayer().isCrouching()) {
-                if (!(itemStack != null && itemStack.getItem() instanceof BlockItem && !BlockUtil.isOverlay(itemStack))) {
-                	event.setUseBlock(Result.ALLOW);
-                }
-            }
-    	}
-    }
-
     /**
      * Grabs mouse scroll events for slope selection.
      */
@@ -268,5 +202,5 @@ public class EventHandler {
             }
         }*/
     }
-
+    
 }

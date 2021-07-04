@@ -42,7 +42,7 @@ import net.minecraftforge.client.model.data.IModelData;
 
 public class RenderPkg {
 
-	public static ThreadLocal<RenderPkg> THREAD_LOCAL_RENDER_PKG = new ThreadLocal<RenderPkg>();
+	public static ThreadLocal<RenderPkg> THREAD_LOCAL_RENDER_PKG = new ThreadLocal<>();
 	private VertexFormat _vertexFormat;
     private Random _rand;
     private AttributeHelper _cbAttrHelper;
@@ -240,8 +240,8 @@ public class RenderPkg {
 	        if (hasOverlay && overlayRenderLayer.equals(renderType)) {
 	        	Overlay overlay = OverlayHandler.getOverlayType(((AttributeItemStack)_cbAttrHelper.getAttribute(location, EnumAttributeType.OVERLAY)).getModel());
 	        	int overlayColor = RenderConstants.DEFAULT_RGB;
-	        	if (Overlay.GRASS.equals(overlay)) {
-	        		BlockState overlayBlockState = Blocks.GRASS.defaultBlockState();
+	        	if (Overlay.grass.equals(overlay)) {
+	        		BlockState overlayBlockState = Blocks.GRASS_BLOCK.defaultBlockState();
 	        		overlayColor = blockColors.getColor(overlayBlockState, Minecraft.getInstance().level, _blockPos);
 	        	}        	
 	        	for (Direction facing : Direction.values()) {
@@ -261,7 +261,7 @@ public class RenderPkg {
 	        		&& (hostBlockState != null && !isSnowState(hostBlockState))
 	        		&& overlayRenderLayer.equals(renderType)) {
 	        	for (Direction facing : Direction.values()) {
-	        		TextureAtlasSprite overlaySprite = OverlayHandler.getOverlaySprite(Overlay.SNOW, facing);
+	        		TextureAtlasSprite overlaySprite = OverlayHandler.getOverlaySprite(Overlay.snow, facing);
 	        		if (overlaySprite != null) {
 	        			quads.addAll(getQuadsForSide(quadContainer, facing, overlaySprite, null, false));
 	        		}
@@ -308,7 +308,7 @@ public class RenderPkg {
     	
     	int attrRgb = -1;
     	if (blockState != null) {
-    		attrRgb = blockColors.getColor(blockState, Minecraft.getInstance().level, _blockPos);
+    		attrRgb = blockColors.getColor(blockState, Minecraft.getInstance().level, _blockPos, 0);
     	}
     	
     	// Add quads
@@ -320,7 +320,7 @@ public class RenderPkg {
 	    				if (canRenderCover && bakedQuads.get(facing) != null) {
 	    					for (BakedQuad bakedQuad : bakedQuads.get(facing)) {
 	    						Quad newQuad = new Quad(quad);
-	    						if (Blocks.GRASS.equals(blockState.getBlock())) {
+	    						if (Blocks.GRASS_BLOCK.equals(blockState.getBlock())) {
     								if (isTintedGrassSprite(bakedQuad.getSprite())) {
     									newQuad.setRgb(attrRgb);
     								} else if (hasDye) {
@@ -355,7 +355,8 @@ public class RenderPkg {
     }
     
     private boolean isTintedGrassSprite(TextureAtlasSprite sprite) {
-    	return "minecraft:blocks/grass_top".equalsIgnoreCase(sprite.getName().toString()) || "minecraft:blocks/grass_side_overlay".equalsIgnoreCase(sprite.getName().toString());
+    	return "minecraft:block/grass_block_top".equalsIgnoreCase(sprite.getName().toString())
+    			|| "minecraft:block/grass_block_side_overlay".equalsIgnoreCase(sprite.getName().toString());
     }
     
     private List<BakedQuad> getQuadsForSide(QuadContainer quadContainer, Direction facing, TextureAtlasSprite spriteOverride, Integer rgbOverride, boolean isCover) {

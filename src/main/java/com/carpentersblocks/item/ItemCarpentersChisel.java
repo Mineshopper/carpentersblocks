@@ -18,7 +18,7 @@ public class ItemCarpentersChisel extends Item implements ICarpentersChisel {
 	@Override
     public void onChiselUse(World world, PlayerEntity playerEntity, Hand hand) {
         playerEntity.getItemInHand(hand).hurtAndBreak(1, playerEntity, (a) -> {
-        	a.broadcastBreakEvent(playerEntity.swingingArm);
+        	a.broadcastBreakEvent(hand);
         });
     }
 

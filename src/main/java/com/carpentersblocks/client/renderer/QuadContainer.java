@@ -80,6 +80,7 @@ public class QuadContainer {
 	    	if (facing.equals(offsetFacing)) { // Side cover direction matches offset facing
 		    	//quadContainer.add(new Quad(quad).setFacing(facing.getOpposite())); // Should only add this if face is visible (if host is translucent/mipped)
 		    	Quad offsetQuad = new Quad(quad);
+		    	
 		    	offsetQuad.applyFacing(true, offsetFacing);
 	    		quadContainer.addAll(QuadUtil.getPerpendicularQuads(offsetQuad, depth));
 	    		quadContainer.add(quad.offset(offsetFacing.getStepX() * depth, offsetFacing.getStepY() * depth, offsetFacing.getStepZ() * depth));
@@ -101,6 +102,7 @@ public class QuadContainer {
 				}
 			}
 		}
+	    transformForBlockState(true, blockState);
 	    return quadContainer;
 	}
 	
@@ -201,7 +203,7 @@ public class QuadContainer {
 		for (Quad quad : _quads) {
 			if (quad.isSloped(Axis.Y)) {
 				if (isSideCover) {
-					if (!Axis.Y.equals(quad.getDirection())) {
+					if (!Axis.Y.equals(quad.getDirection().getAxis())) {
 						Quad newQuad = new Quad(quad);
 						newQuad.applyFacing(true, quad.getNormal().y > 0.0D ? Direction.UP : Direction.DOWN);
 						list.add(newQuad);
@@ -209,9 +211,9 @@ public class QuadContainer {
 						list.add(new Quad(quad));
 					}
 				} else {
-					double MAX_UP_SLOPE = this.MAX_UP_SLOPE;
-					double MAX_SIDE_SLOPE = this.MAX_SIDE_SLOPE;
-					if (Blocks.GRASS.equals(blockState.getBlock()) || Blocks.MYCELIUM.equals(blockState.getBlock())) {
+					double MAX_UP_SLOPE = QuadContainer.MAX_UP_SLOPE;
+					double MAX_SIDE_SLOPE = QuadContainer.MAX_SIDE_SLOPE;
+					if (Blocks.GRASS_BLOCK.equals(blockState.getBlock()) || Blocks.MYCELIUM.equals(blockState.getBlock())) {
 						MAX_UP_SLOPE = MAX_UP_SLOPE_GRASS;
 						MAX_SIDE_SLOPE = MAX_SIDE_SLOPE_GRASS;
 					}

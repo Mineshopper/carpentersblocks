@@ -1,5 +1,8 @@
 package com.carpentersblocks.util;
 
+import org.apache.logging.log4j.Level;
+
+import com.carpentersblocks.ModLogger;
 import com.carpentersblocks.api.IWrappableBlock;
 import com.carpentersblocks.block.AbstractCoverableBlock;
 import com.carpentersblocks.config.Configuration;
@@ -28,7 +31,9 @@ import net.minecraft.item.Items;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 
 public class BlockUtil {
 
@@ -220,5 +225,18 @@ public class BlockUtil {
     public static boolean isOverlay(ItemStack itemStack) {
         return OverlayHandler.overlayMap.containsKey(itemStack.getItem().getRegistryName().toString());
     }
+ 
+    public static boolean isValidTileEntity(IWorld world, BlockPos blockPos) {
+		TileEntity tileEntity = world.getBlockEntity(blockPos);
+    	return tileEntity != null && tileEntity instanceof CbTileEntity;
+	}
+
+	public static boolean isAreaLoaded(ServerWorld serverWorld, BlockPos blockPos) {
+		if (!serverWorld.isAreaLoaded(blockPos, 0)) {
+    		ModLogger.log(Level.WARN, "Server ignoring block interact packet for unloaded block position {}", blockPos.toShortString());
+    		return false;
+    	}
+		return true;
+	}
     
 }

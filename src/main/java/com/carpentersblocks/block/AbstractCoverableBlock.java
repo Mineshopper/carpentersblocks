@@ -15,6 +15,7 @@ import com.carpentersblocks.nbt.CbTileEntity;
 import com.carpentersblocks.nbt.attribute.AbstractAttribute.Key;
 import com.carpentersblocks.nbt.attribute.EnumAttributeLocation;
 import com.carpentersblocks.nbt.attribute.EnumAttributeType;
+import com.carpentersblocks.network.PacketUseItemOnBlock;
 import com.carpentersblocks.util.BlockUtil;
 import com.carpentersblocks.util.EntityLivingUtil;
 import com.carpentersblocks.util.handler.DesignHandler;
@@ -25,11 +26,9 @@ import com.carpentersblocks.util.protection.PlayerPermissions;
 import com.carpentersblocks.util.protection.ProtectedObject;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.IWaterLoggable;
-import net.minecraft.block.SlabBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.entity.Entity;
@@ -39,7 +38,6 @@ import net.minecraft.fluid.FluidState;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.loot.LootContext.Builder;
-import net.minecraft.state.properties.Half;
 import net.minecraft.loot.LootParameters;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
@@ -51,7 +49,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.IWorldReader;
@@ -253,6 +250,10 @@ public abstract class AbstractCoverableBlock extends Block implements IWaterLogg
     
     /**
      * Called when block is left clicked by a player.
+     * <p>
+     * This method will do nothing since we're usually needing to work
+     * with a {@link BlockRayTraceResult} and call {@link #attack(BlockState, World, BlockPos, PlayerEntity, Hand, BlockRayTraceResult) here}
+     * instead.
      * 
      * @param world the world
      * @param blockPos the block position
@@ -260,7 +261,23 @@ public abstract class AbstractCoverableBlock extends Block implements IWaterLogg
      */
     @Override
     public void attack(BlockState blockState, World world, BlockPos blockPos, PlayerEntity playerEntity) {
-        if (world.isClientSide) {
+        return;
+    }
+    
+    /**
+     * Called when block is left clicked by a player client side and also
+     * invoked by server when a {@link PacketUseItemOnBlock.Attack packet}
+     * is received.
+     * 
+     * @param blockState the block state
+     * @param world the world
+     * @param blockPos the block position
+     * @param playerEntity the player entity
+     * @param hand the active hand
+     * @param blockRayTraceResult the block ray trace result
+     */
+    public void attack(BlockState blockState, World world, BlockPos blockPos, PlayerEntity playerEntity, Hand hand, BlockRayTraceResult blockRayTraceResult) {
+    	if (world.isClientSide) {
             return;
         }
         
@@ -269,13 +286,14 @@ public abstract class AbstractCoverableBlock extends Block implements IWaterLogg
             return;
         }
 
-        ItemStack itemStack = playerEntity.getItemInHand(Hand.MAIN_HAND);
+        ItemStack itemStack = playerEntity.getMainHandItem();
         if (itemStack.isEmpty()) {
             return;
         }
 
         ActionResult actionResult = new ActionResult();
-        EnumAttributeLocation location = BlockUtil.getAttributeLocationForFacing(cbTileEntity, EntityLivingUtil.calculateBlockRayTraceResult(playerEntity).getDirection());
+        EnumAttributeLocation location = EnumAttributeLocation.UP;
+        //EnumAttributeLocation location = BlockUtil.getAttributeLocationForFacing(cbTileEntity, EventHandler.getRayTraceResult().getDirection());
         Item item = itemStack.getItem();
         if (item instanceof ICarpentersHammer && ((ICarpentersHammer)item).canUseHammer(world, playerEntity, Hand.MAIN_HAND)) {
             preOnBlockClicked(cbTileEntity, playerEntity, actionResult);
@@ -299,7 +317,7 @@ public abstract class AbstractCoverableBlock extends Block implements IWaterLogg
             if (playerEntity.isCrouching() && cbTileEntity.getAttributeHelper().hasAttribute(location, EnumAttributeType.DESIGN_CHISEL)) {
                 cbTileEntity.removeAttribute(location, EnumAttributeType.DESIGN_CHISEL);
             } else if (cbTileEntity.getAttributeHelper().hasAttribute(location, EnumAttributeType.COVER)) {
-                onChiselClick(cbTileEntity, location, playerEntity.swingingArm, true);
+                onChiselClick(cbTileEntity, location, Hand.MAIN_HAND, true);
             }            
         }
         
@@ -819,7 +837,7 @@ public abstract class AbstractCoverableBlock extends Block implements IWaterLogg
             }
             if (cbTileEntity.getAttributeHelper().hasAttribute(EnumAttributeLocation.HOST, EnumAttributeType.OVERLAY)) {
             	ItemStack itemStack = (ItemStack) cbTileEntity.getAttributeHelper().getAttribute(EnumAttributeLocation.HOST, EnumAttributeType.OVERLAY).getModel();
-            	if (Overlay.MYCELIUM.equals(OverlayHandler.getOverlayType(itemStack))) {
+            	if (Overlay.mycelium.equals(OverlayHandler.getOverlayType(itemStack))) {
                 	Blocks.MYCELIUM.animateTick(Blocks.MYCELIUM.defaultBlockState(), world, blockPos, rand);
                 }
             }
@@ -852,7 +870,7 @@ public abstract class AbstractCoverableBlock extends Block implements IWaterLogg
             	blocks.add(sideBlockState.getBlock());
             	Material material = sideBlockState.getMaterial();
             	if (Blocks.GRASS_BLOCK.equals(block)) {
-           	 		blocks.add(Blocks.GRASS);
+           	 		blocks.add(Blocks.GRASS_BLOCK);
            	 	} else if (Material.DIRT.equals(material)) {
                 	blocks.add(Blocks.DIRT);
                 } else if (Material.SAND.equals(material)) {
@@ -967,7 +985,7 @@ public abstract class AbstractCoverableBlock extends Block implements IWaterLogg
      */
     @Override
     public float getDestroyProgress(BlockState blockState, PlayerEntity playerEntity, IBlockReader blockReader, BlockPos blockPos) {
-    	ItemStack itemStack = playerEntity.getItemInHand(playerEntity.swingingArm);
+    	ItemStack itemStack = playerEntity.getMainHandItem();
     	
     	// Carpenter's tools should not damage block
         if (!itemStack.isEmpty()) {
@@ -979,11 +997,8 @@ public abstract class AbstractCoverableBlock extends Block implements IWaterLogg
         
         // Return cover block hardness if one is present
         CbTileEntity cbTileEntity = getTileEntity(blockReader, blockPos);
-        if (cbTileEntity != null) {
+        if (cbTileEntity != null && cbTileEntity.getAttributeHelper().hasAttribute(EnumAttributeLocation.HOST, EnumAttributeType.COVER)) {
         	BlockState outBlockState = BlockUtil.getAttributeBlockState(cbTileEntity, EnumAttributeLocation.HOST, EnumAttributeType.COVER);
-        	if (outBlockState == null) {
-        		outBlockState = blockState;
-        	}
         	return outBlockState.getDestroyProgress(playerEntity, blockReader, blockPos);
         } else {
             return super.getDestroyProgress(blockState, playerEntity, blockReader, blockPos);

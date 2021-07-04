@@ -7,9 +7,11 @@ import com.carpentersblocks.config.Configuration;
 import com.carpentersblocks.nbt.CbTileEntity;
 import com.carpentersblocks.util.EntityLivingUtil;
 import com.carpentersblocks.util.RotationUtil.CbRotation;
+import com.carpentersblocks.util.handler.EventHandler;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -17,8 +19,11 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.RayTraceContext;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
@@ -33,7 +38,7 @@ public class BlockCarpentersSlope extends AbstractWaterLoggableBlock {
      * Alters block direction.
      */
     protected boolean onHammerLeftClick(CbTileEntity cbTileEntity, PlayerEntity playerEntity) {
-        SlopeData.rotate(cbTileEntity, EntityLivingUtil.calculateBlockRayTraceResult(playerEntity).getDirection().getAxis());
+        //SlopeData.rotate(cbTileEntity, EventHandler.getRayTraceResult().getDirection().getAxis());
         return true;
     }
 
@@ -214,176 +219,192 @@ public class BlockCarpentersSlope extends AbstractWaterLoggableBlock {
     @Override
     public void setPlacedBy(World world, BlockPos blockPos, BlockState blockState, @Nullable LivingEntity livingEntity, ItemStack itemStack) {
     	super.setPlacedBy(world, blockPos, blockState, livingEntity, itemStack);
+    	
     	CbTileEntity cbTileEntity = getTileEntity(world, blockPos);
-        if (cbTileEntity != null) {
+    	if (cbTileEntity == null) {
+    		return;
+    	}
 
-        	// Set type
-        	switch (itemStack.getItem().getRegistryName().toString()) {
-	        	case CbBlocks.REGISTRY_NAME_SLOPE_INVERTED_PRISM:
-	        		SlopeData.setType(cbTileEntity, SlopeData.Type.INVERTED_PRISM);
-	        		break;
-	        	case CbBlocks.REGISTRY_NAME_SLOPE_OBLIQUE_EXTERIOR:
-	        		SlopeData.setType(cbTileEntity, SlopeData.Type.OBLIQUE_EXTERIOR);
-	        		break;
-	        	case CbBlocks.REGISTRY_NAME_SLOPE_OBLIQUE_INTERIOR:
-	        		SlopeData.setType(cbTileEntity, SlopeData.Type.OBLIQUE_INTERIOR);
-	        		break;
-	        	case CbBlocks.REGISTRY_NAME_SLOPE_PRISM:
-	        		SlopeData.setType(cbTileEntity, SlopeData.Type.PRISM);
-	        		break;
-	        	case CbBlocks.REGISTRY_NAME_SLOPE_PRISM_WEDGE:
-	        		SlopeData.setType(cbTileEntity, SlopeData.Type.PRISM_WEDGE);
-	        		break;
-	        	case CbBlocks.REGISTRY_NAME_SLOPE_WEDGE:
-	        		SlopeData.setType(cbTileEntity, SlopeData.Type.WEDGE);
-	        		break;
-	        	case CbBlocks.REGISTRY_NAME_SLOPE_WEDGE_EXTERIOR:
-	        		SlopeData.setType(cbTileEntity, SlopeData.Type.WEDGE_EXTERIOR);
-	        		break;
-	        	case CbBlocks.REGISTRY_NAME_SLOPE_WEDGE_INTERIOR:
-	        		SlopeData.setType(cbTileEntity, SlopeData.Type.WEDGE_INTERIOR);
-	        		break;
-        	}
-        	
-        	if (livingEntity == null) {
-        		return;
-        	}
-        	
-        	// Set rotation
-        	BlockRayTraceResult blockRayTraceResult = EntityLivingUtil.calculateBlockRayTraceResult(livingEntity);
-        	double x = blockRayTraceResult.getLocation().x();
-        	double y = blockRayTraceResult.getLocation().y();
-        	double z = blockRayTraceResult.getLocation().z();
-        	Direction direction = blockRayTraceResult.getDirection();
-        	CbRotation rotation = CbRotation.X0_Y0_Z0;
-        	switch (direction) {
-	        	case DOWN:
-	        		if (x >= 0.2f && x <= 0.8f && z >= 0.2f && z <= 0.8f) {
-	        			switch (livingEntity.getDirection()) {
-		        			case NORTH:
-		        				rotation = CbRotation.X0_Y0_Z180;
-		        				break;
-		        			case SOUTH:
-		        				rotation = CbRotation.X180_Y0_Z0;
-		        				break;
-		        			case WEST:
-		        				rotation = CbRotation.X180_Y90_Z0;
-		        				break;
-		        			case EAST:
-		        				rotation = CbRotation.X180_Y270_Z0;
-		        				break;
-							default:
-								break;
-	        			}
-	        		} else if (1.0f - x > z && x <= 0.5f && x < z) {
-	        			rotation = CbRotation.X180_Y90_Z0;
-        			} else if (z > x && z >= 0.5f) {
-        				rotation = CbRotation.X180_Y0_Z0;
-        			} else if (x > 1.0f - z) {
-        				rotation = CbRotation.X180_Y270_Z0;
-        			} else {
-        				rotation = CbRotation.X0_Y0_Z180;
+    	// Set type
+    	switch (itemStack.getItem().getRegistryName().toString()) {
+        	case CbBlocks.REGISTRY_NAME_SLOPE_INVERTED_PRISM:
+        		SlopeData.setType(cbTileEntity, SlopeData.Type.INVERTED_PRISM);
+        		break;
+        	case CbBlocks.REGISTRY_NAME_SLOPE_OBLIQUE_EXTERIOR:
+        		SlopeData.setType(cbTileEntity, SlopeData.Type.OBLIQUE_EXTERIOR);
+        		break;
+        	case CbBlocks.REGISTRY_NAME_SLOPE_OBLIQUE_INTERIOR:
+        		SlopeData.setType(cbTileEntity, SlopeData.Type.OBLIQUE_INTERIOR);
+        		break;
+        	case CbBlocks.REGISTRY_NAME_SLOPE_PRISM:
+        		SlopeData.setType(cbTileEntity, SlopeData.Type.PRISM);
+        		break;
+        	case CbBlocks.REGISTRY_NAME_SLOPE_PRISM_WEDGE:
+        		SlopeData.setType(cbTileEntity, SlopeData.Type.PRISM_WEDGE);
+        		break;
+        	case CbBlocks.REGISTRY_NAME_SLOPE_WEDGE:
+        		SlopeData.setType(cbTileEntity, SlopeData.Type.WEDGE);
+        		break;
+        	case CbBlocks.REGISTRY_NAME_SLOPE_WEDGE_EXTERIOR:
+        		SlopeData.setType(cbTileEntity, SlopeData.Type.WEDGE_EXTERIOR);
+        		break;
+        	case CbBlocks.REGISTRY_NAME_SLOPE_WEDGE_INTERIOR:
+        		SlopeData.setType(cbTileEntity, SlopeData.Type.WEDGE_INTERIOR);
+        		break;
+    	}
+    	
+    	if (livingEntity == null) {
+    		return;
+    	}
+    	
+    	
+    	////////////// DEBUG
+    	
+    	BlockRayTraceResult blockRayTraceResult = EntityLivingUtil.calculateBlockRayTraceResult(livingEntity);
+    	
+    	///////////// END DEBUG
+    	
+    	
+    	// Set rotation
+    	//BlockRayTraceResult blockRayTraceResult = EventHandler.getRayTraceResult();
+    	double x = blockRayTraceResult.getLocation().x() - (int) blockRayTraceResult.getLocation().x();
+    	if (x < 0.0d) {
+    		x = 1 - (x * -1);
+    	}
+    	double y = blockRayTraceResult.getLocation().y() - (int) blockRayTraceResult.getLocation().y();
+    	double z = blockRayTraceResult.getLocation().z() - (int) blockRayTraceResult.getLocation().z();
+    	if (z < 0.0d) {
+    		z = 1 - (z * -1);
+    	}
+    	Direction direction = blockRayTraceResult.getDirection();
+    	CbRotation rotation = CbRotation.X0_Y0_Z0;
+    	switch (direction) {
+        	case DOWN:
+        		if (x >= 0.2f && x <= 0.8f && z >= 0.2f && z <= 0.8f) {
+        			switch (livingEntity.getDirection()) {
+	        			case NORTH:
+	        				rotation = CbRotation.X0_Y0_Z180;
+	        				break;
+	        			case SOUTH:
+	        				rotation = CbRotation.X180_Y0_Z0;
+	        				break;
+	        			case WEST:
+	        				rotation = CbRotation.X180_Y90_Z0;
+	        				break;
+	        			case EAST:
+	        				rotation = CbRotation.X180_Y270_Z0;
+	        				break;
+						default:
+							break;
         			}
-	        		break;
-	        	case UP:
-	        		if (x >= 0.2f && x <= 0.8f && z >= 0.2f && z <= 0.8f) {
-	        			switch (livingEntity.getDirection()) {
-		        			case NORTH:
-		        				rotation = CbRotation.X0_Y0_Z0;
-		        				break;
-		        			case SOUTH:
-		        				rotation = CbRotation.X0_Y180_Z0;
-		        				break;
-		        			case WEST:
-		        				rotation = CbRotation.X0_Y270_Z0;
-		        				break;
-		        			case EAST:
-		        				rotation = CbRotation.X0_Y90_Z0;
-		        				break;
-							default:
-								break;
-	        			}
-	        		} else if (x < z && x <= 0.5f && 1.0f - x > z) {
-	        			rotation = CbRotation.X0_Y270_Z0;
-	        		} else if (1.0f - z > x && z <= 0.5f) {
-	        			rotation = CbRotation.X0_Y0_Z0;
-	        		} else if (x > z) {
-	        			rotation = CbRotation.X0_Y90_Z0;
-	        		} else {
-	        			rotation = CbRotation.X0_Y180_Z0;
-	        		}
-	        		break;
-	        	case NORTH:
-	        		if (x >= 0.2f && x <= 0.8f) {
-	        			if (y >= 0.5f) {
-	        				rotation = CbRotation.X90_Y0_Z180;
-	        			} else {
-	        				rotation = CbRotation.X90_Y0_Z0;
-	        			}
-	        		} else if (x > y && x >= 0.5f && x > 1.0f - y) {
-	        			rotation = CbRotation.X90_Y0_Z270;
-	        		} else if (y > 1.0f - x && y >= 0.5f) {
-	        			rotation = CbRotation.X90_Y0_Z180;
-	        		} else if (x < y) {
-	        			rotation = CbRotation.X90_Y0_Z90;
-	        		} else {
-	        			rotation = CbRotation.X90_Y0_Z0;
-	        		}
-	        		break;
-	        	case SOUTH:
-	        		if (x >= 0.2f && x <= 0.8f) {
-	        			if (y >= 0.5f) {
-	        				rotation = CbRotation.X270_Y0_Z0;
-	        			} else {
-	        				rotation = CbRotation.X90_Y180_Z0;
-	        			}
-	        		} else if (1.0f - x > y && x <= 0.5f && x < y) {
-	        			rotation = CbRotation.X90_Y180_Z90;
-	        		} else if (y > x && y >= 0.5f) {
-	        			rotation = CbRotation.X270_Y0_Z0;
-	        		} else if (x > 1.0f - y) {
-	        			rotation = CbRotation.X270_Y0_Z90;
-	        		} else {
-	        			rotation = CbRotation.X90_Y180_Z0;
-	        		}
-	        		break;
-	        	case WEST:
-	        		if (z >= 0.2f && z <= 0.8f) {
-	        			if (y >= 0.5f) {
-	        				rotation = CbRotation.X270_Y90_Z0;
-	        			} else {
-	        				rotation = CbRotation.X90_Y270_Z0;
-	        			}
-	        		} else if (1.0f - z > y && z <= 0.5f && z < y) {
-	        			rotation = CbRotation.X0_Y0_Z270;
-	        		} else if (y > z && y >= 0.5f) {
-	        			rotation = CbRotation.X270_Y90_Z0;
-	        		} else if (z > 1.0f - y) {
-	        			rotation = CbRotation.X180_Y0_Z90;
-	        		} else {
-	        			rotation = CbRotation.X90_Y270_Z0;
-	        		}
-	        		break;
-	        	case EAST:
-	        		if (z >= 0.2f && z <= 0.8f) {
-	        			if (y >= 0.5f) {
-	        				rotation = CbRotation.X0_Y270_Z90;
-	        			} else {
-	        				rotation = CbRotation.X90_Y90_Z0;
-	        			}
-	        		} else if (z > y && z >= 0.5f && z > 1.0f - y) {
-	        			rotation = CbRotation.X0_Y180_Z90;
-	        		} else if (y > 1.0f - z && y >= 0.5f) {
-	        			rotation = CbRotation.X0_Y270_Z90;
-	        		} else if (z < y) {
-	        			rotation = CbRotation.X0_Y0_Z90;
-	        		} else {
-	        			rotation = CbRotation.X90_Y90_Z0;
-	        		}
-	        		break;
-        	}
-        	SlopeData.setRotation(cbTileEntity, rotation);
-        }
+        		} else if (1.0f - x > z && x <= 0.5f && x < z) {
+        			rotation = CbRotation.X180_Y90_Z0;
+    			} else if (z > x && z >= 0.5f) {
+    				rotation = CbRotation.X180_Y0_Z0;
+    			} else if (x > 1.0f - z) {
+    				rotation = CbRotation.X180_Y270_Z0;
+    			} else {
+    				rotation = CbRotation.X0_Y0_Z180;
+    			}
+        		break;
+        	case UP:
+        		if (x >= 0.2f && x <= 0.8f && z >= 0.2f && z <= 0.8f) {
+        			switch (livingEntity.getDirection()) {
+	        			case NORTH:
+	        				rotation = CbRotation.X0_Y0_Z0;
+	        				break;
+	        			case SOUTH:
+	        				rotation = CbRotation.X0_Y180_Z0;
+	        				break;
+	        			case WEST:
+	        				rotation = CbRotation.X0_Y270_Z0;
+	        				break;
+	        			case EAST:
+	        				rotation = CbRotation.X0_Y90_Z0;
+	        				break;
+						default:
+							break;
+        			}
+        		} else if (x < z && x <= 0.5f && 1.0f - x > z) {
+        			rotation = CbRotation.X0_Y270_Z0;
+        		} else if (1.0f - z > x && z <= 0.5f) {
+        			rotation = CbRotation.X0_Y0_Z0;
+        		} else if (x > z) {
+        			rotation = CbRotation.X0_Y90_Z0;
+        		} else {
+        			rotation = CbRotation.X0_Y180_Z0;
+        		}
+        		break;
+        	case NORTH:
+        		if (x >= 0.2f && x <= 0.8f) {
+        			if (y >= 0.5f) {
+        				rotation = CbRotation.X90_Y0_Z180;
+        			} else {
+        				rotation = CbRotation.X90_Y0_Z0;
+        			}
+        		} else if (x > y && x >= 0.5f && x > 1.0f - y) {
+        			rotation = CbRotation.X90_Y0_Z270;
+        		} else if (y > 1.0f - x && y >= 0.5f) {
+        			rotation = CbRotation.X90_Y0_Z180;
+        		} else if (x < y) {
+        			rotation = CbRotation.X90_Y0_Z90;
+        		} else {
+        			rotation = CbRotation.X90_Y0_Z0;
+        		}
+        		break;
+        	case SOUTH:
+        		if (x >= 0.2f && x <= 0.8f) {
+        			if (y >= 0.5f) {
+        				rotation = CbRotation.X270_Y0_Z0;
+        			} else {
+        				rotation = CbRotation.X90_Y180_Z0;
+        			}
+        		} else if (1.0f - x > y && x <= 0.5f && x < y) {
+        			rotation = CbRotation.X90_Y180_Z90;
+        		} else if (y > x && y >= 0.5f) {
+        			rotation = CbRotation.X270_Y0_Z0;
+        		} else if (x > 1.0f - y) {
+        			rotation = CbRotation.X270_Y0_Z90;
+        		} else {
+        			rotation = CbRotation.X90_Y180_Z0;
+        		}
+        		break;
+        	case WEST:
+        		if (z >= 0.2f && z <= 0.8f) {
+        			if (y >= 0.5f) {
+        				rotation = CbRotation.X270_Y90_Z0;
+        			} else {
+        				rotation = CbRotation.X90_Y270_Z0;
+        			}
+        		} else if (1.0f - z > y && z <= 0.5f && z < y) {
+        			rotation = CbRotation.X0_Y0_Z270;
+        		} else if (y > z && y >= 0.5f) {
+        			rotation = CbRotation.X270_Y90_Z0;
+        		} else if (z > 1.0f - y) {
+        			rotation = CbRotation.X180_Y0_Z90;
+        		} else {
+        			rotation = CbRotation.X90_Y270_Z0;
+        		}
+        		break;
+        	case EAST:
+        		if (z >= 0.2f && z <= 0.8f) {
+        			if (y >= 0.5f) {
+        				rotation = CbRotation.X0_Y270_Z90;
+        			} else {
+        				rotation = CbRotation.X90_Y90_Z0;
+        			}
+        		} else if (z > y && z >= 0.5f && z > 1.0f - y) {
+        			rotation = CbRotation.X0_Y180_Z90;
+        		} else if (y > 1.0f - z && y >= 0.5f) {
+        			rotation = CbRotation.X0_Y270_Z90;
+        		} else if (z < y) {
+        			rotation = CbRotation.X0_Y0_Z90;
+        		} else {
+        			rotation = CbRotation.X90_Y90_Z0;
+        		}
+        		break;
+    	}
+    	SlopeData.setRotation(cbTileEntity, rotation);
     }
     
     /**

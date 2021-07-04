@@ -28,12 +28,12 @@ import net.minecraftforge.client.model.pipeline.IVertexConsumer;
 public class Quad {
 
 	private static final float TINT_IDX_FULL_BRIGHT = (float) (15 * 0x20) / 0xffff;
-	private static final String GRASS_SIDE_OVERLAY = "minecraft:blocks/grass_side_overlay";
+	private static final String GRASS_SIDE_OVERLAY = "minecraft:block/grass_block_side_overlay";
 	
 	private static final float[] quantizedSixteenths = {
-			0.0f, 0.0625f, 0.125f, 0.1875f, 0.25f, 0.3125f, 0.375f,
+			-0.0625f, -0.125f, 0.0f, 0.0625f, 0.125f, 0.1875f, 0.25f, 0.3125f, 0.375f,
 			0.4375f, 0.5f, 0.5625f, 0.625f, 0.6875f, 0.75f, 0.8125f,
-			0.875f, 0.9375f, 1.0f
+			0.875f, 0.9375f, 1.0f, 1.0625f, 1.125f
 	};
 	
    	private Vector3d[] _vec3ds;
