@@ -19,6 +19,7 @@ public class CarpentersBlocks {
     		() -> new ItemStack(CbItems.itemHammer));
     
     public CarpentersBlocks() {
+    	ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, Configuration.CLIENT_SPEC);
     	ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Configuration.COMMON_SPEC);
 	}
     

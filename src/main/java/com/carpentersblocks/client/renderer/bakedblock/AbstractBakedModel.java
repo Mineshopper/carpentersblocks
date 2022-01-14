@@ -1,11 +1,13 @@
 package com.carpentersblocks.client.renderer.bakedblock;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+import javax.annotation.Nullable;
+
 import com.carpentersblocks.client.TextureAtlasSprites;
+import com.carpentersblocks.client.renderer.ReferenceQuads;
 import com.carpentersblocks.client.renderer.RenderConstants;
 import com.carpentersblocks.client.renderer.RenderPkg;
 import com.mojang.blaze3d.matrix.MatrixStack;
@@ -26,8 +28,6 @@ import net.minecraftforge.common.model.TransformationHelper;
 public abstract class AbstractBakedModel implements IDynamicBakedModel {
 	
 	private final VertexFormat _vertexFormat;
-	
-	private List<BakedQuad> _cachedInventoryQuads;
     
     /**
      * Class constructor.
@@ -36,7 +36,6 @@ public abstract class AbstractBakedModel implements IDynamicBakedModel {
      */
     public AbstractBakedModel(VertexFormat vertexFormat) {
     	this._vertexFormat = vertexFormat;
-    	this._cachedInventoryQuads = new ArrayList<>();
     }
     
     /**
@@ -44,15 +43,13 @@ public abstract class AbstractBakedModel implements IDynamicBakedModel {
      * 
      * @param blockState the block state
      * @param side the side
-     * @param rand the random
+     * @param rand a random
      * @param extraData model data
      */
     @Override
     public List<BakedQuad> getQuads(BlockState blockState, Direction side, Random rand, IModelData extraData) {
     	if (side == null && !(extraData instanceof EmptyModelData)) {
-	    	RenderPkg renderPkg = new RenderPkg(_vertexFormat, extraData, blockState, side, rand);
-	    	fillQuads(renderPkg);
-	    	return renderPkg.getQuads();
+	    	return doGetQuads(blockState, side, rand, extraData);
     	}
     	return Collections.emptyList();
     }
@@ -68,14 +65,36 @@ public abstract class AbstractBakedModel implements IDynamicBakedModel {
      */
     @Override
    	public List<BakedQuad> getQuads(BlockState blockState, Direction side, Random rand) {
-    	if (!_cachedInventoryQuads.isEmpty()) {
-    		return _cachedInventoryQuads;
-    	}
-    	RenderPkg renderPkg = new RenderPkg(_vertexFormat, side, rand);
-    	fillInventoryQuads(renderPkg);
-    	_cachedInventoryQuads.addAll(renderPkg.getInventoryQuads());
-    	return _cachedInventoryQuads;
+    	return doGetQuads(blockState, side, rand, null);
    	}
+    
+    /**
+     * Handles getting quads based on presence of extra data.
+     * 
+     * @param blockState the block state
+     * @param side the side
+     * @param rand a random
+     * @param extraData model data
+     * @return
+     */
+    private List<BakedQuad> doGetQuads(BlockState blockState, Direction side, Random rand, @Nullable IModelData extraData) {
+    	RenderPkg renderPkg;
+    	if (extraData == null) {
+    		renderPkg = new RenderPkg(_vertexFormat, rand);
+    	} else {
+    		renderPkg = new RenderPkg(_vertexFormat, extraData, blockState, rand);
+    	}
+    	RenderPkg.THREAD_LOCAL_RENDER_PKG.set(renderPkg);
+    	if (extraData == null) {
+    		fillInventoryQuads(renderPkg.getReferenceQuads());
+    	} else {
+    		fillQuads(renderPkg.getReferenceQuads());
+    	}
+    	renderPkg.lockReferenceQuads();
+    	List<BakedQuad> bakedQuads = extraData == null ? renderPkg.getBlockItemBakedQuads() : renderPkg.getBlockBakedQuads();
+    	RenderPkg.THREAD_LOCAL_RENDER_PKG.remove();
+    	return bakedQuads;
+    }
     
     @Override
     public ItemOverrideList getOverrides() {
@@ -89,7 +108,7 @@ public abstract class AbstractBakedModel implements IDynamicBakedModel {
 
     @Override
     public boolean isGui3d() {
-        return true;
+        return false;
     }
 
     @Override
@@ -99,7 +118,6 @@ public abstract class AbstractBakedModel implements IDynamicBakedModel {
     
     @Override
 	public boolean usesBlockLight() {
-    	// TODO: figure out what this is
 		return false;
 	}
     
@@ -115,17 +133,20 @@ public abstract class AbstractBakedModel implements IDynamicBakedModel {
 	}
 	
     /**
-     * Fills quad container with all quads.
+     * Fills reference quads with all quads.
+     * <p>
+     * Any world block transformations, like rotation, should
+     * also in this step.
      * 
-     * @param renderPkg the quad container
+     * @param quadContainer the quad container
      */
-    protected abstract void fillQuads(RenderPkg renderPkg);
+    protected abstract void fillQuads(ReferenceQuads referenceQuads);
     
     /**
-     * Fills quad container with all inventory quads.
+     * Fills reference quads with all inventory quads.
      * 
-     * @param renderPkg the quad container
+     * @param quadContainer the quad container
      */
-    protected abstract void fillInventoryQuads(RenderPkg renderPkg);
+    protected abstract void fillInventoryQuads(ReferenceQuads referenceQuads);
     
 }

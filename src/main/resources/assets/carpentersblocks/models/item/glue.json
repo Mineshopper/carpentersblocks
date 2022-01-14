@@ -1,6 +1,6 @@
 {
     "parent": "item/handheld",
 	"textures": {
-        "layer0": "carpentersblocks:item/applicator"
+        "layer0": "carpentersblocks:item/glue"
     }
 }

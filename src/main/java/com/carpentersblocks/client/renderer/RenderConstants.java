@@ -18,6 +18,11 @@ public interface RenderConstants {
 	public static final int DEFAULT_RGB = 0xffffff;
 	public static final String EMPTY_STRING = "";
     
+	public static final double MAX_UP_SLOPE_GRASS = Math.sin(35 * Math.PI / 180);
+	public static final double MAX_SIDE_SLOPE_GRASS = -Math.sin(55 * Math.PI / 180);
+	public static final double MAX_UP_SLOPE = Math.sin(46 * Math.PI / 180);
+	public static final double MAX_SIDE_SLOPE = -Math.sin(44 * Math.PI / 180);
+	
 	/** Item camera transforms for rendering mod blocks. */
     public static final ItemCameraTransforms itemCameraTransforms = new ItemCameraTransforms(
     	new ItemTransformVec3f(new Vector3f(75.0f, 225.0f, 0.0f), new Vector3f(0.0f, 0.15625f, 0.0f), new Vector3f(0.375f, 0.375f, 0.375f)), // thirdperson_left

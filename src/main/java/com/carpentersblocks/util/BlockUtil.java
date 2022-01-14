@@ -1,5 +1,7 @@
 package com.carpentersblocks.util;
 
+import java.util.Random;
+
 import org.apache.logging.log4j.Level;
 
 import com.carpentersblocks.ModLogger;
@@ -23,6 +25,7 @@ import net.minecraft.block.BreakableBlock;
 import net.minecraft.block.PaneBlock;
 import net.minecraft.block.SlabBlock;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.item.BlockItem;
@@ -85,8 +88,17 @@ public class BlockUtil {
     	return null;
     }
     
+    /**
+     * Gets default block state from item stack.
+     * 
+     * @param itemStack the item stack
+     * @return a block state
+     */
     public static BlockState getBlockState(ItemStack itemStack) {
-		return ((BlockItem)itemStack.getItem()).getBlock().defaultBlockState();
+    	if (itemStack.getItem() instanceof BlockItem) {
+    		return ((BlockItem)itemStack.getItem()).getBlock().defaultBlockState();
+    	}
+    	return null;
     }
     
     /**
@@ -179,6 +191,15 @@ public class BlockUtil {
     public static TextureAtlasSprite getParticleTexture(ItemStack itemStack) {
     	BlockState blockState = getBlockState(itemStack);
     	IBakedModel itemModel = Minecraft.getInstance().getBlockRenderer().getBlockModel(blockState);
+    	return itemModel.getParticleIcon();
+    }
+    
+    public static TextureAtlasSprite getQuadTexture(ItemStack itemStack, Direction direction) {
+    	BlockState blockState = getBlockState(itemStack);
+    	IBakedModel itemModel = Minecraft.getInstance().getBlockRenderer().getBlockModel(blockState);
+    	for (BakedQuad bakedQuad : itemModel.getQuads(blockState, direction, new Random())) {
+    		return bakedQuad.getSprite();
+    	}
     	return itemModel.getParticleIcon();
     }
     

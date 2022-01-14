@@ -20,17 +20,17 @@ import net.minecraftforge.registries.ForgeRegistries;
 @Mod.EventBusSubscriber(modid = CarpentersBlocks.MOD_ID, bus = Bus.MOD)
 public class CbItems {
 
-	public static final String REGISTRY_NAME_APPLICATOR = "applicator";
-	public static final String REGISTRY_NAME_BED = "bed";
-	public static final String REGISTRY_NAME_CHISEL = "chisel";
-	public static final String REGISTRY_NAME_DOOR = "door";
-	public static final String REGISTRY_NAME_HAMMER = "hammer";
-	public static final String REGISTRY_NAME_TILE = "tile";
+	public static final String REGISTRY_NAME_PATH_GLUE = "glue";
+	public static final String REGISTRY_NAME_PATH_BED = "bed";
+	public static final String REGISTRY_NAME_PATH_CHISEL = "chisel";
+	public static final String REGISTRY_NAME_PATH_DOOR = "door";
+	public static final String REGISTRY_NAME_PATH_HAMMER = "hammer";
+	public static final String REGISTRY_NAME_PATH_TILE = "tile";
 	
-	public static Item itemApplicator;
 	public static Item itemBed;
 	public static Item itemChisel;
 	public static Item itemDoor;
+	public static Item itemGlue;
     public static Item itemHammer;
     public static Item itemTile;
     
@@ -62,20 +62,11 @@ public class CbItems {
     
     @SubscribeEvent
     public static void onRegisterItemEvent(RegistryEvent.Register<Item> event) {
-    	// applicator
-    	{
-    		Item.Properties properties = new Item.Properties()
-    				.tab(CarpentersBlocks.ITEM_GROUP)
-    				.stacksTo(1);
-    		itemApplicator = new ItemCarpentersApplicator(properties)
-					.setRegistryName(REGISTRY_NAME_APPLICATOR);
-			event.getRegistry().register(itemApplicator);
-    	}
     	// barrier
     	{
     		Item.Properties properties = new Item.Properties()
     				.tab(CarpentersBlocks.ITEM_GROUP)
-    				.stacksTo(1);
+    				.stacksTo(64);
 			blockItemBarrier = new BlockItem(CbBlocks.blockBarrier, properties);
 			blockItemBarrier.setRegistryName(CbBlocks.blockBarrier.getRegistryName());
 			event.getRegistry().register(blockItemBarrier);
@@ -86,14 +77,14 @@ public class CbItems {
     				.tab(CarpentersBlocks.ITEM_GROUP)
     				.stacksTo(1);
     		itemBed = new ItemCarpentersBed(properties)
-					.setRegistryName(REGISTRY_NAME_BED);
+					.setRegistryName(REGISTRY_NAME_PATH_BED);
 			event.getRegistry().register(itemBed);
     	}
 		// block
     	{
     		Item.Properties properties = new Item.Properties()
     				.tab(CarpentersBlocks.ITEM_GROUP)
-    				.stacksTo(1);
+    				.stacksTo(64);
 			blockItemBlock = new BlockItem(CbBlocks.blockBlock, properties);
 			blockItemBlock.setRegistryName(CbBlocks.blockBlock.getRegistryName());
 			event.getRegistry().register(blockItemBlock);
@@ -102,7 +93,7 @@ public class CbItems {
     	{
     		Item.Properties properties = new Item.Properties()
     				.tab(CarpentersBlocks.ITEM_GROUP)
-    				.stacksTo(1);
+    				.stacksTo(64);
 			blockItemButton = new BlockItem(CbBlocks.blockButton, properties);
 			blockItemButton.setRegistryName(CbBlocks.blockButton.getRegistryName());
 			event.getRegistry().register(blockItemButton);
@@ -112,18 +103,18 @@ public class CbItems {
     		Item.Properties properties = new Item.Properties()
     				.tab(CarpentersBlocks.ITEM_GROUP)
     				.stacksTo(1);
-    		if (Configuration.isItemCarpentersToolsDamageable()) {
-    			properties.durability(Configuration.getItemCarpentersToolsUses());
+    		if (Configuration.getItemChiselDurability() > 0) {
+    			properties.durability(Configuration.getItemChiselDurability());
     		}
     		itemChisel = new ItemCarpentersHammer(properties)
-					.setRegistryName(REGISTRY_NAME_CHISEL);
+					.setRegistryName(REGISTRY_NAME_PATH_CHISEL);
 			event.getRegistry().register(itemChisel);
     	}
 		// collapsible block
     	{
     		Item.Properties properties = new Item.Properties()
     				.tab(CarpentersBlocks.ITEM_GROUP)
-    				.stacksTo(1);
+    				.stacksTo(64);
 			blockItemCollapsibleBlock = new BlockItem(CbBlocks.blockCollapsibleBlock, properties);
 			blockItemCollapsibleBlock.setRegistryName(CbBlocks.blockCollapsibleBlock.getRegistryName());
 			event.getRegistry().register(blockItemCollapsibleBlock);
@@ -132,7 +123,7 @@ public class CbItems {
     	{
     		Item.Properties properties = new Item.Properties()
     				.tab(CarpentersBlocks.ITEM_GROUP)
-    				.stacksTo(1);
+    				.stacksTo(64);
     		blockItemDaylightSensor = new BlockItem(CbBlocks.blockDaylightSensor, properties);
 			blockItemDaylightSensor.setRegistryName(CbBlocks.blockDaylightSensor.getRegistryName());
 			event.getRegistry().register(blockItemDaylightSensor);
@@ -143,14 +134,14 @@ public class CbItems {
     				.tab(CarpentersBlocks.ITEM_GROUP)
     				.stacksTo(3);
     		itemDoor = new ItemCarpentersDoor(properties)
-					.setRegistryName(REGISTRY_NAME_DOOR);
+					.setRegistryName(REGISTRY_NAME_PATH_DOOR);
 			event.getRegistry().register(itemDoor);
     	}
 		// flower pot
     	{
     		Item.Properties properties = new Item.Properties()
     				.tab(CarpentersBlocks.ITEM_GROUP)
-    				.stacksTo(1);
+    				.stacksTo(64);
 			blockItemFlowerPot = new BlockItem(CbBlocks.blockFlowerPot, properties);
 			blockItemFlowerPot.setRegistryName(CbBlocks.blockFlowerPot.getRegistryName());
 			event.getRegistry().register(blockItemFlowerPot);
@@ -159,7 +150,7 @@ public class CbItems {
 		{
 			Item.Properties properties = new Item.Properties()
     				.tab(CarpentersBlocks.ITEM_GROUP)
-    				.stacksTo(1);
+    				.stacksTo(64);
 			blockItemGarageDoor = new BlockItem(CbBlocks.blockGarageDoor, properties);
 			blockItemGarageDoor.setRegistryName(CbBlocks.blockGarageDoor.getRegistryName());
 			event.getRegistry().register(blockItemGarageDoor);
@@ -168,28 +159,40 @@ public class CbItems {
 		{
 			Item.Properties properties = new Item.Properties()
     				.tab(CarpentersBlocks.ITEM_GROUP)
-    				.stacksTo(1);
+    				.stacksTo(64);
 			blockItemGate = new BlockItem(CbBlocks.blockGate, properties);
 			blockItemGate.setRegistryName(CbBlocks.blockGate.getRegistryName());
 			event.getRegistry().register(blockItemGate);
 	    }
+		// glue
+    	{
+    		Item.Properties properties = new Item.Properties()
+    				.tab(CarpentersBlocks.ITEM_GROUP)
+    				.stacksTo(1);
+    		if (Configuration.getItemGlueDurability() > 0) {
+    			properties.durability(Configuration.getItemGlueDurability());
+    		}
+    		itemGlue = new ItemCarpentersGlue(properties)
+					.setRegistryName(REGISTRY_NAME_PATH_GLUE);
+			event.getRegistry().register(itemGlue);
+    	}
 		// hammer
     	{
     		Item.Properties properties = new Item.Properties()
     				.tab(CarpentersBlocks.ITEM_GROUP)
     				.stacksTo(1);
-    		if (Configuration.isItemCarpentersToolsDamageable()) {
-    			properties.durability(Configuration.getItemCarpentersToolsUses());
+    		if (Configuration.getItemHammerDurability() > 0) {
+    			properties.durability(Configuration.getItemHammerDurability());
     		}
 			itemHammer = new ItemCarpentersHammer(properties)
-					.setRegistryName(REGISTRY_NAME_HAMMER);
+					.setRegistryName(REGISTRY_NAME_PATH_HAMMER);
 			event.getRegistry().register(itemHammer);
     	}
 		// hatch
     	{
     		Item.Properties properties = new Item.Properties()
     				.tab(CarpentersBlocks.ITEM_GROUP)
-    				.stacksTo(1);
+    				.stacksTo(64);
 			blockItemHatch = new BlockItem(CbBlocks.blockHatch, properties);
 			blockItemHatch.setRegistryName(CbBlocks.blockHatch.getRegistryName());
 			event.getRegistry().register(blockItemHatch);
@@ -198,7 +201,7 @@ public class CbItems {
 		{
 			Item.Properties properties = new Item.Properties()
     				.tab(CarpentersBlocks.ITEM_GROUP)
-    				.stacksTo(1);
+    				.stacksTo(64);
 			blockItemLadder = new BlockItem(CbBlocks.blockLadder, properties);
 			blockItemLadder.setRegistryName(CbBlocks.blockLadder.getRegistryName());
 			event.getRegistry().register(blockItemLadder);
@@ -207,7 +210,7 @@ public class CbItems {
 		{
 			Item.Properties properties = new Item.Properties()
     				.tab(CarpentersBlocks.ITEM_GROUP)
-    				.stacksTo(1);
+    				.stacksTo(64);
 			blockItemLever = new BlockItem(CbBlocks.blockLever, properties);
 			blockItemLever.setRegistryName(CbBlocks.blockLever.getRegistryName());
 			event.getRegistry().register(blockItemLever);
@@ -216,7 +219,7 @@ public class CbItems {
 		{
 			Item.Properties properties = new Item.Properties()
     				.tab(CarpentersBlocks.ITEM_GROUP)
-    				.stacksTo(1);
+    				.stacksTo(64);
 			blockItemPressurePlate = new BlockItem(CbBlocks.blockPressurePlate, properties);
 			blockItemPressurePlate.setRegistryName(CbBlocks.blockPressurePlate.getRegistryName());
 			event.getRegistry().register(blockItemPressurePlate);
@@ -225,7 +228,7 @@ public class CbItems {
 		{
 			Item.Properties properties = new Item.Properties()
     				.tab(CarpentersBlocks.ITEM_GROUP)
-    				.stacksTo(1);
+    				.stacksTo(64);
 			blockItemSafe = new BlockItem(CbBlocks.blockSafe, properties);
 			blockItemSafe.setRegistryName(CbBlocks.blockSafe.getRegistryName());
 			event.getRegistry().register(blockItemSafe);
@@ -236,21 +239,21 @@ public class CbItems {
     				.tab(CarpentersBlocks.ITEM_GROUP)
     				.stacksTo(64);
 			event.getRegistry().register(blockItemSlopeInvertedPrism = (BlockItem) new BlockItem(CbBlocks.blockSlopeInvertedPrism, properties)
-		    		.setRegistryName(CbBlocks.REGISTRY_NAME_SLOPE_INVERTED_PRISM));
+		    		.setRegistryName(CbBlocks.REGISTRY_NAME_PATH_SLOPE_INVERTED_PRISM));
 			event.getRegistry().register(blockItemSlopeObliqueExterior = (BlockItem) new BlockItem(CbBlocks.blockSlopeObliqueExterior, properties)
-		    		.setRegistryName(CbBlocks.REGISTRY_NAME_SLOPE_OBLIQUE_EXTERIOR));
+		    		.setRegistryName(CbBlocks.REGISTRY_NAME_PATH_SLOPE_OBLIQUE_EXTERIOR));
 			event.getRegistry().register(blockItemSlopeObliqueInterior = (BlockItem) new BlockItem(CbBlocks.blockSlopeObliqueInterior, properties)
-		    		.setRegistryName(CbBlocks.REGISTRY_NAME_SLOPE_OBLIQUE_INTERIOR));
+		    		.setRegistryName(CbBlocks.REGISTRY_NAME_PATH_SLOPE_OBLIQUE_INTERIOR));
 			event.getRegistry().register(blockItemSlopePrism = (BlockItem) new BlockItem(CbBlocks.blockSlopePrism, properties)
-		    		.setRegistryName(CbBlocks.REGISTRY_NAME_SLOPE_PRISM));
+		    		.setRegistryName(CbBlocks.REGISTRY_NAME_PATH_SLOPE_PRISM));
 			event.getRegistry().register(blockItemSlopePrismWedge = (BlockItem) new BlockItem(CbBlocks.blockSlopePrismWedge, properties)
-		    		.setRegistryName(CbBlocks.REGISTRY_NAME_SLOPE_PRISM_WEDGE));
+		    		.setRegistryName(CbBlocks.REGISTRY_NAME_PATH_SLOPE_PRISM_WEDGE));
 			event.getRegistry().register(blockItemSlopeWedge = (BlockItem) new BlockItem(CbBlocks.blockSlopeWedge, properties)
-		    		.setRegistryName(CbBlocks.REGISTRY_NAME_SLOPE_WEDGE));
+		    		.setRegistryName(CbBlocks.REGISTRY_NAME_PATH_SLOPE_WEDGE));
 			event.getRegistry().register(blockItemSlopeWedgeExterior = (BlockItem) new BlockItem(CbBlocks.blockSlopeWedgeExterior, properties)
-		    		.setRegistryName(CbBlocks.REGISTRY_NAME_SLOPE_WEDGE_EXTERIOR));
+		    		.setRegistryName(CbBlocks.REGISTRY_NAME_PATH_SLOPE_WEDGE_EXTERIOR));
 			event.getRegistry().register(blockItemSlopeWedgeInterior = (BlockItem) new BlockItem(CbBlocks.blockSlopeWedgeInterior, properties)
-		    		.setRegistryName(CbBlocks.REGISTRY_NAME_SLOPE_WEDGE_INTERIOR));
+		    		.setRegistryName(CbBlocks.REGISTRY_NAME_PATH_SLOPE_WEDGE_INTERIOR));
 			slopeBlockItemSubTypes.add(blockItemSlopeWedge);
 			slopeBlockItemSubTypes.add(blockItemSlopeWedgeInterior);
 			slopeBlockItemSubTypes.add(blockItemSlopeWedgeExterior);
@@ -264,7 +267,7 @@ public class CbItems {
 		{
 			Item.Properties properties = new Item.Properties()
     				.tab(CarpentersBlocks.ITEM_GROUP)
-    				.stacksTo(1);
+    				.stacksTo(64);
 			blockItemStairs = new BlockItem(CbBlocks.blockStairs, properties);
 			blockItemStairs.setRegistryName(CbBlocks.blockStairs.getRegistryName());
 			event.getRegistry().register(blockItemStairs);
@@ -275,14 +278,14 @@ public class CbItems {
     				.tab(CarpentersBlocks.ITEM_GROUP)
     				.stacksTo(64);
 			itemTile = new ItemCarpentersHammer(properties)
-					.setRegistryName(REGISTRY_NAME_TILE);
+					.setRegistryName(REGISTRY_NAME_PATH_TILE);
 			event.getRegistry().register(itemTile);
     	}
 		// torch
     	{
     		Item.Properties properties = new Item.Properties()
     				.tab(CarpentersBlocks.ITEM_GROUP)
-    				.stacksTo(1);
+    				.stacksTo(64);
 			blockItemTorch = new BlockItem(CbBlocks.blockTorch, properties);
 			blockItemTorch.setRegistryName(CbBlocks.blockTorch.getRegistryName());
 			event.getRegistry().register(blockItemTorch);

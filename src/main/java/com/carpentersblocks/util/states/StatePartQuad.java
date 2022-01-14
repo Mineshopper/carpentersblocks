@@ -225,7 +225,6 @@ public class StatePartQuad {
 		TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(PlayerContainer.BLOCK_ATLAS).apply(resourceLocation);
 		quads.add(Quad.getQuad(
 			this._facing,
-			false,
 			sprite,
 			this._rgb,
 			this._maxBrightness,
@@ -239,7 +238,6 @@ public class StatePartQuad {
 				.toArray();
 			quads.add(Quad.getQuad(
 				this._facing.getOpposite(),
-				false,
 				sprite,
 				this._rgb,
 				this._maxBrightness,

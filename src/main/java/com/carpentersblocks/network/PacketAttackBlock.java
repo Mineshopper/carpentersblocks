@@ -48,6 +48,7 @@ public class PacketAttackBlock implements ICarpentersBlocksPacket {
 			if (!BlockUtil.isAreaLoaded(ctx.get().getSender().getLevel(), msg.blockRayTraceResult.getBlockPos())) {
 				return;
 			}
+			System.out.println("Server received PacketAttackBlock");
 			ServerPlayerEntity serverPlayerEntity = ctx.get().getSender();
 			BlockRayTraceResult blockRayTraceResult = msg.blockRayTraceResult;
 			BlockState blockState = serverPlayerEntity.getLevel().getBlockState(blockRayTraceResult.getBlockPos());
@@ -72,8 +73,8 @@ public class PacketAttackBlock implements ICarpentersBlocksPacket {
     		return;
     	}
     	
-    	// skip if not clicking on a Carpenter's block
-    	if (!(event.getWorld().getBlockState(event.getPos()).getBlock() instanceof AbstractCoverableBlock)) {
+    	// skip if not clicking a Carpenter's block
+    	if (!BlockUtil.isValidTileEntity(event.getWorld(), event.getPos())) {
     		return;
     	}
     	
@@ -81,18 +82,19 @@ public class PacketAttackBlock implements ICarpentersBlocksPacket {
     	// this doesn't do anything client side, so we check that below before performing more work
     	event.setCanceled(true);
     	
-    	// skip if player holding attack key
+    	// skip if player is holding key binding
     	if (event.getPlayer().swinging) {
+    		if (event.getWorld().isClientSide())
+    			System.out.println("Detected player swinging on client");
     		return;
     	}
 		
     	// handle client side tasks
     	if (event.getWorld().isClientSide()) {
+    		System.out.println("Client sending PacketAttackBLock");
 	    	// send packet with attack hit vector and hand included for Carpenter's tool interactions
 	    	BlockRayTraceResult blockRayTraceResult = (BlockRayTraceResult) Minecraft.getInstance().hitResult;
-	    	if (BlockUtil.isValidTileEntity(event.getWorld(), event.getPos())) {
-	    		CarpentersBlocksPacketHandler.sendToServer(new PacketAttackBlock(blockRayTraceResult, event.getHand()));
-	    	}
+	    	CarpentersBlocksPacketHandler.sendToServer(new PacketAttackBlock(blockRayTraceResult, event.getHand()));
 	    	// call custom attack method to update block display on client only
 	    	BlockState blockState = event.getPlayer().level.getBlockState(event.getPos());
 			((AbstractCoverableBlock)blockState.getBlock()).attack(blockState, event.getWorld(), event.getPos(), event.getPlayer(), event.getHand(), blockRayTraceResult);

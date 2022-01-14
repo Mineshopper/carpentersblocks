@@ -10,7 +10,6 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.Level;
 
 import com.carpentersblocks.CarpentersBlocks;
@@ -41,16 +40,13 @@ import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
 
 public class Configuration {
 	
-	private static final CommonConfig COMMON_CONFIG;
+	public static final ForgeConfigSpec CLIENT_SPEC;
     public static final ForgeConfigSpec COMMON_SPEC;
-
 	static {
-		Pair<CommonConfig, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(CommonConfig::new);
-		COMMON_CONFIG = specPair.getLeft();
-		COMMON_SPEC = specPair.getRight();
+		CLIENT_SPEC = new ForgeConfigSpec.Builder().configure(ClientConfig::new).getRight();
+		COMMON_SPEC = new ForgeConfigSpec.Builder().configure(CommonConfig::new).getRight();
 	}
 	
-	private static boolean enableApplicator;
 	private static boolean enableBarrier;
     private static boolean enableBed;
     private static boolean enableBlock;
@@ -62,6 +58,7 @@ public class Configuration {
     private static boolean enableFlowerPot;
     private static boolean enableGarageDoor;
     private static boolean enableGate;
+    private static boolean enableGlue;
     private static boolean enableHammer;
     private static boolean enableHatch;
     private static boolean enableLadder;
@@ -72,9 +69,9 @@ public class Configuration {
     private static boolean enableStairs;
     private static boolean enableTile;
     private static boolean enableTorch;
-    
-    private static int itemCarpentersToolsUses;
-    private static boolean itemCarpentersToolsDamageable;
+    private static int itemChiselDurability;
+    private static int itemGlueDurability;
+    private static int itemHammerDurability;
     private static double itemHammerDamageChanceFromSlopes;
     private static double itemHammerDamageChanceFromStairs;
     private static double itemHammerDamageChanceFromCollapsible;
@@ -93,10 +90,6 @@ public class Configuration {
     private static int multiBlockSizeLimit;
     private static List<String> overlayItems;
     private static List<String> coverBlockExceptions;
-	
-    public static boolean isApplicatorEnabled() {
-    	return enableApplicator;
-    }
     
     public static boolean isBarrierEnabled() {
     	return enableBarrier;
@@ -141,6 +134,10 @@ public class Configuration {
     public static boolean isGateEnabled() {
     	return enableGate;
     }
+    
+    public static boolean isGlueEnabled() {
+    	return enableGlue;
+    }
 
     public static boolean isHammerEnabled() {
     	return enableHammer;
@@ -182,14 +179,18 @@ public class Configuration {
     	return enableTorch;
     }
     
-    public static int getItemCarpentersToolsUses() {
-    	return itemCarpentersToolsUses;
+    public static int getItemChiselDurability() {
+    	return itemChiselDurability;
     }
-
-    public static boolean isItemCarpentersToolsDamageable() {
-    	return itemCarpentersToolsDamageable;
+    
+    public static int getItemGlueDurability() {
+    	return itemGlueDurability;
     }
-
+    
+    public static int getItemHammerDurability() {
+    	return itemHammerDurability;
+    }
+    
     public static double getItemHammerDamageChanceFromSlopes() {
     	return itemHammerDamageChanceFromSlopes;
     }
@@ -263,9 +264,40 @@ public class Configuration {
     }
     
     @Mod.EventBusSubscriber(modid = CarpentersBlocks.MOD_ID, bus = Bus.MOD)
+    static class ClientConfig {
+    	
+    	private static BooleanValue enableRailSlopeFill;
+    	
+    	public ClientConfig(ForgeConfigSpec.Builder builder) {
+		    builder.push("features");
+		    
+		    enableRailSlopeFill = builder
+		    		.comment("This allows Carpenter's Blocks with solid top faces to create slopes above them when a sloping rail is above the block.")
+					.translation(CarpentersBlocks.MOD_ID + ".config." + "enableRailSlopeFill")
+					.define("enableRailSlopeFill", true);
+		    
+		    builder.pop();
+		}
+    	
+    	/**
+	     * Used to populate public static variables once configuration
+	     * values are read from filesystem.
+	     * 
+	     * @param configEvent the event
+	     */
+		@SubscribeEvent
+		public static void onModConfigEvent(final ModConfig.ModConfigEvent configEvent) {
+			if (CLIENT_SPEC != configEvent.getConfig().getSpec()) {
+				return;
+			}
+			Configuration.enableRailSlopeFill = enableRailSlopeFill.get();
+		}
+		
+    }
+    
+    @Mod.EventBusSubscriber(modid = CarpentersBlocks.MOD_ID, bus = Bus.MOD)
     static class CommonConfig {
     	
-		private static BooleanValue enableApplicator;
 		private static BooleanValue enableBarrier;
 		private static BooleanValue enableBed;
 		private static BooleanValue enableBlock;
@@ -277,6 +309,7 @@ public class Configuration {
 	    private static BooleanValue enableFlowerPot;
 	    private static BooleanValue enableGarageDoor;
 	    private static BooleanValue enableGate;
+	    private static BooleanValue enableGlue;
 	    private static BooleanValue enableHammer;
 	    private static BooleanValue enableHatch;
 	    private static BooleanValue enableLadder;
@@ -287,9 +320,9 @@ public class Configuration {
 	    private static BooleanValue enableStairs;
 	    private static BooleanValue enableTile;
 	    private static BooleanValue enableTorch;
-	    
-	    private static IntValue itemCarpentersToolsUses;
-	    private static BooleanValue itemCarpentersToolsDamageable;
+	    private static IntValue itemChiselDurability;
+	    private static IntValue itemGlueDurability;
+	    private static IntValue itemHammerDurability;
 	    private static DoubleValue itemHammerDamageChanceFromSlopes;
 	    private static DoubleValue itemHammerDamageChanceFromStairs;
 	    private static DoubleValue itemHammerDamageChanceFromCollapsible;
@@ -301,76 +334,14 @@ public class Configuration {
 	    private static BooleanValue enableTorchWeatherEffects;
 	    private static BooleanValue enableOwnership;
 	    private static BooleanValue enableIllumination;
-	    private static BooleanValue enableRailSlopeFill;
 	    private static BooleanValue enableGarageDoorFill;
 	    private static BooleanValue enableFreeStandingLadders;
 	    private static BooleanValue enableSmoothSlopes;
 	    private static IntValue multiBlockSizeLimit;
 	    private static ConfigValue<List<String>> overlayItemList;
 	    private static ConfigValue<List<String>> coverBlockExceptionList;
-	
-	    /**
-	     * Used to populate public static variables once configuration
-	     * values are read from filesystem.
-	     * 
-	     * @param configEvent the event
-	     */
-		@SubscribeEvent
-		public static void onModConfigEvent(final ModConfig.ModConfigEvent configEvent) {
-			if (COMMON_SPEC != configEvent.getConfig().getSpec()) {
-				return;
-			}
-			Configuration.enableBarrier = enableBarrier.get();
-			Configuration.enableApplicator = enableApplicator.get();
-			Configuration.enableBed = enableBed.get();
-			Configuration.enableBlock = enableBlock.get();
-			Configuration.enableButton = enableButton.get();
-			Configuration.enableChisel = enableChisel.get();
-			Configuration.enableCollapsibleBlock = enableCollapsibleBlock.get();
-			Configuration.enableDaylightSensor = enableDaylightSensor.get();
-			Configuration.enableDoor = enableDoor.get();
-			Configuration.enableFlowerPot = enableFlowerPot.get();
-			Configuration.enableGarageDoor = enableGarageDoor.get();
-			Configuration.enableGate = enableGate.get();
-			Configuration.enableHammer = enableHammer.get();
-			Configuration.enableHatch = enableHatch.get();
-			Configuration.enableLadder = enableLadder.get();
-			Configuration.enableLever = enableLever.get();
-			Configuration.enablePressurePlate = enablePressurePlate.get();
-			Configuration.enableSafe = enableSafe.get();
-			Configuration.enableSlope = enableSlope.get();
-			Configuration.enableStairs = enableStairs.get();
-			Configuration.enableTile = enableTile.get();
-			Configuration.enableTorch = enableTorch.get();
-			Configuration.itemCarpentersToolsUses = itemCarpentersToolsUses.get();
-			Configuration.itemCarpentersToolsDamageable = itemCarpentersToolsDamageable.get();
-			Configuration.itemHammerDamageChanceFromSlopes = itemHammerDamageChanceFromSlopes.get();
-			Configuration.itemHammerDamageChanceFromStairs = itemHammerDamageChanceFromStairs.get();
-			Configuration.itemHammerDamageChanceFromCollapsible = itemHammerDamageChanceFromCollapsible.get();
-			Configuration.enableCovers = enableCovers.get();
-			Configuration.enableOverlays = enableOverlays.get();
-			Configuration.enableSideCovers = enableSideCovers.get();
-			Configuration.enableDyeColors = enableDyeColors.get();
-			Configuration.enableChiselDesigns = enableChiselDesigns.get();
-			Configuration.enableTorchWeatherEffects = enableTorchWeatherEffects.get();
-			Configuration.enableOwnership = enableOwnership.get();
-			Configuration.enableIllumination = enableIllumination.get();
-			Configuration.enableRailSlopeFill = enableRailSlopeFill.get();
-			Configuration.enableGarageDoorFill = enableGarageDoorFill.get();
-			Configuration.enableFreeStandingLadders = enableFreeStandingLadders.get();
-			Configuration.enableSmoothSlopes = enableSmoothSlopes.get();
-			Configuration.multiBlockSizeLimit = multiBlockSizeLimit.get();
-			Configuration.overlayItems = new ArrayList<>();
-			for (String item : overlayItemList.get()) {
-				Configuration.overlayItems.add(item);
-	        }
-			Configuration.coverBlockExceptions = new ArrayList<>();
-			for (String item : coverBlockExceptionList.get()) {
-				Configuration.coverBlockExceptions.add(item);
-	        }
-		}
-		
-		public CommonConfig(ForgeConfigSpec.Builder builder) {
+	    
+	    public CommonConfig(ForgeConfigSpec.Builder builder) {
 			builder.push("blocks");
 			enableBarrier = builder
 					.comment("Enable Carpenter's Barrier")
@@ -458,10 +429,10 @@ public class Configuration {
 					.translation(CarpentersBlocks.MOD_ID + ".config." + "enableChisel")
 					.define("enableChisel", true);
 			
-			enableApplicator = builder
-					.comment("Enable Carpenter's Applicator")
-					.translation(CarpentersBlocks.MOD_ID + ".config." + "enableApplicator")
-					.define("enableApplicator", true);
+			enableGlue = builder
+					.comment("Enable Carpenter's Glue")
+					.translation(CarpentersBlocks.MOD_ID + ".config." + "enableGlue")
+					.define("enableGlue", true);
 			
 			enableTile = builder
 					.comment("Enable Carpenter's Tile")
@@ -471,15 +442,20 @@ public class Configuration {
 			builder.pop();
 		    builder.push("tool properties");
 		    
-		    itemCarpentersToolsDamageable = builder
-					.comment("Damage tools when used")
-					.translation(CarpentersBlocks.MOD_ID + ".config." + "itemCarpentersToolsDamageable")
-					.define("itemCarpentersToolsDamageable", true);
+		    itemChiselDurability = builder
+					.comment("Uses the chisel can sustain before breaking", "Note: set to '0' to disable damage")
+					.translation(CarpentersBlocks.MOD_ID + ".config." + "itemChiselDurability")
+					.defineInRange("itemChiselDurability", 400, 0, Integer.MAX_VALUE);
 		    
-		    itemCarpentersToolsUses = builder
-					.comment("Damage (uses) a tool can sustain before breaking")
-					.translation(CarpentersBlocks.MOD_ID + ".config." + "itemCarpentersToolsUses")
-					.defineInRange("itemCarpentersToolsUses", 400, 1, Integer.MAX_VALUE);
+		    itemGlueDurability = builder
+					.comment("Uses the glue will provide before depleting", "Note: set to '0' to disable depletion")
+					.translation(CarpentersBlocks.MOD_ID + ".config." + "itemGlueDurability")
+					.defineInRange("itemGlueDurability", 1000, 0, Integer.MAX_VALUE);
+		    
+		    itemHammerDurability = builder
+					.comment("Uses the hammer can sustain before breaking", "Note: set to '0' to disable damage")
+					.translation(CarpentersBlocks.MOD_ID + ".config." + "itemHammerDurability")
+					.defineInRange("itemHammerDurability", 400, 0, Integer.MAX_VALUE);
 		    
 		    itemHammerDamageChanceFromSlopes = builder
 					.comment("Chance of damaging the Carpenter's Hammer when interacting with Carpenter's Slopes")
@@ -538,11 +514,6 @@ public class Configuration {
 					.translation(CarpentersBlocks.MOD_ID + ".config." + "enableTorchWeatherEffects")
 					.define("enableTorchWeatherEffects", true);
 		    
-		    enableRailSlopeFill = builder
-		    		.comment("This allows Carpenter's Blocks with solid top faces to create slopes above them when a sloping rail is above the block.")
-					.translation(CarpentersBlocks.MOD_ID + ".config." + "enableRailSlopeFill")
-					.define("enableRailSlopeFill", true);
-		    
 		    enableGarageDoorFill = builder
 		    		.comment("This allows garage doors to automatically fill in gaps when obstructions beneath them are destroyed.")
 					.translation(CarpentersBlocks.MOD_ID + ".config." + "enableGarageDoorFill")
@@ -581,6 +552,61 @@ public class Configuration {
 		    
 		    builder.pop();
 		}
+	    
+	    /**
+	     * Used to populate public static variables once configuration
+	     * values are read from filesystem.
+	     * 
+	     * @param configEvent the event
+	     */
+		@SubscribeEvent
+		public static void onModConfigEvent(final ModConfig.ModConfigEvent configEvent) {
+			if (COMMON_SPEC != configEvent.getConfig().getSpec()) {
+				return;
+			}
+			Configuration.enableBarrier = enableBarrier.get();
+			Configuration.enableBed = enableBed.get();
+			Configuration.enableBlock = enableBlock.get();
+			Configuration.enableButton = enableButton.get();
+			Configuration.enableChisel = enableChisel.get();
+			Configuration.enableCollapsibleBlock = enableCollapsibleBlock.get();
+			Configuration.enableDaylightSensor = enableDaylightSensor.get();
+			Configuration.enableDoor = enableDoor.get();
+			Configuration.enableFlowerPot = enableFlowerPot.get();
+			Configuration.enableGarageDoor = enableGarageDoor.get();
+			Configuration.enableGate = enableGate.get();
+			Configuration.enableGlue = enableGlue.get();
+			Configuration.enableHammer = enableHammer.get();
+			Configuration.enableHatch = enableHatch.get();
+			Configuration.enableLadder = enableLadder.get();
+			Configuration.enableLever = enableLever.get();
+			Configuration.enablePressurePlate = enablePressurePlate.get();
+			Configuration.enableSafe = enableSafe.get();
+			Configuration.enableSlope = enableSlope.get();
+			Configuration.enableStairs = enableStairs.get();
+			Configuration.enableTile = enableTile.get();
+			Configuration.enableTorch = enableTorch.get();
+			Configuration.itemChiselDurability = itemChiselDurability.get();
+			Configuration.itemGlueDurability = itemGlueDurability.get();
+			Configuration.itemHammerDurability = itemHammerDurability.get();
+			Configuration.itemHammerDamageChanceFromSlopes = itemHammerDamageChanceFromSlopes.get();
+			Configuration.itemHammerDamageChanceFromStairs = itemHammerDamageChanceFromStairs.get();
+			Configuration.itemHammerDamageChanceFromCollapsible = itemHammerDamageChanceFromCollapsible.get();
+			Configuration.enableCovers = enableCovers.get();
+			Configuration.enableOverlays = enableOverlays.get();
+			Configuration.enableSideCovers = enableSideCovers.get();
+			Configuration.enableDyeColors = enableDyeColors.get();
+			Configuration.enableChiselDesigns = enableChiselDesigns.get();
+			Configuration.enableTorchWeatherEffects = enableTorchWeatherEffects.get();
+			Configuration.enableOwnership = enableOwnership.get();
+			Configuration.enableIllumination = enableIllumination.get();
+			Configuration.enableGarageDoorFill = enableGarageDoorFill.get();
+			Configuration.enableFreeStandingLadders = enableFreeStandingLadders.get();
+			Configuration.enableSmoothSlopes = enableSmoothSlopes.get();
+			Configuration.multiBlockSizeLimit = multiBlockSizeLimit.get();
+			Configuration.overlayItems = new ArrayList<>(overlayItemList.get());
+			Configuration.coverBlockExceptions = new ArrayList<>(coverBlockExceptionList.get());
+		}
 		
 	}
     
@@ -614,9 +640,6 @@ public class Configuration {
     			
     			// remove recipes and item group assignments
     			Map<ResourceLocation, IRecipe<?>> craftingRecipes = updatedRecipes.get(IRecipeType.CRAFTING);
-    			if (!enableApplicator) {
-    				removeItem(craftingRecipes, CbItems.itemApplicator);
-        		}
         		if (!enableBarrier) {
         			removeItem(craftingRecipes, CbItems.blockItemBarrier);
         		}
@@ -649,6 +672,9 @@ public class Configuration {
         		}
         		if (!enableGate) {
         			removeItem(craftingRecipes, CbItems.blockItemGate);
+        		}
+        		if (!enableGlue) {
+    				removeItem(craftingRecipes, CbItems.itemGlue);
         		}
         		if (!enableHammer) {
         			removeItem(craftingRecipes, CbItems.itemHammer);

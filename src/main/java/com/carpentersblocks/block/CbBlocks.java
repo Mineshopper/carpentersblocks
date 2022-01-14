@@ -39,14 +39,14 @@ public class CbBlocks {
 	public static final String REGISTRY_NAME_LEVER = "lever";
 	public static final String REGISTRY_NAME_PRESSURE_PLATE = "pressure_plate";
 	public static final String REGISTRY_NAME_SAFE = "safe";
-	public static final String REGISTRY_NAME_SLOPE_WEDGE = "slope_wedge";
-    public static final String REGISTRY_NAME_SLOPE_WEDGE_INTERIOR = "slope_wedge_interior";
-    public static final String REGISTRY_NAME_SLOPE_WEDGE_EXTERIOR = "slope_wedge_exterior";
-    public static final String REGISTRY_NAME_SLOPE_OBLIQUE_INTERIOR = "slope_oblique_interior";
-    public static final String REGISTRY_NAME_SLOPE_OBLIQUE_EXTERIOR = "slope_oblique_exterior";
-    public static final String REGISTRY_NAME_SLOPE_PRISM_WEDGE = "slope_prism_wedge";
-    public static final String REGISTRY_NAME_SLOPE_PRISM = "slope_prism";
-    public static final String REGISTRY_NAME_SLOPE_INVERTED_PRISM = "slope_inverted_prism";
+	public static final String REGISTRY_NAME_PATH_SLOPE_WEDGE = "slope_wedge";
+    public static final String REGISTRY_NAME_PATH_SLOPE_WEDGE_INTERIOR = "slope_wedge_interior";
+    public static final String REGISTRY_NAME_PATH_SLOPE_WEDGE_EXTERIOR = "slope_wedge_exterior";
+    public static final String REGISTRY_NAME_PATH_SLOPE_OBLIQUE_INTERIOR = "slope_oblique_interior";
+    public static final String REGISTRY_NAME_PATH_SLOPE_OBLIQUE_EXTERIOR = "slope_oblique_exterior";
+    public static final String REGISTRY_NAME_PATH_SLOPE_PRISM_WEDGE = "slope_prism_wedge";
+    public static final String REGISTRY_NAME_PATH_SLOPE_PRISM = "slope_prism";
+    public static final String REGISTRY_NAME_PATH_SLOPE_INVERTED_PRISM = "slope_inverted_prism";
 	public static final String REGISTRY_NAME_STAIRS = "stairs";
 	public static final String REGISTRY_NAME_TORCH = "torch";
 	
@@ -204,14 +204,14 @@ public class CbBlocks {
     	Properties properties = Block.Properties.of(Material.WOOD, MaterialColor.COLOR_BROWN)
     			.strength(2.0F, 3.0F)
     			.sound(SoundType.WOOD);
-    	blockSlopeInvertedPrism = registerBlock(BlockCarpentersSlope.class, properties, REGISTRY_NAME_SLOPE_INVERTED_PRISM, event);
-    	blockSlopeObliqueExterior = registerBlock(BlockCarpentersSlope.class, properties, REGISTRY_NAME_SLOPE_OBLIQUE_EXTERIOR, event);
-    	blockSlopeObliqueInterior = registerBlock(BlockCarpentersSlope.class, properties, REGISTRY_NAME_SLOPE_OBLIQUE_INTERIOR, event);
-    	blockSlopePrism = registerBlock(BlockCarpentersSlope.class, properties, REGISTRY_NAME_SLOPE_PRISM, event);
-    	blockSlopePrismWedge = registerBlock(BlockCarpentersSlope.class, properties, REGISTRY_NAME_SLOPE_PRISM_WEDGE, event);
-    	blockSlopeWedge = registerBlock(BlockCarpentersSlope.class, properties, REGISTRY_NAME_SLOPE_WEDGE, event);
-    	blockSlopeWedgeExterior = registerBlock(BlockCarpentersSlope.class, properties, REGISTRY_NAME_SLOPE_WEDGE_EXTERIOR, event);
-    	blockSlopeWedgeInterior = registerBlock(BlockCarpentersSlope.class, properties, REGISTRY_NAME_SLOPE_WEDGE_INTERIOR, event);
+    	blockSlopeInvertedPrism = registerBlock(BlockCarpentersSlope.class, properties, REGISTRY_NAME_PATH_SLOPE_INVERTED_PRISM, event);
+    	blockSlopeObliqueExterior = registerBlock(BlockCarpentersSlope.class, properties, REGISTRY_NAME_PATH_SLOPE_OBLIQUE_EXTERIOR, event);
+    	blockSlopeObliqueInterior = registerBlock(BlockCarpentersSlope.class, properties, REGISTRY_NAME_PATH_SLOPE_OBLIQUE_INTERIOR, event);
+    	blockSlopePrism = registerBlock(BlockCarpentersSlope.class, properties, REGISTRY_NAME_PATH_SLOPE_PRISM, event);
+    	blockSlopePrismWedge = registerBlock(BlockCarpentersSlope.class, properties, REGISTRY_NAME_PATH_SLOPE_PRISM_WEDGE, event);
+    	blockSlopeWedge = registerBlock(BlockCarpentersSlope.class, properties, REGISTRY_NAME_PATH_SLOPE_WEDGE, event);
+    	blockSlopeWedgeExterior = registerBlock(BlockCarpentersSlope.class, properties, REGISTRY_NAME_PATH_SLOPE_WEDGE_EXTERIOR, event);
+    	blockSlopeWedgeInterior = registerBlock(BlockCarpentersSlope.class, properties, REGISTRY_NAME_PATH_SLOPE_WEDGE_INTERIOR, event);
     	
 	    // stairs
     	blockStairs = registerBlock(BlockCarpentersStairs.class,

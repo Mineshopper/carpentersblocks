@@ -5,13 +5,10 @@ import javax.annotation.Nullable;
 import com.carpentersblocks.block.data.SlopeData;
 import com.carpentersblocks.config.Configuration;
 import com.carpentersblocks.nbt.CbTileEntity;
-import com.carpentersblocks.util.EntityLivingUtil;
 import com.carpentersblocks.util.RotationUtil.CbRotation;
-import com.carpentersblocks.util.handler.EventHandler;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -19,11 +16,8 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.RayTraceContext;
-import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
@@ -37,8 +31,8 @@ public class BlockCarpentersSlope extends AbstractWaterLoggableBlock {
     /**
      * Alters block direction.
      */
-    protected boolean onHammerLeftClick(CbTileEntity cbTileEntity, PlayerEntity playerEntity) {
-        //SlopeData.rotate(cbTileEntity, EventHandler.getRayTraceResult().getDirection().getAxis());
+    protected boolean onHammerLeftClick(CbTileEntity cbTileEntity, PlayerEntity playerEntity, BlockRayTraceResult blockRayTraceResult) {
+        SlopeData.rotate(cbTileEntity, blockRayTraceResult.getDirection().getAxis());
         return true;
     }
 
@@ -46,7 +40,7 @@ public class BlockCarpentersSlope extends AbstractWaterLoggableBlock {
     /**
      * Alters block type.
      */
-    protected boolean onHammerRightClick(CbTileEntity cbTileEntity, PlayerEntity playerEntity) {
+    protected boolean onHammerRightClick(CbTileEntity cbTileEntity, PlayerEntity playerEntity, BlockRayTraceResult blockRayTraceResult) {
     	SlopeData.setNextType(cbTileEntity);
         return true;        
     }
@@ -219,36 +213,38 @@ public class BlockCarpentersSlope extends AbstractWaterLoggableBlock {
     @Override
     public void setPlacedBy(World world, BlockPos blockPos, BlockState blockState, @Nullable LivingEntity livingEntity, ItemStack itemStack) {
     	super.setPlacedBy(world, blockPos, blockState, livingEntity, itemStack);
-    	
+    }
+    
+    public void setPlacedBy(World world, BlockPos blockPos, BlockState blockState, @Nullable LivingEntity livingEntity, ItemStack itemStack, BlockRayTraceResult blockRayTraceResult) {
     	CbTileEntity cbTileEntity = getTileEntity(world, blockPos);
     	if (cbTileEntity == null) {
     		return;
     	}
 
     	// Set type
-    	switch (itemStack.getItem().getRegistryName().toString()) {
-        	case CbBlocks.REGISTRY_NAME_SLOPE_INVERTED_PRISM:
+    	switch (itemStack.getItem().getRegistryName().getPath()) {
+        	case CbBlocks.REGISTRY_NAME_PATH_SLOPE_INVERTED_PRISM:
         		SlopeData.setType(cbTileEntity, SlopeData.Type.INVERTED_PRISM);
         		break;
-        	case CbBlocks.REGISTRY_NAME_SLOPE_OBLIQUE_EXTERIOR:
+        	case CbBlocks.REGISTRY_NAME_PATH_SLOPE_OBLIQUE_EXTERIOR:
         		SlopeData.setType(cbTileEntity, SlopeData.Type.OBLIQUE_EXTERIOR);
         		break;
-        	case CbBlocks.REGISTRY_NAME_SLOPE_OBLIQUE_INTERIOR:
+        	case CbBlocks.REGISTRY_NAME_PATH_SLOPE_OBLIQUE_INTERIOR:
         		SlopeData.setType(cbTileEntity, SlopeData.Type.OBLIQUE_INTERIOR);
         		break;
-        	case CbBlocks.REGISTRY_NAME_SLOPE_PRISM:
+        	case CbBlocks.REGISTRY_NAME_PATH_SLOPE_PRISM:
         		SlopeData.setType(cbTileEntity, SlopeData.Type.PRISM);
         		break;
-        	case CbBlocks.REGISTRY_NAME_SLOPE_PRISM_WEDGE:
+        	case CbBlocks.REGISTRY_NAME_PATH_SLOPE_PRISM_WEDGE:
         		SlopeData.setType(cbTileEntity, SlopeData.Type.PRISM_WEDGE);
         		break;
-        	case CbBlocks.REGISTRY_NAME_SLOPE_WEDGE:
+        	case CbBlocks.REGISTRY_NAME_PATH_SLOPE_WEDGE:
         		SlopeData.setType(cbTileEntity, SlopeData.Type.WEDGE);
         		break;
-        	case CbBlocks.REGISTRY_NAME_SLOPE_WEDGE_EXTERIOR:
+        	case CbBlocks.REGISTRY_NAME_PATH_SLOPE_WEDGE_EXTERIOR:
         		SlopeData.setType(cbTileEntity, SlopeData.Type.WEDGE_EXTERIOR);
         		break;
-        	case CbBlocks.REGISTRY_NAME_SLOPE_WEDGE_INTERIOR:
+        	case CbBlocks.REGISTRY_NAME_PATH_SLOPE_WEDGE_INTERIOR:
         		SlopeData.setType(cbTileEntity, SlopeData.Type.WEDGE_INTERIOR);
         		break;
     	}
@@ -257,16 +253,7 @@ public class BlockCarpentersSlope extends AbstractWaterLoggableBlock {
     		return;
     	}
     	
-    	
-    	////////////// DEBUG
-    	
-    	BlockRayTraceResult blockRayTraceResult = EntityLivingUtil.calculateBlockRayTraceResult(livingEntity);
-    	
-    	///////////// END DEBUG
-    	
-    	
     	// Set rotation
-    	//BlockRayTraceResult blockRayTraceResult = EventHandler.getRayTraceResult();
     	double x = blockRayTraceResult.getLocation().x() - (int) blockRayTraceResult.getLocation().x();
     	if (x < 0.0d) {
     		x = 1 - (x * -1);

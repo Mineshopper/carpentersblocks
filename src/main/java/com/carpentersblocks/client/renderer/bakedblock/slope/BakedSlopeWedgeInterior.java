@@ -1,6 +1,6 @@
 package com.carpentersblocks.client.renderer.bakedblock.slope;
 
-import com.carpentersblocks.client.renderer.RenderPkg;
+import com.carpentersblocks.client.renderer.ReferenceQuads;
 
 import net.minecraft.client.renderer.vertex.VertexFormat;
 
@@ -11,8 +11,8 @@ public class BakedSlopeWedgeInterior extends AbstractBakedSlope {
 	}
 	
 	@Override
-	protected void fillInventoryQuads(RenderPkg renderPkg) {
-		fillWedgeInterior(renderPkg);
+	protected void fillInventoryQuads(ReferenceQuads referenceQuads) {
+		fillWedgeInterior(referenceQuads);
 	}
 	
 }

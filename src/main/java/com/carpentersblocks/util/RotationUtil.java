@@ -13,6 +13,7 @@ public class RotationUtil {
 	private final static int ROT_180 = 2;
 	private final static int ROT_270 = 3;
 	
+	/** Rotation about axis in format [{@link CbRotation#ordinal() CbRotation}][{@link Axis#ordinal() Axis}] */
 	private static final CbRotation[][] ROTATIONS = {
 		{	CbRotation.X90_Y0_Z0,		CbRotation.X0_Y90_Z0,		CbRotation.X0_Y0_Z90	},
 		{	CbRotation.X90_Y90_Z0,		CbRotation.X270_Y0_Z90,		CbRotation.X0_Y0_Z180	},
@@ -114,7 +115,7 @@ public class RotationUtil {
 		/** WEST + DOWN */
 		X270_Y90_Z0(ROT_270, ROT_90, ROT_0);
 		
-		/** Holds axis-based rotated directions in [input_direction][axis] array. */
+		/** Axis-based rotated directions in [input_direction][axis] array. */
 		private final Direction[][] _rotatedDirections = {
 				{ Direction.SOUTH, Direction.DOWN,  Direction.WEST },
 				{ Direction.NORTH,   Direction.UP,  Direction.EAST },

@@ -29,5 +29,29 @@ public class Point2d {
 	public double distance(Point2d point2d) {
 		return Math.sqrt(Math.pow(point2d.u - this.u, 2) + Math.pow(point2d.v - this.v,2));
 	}
+	
+	@Override
+	public int hashCode() {
+		long j = Double.doubleToLongBits(this.u);
+		int i = (int)(j ^ j >>> 32);
+		j = Double.doubleToLongBits(this.v);
+		return 31 * i + (int)(j ^ j >>> 32);
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		} else if (!(obj instanceof Point2d)) {
+			return false;
+		} else {
+			Point2d point2d = (Point2d) obj;
+			if (Double.compare(point2d.u, this.u) != 0) {
+				return false;
+			} else {
+				return Double.compare(point2d.v, this.v) == 0;
+			}
+		}
+	}
 
 }

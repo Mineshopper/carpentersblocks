@@ -8,14 +8,16 @@ import java.util.Set;
 import javax.annotation.Nullable;
 
 import com.carpentersblocks.api.ICarpentersChisel;
+import com.carpentersblocks.api.ICarpentersGlue;
 import com.carpentersblocks.api.ICarpentersHammer;
 import com.carpentersblocks.client.renderer.RenderConstants;
 import com.carpentersblocks.config.Configuration;
+import com.carpentersblocks.item.CbItems;
 import com.carpentersblocks.nbt.CbTileEntity;
 import com.carpentersblocks.nbt.attribute.AbstractAttribute.Key;
 import com.carpentersblocks.nbt.attribute.EnumAttributeLocation;
 import com.carpentersblocks.nbt.attribute.EnumAttributeType;
-import com.carpentersblocks.network.PacketUseItemOnBlock;
+import com.carpentersblocks.network.PacketAttackBlock;
 import com.carpentersblocks.util.BlockUtil;
 import com.carpentersblocks.util.EntityLivingUtil;
 import com.carpentersblocks.util.handler.DesignHandler;
@@ -75,6 +77,7 @@ public abstract class AbstractCoverableBlock extends Block implements IWaterLogg
         public ItemStack itemStack;
         public boolean playSound = true;
         public boolean altered = false;
+        public boolean alteredOffHand = false;
         public boolean decInv = false;
 
         public ActionResult setSoundSource(ItemStack itemStack) {
@@ -90,6 +93,11 @@ public abstract class AbstractCoverableBlock extends Block implements IWaterLogg
         public ActionResult setAltered() {
             altered = true;
             return this;
+        }
+        
+        public ActionResult setAlteredOffHand(boolean alteredOffHand) {
+        	this.alteredOffHand = alteredOffHand;
+        	return this;
         }
 
         public ActionResult decInventory() {
@@ -261,12 +269,12 @@ public abstract class AbstractCoverableBlock extends Block implements IWaterLogg
      */
     @Override
     public void attack(BlockState blockState, World world, BlockPos blockPos, PlayerEntity playerEntity) {
-        return;
+        super.attack(blockState, world, blockPos, playerEntity);
     }
     
     /**
      * Called when block is left clicked by a player client side and also
-     * invoked by server when a {@link PacketUseItemOnBlock.Attack packet}
+     * invoked by server when a {@link PacketAttackBlock packet}
      * is received.
      * 
      * @param blockState the block state
@@ -292,10 +300,9 @@ public abstract class AbstractCoverableBlock extends Block implements IWaterLogg
         }
 
         ActionResult actionResult = new ActionResult();
-        EnumAttributeLocation location = EnumAttributeLocation.UP;
-        //EnumAttributeLocation location = BlockUtil.getAttributeLocationForFacing(cbTileEntity, EventHandler.getRayTraceResult().getDirection());
+        EnumAttributeLocation location = BlockUtil.getAttributeLocationForFacing(cbTileEntity, blockRayTraceResult.getDirection());
         Item item = itemStack.getItem();
-        if (item instanceof ICarpentersHammer && ((ICarpentersHammer)item).canUseHammer(world, playerEntity, Hand.MAIN_HAND)) {
+        if (item instanceof ICarpentersHammer && ((ICarpentersHammer)item).canUseHammer(world, playerEntity, hand)) {
             preOnBlockClicked(cbTileEntity, playerEntity, actionResult);
             if (!actionResult.altered) {
                 if (playerEntity.isCrouching()) {
@@ -303,7 +310,7 @@ public abstract class AbstractCoverableBlock extends Block implements IWaterLogg
                     	actionResult.setAltered();
                     }
                 } else {
-                    if (onHammerLeftClick(cbTileEntity, playerEntity)) {
+                    if (onHammerLeftClick(cbTileEntity, playerEntity, blockRayTraceResult)) {
                     	actionResult.setAltered();
                     }
                 }
@@ -313,11 +320,11 @@ public abstract class AbstractCoverableBlock extends Block implements IWaterLogg
             	this.onNeighborChange(blockState, world, blockPos, blockPos);
                 //world.notifyNeighborsOfStateChange(blockPos, this);
             }
-        } else if (item instanceof ICarpentersChisel && ((ICarpentersChisel)item).canUseChisel(world, playerEntity, Hand.MAIN_HAND)) {
+        } else if (item instanceof ICarpentersChisel && ((ICarpentersChisel)item).canUseChisel(world, playerEntity, hand)) {
             if (playerEntity.isCrouching() && cbTileEntity.getAttributeHelper().hasAttribute(location, EnumAttributeType.DESIGN_CHISEL)) {
                 cbTileEntity.removeAttribute(location, EnumAttributeType.DESIGN_CHISEL);
             } else if (cbTileEntity.getAttributeHelper().hasAttribute(location, EnumAttributeType.COVER)) {
-                onChiselClick(cbTileEntity, location, Hand.MAIN_HAND, true);
+                onChiselClick(cbTileEntity, location, hand, true);
             }            
         }
         
@@ -363,8 +370,9 @@ public abstract class AbstractCoverableBlock extends Block implements IWaterLogg
             if (PlayerPermissions.hasElevatedPermission(cbTileEntity, playerEntity, false)) {
                 if (!playerEntity.getItemInHand(hand).isEmpty()) {
                 	ItemStack itemStack = playerEntity.getItemInHand(hand);
+                	boolean hasGlue = Configuration.isGlueEnabled() && playerEntity.getOffhandItem().getItem().equals(CbItems.itemGlue);
                 	if (itemStack.getItem() instanceof ICarpentersHammer && ((ICarpentersHammer)itemStack.getItem()).canUseHammer(world, playerEntity, hand)) {
-                        if (onHammerRightClick(cbTileEntity, playerEntity)) {
+                        if (onHammerRightClick(cbTileEntity, playerEntity, blockRayTraceResult)) {
                             actionResult.setAltered();
                         }
                 	} else if (Configuration.isChiselEnabled() && itemStack.getItem() instanceof ICarpentersChisel && ((ICarpentersChisel)itemStack.getItem()).canUseChisel(world, playerEntity, hand)) {
@@ -373,47 +381,43 @@ public abstract class AbstractCoverableBlock extends Block implements IWaterLogg
                                 actionResult.setAltered();
                             }
                         }
-                    } else if (Configuration.isCoversEnabled() && BlockUtil.isCover(itemStack)) {
-
-                        Block block = BlockUtil.toBlock(itemStack);
-
-                        /* Will handle blocks that save directions using only y axis (pumpkin) */
-                        //int metadata = block instanceof BlockDirectional ? MathHelper.floor_double(playerEntity.rotationYaw * 4.0F / 360.0F + 2.5D) & 3 : itemStack.getItemDamage();
-
-                        /* Will handle blocks that save directions using all axes (logs, quartz) */
-                        // TODO: Handle later
-                        /*if (BlockProperties.blockRotates(itemStack)) {
-                            int rot = Direction.rotateOpposite[EntityLivingUtil.getRotationValue(playerEntity)];
-                            int side_interpolated = playerEntity.rotationPitch < -45.0F ? 0 : playerEntity.rotationPitch > 45 ? 1 : rot == 0 ? 3 : rot == 1 ? 4 : rot == 2 ? 2 : 5;
-                            metadata = block.onBlockPlaced(world, cbTileEntity.xCoord, cbTileEntity.yCoord, cbTileEntity.zCoord, side_interpolated, hitX, hitY, hitZ, metadata);
-                        }*/
-                        
-                        if (EnumAttributeLocation.HOST.equals(location) && (!canSupportCover(cbTileEntity, location) || cbTileEntity.getAttributeHelper().hasAttribute(EnumAttributeLocation.HOST, EnumAttributeType.COVER))) {
-                            location = EnumAttributeLocation.valueOf(blockRayTraceResult.getDirection().ordinal());
-                        }
-                        
-                        if (canSupportCover(cbTileEntity, location) && !cbTileEntity.getAttributeHelper().hasAttribute(location, EnumAttributeType.COVER)) {
-                            cbTileEntity.addAttribute(location, EnumAttributeType.COVER, itemStack);
-                            actionResult.setAltered().decInventory().setSoundSource(itemStack);
-                        }
-
-                    } else if (playerEntity.isCrouching()) {
-                        if (Configuration.isIlluminationEnabled() && BlockUtil.isIlluminator(itemStack)) {
-                            if (!cbTileEntity.getAttributeHelper().hasAttribute(location, EnumAttributeType.ILLUMINATOR)) {
-                                cbTileEntity.addAttribute(location, EnumAttributeType.ILLUMINATOR, itemStack);
-                                actionResult.setAltered().decInventory().setSoundSource(itemStack);
-                            }
-                        } else if (Configuration.isOverlaysEnabled() && BlockUtil.isOverlay(itemStack)) {
-                            if (!cbTileEntity.getAttributeHelper().hasAttribute(location, EnumAttributeType.OVERLAY)) {
-                                cbTileEntity.addAttribute(location, EnumAttributeType.OVERLAY, itemStack);
-                                actionResult.setAltered().decInventory().setSoundSource(itemStack);
-                            }
-                        } else if (Configuration.isDyeColorsEnabled() && BlockUtil.isDye(itemStack, false)) {
-                            if (!cbTileEntity.getAttributeHelper().hasAttribute(location, EnumAttributeType.DYE)) {
-                                cbTileEntity.addAttribute(location, EnumAttributeType.DYE, itemStack);
-                                actionResult.setAltered().decInventory().setSoundSource(itemStack);
-                            }
-                        }
+                    } else if (hasGlue || playerEntity.isCrouching()) {
+                    	if (Configuration.isCoversEnabled() && BlockUtil.isCover(itemStack)) {
+	                        Block block = BlockUtil.toBlock(itemStack);
+	
+	                        /* Will handle blocks that save directions using only y axis (pumpkin) */
+	                        //int metadata = block instanceof BlockDirectional ? MathHelper.floor_double(playerEntity.rotationYaw * 4.0F / 360.0F + 2.5D) & 3 : itemStack.getItemDamage();
+	
+	                        /* Will handle blocks that save directions using all axes (logs, quartz) */
+	                        // TODO: Handle later
+	                        /*if (BlockProperties.blockRotates(itemStack)) {
+	                            int rot = Direction.rotateOpposite[EntityLivingUtil.getRotationValue(playerEntity)];
+	                            int side_interpolated = playerEntity.rotationPitch < -45.0F ? 0 : playerEntity.rotationPitch > 45 ? 1 : rot == 0 ? 3 : rot == 1 ? 4 : rot == 2 ? 2 : 5;
+	                            metadata = block.onBlockPlaced(world, cbTileEntity.xCoord, cbTileEntity.yCoord, cbTileEntity.zCoord, side_interpolated, hitX, hitY, hitZ, metadata);
+	                        }*/
+	                        
+	                        if (EnumAttributeLocation.HOST.equals(location) && (!canSupportCover(cbTileEntity, location) || cbTileEntity.getAttributeHelper().hasAttribute(EnumAttributeLocation.HOST, EnumAttributeType.COVER))) {
+	                            location = EnumAttributeLocation.valueOf(blockRayTraceResult.getDirection().ordinal());
+	                        }
+	                        
+	                        if (canSupportCover(cbTileEntity, location) && !cbTileEntity.getAttributeHelper().hasAttribute(location, EnumAttributeType.COVER)) {
+	                            cbTileEntity.addAttribute(location, EnumAttributeType.COVER, itemStack);
+	                            actionResult.setAltered().setAlteredOffHand(hasGlue).decInventory().setSoundSource(itemStack);
+	                        }
+	
+	                    } else if (Configuration.isIlluminationEnabled() && BlockUtil.isIlluminator(itemStack)
+	                    		&& !cbTileEntity.getAttributeHelper().hasAttribute(location, EnumAttributeType.ILLUMINATOR)) {
+                            cbTileEntity.addAttribute(location, EnumAttributeType.ILLUMINATOR, itemStack);
+                            actionResult.setAltered().setAlteredOffHand(hasGlue).decInventory().setSoundSource(itemStack);
+	                    } else if (Configuration.isOverlaysEnabled() && BlockUtil.isOverlay(itemStack)
+	                    		&& !cbTileEntity.getAttributeHelper().hasAttribute(location, EnumAttributeType.OVERLAY)) {
+                            cbTileEntity.addAttribute(location, EnumAttributeType.OVERLAY, itemStack);
+                            actionResult.setAltered().setAlteredOffHand(hasGlue).decInventory().setSoundSource(itemStack);
+	                    } else if (Configuration.isDyeColorsEnabled() && BlockUtil.isDye(itemStack, false)
+	                    		&& !cbTileEntity.getAttributeHelper().hasAttribute(location, EnumAttributeType.DYE)) {
+                            cbTileEntity.addAttribute(location, EnumAttributeType.DYE, itemStack);
+                            actionResult.setAltered().setAlteredOffHand(hasGlue).decInventory().setSoundSource(itemStack);
+	                    }
                     }
                 }
             }
@@ -428,6 +432,10 @@ public abstract class AbstractCoverableBlock extends Block implements IWaterLogg
             damageItemWithChance(world, playerEntity, hand);
             //onNeighborChange(world, blockPos, blockPos);
             //world.notifyNeighborsOfStateChange(blockPos, this);
+        }
+        
+        if (actionResult.alteredOffHand) {
+        	damageItemWithChance(world, playerEntity, Hand.OFF_HAND);
         }
         
         if (actionResult.altered) {
@@ -932,22 +940,18 @@ public abstract class AbstractCoverableBlock extends Block implements IWaterLogg
         //}
     }
     
-    /**
-     * Called when the block is placed in the world.
-     * 
-     * @param world the world
-     * @param blockPos the block position
-     * @param blockState the block state
-     * @param livingEntity the living entity
-     * @param itemStack the entity held ItemStack
-     */
     @Override
-    public void setPlacedBy(World world, BlockPos blockPos, BlockState blockState, LivingEntity livingEntity, ItemStack itemStack) {
-    	if (!world.isClientSide()) {
-            CbTileEntity cbTileEntity = getTileEntity(world, blockPos);
-            if (cbTileEntity != null) {
-                cbTileEntity.setOwner(new ProtectedObject((PlayerEntity)livingEntity));
-            }
+    public void setPlacedBy(World world, BlockPos blockPos, BlockState blockState, @Nullable LivingEntity livingEntity, ItemStack itemStack) {
+    	super.setPlacedBy(world, blockPos, blockState, livingEntity, itemStack);
+    }
+    
+    public void setPlacedBy(World world, BlockPos blockPos, BlockState blockState, @Nullable LivingEntity livingEntity, ItemStack itemStack, BlockRayTraceResult blockRayTraceResult) {
+    	if (world.isClientSide()) {
+    		return;
+    	}
+        CbTileEntity cbTileEntity = getTileEntity(world, blockPos);
+        if (cbTileEntity != null) {
+            cbTileEntity.setOwner(new ProtectedObject((PlayerEntity)livingEntity));
         }
     }
     
@@ -1049,6 +1053,8 @@ public abstract class AbstractCoverableBlock extends Block implements IWaterLogg
             ((ICarpentersHammer)item).onHammerUse(world, playerEntity, hand);
         } else if (item instanceof ICarpentersChisel) {
             ((ICarpentersChisel)item).onChiselUse(world, playerEntity, hand);
+        } else if (item instanceof ICarpentersGlue) {
+        	((ICarpentersGlue)item).onGlueUse(world, playerEntity, hand);
         }
     }
     
@@ -1091,9 +1097,10 @@ public abstract class AbstractCoverableBlock extends Block implements IWaterLogg
      * 
      * @param cbTileEntity the Carpenter's Block tile entity
      * @param playerEntity the player
+     * @param blockRayTraceResult the block ray trace result
      * @return <code>true</code> if tile entity changed
      */
-    protected boolean onHammerLeftClick(CbTileEntity cbTileEntity, PlayerEntity playerEntity) {
+    protected boolean onHammerLeftClick(CbTileEntity cbTileEntity, PlayerEntity playerEntity, BlockRayTraceResult blockRayTraceResult) {
         return false;
     }
 
@@ -1104,9 +1111,10 @@ public abstract class AbstractCoverableBlock extends Block implements IWaterLogg
      * 
      * @param cbTileEntity the Carpenter's Block tile entity
      * @param playerEntity the player
+     * @param blockRayTraceResult the block ray trace result
      * @return <code>true</code> if tile entity changed
      */
-    protected boolean onHammerRightClick(CbTileEntity cbTileEntity, PlayerEntity playerEntity) {
+    protected boolean onHammerRightClick(CbTileEntity cbTileEntity, PlayerEntity playerEntity, BlockRayTraceResult blockRayTraceResult) {
         return false;
     }
 
@@ -1118,6 +1126,15 @@ public abstract class AbstractCoverableBlock extends Block implements IWaterLogg
      */
     protected boolean canSupportCover(CbTileEntity cbTileEntity, EnumAttributeLocation location) {
         return true;
+    }
+    
+    /**
+     * We want to reduce the shape by just a fraction so that
+     * occlusion doesn't darken interior faces.
+     */
+    @Override
+    public VoxelShape getShape(BlockState blockState, IBlockReader blockReader, BlockPos blockPos, ISelectionContext context) {
+    	return Block.box(0.0001D, 0.0001D, 0.0001D, 15.9999D, 15.9999D, 15.9999D);
     }
 
     /**

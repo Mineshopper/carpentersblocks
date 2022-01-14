@@ -3,6 +3,8 @@ package com.carpentersblocks.network;
 import java.util.function.Supplier;
 
 import com.carpentersblocks.CarpentersBlocks;
+import com.carpentersblocks.api.ICarpentersChisel;
+import com.carpentersblocks.api.ICarpentersHammer;
 import com.carpentersblocks.util.BlockUtil;
 
 import net.minecraft.block.BlockState;
@@ -62,42 +64,37 @@ public class PacketUseItemOnBlock implements ICarpentersBlocksPacket {
      * Intercepts block right click action and sends packet to
      * server with {@link BlockRayTraceResult} if conditions
      * are met.
-     * <p>
-     * Provides ability to right-click a Carpenter's Block while
-     * the player is crouching.
      * 
      * @param event the event
      */
     @SubscribeEvent
     public static void onRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
-    	ItemStack itemStack;
-    	if ((itemStack = event.getPlayer().getItemInHand(event.getHand())) == null) {
+    	// skip event if holding nothing, or if not holding Carpenter's tool
+    	ItemStack itemStack = event.getPlayer().getItemInHand(event.getHand());
+    	if (itemStack == null ||
+    			!(itemStack.getItem() instanceof ICarpentersChisel || itemStack.getItem() instanceof ICarpentersHammer)) {
     		return;
     	}
-    	return;
-    	// handle placedBy()
-    	//if (itemStack.getItem()..is(AbstractCoverableBlock) instanceof AbstractCoverableBlock) {
-    	/*
-    	if (isValidCarpentersBlock(event.getWorld(), event.getPos())) {
-            if (event.getPlayer().isCrouching()
-            		&& !(itemStack != null && itemStack.getItem() instanceof BlockItem && !BlockUtil.isOverlay(itemStack))) {
-        		// prevent event from propagating to server
-	        	if (event.getWorld().isClientSide()) {
-	        		event.setCanceled(true);
-	        	}
-	        	// no need to call default attack() block method
-            	event.setUseBlock(Result.DENY);
-            	// call our own method and also send packet to server
-            	CarpentersBlocksPacketHandler.sendToServer(new PacketBlockInteraction.UseItem(event.getHitVec(), event.getHand()));
-            	BlockState blockState = event.getPlayer().level.getBlockState(event.getPos());
-            	ActionResultType result = blockState.getBlock().use(blockState, event.getWorld(), event.getPos(), event.getPlayer(), event.getHand(), event.getHitVec());
-		        if (!ActionResultType.SUCCESS.equals(result) && itemStack != null && itemStack.getItem() instanceof BlockItem) {
-		        	itemStack.onItemUseFirst(new ItemUseContext(event.getPlayer(), event.getHand(), event.getHitVec()));
-		        	// TODO: may need to consume item
-		        }
-            }
+    	
+    	// skip if not clicking a Carpenter's block
+    	if (!BlockUtil.isValidTileEntity(event.getWorld(), event.getPos())) {
+    		return;
     	}
-    	*/
+    	
+    	// if player is crouching and not holding an overlay item
+        if (event.getPlayer().isCrouching()
+        		&& !(itemStack.getItem() instanceof BlockItem && !BlockUtil.isOverlay(itemStack))) {
+        	// send packet with attack hit vector and hand included for Carpenter's tool interactions
+        	CarpentersBlocksPacketHandler.sendToServer(new PacketUseItemOnBlock(event.getHitVec(), event.getHand()));
+        	// call custom use method to update block display on client only
+        	BlockState blockState = event.getPlayer().level.getBlockState(event.getPos());
+        	ActionResultType result = blockState.getBlock().use(blockState, event.getWorld(), event.getPos(), event.getPlayer(), event.getHand(), event.getHitVec());
+	        if (!ActionResultType.SUCCESS.equals(result) && itemStack != null && itemStack.getItem() instanceof BlockItem) {
+	        	itemStack.onItemUseFirst(new ItemUseContext(event.getPlayer(), event.getHand(), event.getHitVec()));
+	        	// TODO: may need to consume item
+	        }
+        }
+    	
     }
 	
 }

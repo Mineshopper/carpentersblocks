@@ -1,17 +1,14 @@
 package com.carpentersblocks.client.renderer;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
-import java.util.LinkedHashSet;
 
-import com.carpentersblocks.block.CbBlocks;
 import com.carpentersblocks.client.TextureAtlasSprites;
-import com.carpentersblocks.nbt.attribute.EnumAttributeLocation;
 import com.carpentersblocks.util.QuadUtil;
 import com.carpentersblocks.util.RotationUtil;
 import com.carpentersblocks.util.RotationUtil.CbRotation;
 import com.google.common.collect.ImmutableList;
 
-import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -19,22 +16,12 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.renderer.vertex.VertexFormatElement;
 import net.minecraft.util.Direction;
-import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.client.model.pipeline.BakedQuadBuilder;
 import net.minecraftforge.client.model.pipeline.IVertexConsumer;
 
 public class Quad {
-
-	private static final float TINT_IDX_FULL_BRIGHT = (float) (15 * 0x20) / 0xffff;
-	private static final String GRASS_SIDE_OVERLAY = "minecraft:block/grass_block_side_overlay";
-	
-	private static final float[] quantizedSixteenths = {
-			-0.0625f, -0.125f, 0.0f, 0.0625f, 0.125f, 0.1875f, 0.25f, 0.3125f, 0.375f,
-			0.4375f, 0.5f, 0.5625f, 0.625f, 0.6875f, 0.75f, 0.8125f,
-			0.875f, 0.9375f, 1.0f, 1.0625f, 1.125f
-	};
 	
    	private Vector3d[] _vec3ds;
 	private Direction _direction;
@@ -43,10 +30,11 @@ public class Quad {
 	private boolean _maxBrightness;
 	private RenderType _renderType;
 	private Vector3d _normal;
-	private boolean _isOblique;
+	private boolean _diffuseLighting;
+	private double _offset;
 	private Vector3d _uvOffset;
 	private Direction _uvFloat;
-	private boolean _diffuseLighting;
+	private Direction _bakeDirection;
 	
 	private Quad() { }
 			
@@ -56,17 +44,15 @@ public class Quad {
 	 * @param src the source quad
 	 */
 	public Quad(Quad src) {
-		_vec3ds = Arrays.copyOf(src.getVecs(), src.getVecs().length);
+		_vec3ds = Arrays.copyOf(src.getVec3ds(), src.getVec3ds().length);
 		_direction = src.getDirection();
 		_maxBrightness = src.isMaxBrightness();
 		_renderType = src.getRenderType();
 		_rgb = src.getRgb();
 		_textureAtlasSprite = src.getTextureAtlasSprite();
 		_normal = new Vector3d(src.getNormal().x, src.getNormal().y, src.getNormal().z);
-		_isOblique = src.isObliqueSlope();
-		_uvFloat = src.getUVFloat();
-		_uvOffset = src.getUVOffset();
 		_diffuseLighting = src.hasDiffuseLighting();
+		_uvFloat = src.getUVFloat();
 	}
 	
 	/**
@@ -75,14 +61,13 @@ public class Quad {
 	 * This is used by the mod's built-in block state system which
 	 * constructs shapes using custom json files.
 	 * 
-	 * @param facing the facing
+	 * @param direction the direction
 	 * @param vec3ds the quad vectors
 	 * @return a new quad
 	 */
-	public static Quad getQuad(Direction facing, Vector3d ... vec3ds) {
+	public static Quad getQuad(Direction direction, Vector3d ... vec3ds) {
 		return getQuad(
-				facing,
-				true,
+				direction,
 				TextureAtlasSprites.sprite_uncovered_full,
 				RenderConstants.DEFAULT_RGB,
 				false,
@@ -98,14 +83,13 @@ public class Quad {
 	 * This is used when generating side covers, since they are
 	 * generated from pre-sorted quads.
 	 * 
-	 * @param facing the facing
+	 * @param direction the direction
 	 * @param vec3ds the quad vectors
 	 * @return a new quad
 	 */
-	public static Quad getUnsortedQuad(Direction facing, Vector3d ... vec3ds) {
+	public static Quad getUnsortedQuad(Direction direction, Vector3d ... vec3ds) {
 		return getQuad(
-				facing,
-				false,
+				direction,
 				TextureAtlasSprites.sprite_uncovered_full,
 				RenderConstants.DEFAULT_RGB,
 				false,
@@ -119,15 +103,14 @@ public class Quad {
 	 * <p>
 	 * This is used when first generating quads for rendering.
 	 * 
-	 * @param facing the facing
+	 * @param direction the direction
 	 * @param sprite the sprite
 	 * @param vec3ds the quad vectors
 	 * @return a new quad
 	 */
-	public static Quad getQuad(Direction facing, TextureAtlasSprite sprite, Vector3d ... vec3ds) {
+	public static Quad getQuad(Direction direction, TextureAtlasSprite sprite, Vector3d ... vec3ds) {
 		return getQuad(
-				facing,
-				true,
+				direction,
 				sprite,
 				RenderConstants.DEFAULT_RGB,
 				false,
@@ -141,16 +124,15 @@ public class Quad {
 	 * <p>
 	 * This is used when transforming BakedQuads into Quads.
 	 * 
-	 * @param facing the facing
+	 * @param direction the direction
 	 * @param sprite the sprite
 	 * @param tintIdx the tint index (rgb)
 	 * @param vec3ds the quad vectors
 	 * @return a new quad
 	 */
-	public static Quad getQuad(Direction facing, TextureAtlasSprite sprite, int tintIdx, Vector3d ... vec3ds) {
+	public static Quad getQuad(Direction direction, TextureAtlasSprite sprite, int tintIdx, Vector3d ... vec3ds) {
 		return getQuad(
-				facing,
-				true,
+				direction,
 				sprite,
 				tintIdx,
 				false,
@@ -160,10 +142,9 @@ public class Quad {
 	}
 	
 	/**
-	 * Handles the final step of quad creation for internal methods using all parameters.
+	 * Handles the final step of quad creation for internal methods using all arguments.
 	 * 
-	 * @param facing the facing
-	 * @param sortVecs whether input vectors need to be sorted based on facing
+	 * @param direction the direction
 	 * @param sprite the sprite
 	 * @param tintIdx the tint index (rgb)
 	 * @param maxBrightness the max brightness
@@ -172,8 +153,7 @@ public class Quad {
 	 * @return a new quad
 	 */
 	public static Quad getQuad(
-			Direction facing,
-			boolean sortVecs,
+			Direction direction,
 			TextureAtlasSprite sprite,
 			int tintIdx,
 			boolean maxBrightness,
@@ -187,7 +167,7 @@ public class Quad {
 		quad.setDiffuseLighting(diffuseLighting);
 		quad.setRenderType(renderType);
 		quad.setRgb(tintIdx);
-		if (!quad.applyFacing(sortVecs, facing)) {
+		if (!quad.setDirection(direction)) {
 			return null;
 		}
 		return quad;
@@ -210,69 +190,36 @@ public class Quad {
 		return quad;
 	}
 	
-	public BakedQuad bake(EnumAttributeLocation location) {
+	/**
+	 * Bakes quad.
+	 * 
+	 * @param location the location
+	 * @return a baked quad
+	 */
+	public BakedQuad bake() {
 		RenderPkg renderPkg = RenderPkg.get();
-		
-        // inventory rendering ignores these
-        boolean isFloatingOverlay = false;
-        if (DefaultVertexFormats.BLOCK.equals(renderPkg.getVertexFormat())) {
-	        isFloatingOverlay = _textureAtlasSprite.getName().toString().equals(GRASS_SIDE_OVERLAY)
-	        	|| _textureAtlasSprite.getName().getPath().contains("overlay/overlay_")
-	        	&& _textureAtlasSprite.getName().getPath().endsWith("_side");
-	        Block block = renderPkg.getBlockState().getBlock();
-	        if (CbBlocks.blockCollapsibleBlock.equals(block) && (isSloped(Axis.X) || isSloped(Axis.Y) || isSloped(Axis.Z))) {
-	        	this._isOblique = false;
-	        	isFloatingOverlay = false;
-	        }
-        }
-        
-        boolean debug = false;
-        if (debug) {
-	        switch (this._direction) {
-		        case DOWN:
-		        	_rgb = 0xffffff; // white
-		        	break;
-		        case UP:
-		        	_rgb = 0x000000; // black
-		        	break;
-		        case NORTH:
-		        	_rgb = 0xff0000; // red
-		        	break;
-		        case SOUTH:
-		        	_rgb = 0x00ff00; // green
-		        	break;
-		        case WEST:
-		        	_rgb = 0x0000ff; // blue
-		        	break;
-		        case EAST:
-		        	_rgb = 0xffff00; // yellow
-		        	break;
-	        }
-        }
-        
-        UV[] uv = QuadUtil.getUV(this, isFloatingOverlay, location);
-        BakedQuadBuilder builder = new BakedQuadBuilder(_textureAtlasSprite);
-        builder.setQuadOrientation(_direction);
-        
+        UV[] uv = QuadUtil.getUV(this);
+        BakedQuadBuilder builder = new BakedQuadBuilder(getTextureAtlasSprite());
+        builder.setQuadOrientation(getBakeDirection());
         for (int vertex = 0; vertex < 4; vertex++) {
         	if (DefaultVertexFormats.BLOCK.equals(renderPkg.getVertexFormat())) {
         		putBlockVertex(
         				builder,
-	            		_rgb,
-	            		quantizeToHexFractional(_vec3ds[vertex].x),
-	            		quantizeToHexFractional(_vec3ds[vertex].y),
-	            		quantizeToHexFractional(_vec3ds[vertex].z),
-	            		_textureAtlasSprite.getU(uv[vertex].getU()),
-	            		_textureAtlasSprite.getV(uv[vertex].getV())
+	            		getRgb(),
+	            		(float) quantizedVector3d(getVec3ds()[vertex]).add(getNormal().multiply(getOffset(), getOffset(), getOffset())).x,
+	            		(float) quantizedVector3d(getVec3ds()[vertex]).add(getNormal().multiply(getOffset(), getOffset(), getOffset())).y,
+	            		(float) quantizedVector3d(getVec3ds()[vertex]).add(getNormal().multiply(getOffset(), getOffset(), getOffset())).z,
+	            		getTextureAtlasSprite().getU(uv[vertex].getU()),
+	            		getTextureAtlasSprite().getV(uv[vertex].getV())
         		);
         	} else if (DefaultVertexFormats.NEW_ENTITY.equals(renderPkg.getVertexFormat())) {
         		putItemVertex(
         				builder,
-	            		(float) _vec3ds[vertex].x,
-	            		(float) _vec3ds[vertex].y,
-	            		(float) _vec3ds[vertex].z,
-	            		_textureAtlasSprite.getU(uv[vertex].getU()),
-	            		_textureAtlasSprite.getV(uv[vertex].getV())
+	            		(float) getVec3ds()[vertex].x,
+	            		(float) getVec3ds()[vertex].y,
+	            		(float) getVec3ds()[vertex].z,
+	            		getTextureAtlasSprite().getU(uv[vertex].getU()),
+	            		getTextureAtlasSprite().getV(uv[vertex].getV())
         		);
         	}
         }
@@ -280,25 +227,34 @@ public class Quad {
 	}
 	
 	/**
-	 * Rotated blocks accumulate precision errors that break
-	 * vanilla and non-experimental Forge lighting systems.
+	 * Rotated blocks accumulate precision errors that don't
+	 * work well with ambient occlusion calculations.
 	 * <p>
-	 * This will quantize a coordinate value into 1/16th
-	 * increments from 0.0f to 1.0f, providing aligned values
-	 * that work in harmony with occlusion and lighting systems.
+	 * This will quantize 3d vector coordinates into the
+	 * nearest 1/16th increment to accommodate side cover
+	 * depths, providing aligned values that work in harmony
+	 * with the lighting system.
 	 * 
-	 * @param value the input value
-	 * @return a quantized value to nearest 1/16th increment
-	 * between 0.0f and 1.0f
+	 * @param value the input 3d vector
+	 * @return a quantized 3d vector to nearest 1/16th coordinates
 	 */
-	private float quantizeToHexFractional(double value) {
-		Float closest = null;
-		for (float quantization : quantizedSixteenths) {
-			if (closest == null || MathHelper.abs((float) value - closest) > MathHelper.abs(quantization - (float) value)) {
-				closest = quantization;
+	private Vector3d quantizedVector3d(Vector3d vec3d) {
+		double[] values = { vec3d.x(), vec3d.y(), vec3d.z() };
+		double[] adjusted = new double[3];
+		for (int i = 0; i < values.length; ++i) {
+			BigDecimal bigDecimal = new BigDecimal(String.valueOf(values[i]));
+			int intValue = bigDecimal.intValue();
+			float floatValue = Math.abs(bigDecimal.subtract(new BigDecimal(intValue)).floatValue());
+			Float decimalValue = null;
+			for (int counter = 16; counter >= 0; --counter) {
+				float fractional = counter / 16.0f;
+				if (decimalValue == null || MathHelper.abs(floatValue - decimalValue) > MathHelper.abs(fractional - floatValue)) {
+					decimalValue = fractional;
+				}
 			}
+			adjusted[i] = values[i] > 0 ? intValue + decimalValue : intValue - decimalValue;
 		}
-		return closest;
+		return new Vector3d(adjusted[0], adjusted[1], adjusted[2]);
 	}
 	
 	private void putItemVertex(IVertexConsumer consumer, float x, float y, float z, float u, float v) {
@@ -343,8 +299,7 @@ public class Quad {
 	                float r = ((color >> 16) & 0xFF) / 255f;
 	                float g = ((color >>  8) & 0xFF) / 255f;
 	                float b = ( color        & 0xFF) / 255f;
-	                float a = ((color >> 24) & 0xFF) / 255f; // used?
-	                consumer.put(e, r, g, b, a);
+	                consumer.put(e, r, g, b, 1.0f);
 	                break;
 	            case NORMAL:
 	            	consumer.put(
@@ -373,55 +328,53 @@ public class Quad {
 	 */
 	public void rotate(CbRotation rotation) {
 		_vec3ds = RotationUtil.rotate(_vec3ds, rotation);
-		this.applyFacing(true, rotation.getRotatedDirection(_direction));
+		setDirection(rotation.getRotatedDirection(_direction));
 	}
 	
 	/**
-	 * Gets whether quad is sloped.
-	 * 
-	 * @param axis the axis to check for sloping
-	 * @return <code>true</code> if sloped on axis
-	 */
-	public boolean isSloped(Axis axis) {
-		double axis1 = Axis.X.equals(axis) ? _normal.x : Axis.Y.equals(axis) ? _normal.y : _normal.z;
-		return QuadUtil.compare(axis1, -1.0D) > 0 &&
-				QuadUtil.compare(axis1, 0.0D) != 0 &&
-				QuadUtil.compare(axis1, 1.0D) < 0;
-	}
-	
-	/**
-	 * Applies direction and calculates properties.
+	 * Sorts vec3ds for given direction.
 	 * <p>
-	 * Quad must be reoriented to match facing prior to calling this
-	 * or runtime exception may occur.
+	 * If sorting fails, will return <code>false</code>
+	 * and vec3ds will remain unmodified.  This is kept
+	 * separate from {@link #setDirection(Direction)} so
+	 * that vec3d order can be rotated to be compatible
+	 * with baking orientation for lighting purposes.
 	 * 
-	 * @param sortVecs whether to sort vectors using new direction
-	 * @param direction the new direction
-	 * @return <code>true</code> if transformation succeeds, <code>false</code> if it fails.
+	 * @param direction a direction
+	 * @return <code>true</code> if sorted successfully
 	 */
-	public boolean applyFacing(boolean sortVecs, Direction direction) {
-		if (sortVecs) {
-			_vec3ds = QuadUtil.sortVector3dsByDirection(direction, _vec3ds);
-		}
-		if (!QuadUtil.isValid(this)) {
+	public boolean sortVec3ds(Direction direction) {
+		Vector3d[] sortedVec3ds = QuadUtil.sortVector3dsByDirection(direction, _vec3ds);
+		if (!QuadUtil.isValid(sortedVec3ds)) {
 			return false;
 		}
-		_direction = direction;
-		Vector3d[] vecs1 = new LinkedHashSet<Vector3d>(Arrays.asList(this.getVecs())).toArray(new Vector3d[this.getVecs().length]);
-		_normal = QuadUtil.getNormal(vecs1);
-		_isOblique = isSloped(Axis.X) && isSloped(Axis.Y) && isSloped(Axis.Z);
+		_vec3ds = sortedVec3ds;
 		return true;
 	}
 	
-	public Direction getYSlope() {
-		return getNormal().y > 0.0D ? Direction.UP : Direction.DOWN;
+	/**
+	 * Sets a new direction for quad.
+	 * <p>
+	 * If direction is compatible, will sort points and
+	 * calculate a new normal if direction flips.
+	 * 
+	 * @param direction the new direction
+	 * @return <code>true</code> if set successfully
+	 */
+	public boolean setDirection(Direction direction) {
+		if (!sortVec3ds(direction)) {
+			return false;
+		}
+		_direction = direction;
+		_normal = QuadUtil.getNormal(_vec3ds);
+		return true;
 	}
 	
 	public Direction getDirection() {
 		return _direction;
 	}
 	
-	public Vector3d[] getVecs() {
+	public Vector3d[] getVec3ds() {
 		return _vec3ds;
 	}
 	
@@ -429,32 +382,36 @@ public class Quad {
 		return _textureAtlasSprite;
 	}
 	
-	public void setTextureAtlasSprite(TextureAtlasSprite sprite) {
+	public Quad setTextureAtlasSprite(TextureAtlasSprite sprite) {
 		_textureAtlasSprite = sprite;
+		return this;
 	}
 	
 	public int getRgb() {
 		return _rgb;
 	}
 
-	public void setRgb(int rgb) {
+	public Quad setRgb(int rgb) {
 		_rgb = rgb;
+		return this;
 	}
 
 	public boolean isMaxBrightness() {
 		return _maxBrightness;
 	}
 
-	public void setMaxBrightness(boolean maxBrightness) {
+	public Quad setMaxBrightness(boolean maxBrightness) {
 		_maxBrightness = maxBrightness;
+		return this;
 	}
 
 	public RenderType getRenderType() {
 		return _renderType;
 	}
 
-	public void setRenderType(RenderType renderType) {
+	public Quad setRenderType(RenderType renderType) {
 		_renderType = renderType;
+		return this;
 	}
 	
 	public boolean canCover() {
@@ -465,10 +422,24 @@ public class Quad {
 		return _normal;
 	}
 	
-	public boolean isObliqueSlope() {
-		return _isOblique;
+	public boolean hasDiffuseLighting() {
+		return _diffuseLighting;
 	}
 
+	public Quad setDiffuseLighting(boolean _diffuseLighting) {
+		this._diffuseLighting = _diffuseLighting;
+		return this;
+	}
+	
+	public double getOffset() {
+		return _offset;
+	}
+
+	public Quad setOffset(double _offset) {
+		this._offset = _offset;
+		return this;
+	}
+	
 	public Vector3d getUVOffset() {
 		if (_uvOffset == null) {
 			return Vector3d.ZERO;
@@ -479,7 +450,7 @@ public class Quad {
 	public void setUVOffset(Vector3d _uvOffset) {
 		this._uvOffset = _uvOffset;
 	}
-
+	
 	public boolean hasFloatingUV() {
 		return this._uvFloat != null;
 	}
@@ -492,13 +463,16 @@ public class Quad {
 		this._uvFloat = _uvFloat;
 		return this;
 	}
-
-	public boolean hasDiffuseLighting() {
-		return _diffuseLighting;
+	
+	public Direction getBakeDirection() {
+		if (_bakeDirection == null) {
+			return _direction;
+		}
+		return _bakeDirection;
 	}
-
-	public void setDiffuseLighting(boolean _diffuseLighting) {
-		this._diffuseLighting = _diffuseLighting;
+	
+	public void setBakeDirection(Direction bakeDirection) {
+		this._bakeDirection = bakeDirection;
 	}
 	
 }

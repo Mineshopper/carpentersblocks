@@ -28,10 +28,12 @@ public class CarpentersBlocksPacketHandler {
 	
 	@SubscribeEvent
 	public static void register(FMLCommonSetupEvent event) {
-		INSTANCE.registerMessage(0, PacketAttackBlock.class, PacketAttackBlock::encode, PacketAttackBlock::new, PacketAttackBlock::handle);
-		INSTANCE.registerMessage(1, PacketUseItemOnBlock.class, PacketUseItemOnBlock::encode, PacketUseItemOnBlock::new, PacketUseItemOnBlock::handle);
-		INSTANCE.registerMessage(2, PacketEnrichPlant.class, PacketEnrichPlant::encode, PacketEnrichPlant::new, PacketEnrichPlant::handle);
-		INSTANCE.registerMessage(3, PacketSlopeSelect.class, PacketSlopeSelect::encode, PacketSlopeSelect::new, PacketSlopeSelect::handle);
+		int id = 0;
+		INSTANCE.registerMessage(id++, PacketAttackBlock.class, PacketAttackBlock::encode, PacketAttackBlock::new, PacketAttackBlock::handle);
+		INSTANCE.registerMessage(id++, PacketUseItemOnBlock.class, PacketUseItemOnBlock::encode, PacketUseItemOnBlock::new, PacketUseItemOnBlock::handle);
+		INSTANCE.registerMessage(id++, PacketSetPlacedBy.class, PacketSetPlacedBy::encode, PacketSetPlacedBy::new, PacketSetPlacedBy::handle);
+		INSTANCE.registerMessage(id++, PacketEnrichPlant.class, PacketEnrichPlant::encode, PacketEnrichPlant::new, PacketEnrichPlant::handle);
+		INSTANCE.registerMessage(id++, PacketSlopeSelect.class, PacketSlopeSelect::encode, PacketSlopeSelect::new, PacketSlopeSelect::handle);
 	}
 	
 	public static void sendToServer(ICarpentersBlocksPacket pkt) {
