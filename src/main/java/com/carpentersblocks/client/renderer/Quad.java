@@ -53,6 +53,7 @@ public class Quad {
 		_normal = new Vector3d(src.getNormal().x, src.getNormal().y, src.getNormal().z);
 		_diffuseLighting = src.hasDiffuseLighting();
 		_uvFloat = src.getUVFloat();
+		_uvOffset = new Vector3d(src.getUVOffset().x, src.getUVOffset().y, src.getUVOffset().z);
 	}
 	
 	/**
