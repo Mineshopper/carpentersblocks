@@ -15,6 +15,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraftforge.client.event.InputEvent.MouseInputEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -25,8 +26,9 @@ public class PacketAttackBlock implements ICarpentersBlocksPacket {
 
 	protected BlockRayTraceResult blockRayTraceResult;
 	protected Hand hand;
+	private static boolean canConsumeLeftClick;
 	
-	public PacketAttackBlock() {}
+	public PacketAttackBlock() { }
 	
     public PacketAttackBlock(BlockRayTraceResult blockRayTraceResult, Hand hand) {
     	this.hand = hand;
@@ -48,13 +50,28 @@ public class PacketAttackBlock implements ICarpentersBlocksPacket {
 			if (!BlockUtil.isAreaLoaded(ctx.get().getSender().getLevel(), msg.blockRayTraceResult.getBlockPos())) {
 				return;
 			}
-			System.out.println("Server received PacketAttackBlock");
 			ServerPlayerEntity serverPlayerEntity = ctx.get().getSender();
 			BlockRayTraceResult blockRayTraceResult = msg.blockRayTraceResult;
 			BlockState blockState = serverPlayerEntity.getLevel().getBlockState(blockRayTraceResult.getBlockPos());
 	    	((AbstractCoverableBlock)blockState.getBlock()).attack(
 	    			blockState, serverPlayerEntity.getLevel(), blockRayTraceResult.getBlockPos(), serverPlayerEntity, msg.hand, blockRayTraceResult);
 		});
+	}
+	
+	/**
+	 * We want to capture left clicks to know when hitting
+	 * a block should perform an action.
+	 * <p>
+	 * {@link PlayerInteractEvent.LeftClickBlock} will continue
+	 * firing every 500ms if player is holding the button.
+	 * 
+	 * @param event the event
+	 */
+	@SubscribeEvent
+	public static void onMouseInput(MouseInputEvent event) {
+		if (event.getButton() == 0) {
+			canConsumeLeftClick = event.getAction() == 1;
+		}
 	}
 	
 	/**
@@ -82,16 +99,13 @@ public class PacketAttackBlock implements ICarpentersBlocksPacket {
     	// this doesn't do anything client side, so we check that below before performing more work
     	event.setCanceled(true);
     	
-    	// skip if player is holding key binding
-    	if (event.getPlayer().swinging) {
-    		if (event.getWorld().isClientSide())
-    			System.out.println("Detected player swinging on client");
-    		return;
-    	}
-		
     	// handle client side tasks
     	if (event.getWorld().isClientSide()) {
-    		System.out.println("Client sending PacketAttackBLock");
+    		// skip if click already consumed (player is holding button)
+    		if (!canConsumeLeftClick) {
+        		return;
+        	}
+        	canConsumeLeftClick = false;
 	    	// send packet with attack hit vector and hand included for Carpenter's tool interactions
 	    	BlockRayTraceResult blockRayTraceResult = (BlockRayTraceResult) Minecraft.getInstance().hitResult;
 	    	CarpentersBlocksPacketHandler.sendToServer(new PacketAttackBlock(blockRayTraceResult, event.getHand()));
