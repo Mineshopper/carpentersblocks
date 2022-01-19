@@ -1,7 +1,6 @@
 package com.carpentersblocks.nbt;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -30,8 +29,11 @@ import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorld;
+import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.math.SectionPos;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.ChunkSection;
+import net.minecraft.world.lighting.WorldLightManager;
 import net.minecraftforge.client.model.ModelDataManager;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
@@ -204,7 +206,6 @@ public class CbTileEntity extends TileEntity implements IForgeTileEntity, IProte
         } else {
         	return false;
         }
-        //updateWorldAndLighting(true);
         return true;
     }
     
@@ -262,10 +263,35 @@ public class CbTileEntity extends TileEntity implements IForgeTileEntity, IProte
     	return _cbAttrHelper;
     }
     
+    /**
+     * Updates world and lighting.
+     * 
+     * @param isChanged whether change has occurred
+     */
+    public void update(boolean isChanged) {
+        World world = getLevel();
+        if (world != null) {
+            updateLighting();
+            if (isChanged) {
+            	setChanged();
+            }
+        }
+    }
+    
+    @Nonnull
+    @Override
+    public IModelData getModelData() {
+        return new ModelDataMap.Builder()
+                .withInitial(MODEL_ATTRIBUTES, _cbAttrHelper.copyMap())
+                .withInitial(MODEL_METADATA, _cbMetadata)
+                .withInitial(MODEL_BLOCK_POS, getBlockPos())
+                .build();
+    }
+    
     //////////////////////////////
     // Properties section below //
     //////////////////////////////
-    
+    /*
     public Object getProperty(String key) {
     	if (_properties == null) {
     		return null;
@@ -285,7 +311,7 @@ public class CbTileEntity extends TileEntity implements IForgeTileEntity, IProte
     		_properties.remove(key);
     	}
     }
-    
+    */
     ////////////////////////////////////
     // Code below handles block drops //
     ////////////////////////////////////
@@ -324,6 +350,13 @@ public class CbTileEntity extends TileEntity implements IForgeTileEntity, IProte
         return true;
     }
     
+    /**
+     * Gets droppable item stack using attribute key,
+     * otherwise <em>null</em>.
+     * 
+     * @param key the attribute key
+     * @return an item stack or <em>null</em>
+     */
     public ItemStack getDroppableItemStack(Key key) {
         AbstractAttribute<?> attribute = _cbAttrHelper.getAttribute(key);
         if (attribute instanceof AttributeItemStack) {
@@ -403,7 +436,7 @@ public class CbTileEntity extends TileEntity implements IForgeTileEntity, IProte
     private void createBlockDropEvent(AttributeItemStack attribute) {
         getLevel().blockEvent(getBlockPos(), getBlockState().getBlock(), AbstractCoverableBlock.EVENT_ID_DROP_ATTR , attribute.getKey().hashCode());
     }
-
+    
     ///////////////////////////////////////////////////////
     // Code below implemented strictly for light updates //
     ///////////////////////////////////////////////////////
@@ -417,7 +450,7 @@ public class CbTileEntity extends TileEntity implements IForgeTileEntity, IProte
      */
     public int getLightValue() {
         if (_lightValue == -1 && !_flagLightingCalcs) {
-            updateCachedLighting();
+        	updateLighting();
         }
         return _lightValue;
     }
@@ -448,39 +481,24 @@ public class CbTileEntity extends TileEntity implements IForgeTileEntity, IProte
     }
     
     /**
-     * Updates light value and world lightmap.
+     * Updates light value.
      */
-    private void updateCachedLighting() {
-        _lightValue = getDynamicLightValue();
-        getLevel().getLightEmission(getBlockPos());
-    }
-    
-    /**
-     * Performs world update and refreshes lighting.
-     */
-    public void update(boolean isChanged) {
-        World world = getLevel();
-        if (world != null) {
-            BlockState blockState = world.getBlockState(getBlockPos());
-            world.sendBlockUpdated(getBlockPos(), blockState, blockState, 4);
-            if (blockState.hasAnalogOutputSignal()) {
-            	world.updateNeighborsAt(getBlockPos(), blockState.getBlock());
-            }
-            updateCachedLighting();
-            if (isChanged) {
-            	setChanged();
-            }
-        }
-    }
-    
-    @Nonnull
-    @Override
-    public IModelData getModelData() {
-        return new ModelDataMap.Builder()
-                .withInitial(MODEL_ATTRIBUTES, _cbAttrHelper.copyMap())
-                .withInitial(MODEL_METADATA, _cbMetadata)
-                .withInitial(MODEL_BLOCK_POS, getBlockPos())
-                .build();
+    private void updateLighting() {
+    	_lightValue = getDynamicLightValue();
+    	World world = getLevel();
+    	
+    	// update lighting data
+    	ChunkSection[] chunkSections = world.getChunkAt(getBlockPos()).getSections();
+    	WorldLightManager worldLightManager = world.getLightEngine();
+    	worldLightManager.enableLightSources(new ChunkPos(getBlockPos().getX(), getBlockPos().getZ()), true);
+    	for (int j = 0; j < chunkSections.length; ++j) {
+    		ChunkSection chunkSection = chunkSections[j];
+    		worldLightManager.updateSectionStatus(SectionPos.of(getBlockPos().getX(), j, getBlockPos().getZ()), ChunkSection.isEmpty(chunkSection));
+    	}
+    	world.getLightEngine().checkBlock(getBlockPos());
+        
+        // update client
+        world.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 4);
     }
     
 }
